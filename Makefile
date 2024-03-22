@@ -17,4 +17,4 @@ clean:
 
 # Build a platform interface library
 .platforms/%:
-	gcc -I platforms -c $(subst .platforms, platforms, $@)/mod-loader.c -o out/libplatform.so
+	gcc -I platforms -c $(subst .platforms, platforms, $@)/platform.c -o out/libplatform.so
