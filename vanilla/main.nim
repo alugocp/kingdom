@@ -1,3 +1,5 @@
+import test
 
-proc kingdom_mod_init(): void {.exportc,dynlib.} =
+proc kingdom_mod_init(times: ref Counter): void {.exportc,dynlib.} =
     echo "Mod loaded!"
+    hello(times)

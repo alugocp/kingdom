@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-int loadMod(const char *filepath) {
+int loadMod(const char *filepath, void *times) {
     printf("%s\n", filepath);
     char *error;
     void (*kingdom_mod_init)();
@@ -26,7 +26,7 @@ int loadMod(const char *filepath) {
     }
 
     // Run the init function and close the library
-    (*kingdom_mod_init)();
+    (*kingdom_mod_init)(times);
     dlclose(mod);
     return 0;
 }

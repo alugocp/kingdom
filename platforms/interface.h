@@ -1,2 +1,2 @@
 
-int loadMod(const char *filepath);
+int loadMod(const char *filepath, void *times);
