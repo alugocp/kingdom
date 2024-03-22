@@ -20,8 +20,9 @@ proc loadMod(filepath: string, times: ref Counter): bool =
     unloadLib(lib)
     return true
 
-echo("Hello, world!")
-let times = newCounter()
-hello(times)
-hello(times)
-discard loadMod("/home/alexander/Desktop/kingdom/out/vanilla", times)
+proc init_kingdom(): void {.exportc,dynlib.} =
+    echo("Hello, world!")
+    let times = newCounter()
+    hello(times)
+    hello(times)
+    discard loadMod("/home/alexander/Desktop/kingdom/out/vanilla", times)

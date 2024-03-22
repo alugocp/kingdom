@@ -1,6 +1,6 @@
 
 # Rebuild the entire game from scratch
-all: clean .platforms/desktop .kingdom .vanilla
+all: clean .kingdom .platforms/desktop .vanilla
 
 # Clean up all generated files
 clean:
@@ -10,6 +10,7 @@ clean:
 # Compile Nim source into the game executable
 .kingdom:
 	nim c src/main.nim
+	mv out/kingdom out/libkingdom.so
 
 # Compile the vanilla game mod library
 .vanilla:
@@ -17,4 +18,4 @@ clean:
 
 # Build a platform interface library
 .platforms/%:
-	gcc -I platforms -c $(subst .platforms, platforms, $@)/platform.c -o out/libplatform.so
+	gcc -I platforms $(subst .platforms, platforms, $@)/platform.c -Lout -lkingdom -o out/game

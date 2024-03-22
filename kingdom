@@ -4,7 +4,7 @@
 type choosenim > /dev/null
 if [ "$?" = 0 ]; then
     path="$(choosenim --noColor show | grep -Po '(?<=Path: ).+')/lib"
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$path"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$path:./out"
 else
     echo "You may need to set \$LD_LIBRARY_PATH to include your Nim standard library (we need nimrtl.nim)"
 fi
