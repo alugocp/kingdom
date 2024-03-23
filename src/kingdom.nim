@@ -1,9 +1,13 @@
+import std/tables
 import raylib
 import kingdom/mods/loader
 import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/controls
 import kingdom/test
+import kingdom/entities/unit
+import kingdom/entities/signals
+import kingdom/entities
 
 # Record mouse state for later consumption
 proc handleMouseLogic(m: ref MouseState): void =
@@ -24,6 +28,14 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
     hello(times)
     discard loader.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", times)
 
+    # Test for signal handlers
+    let u = newUnit()
+    let args = BaseSignalArgs(channel: "Base")
+    u.handlers["GetHealth"][0](@[], args)
+    let arg1 = GetHealthSignalArgs(channel: "GetHealth", health: 30)
+    u.handlers["GetHealth"][0](@[], arg1)
+    u.handleSignal(@[], arg1)
+
     # Initialize the Raylib game window
     initWindow(800, 450, "Kingdom")
     defer: closeWindow()
@@ -31,8 +43,8 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
 
     # Raylib game loop
     let m = newMouseState()
-    var dx = 0.0;
-    var dy = 0.0;
+    var dx = 0.0
+    var dy = 0.0
     while not windowShouldClose():
         handleMouseLogic(m)
         if m.down:
