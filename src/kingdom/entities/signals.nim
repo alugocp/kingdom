@@ -1,19 +1,26 @@
-import sugar
+import sequtils
 import std/tables
+import kingdom/types/entities
+import kingdom/types/signals
 
-# Base signal arguments payload
-type BaseSignalArgs* = ref object of RootObj
-    channel*: string
+# Tells a Unit or Tile to handle some incoming signal
+proc handleSignal*(x: ref Entity, ctx: SignalContext, args: BaseSignalArgs): void =
 
-# Stack type to help prevent infinite loops in signal processing
-type SignalContext* = seq[(int, string)]
+    # Don't do anything if this entity has no relevant handler(s)
+    if not x.handlers.hasKey(args.channel):
+        return
 
-# Signal handler type
-type SignalHandler* = (SignalContext, BaseSignalArgs) -> void
+    # Avoid infinite signal loops
+    let step = (x.id, args.channel)
+    if step in ctx:
+        return
 
-# Signal handlers collection type
-type SignalHandlersTable* = Table[string, seq[SignalHandler]]
+    # Kick off the relevant handlers
+    for handler in x.handlers[args.channel]:
+        handler(concat(ctx, @[step]), args)
 
-# Test signal arguments payload
-type GetHealthSignalArgs* = ref object of BaseSignalArgs
-    health*: Natural
+# Adds a signal handler to some entity
+proc addSignalHandler*(x: ref Entity, channel: string, handler: SignalHandler): void =
+    if not x.handlers.hasKey(channel):
+        x.handlers[channel] = @[]
+    x.handlers[channel].add(handler)

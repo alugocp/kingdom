@@ -7,7 +7,8 @@ import kingdom/controls
 import kingdom/test
 import kingdom/entities/unit
 import kingdom/entities/signals
-import kingdom/entities
+import kingdom/types/entities
+import kingdom/types/signals
 
 # Record mouse state for later consumption
 proc handleMouseLogic(m: ref MouseState): void =

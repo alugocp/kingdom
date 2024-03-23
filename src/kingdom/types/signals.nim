@@ -1,0 +1,19 @@
+import sugar
+import std/tables
+
+# Base signal arguments payload
+type BaseSignalArgs* = ref object of RootObj
+    channel*: string
+
+# Stack type to help prevent infinite loops in signal processing
+type SignalContext* = seq[(int, string)]
+
+# Signal handler type
+type SignalHandler* = (SignalContext, BaseSignalArgs) -> void
+
+# Signal handlers collection type
+type SignalHandlersTable* = Table[string, seq[SignalHandler]]
+
+# Test signal arguments payload
+type GetHealthSignalArgs* = ref object of BaseSignalArgs
+    health*: Natural
