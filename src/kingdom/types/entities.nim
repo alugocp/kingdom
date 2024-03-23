@@ -5,13 +5,13 @@ import kingdom/types/signals
 type Unit* = object
     id*: int
     pos*: Coord
-    handlers*: SignalHandlersTable
+    handlers*: SignalHandlersTable[Unit]
 
 # Tile type for the in-game map
 type Tile* = object
     id*: int
     pos*: Coord
-    handlers*: SignalHandlersTable
+    handlers*: SignalHandlersTable[Tile]
 
 # Combined entity type
 type Entity* = Unit | Tile

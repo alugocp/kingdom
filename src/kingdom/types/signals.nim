@@ -9,10 +9,10 @@ type BaseSignalArgs* = ref object of RootObj
 type SignalContext* = seq[(int, string)]
 
 # Signal handler type
-type SignalHandler* = (SignalContext, BaseSignalArgs) -> void
+type SignalHandler*[T] = (SignalContext, BaseSignalArgs, ref T) -> void
 
 # Signal handlers collection type
-type SignalHandlersTable* = Table[string, seq[SignalHandler]]
+type SignalHandlersTable*[T] = Table[string, seq[SignalHandler[T]]]
 
 # Test signal arguments payload
 type GetHealthSignalArgs* = ref object of BaseSignalArgs

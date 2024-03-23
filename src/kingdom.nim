@@ -31,11 +31,8 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
 
     # Test for signal handlers
     let u = newUnit()
-    let args = BaseSignalArgs(channel: "Base")
-    u.handlers["GetHealth"][0](@[], args)
-    let arg1 = GetHealthSignalArgs(channel: "GetHealth", health: 30)
-    u.handlers["GetHealth"][0](@[], arg1)
-    u.handleSignal(@[], arg1)
+    let args = GetHealthSignalArgs(channel: "GetHealth", health: 30)
+    u.handleSignal(@[], args)
 
     # Initialize the Raylib game window
     initWindow(800, 450, "Kingdom")
