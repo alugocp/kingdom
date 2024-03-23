@@ -2,7 +2,7 @@ import std/tables
 import kingdom/entities/signals
 import kingdom/types/entities
 import kingdom/types/signals
-import kingdom/math/types
+import kingdom/types/math
 
 # Constructor for the Unit type
 proc newUnit*(): ref Unit =

@@ -1,4 +1,4 @@
-import kingdom/math/types
+import kingdom/types/math
 import kingdom/types/signals
 
 # Unit type for in-game characters

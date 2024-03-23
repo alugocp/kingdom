@@ -1,13 +1,11 @@
-import std/tables
 import raylib
 import kingdom/mods/loader
 import kingdom/math/hexagons
-import kingdom/math/types
+import kingdom/types/math
 import kingdom/controls
 import kingdom/test
 import kingdom/entities/unit
 import kingdom/entities/signals
-import kingdom/types/entities
 import kingdom/types/signals
 
 # Record mouse state for later consumption
