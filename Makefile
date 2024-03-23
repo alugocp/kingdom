@@ -14,7 +14,7 @@ clean:
 
 # Compile the vanilla game mod library
 .vanilla:
-	nim c vanilla/main.nim
+	python3 modmanager.py build vanilla
 
 # Build a platform interface library
 .platforms/%:
