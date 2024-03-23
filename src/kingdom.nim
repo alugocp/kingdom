@@ -1,8 +1,8 @@
 import raylib
-import mods/loader
-import math/hexagons
-import math/types
-import test
+import kingdom/mods/loader
+import kingdom/math/hexagons
+import kingdom/math/types
+import kingdom/test
 
 proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
     echo("Hello, world!")

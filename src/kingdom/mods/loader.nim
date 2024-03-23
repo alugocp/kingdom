@@ -1,5 +1,5 @@
 import dynlib
-import test
+import kingdom/test
 
 type ModEntryPoint = proc(times: ref Counter): void {.gcsafe, stdcall.}
 
