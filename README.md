@@ -6,7 +6,8 @@ You will need to install Nim in order to develop the game engine or mods.
 I recommend using [choosenim](https://nim-lang.org/install_unix.html).
 
 ### Build
-You can build the game engine from source like so:
+First you'll have to install everything needed for [Raylib](https://github.com/raysan5/raylib).
+Then you can build the game engine from source like so:
 
 ```bash
 # You will need to compile nimrtl.so before you can build this project
@@ -15,6 +16,9 @@ choosenim show
 
 # Then, compile nimrtl.nim like so
 nim c <Path>/lib/nimrtl.nim
+
+# Install the Nimble dependencies
+nimble install
 
 # Run this to build the project for the first time
 make
