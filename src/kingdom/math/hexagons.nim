@@ -1,5 +1,5 @@
 import std/math
-import math/types
+import kingdom/math/types
 
 # Constants for optimal calculation
 const r3 = sqrt(3.0)
