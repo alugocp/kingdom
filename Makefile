@@ -9,7 +9,7 @@ clean:
 
 # Compile Nim source into the game executable
 .kingdom:
-	nim c src/main.nim
+	nim c src/kingdom.nim
 	mv out/kingdom out/libkingdom.so
 
 # Compile the vanilla game mod library

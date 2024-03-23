@@ -1,5 +1,5 @@
 import raylib
-import modloader
+import mods/loader
 import test
 
 proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
@@ -7,7 +7,7 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
     let times = newCounter()
     hello(times)
     hello(times)
-    discard loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", times)
+    discard loader.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", times)
 
     # Initialize the Raylib game window
     initWindow(800, 450, "Kingdom")
