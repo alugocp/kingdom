@@ -3,10 +3,10 @@ import kingdom/mods/loader
 import kingdom/math/hexagons
 import kingdom/types/math
 import kingdom/controls
-import kingdom/test
 import kingdom/entities/unit
 import kingdom/entities/signals
 import kingdom/types/signals
+import kingdom/game
 
 # Record mouse state for later consumption
 proc handleMouseLogic(m: ref MouseState): void =
@@ -22,10 +22,8 @@ proc handleMouseLogic(m: ref MouseState): void =
 # Main entry point function which is exported to the platform interface (C code)
 proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
     echo("Hello, world!")
-    let times = newCounter()
-    hello(times)
-    hello(times)
-    discard loader.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", times)
+    let game = newGame()
+    discard loader.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", game)
 
     # Test for signal handlers
     let u = newUnit()

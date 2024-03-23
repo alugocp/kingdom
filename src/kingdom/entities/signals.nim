@@ -4,7 +4,7 @@ import kingdom/types/entities
 import kingdom/types/signals
 
 # Tells a Unit or Tile to handle some incoming signal
-proc handleSignal*(x: ref Entity, ctx: SignalContext, args: BaseSignalArgs): void =
+proc handleSignal*(x: Entity, ctx: SignalContext, args: BaseSignalArgs): void =
 
     # Don't do anything if this entity has no relevant handler(s)
     if not x.handlers.hasKey(args.channel):
@@ -20,7 +20,7 @@ proc handleSignal*(x: ref Entity, ctx: SignalContext, args: BaseSignalArgs): voi
         handler(concat(ctx, @[step]), args, x)
 
 # Adds a signal handler to some entity
-proc addSignalHandler*[T: Entity](x: ref T, channel: string, handler: SignalHandler[T]): void =
+proc addSignalHandler*[T: Entity](x: T, channel: string, handler: SignalHandler[T]): void =
     if not x.handlers.hasKey(channel):
         x.handlers[channel] = @[]
     x.handlers[channel].add(handler)

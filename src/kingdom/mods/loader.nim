@@ -1,9 +1,9 @@
 import dynlib
-import kingdom/test
+import kingdom/types/game
 
-type ModEntryPoint = proc(times: ref Counter): void {.gcsafe, stdcall.}
+type ModEntryPoint = proc(game: Game): void {.gcsafe, stdcall.}
 
-proc loadMod*(filepath: string, times: ref Counter): bool =
+proc loadMod*(filepath: string, game: Game): bool =
     # TODO unzip the archive at the filepath and find a .so within to actually load
     let lib = loadLib(filepath)
     if lib == nil:
@@ -18,6 +18,6 @@ proc loadMod*(filepath: string, times: ref Counter): bool =
         return false
 
     # Run the init function and return
-    initKingdomMod(times)
+    initKingdomMod(game)
     unloadLib(lib)
     return true

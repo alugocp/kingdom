@@ -9,7 +9,7 @@ type BaseSignalArgs* = ref object of RootObj
 type SignalContext* = seq[(int, string)]
 
 # Signal handler type
-type SignalHandler*[T] = (SignalContext, BaseSignalArgs, ref T) -> void
+type SignalHandler*[T] = (SignalContext, BaseSignalArgs, T) -> void
 
 # Signal handlers collection type
 type SignalHandlersTable*[T] = Table[string, seq[SignalHandler[T]]]

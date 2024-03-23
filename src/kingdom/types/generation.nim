@@ -15,7 +15,7 @@ type FullGenerator*[T: Entity] = object
 
 # Generic manager type for Entity generation
 type GenerationManager*[T: Entity] = object
-    generators: Table[string, FullGenerator[T]]
+    generators*: Table[string, FullGenerator[T]]
 
 # Manager for Unit generation
 type UnitGenerationManager* = GenerationManager[Unit]
