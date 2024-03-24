@@ -4,7 +4,7 @@ import kingdom/entities/signals
 import kingdom/types/signals
 import kingdom/mods/loader
 import kingdom/math/hexagons
-import kingdom/types/math
+import kingdom/math/types
 import kingdom/controls
 import kingdom/generation
 import kingdom/game

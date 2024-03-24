@@ -1,0 +1,19 @@
+import std/tables
+import kingdom/types/entities
+import kingdom/types/signals
+import kingdom/math/hexagons
+import kingdom/math/types
+
+# Constructor for the Tile type
+proc newTile*(id: int, pos: Coord): Tile =
+    result = Tile()
+    result.id = id
+    result.pos = pos
+    result.handlers = initTable[string, seq[SignalHandler[Tile]]]()
+    for a in 0..5:
+        result.borders[a] = OPEN_BORDER
+    return result
+
+# Sets a border value on this tile
+proc setTileBorder*(tile: Tile, side: HexSides, border: string): void =
+    tile.borders[hexSideToInt(side)] = border

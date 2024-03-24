@@ -3,7 +3,7 @@ import std/tables
 import kingdom/entities/signals
 import kingdom/types/entities
 import kingdom/types/signals
-import kingdom/types/math
+import kingdom/math/types
 
 # Constructor for the Unit type
 proc newUnit*(): Unit =
@@ -14,7 +14,7 @@ proc newUnit*(): Unit =
     result.addSignalHandler("GetHealth", proc (ctx: SignalContext, x: BaseSignalArgs, u: Unit): void =
         if x.channel == "GetHealth":
             echo "Is GetHealthSignalArgs"
-            let y: GetHealthsignalArgs = cast[GetHealthsignalArgs](x)
+            let y: GetHealthSignalArgs = cast[GetHealthSignalArgs](x)
             echo(fmt"{y.health}")
             u.handleSignal(ctx, x)
         else:

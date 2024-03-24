@@ -1,5 +1,5 @@
 import std/math
-import kingdom/types/math
+import kingdom/math/types
 
 # Constants for optimal calculation
 const r3 = sqrt(3.0)
@@ -34,3 +34,13 @@ proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] =
     if c.x + 1 < bounds.x:
         adjs.add(Coord(x: c.x + 1, y: c.y)) # Right
     return adjs
+
+# Converts a HexSide to an integer result
+proc hexSideToInt*(side: HexSides): int =
+    case side:
+        of TOP_RIGHT: return 0
+        of TOP_LEFT: return 1
+        of RIGHT: return 2
+        of LEFT: return 3
+        of BOT_RIGHT: return 4
+        of BOT_LEFT: return 5
