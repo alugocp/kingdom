@@ -11,7 +11,7 @@ type Modifier*[T: Entity] = (x: T) -> void
 # Object containing a base Generator and several optional Modifiers
 type FullGenerator*[T: Entity] = ref object of RootObj
     base*: Generator[T]
-    #post*: seq[Modifier[T]]
+    post*: seq[Modifier[T]]
 
 # Generic manager type for Entity generation
 type GenerationManager*[T: Entity] = ref object of RootObj

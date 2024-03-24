@@ -19,5 +19,6 @@ proc loadMod*(filepath: string, game: Game): bool =
 
     # Run the init function and return
     initKingdomMod(game)
-    #unloadLib(lib)
+    # TODO defer unloading any of these libs until the process is done
+    # unloadLib(lib)
     return true
