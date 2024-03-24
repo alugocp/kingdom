@@ -23,7 +23,7 @@ proc handleMouseLogic(m: ref MouseState): void =
 # Main entry point function which is exported to the platform interface (C code)
 proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
     var game = newGame()
-    discard loader.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", game)
+    discard loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", game)
 
     # Test for signal handlers
     let u = game.unitGeneration.generate("test")

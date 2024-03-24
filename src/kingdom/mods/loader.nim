@@ -1,8 +1,10 @@
 import dynlib
 import kingdom/types/game
 
+# Type representing a mod's entry function
 type ModEntryPoint = proc(game: Game): void {.gcsafe, stdcall.}
 
+# Loads a mod and runs its init function
 proc loadMod*(filepath: string, game: Game): bool =
     # TODO unzip the archive at the filepath and find a .so within to actually load
     let lib = loadLib(filepath)
@@ -19,6 +21,4 @@ proc loadMod*(filepath: string, game: Game): bool =
 
     # Run the init function and return
     initKingdomMod(game)
-    # TODO defer unloading any of these libs until the process is done
-    # unloadLib(lib)
     return true
