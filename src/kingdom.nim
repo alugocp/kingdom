@@ -1,3 +1,4 @@
+import std/tables
 import raylib
 import kingdom/mods/loader
 import kingdom/math/hexagons
@@ -26,7 +27,10 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
 
     # Test for signal handlers
     let u = game.unitGeneration.generate("test")
-    discard world.pathfind(u, Coord(x: 2, y: 2))
+    try:
+        discard world.pathfind(u, Coord(x: 2, y: 2))
+    except Exception:
+        echo(getCurrentExceptionMsg())
 
     # Initialize the Raylib game window
     initWindow(800, 450, "Kingdom")
