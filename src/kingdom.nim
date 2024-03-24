@@ -6,6 +6,7 @@ import kingdom/controls
 import kingdom/entities/unit
 import kingdom/entities/signals
 import kingdom/types/signals
+import kingdom/generation
 import kingdom/game
 
 # Record mouse state for later consumption
@@ -22,13 +23,14 @@ proc handleMouseLogic(m: ref MouseState): void =
 # Main entry point function which is exported to the platform interface (C code)
 proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
     echo("Hello, world!")
-    let game = newGame()
+    var game = newGame()
     discard loader.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", game)
 
     # Test for signal handlers
-    let u = newUnit()
-    let args = GetHealthSignalArgs(channel: "GetHealth", health: 30)
-    u.handleSignal(@[], args)
+    echo("Okay here now")
+    let u = game.unitGeneration.generate("test")
+    #let args = GetHealthSignalArgs(channel: "GetHealth", health: 30)
+    #u.handleSignal(@[], args)
 
     # Initialize the Raylib game window
     initWindow(800, 450, "Kingdom")

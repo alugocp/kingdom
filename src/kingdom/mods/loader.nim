@@ -19,5 +19,5 @@ proc loadMod*(filepath: string, game: Game): bool =
 
     # Run the init function and return
     initKingdomMod(game)
-    unloadLib(lib)
+    #unloadLib(lib)
     return true
