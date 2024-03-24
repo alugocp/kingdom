@@ -1,4 +1,4 @@
-import sequtils
+import std/sequtils
 import std/tables
 import kingdom/types/entities
 import kingdom/types/signals

@@ -1,9 +1,11 @@
+import std/math
 import std/tables
 import std/sequtils
 import kingdom/types/entities
 import kingdom/entities/tile
 import kingdom/math/hexagons
 import kingdom/math/types
+import kingdom/stringify
 
 # World type to contain Tile objects
 type World* = ref object
@@ -33,31 +35,33 @@ proc getTile*(world: World, x: Natural, y: Natural): Tile =
 # This function implements A* algorithm, based on pseudocode from
 # Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)
 proc pathfind*(world: World, unit: Unit, dst: Coord): seq[Coord]=
+    const infinity = high(int)
 
+    # Heuristic function for the A* algorithm
+    proc dist(c: Coord): int = int(ceil((abs(dst.x - c.x) + abs(dst.y - c.y)) / 2))
+
+    # Initialize relevant tables and sets
     var openSet: seq[Coord] = @[unit.pos]
     var cameFrom = initTable[Coord, Coord]()
     var gScore = initTable[Coord, int]()
     var fScore = initTable[Coord, int]()
-    # gScore[unit.pos] = 0
-    # fScore[unit.pos] = h(unit.pos)
+    fScore[unit.pos] = dist(unit.pos)
+    gScore[unit.pos] = 0
 
-    proc fScoreCalc(c: Coord): int =
-        if fScore.hasKey(c):
-            return fScore[c]
-        return high(int)
-
-    proc gScoreCalc(c: Coord): int =
-        if gScore.hasKey(c):
-            return gScore[c]
-        return high(int)
-
+    # Main algorithm body
     var current: Coord
     while openSet.len > 0:
-        current = foldl(openSet, if fScoreCalc(a) < fScoreCalc(b): a else: b, openSet[0])
+        current = foldl(openSet, if fScore.getOrDefault(a, infinity) < fScore.getOrDefault(b, infinity): a else: b, openSet[0])
 
         # We made it!
         if current == dst:
             echo("We made it!")
+            var path: seq[Coord] = @[current]
+            while cameFrom.hasKey(current):
+                current = cameFrom[current]
+                path.insert(current, 0)
+            for c in path:
+                echo(c)
             return @[]
 
         # Filter openSet and check adjacent tiles
@@ -65,11 +69,11 @@ proc pathfind*(world: World, unit: Unit, dst: Coord): seq[Coord]=
         let neighbors = current.getAdjacentHexagonCoords(Coord(x: world.w, y: world.h))
         # TODO filter neighbors by the unit's canCrossBorder signal
         for adj in neighbors:
-            let g = gScoreCalc(current) + 1
-            if g < gScoreCalc(adj):
-                # cameFrom[adj] := current
-                # gScore[adj] := g
-                # fScore[adj] := g + h(neighbor)
+            let g = if gScore.hasKey(current): gScore[current] + 1 else : infinity
+            if g < gScore.getOrDefault(adj, infinity):
+                cameFrom[adj] = current
+                gScore[adj] = g
+                fScore[adj] = g + dist(adj)
                 if not (adj in openSet):
                     openSet.add(adj)
 

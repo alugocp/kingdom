@@ -18,14 +18,14 @@ proc getHexagonCenterPoint*(c: Coord): (float, float) =
 # Returns a sequence of coords for hexagons adjacent to the one at the given coord
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] =
     var adjs = newSeq[Coord]()
-    let dx = if c.x mod 2 == 1: 0 else: -1
+    let dx = if c.y mod 2 == 1: 0 else: -1
     if c.y > 0:
-        if c.x + dx > 0:
+        if c.x + dx >= 0:
             adjs.add(Coord(x: c.x + dx, y: c.y - 1)) # Above left
         if c.x + dx + 1 < bounds.x:
             adjs.add(Coord(x: c.x + dx + 1, y: c.y - 1)) # Above right
     if c.y + 1 < bounds.y:
-        if c.x + dx > 0:
+        if c.x + dx >= 0:
             adjs.add(Coord(x: c.x + dx, y: c.y + 1)) # Bottom left
         if c.x + dx + 1 < bounds.x:
             adjs.add(Coord(x: c.x + dx + 1, y: c.y + 1)) # Bottom right

@@ -1,4 +1,4 @@
-import sugar
+import std/sugar
 import std/tables
 
 # Base signal arguments payload
