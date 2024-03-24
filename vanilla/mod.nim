@@ -1,4 +1,4 @@
-import kingdom/types/game
+import kingdom/game
 import kingdom/types/entities
 import kingdom/generation
 import kingdom/entities/unit

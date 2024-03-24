@@ -1,20 +1,22 @@
 import std/tables
 import kingdom/types/generation
 import kingdom/types/entities
-import kingdom/types/game
+import kingdom/world
 
-proc newUnitGenerationManager(): UnitGenerationManager =
-    return GenerationManager[Unit](
-        generators: initTable[string, FullGenerator[Unit]]()
-    )
+# Game type used to aggregate relevant data and used in mod init functions
+type Game* = ref object of RootObj
+    unitGeneration*: UnitGenerationManager
+    tileGeneration*: TileGenerationManager
+    world*: World
 
-proc newTileGenerationManager(): TileGenerationManager =
-    return GenerationManager[Tile](
-        generators: initTable[string, FullGenerator[Tile]]()
-    )
-
-proc newGame*(): Game =
+# Constructor for a Game type
+proc newGame*(world: World): Game =
     return Game(
-        unitGeneration: newUnitGenerationManager(),
-        tileGeneration: newTileGenerationManager()
+        unitGeneration: GenerationManager[Unit](
+            generators: initTable[string, FullGenerator[Unit]]()
+        ),
+        tileGeneration: GenerationManager[Tile](
+            generators: initTable[string, FullGenerator[Tile]]()
+        ),
+        world: world
     )

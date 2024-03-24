@@ -7,6 +7,7 @@ import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/controls
 import kingdom/generation
+import kingdom/world
 import kingdom/game
 
 # Record mouse state for later consumption
@@ -22,7 +23,8 @@ proc handleMouseLogic(m: ref MouseState): void =
 
 # Main entry point function which is exported to the platform interface (C code)
 proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
-    var game = newGame()
+    let world = newWorld(20, 10)
+    var game = newGame(world)
     discard loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", game)
 
     # Test for signal handlers
@@ -46,9 +48,9 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
             dy += m.pos[1] - m.posprev[1]
         beginDrawing()
         clearBackground(RAYWHITE)
-        for x in 0..9:
-            for y in 0..4:
-                let coords = getHexagonCenterPoint(Coord(x: x, y: y))
+        for column in world.tiles:
+            for tile in column:
+                let coords = getHexagonCenterPoint(Coord(x: tile.pos.x, y: tile.pos.y))
                 let v = Vector2(x: coords[0] + dx, y: coords[1] + dy)
                 drawPoly(v, 6, hexagons.SIDE, 90, GREEN)
                 drawPolyLines(v, 6, hexagons.SIDE, 90, BLACK)

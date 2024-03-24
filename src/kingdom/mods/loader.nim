@@ -1,5 +1,5 @@
 import dynlib
-import kingdom/types/game
+import kingdom/game
 
 # Type representing a mod's entry function
 type ModEntryPoint = proc(game: Game): void {.gcsafe, stdcall.}
