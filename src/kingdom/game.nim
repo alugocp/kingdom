@@ -4,7 +4,7 @@ import kingdom/types/entities
 import kingdom/world
 
 # Game type used to aggregate relevant data and used in mod init functions
-type Game* = ref object of RootObj
+type Game* = ref object
     unitGeneration*: UnitGenerationManager
     tileGeneration*: TileGenerationManager
     world*: World

@@ -6,14 +6,14 @@ import kingdom/math/hexagons
 import kingdom/math/types
 
 # World type to contain Tile objects
-type World* = ref object of RootObj
+type World* = ref object
     tiles*: seq[seq[Tile]]
     w*: Natural
     h*: Natural
 
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
-    result = World()
+    new result
     result.w = w
     result.h = h
     var id = 0

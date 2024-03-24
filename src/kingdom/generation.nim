@@ -5,7 +5,7 @@ import kingdom/types/entities
 
 # Constructor for a FullGenerator type
 proc newFullGenerator[T: Entity](base: Generator[T]): FullGenerator[T] =
-    result = FullGenerator[T]()
+    new result
     result.base = base
     result.post = newSeq[Modifier[T]]()
     return result
@@ -15,7 +15,7 @@ proc addGenerator*[T: Entity](manager: GenerationManager[T], key: string, genera
     if manager.generators.hasKey(key):
         raise newException(Exception, fmt"Generator '{key}' already exists")
     let full = newFullGenerator[T](generator)
-    discard manager.generators.hasKeyOrPut(key, full)
+    manager.generators[key] = full
 
 # Adds a Modifier to the given Generator
 proc addModifier*[T: Entity](manager: GenerationManager[T], key: string, modifier: Modifier[T]): void =

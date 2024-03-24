@@ -12,7 +12,7 @@ type CanCrossBorderSignalArgs* = ref object of BaseSignalArgs
     tile*: Tile
 
 proc newCanCrossBorderSignalArgs*(tile: Tile, side: HexSides, border: string): CanCrossBorderSignalArgs =
-    result = CanCrossBorderSignalArgs()
+    new result
     result.channel = "CanCrossBorder"
     result.canCross = (border == OPEN_BORDER)
     result.border = border

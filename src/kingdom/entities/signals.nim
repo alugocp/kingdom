@@ -22,5 +22,5 @@ proc handleSignal*(x: Entity, ctx: SignalContext, args: BaseSignalArgs): void =
 # Adds a signal handler to some entity
 proc addSignalHandler*[T: Entity](x: T, channel: string, handler: SignalHandler[T]): void =
     if not x.handlers.hasKey(channel):
-        discard x.handlers.hasKeyOrPut(channel, newSeq[SignalHandler[T]]())
+        x.handlers[channel] = @[]
     x.handlers[channel].add(handler)

@@ -5,7 +5,7 @@ import kingdom/math/types
 
 # Constructor for the Unit type
 proc newUnit*(): Unit =
-    result = Unit()
+    new result
     result.id = 1
     result.pos = Coord(x: 0, y: 0)
     result.handlers = initTable[string, seq[SignalHandler[Unit]]]()

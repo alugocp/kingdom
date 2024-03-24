@@ -6,7 +6,7 @@ import kingdom/math/types
 
 # Constructor for the Tile type
 proc newTile*(id: int, pos: Coord): Tile =
-    result = Tile()
+    new result
     result.id = id
     result.pos = pos
     result.handlers = initTable[string, seq[SignalHandler[Tile]]]()
