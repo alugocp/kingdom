@@ -13,7 +13,3 @@ type SignalHandler*[T] = (SignalContext, BaseSignalArgs, T) -> void
 
 # Signal handlers collection type
 type SignalHandlersTable*[T] = Table[string, seq[SignalHandler[T]]]
-
-# Test signal arguments payload
-type GetHealthSignalArgs* = ref object of BaseSignalArgs
-    health*: Natural

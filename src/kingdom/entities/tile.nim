@@ -14,6 +14,10 @@ proc newTile*(id: int, pos: Coord): Tile =
         result.borders[a] = OPEN_BORDER
     return result
 
-# Sets a border value on this tile
+# Sets a border value on this Tile
 proc setTileBorder*(tile: Tile, side: HexSides, border: string): void =
     tile.borders[hexSideToInt(side)] = border
+
+# Returns a border value on the given Tile
+proc getTileBorder*(tile: Tile, side: HexSides): string =
+    return tile.borders[hexSideToInt(side)]
