@@ -1,3 +1,6 @@
+"""
+Python tool to initialize and build mods
+"""
 from typing import Tuple, List
 import subprocess
 import sys
@@ -9,13 +12,17 @@ PLATFORMS = [
     "linux"
 ]
 
-# Writes some string contents to a filepath
 def create_file(path: str, contents: List[str]):
+    """
+    Writes some string contents to a filepath
+    """
     with open(path, "w", encoding="utf-8") as file:
         file.write("\n".join(contents))
 
-# Initialize a new mod project
 def create_new_mod(name) -> Tuple[bool, str]:
+    """
+    Initialize a new mod project
+    """
 
     # Check mod name
     if not re.match(r"^\w+$", name):
@@ -29,12 +36,12 @@ def create_new_mod(name) -> Tuple[bool, str]:
     # Populate files
     create_file(f"{name}/.gitignore", [
         "/out",
-        "/%s.zip" % (name)
+        f"/{name}.zip"
     ])
     create_file(f"{name}/archive.json", [
         "{",
         "    \"version\": 1.0,",
-        "    \"name\": \"%s\"" % (name),
+        f"    \"name\": \"{name}\"",
         "}"
     ])
     create_file(f"{name}/nim.cfg", [
@@ -52,8 +59,10 @@ def create_new_mod(name) -> Tuple[bool, str]:
     return True, None
 
 
-# Build the mod project into a ZIP file
 def build_mod_archive(name) -> Tuple[bool, str]:
+    """
+    Build the mod project into a ZIP file
+    """
 
     # Create out directory
     if not os.path.exists(f"{name}/out"):
@@ -62,12 +71,23 @@ def build_mod_archive(name) -> Tuple[bool, str]:
     # Compile the mod for each platform
     for platform in PLATFORMS:
         print(f"Compiling {platform}...")
-        subprocess.run(["nim", "c", f"--os:{platform}", f"--out:{name}-{platform}", f"{name}/mod.nim"])
+        subprocess.run([
+            "nim",
+            "c",
+            f"--os:{platform}",
+            f"--out:{name}-{platform}",
+            f"{name}/mod.nim"
+        ], check = True)
         os.rename(f"{name}-{platform}", f"{name}/out/{name}-{platform}")
 
     # Zip the files together
     print("Packaging the mod library...")
-    subprocess.run(["zip", f"{name}/{name}.zip", f"{name}/archive.json", f"{name}/out/{name}-linux"])
+    subprocess.run([
+        "zip",
+        f"{name}/{name}.zip",
+        f"{name}/archive.json",
+        f"{name}/out/{name}-linux"
+    ], check = True)
     print("Mod packaging complete!")
     return True, None
 
@@ -75,7 +95,10 @@ def build_mod_archive(name) -> Tuple[bool, str]:
 # CLI argument processing
 if __name__ == "__main__":
     if len(sys.argv) == 3 and sys.argv[1] in ["init", "build"]:
-        success, msg = create_new_mod(sys.argv[2]) if sys.argv[1] == "init" else build_mod_archive(sys.argv[2])
+        if sys.argv[1] == "init":
+            success, msg = create_new_mod(sys.argv[2])
+        else:
+            success, msg = build_mod_archive(sys.argv[2])
         if not success:
             print(msg)
         sys.exit(0 if success else 1)

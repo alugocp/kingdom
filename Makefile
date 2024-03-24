@@ -19,3 +19,14 @@ clean:
 # Build a platform interface library
 .platforms/%:
 	gcc -I platforms $(subst .platforms, platforms, $@)/platform.c -Lout -lkingdom -o out/game
+
+# Lint the entire project
+lint: lint-c lint-py
+
+# Lint the platform interfaces
+lint-c:
+	cppcheck platforms
+
+# Lint Python scripts
+lint-py:
+	python3 -m pylint ./**/*.py

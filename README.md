@@ -31,9 +31,27 @@ make .platforms/desktop
 
 # Run this to rebuild the vanilla game mod library
 make .vanilla
+```
 
-# Run the game
+### Run
+Use this command once you've built the game:
+
+```bash
 ./kingdom
+```
+
+### Lint
+This command lints the project's Python and C code:
+
+```bash
+make lint
+```
+
+You will need to run the following commands to install all linter programs:
+
+```bash
+sudo apt-get install cppcheck
+pip install pylint
 ```
 
 ## Notes
