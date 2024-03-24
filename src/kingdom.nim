@@ -1,4 +1,7 @@
+import sequtils
 import raylib
+import kingdom/entities/signals
+import kingdom/types/signals
 import kingdom/mods/loader
 import kingdom/math/hexagons
 import kingdom/types/math
@@ -24,8 +27,8 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
 
     # Test for signal handlers
     let u = game.unitGeneration.generate("test")
-    #let args = GetHealthSignalArgs(channel: "GetHealth", health: 30)
-    #u.handleSignal(@[], args)
+    let args = GetHealthSignalArgs(channel: "GetHealth", health: 30)
+    u.handleSignal(@[], args)
 
     # Initialize the Raylib game window
     initWindow(800, 450, "Kingdom")
