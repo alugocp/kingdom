@@ -1,4 +1,5 @@
 import std/math
+import std/strformat
 import kingdom/math/types
 
 # Constants for optimal calculation
@@ -44,3 +45,24 @@ proc hexSideToInt*(side: HexSides): int =
         of LEFT: return 3
         of BOT_RIGHT: return 4
         of BOT_LEFT: return 5
+
+# Gets the opposite side form the one given
+proc getOppositeSide*(side: HexSides): HexSides =
+    case side:
+        of TOP_RIGHT: return BOT_LEFT
+        of TOP_LEFT: return BOT_RIGHT
+        of RIGHT: return LEFT
+        of LEFT: return RIGHT
+        of BOT_RIGHT: return TOP_LEFT
+        of BOT_LEFT: return TOP_RIGHT
+
+# Returns which side on hexagon h1 coincides with h2
+proc getSharedSide*(h1: Coord, h2: Coord): HexSides =
+    let dx = if h1.y mod 2 == 1: 0 else: -1
+    if h2.x == h1.x + dx and h2.y == h1.y - 1: return TOP_LEFT
+    if h2.x == h1.x + dx + 1 and h2.y == h1.y - 1: return TOP_RIGHT
+    if h2.x == h1.x + dx and h2.y == h1.y + 1: return BOT_LEFT
+    if h2.x == h1.x + dx + 1 and h2.y == h1.y + 1: return BOT_RIGHT
+    if h2.x == h1.x - 1 and h2.y == h1.y: return LEFT
+    if h2.x == h1.x + 1 and h2.y == h1.y: return RIGHT
+    raise newException(Exception, fmt"The hexagons at {h1} and {h2} don't share any sides")
