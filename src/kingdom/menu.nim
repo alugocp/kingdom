@@ -3,6 +3,7 @@ import std/sequtils
 import kingdom/math/types
 import kingdom/wrapper/draw
 import kingdom/controls/mouse
+import kingdom/colors
 
 # Enum representing the types of UI elements
 type MenuElement* = enum
@@ -33,7 +34,9 @@ proc newMenu*(x: float, y: float, root: MenuNode): Menu =
     result.y = y
 
 # Draw every MenuNode in this Menu
-proc draw*(this: Menu): void = this.root.draw(this.x, this.y)
+proc draw*(this: Menu): void =
+    drawRect(this.x, this.y, 100, this.root.getHeight(), WHITE)
+    this.root.draw(this.x, this.y)
 
 # Propogates a MouseState through this Menu to see if any node was clicked on
 proc checkClick*(this: Menu, mouse: MouseState): void =
@@ -57,7 +60,7 @@ proc newTextNode*(text: string): TextNode =
     result.text = text
 
 method getHeight*(node: TextNode): float = getTextSize(node.text).y
-method draw*(node: TextNode, x: float, y: float): void = drawText(node.text, x, y)
+method draw*(node: TextNode, x: float, y: float): void = drawText(node.text, x, y, BLACK)
 method checkClick*(this: TextNode, m: MouseState, r: Rect): void = discard
 
 # Text header
@@ -70,7 +73,7 @@ proc newHeaderNode*(text: string): HeaderNode =
     result.text = text
 
 method getHeight*(node: HeaderNode): float = getTextSize(node.text).y
-method draw*(node: HeaderNode, x: float, y: float): void = drawText(node.text, x, y)
+method draw*(node: HeaderNode, x: float, y: float): void = drawText(node.text, x, y, BLACK)
 method checkClick*(this: HeaderNode, m: MouseState, r: Rect): void = discard
 
 # Clickable button
@@ -85,7 +88,7 @@ proc newButtonNode*(text: string, click: () -> void): ButtonNode =
     result.text = text
 
 method getHeight*(node: ButtonNode): float = getTextSize(node.text).y
-method draw*(node: ButtonNode, x: float, y: float): void = drawText(node.text, x, y)
+method draw*(node: ButtonNode, x: float, y: float): void = drawText(node.text, x, y, BLACK)
 method checkClick*(this: ButtonNode, m: MouseState, r: Rect): void =
     if m.pos.within(r):
         this.click()

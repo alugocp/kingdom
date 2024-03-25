@@ -9,6 +9,7 @@ import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/stringify
 import kingdom/wrapper/draw
+import kingdom/colors
 
 # World type to contain Tile objects
 type World* = ref object
@@ -38,7 +39,7 @@ proc draw*(world: World, dx: float, dy: float): void =
     for column in world.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(Coord(x: tile.pos.x, y: tile.pos.y))
-            drawHexagon(coords.x + dx, coords.y + dy)
+            drawHexagon(coords.x + dx, coords.y + dy, GREEN)
 
 # Return a path from the unit's current position to the destination,
 # making sure to respect which borders that unit can cross.

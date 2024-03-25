@@ -1,6 +1,8 @@
 import raylib
 import kingdom/controls/mouse
+import kingdom/wrapper/draw
 import kingdom/math/types
+import kingdom/colors
 import kingdom/game
 
 # Record mouse state for later consumption
@@ -27,6 +29,6 @@ proc gameLoop*(game: Game): void =
         handleMouseLogic(game.mouse)
         game.consumeMouseUpdates()
         beginDrawing()
-        clearBackground(RAYWHITE)
+        setBackground(colors.BLUE)
         game.draw()
         endDrawing()

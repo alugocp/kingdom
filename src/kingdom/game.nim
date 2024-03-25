@@ -25,7 +25,12 @@ proc newGame*(world: World): Game =
         tileGeneration: GenerationManager[Tile](
             generators: initTable[string, FullGenerator[Tile]]()
         ),
-        menu: none(Menu),
+        menu: some(newMenu(0, 0,
+            newListNode(cast[seq[MenuNode]](@[
+                newTextNode("Hello, world!"),
+                newbuttonNode("Click Me", proc () = echo "Thank you!")
+            ]))
+        )),
         mouse: newMouseState(),
         view: newView(),
         world: world
