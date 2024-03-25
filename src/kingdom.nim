@@ -1,5 +1,6 @@
 import std/tables
 import kingdom/mods/loader
+import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/wrapper/init
 import kingdom/generation

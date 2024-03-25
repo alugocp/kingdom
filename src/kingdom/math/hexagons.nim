@@ -9,6 +9,15 @@ const WIDTH = SIDE * r3
 const DY = SIDE * 1.5
 const HALF_W = WIDTH / 2
 
+# Hexagon sides
+type HexSides* = enum
+    TOP_RIGHT
+    TOP_LEFT
+    RIGHT
+    LEFT
+    BOT_RIGHT
+    BOT_LEFT
+
 # Calculate the center point of a hexagon at the given coordinate
 proc getHexagonCenterPoint*(c: Coord): Position =
     return Position(

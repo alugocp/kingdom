@@ -1,6 +1,6 @@
 import kingdom/types/signals
 import kingdom/types/entities
-import kingdom/math/types
+import kingdom/math/hexagons
 
 # BUILT-IN SIGNAL ARGS TYPES
 
