@@ -1,18 +1,19 @@
 import raylib
 import kingdom/controls/mouse
-import kingdom/world
+import kingdom/math/types
 import kingdom/game
 
 # Record mouse state for later consumption
 proc handleMouseLogic(m: MouseState): void =
     let x = getMouseX()
     let y = getMouseY()
+    m.wasDown = m.down
     if not m.down and isMouseButtonDown(MouseButton.Left):
-        m.mouseDown(float(x), float(y))
+        m.mouseDown(Position(x: float(x), y: float(y)))
     elif m.down and isMouseButtonUp(MouseButton.Left):
-        m.mouseUp(float(x), float(y))
+        m.mouseUp(Position(x: float(x), y: float(y)))
     else:
-        m.mouseMove(float(x), float(y))
+        m.mouseMove(Position(x: float(x), y: float(y)))
 
 # Handles game loop logic
 proc gameLoop*(game: Game): void =
@@ -27,5 +28,5 @@ proc gameLoop*(game: Game): void =
         game.consumeMouseUpdates()
         beginDrawing()
         clearBackground(RAYWHITE)
-        game.world.draw(game.view.dx, game.view.dy)
+        game.draw()
         endDrawing()

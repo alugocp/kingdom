@@ -38,7 +38,7 @@ proc draw*(world: World, dx: float, dy: float): void =
     for column in world.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(Coord(x: tile.pos.x, y: tile.pos.y))
-            drawHexagon(coords[0] + dx, coords[1] + dy)
+            drawHexagon(coords.x + dx, coords.y + dy)
 
 # Return a path from the unit's current position to the destination,
 # making sure to respect which borders that unit can cross.

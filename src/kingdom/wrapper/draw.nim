@@ -1,4 +1,5 @@
 import raylib
+import kingdom/math/types
 import kingdom/math/hexagons
 
 const FONT_SIZE = 20
@@ -19,7 +20,7 @@ proc drawText*(text: string, x: float, y: float): void =
     raylib.drawText(cstring(text), int32(x), int32(y), FONT_SIZE, BLACK)
 
 # Calculate the size of this text
-proc getTextSize*(text: string): (float, float) =
+proc getTextSize*(text: string): Position =
     let font = getFontDefault()
     let v = measureText(font, cstring(text), FONT_SIZE, SPACING)
-    return (float(v.x), float(v.y))
+    return Position(x: float(v.x), y: float(v.y))

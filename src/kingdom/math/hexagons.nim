@@ -10,10 +10,10 @@ const DY = SIDE * 1.5
 const HALF_W = WIDTH / 2
 
 # Calculate the center point of a hexagon at the given coordinate
-proc getHexagonCenterPoint*(c: Coord): (float, float) =
-    return (
-        (float(c.x) * WIDTH) + (float(c.y mod 2) * HALF_W) + HALF_W,
-        (float(c.y) * DY) + SIDE
+proc getHexagonCenterPoint*(c: Coord): Position =
+    return Position(
+        x: (float(c.x) * WIDTH) + (float(c.y mod 2) * HALF_W) + HALF_W,
+        y: (float(c.y) * DY) + SIDE
     )
 
 # Returns a sequence of coords for hexagons adjacent to the one at the given coord
