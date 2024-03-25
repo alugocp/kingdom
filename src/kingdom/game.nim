@@ -1,8 +1,8 @@
 import std/tables
 import kingdom/types/generation
 import kingdom/types/entities
+import kingdom/controls/mouse
 import kingdom/controls/view
-import kingdom/controls
 import kingdom/world
 
 # Game type used to aggregate relevant data and used in mod init functions

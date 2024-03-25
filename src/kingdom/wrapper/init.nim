@@ -1,5 +1,5 @@
 import raylib
-import kingdom/controls
+import kingdom/controls/mouse
 import kingdom/world
 import kingdom/game
 
