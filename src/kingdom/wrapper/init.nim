@@ -4,7 +4,7 @@ import kingdom/world
 import kingdom/game
 
 # Record mouse state for later consumption
-proc handleMouseLogic(m: ref MouseState): void =
+proc handleMouseLogic(m: MouseState): void =
     let x = getMouseX()
     let y = getMouseY()
     if not m.down and isMouseButtonDown(MouseButton.Left):
@@ -22,15 +22,10 @@ proc gameLoop*(game: Game): void =
     setTargetFPS(30)
 
     # Raylib game loop
-    let m = newMouseState()
-    var dx = 0.0
-    var dy = 0.0
     while not windowShouldClose():
-        handleMouseLogic(m)
-        if m.down:
-            dx += m.pos[0] - m.posprev[0]
-            dy += m.pos[1] - m.posprev[1]
+        handleMouseLogic(game.mouse)
+        game.consumeMouseUpdates()
         beginDrawing()
         clearBackground(RAYWHITE)
-        game.world.draw(dx, dy)
+        game.world.draw(game.view.dx, game.view.dy)
         endDrawing()
