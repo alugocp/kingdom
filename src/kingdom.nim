@@ -1,14 +1,13 @@
 import std/tables
 import raylib
 import kingdom/mods/loader
-import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/controls
 import kingdom/generation
 import kingdom/world
 import kingdom/game
 import kingdom/entities/tile
-import kingdom/types/entities
+import kingdom/menu
 
 # Record mouse state for later consumption
 proc handleMouseLogic(m: ref MouseState): void =
@@ -22,7 +21,7 @@ proc handleMouseLogic(m: ref MouseState): void =
         m.mouseMove(float(x), float(y))
 
 # Main entry point function which is exported to the platform interface (C code)
-proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
+proc initKingdom(): void {.exportc: "init_kingdom", dynlib.} =
     let world = newWorld(20, 10)
     world.getTile(Coord(x: 0, y: 0)).setTileBorder(HexSides.RIGHT, "denied!")
     var game = newGame(world)
@@ -31,6 +30,11 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
     # Test for signal handlers
     let u = game.unitGeneration.generate("test")
     discard world.pathfind(u, Coord(x: 2, y: 2))
+
+    let menu = newListNode(cast[seq[MenuNode]](@[
+        newTextNode("Hello!"),
+        newTextNode("We got menus now")
+    ]))
 
     # Initialize the Raylib game window
     initWindow(800, 450, "Kingdom")
@@ -48,11 +52,6 @@ proc initKingdom(): void {.exportc: "init_kingdom",dynlib.} =
             dy += m.pos[1] - m.posprev[1]
         beginDrawing()
         clearBackground(RAYWHITE)
-        for column in world.tiles:
-            for tile in column:
-                let coords = getHexagonCenterPoint(Coord(x: tile.pos.x, y: tile.pos.y))
-                let v = Vector2(x: coords[0] + dx, y: coords[1] + dy)
-                drawPoly(v, 6, hexagons.SIDE, 90, GREEN)
-                drawPolyLines(v, 6, hexagons.SIDE, 90, BLACK)
-        drawText("Hello, world!", 0, 0, 20, BLACK)
+        world.draw(dx, dy)
+        menu.draw(float(0), float(0))
         endDrawing()
