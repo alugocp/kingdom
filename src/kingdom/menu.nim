@@ -1,6 +1,6 @@
 import std/sugar
 import std/sequtils
-import kingdom/draw
+import kingdom/wrapper/draw
 
 # Enum representing the types of UI elements
 type MenuElement* = enum

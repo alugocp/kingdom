@@ -8,7 +8,7 @@ import kingdom/entities/signals
 import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/stringify
-import kingdom/draw
+import kingdom/wrapper/draw
 
 # World type to contain Tile objects
 type World* = ref object
