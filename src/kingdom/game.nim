@@ -45,13 +45,13 @@ proc draw*(this: Game): void =
 
 # Check for updated mouse state and see what we have to process
 proc consumeMouseUpdates*(this: Game): void =
-    if this.mouse.down:
+    if this.mouse.down and this.mouse.scrolling:
         this.view.scroll(
             this.mouse.pos.x - this.mouse.posprev.x,
             this.mouse.pos.y - this.mouse.posprev.y
         )
 
-    if not this.mouse.down and this.mouse.wasDown:
+    if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
         if not (this.menu.isSome and this.menu.get().checkClick(this.mouse)):
             let hex = getHexagonCoords(this.view.withOffset(this.mouse.pos))
             if hex.isSome and this.world.contains(hex.get()):

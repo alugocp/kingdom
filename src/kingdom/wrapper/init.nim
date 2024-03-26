@@ -10,6 +10,7 @@ proc handleMouseLogic(m: MouseState): void =
     let x = getMouseX()
     let y = getMouseY()
     m.wasDown = m.down
+    m.wasScrolling = m.scrolling
     if not m.down and isMouseButtonDown(MouseButton.Left):
         m.mouseDown(Position(x: float(x), y: float(y)))
     elif m.down and isMouseButtonUp(MouseButton.Left):
@@ -20,7 +21,7 @@ proc handleMouseLogic(m: MouseState): void =
 # Handles game loop logic
 proc gameLoop*(game: Game): void =
     # Initialize the Raylib game window
-    initWindow(800, 450, "Kingdom")
+    initWindow(1200, 800, "Kingdom")
     defer: closeWindow()
     setTargetFPS(30)
 
