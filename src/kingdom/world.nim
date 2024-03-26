@@ -13,6 +13,7 @@ import kingdom/colors
 
 # World type to contain Tile objects
 type World* = ref object
+    units*: seq[seq[seq[Unit]]]
     tiles*: seq[seq[Tile]]
     w*: Natural
     h*: Natural
@@ -25,22 +26,31 @@ proc newWorld*(w: Natural, h: Natural): World =
     var id = 0
     for x in 0..(w - 1):
         result.tiles.add(@[])
+        result.units.add(@[])
         for y in 0..(h - 1):
             result.tiles[x].add(newTile(id, newCoord(x, y)))
+            result.units[x].add(@[])
             id += 1
     return result
 
 # Retrieves a Tile in this World
-proc getTile*(world: World, c: Coord): Tile =
-    return world.tiles[c.x][c.y]
+proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y]
+
+# Retrieves a set of Units on a Tile in this World
+proc getUnits*(this: World, c: Coord): seq[Unit] = this.units[c.x][c.y]
+
+# Moves a unit from one Tile in this World to another
+proc moveUnit*(this: World, u: Unit, c: Coord): void =
+    this.units[u.pos.x][u.pos.y] = this.units[u.pos.x][u.pos.y].filterIt(it != u)
+    this.units[c.x][c.y].add(u)
+    u.pos = c
 
 # Returns true if the World contains a Tile at the given Coord
-proc contains*(this: World, c: Coord): bool =
-    return c.x < this.w and c.y < this.h
+proc contains*(this: World, c: Coord): bool = c.x < this.w and c.y < this.h
 
 # Draw this World object
-proc draw*(world: World, dx: float, dy: float): void =
-    for column in world.tiles:
+proc draw*(this: World, dx: float, dy: float): void =
+    for column in this.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(newCoord(tile.pos.x, tile.pos.y))
             drawHexagon(coords.x + dx, coords.y + dy, GREEN)
@@ -49,15 +59,15 @@ proc draw*(world: World, dx: float, dy: float): void =
 # making sure to respect which borders that unit can cross.
 # This function implements A* algorithm, based on pseudocode from
 # Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)
-proc pathfind*(world: World, unit: Unit, dst: Coord): seq[Coord]=
+proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
     const infinity = high(int)
 
     # Checks if the Unit can cross the border from one Tile to another
     proc canTravelFromCurrent(current: Coord, adj: Coord): bool =
         let side = getSharedSide(current, adj)
         let opp = getOppositeSide(side)
-        let tile1 = world.getTile(current)
-        let tile2 = world.getTile(adj)
+        let tile1 = this.getTile(current)
+        let tile2 = this.getTile(adj)
         var test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getTileBorder(side))
         var test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getTileBorder(opp))
         if not test1.canCross:
@@ -95,7 +105,7 @@ proc pathfind*(world: World, unit: Unit, dst: Coord): seq[Coord]=
 
         # Filter openSet and check adjacent tiles
         openSet = openSet.filterIt(it != current)
-        let neighbors = current.getAdjacentHexagonCoords(newCoord(world.w, world.h))
+        let neighbors = current.getAdjacentHexagonCoords(newCoord(this.w, this.h))
         for adj in neighbors:
 
             # Skip any neighbors with borders the unit cannot cross

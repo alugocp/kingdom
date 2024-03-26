@@ -98,9 +98,12 @@ method checkClick*(this: ButtonNode, m: MouseState, r: Rect): void =
 type ListNode* = ref object of MenuNode
     nodes*: seq[MenuNode]
 
-proc newListNode*(nodes: seq[MenuNode]): ListNode =
+proc newListNode*(nodes: seq[MenuNode] = @[]): ListNode =
     new result
     result.nodes = nodes
+
+proc add*(this: ListNode, node: MenuNode): void =
+    this.nodes.add(node)
 
 method getHeight*(node: ListNode): float = node.nodes.foldl(a + b.getHeight(), 0.0)
 method draw*(node: ListNode, x: float, y: float): void =

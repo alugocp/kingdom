@@ -1,9 +1,7 @@
-import std/tables
 import kingdom/mods/loader
 import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/wrapper/init
-import kingdom/generation
 import kingdom/world
 import kingdom/game
 import kingdom/entities/tile
@@ -15,9 +13,8 @@ proc initKingdom(): void {.exportc: "init_kingdom", dynlib.} =
     var game = newGame(world)
     discard loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", game)
 
-    # Test for signal handlers
-    let u = game.unitGeneration.generate("test")
-    discard world.pathfind(u, newCoord(2, 2))
+    # Testing code
+    discard game.addNewUnit("test", newCoord(0, 0))
 
     # Start the game loop
     gameLoop(game)
