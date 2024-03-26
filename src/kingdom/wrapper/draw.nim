@@ -40,7 +40,7 @@ proc drawText*(text: string, x: float, y: float, color: uint32): void =
 proc getTextSize*(text: string): Position =
     let font = getFontDefault()
     let v = measureText(font, cstring(text), FONT_SIZE, SPACING)
-    return Position(x: float(v.x), y: float(v.y))
+    return newPosition(v.x, v.y)
 
 # Draw a rectangle
 proc drawRect*(x: float, y: float, w: float, h: float, color: uint32): void =

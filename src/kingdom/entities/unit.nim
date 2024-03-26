@@ -7,6 +7,7 @@ import kingdom/math/types
 proc newUnit*(): Unit =
     new result
     result.id = 1
-    result.pos = Coord(x: 0, y: 0)
+    result.name = "unnamed"
+    result.pos = newCoord(0, 0)
     result.handlers = initTable[string, seq[SignalHandler[Unit]]]()
     return result

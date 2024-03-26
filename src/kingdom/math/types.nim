@@ -11,7 +11,7 @@ type Position* = object
     x*: float
     y*: float
 
-proc newPosition*(x: float, y: float): Position = Position(x: x, y: y)
+proc newPosition*(x: SomeNumber, y: SomeNumber): Position = Position(x: float(x), y: float(y))
 
 # Float bounds
 type Rect* = object

@@ -12,11 +12,11 @@ proc handleMouseLogic(m: MouseState): void =
     m.wasDown = m.down
     m.wasScrolling = m.scrolling
     if not m.down and isMouseButtonDown(MouseButton.Left):
-        m.mouseDown(Position(x: float(x), y: float(y)))
+        m.mouseDown(newPosition(x, y))
     elif m.down and isMouseButtonUp(MouseButton.Left):
-        m.mouseUp(Position(x: float(x), y: float(y)))
+        m.mouseUp(newPosition(x, y))
     else:
-        m.mouseMove(Position(x: float(x), y: float(y)))
+        m.mouseMove(newPosition(x, y))
 
 # Handles game loop logic
 proc gameLoop*(game: Game): void =

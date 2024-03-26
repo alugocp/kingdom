@@ -6,6 +6,7 @@ type Unit* = ref object
     id*: int
     pos*: Coord
     handlers*: SignalHandlersTable[Unit]
+    name*: string
 
 # Tile type for the in-game map
 type Tile* = ref object

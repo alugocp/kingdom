@@ -26,7 +26,7 @@ proc newWorld*(w: Natural, h: Natural): World =
     for x in 0..(w - 1):
         result.tiles.add(@[])
         for y in 0..(h - 1):
-            result.tiles[x].add(newTile(id, Coord(x: x, y: y)))
+            result.tiles[x].add(newTile(id, newCoord(x, y)))
             id += 1
     return result
 
@@ -42,7 +42,7 @@ proc contains*(this: World, c: Coord): bool =
 proc draw*(world: World, dx: float, dy: float): void =
     for column in world.tiles:
         for tile in column:
-            let coords = getHexagonCenterPoint(Coord(x: tile.pos.x, y: tile.pos.y))
+            let coords = getHexagonCenterPoint(newCoord(tile.pos.x, tile.pos.y))
             drawHexagon(coords.x + dx, coords.y + dy, GREEN)
 
 # Return a path from the unit's current position to the destination,
@@ -95,7 +95,7 @@ proc pathfind*(world: World, unit: Unit, dst: Coord): seq[Coord]=
 
         # Filter openSet and check adjacent tiles
         openSet = openSet.filterIt(it != current)
-        let neighbors = current.getAdjacentHexagonCoords(Coord(x: world.w, y: world.h))
+        let neighbors = current.getAdjacentHexagonCoords(newCoord(world.w, world.h))
         for adj in neighbors:
 
             # Skip any neighbors with borders the unit cannot cross
