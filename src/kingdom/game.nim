@@ -1,5 +1,6 @@
 import std/tables
 import std/options
+import kingdom/math/hexagons
 import kingdom/types/generation
 import kingdom/types/entities
 import kingdom/controls/mouse
@@ -25,7 +26,7 @@ proc newGame*(world: World): Game =
         tileGeneration: GenerationManager[Tile](
             generators: initTable[string, FullGenerator[Tile]]()
         ),
-        menu: some(newMenu(0, 0,
+        menu: some(newMenu(0, 0, 200,
             newListNode(cast[seq[MenuNode]](@[
                 newTextNode("Hello, world!"),
                 newbuttonNode("Click Me", proc () = echo "Thank you!")
@@ -51,5 +52,7 @@ proc consumeMouseUpdates*(this: Game): void =
         )
 
     if not this.mouse.down and this.mouse.wasDown:
-        if this.menu.isSome:
-            this.menu.get().checkClick(this.mouse)
+        if not (this.menu.isSome and this.menu.get().checkClick(this.mouse)):
+            let hex = getHexagonCoords(this.view.withOffset(this.mouse.pos))
+            if hex.isSome and this.world.contains(hex.get()):
+                echo hex.get()

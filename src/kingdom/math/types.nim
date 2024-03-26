@@ -4,10 +4,14 @@ type Coord* = object
     x*: Natural
     y*: Natural
 
+proc newCoord*(x: Natural, y: Natural): Coord = Coord(x: x, y: y)
+
 # Like a Coordinate but with floats
 type Position* = object
     x*: float
     y*: float
+
+proc newPosition*(x: float, y: float): Position = Position(x: x, y: y)
 
 # Float bounds
 type Rect* = object

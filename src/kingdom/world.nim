@@ -34,6 +34,10 @@ proc newWorld*(w: Natural, h: Natural): World =
 proc getTile*(world: World, c: Coord): Tile =
     return world.tiles[c.x][c.y]
 
+# Returns true if the World contains a Tile at the given Coord
+proc contains*(this: World, c: Coord): bool =
+    return c.x < this.w and c.y < this.h
+
 # Draw this World object
 proc draw*(world: World, dx: float, dy: float): void =
     for column in world.tiles:

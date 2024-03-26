@@ -1,3 +1,4 @@
+import kingdom/math/types
 
 type View* = ref object
     dx*: float
@@ -13,3 +14,7 @@ proc newView*(): View =
 proc scroll*(this: View, dx: float, dy: float) =
     this.dx += dx
     this.dy += dy
+
+# Adds the total scroll offset to the given Position
+proc withOffset*(this: View, p: Position): Position =
+    newPosition(p.x - this.dx, p.y - this.dy)

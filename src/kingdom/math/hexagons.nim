@@ -1,4 +1,5 @@
 import std/math
+import std/options
 import std/strformat
 import kingdom/math/types
 
@@ -8,6 +9,8 @@ const SIDE* = 25
 const WIDTH = SIDE * r3
 const DY = SIDE * 1.5
 const HALF_W = WIDTH / 2
+const r3n1 = 1 / r3
+const HALF_S = SIDE / 2
 
 # Hexagon sides
 type HexSides* = enum
@@ -75,3 +78,32 @@ proc getSharedSide*(h1: Coord, h2: Coord): HexSides =
     if h2.x == h1.x - 1 and h2.y == h1.y: return LEFT
     if h2.x == h1.x + 1 and h2.y == h1.y: return RIGHT
     raise newException(Exception, fmt"The hexagons at {h1} and {h2} don't share any sides")
+
+# Get the coordinates of the hexagon that this position falls into
+proc getHexagonCoords*(p: Position): Option[Coord] =
+    type Vector = object
+        x: int
+        y: int
+    proc newVector(x: int, y: int): Vector = Vector(x: x, y: y)
+    let g = newVector(int(floor(p.x / HALF_W)), int(floor(p.y / HALF_S)))
+    if g.y mod 3 == 0:
+        let z = newVector(g.x, int(g.y / 3))
+        let l = newPosition(p.x - (float(g.x) * HALF_W), p.y - (float(g.y) * HALF_S))
+        let b = newVector(int(floor((z.x - (z.y mod 2)) / 2)), z.y)
+        var d = newVector(0, 0)
+        if (z.x mod 2) == 0 and (z.y mod 2) == 0 and l.y < HALF_S - (r3n1 * l.x):
+            d = newVector(-1, -1)
+        elif (z.x mod 2) == 1 and (z.y mod 2) == 0 and l.y < r3n1 * l.x:
+            d = newVector(0, -1)
+        elif (z.x mod 2) == 0 and (z.y mod 2) == 1 and l.y < r3n1 * l.x:
+            d = newVector(1, -1)
+        elif (z.x mod 2) == 1 and (z.y mod 2) == 1 and l.y < HALF_S - (r3n1 * l.x):
+            d = newVector(0, -1)
+        if b.x + d.x >= 0 and b.y + d.y >= 0:
+            return some(newCoord(b.x + d.x, b.y + d.y))
+    else:
+        let hy = int(floor(g.y / 3))
+        let hx = int(floor((g.x - (hy mod 2)) / 2))
+        if hx >= 0 and hy >= 0:
+            return some(newCoord(hx, hy))
+    return none(Coord)

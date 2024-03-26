@@ -23,32 +23,33 @@ method checkClick*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = disc
 # Top-level menu type
 type Menu* = ref object
     root*: MenuNode
+    width: float
     x*: float
     y*: float
 
 # Constructor for Menu type
-proc newMenu*(x: float, y: float, root: MenuNode): Menu =
+proc newMenu*(x: float, y: float, width: float, root: MenuNode): Menu =
     new result
     result.root = root
+    result.width = width
     result.x = x
     result.y = y
 
 # Draw every MenuNode in this Menu
 proc draw*(this: Menu): void =
-    drawRect(this.x, this.y, 100, this.root.getHeight(), WHITE)
+    drawRect(this.x, this.y, this.width, this.root.getHeight(), WHITE)
     this.root.draw(this.x, this.y)
 
 # Propogates a MouseState through this Menu to see if any node was clicked on
-proc checkClick*(this: Menu, mouse: MouseState): void =
-    this.root.checkClick(
-        mouse,
-        Rect(
-            x: this.x,
-            y: this.y,
-            w: 100,
-            h: this.root.getHeight()
-        )
+proc checkClick*(this: Menu, mouse: MouseState): bool =
+    let r = Rect(
+        x: this.x,
+        y: this.y,
+        w: this.width,
+        h: this.root.getHeight()
     )
+    this.root.checkClick(mouse, r)
+    return mouse.pos.within(r)
 
 # Text paragraph
 type TextNode* = ref object of MenuNode
