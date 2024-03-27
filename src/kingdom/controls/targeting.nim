@@ -10,17 +10,31 @@ type Targeter* = ref object
     coordHandler*: Option[(Coord) -> void]
     unitHandler*: Option[(Unit) -> void]
 
-proc newTargeterInternal(): Targeter =
+# Clear the data inside this Targeter
+proc cancel*(this: Targeter): void =
+    this.coords = none(seq[Coord])
+    this.units = none(seq[Unit])
+    this.coordHandler = none((Coord) -> void)
+    this.unitHandler = none((Unit) -> void)
+
+# Instantiate an inactive Targeter
+proc newTargeter*(): Targeter =
     new result
-    result.coords = none(seq[Coord])
-    result.units = none(seq[Unit])
-    result.coordHandler = none((Coord) -> void)
-    result.unitHandler = none((Unit) -> void)
+    result.cancel()
     return result
 
-# Instantiate a Targeter focused on Coords
-proc newTargeter*(coords: seq[Coord], coordHandler: (Coord) -> void): Targeter =
-    result = newTargeterInternal()
-    result.coords = some(coords)
-    result.coordHandler = some(coordHandler)
-    return result
+# Returns true if this Targeter is targeting Coords
+proc isCoords*(this: Targeter): bool = this.coords.isSome
+
+# Returns true if this Targeter is targeting Units
+proc isUnits*(this: Targeter): bool = this.units.isSome
+
+# Points this Targeter towards some Coords
+proc target*(this: Targeter, coords: seq[Coord], coordHandler: (c: Coord) -> void) =
+    this.coordHandler = some(coordHandler)
+    this.coords = some(coords)
+
+# Points this Targeter towards some Units
+proc target*(this: Targeter, units: seq[Unit], unitHandler: (c: Unit) -> void) =
+    this.unitHandler = some(unitHandler)
+    this.units = some(units)

@@ -30,7 +30,7 @@ proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
         ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[AbilityClickedSignalArgs](args)
             let targets = a.host.pos.getAdjacentHexagonCoords(game.world.getBounds())
-            game.setTargeter(newTargeter(targets, proc (c: Coord): void = game.world.moveUnit(a.host, c)))
+            game.targeter.target(targets, proc (c: Coord): void = game.world.moveUnit(a.host, c))
         )
         return ability
     )
