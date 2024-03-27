@@ -28,7 +28,7 @@ proc getMenuNode*(this: Unit): MenuNode =
     if this.abilities.len > 0:
         node.add(newHeaderNode("Abilities:"))
         for ability in this.abilities:
-            node.add(ability.getMenuNode())
+            node.add(ability.getMenuNode(this))
     if this.items.len > 0:
         node.add(newHeaderNode("Items:"))
         for item in this.items:

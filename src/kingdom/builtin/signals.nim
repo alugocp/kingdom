@@ -1,6 +1,7 @@
 import kingdom/types/signals
 import kingdom/entities/types
 import kingdom/math/hexagons
+import kingdom/builtin/channels
 
 # BUILT-IN UNIT SIGNAL ARGS TYPES
 
@@ -13,7 +14,7 @@ type CanCrossBorderSignalArgs* = ref object of BaseSignalArgs
 
 proc newCanCrossBorderSignalArgs*(tile: Tile, side: HexSides, border: string): CanCrossBorderSignalArgs =
     new result
-    result.channel = "CanCrossBorder"
+    result.channel = CAN_CROSS_BORDER_CHANNEL
     result.canCross = (border == OPEN_BORDER)
     result.border = border
     result.side = side
@@ -30,7 +31,7 @@ type AbilityClickedSignalArgs* = ref object of BaseSignalArgs
 
 proc newAbilityClickedSignalArgs*(host: Unit): AbilityClickedSignalArgs =
     new result
-    result.channel = "AbilityClicked"
+    result.channel = ABILITY_CLICKED_CHANNEL
     result.host = host
     return result
 
@@ -41,7 +42,7 @@ type GetAbilityTargetsSignalArgs*[T: Entity] = ref object of BaseSignalArgs
 
 proc newGetAbilityTargetsSignalArgs*[T: Entity](host: Unit): GetAbilityTargetsSignalArgs[T] =
     new result
-    result.channel = "GetAbilityTargets"
+    result.channel = GET_ABILITY_TARGETS_CHANNEL
     result.host = host
     result.targets = @[]
     return result

@@ -17,7 +17,7 @@ type SignalContextElement* = (EntityTypes, int, string)
 type SignalContext* = seq[SignalContextElement]
 
 # Signal handler type
-type SignalHandler*[T] = (SignalContext, BaseSignalArgs, T) -> void
+type SignalHandler*[T] = (T, SignalContext, BaseSignalArgs) -> void
 
 # Signal handlers collection type
 type SignalHandlersTable*[T] = Table[string, seq[SignalHandler[T]]]

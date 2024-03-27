@@ -16,7 +16,7 @@ proc internalHandleSignal(x: Entity, ctx: SignalContext, step: SignalContextElem
 
     # Kick off the relevant handlers
     for handler in x.handlers[args.channel]:
-        handler(concat(ctx, @[step]), args, x)
+        handler(x, concat(ctx, @[step]), args)
 
 # Tells an Ability to handle some incoming signal
 proc handleSignal*(x: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
@@ -38,8 +38,12 @@ proc handleSignal*(x: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
     for item in x.items:
         handleSignal(item, unitCtx, args)
 
+# Returns true if this Entity has a handler for the given channel
+proc hasSignalHandler*(x: Entity, channel: string): bool =
+    x.handlers.hasKey(channel)
+
 # Adds a SignalHandler to some Entity
 proc addSignalHandler*[T: Entity](x: T, channel: string, handler: SignalHandler[T]): void =
-    if not x.handlers.hasKey(channel):
+    if not x.hasSignalHandler(channel):
         x.handlers[channel] = @[]
     x.handlers[channel].add(handler)
