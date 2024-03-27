@@ -4,12 +4,14 @@ import kingdom/types/signals
 
 # Actions or passive properties associated with a Unit
 type Ability* = ref object
+    id*: int
     name*: string
     desc*: Option[string]
     handlers*: SignalHandlersTable[Ability]
 
 # Items that can be equipped by a Unit
 type Item* = ref object
+    id*: int
     name*: string
     desc*: string
     handlers*: SignalHandlersTable[Item]

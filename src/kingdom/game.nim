@@ -14,7 +14,9 @@ import kingdom/menu
 # Game type used to aggregate relevant data and used in mod init functions
 type Game* = ref object
     menu*: Option[Menu]
+    nextAbilityId: int
     nextUnitId: int
+    nextItemId: int
     unitGeneration*: UnitGenerationManager
     tileGeneration*: TileGenerationManager
     itemGeneration*: ItemGenerationManager
@@ -27,7 +29,9 @@ type Game* = ref object
 # Constructor for a Game type
 proc newGame*(world: World): Game =
     return Game(
+        nextAbilityId: 0,
         nextUnitId: 0,
+        nextItemId: 0,
         unitGeneration: GenerationManager[Unit](
             generators: initTable[string, FullGenerator[Unit]]()
         ),

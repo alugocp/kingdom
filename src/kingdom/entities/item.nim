@@ -6,6 +6,7 @@ import kingdom/menu
 # Constructor for the Item type
 proc newItem*(): Item =
     new result
+    result.id = 1
     result.name = "unnamed item"
     result.desc = "just some item"
     result.handlers = initTable[string, seq[SignalHandler[Item]]]()

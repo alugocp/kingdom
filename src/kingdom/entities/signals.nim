@@ -4,14 +4,13 @@ import kingdom/entities/types
 import kingdom/types/signals
 
 # Internal helper function for shared Unit/Tile/Item logic
-proc internalHandleSignal(x: Tile | Unit, ctx: SignalContext, args: BaseSignalArgs): SignalContext =
+proc internalHandleSignal(x: Entity, ctx: SignalContext, step: SignalContextElement, args: BaseSignalArgs): SignalContext =
 
     # Don't do anything if this entity has no relevant handler(s)
     if not x.handlers.hasKey(args.channel):
         return
 
     # Avoid infinite signal loops
-    let step = (x.id, args.channel)
     if step in ctx:
         return
 
@@ -19,21 +18,25 @@ proc internalHandleSignal(x: Tile | Unit, ctx: SignalContext, args: BaseSignalAr
     for handler in x.handlers[args.channel]:
         handler(concat(ctx, @[step]), args, x)
 
+# Tells an Ability to handle some incoming signal
+proc handleSignal*(x: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+    discard internalHandleSignal(x, ctx, (EntityTypes.ABILITY_TYPE, x.id, args.channel), args)
+
+# Tells a Item to handle some incoming signal
+proc handleSignal*(x: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+    discard internalHandleSignal(x, ctx, (EntityTypes.ITEM_TYPE, x.id, args.channel), args)
+
 # Tells a Tile to handle some incoming signal
 proc handleSignal*(x: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
-    discard internalHandleSignal(x, ctx, args)
+    discard internalHandleSignal(x, ctx, (EntityTypes.TILE_TYPE, x.id, args.channel), args)
 
 # Tells a Unit to handle some incoming signal
 proc handleSignal*(x: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-    let unitCtx = internalHandleSignal(x, ctx, args)
+    let unitCtx = internalHandleSignal(x, ctx, (EntityTypes.UNIT_TYPE, x.id, args.channel), args)
     for ability in x.abilities:
-        if ability.handlers.hasKey(args.channel):
-            for handler in ability.handlers[args.channel]:
-                handler(unitCtx, args, ability)
+        handleSignal(ability, unitCtx, args)
     for item in x.items:
-        if item.handlers.hasKey(args.channel):
-            for handler in item.handlers[args.channel]:
-                handler(unitCtx, args, item)
+        handleSignal(item, unitCtx, args)
 
 # Adds a SignalHandler to some Entity
 proc addSignalHandler*[T: Entity](x: T, channel: string, handler: SignalHandler[T]): void =

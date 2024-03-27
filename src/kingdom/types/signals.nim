@@ -1,12 +1,20 @@
 import std/sugar
 import std/tables
 
+# Used to help differentiate IDs in SignalContext
+type EntityTypes* = enum
+    UNIT_TYPE
+    TILE_TYPE
+    ITEM_TYPE
+    ABILITY_TYPE
+
 # Base signal arguments payload
 type BaseSignalArgs* = ref object of RootObj
     channel*: string
 
-# Stack type to help prevent infinite loops in signal processing
-type SignalContext* = seq[(int, string)]
+# Type to help prevent infinite loops in signal processing
+type SignalContextElement* = (EntityTypes, int, string)
+type SignalContext* = seq[SignalContextElement]
 
 # Signal handler type
 type SignalHandler*[T] = (SignalContext, BaseSignalArgs, T) -> void
