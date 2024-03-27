@@ -1,5 +1,5 @@
 import kingdom/game
-import kingdom/types/entities
+import kingdom/entities/types
 import kingdom/generation
 import kingdom/entities/unit
 

@@ -1,6 +1,6 @@
 import std/sugar
 import std/tables
-import kingdom/types/entities
+import kingdom/entities/types
 
 # Function type for generating an entity
 type Generator*[T: Entity] = () -> T
@@ -17,8 +17,8 @@ type FullGenerator*[T: Entity] = ref object
 type GenerationManager*[T: Entity] = ref object
     generators*: Table[string, FullGenerator[T]]
 
-# Manager for Unit generation
+# Managers for each specific Entity
 type UnitGenerationManager* = GenerationManager[Unit]
-
-# Manager for Tile generation
 type TileGenerationManager* = GenerationManager[Tile]
+type ItemGenerationManager* = GenerationManager[Item]
+type AbilityGenerationManager* = GenerationManager[Ability]

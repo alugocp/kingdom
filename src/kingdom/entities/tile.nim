@@ -1,5 +1,5 @@
 import std/tables
-import kingdom/types/entities
+import kingdom/entities/types
 import kingdom/types/signals
 import kingdom/math/hexagons
 import kingdom/math/types

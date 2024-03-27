@@ -1,5 +1,18 @@
+import std/options
 import kingdom/math/types
 import kingdom/types/signals
+
+# Actions or passive properties associated with a Unit
+type Ability* = ref object
+    name*: string
+    desc*: Option[string]
+    handlers*: SignalHandlersTable[Ability]
+
+# Items that can be equipped by a Unit
+type Item* = ref object
+    name*: string
+    desc*: string
+    handlers*: SignalHandlersTable[Item]
 
 # Unit type for in-game characters
 type Unit* = ref object
@@ -7,6 +20,8 @@ type Unit* = ref object
     pos*: Coord
     handlers*: SignalHandlersTable[Unit]
     name*: string
+    items*: seq[Item]
+    abilities*: seq[Ability]
 
 # Tile type for the in-game map
 type Tile* = ref object
@@ -16,7 +31,7 @@ type Tile* = ref object
     borders*: array[0..5, string]
 
 # Combined entity type
-type Entity* = Unit | Tile
+type Entity* = Unit | Tile | Item | Ability
 
 # Default Tile border value
 const OPEN_BORDER* = "none"

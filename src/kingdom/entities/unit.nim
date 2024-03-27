@@ -1,5 +1,5 @@
 import std/tables
-import kingdom/types/entities
+import kingdom/entities/types
 import kingdom/types/signals
 import kingdom/math/types
 
@@ -10,4 +10,6 @@ proc newUnit*(): Unit =
     result.name = "unnamed"
     result.pos = newCoord(0, 0)
     result.handlers = initTable[string, seq[SignalHandler[Unit]]]()
+    result.abilities = @[]
+    result.items = @[]
     return result

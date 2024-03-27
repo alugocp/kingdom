@@ -4,7 +4,7 @@ import std/strformat
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/types/generation
-import kingdom/types/entities
+import kingdom/entities/types
 import kingdom/controls/mouse
 import kingdom/controls/view
 import kingdom/generation
@@ -17,6 +17,8 @@ type Game* = ref object
     nextUnitId: int
     unitGeneration*: UnitGenerationManager
     tileGeneration*: TileGenerationManager
+    itemGeneration*: ItemGenerationManager
+    abilityGeneration*: AbilityGenerationManager
     hoveredHex: Option[Coord]
     mouse*: MouseState
     world*: World
@@ -31,6 +33,12 @@ proc newGame*(world: World): Game =
         ),
         tileGeneration: GenerationManager[Tile](
             generators: initTable[string, FullGenerator[Tile]]()
+        ),
+        itemGeneration: GenerationManager[Item](
+            generators: initTable[string, FullGenerator[Item]]()
+        ),
+        abilityGeneration: GenerationManager[Ability](
+            generators: initTable[string, FullGenerator[Ability]]()
         ),
         hoveredHex: none(Coord),
         menu: none(Menu),

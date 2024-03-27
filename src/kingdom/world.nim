@@ -3,7 +3,7 @@ import std/tables
 import std/options
 import std/sequtils
 import kingdom/builtin/signals
-import kingdom/types/entities
+import kingdom/entities/types
 import kingdom/entities/tile
 import kingdom/entities/signals
 import kingdom/math/hexagons

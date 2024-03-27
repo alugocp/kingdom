@@ -1,7 +1,7 @@
 import std/tables
 import std/strformat
 import kingdom/types/generation
-import kingdom/types/entities
+import kingdom/entities/types
 
 # Constructor for a FullGenerator type
 proc newFullGenerator[T: Entity](base: Generator[T]): FullGenerator[T] =
