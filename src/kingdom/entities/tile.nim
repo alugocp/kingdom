@@ -15,9 +15,9 @@ proc newTile*(id: int, pos: Coord): Tile =
     return result
 
 # Sets a border value on this Tile
-proc setTileBorder*(tile: Tile, side: HexSides, border: string): void =
-    tile.borders[hexSideToInt(side)] = border
+proc setBorder*(this: Tile, side: HexSides, border: string): void =
+    this.borders[hexSideToInt(side)] = border
 
 # Returns a border value on the given Tile
-proc getTileBorder*(tile: Tile, side: HexSides): string =
-    return tile.borders[hexSideToInt(side)]
+proc getBorder*(this: Tile, side: HexSides): string =
+    return this.borders[hexSideToInt(side)]

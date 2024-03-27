@@ -94,8 +94,8 @@ proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
         let opp = getOppositeSide(side)
         let tile1 = this.getTile(current)
         let tile2 = this.getTile(adj)
-        var test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getTileBorder(side))
-        var test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getTileBorder(opp))
+        var test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getBorder(side))
+        var test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getBorder(opp))
         if not test1.canCross:
             unit.handleSignal(@[], test1)
         if not test2.canCross:

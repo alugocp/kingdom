@@ -6,17 +6,17 @@ import kingdom/builtin/values
 import kingdom/game
 
 # Record mouse state for later consumption
-proc handleMouseLogic(m: MouseState): void =
+proc handleLogic(this: MouseState): void =
     let x = getMouseX()
     let y = getMouseY()
-    m.wasDown = m.down
-    m.wasScrolling = m.scrolling
-    if not m.down and isMouseButtonDown(MouseButton.Left):
-        m.mouseDown(initPosition(x, y))
-    elif m.down and isMouseButtonUp(MouseButton.Left):
-        m.mouseUp(initPosition(x, y))
+    this.wasDown = this.down
+    this.wasScrolling = this.scrolling
+    if not this.down and isMouseButtonDown(MouseButton.Left):
+        this.mouseDown(initPosition(x, y))
+    elif this.down and isMouseButtonUp(MouseButton.Left):
+        this.mouseUp(initPosition(x, y))
     else:
-        m.mouseMove(initPosition(x, y))
+        this.mouseMove(initPosition(x, y))
 
 # Handles game loop logic
 proc gameLoop*(game: Game): void =
@@ -27,7 +27,7 @@ proc gameLoop*(game: Game): void =
 
     # Raylib game loop
     while not windowShouldClose():
-        handleMouseLogic(game.mouse)
+        game.mouse.handleLogic()
         game.consumeMouseUpdates()
         beginDrawing()
         setBackground(values.BLUE)

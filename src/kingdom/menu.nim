@@ -16,8 +16,8 @@ type MenuElement* = enum
 type MenuNode* = ref object of RootObj
     element*: MenuElement
 
-method getHeight*(node: MenuNode): float {.base.} = 0
-method draw*(node: MenuNode, x: float, y: float): void {.base.} = discard
+method getHeight*(this: MenuNode): float {.base.} = 0
+method draw*(this: MenuNode, x: float, y: float): void {.base.} = discard
 method checkClick*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
 
 # Top-level menu type
@@ -60,8 +60,8 @@ proc newTextNode*(text: string): TextNode =
     result.element = MenuElement.TEXT
     result.text = text
 
-method getHeight*(node: TextNode): float = getTextSize(node.text).y
-method draw*(node: TextNode, x: float, y: float): void = drawText(node.text, x, y, BLACK)
+method getHeight*(this: TextNode): float = getTextSize(this.text).y
+method draw*(this: TextNode, x: float, y: float): void = drawText(this.text, x, y, BLACK)
 method checkClick*(this: TextNode, m: MouseState, r: Rect): void = discard
 
 # Text header
@@ -73,8 +73,8 @@ proc newHeaderNode*(text: string): HeaderNode =
     result.element = MenuElement.HEADER
     result.text = text
 
-method getHeight*(node: HeaderNode): float = getTextSize(node.text).y
-method draw*(node: HeaderNode, x: float, y: float): void = drawText(node.text, x, y, BLACK)
+method getHeight*(this: HeaderNode): float = getTextSize(this.text).y
+method draw*(this: HeaderNode, x: float, y: float): void = drawText(this.text, x, y, BLACK)
 method checkClick*(this: HeaderNode, m: MouseState, r: Rect): void = discard
 
 # Clickable button
@@ -88,8 +88,8 @@ proc newButtonNode*(text: string, click: () -> void): ButtonNode =
     result.click = click
     result.text = text
 
-method getHeight*(node: ButtonNode): float = getTextSize(node.text).y
-method draw*(node: ButtonNode, x: float, y: float): void = drawText(node.text, x, y, BLACK)
+method getHeight*(this: ButtonNode): float = getTextSize(this.text).y
+method draw*(this: ButtonNode, x: float, y: float): void = drawText(this.text, x, y, BLACK)
 method checkClick*(this: ButtonNode, m: MouseState, r: Rect): void =
     if m.pos.within(r):
         this.click()
@@ -105,10 +105,10 @@ proc newListNode*(nodes: seq[MenuNode] = @[]): ListNode =
 proc add*(this: ListNode, node: MenuNode): void =
     this.nodes.add(node)
 
-method getHeight*(node: ListNode): float = node.nodes.foldl(a + b.getHeight(), 0.0)
-method draw*(node: ListNode, x: float, y: float): void =
+method getHeight*(this: ListNode): float = this.nodes.foldl(a + b.getHeight(), 0.0)
+method draw*(this: ListNode, x: float, y: float): void =
     var dy = 0.0
-    for n in node.nodes:
+    for n in this.nodes:
         n.draw(x, y + dy)
         if n.element != MenuElement.LIST:
             dy += n.getHeight()

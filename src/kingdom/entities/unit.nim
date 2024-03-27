@@ -15,6 +15,7 @@ proc newUnit*(): Unit =
     result.pos = initCoord(0, 0)
     result.handlers = initTable[string, seq[SignalHandler[Unit]]]()
     result.abilities = @[]
+    result.statuses = @[]
     result.items = @[]
     return result
 
@@ -28,6 +29,10 @@ proc getMenuNode*(this: Unit): MenuNode =
         node.add(newHeaderNode("Abilities:"))
         for ability in this.abilities:
             node.add(ability.getMenuNode(this))
+    if this.statuses.len > 0:
+        node.add(newHeaderNode("Statuses:"))
+        for status in this.statuses:
+            node.add(status.getMenuNode(this))
     if this.items.len > 0:
         node.add(newHeaderNode("Items:"))
         for item in this.items:

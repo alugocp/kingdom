@@ -11,23 +11,23 @@ proc newFullGenerator[T: Entity](base: Generator[T]): FullGenerator[T] =
     return result
 
 # Adds a new Generator to the given manager
-proc addGenerator*[T: Entity](manager: GenerationManager[T], key: string, generator: Generator[T]): void =
-    if manager.generators.hasKey(key):
+proc addGenerator*[T: Entity](this: GenerationManager[T], key: string, generator: Generator[T]): void =
+    if this.generators.hasKey(key):
         raise newException(Exception, fmt"Generator '{key}' already exists")
     let full = newFullGenerator[T](generator)
-    manager.generators[key] = full
+    this.generators[key] = full
 
 # Adds a Modifier to the given Generator
-proc addModifier*[T: Entity](manager: GenerationManager[T], key: string, modifier: Modifier[T]): void =
-    if not manager.generators.hasKey(key):
+proc addModifier*[T: Entity](this: GenerationManager[T], key: string, modifier: Modifier[T]): void =
+    if not this.generators.hasKey(key):
         raise newException(Exception, fmt"Generator '{key}' does not exist")
-    manager.generator[key].post.add(modifier)
+    this.generator[key].post.add(modifier)
 
 # Request the given manager to generate some Entity
-proc generate*[T: Entity](manager: GenerationManager[T], key: string): T =
-    if not manager.generators.hasKey(key):
+proc generate*[T: Entity](this: GenerationManager[T], key: string): T =
+    if not this.generators.hasKey(key):
         raise newException(Exception, fmt"Generator '{key}' does not exist")
-    let full = manager.generators[key]
+    let full = this.generators[key]
     var x = full.base()
     for p in full.post:
         p(x)

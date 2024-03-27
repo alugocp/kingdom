@@ -51,6 +51,7 @@ type Unit* = ref object
     desc*: Option[string]
     items*: seq[Item]
     abilities*: seq[Ability]
+    statuses*: seq[Ability]
 
 # Tile type for the in-game map
 type Tile* = ref object

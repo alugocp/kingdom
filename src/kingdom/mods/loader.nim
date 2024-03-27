@@ -20,5 +20,5 @@ proc loadMod*(game: Game, filepath: string): bool =
         return false
 
     # Run the init function and return
-    initKingdomMod(game)
+    game.initKingdomMod()
     return true
