@@ -17,6 +17,7 @@ type Game* = ref object
     nextUnitId: int
     unitGeneration*: UnitGenerationManager
     tileGeneration*: TileGenerationManager
+    hoveredHex: Option[Coord]
     mouse*: MouseState
     world*: World
     view*: View
@@ -31,6 +32,7 @@ proc newGame*(world: World): Game =
         tileGeneration: GenerationManager[Tile](
             generators: initTable[string, FullGenerator[Tile]]()
         ),
+        hoveredHex: none(Coord),
         menu: none(Menu),
         mouse: newMouseState(),
         view: newView(),
@@ -55,7 +57,7 @@ proc openMenu*(this: Game, menu: Menu): void =
 
 # Draws all elements of this Game object
 proc draw*(this: Game): void =
-    this.world.draw(this.view.dx, this.view.dy)
+    this.world.draw(this.hoveredHex, this.view.dx, this.view.dy)
     if this.menu.isSome:
         this.menu.get().draw()
 
@@ -67,18 +69,21 @@ proc consumeMouseUpdates*(this: Game): void =
             this.mouse.pos.y - this.mouse.posprev.y
         )
 
+    # check if the user is hovering over a hexagonal Tile
+    let hex = getHexagonCoords(this.view.withOffset(this.mouse.pos))
+    this.hoveredHex = hex
+
+    # Process a click event
     if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
         if this.menu.isSome:
             let clicked = this.menu.get().checkClick(this.mouse)
             if not clicked:
                 this.closeMenu()
-        else:
-            let hex = getHexagonCoords(this.view.withOffset(this.mouse.pos))
-            if hex.isSome and this.world.contains(hex.get()):
-                let coord = hex.get()
-                let list = newListNode()
-                list.add(newTextNode(fmt"Tile {coord}"))
-                let units = this.world.getUnits(coord).len
-                if units > 0:
-                    list.add(newTextNode(fmt"{units} unit(s)"))
-                this.openMenu(newMenu(0, 0, 200, list))
+        if hex.isSome and this.world.contains(hex.get()):
+            let coord = hex.get()
+            let list = newListNode()
+            list.add(newTextNode(fmt"Tile {coord}"))
+            let units = this.world.getUnits(coord).len
+            if units > 0:
+                list.add(newTextNode(fmt"{units} unit(s)"))
+            this.openMenu(newMenu(0, 0, 200, list))

@@ -1,5 +1,6 @@
 import std/math
 import std/tables
+import std/options
 import std/sequtils
 import kingdom/builtin/signals
 import kingdom/types/entities
@@ -49,11 +50,12 @@ proc moveUnit*(this: World, u: Unit, c: Coord): void =
 proc contains*(this: World, c: Coord): bool = c.x < this.w and c.y < this.h
 
 # Draw this World object
-proc draw*(this: World, dx: float, dy: float): void =
+proc draw*(this: World, hovered: Option[Coord], dx: float, dy: float): void =
     for column in this.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(newCoord(tile.pos.x, tile.pos.y))
-            drawHexagon(coords.x + dx, coords.y + dy, GREEN)
+            let color = if hovered.isSome and hovered.get() == tile.pos: DK_GREEN else: GREEN
+            drawHexagon(coords.x + dx, coords.y + dy, color)
 
 # Return a path from the unit's current position to the destination,
 # making sure to respect which borders that unit can cross.
