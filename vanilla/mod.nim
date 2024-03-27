@@ -1,5 +1,8 @@
 import std/options
 import kingdom/game
+import kingdom/world
+import kingdom/math/types
+import kingdom/builtin/signals
 import kingdom/builtin/channels
 import kingdom/entities/types
 import kingdom/entities/unit
@@ -16,13 +19,16 @@ proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = "Vanilla mod unit"
         unit.desc = some("Imported via modding!")
+        unit.abilities.add(game.abilityGeneration.generate(ABILITY_MOVE))
         return unit
     )
     game.abilityGeneration.addGenerator(ABILITY_MOVE, proc(): Ability =
         let ability = newAbility()
         ability.name = ABILITY_MOVE
         ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
-            echo("Move!")
+            let a = cast[AbilityClickedSignalArgs](args)
+            game.world.moveUnit(a.host, initCoord(1, 1))
+            # TODO set game targeter and close the menu (?)
         )
         return ability
     )

@@ -33,7 +33,7 @@ proc newWorld*(w: Natural, h: Natural): World =
         result.tiles.add(@[])
         result.units.add(@[])
         for y in 0..(h - 1):
-            result.tiles[x].add(newTile(id, newCoord(x, y)))
+            result.tiles[x].add(newTile(id, initCoord(x, y)))
             result.units[x].add(@[])
             id += 1
     return result
@@ -69,7 +69,7 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void): MenuNode =
 proc draw*(this: World, hovered: Option[Coord], dx: float, dy: float): void =
     for column in this.tiles:
         for tile in column:
-            let coords = getHexagonCenterPoint(newCoord(tile.pos.x, tile.pos.y))
+            let coords = getHexagonCenterPoint(initCoord(tile.pos.x, tile.pos.y))
             let color = if hovered.isSome and hovered.get() == tile.pos: DK_GREEN else: GREEN
             drawHexagon(coords.x + dx, coords.y + dy, color)
 
@@ -123,7 +123,7 @@ proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
 
         # Filter openSet and check adjacent tiles
         openSet = openSet.filterIt(it != current)
-        let neighbors = current.getAdjacentHexagonCoords(newCoord(this.w, this.h))
+        let neighbors = current.getAdjacentHexagonCoords(initCoord(this.w, this.h))
         for adj in neighbors:
 
             # Skip any neighbors with borders the unit cannot cross

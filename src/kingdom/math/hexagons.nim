@@ -34,18 +34,18 @@ proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] =
     let dx = if c.y mod 2 == 1: 0 else: -1
     if c.y > 0:
         if c.x + dx >= 0:
-            adjs.add(newCoord(c.x + dx, c.y - 1)) # Above left
+            adjs.add(initCoord(c.x + dx, c.y - 1)) # Above left
         if c.x + dx + 1 < bounds.x:
-            adjs.add(newCoord(c.x + dx + 1, c.y - 1)) # Above right
+            adjs.add(initCoord(c.x + dx + 1, c.y - 1)) # Above right
     if c.y + 1 < bounds.y:
         if c.x + dx >= 0:
-            adjs.add(newCoord(c.x + dx, c.y + 1)) # Bottom left
+            adjs.add(initCoord(c.x + dx, c.y + 1)) # Bottom left
         if c.x + dx + 1 < bounds.x:
-            adjs.add(newCoord(c.x + dx + 1, c.y + 1)) # Bottom right
+            adjs.add(initCoord(c.x + dx + 1, c.y + 1)) # Bottom right
     if c.x > 0:
-        adjs.add(newCoord(c.x - 1, c.y)) # Left
+        adjs.add(initCoord(c.x - 1, c.y)) # Left
     if c.x + 1 < bounds.x:
-        adjs.add(newCoord(c.x + 1, c.y)) # Right
+        adjs.add(initCoord(c.x + 1, c.y)) # Right
     return adjs
 
 # Converts a HexSide to an integer result
@@ -84,26 +84,26 @@ proc getHexagonCoords*(p: Position): Option[Coord] =
     type Vector = object
         x: int
         y: int
-    proc newVector(x: int, y: int): Vector = Vector(x: x, y: y)
-    let g = newVector(int(floor(p.x / HALF_W)), int(floor(p.y / HALF_S)))
+    proc initVector(x: int, y: int): Vector = Vector(x: x, y: y)
+    let g = initVector(int(floor(p.x / HALF_W)), int(floor(p.y / HALF_S)))
     if g.y mod 3 == 0:
-        let z = newVector(g.x, int(g.y / 3))
-        let l = newPosition(p.x - (float(g.x) * HALF_W), p.y - (float(g.y) * HALF_S))
-        let b = newVector(int(floor((z.x - (z.y mod 2)) / 2)), z.y)
-        var d = newVector(0, 0)
+        let z = initVector(g.x, int(g.y / 3))
+        let l = initPosition(p.x - (float(g.x) * HALF_W), p.y - (float(g.y) * HALF_S))
+        let b = initVector(int(floor((z.x - (z.y mod 2)) / 2)), z.y)
+        var d = initVector(0, 0)
         if (z.x mod 2) == 0 and (z.y mod 2) == 0 and l.y < HALF_S - (r3n1 * l.x):
-            d = newVector(-1, -1)
+            d = initVector(-1, -1)
         elif (z.x mod 2) == 1 and (z.y mod 2) == 0 and l.y < r3n1 * l.x:
-            d = newVector(0, -1)
+            d = initVector(0, -1)
         elif (z.x mod 2) == 0 and (z.y mod 2) == 1 and l.y < r3n1 * l.x:
-            d = newVector(1, -1)
+            d = initVector(1, -1)
         elif (z.x mod 2) == 1 and (z.y mod 2) == 1 and l.y < HALF_S - (r3n1 * l.x):
-            d = newVector(0, -1)
+            d = initVector(0, -1)
         if b.x + d.x >= 0 and b.y + d.y >= 0:
-            return some(newCoord(b.x + d.x, b.y + d.y))
+            return some(initCoord(b.x + d.x, b.y + d.y))
     else:
         let hy = int(floor(g.y / 3))
         let hx = int(floor((g.x - (hy mod 2)) / 2))
         if hx >= 0 and hy >= 0:
-            return some(newCoord(hx, hy))
+            return some(initCoord(hx, hy))
     return none(Coord)

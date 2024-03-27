@@ -17,4 +17,4 @@ proc scroll*(this: View, dx: float, dy: float) =
 
 # Adds the total scroll offset to the given Position
 proc withOffset*(this: View, p: Position): Position =
-    newPosition(p.x - this.dx, p.y - this.dy)
+    initPosition(p.x - this.dx, p.y - this.dy)

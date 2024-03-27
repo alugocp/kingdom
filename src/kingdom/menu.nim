@@ -115,7 +115,8 @@ method draw*(node: ListNode, x: float, y: float): void =
 method checkClick*(this: ListNode, m: MouseState, r: Rect): void =
     if m.pos.within(r):
         var r1 = r
-        for n in this.nodes:
+        let nodes = this.nodes # Copied in case we change the Menu
+        for n in nodes:
             r1.h = n.getHeight()
             n.checkClick(m, r1)
             if n.element != MenuElement.LIST:

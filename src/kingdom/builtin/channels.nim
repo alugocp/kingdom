@@ -3,4 +3,4 @@
 
 const CAN_CROSS_BORDER_CHANNEL* = "CanCrossBorder"
 const ABILITY_CLICKED_CHANNEL* = "AbilityClicked"
-const GET_ABILITY_TARGETS_CHANNEL* = "GetAbilityTargets"
+const GET_ABILITY_COORD_TARGETS_CHANNEL* = "GetAbilityCoordTargets"

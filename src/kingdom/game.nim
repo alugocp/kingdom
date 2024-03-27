@@ -93,8 +93,8 @@ proc consumeMouseUpdates*(this: Game): void =
     if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
         if this.menu.isSome:
             let clicked = this.menu.get().checkClick(this.mouse)
-            if not clicked:
-                this.closeMenu()
+            if clicked: return
+            else: this.closeMenu()
         if hex.isSome and this.world.contains(hex.get()):
             let node = this.world.getMenuNode(hex.get(), proc (n: MenuNode) = this.openMenu(n))
             this.openMenu(node)

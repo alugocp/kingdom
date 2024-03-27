@@ -1,4 +1,5 @@
 import kingdom/entities/types
+import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/builtin/channels
 import kingdom/builtin/values
@@ -35,14 +36,14 @@ proc newAbilityClickedSignalArgs*(host: Unit): AbilityClickedSignalArgs =
     result.host = host
     return result
 
-# Payload when an ability must calculate its potential targets
-type GetAbilityTargetsSignalArgs*[T: Entity] = ref object of BaseSignalArgs
+# Payload when an ability must calculate its potential targets (template for each possible target type)
+type GetAbilityTargetsSignalArgs*[T] = ref object of BaseSignalArgs
     host*: Unit
     targets*: seq[T]
 
-proc newGetAbilityTargetsSignalArgs*[T: Entity](host: Unit): GetAbilityTargetsSignalArgs[T] =
+proc newGetAbilityCoordTargetsSignalArgs*(host: Unit): GetAbilityTargetsSignalArgs[Coord] =
     new result
-    result.channel = GET_ABILITY_TARGETS_CHANNEL
+    result.channel = GET_ABILITY_COORD_TARGETS_CHANNEL
     result.host = host
     result.targets = @[]
     return result

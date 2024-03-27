@@ -4,14 +4,14 @@ type Coord* = object
     x*: Natural
     y*: Natural
 
-proc newCoord*(x: Natural, y: Natural): Coord = Coord(x: x, y: y)
+proc initCoord*(x: Natural, y: Natural): Coord = Coord(x: x, y: y)
 
 # Like a Coordinate but with floats
 type Position* = object
     x*: float
     y*: float
 
-proc newPosition*(x: SomeNumber, y: SomeNumber): Position = Position(x: float(x), y: float(y))
+proc initPosition*(x: SomeNumber, y: SomeNumber): Position = Position(x: float(x), y: float(y))
 
 # Float bounds
 type Rect* = object

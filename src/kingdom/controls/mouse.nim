@@ -13,9 +13,9 @@ type MouseState* = ref object
 # Constructor for MouseState
 proc newMouseState*(): MouseState =
     new result
-    result.posdown = newPosition(0, 0)
-    result.posprev = newPosition(0, 0)
-    result.pos = newPosition(0, 0)
+    result.posdown = initPosition(0, 0)
+    result.posprev = initPosition(0, 0)
+    result.pos = initPosition(0, 0)
     result.wasScrolling = false
     result.scrolling = false
     result.wasDown = false
