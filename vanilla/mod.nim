@@ -5,7 +5,6 @@ import kingdom/entities/types
 import kingdom/entities/unit
 import kingdom/entities/ability
 import kingdom/entities/signals
-import kingdom/types/signals
 import kingdom/generation
 
 # Labels for mod content

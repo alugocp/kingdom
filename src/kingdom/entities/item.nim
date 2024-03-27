@@ -1,5 +1,4 @@
 import std/tables
-import kingdom/types/signals
 import kingdom/entities/types
 import kingdom/menu
 

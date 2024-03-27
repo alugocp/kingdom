@@ -1,7 +1,6 @@
 import std/tables
 import kingdom/builtin/values
 import kingdom/entities/types
-import kingdom/types/signals
 import kingdom/math/hexagons
 import kingdom/math/types
 

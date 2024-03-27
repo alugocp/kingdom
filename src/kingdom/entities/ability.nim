@@ -1,6 +1,5 @@
 import std/tables
 import std/options
-import kingdom/types/signals
 import kingdom/entities/types
 import kingdom/entities/signals
 import kingdom/builtin/channels

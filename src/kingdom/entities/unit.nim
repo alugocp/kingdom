@@ -3,7 +3,6 @@ import std/options
 import kingdom/entities/types
 import kingdom/entities/ability
 import kingdom/entities/item
-import kingdom/types/signals
 import kingdom/math/types
 import kingdom/menu
 

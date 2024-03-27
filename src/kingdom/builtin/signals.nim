@@ -1,4 +1,3 @@
-import kingdom/types/signals
 import kingdom/entities/types
 import kingdom/math/hexagons
 import kingdom/builtin/channels

@@ -1,7 +1,6 @@
 import std/sequtils
 import std/tables
 import kingdom/entities/types
-import kingdom/types/signals
 
 # Internal helper function for shared Unit/Tile/Item logic
 proc internalHandleSignal(x: Entity, ctx: SignalContext, step: SignalContextElement, args: BaseSignalArgs): SignalContext =
