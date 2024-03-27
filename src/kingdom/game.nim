@@ -3,11 +3,11 @@ import std/options
 import std/strformat
 import kingdom/math/types
 import kingdom/math/hexagons
-import kingdom/types/generation
+import kingdom/generation/manager
+import kingdom/generation/types
 import kingdom/entities/types
 import kingdom/controls/mouse
 import kingdom/controls/view
-import kingdom/generation
 import kingdom/world
 import kingdom/menu
 

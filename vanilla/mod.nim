@@ -5,7 +5,7 @@ import kingdom/entities/types
 import kingdom/entities/unit
 import kingdom/entities/ability
 import kingdom/entities/signals
-import kingdom/generation
+import kingdom/generation/manager
 
 # Labels for mod content
 const ABILITY_MOVE = "Move"

@@ -1,6 +1,6 @@
 import std/tables
 import std/strformat
-import kingdom/types/generation
+import kingdom/generation/types
 import kingdom/entities/types
 
 # Constructor for a FullGenerator type
