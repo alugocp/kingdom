@@ -63,6 +63,10 @@ proc closeMenu*(this: Game): void =
 proc openMenu*(this: Game, menu: Menu): void =
     this.menu = some(menu)
 
+# Open a Menu in this Game (with default options)
+proc openMenu*(this: Game, root: MenuNode): void =
+    this.menu = some(newMenu(0, 0, 200, root))
+
 # Draws all elements of this Game object
 proc draw*(this: Game): void =
     this.world.draw(this.hoveredHex, this.view.dx, this.view.dy)
@@ -88,10 +92,5 @@ proc consumeMouseUpdates*(this: Game): void =
             if not clicked:
                 this.closeMenu()
         if hex.isSome and this.world.contains(hex.get()):
-            let coord = hex.get()
-            let list = newListNode()
-            list.add(newTextNode(fmt"Tile {coord}"))
-            let units = this.world.getUnits(coord).len
-            if units > 0:
-                list.add(newTextNode(fmt"{units} unit(s)"))
-            this.openMenu(newMenu(0, 0, 200, list))
+            let node = this.world.getMenuNode(hex.get(), proc (n: MenuNode) = this.openMenu(n))
+            this.openMenu(node)

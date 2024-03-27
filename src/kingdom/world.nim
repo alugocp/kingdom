@@ -1,16 +1,20 @@
 import std/math
+import std/sugar
 import std/tables
 import std/options
 import std/sequtils
+import std/strformat
 import kingdom/builtin/signals
 import kingdom/entities/types
 import kingdom/entities/tile
+import kingdom/entities/unit
 import kingdom/entities/signals
 import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/stringify
 import kingdom/wrapper/draw
 import kingdom/colors
+import kingdom/menu
 
 # World type to contain Tile objects
 type World* = ref object
@@ -48,6 +52,18 @@ proc moveUnit*(this: World, u: Unit, c: Coord): void =
 
 # Returns true if the World contains a Tile at the given Coord
 proc contains*(this: World, c: Coord): bool = c.x < this.w and c.y < this.h
+
+# Return a MenuNode describing this
+proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void): MenuNode =
+    let node = newListNode()
+    node.add(newTextNode(fmt"Tile {c}"))
+    let units = this.getUnits(c)
+    if units.len > 0:
+        node.add(newTextNode(fmt"{units.len} unit(s):"))
+    for u in units:
+        let root = u.getMenuNode()
+        node.add(newButtonNode(u.name, proc (): void = open(root)))
+    return node
 
 # Draw this World object
 proc draw*(this: World, hovered: Option[Coord], dx: float, dy: float): void =

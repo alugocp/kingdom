@@ -1,6 +1,7 @@
 import std/tables
 import kingdom/types/signals
 import kingdom/entities/types
+import kingdom/menu
 
 # Constructor for the Item type
 proc newItem*(): Item =
@@ -9,3 +10,10 @@ proc newItem*(): Item =
     result.desc = "just some item"
     result.handlers = initTable[string, seq[SignalHandler[Item]]]()
     return result
+
+# Return a MenuNode describing this Item
+proc getMenuNode*(this: Item): MenuNode =
+    let node = newListNode()
+    node.add(newHeaderNode(this.name))
+    node.add(newTextNode(this.desc))
+    return node

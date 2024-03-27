@@ -20,6 +20,7 @@ type Unit* = ref object
     pos*: Coord
     handlers*: SignalHandlersTable[Unit]
     name*: string
+    desc*: Option[string]
     items*: seq[Item]
     abilities*: seq[Ability]
 
