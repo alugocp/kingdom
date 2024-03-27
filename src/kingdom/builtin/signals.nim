@@ -2,6 +2,7 @@ import kingdom/types/signals
 import kingdom/entities/types
 import kingdom/math/hexagons
 import kingdom/builtin/channels
+import kingdom/builtin/values
 
 # BUILT-IN UNIT SIGNAL ARGS TYPES
 

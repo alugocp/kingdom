@@ -13,7 +13,7 @@ import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/stringify
 import kingdom/wrapper/draw
-import kingdom/colors
+import kingdom/builtin/values
 import kingdom/menu
 
 # World type to contain Tile objects

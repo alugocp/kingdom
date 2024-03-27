@@ -34,9 +34,9 @@ proc handleSignal*(x: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
 proc handleSignal*(x: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
     let unitCtx = internalHandleSignal(x, ctx, (EntityTypes.UNIT_TYPE, x.id, args.channel), args)
     for ability in x.abilities:
-        handleSignal(ability, unitCtx, args)
+        ability.handleSignal(unitCtx, args)
     for item in x.items:
-        handleSignal(item, unitCtx, args)
+        item.handleSignal(unitCtx, args)
 
 # Returns true if this Entity has a handler for the given channel
 proc hasSignalHandler*(x: Entity, channel: string): bool =

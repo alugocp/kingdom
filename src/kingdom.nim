@@ -11,7 +11,7 @@ proc initKingdom(): void {.exportc: "init_kingdom", dynlib.} =
     let world = newWorld(20, 10)
     world.getTile(newCoord(0, 0)).setTileBorder(HexSides.RIGHT, "denied!")
     var game = newGame(world)
-    discard loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux", game)
+    discard game.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux")
 
     # Testing code
     discard game.addNewUnit("test", newCoord(0, 0))

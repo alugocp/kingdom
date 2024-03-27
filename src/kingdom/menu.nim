@@ -3,7 +3,7 @@ import std/sequtils
 import kingdom/math/types
 import kingdom/wrapper/draw
 import kingdom/controls/mouse
-import kingdom/colors
+import kingdom/builtin/values
 
 # Enum representing the types of UI elements
 type MenuElement* = enum

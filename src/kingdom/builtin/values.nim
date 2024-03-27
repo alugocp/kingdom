@@ -1,4 +1,10 @@
 
+# BUILT-IN VALUES FOR THE GAME CORE
+
+# Default Tile border value
+const OPEN_BORDER* = "none"
+
+# Colors
 const BLACK*    = uint32(0x000000FF)
 const WHITE*    = uint32(0xFFFFFFFF)
 const GREEN*    = uint32(0x00FF00FF)

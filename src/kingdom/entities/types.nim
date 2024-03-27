@@ -35,6 +35,3 @@ type Tile* = ref object
 
 # Combined entity type
 type Entity* = Unit | Tile | Item | Ability
-
-# Default Tile border value
-const OPEN_BORDER* = "none"

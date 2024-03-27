@@ -5,7 +5,7 @@ import kingdom/game
 type ModEntryPoint = proc(game: Game): void {.gcsafe, stdcall.}
 
 # Loads a mod and runs its init function
-proc loadMod*(filepath: string, game: Game): bool =
+proc loadMod*(game: Game, filepath: string): bool =
     # TODO unzip the archive at the filepath and find a .so within to actually load
     let lib = loadLib(filepath)
     if lib == nil:
