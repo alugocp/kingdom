@@ -38,6 +38,10 @@ proc newWorld*(w: Natural, h: Natural): World =
             id += 1
     return result
 
+# Returns the bounds of this World as a Coord
+proc getBounds*(this: World): Coord =
+    initCoord(this.w, this.h)
+
 # Retrieves a Tile in this World
 proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y]
 
@@ -66,11 +70,15 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void): MenuNode =
     return node
 
 # Draw this World object
-proc draw*(this: World, hovered: Option[Coord], dx: float, dy: float): void =
+proc draw*(this: World, hovered: Option[Coord], targeted: Option[seq[Coord]], dx: float, dy: float): void =
     for column in this.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(initCoord(tile.pos.x, tile.pos.y))
-            let color = if hovered.isSome and hovered.get() == tile.pos: DK_GREEN else: GREEN
+            var color = GREEN
+            if targeted.isSome and targeted.get().contains(tile.pos):
+                color = YELLOW
+            if hovered.isSome and hovered.get() == tile.pos:
+                color = DK_GREEN
             drawHexagon(coords.x + dx, coords.y + dy, color)
 
 # Return a path from the unit's current position to the destination,

@@ -6,6 +6,7 @@ import kingdom/math/hexagons
 import kingdom/generation/manager
 import kingdom/generation/types
 import kingdom/entities/types
+import kingdom/controls/targeting
 import kingdom/controls/mouse
 import kingdom/controls/view
 import kingdom/world
@@ -17,6 +18,7 @@ type Game* = ref object
     nextAbilityId: int
     nextUnitId: int
     nextItemId: int
+    targeter: Option[Targeter]
     unitGeneration*: UnitGenerationManager
     tileGeneration*: TileGenerationManager
     itemGeneration*: ItemGenerationManager
@@ -32,6 +34,7 @@ proc newGame*(world: World): Game =
         nextAbilityId: 0,
         nextUnitId: 0,
         nextItemId: 0,
+        targeter: none(Targeter),
         unitGeneration: GenerationManager[Unit](
             generators: initTable[string, FullGenerator[Unit]]()
         ),
@@ -71,9 +74,20 @@ proc openMenu*(this: Game, menu: Menu): void =
 proc openMenu*(this: Game, root: MenuNode): void =
     this.menu = some(newMenu(0, 0, 200, root))
 
+# Sets a Targeter on the Game object
+proc setTargeter*(this: Game, targeter: Targeter): void =
+    this.targeter = some(targeter)
+
+# Remove the Targeter on this Game
+proc removeTargeter*(this: Game): void =
+    this.targeter = none(Targeter)
+
 # Draws all elements of this Game object
 proc draw*(this: Game): void =
-    this.world.draw(this.hoveredHex, this.view.dx, this.view.dy)
+    var targeted = none(seq[Coord])
+    if this.targeter.isSome and this.targeter.get().coords.isSome:
+        targeted = this.targeter.get().coords
+    this.world.draw(this.hoveredHex, targeted, this.view.dx, this.view.dy)
     if this.menu.isSome:
         this.menu.get().draw()
 
@@ -96,5 +110,11 @@ proc consumeMouseUpdates*(this: Game): void =
             if clicked: return
             else: this.closeMenu()
         if hex.isSome and this.world.contains(hex.get()):
+            if this.targeter.isSome and this.targeter.get().coords.isSome:
+                let t = this.targeter.get()
+                this.removeTargeter()
+                if t.coords.get().contains(hex.get()):
+                    t.coordHandler.get()(hex.get())
+                    return
             let node = this.world.getMenuNode(hex.get(), proc (n: MenuNode) = this.openMenu(n))
             this.openMenu(node)
