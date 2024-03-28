@@ -1,4 +1,5 @@
 import kingdom/entities/types
+import kingdom/entities/stats
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/builtin/channels
@@ -46,6 +47,17 @@ proc newGetAbilityCoordTargetsSignalArgs*(host: Unit): GetAbilityTargetsSignalAr
     result.channel = GET_ABILITY_COORD_TARGETS_CHANNEL
     result.host = host
     result.targets = @[]
+    return result
+
+# Payload when calculating a Unit's stats
+type GetStatsSignalArgs* = ref object of BaseSignalArgs
+    unit*: Unit
+    stats*: Stats
+
+proc newGetStatsSignalArgs*(unit: Unit): GetStatsSignalArgs =
+    new result
+    result.unit = unit
+    result.stats = newStats()
     return result
 
 # BUILT-IN ITEM SIGNAL ARGS TYPES

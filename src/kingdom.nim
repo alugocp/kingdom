@@ -14,7 +14,8 @@ proc initKingdom(): void {.exportc: "init_kingdom", dynlib.} =
     discard game.loadMod("/home/alexander/Desktop/kingdom/vanilla/out/vanilla-linux")
 
     # Testing code
-    discard game.addNewUnit("test", initCoord(0, 0))
+    discard game.addNewUnit("Plasmoid Adventurer", initCoord(0, 0))
+    discard game.addNewItem("Ring of Strength", initCoord(1, 1))
 
     # Start the game loop
     game.gameLoop()

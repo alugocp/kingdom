@@ -4,6 +4,9 @@
 # Default Tile border value
 const OPEN_BORDER* = "none"
 
+# Stats
+const STRENGTH* = "Strength"
+
 # Colors
 const BLACK*    = uint32(0x000000FF)
 const WHITE*    = uint32(0xFFFFFFFF)

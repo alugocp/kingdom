@@ -2,6 +2,7 @@ import std/sugar
 import std/tables
 import std/options
 import kingdom/math/types
+import kingdom/entities/stats
 
 # SIGNAL TYPES
 
@@ -41,6 +42,7 @@ type Item* = ref object
     name*: string
     desc*: string
     handlers*: SignalHandlersTable[Item]
+    pos*: Option[Coord]
 
 # Unit type for in-game characters
 type Unit* = ref object
@@ -52,6 +54,7 @@ type Unit* = ref object
     items*: seq[Item]
     abilities*: seq[Ability]
     statuses*: seq[Ability]
+    stats*: Stats
 
 # Tile type for the in-game map
 type Tile* = ref object

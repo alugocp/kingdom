@@ -8,6 +8,7 @@ import kingdom/builtin/signals
 import kingdom/entities/types
 import kingdom/entities/tile
 import kingdom/entities/unit
+import kingdom/entities/item
 import kingdom/entities/signals
 import kingdom/math/hexagons
 import kingdom/math/types
@@ -18,8 +19,9 @@ import kingdom/menu
 
 # World type to contain Tile objects
 type World* = ref object
-    units*: seq[seq[seq[Unit]]]
-    tiles*: seq[seq[Tile]]
+    units: seq[seq[seq[Unit]]]
+    items: seq[seq[seq[Item]]]
+    tiles: seq[seq[Tile]]
     w*: Natural
     h*: Natural
 
@@ -32,9 +34,11 @@ proc newWorld*(w: Natural, h: Natural): World =
     for x in 0..(w - 1):
         result.tiles.add(@[])
         result.units.add(@[])
+        result.items.add(@[])
         for y in 0..(h - 1):
             result.tiles[x].add(newTile(id, initCoord(x, y)))
             result.units[x].add(@[])
+            result.items[x].add(@[])
             id += 1
     return result
 
@@ -48,11 +52,22 @@ proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y]
 # Retrieves a set of Units on a Tile in this World
 proc getUnits*(this: World, c: Coord): seq[Unit] = this.units[c.x][c.y]
 
-# Moves a unit from one Tile in this World to another
+# Retrieves a set of Items on a Tile in this World
+proc getItems*(this: World, c: Coord): seq[Item] = this.items[c.x][c.y]
+
+# Moves a Unit from one Tile in this World to another
 proc moveUnit*(this: World, u: Unit, c: Coord): void =
     this.units[u.pos.x][u.pos.y] = this.units[u.pos.x][u.pos.y].filterIt(it != u)
     this.units[c.x][c.y].add(u)
     u.pos = c
+
+# Moves an Item from one Tile in this World to another (or to add/remove it from the World)
+proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
+    if i.pos.isSome:
+        this.items[i.pos.get().x][i.pos.get().y] = this.items[i.pos.get().x][i.pos.get().y].filterIt(it != i)
+    if c.isSome:
+        this.items[c.get().x][c.get().y].add(i)
+    i.pos = c
 
 # Returns true if the World contains a Tile at the given Coord
 proc contains*(this: World, c: Coord): bool = c.x < this.w and c.y < this.h
@@ -67,6 +82,12 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void): MenuNode =
     for u in units:
         let root = u.getMenuNode()
         node.add(newButtonNode(u.name, proc (): void = open(root)))
+    let items = this.getItems(c)
+    if items.len > 0:
+        node.add(newTextNode(fmt"{items.len} item(s):"))
+    for i in items:
+        let root = i.getMenuNode()
+        node.add(newButtonNode(i.name, proc (): void = open(root)))
     return node
 
 # Draw this World object

@@ -62,6 +62,14 @@ proc addNewUnit*(this: Game, key: string, pos: Coord): Unit =
     this.world.moveUnit(u, pos)
     this.nextUnitId += 1
 
+# Initializes a new Item instance and puts it in the World
+proc addNewItem*(this: Game, key: string, pos: Coord): Unit =
+    let i = this.itemGeneration.generate(key)
+    i.pos = none(Coord)
+    i.id = this.nextItemId
+    this.world.moveItem(i, some(pos))
+    this.nextItemId += 1
+
 # Close the currently open Menu in this Game
 proc closeMenu*(this: Game): void =
     this.menu = none(Menu)
