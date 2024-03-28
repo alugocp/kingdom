@@ -1,3 +1,4 @@
+import std/sugar
 import std/tables
 import std/options
 import kingdom/entities/types
@@ -20,7 +21,7 @@ proc newUnit*(): Unit =
     return result
 
 # Return a MenuNode describing this Unit and associated actions
-proc getMenuNode*(this: Unit): MenuNode =
+proc getMenuNode*(this: Unit, unequip: (Item) -> void): MenuNode =
     let node = newListNode()
     node.add(newHeaderNode(this.name))
     if this.desc.isSome:
@@ -36,5 +37,6 @@ proc getMenuNode*(this: Unit): MenuNode =
     if this.items.len > 0:
         node.add(newHeaderNode("Items:"))
         for item in this.items:
-            node.add(item.getMenuNode())
+            let item1 = item
+            node.add(item.getUnitMenuNode(() => unequip(item1)))
     return node

@@ -1,5 +1,7 @@
+import std/sugar
 import std/tables
 import std/options
+import std/sequtils
 import std/strformat
 import kingdom/math/types
 import kingdom/math/hexagons
@@ -82,6 +84,21 @@ proc openMenu*(this: Game, menu: Menu): void =
 proc openMenu*(this: Game, root: MenuNode): void =
     this.menu = some(newMenu(0, 0, 200, root))
 
+# Opens a menu used specifically for targeting
+proc openTargetMenu*(this: Game): void =
+    if this.targeter.isUnits():
+        let units = this.targeter.units.get()
+        let handler = this.targeter.unitHandler.get()
+        let node = newListNode()
+        for u in units:
+            let u1 = u
+            node.add(newButtonNode(u.name, proc (): void =
+                handler(u1)
+                this.targeter.cancel()
+                this.closeMenu()
+            ))
+        this.openMenu(node)
+
 # Draws all elements of this Game object
 proc draw*(this: Game): void =
     this.world.draw(this.hoveredHex, this.targeter.coords, this.view.dx, this.view.dy)
@@ -113,5 +130,19 @@ proc consumeMouseUpdates*(this: Game): void =
                     this.targeter.cancel()
                     return
                 this.targeter.cancel()
-            let node = this.world.getMenuNode(hex.get(), proc (n: MenuNode) = this.openMenu(n))
+            let node = this.world.getMenuNode(
+                hex.get(),
+                (n: MenuNode) => this.openMenu(n),
+                proc (i: Item): void =
+                    let units = this.world.getUnits(i.pos.get())
+                    this.targeter.target(units, proc (u: Unit): void =
+                        this.world.moveItem(i, none(Coord))
+                        u.items.add(i)
+                    )
+                    this.openTargetMenu(),
+                proc (u: Unit, i: Item): void =
+                    u.items = u.items.filterIt(it != i)
+                    this.world.moveItem(i, some(u.pos))
+                    this.closeMenu()
+            )
             this.openMenu(node)

@@ -73,21 +73,23 @@ proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
 proc contains*(this: World, c: Coord): bool = c.x < this.w and c.y < this.h
 
 # Return a MenuNode describing this
-proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void): MenuNode =
+proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item) -> void, unequip: (Unit, Item) -> void): MenuNode =
     let node = newListNode()
     node.add(newTextNode(fmt"Tile {c}"))
     let units = this.getUnits(c)
     if units.len > 0:
         node.add(newTextNode(fmt"{units.len} unit(s):"))
     for u in units:
-        let root = u.getMenuNode()
-        node.add(newButtonNode(u.name, proc (): void = open(root)))
+        let u1 = u
+        let root = u.getMenuNode((i: Item) => unequip(u1, i))
+        node.add(newButtonNode(u.name, () => open(root)))
     let items = this.getItems(c)
     if items.len > 0:
         node.add(newTextNode(fmt"{items.len} item(s):"))
     for i in items:
-        let root = i.getMenuNode()
-        node.add(newButtonNode(i.name, proc (): void = open(root)))
+        let i1 = i
+        let root = i.getFreeMenuNode(() => equip(i1))
+        node.add(newButtonNode(i.name, () => open(root)))
     return node
 
 # Draw this World object
