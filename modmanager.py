@@ -32,6 +32,7 @@ def create_new_mod(name) -> Tuple[bool, str]:
     if os.path.exists(name):
         return False, "Mod directory already exists"
     os.makedirs(name)
+    os.makedirs(f"{name}/assets")
 
     # Populate files
     create_file(f"{name}/.gitignore", [
@@ -86,7 +87,8 @@ def build_mod_archive(name) -> Tuple[bool, str]:
         "zip",
         f"{name}/{name}.zip",
         f"{name}/archive.json",
-        f"{name}/out/{name}-linux"
+        f"{name}/assets",
+        f"{name}/out"
     ], check = True)
     print("Mod packaging complete!")
     return True, None
