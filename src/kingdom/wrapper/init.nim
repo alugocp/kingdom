@@ -1,8 +1,9 @@
 import raylib
 import kingdom/controls/mouse
+import kingdom/builtin/values
+import kingdom/wrapper/sprites
 import kingdom/wrapper/draw
 import kingdom/math/types
-import kingdom/builtin/values
 import kingdom/game
 
 # Record mouse state for later consumption
@@ -24,6 +25,7 @@ proc gameLoop*(game: Game): void =
     initWindow(1200, 800, "Kingdom")
     defer: closeWindow()
     setTargetFPS(30)
+    game.sprites.loadAllSheets()
 
     # Raylib game loop
     while not windowShouldClose():

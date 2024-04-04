@@ -3,6 +3,7 @@ import std/tables
 import std/options
 import kingdom/math/types
 import kingdom/entities/stats
+import kingdom/wrapper/types
 
 # SIGNAL TYPES
 
@@ -48,6 +49,7 @@ type Item* = ref object
 type Unit* = ref object
     id*: int
     pos*: Coord
+    sprite*: SpriteHandle
     handlers*: SignalHandlersTable[Unit]
     name*: string
     desc*: Option[string]

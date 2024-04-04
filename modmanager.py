@@ -85,6 +85,7 @@ def build_mod_archive(name) -> Tuple[bool, str]:
     print("Packaging the mod library...")
     subprocess.run([
         "zip",
+        "-r",
         f"{name}/{name}.zip",
         f"{name}/archive.json",
         f"{name}/assets",

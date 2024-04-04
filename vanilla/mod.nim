@@ -4,6 +4,7 @@ import kingdom/game
 import kingdom/world
 import kingdom/math/types
 import kingdom/math/hexagons
+import kingdom/wrapper/sprites
 import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
@@ -23,13 +24,20 @@ const UNIT_PLASMOID_ADVENTURER = "Plasmoid Adventurer"
 
 # Mod initialization procedure
 proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
+    # Register spritesheets
+    let unitSprites = game.sprites.registerSheet("vanilla", "units")
+
+    # Unit generators
     game.unitGeneration.addGenerator(UNIT_PLASMOID_ADVENTURER, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_PLASMOID_ADVENTURER
         unit.desc = some("Slimy guy")
+        unit.sprite = game.sprites.getSpriteHandle(unitSprites, 0, 0)
         unit.abilities.add(game.abilityGeneration.generate(ABILITY_MOVE))
         return unit
     )
+
+    # Ability generators
     game.abilityGeneration.addGenerator(ABILITY_MOVE, proc(): Ability =
         let ability = newAbility()
         ability.name = ABILITY_MOVE
@@ -40,6 +48,8 @@ proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
         )
         return ability
     )
+
+    # Item generators
     game.itemGeneration.addGenerator(ITEM_RING_OF_STRENGTH, proc(): Item =
         let item = newItem()
         item.name = ITEM_RING_OF_STRENGTH

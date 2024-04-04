@@ -14,6 +14,7 @@ import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/stringify
 import kingdom/wrapper/draw
+import kingdom/wrapper/sprites
 import kingdom/builtin/values
 import kingdom/menu
 
@@ -93,7 +94,7 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
     return node
 
 # Draw this World object
-proc draw*(this: World, hovered: Option[Coord], targeted: Option[seq[Coord]], dx: float, dy: float): void =
+proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Option[seq[Coord]], dx: float, dy: float): void =
     for column in this.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(initCoord(tile.pos.x, tile.pos.y))
@@ -103,6 +104,9 @@ proc draw*(this: World, hovered: Option[Coord], targeted: Option[seq[Coord]], dx
             if hovered.isSome and hovered.get() == tile.pos:
                 color = DK_GREEN
             drawHexagon(coords.x + dx, coords.y + dy, color)
+            let units = this.getUnits(tile.pos)
+            if units.len > 0:
+                sm.drawSprite(units[0].sprite, coords.x, coords.y)
 
 # Return a path from the unit's current position to the destination,
 # making sure to respect which borders that unit can cross.

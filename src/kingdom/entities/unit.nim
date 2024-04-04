@@ -1,6 +1,7 @@
 import std/sugar
 import std/tables
 import std/options
+import kingdom/wrapper/types
 import kingdom/entities/types
 import kingdom/entities/ability
 import kingdom/entities/item
@@ -13,6 +14,7 @@ proc newUnit*(): Unit =
     result.id = 1
     result.name = "unnamed"
     result.desc = none(string)
+    result.sprite = NULL_SPRITE
     result.pos = initCoord(0, 0)
     result.handlers = initTable[string, seq[SignalHandler[Unit]]]()
     result.abilities = @[]

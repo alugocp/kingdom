@@ -2,9 +2,9 @@ import kingdom/mods/loader
 import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/wrapper/init
+import kingdom/entities/tile
 import kingdom/world
 import kingdom/game
-import kingdom/entities/tile
 
 # Main entry point function which is exported to the platform interface (C code)
 proc initKingdom(): void {.exportc: "init_kingdom", dynlib.} =
