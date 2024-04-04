@@ -31,17 +31,22 @@ proc newWorld*(w: Natural, h: Natural): World =
     new result
     result.w = w
     result.h = h
+
+# Fills out the Tiles in this World
+proc build*(this: World, generate: () -> Tile): void =
     var id = 0
-    for x in 0..(w - 1):
-        result.tiles.add(@[])
-        result.units.add(@[])
-        result.items.add(@[])
-        for y in 0..(h - 1):
-            result.tiles[x].add(newTile(id, initCoord(x, y)))
-            result.units[x].add(@[])
-            result.items[x].add(@[])
+    for x in 0..(this.w - 1):
+        this.tiles.add(@[])
+        this.units.add(@[])
+        this.items.add(@[])
+        for y in 0..(this.h - 1):
+            let t = generate()
+            t.id = id
+            t.pos = initCoord(x, y)
+            this.tiles[x].add(t)
+            this.units[x].add(@[])
+            this.items[x].add(@[])
             id += 1
-    return result
 
 # Returns the bounds of this World as a Coord
 proc getBounds*(this: World): Coord =
@@ -98,15 +103,20 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
     for column in this.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(initCoord(tile.pos.x, tile.pos.y))
-            var color = GREEN
-            if targeted.isSome and targeted.get().contains(tile.pos):
-                color = YELLOW
+
+            # Draw the Tile
+            # drawHexagon(coords.x + dx, coords.y + dy, GREEN)
+            sm.drawSprite(tile.sprite, coords.x + dx - HALF_W, coords.y + dy - SIDE)
             if hovered.isSome and hovered.get() == tile.pos:
-                color = DK_GREEN
-            drawHexagon(coords.x + dx, coords.y + dy, color)
+                drawHexagon(coords.x + dx, coords.y + dy, YELLOW)
+            elif targeted.isSome and targeted.get().contains(tile.pos):
+                drawHexagon(coords.x + dx, coords.y + dy, DARKER)
+            outlineHexagon(coords.x + dx, coords.y + dy)
+
+            # Draw any Units on the Tile
             let units = this.getUnits(tile.pos)
             if units.len > 0:
-                sm.drawSprite(units[0].sprite, coords.x, coords.y)
+                sm.drawSprite(units[0].sprite, coords.x + dx - 12, coords.y + dy - 12)
 
 # Return a path from the unit's current position to the destination,
 # making sure to respect which borders that unit can cross.

@@ -5,10 +5,10 @@ import kingdom/math/types
 
 # Constants for optimal calculation
 const r3 = sqrt(3.0)
-const SIDE* = 25
+const SIDE* = 55
 const WIDTH = SIDE * r3
 const DY = SIDE * 1.5
-const HALF_W = WIDTH / 2
+const HALF_W* = WIDTH / 2
 const r3n1 = 1 / r3
 const HALF_S = SIDE / 2
 

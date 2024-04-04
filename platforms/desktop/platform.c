@@ -13,7 +13,7 @@ void inflate_mod(char *modname) {
     int status;
     pid_t child = fork();
     if (child == 0) {
-        char *argv[] = { "unzip", filepath, "-d", "out/mods", NULL };
+        char *argv[] = { "unzip", "-o", filepath, "-d", "out/mods", NULL };
         status = execvp(argv[0], argv);
         if (status < 0) {
             sprintf(filepath, "Error while inflating mod '%s'", modname);

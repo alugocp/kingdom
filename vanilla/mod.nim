@@ -12,6 +12,7 @@ import kingdom/entities/types
 import kingdom/entities/stats
 import kingdom/entities/item
 import kingdom/entities/unit
+import kingdom/entities/tile
 import kingdom/entities/ability
 import kingdom/entities/signals
 import kingdom/generation/manager
@@ -21,11 +22,13 @@ import kingdom/controls/targeting
 const ABILITY_MOVE = "Move"
 const ITEM_RING_OF_STRENGTH = "Ring of Strength"
 const UNIT_PLASMOID_ADVENTURER = "Plasmoid Adventurer"
+const TILE_GRASS = "Grass"
 
 # Mod initialization procedure
 proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
     # Register spritesheets
     let unitSprites = game.sprites.registerSheet("vanilla", "units")
+    let tileSprites = game.sprites.registerSheet("vanilla", "tile")
 
     # Unit generators
     game.unitGeneration.addGenerator(UNIT_PLASMOID_ADVENTURER, proc (): Unit =
@@ -59,4 +62,11 @@ proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
             a.stats.incStat(STRENGTH, 2)
         )
         return item
+    )
+
+    # Tile generators
+    game.tileGeneration.addGenerator(TILE_GRASS, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.sprites.getSpriteHandle(tileSprites, 0, 0, 96, 110)
+        return tile
     )

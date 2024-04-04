@@ -29,6 +29,10 @@ proc drawHexagon*(x: float, y: float, color: uint32): void =
     let v = Vector2(x: x, y: y)
     let c = color.toRaylibColor()
     drawPoly(v, 6, hexagons.SIDE, 90, c)
+
+# Outlines a hexagon like the one used for Tiles
+proc outlineHexagon*(x: float, y: float): void =
+    let v = Vector2(x: x, y: y)
     drawPolyLines(v, 6, hexagons.SIDE, 90, Black)
 
 # Draw some text
