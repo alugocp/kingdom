@@ -1,4 +1,5 @@
 import std/options
+import std/sequtils
 import std/strformat
 import kingdom/game
 import kingdom/world
@@ -23,6 +24,7 @@ const ABILITY_MOVE = "Move"
 const ITEM_RING_OF_STRENGTH = "Ring of Strength"
 const UNIT_PLASMOID_ADVENTURER = "Plasmoid Adventurer"
 const TILE_GRASS = "Grass"
+const TILE_WATER = "Water"
 
 # Mod initialization procedure
 proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
@@ -47,7 +49,8 @@ proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
         ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[AbilityClickedSignalArgs](args)
             let targets = a.host.pos.getAdjacentHexagonCoords(game.world.getBounds())
-            game.targeter.target(targets, proc (c: Coord): void = game.world.moveUnit(a.host, c))
+            let filtered = targets.filterIt(game.world.canUnitTravelAcrossTiles(a.host, a.host.pos, it))
+            game.targeter.target(filtered, proc (c: Coord): void = game.world.moveUnit(a.host, c))
         )
         return ability
     )
@@ -68,5 +71,11 @@ proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
     game.tileGeneration.addGenerator(TILE_GRASS, proc(): Tile =
         let tile = newTile()
         tile.sprite = game.sprites.getSpriteHandle(tileSprites, 0, 0, 96, 110)
+        return tile
+    )
+    game.tileGeneration.addGenerator(TILE_WATER, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
+        tile.setAllBorders("water")
         return tile
     )

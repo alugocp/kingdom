@@ -16,6 +16,11 @@ proc newTile*(): Tile =
         result.borders[a] = OPEN_BORDER
     return result
 
+# Sets all border values on this Tile
+proc setAllBorders*(this: Tile, border: string): void =
+    for a in 0..5:
+        this.borders[a] = border
+
 # Sets a border value on this Tile
 proc setBorder*(this: Tile, side: HexSides, border: string): void =
     this.borders[hexSideToInt(side)] = border

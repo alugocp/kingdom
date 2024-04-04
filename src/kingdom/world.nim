@@ -33,14 +33,14 @@ proc newWorld*(w: Natural, h: Natural): World =
     result.h = h
 
 # Fills out the Tiles in this World
-proc build*(this: World, generate: () -> Tile): void =
+proc build*(this: World, generate: (x: int, y: int) -> Tile): void =
     var id = 0
     for x in 0..(this.w - 1):
         this.tiles.add(@[])
         this.units.add(@[])
         this.items.add(@[])
         for y in 0..(this.h - 1):
-            let t = generate()
+            let t = generate(x, y)
             t.id = id
             t.pos = initCoord(x, y)
             this.tiles[x].add(t)
@@ -118,26 +118,26 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
             if units.len > 0:
                 sm.drawSprite(units[0].sprite, coords.x + dx - 12, coords.y + dy - 12)
 
+# Checks if the Unit can cross the border from one Tile to another
+proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool =
+    let side = getSharedSide(current, adj)
+    let opp = getOppositeSide(side)
+    let tile1 = this.getTile(current)
+    let tile2 = this.getTile(adj)
+    var test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getBorder(side))
+    var test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getBorder(opp))
+    if not test1.canCross:
+        unit.handleSignal(@[], test1)
+    if not test2.canCross:
+        unit.handleSignal(@[], test2)
+    return test1.canCross and test2.canCross
+
 # Return a path from the unit's current position to the destination,
 # making sure to respect which borders that unit can cross.
 # This function implements A* algorithm, based on pseudocode from
 # Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)
 proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
     const infinity = high(int)
-
-    # Checks if the Unit can cross the border from one Tile to another
-    proc canTravelFromCurrent(current: Coord, adj: Coord): bool =
-        let side = getSharedSide(current, adj)
-        let opp = getOppositeSide(side)
-        let tile1 = this.getTile(current)
-        let tile2 = this.getTile(adj)
-        var test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getBorder(side))
-        var test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getBorder(opp))
-        if not test1.canCross:
-            unit.handleSignal(@[], test1)
-        if not test2.canCross:
-            unit.handleSignal(@[], test2)
-        return test1.canCross and test2.canCross
 
     # Heuristic function for the A* algorithm
     proc dist(c: Coord): int = int(ceil((abs(dst.x - c.x) + abs(dst.y - c.y)) / 2))
@@ -172,7 +172,7 @@ proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
         for adj in neighbors:
 
             # Skip any neighbors with borders the unit cannot cross
-            if not canTravelFromCurrent(current, adj):
+            if not this.canUnitTravelAcrossTiles(unit, current, adj):
                 continue
 
             let g = if gScore.hasKey(current): gScore[current] + 1 else : infinity
