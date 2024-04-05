@@ -8,9 +8,10 @@ const OPEN_BORDER* = "none"
 const STRENGTH* = "Strength"
 
 # Colors
-const BLACK*    = uint32(0x000000FF)
-const WHITE*    = uint32(0xFFFFFFFF)
-const GREEN*    = uint32(0x00FF00FF)
-const BLUE*     = uint32(0x0000FFFF)
-const DARKER*   = uint32(0x00000077)
-const YELLOW*   = uint32(0x00FFFFAA)
+const BLACK*      = uint32(0x000000FF)
+const WHITE*      = uint32(0xFFFFFFFF)
+const GREEN*      = uint32(0x00FF00FF)
+const BLUE*       = uint32(0x0000FFFF)
+const LIGHT_BLUE* = uint32(0x000077FF)
+const DARKER*     = uint32(0x00000077)
+const YELLOW*     = uint32(0x00FFFFAA)

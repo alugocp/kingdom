@@ -19,7 +19,7 @@ type MenuNode* = ref object of RootObj
     element*: MenuElement
 
 method getHeight*(this: MenuNode): float {.base.} = 0
-method draw*(this: MenuNode, x: float, y: float): void {.base.} = discard
+method draw*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
 method checkClick*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
 method pack*(this: MenuNode, width: float): void {.base.} = discard
 
@@ -39,9 +39,15 @@ proc newMenu*(x: float, y: float, width: float, root: MenuNode): Menu =
     result.y = y
 
 # Draw every MenuNode in this Menu
-proc draw*(this: Menu): void =
+proc draw*(this: Menu, m: MouseState): void =
     drawRect(this.x, this.y, this.width, this.root.getHeight(), WHITE)
-    this.root.draw(this.x, this.y)
+    let r = Rect(
+        x: this.x,
+        y: this.y,
+        w: this.width,
+        h: this.root.getHeight()
+    )
+    this.root.draw(m, r)
 
 # Propogates a MouseState through this Menu to see if any node was clicked on
 proc checkClick*(this: Menu, mouse: MouseState): bool =
@@ -67,7 +73,7 @@ proc newTextNode*(text: string): TextNode =
     result.text = text
 
 method getHeight*(this: TextNode): float = getTextSize(this.text).y
-method draw*(this: TextNode, x: float, y: float): void = drawText(this.text, x, y)
+method draw*(this: TextNode, m: MouseState, r: Rect): void = drawText(this.text, r.x, r.y)
 method checkClick*(this: TextNode, m: MouseState, r: Rect): void = discard
 method pack*(this: TextNode, width: float): void =
     this.text = this.text.wrapText(width)
@@ -82,7 +88,7 @@ proc newHeaderNode*(text: string): HeaderNode =
     result.text = text
 
 method getHeight*(this: HeaderNode): float = getTextSize(this.text, HEADER_FONT).y
-method draw*(this: HeaderNode, x: float, y: float): void = drawText(this.text, x, y, HEADER_FONT)
+method draw*(this: HeaderNode, m: MouseState, r: Rect): void = drawText(this.text, r.x, r.y, HEADER_FONT)
 method checkClick*(this: HeaderNode, m: MouseState, r: Rect): void = discard
 method pack*(this: HeaderNode, width: float): void =
     this.text = this.text.wrapText(width, HEADER_FONT)
@@ -99,7 +105,9 @@ proc newButtonNode*(text: string, click: () -> void): ButtonNode =
     result.text = text
 
 method getHeight*(this: ButtonNode): float = getTextSize(this.text).y
-method draw*(this: ButtonNode, x: float, y: float): void = drawText(this.text, x, y, LINK_FONT)
+method draw*(this: ButtonNode, m: MouseState, r: Rect): void =
+    let font = if m.pos.within(r): HOVER_FONT else: LINK_FONT
+    drawText(this.text, r.x, r.y, font)
 method checkClick*(this: ButtonNode, m: MouseState, r: Rect): void =
     if m.pos.within(r):
         this.click()
@@ -114,7 +122,7 @@ proc newSpaceNode*(): SpaceNode =
     result.element = MenuElement.SPACE
 
 method getHeight*(this: SpaceNode): float = 10
-method draw*(this: SpaceNode, x: float, y: float): void = discard
+method draw*(this: SpaceNode, m: MouseState, r: Rect): void = discard
 method checkClick*(this: SpaceNode, m: MouseState, r: Rect): void = discard
 method pack*(this: SpaceNode, width: float): void = discard
 
@@ -130,12 +138,13 @@ proc add*(this: ListNode, node: MenuNode): void =
     this.nodes.add(node)
 
 method getHeight*(this: ListNode): float = this.nodes.foldl(a + b.getHeight(), 0.0)
-method draw*(this: ListNode, x: float, y: float): void =
-    var dy = 0.0
+method draw*(this: ListNode, m: MouseState, r: Rect): void =
+    var r1 = r
     for n in this.nodes:
-        n.draw(x, y + dy)
+        r1.h = n.getHeight()
+        n.draw(m, r1)
         if n.element != MenuElement.LIST:
-            dy += n.getHeight()
+            r1.y += r1.h
 method checkClick*(this: ListNode, m: MouseState, r: Rect): void =
     if m.pos.within(r):
         var r1 = r

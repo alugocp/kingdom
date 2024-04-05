@@ -28,9 +28,15 @@ const REGULAR_FONT* = FontSettings(
     size: 20
 )
 
-# Font for "links"
+# Font for links
 const LINK_FONT* = FontSettings(
     color: BLUE,
+    size: 20
+)
+
+# Font for links when they're hovered over
+const HOVER_FONT* = FontSettings(
+    color: LIGHT_BLUE,
     size: 20
 )
 

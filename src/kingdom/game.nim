@@ -108,7 +108,7 @@ proc openTargetMenu*(this: Game): void =
 proc draw*(this: Game): void =
     this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view.dx, this.view.dy)
     if this.menu.isSome:
-        this.menu.get().draw()
+        this.menu.get().draw(this.mouse)
 
 # Check for updated mouse state and see what we have to process
 proc consumeMouseUpdates*(this: Game): void =
