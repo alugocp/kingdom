@@ -14,6 +14,7 @@ import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/stringify
 import kingdom/wrapper/draw
+import kingdom/wrapper/types
 import kingdom/wrapper/sprites
 import kingdom/builtin/values
 import kingdom/menu
@@ -101,13 +102,12 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
     return node
 
 # Draw this World object
-proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Option[seq[Coord]], dx: float, dy: float): void =
+proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Option[seq[Coord]], dx: float, dy: float, edgeTileSprite: SpriteHandle): void =
     for column in this.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(initCoord(tile.pos.x, tile.pos.y))
 
             # Draw the Tile
-            # drawHexagon(coords.x + dx, coords.y + dy, GREEN)
             sm.drawSprite(tile.sprite, coords.x + dx - HALF_W, coords.y + dy - SIDE)
             if hovered.isSome and hovered.get() == tile.pos:
                 drawHexagon(coords.x + dx, coords.y + dy, YELLOW)
@@ -119,6 +119,23 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
             let units = this.getUnits(tile.pos)
             if units.len > 0:
                 sm.drawSprite(units[0].sprite, coords.x + dx - 12, coords.y + dy - 12)
+
+    # Draw the edge tiles
+    for x in 0..this.w:
+        let coord1 = getHexagonCenterPoint(x, -1)
+        let coord2 = getHexagonCenterPoint(x, this.h)
+        sm.drawSprite(edgeTileSprite, coord1.x + dx - HALF_W, coord1.y + dy - SIDE)
+        sm.drawSprite(edgeTileSprite, coord2.x + dx - HALF_W, coord2.y + dy - SIDE)
+        outlineHexagon(coord1.x + dx, coord1.y + dy)
+        outlineHexagon(coord2.x + dx, coord2.y + dy)
+    for y in 0..(this.h - 1):
+        let coord1 = getHexagonCenterPoint(-1, y)
+        let coord2 = getHexagonCenterPoint(this.w, y)
+        sm.drawSprite(edgeTileSprite, coord1.x + dx - HALF_W, coord1.y + dy - SIDE)
+        sm.drawSprite(edgeTileSprite, coord2.x + dx - HALF_W, coord2.y + dy - SIDE)
+        outlineHexagon(coord1.x + dx, coord1.y + dy)
+        outlineHexagon(coord2.x + dx, coord2.y + dy)
+
 
 # Checks if the Unit can cross the border from one Tile to another
 proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool =

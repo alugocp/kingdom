@@ -22,11 +22,13 @@ type HexSides* = enum
     BOT_LEFT
 
 # Calculate the center point of a hexagon at the given coordinate
-proc getHexagonCenterPoint*(c: Coord): Position =
+proc getHexagonCenterPoint*(x: int, y: int): Position =
     return Position(
-        x: (float(c.x) * WIDTH) + (float(c.y mod 2) * HALF_W) + HALF_W,
-        y: (float(c.y) * DY) + SIDE
+        x: (float(x) * WIDTH) + (float(y mod 2) * HALF_W) + HALF_W,
+        y: (float(y) * DY) + SIDE
     )
+proc getHexagonCenterPoint*(c: Coord): Position =
+    getHexagonCenterPoint(c.x, c.y)
 
 # Returns a sequence of coords for hexagons adjacent to the one at the given coord
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] =

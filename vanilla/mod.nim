@@ -28,9 +28,10 @@ const TILE_WATER = "Water"
 
 # Mod initialization procedure
 proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
-    # Register spritesheets
+    # Register spritesheets and set the edgeTileSprite
     let unitSprites = game.sprites.registerSheet("vanilla", "units")
     let tileSprites = game.sprites.registerSheet("vanilla", "tile")
+    game.edgeTileSprite = game.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
 
     # Unit generators
     game.unitGeneration.addGenerator(UNIT_PLASMOID_ADVENTURER, proc (): Unit =

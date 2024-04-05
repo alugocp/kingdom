@@ -1,8 +1,6 @@
 import raylib
 import kingdom/controls/mouse
-import kingdom/builtin/values
 import kingdom/wrapper/sprites
-import kingdom/wrapper/draw
 import kingdom/math/types
 import kingdom/game
 
@@ -32,6 +30,5 @@ proc gameLoop*(game: Game): void =
         game.mouse.handleLogic()
         game.consumeMouseUpdates()
         beginDrawing()
-        setBackground(values.BLUE)
         game.draw()
         endDrawing()

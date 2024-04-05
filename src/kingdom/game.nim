@@ -9,6 +9,7 @@ import kingdom/generation/manager
 import kingdom/generation/types
 import kingdom/entities/types
 import kingdom/wrapper/sprites
+import kingdom/wrapper/types
 import kingdom/controls/targeting
 import kingdom/controls/mouse
 import kingdom/controls/view
@@ -27,6 +28,7 @@ type Game* = ref object
     tileGeneration*: TileGenerationManager
     itemGeneration*: ItemGenerationManager
     abilityGeneration*: AbilityGenerationManager
+    edgeTileSprite*: SpriteHandle
     hoveredHex: Option[Coord]
     mouse*: MouseState
     world*: World
@@ -40,6 +42,7 @@ proc newGame*(world: World): Game =
         nextItemId: 0,
         targeter: newTargeter(),
         sprites: newSpriteManager(),
+        edgeTileSprite: NULL_SPRITE,
         unitGeneration: GenerationManager[Unit](
             generators: initTable[string, FullGenerator[Unit]]()
         ),
@@ -106,7 +109,7 @@ proc openTargetMenu*(this: Game): void =
 
 # Draws all elements of this Game object
 proc draw*(this: Game): void =
-    this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view.dx, this.view.dy)
+    this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view.dx, this.view.dy, this.edgeTileSprite)
     if this.menu.isSome:
         this.menu.get().draw(this.mouse)
 
@@ -115,7 +118,9 @@ proc consumeMouseUpdates*(this: Game): void =
     if this.mouse.down and this.mouse.scrolling:
         this.view.scroll(
             this.mouse.pos.x - this.mouse.posprev.x,
-            this.mouse.pos.y - this.mouse.posprev.y
+            this.mouse.pos.y - this.mouse.posprev.y,
+            this.world.w,
+            this.world.h
         )
 
     # check if the user is hovering over a hexagonal Tile
