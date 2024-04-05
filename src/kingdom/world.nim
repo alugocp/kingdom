@@ -84,6 +84,7 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
     node.add(newTextNode(fmt"Tile {c}"))
     let units = this.getUnits(c)
     if units.len > 0:
+        node.add(newSpaceNode())
         node.add(newTextNode(fmt"{units.len} unit(s):"))
     for u in units:
         let u1 = u
@@ -91,6 +92,7 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
         node.add(newButtonNode(u.name, () => open(root)))
     let items = this.getItems(c)
     if items.len > 0:
+        node.add(newSpaceNode())
         node.add(newTextNode(fmt"{items.len} item(s):"))
     for i in items:
         let i1 = i

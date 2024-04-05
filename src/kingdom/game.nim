@@ -85,7 +85,9 @@ proc openMenu*(this: Game, menu: Menu): void =
 
 # Open a Menu in this Game (with default options)
 proc openMenu*(this: Game, root: MenuNode): void =
-    this.menu = some(newMenu(0, 0, 200, root))
+    let m = newMenu(0, 0, 200, root)
+    this.menu = some(m)
+    m.pack()
 
 # Opens a menu used specifically for targeting
 proc openTargetMenu*(this: Game): void =

@@ -18,9 +18,9 @@ proc newItem*(): Item =
 # Return a MenuNode describing this Item when equipped to a Unit
 proc getUnitMenuNode*(this: Item, unequip: () -> void): MenuNode =
     let node = newListNode()
-    node.add(newHeaderNode(this.name))
+    node.add(newTextNode(this.name))
     node.add(newTextNode(this.desc))
-    node.add(newbuttonNode("Unequip", unequip))
+    node.add(newButtonNode("Unequip", unequip))
     return node
 
 # Return a MenuNode describing this Item when it has no host Unit
@@ -28,5 +28,5 @@ proc getFreeMenuNode*(this: Item, equip: () -> void): MenuNode =
     let node = newListNode()
     node.add(newHeaderNode(this.name))
     node.add(newTextNode(this.desc))
-    node.add(newbuttonNode("Equip", equip))
+    node.add(newButtonNode("Equip", equip))
     return node

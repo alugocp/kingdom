@@ -1,9 +1,12 @@
 import raylib
 import std/bitops
+import std/strutils
+import std/strformat
 import kingdom/math/types
 import kingdom/math/hexagons
+import kingdom/wrapper/types
 
-const FONT_SIZE = 20
+# Contant value representing text margins
 const SPACING = 1
 
 # Converts a hexadecimal value to a Raylib color
@@ -33,21 +36,49 @@ proc drawHexagon*(x: float, y: float, color: uint32): void =
 # Outlines a hexagon like the one used for Tiles
 proc outlineHexagon*(x: float, y: float): void =
     let v = Vector2(x: x, y: y)
-    drawPolyLines(v, 6, hexagons.SIDE, 90, Black)
-
-# Draw some text
-proc drawText*(text: string, x: float, y: float, color: uint32): void =
-    let c = color.toRaylibColor()
-    raylib.drawText(cstring(text), int32(x), int32(y), FONT_SIZE, c)
+    drawPolyLines(v, 6, hexagons.SIDE, 90, raylib.Black)
 
 # Calculate the size of this text
-proc getTextSize*(text: string): Position =
+proc getTextSize*(text: string, settings: FontSettings = REGULAR_FONT): Position =
     let font = getFontDefault()
-    let v = measureText(font, cstring(text), FONT_SIZE, SPACING)
-    return initPosition(v.x, v.y)
+    var w = 0'f32
+    var h = 0'f32
+    for line in text.splitLines():
+        let v = measureText(font, cstring(line), float32(settings.size), SPACING)
+        w = if v.x > w: v.x else: w
+        h += v.y
+    return initPosition(w, h)
+
+# Draw some text
+proc drawText*(text: string, x: float, y: float, settings: FontSettings = REGULAR_FONT): void =
+    let c = settings.color.toRaylibColor()
+    let lines = text.splitLines()
+    if lines.len == 0:
+        return
+    var y1 = y
+    let dy = lines[0].getTextSize(settings).y
+    for line in lines:
+        raylib.drawText(cstring(line), int32(x), int32(y1), int32(settings.size), c)
+        y1 += dy
 
 # Draw a rectangle
 proc drawRect*(x: float, y: float, w: float, h: float, color: uint32): void =
     let r = Rectangle(x: x, y: y, width: w, height: h)
     let c = color.toRaylibColor()
     drawRectangle(r, c)
+
+# Inserts newline characters where necessary to wrap text within the given bounds
+proc wrapText*(text: string, width: float, settings: FontSettings = REGULAR_FONT): string =
+    let words = text.split()
+    let mid = "\n"
+    var rebuilt = ""
+    var line = ""
+    for w in words:
+        let lookahead = if line.len > 0: fmt"{line} {w}" else: w
+        if getTextSize(lookahead, settings).x < width:
+            line = lookahead
+        else:
+            rebuilt = if rebuilt.len > 0: fmt"{rebuilt}{mid}{line}" else: line
+            line = w
+    rebuilt = if rebuilt.len > 0: fmt"{rebuilt}{mid}{line}" else: line
+    return rebuilt

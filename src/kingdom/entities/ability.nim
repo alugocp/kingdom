@@ -17,11 +17,12 @@ proc newAbility*(): Ability =
 # Return a MenuNode describing this Ability
 proc getMenuNode*(this: Ability, host: Unit): MenuNode =
     let node = newListNode()
-    node.add(newHeaderNode(this.name))
-    if this.desc.isSome:
-        node.add(newTextNode(this.desc.get()))
     if this.hasSignalHandler(ABILITY_CLICKED_CHANNEL):
-        node.add(newButtonNode("Activate", proc (): void =
+        node.add(newButtonNode(this.name, proc (): void =
             this.handleSignal(@[], newAbilityClickedSignalArgs(host))
         ))
+    else:
+        node.add(newTextNode(this.name))
+    if this.desc.isSome:
+        node.add(newTextNode(this.desc.get()))
     return node

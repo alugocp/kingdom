@@ -2,6 +2,7 @@ import std/sugar
 import std/sequtils
 import kingdom/math/types
 import kingdom/wrapper/draw
+import kingdom/wrapper/types
 import kingdom/controls/mouse
 import kingdom/builtin/values
 
@@ -10,6 +11,7 @@ type MenuElement* = enum
     TEXT
     HEADER
     BUTTON
+    SPACE
     LIST
 
 # Parent class for all menu nodes
@@ -19,6 +21,7 @@ type MenuNode* = ref object of RootObj
 method getHeight*(this: MenuNode): float {.base.} = 0
 method draw*(this: MenuNode, x: float, y: float): void {.base.} = discard
 method checkClick*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
+method pack*(this: MenuNode, width: float): void {.base.} = discard
 
 # Top-level menu type
 type Menu* = ref object
@@ -51,6 +54,9 @@ proc checkClick*(this: Menu, mouse: MouseState): bool =
     this.root.checkClick(mouse, r)
     return mouse.pos.within(r)
 
+# Recursively text wraps each child node to this Menu's width
+proc pack*(this: Menu): void = this.root.pack(this.width)
+
 # Text paragraph
 type TextNode* = ref object of MenuNode
     text*: string
@@ -61,8 +67,10 @@ proc newTextNode*(text: string): TextNode =
     result.text = text
 
 method getHeight*(this: TextNode): float = getTextSize(this.text).y
-method draw*(this: TextNode, x: float, y: float): void = drawText(this.text, x, y, BLACK)
+method draw*(this: TextNode, x: float, y: float): void = drawText(this.text, x, y)
 method checkClick*(this: TextNode, m: MouseState, r: Rect): void = discard
+method pack*(this: TextNode, width: float): void =
+    this.text = this.text.wrapText(width)
 
 # Text header
 type HeaderNode* = ref object of MenuNode
@@ -73,9 +81,11 @@ proc newHeaderNode*(text: string): HeaderNode =
     result.element = MenuElement.HEADER
     result.text = text
 
-method getHeight*(this: HeaderNode): float = getTextSize(this.text).y
-method draw*(this: HeaderNode, x: float, y: float): void = drawText(this.text, x, y, BLACK)
+method getHeight*(this: HeaderNode): float = getTextSize(this.text, HEADER_FONT).y
+method draw*(this: HeaderNode, x: float, y: float): void = drawText(this.text, x, y, HEADER_FONT)
 method checkClick*(this: HeaderNode, m: MouseState, r: Rect): void = discard
+method pack*(this: HeaderNode, width: float): void =
+    this.text = this.text.wrapText(width, HEADER_FONT)
 
 # Clickable button
 type ButtonNode* = ref object of MenuNode
@@ -89,10 +99,24 @@ proc newButtonNode*(text: string, click: () -> void): ButtonNode =
     result.text = text
 
 method getHeight*(this: ButtonNode): float = getTextSize(this.text).y
-method draw*(this: ButtonNode, x: float, y: float): void = drawText(this.text, x, y, BLACK)
+method draw*(this: ButtonNode, x: float, y: float): void = drawText(this.text, x, y, LINK_FONT)
 method checkClick*(this: ButtonNode, m: MouseState, r: Rect): void =
     if m.pos.within(r):
         this.click()
+method pack*(this: ButtonNode, width: float): void =
+    this.text = this.text.wrapText(width, LINK_FONT)
+
+# Empty space
+type SpaceNode* = ref object of MenuNode
+
+proc newSpaceNode*(): SpaceNode =
+    new result
+    result.element = MenuElement.SPACE
+
+method getHeight*(this: SpaceNode): float = 10
+method draw*(this: SpaceNode, x: float, y: float): void = discard
+method checkClick*(this: SpaceNode, m: MouseState, r: Rect): void = discard
+method pack*(this: SpaceNode, width: float): void = discard
 
 # List of MenuNodes
 type ListNode* = ref object of MenuNode
@@ -121,3 +145,5 @@ method checkClick*(this: ListNode, m: MouseState, r: Rect): void =
             n.checkClick(m, r1)
             if n.element != MenuElement.LIST:
                 r1.y += r1.h
+method pack*(this: ListNode, width: float): void =
+    for n in this.nodes: n.pack(width)

@@ -29,15 +29,18 @@ proc getMenuNode*(this: Unit, unequip: (Item) -> void): MenuNode =
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
     if this.abilities.len > 0:
-        node.add(newHeaderNode("Abilities:"))
+        node.add(newSpaceNode())
+        node.add(newTextNode("Abilities:"))
         for ability in this.abilities:
             node.add(ability.getMenuNode(this))
     if this.statuses.len > 0:
-        node.add(newHeaderNode("Statuses:"))
+        node.add(newSpaceNode())
+        node.add(newTextNode("Statuses:"))
         for status in this.statuses:
             node.add(status.getMenuNode(this))
     if this.items.len > 0:
-        node.add(newHeaderNode("Items:"))
+        node.add(newSpaceNode())
+        node.add(newTextNode("Items:"))
         for item in this.items:
             let item1 = item
             node.add(item.getUnitMenuNode(() => unequip(item1)))
