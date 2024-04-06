@@ -1,5 +1,7 @@
 import raylib
+import std/sets
 import kingdom/controls/mouse
+import kingdom/controls/keyboard
 import kingdom/wrapper/sprites
 import kingdom/math/types
 import kingdom/game
@@ -17,6 +19,19 @@ proc handleLogic(this: MouseState): void =
     else:
         this.mouseMove(initPosition(x, y))
 
+# Record keyboard state for later consumption
+proc handleLogic(this: KeyboardState): void =
+    var pressed = HashSet[int]()
+    var keycode = int(getKeyPressed())
+    while keycode > 0:
+        pressed.incl(keycode)
+        keycode = int(getKeyPressed())
+    for k in this.down:
+        {.warning[HoleEnumConv]: off.}
+        if isKeyDown(KeyboardKey(k)):
+            pressed.incl(k)
+    this.keysPressed(pressed)
+
 # Handles game loop logic
 proc gameLoop*(game: Game): void =
     # Initialize the Raylib game window
@@ -28,6 +43,8 @@ proc gameLoop*(game: Game): void =
     # Raylib game loop
     while not windowShouldClose():
         game.mouse.handleLogic()
+        game.keyboard.handleLogic()
+        game.consumeKeyboardUpdates()
         game.consumeMouseUpdates()
         beginDrawing()
         game.draw()

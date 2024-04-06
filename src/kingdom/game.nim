@@ -1,3 +1,4 @@
+import std/sets
 import std/sugar
 import std/tables
 import std/options
@@ -11,6 +12,7 @@ import kingdom/entities/types
 import kingdom/wrapper/sprites
 import kingdom/wrapper/types
 import kingdom/controls/targeting
+import kingdom/controls/keyboard
 import kingdom/controls/mouse
 import kingdom/controls/view
 import kingdom/world
@@ -30,6 +32,7 @@ type Game* = ref object
     abilityGeneration*: AbilityGenerationManager
     edgeTileSprite*: SpriteHandle
     hoveredHex: Option[Coord]
+    keyboard*: KeyboardState
     mouse*: MouseState
     world*: World
     view*: View
@@ -57,9 +60,10 @@ proc newGame*(world: World): Game =
         abilityGeneration: GenerationManager[Ability](
             generators: initTable[string, FullGenerator[Ability]]()
         ),
+        keyboard: newKeyboardState(),
+        mouse: newMouseState(),
         hoveredHex: none(Coord),
         menu: none(Menu),
-        mouse: newMouseState(),
         view: newView(),
         world: world
     )
@@ -116,6 +120,12 @@ proc draw*(this: Game): void =
     this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view, this.edgeTileSprite)
     if this.menu.isSome:
         this.menu.get().draw(this.mouse)
+
+# Check for updated keyboard state and see what we have to process
+proc consumeKeyboardUpdates*(this: Game): void =
+    let thing = this.keyboard.getKeysReleased().toSeq()
+    if thing.len > 0:
+        echo thing
 
 # Check for updated mouse state and see what we have to process
 proc consumeMouseUpdates*(this: Game): void =
