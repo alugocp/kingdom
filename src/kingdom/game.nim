@@ -34,9 +34,11 @@ type Game* = ref object
     world*: World
     view*: View
 
+proc closeMenu*(this: Game): void
+
 # Constructor for a Game type
 proc newGame*(world: World): Game =
-    return Game(
+    let g = Game(
         nextAbilityId: 0,
         nextUnitId: 0,
         nextItemId: 0,
@@ -61,6 +63,8 @@ proc newGame*(world: World): Game =
         view: newView(),
         world: world
     )
+    g.targeter.onTarget = () => g.closeMenu()
+    return g
 
 # Initializes a new Unit instance and puts it in the World
 proc addNewUnit*(this: Game, key: string, pos: Coord): Unit =

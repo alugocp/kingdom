@@ -9,6 +9,7 @@ type Targeter* = ref object
     units*: Option[seq[Unit]]
     coordHandler*: Option[(Coord) -> void]
     unitHandler*: Option[(Unit) -> void]
+    onTarget*: () -> void
 
 # Clear the data inside this Targeter
 proc cancel*(this: Targeter): void =
@@ -20,6 +21,7 @@ proc cancel*(this: Targeter): void =
 # Instantiate an inactive Targeter
 proc newTargeter*(): Targeter =
     new result
+    result.onTarget = proc () = discard
     result.cancel()
     return result
 
@@ -33,8 +35,10 @@ proc isUnits*(this: Targeter): bool = this.units.isSome
 proc target*(this: Targeter, coords: seq[Coord], coordHandler: (c: Coord) -> void) =
     this.coordHandler = some(coordHandler)
     this.coords = some(coords)
+    this.onTarget()
 
 # Points this Targeter towards some Units
 proc target*(this: Targeter, units: seq[Unit], unitHandler: (c: Unit) -> void) =
     this.unitHandler = some(unitHandler)
     this.units = some(units)
+    this.onTarget()
