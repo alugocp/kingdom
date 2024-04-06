@@ -14,24 +14,6 @@ proc newView*(): View =
     result.dx = 0.0
     result.dy = 0.0
 
-# Scroll the View
-proc scroll*(this: View, dx: float, dy: float, w: Natural, h: Natural) =
-    this.dx += dx
-    this.dy += dy
-    let window = getWindowBounds()
-    if this.dx > 0:
-        this.dx = 0
-    else:
-        let right = initCoord(w - 1, 1).getHexagonCenterPoint().x + HALF_W
-        if right + this.dx < window.x:
-            this.dx = window.x - right
-    if this.dy > 0:
-        this.dy = 0
-    else:
-        let bot = initCoord(0, h - 1).getHexagonCenterPoint().y + SIDE
-        if bot + this.dy < window.y:
-            this.dy = window.y - bot
-
 # Converts a game position to a screen position
 proc gameToScreen*(this: View, pos: Position): Position =
     initPosition(
@@ -45,6 +27,22 @@ proc screenToGame*(this: View, pos: Position): Position =
         (pos.x - this.dx) / this.scale,
         (pos.y - this.dy) / this.scale
     )
+
+# Scrolls the View
+proc scroll*(this: View, dx: float, dy: float, w: Natural, h: Natural) =
+    this.dx += dx
+    this.dy += dy
+    let window = getWindowBounds()
+    if this.dx > 0: this.dx = 0
+    if this.dy > 0: this.dy = 0
+    let bounds = this.gameToScreen(initPosition(
+        initCoord(w - 1, 1).getHexagonCenterPoint().x + HALF_W,
+        initCoord(0, h - 1).getHexagonCenterPoint().y + SIDE
+    ))
+    if bounds.x < window.x:
+        this.dx += window.x - bounds.x
+    if bounds.y < window.y:
+        this.dy += window.y - bounds.y
 
 # Returns true if the given game Position is on the screen
 proc isOnScreen*(this: View, g: Position): bool =

@@ -5,6 +5,7 @@ import std/strformat
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/wrapper/types
+import kingdom/controls/view
 
 # Contant value representing text margins
 const SPACING = 1
@@ -27,20 +28,28 @@ proc setBackground*(color: uint32): void =
     let c = color.toRaylibColor()
     clearBackground(c)
 
+#
+# GAME WORLD DRAWING FUNCTIONS
+#
+
 # Draws a hexagon like the one used for Tiles
-proc drawHexagon*(x: float, y: float, color: uint32): void =
+proc drawHexagon*(x: float, y: float, color: uint32, view: View): void =
     let v = Vector2(x: x, y: y)
     let c = color.toRaylibColor()
-    drawPoly(v, 6, hexagons.SIDE, 90, c)
-proc drawHexagon*(pos: Position, color: uint32): void =
-    drawHexagon(pos.x, pos.y, color)
+    drawPoly(v, 6, hexagons.SIDE * view.scale, 90, c)
+proc drawHexagon*(pos: Position, color: uint32, view: View): void =
+    drawHexagon(pos.x, pos.y, color, view)
 
 # Outlines a hexagon like the one used for Tiles
-proc outlineHexagon*(x: float, y: float): void =
+proc outlineHexagon*(x: float, y: float, view: View): void =
     let v = Vector2(x: x, y: y)
-    drawPolyLines(v, 6, hexagons.SIDE, 90, raylib.Black)
-proc outlineHexagon*(pos: Position): void =
-    outlineHexagon(pos.x, pos.y)
+    drawPolyLines(v, 6, hexagons.SIDE * view.scale, 90, raylib.Black)
+proc outlineHexagon*(pos: Position, view: View): void =
+    outlineHexagon(pos.x, pos.y, view)
+
+#
+# MENU DRAWING FUNCTIONS
+#
 
 # Calculate the size of this text
 proc getTextSize*(text: string, settings: FontSettings = REGULAR_FONT): Position =

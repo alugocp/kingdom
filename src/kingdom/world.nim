@@ -111,37 +111,37 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
                 continue
 
             # Draw the Tile
-            sm.drawSprite(tile.sprite, view.gameToScreen(initPosition(coords.x - HALF_W, coords.y - SIDE)))
+            sm.drawSprite(tile.sprite, view, view.gameToScreen(initPosition(coords.x - HALF_W, coords.y - SIDE)))
             if hovered.isSome and hovered.get() == tile.pos:
-                drawHexagon(view.gameToScreen(coords), YELLOW)
+                drawHexagon(view.gameToScreen(coords), YELLOW, view)
             elif targeted.isSome and targeted.get().contains(tile.pos):
-                drawHexagon(view.gameToScreen(coords), DARKER)
-            outlineHexagon(view.gameToScreen(coords))
+                drawHexagon(view.gameToScreen(coords), DARKER, view)
+            outlineHexagon(view.gameToScreen(coords), view)
 
             # Draw any Units on the Tile
             let units = this.getUnits(tile.pos)
             if units.len > 0:
-                sm.drawSprite(units[0].sprite, view.gameToScreen(initPosition(coords.x - 12, coords.y - 12)))
+                sm.drawSprite(units[0].sprite, view, view.gameToScreen(initPosition(coords.x - 12, coords.y - 12)))
 
     # Draw the edge tiles
     for x in 0..this.w:
         let coord1 = getHexagonCenterPoint(x, -1)
         if view.isHexOnScreen(coord1):
-            sm.drawSprite(edgeTileSprite, view.gameToScreen(initPosition(coord1.x - HALF_W, coord1.y - SIDE)))
-            outlineHexagon(view.gameToScreen(coord1))
+            sm.drawSprite(edgeTileSprite, view, view.gameToScreen(initPosition(coord1.x - HALF_W, coord1.y - SIDE)))
+            outlineHexagon(view.gameToScreen(coord1), view)
         let coord2 = getHexagonCenterPoint(x, this.h)
         if view.isHexOnScreen(coord2):
-            sm.drawSprite(edgeTileSprite, view.gameToScreen(initPosition(coord2.x - HALF_W, coord2.y - SIDE)))
-            outlineHexagon(view.gameToScreen(coord2))
+            sm.drawSprite(edgeTileSprite, view, view.gameToScreen(initPosition(coord2.x - HALF_W, coord2.y - SIDE)))
+            outlineHexagon(view.gameToScreen(coord2), view)
     for y in 0..(this.h - 1):
         let coord1 = getHexagonCenterPoint(-1, y)
         if view.isHexOnScreen(coord1):
-            sm.drawSprite(edgeTileSprite, view.gameToScreen(initPosition(coord1.x - HALF_W, coord1.y - SIDE)))
-            outlineHexagon(view.gameToScreen(coord1))
+            sm.drawSprite(edgeTileSprite, view, view.gameToScreen(initPosition(coord1.x - HALF_W, coord1.y - SIDE)))
+            outlineHexagon(view.gameToScreen(coord1), view)
         let coord2 = getHexagonCenterPoint(this.w, y)
         if view.isHexOnScreen(coord2):
-            sm.drawSprite(edgeTileSprite, view.gameToScreen(initPosition(coord2.x - HALF_W, coord2.y - SIDE)))
-            outlineHexagon(view.gameToScreen(coord2))
+            sm.drawSprite(edgeTileSprite, view, view.gameToScreen(initPosition(coord2.x - HALF_W, coord2.y - SIDE)))
+            outlineHexagon(view.gameToScreen(coord2), view)
 
 
 # Checks if the Unit can cross the border from one Tile to another

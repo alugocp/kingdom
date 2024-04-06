@@ -3,6 +3,7 @@ import std/tables
 import std/strformat
 import kingdom/math/types
 import kingdom/wrapper/types
+import kingdom/controls/view
 
 # Handles loading and drawing sprite assets
 type SpriteManager* = ref object
@@ -43,7 +44,7 @@ proc getSpriteHandle*(this: SpriteManager, id: SheetHandle, x: uint8, y: uint8, 
     return (uint64(id) shl 32) + (uint64(x) shl 24) + (uint64(y) shl 16) + (uint64(w) shl 8) + (h)
 
 # Draws a sprite from a loaded spritesheet
-proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, x: float, y: float): void =
+proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: View, x: float, y: float): void =
     # Don't draw a null sprite or a sprite from an unloaded spritesheet
     let id = SheetHandle((sprite and 0xFF00000000'u64) shr 32)
     if sprite == NULL_SPRITE or not this.isSheetLoaded(id):
@@ -55,7 +56,7 @@ proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, x: float, y: float):
     let w = uint8((sprite and  0x000000FF00'u64) shr 8)
     let h = uint8(sprite and   0x00000000FF'u64)
     let src = Rectangle(x: float(x1), y: float(y1), width: float(w), height: float(h))
-    let dst = Vector2(x: x, y: y)
-    drawTexture(this.loaded[this.spritesheets[id]], src, dst, RayWhite)
-proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, pos: Position): void =
-    this.drawSprite(sprite, pos.x, pos.y)
+    let dst = Rectangle(x: x, y: y, width: float(w) * 2, height: float(h) * 2)
+    drawTexture(this.loaded[this.spritesheets[id]], src, dst, Vector2(x: 0, y: 0), 0, RayWhite)
+proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: View, pos: Position): void =
+    this.drawSprite(sprite, view, pos.x, pos.y)
