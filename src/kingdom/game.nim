@@ -109,7 +109,7 @@ proc openTargetMenu*(this: Game): void =
 
 # Draws all elements of this Game object
 proc draw*(this: Game): void =
-    this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view.dx, this.view.dy, this.edgeTileSprite)
+    this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view, this.edgeTileSprite)
     if this.menu.isSome:
         this.menu.get().draw(this.mouse)
 
@@ -124,7 +124,7 @@ proc consumeMouseUpdates*(this: Game): void =
         )
 
     # check if the user is hovering over a hexagonal Tile
-    let hex = getHexagonCoords(this.view.withOffset(this.mouse.pos))
+    let hex = getHexagonCoords(this.view.screenToGame(this.mouse.pos))
     this.hoveredHex = hex
 
     # Process a click event

@@ -1,6 +1,7 @@
 import raylib
 import std/tables
 import std/strformat
+import kingdom/math/types
 import kingdom/wrapper/types
 
 # Handles loading and drawing sprite assets
@@ -56,3 +57,5 @@ proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, x: float, y: float):
     let src = Rectangle(x: float(x1), y: float(y1), width: float(w), height: float(h))
     let dst = Vector2(x: x, y: y)
     drawTexture(this.loaded[this.spritesheets[id]], src, dst, RayWhite)
+proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, pos: Position): void =
+    this.drawSprite(sprite, pos.x, pos.y)

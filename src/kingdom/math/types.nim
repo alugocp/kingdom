@@ -20,5 +20,8 @@ type Rect* = object
     w*: float
     h*: float
 
+proc initRect*(x: SomeNumber, y: SomeNumber, w: SomeNumber, h: SomeNumber): Rect =
+    Rect(x: float(x), y: float(y), w: float(w), h: float(h))
+
 # Returns true if this Position falls within the given Rect
 proc within*(p: Position, r: Rect): bool = p.x >= r.x and p.x <= r.x + r.w and p.y >= r.y and p.y <= r.y + r.h
