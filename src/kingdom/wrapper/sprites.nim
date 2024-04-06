@@ -56,7 +56,7 @@ proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: View, x: float
     let w = uint8((sprite and  0x000000FF00'u64) shr 8)
     let h = uint8(sprite and   0x00000000FF'u64)
     let src = Rectangle(x: float(x1), y: float(y1), width: float(w), height: float(h))
-    let dst = Rectangle(x: x, y: y, width: float(w) * 2, height: float(h) * 2)
+    let dst = Rectangle(x: x, y: y, width: float(w) * view.scale, height: float(h) * view.scale)
     drawTexture(this.loaded[this.spritesheets[id]], src, dst, Vector2(x: 0, y: 0), 0, RayWhite)
 proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: View, pos: Position): void =
     this.drawSprite(sprite, view, pos.x, pos.y)

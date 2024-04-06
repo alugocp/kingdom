@@ -123,9 +123,16 @@ proc draw*(this: Game): void =
 
 # Check for updated keyboard state and see what we have to process
 proc consumeKeyboardUpdates*(this: Game): void =
-    let thing = this.keyboard.getKeysReleased().toSeq()
-    if thing.len > 0:
-        echo thing
+    # DEBUG
+    # let thing = this.keyboard.getKeysReleased().toSeq()
+    # if thing.len > 0:
+    #     echo thing
+
+    let released = this.keyboard.getKeysReleased()
+    if released.contains(61):
+        this.view.zoom(0.1, this.world.w, this.world.h)
+    if released.contains(45):
+        this.view.zoom(-0.1, this.world.w, this.world.h)
 
 # Check for updated mouse state and see what we have to process
 proc consumeMouseUpdates*(this: Game): void =

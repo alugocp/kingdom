@@ -2,6 +2,9 @@ import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/wrapper/window
 
+const UPPER_ZOOM = 3f
+const LOWER_ZOOM = 0.5f
+
 type View* = ref object
     scale*: float
     dx*: float
@@ -60,3 +63,22 @@ proc isOnScreen*(this: View, g: Rect): bool =
 # Returns true if the given hexagon's game position is on the screen
 proc isHexOnScreen*(this: View, h: Position): bool =
     this.isOnScreen(initRect(h.x - HALF_W, h.y - SIDE, HALF_W * 2, SIDE * 2))
+
+proc zoom*(this: View, dz: float, w: Natural, h: Natural): void =
+    # Calculate center of screen as a game position
+    let window = getWindowBounds()
+    let g = this.screenToGame(initPosition(window.x / 2, window.y / 2))
+
+    # Set new scale
+    this.scale += dz
+    if this.scale > UPPER_ZOOM: this.scale = UPPER_ZOOM
+    if this.scale < LOWER_ZOOM: this.scale = LOWER_ZOOM
+
+    # Shift scroll to keep that point in the center
+    let s = this.gameToScreen(g)
+    this.scroll(
+        (window.x / 2) - s.x,
+        (window.y / 2) - s.y,
+        w,
+        h
+    )
