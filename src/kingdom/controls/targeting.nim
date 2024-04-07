@@ -25,7 +25,7 @@ proc isCoords*(this: Targeter): bool = this.coords.isSome
 proc isUnits*(this: Targeter): bool = this.units.isSome
 
 # Points this Targeter towards some Coords
-proc target*(this: Targeter, coords: seq[Coord], coordHandler: (c: Coord) -> void): void = # {.exportc, dynlib.} =
+proc target*(this: Targeter, coords: seq[Coord], coordHandler: (c: Coord) -> void): void =
     this.coordHandler = some(coordHandler)
     this.coords = some(coords)
     this.onTarget()
