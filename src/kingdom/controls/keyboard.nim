@@ -1,9 +1,5 @@
 import std/sets
-
-# Object to track user keyboard input
-type KeyboardState* = ref object
-    released: HashSet[int]
-    down*: HashSet[int]
+import kingdom/controls/types
 
 # Constructor for the KeyboardState type
 proc newKeyboardState*(): KeyboardState =

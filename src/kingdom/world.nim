@@ -10,6 +10,7 @@ import kingdom/entities/tile
 import kingdom/entities/unit
 import kingdom/entities/item
 import kingdom/entities/signals
+import kingdom/controls/types
 import kingdom/controls/view
 import kingdom/math/hexagons
 import kingdom/math/types
@@ -18,15 +19,8 @@ import kingdom/wrapper/draw
 import kingdom/wrapper/types
 import kingdom/wrapper/sprites
 import kingdom/builtin/values
+import kingdom/types
 import kingdom/menu
-
-# World type to contain Tile objects
-type World* = ref object
-    units: seq[seq[seq[Unit]]]
-    items: seq[seq[seq[Item]]]
-    tiles: seq[seq[Tile]]
-    w*: Natural
-    h*: Natural
 
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
@@ -51,7 +45,7 @@ proc build*(this: World, generate: (x: int, y: int) -> Tile): void =
             id += 1
 
 # Returns the bounds of this World as a Coord
-proc getBounds*(this: World): Coord =
+proc getBounds*(this: World): Coord {.exportc, dynlib.} =
     initCoord(this.w, this.h)
 
 # Retrieves a Tile in this World
@@ -64,7 +58,7 @@ proc getUnits*(this: World, c: Coord): seq[Unit] = this.units[c.x][c.y]
 proc getItems*(this: World, c: Coord): seq[Item] = this.items[c.x][c.y]
 
 # Moves a Unit from one Tile in this World to another
-proc moveUnit*(this: World, u: Unit, c: Coord): void =
+proc moveUnit*(this: World, u: Unit, c: Coord): void {.exportc, dynlib.} =
     this.units[u.pos.x][u.pos.y] = this.units[u.pos.x][u.pos.y].filterIt(it != u)
     this.units[c.x][c.y].add(u)
     u.pos = c
@@ -145,7 +139,7 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
 
 
 # Checks if the Unit can cross the border from one Tile to another
-proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool =
+proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool {.exportc, dynlib.} =
     let side = getSharedSide(current, adj)
     let opp = getOppositeSide(side)
     let tile1 = this.getTile(current)

@@ -31,7 +31,7 @@ proc getHexagonCenterPoint*(c: Coord): Position =
     getHexagonCenterPoint(c.x, c.y)
 
 # Returns a sequence of coords for hexagons adjacent to the one at the given coord
-proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] =
+proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.exportc, dynlib.} =
     var adjs = newSeq[Coord]()
     let dx = if c.y mod 2 == 1: 0 else: -1
     if c.y > 0:

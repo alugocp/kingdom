@@ -4,10 +4,11 @@ import kingdom/entities/types
 import kingdom/entities/signals
 import kingdom/builtin/channels
 import kingdom/builtin/signals
+import kingdom/types
 import kingdom/menu
 
 # Constructor for the Ability type
-proc newAbility*(): Ability =
+proc newAbility*(): Ability {.exportc, dynlib.} =
     new result
     result.name = "unnamed ability"
     result.desc = none(string)

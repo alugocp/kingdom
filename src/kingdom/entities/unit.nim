@@ -6,10 +6,11 @@ import kingdom/entities/types
 import kingdom/entities/ability
 import kingdom/entities/item
 import kingdom/math/types
+import kingdom/types
 import kingdom/menu
 
 # Constructor for the Unit type
-proc newUnit*(): Unit =
+proc newUnit*(): Unit {.exportc, dynlib.} =
     new result
     result.id = 1
     result.name = "unnamed"

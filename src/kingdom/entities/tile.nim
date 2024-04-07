@@ -6,7 +6,7 @@ import kingdom/math/hexagons
 import kingdom/math/types
 
 # Constructor for the Tile type
-proc newTile*(): Tile =
+proc newTile*(): Tile {.exportc, dynlib.} =
     new result
     result.id = 1
     result.pos = initCoord(0, 0)
@@ -17,7 +17,7 @@ proc newTile*(): Tile =
     return result
 
 # Sets all border values on this Tile
-proc setAllBorders*(this: Tile, border: string): void =
+proc setAllBorders*(this: Tile, border: string): void {.exportc, dynlib.} =
     for a in 0..5:
         this.borders[a] = border
 

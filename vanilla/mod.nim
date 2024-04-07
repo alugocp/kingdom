@@ -1,23 +1,16 @@
 import std/options
 import std/sequtils
 import std/strformat
-import kingdom/game
-import kingdom/world
+import kingdom/types
+import kingdom/headers
 import kingdom/math/types
-import kingdom/math/hexagons
-import kingdom/wrapper/sprites
+import kingdom/entities/types
+import kingdom/generation/types
 import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
-import kingdom/entities/types
-import kingdom/entities/stats
-import kingdom/entities/item
-import kingdom/entities/unit
-import kingdom/entities/tile
-import kingdom/entities/ability
-import kingdom/entities/signals
 import kingdom/generation/manager
-import kingdom/controls/targeting
+import kingdom/entities/signals
 
 # Labels for mod content
 const ABILITY_MOVE = "Move"

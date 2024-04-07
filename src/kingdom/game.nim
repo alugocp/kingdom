@@ -14,28 +14,11 @@ import kingdom/wrapper/types
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
 import kingdom/controls/mouse
+import kingdom/controls/types
 import kingdom/controls/view
 import kingdom/world
+import kingdom/types
 import kingdom/menu
-
-# Game type used to aggregate relevant data and used in mod init functions
-type Game* = ref object
-    menu*: Option[Menu]
-    nextAbilityId: int
-    nextUnitId: int
-    nextItemId: int
-    targeter*: Targeter
-    sprites*: SpriteManager
-    unitGeneration*: UnitGenerationManager
-    tileGeneration*: TileGenerationManager
-    itemGeneration*: ItemGenerationManager
-    abilityGeneration*: AbilityGenerationManager
-    edgeTileSprite*: SpriteHandle
-    hoveredHex: Option[Coord]
-    keyboard*: KeyboardState
-    mouse*: MouseState
-    world*: World
-    view*: View
 
 proc closeMenu*(this: Game): void
 

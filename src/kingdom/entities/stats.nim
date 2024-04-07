@@ -1,13 +1,4 @@
-
-# Type encompassing up to 3 integer values associated with a Unit
-type Stats* = ref object
-    label1: string
-    label2: string
-    label3: string
-    stat1: int
-    stat2: int
-    stat3: int
-    n: int
+import kingdom/entities/types
 
 # Constructor for the Stats type
 proc newStats*(): Stats =
@@ -47,6 +38,6 @@ proc setStat*(this: Stats, label: string, stat: int): void =
         this.n += 1
 
 # Increments the numeric value associated with a stat label by some delta
-proc incStat*(this: Stats, label: string, d: int): void =
+proc incStat*(this: Stats, label: string, d: int): void {.exportc, dynlib.} =
     let val = this.getStat(label) + d
     this.setStat(label, if val > 0: val else: 0)

@@ -1,9 +1,11 @@
 import raylib
 import std/sets
+import kingdom/controls/types
 import kingdom/controls/mouse
 import kingdom/controls/keyboard
 import kingdom/wrapper/sprites
 import kingdom/math/types
+import kingdom/types
 import kingdom/game
 
 # Record mouse state for later consumption

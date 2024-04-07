@@ -3,32 +3,14 @@ import std/sequtils
 import kingdom/math/types
 import kingdom/wrapper/draw
 import kingdom/wrapper/types
-import kingdom/controls/mouse
+import kingdom/controls/types
 import kingdom/builtin/values
-
-# Enum representing the types of UI elements
-type MenuElement* = enum
-    TEXT
-    HEADER
-    BUTTON
-    SPACE
-    LIST
-
-# Parent class for all menu nodes
-type MenuNode* = ref object of RootObj
-    element*: MenuElement
+import kingdom/types
 
 method getHeight*(this: MenuNode): float {.base.} = 0
 method draw*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
 method checkClick*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
 method pack*(this: MenuNode, width: float): void {.base.} = discard
-
-# Top-level menu type
-type Menu* = ref object
-    root*: MenuNode
-    width: float
-    x*: float
-    y*: float
 
 # Constructor for Menu type
 proc newMenu*(x: float, y: float, width: float, root: MenuNode): Menu =

@@ -1,14 +1,10 @@
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/wrapper/window
+import kingdom/controls/types
 
 const UPPER_ZOOM = 3f
 const LOWER_ZOOM = 0.5f
-
-type View* = ref object
-    scale*: float
-    dx*: float
-    dy*: float
 
 # Constructor for View type
 proc newView*(): View =

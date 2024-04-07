@@ -1,14 +1,5 @@
+import kingdom/controls/types
 import kingdom/math/types
-
-# Aggregate of mouse state data
-type MouseState* = ref object
-    wasScrolling*: bool
-    scrolling*: bool
-    posdown: Position
-    posprev*: Position
-    pos*: Position
-    wasDown*: bool
-    down*: bool
 
 # Constructor for MouseState
 proc newMouseState*(): MouseState =

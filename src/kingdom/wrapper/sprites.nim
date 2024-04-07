@@ -3,12 +3,7 @@ import std/tables
 import std/strformat
 import kingdom/math/types
 import kingdom/wrapper/types
-import kingdom/controls/view
-
-# Handles loading and drawing sprite assets
-type SpriteManager* = ref object
-    spritesheets: seq[string]
-    loaded: Table[string, Texture2D]
+import kingdom/controls/types
 
 # Constructor for the SpriteManager type
 proc newSpriteManager*(): SpriteManager =
@@ -17,7 +12,7 @@ proc newSpriteManager*(): SpriteManager =
     result.spritesheets = @[]
 
 # Registers a filename to be loaded at will by the SpriteManager
-proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle =
+proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.exportc, dynlib.} =
     let i = SheetHandle(this.spritesheets.len)
     if i >= 255:
         raise newException(Exception, "Cannot register more than 255 spritesheets")
@@ -40,7 +35,7 @@ proc loadAllSheets*(this: SpriteManager): void =
         this.loadSheet(SheetHandle(i))
 
 # Creates a SpriteHandle from an input sheet ID and bounding rectangle
-proc getSpriteHandle*(this: SpriteManager, id: SheetHandle, x: uint8, y: uint8, w: uint8 = 24, h: uint8 = 24): SpriteHandle =
+proc getSpriteHandle*(this: SpriteManager, id: SheetHandle, x: uint8, y: uint8, w: uint8 = 24, h: uint8 = 24): SpriteHandle {.exportc,dynlib.} =
     return (uint64(id) shl 32) + (uint64(x) shl 24) + (uint64(y) shl 16) + (uint64(w) shl 8) + (h)
 
 # Draws a sprite from a loaded spritesheet

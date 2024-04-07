@@ -3,10 +3,11 @@ import std/tables
 import std/options
 import kingdom/entities/types
 import kingdom/math/types
+import kingdom/types
 import kingdom/menu
 
 # Constructor for the Item type
-proc newItem*(): Item =
+proc newItem*(): Item {.exportc, dynlib.} =
     new result
     result.id = 1
     result.pos = none(Coord)

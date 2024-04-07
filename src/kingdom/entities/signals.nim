@@ -44,7 +44,7 @@ proc hasSignalHandler*(this: Entity, channel: string): bool =
     this.handlers.hasKey(channel)
 
 # Adds a SignalHandler to some Entity
-proc addSignalHandler*[T: Entity](this: T, channel: string, handler: SignalHandler[T]): void =
+proc addSignalHandler*[T: Entity](this: T, channel: string, handler: SignalHandler[T]): void = # {.exportc, dynlib.} =
     if not this.hasSignalHandler(channel):
         this.handlers[channel] = @[]
     this.handlers[channel].add(handler)

@@ -5,7 +5,7 @@ import std/strformat
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/wrapper/types
-import kingdom/controls/view
+import kingdom/controls/types
 
 # Contant value representing text margins
 const SPACING = 1

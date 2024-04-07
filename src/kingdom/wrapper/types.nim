@@ -1,3 +1,5 @@
+import raylib
+import std/tables
 import kingdom/builtin/values
 
 #
@@ -13,6 +15,11 @@ type SpriteHandle* = uint64
 # Null sprite value
 const NULL_SPRITE* = 0'u64
 
+# Handles loading and drawing sprite assets
+type SpriteManager* = ref object
+    spritesheets*: seq[string]
+    loaded*: Table[string, Texture2D]
+
 #
 # DRAW WRAPPER TYPES
 #
@@ -24,13 +31,13 @@ type FontSettings* = object
 
 # Default font in the game
 const REGULAR_FONT* = FontSettings(
-    color: BLACK,
+    color: values.BLACK,
     size: 20
 )
 
 # Font for links
 const LINK_FONT* = FontSettings(
-    color: BLUE,
+    color: values.BLUE,
     size: 20
 )
 
@@ -42,6 +49,6 @@ const HOVER_FONT* = FontSettings(
 
 # Font for headers
 const HEADER_FONT* = FontSettings(
-    color: BLACK,
+    color: values.BLACK,
     size: 35
 )

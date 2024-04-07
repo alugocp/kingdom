@@ -2,8 +2,19 @@ import std/sugar
 import std/tables
 import std/options
 import kingdom/math/types
-import kingdom/entities/stats
 import kingdom/wrapper/types
+
+# STAT TYPES
+
+# Type encompassing up to 3 integer values associated with a Unit
+type Stats* = ref object
+    label1*: string
+    label2*: string
+    label3*: string
+    stat1*: int
+    stat2*: int
+    stat3*: int
+    n*: int
 
 # SIGNAL TYPES
 
