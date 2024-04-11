@@ -48,3 +48,12 @@ proc addSignalHandler*[T: Entity](this: T, channel: string, handler: SignalHandl
     if not this.hasSignalHandler(channel):
         this.handlers[channel] = @[]
     this.handlers[channel].add(handler)
+
+proc addSignalHandler1*(this: Ability, channel: string, handler: SignalHandler[Ability]): void {.exportc: "addSignalHandler_ability", dynlib.} =
+    addSignalHandler(this, channel, handler)
+proc addSignalHandler1*(this: Item, channel: string, handler: SignalHandler[Item]): void {.exportc: "addSignalHandler_item", dynlib.} =
+    addSignalHandler(this, channel, handler)
+proc addSignalHandler1*(this: Unit, channel: string, handler: SignalHandler[Unit]): void {.exportc: "addSignalHandler_unit", dynlib.} =
+    addSignalHandler(this, channel, handler)
+proc addSignalHandler1*(this: Tile, channel: string, handler: SignalHandler[Tile]): void {.exportc: "addSignalHandler_tile", dynlib.} =
+    addSignalHandler(this, channel, handler)

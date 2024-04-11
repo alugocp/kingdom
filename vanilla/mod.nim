@@ -9,8 +9,6 @@ import kingdom/generation/types
 import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
-import kingdom/generation/manager
-import kingdom/entities/signals
 
 # Labels for mod content
 const ABILITY_MOVE = "Move"
