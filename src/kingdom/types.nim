@@ -50,3 +50,13 @@ type Game* = ref object
     mouse*: MouseState
     world*: World
     view*: View
+
+# Type representing the game's start menu
+type Start* = ref object
+    keyboard*: KeyboardState
+    mouse*: MouseState
+    menu*: Menu
+    dead*: bool
+
+# Aggregate type for all game screens
+type Screen* = Game | Start

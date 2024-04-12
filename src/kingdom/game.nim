@@ -3,7 +3,6 @@ import std/sugar
 import std/tables
 import std/options
 import std/sequtils
-import std/strformat
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/generation/manager
@@ -98,6 +97,9 @@ proc openTargetMenu*(this: Game): void =
             ))
         this.openMenu(node)
 
+# Returns which Screen should be shown in the next frame
+proc getNextScreen*(this: Game): Screen = this
+
 # Draws all elements of this Game object
 proc draw*(this: Game): void =
     this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view, this.edgeTileSprite)
@@ -106,15 +108,10 @@ proc draw*(this: Game): void =
 
 # Check for updated keyboard state and see what we have to process
 proc consumeKeyboardUpdates*(this: Game): void =
-    # DEBUG
-    # let thing = this.keyboard.getKeysReleased().toSeq()
-    # if thing.len > 0:
-    #     echo thing
-
     let released = this.keyboard.getKeysReleased()
-    if released.contains(61):
+    if released.contains(61): # +
         this.view.zoom(0.1, this.world.w, this.world.h)
-    if released.contains(45):
+    if released.contains(45): # -
         this.view.zoom(-0.1, this.world.w, this.world.h)
 
 # Check for updated mouse state and see what we have to process

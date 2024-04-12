@@ -3,9 +3,9 @@ import std/sets
 import kingdom/controls/types
 import kingdom/controls/mouse
 import kingdom/controls/keyboard
-import kingdom/wrapper/sprites
 import kingdom/math/types
 import kingdom/types
+import kingdom/start
 import kingdom/game
 
 # Record mouse state for later consumption
@@ -35,19 +35,20 @@ proc handleLogic(this: KeyboardState): void =
     this.keysPressed(pressed)
 
 # Handles game loop logic
-proc gameLoop*(game: Game): void =
+proc gameLoop*(initial: Screen): void =
     # Initialize the Raylib game window
     initWindow(1200, 800, "Kingdom")
     defer: closeWindow()
     setTargetFPS(30)
-    game.sprites.loadAllSheets()
+    var screen = initial
 
     # Raylib game loop
     while not windowShouldClose():
-        game.mouse.handleLogic()
-        game.keyboard.handleLogic()
-        game.consumeKeyboardUpdates()
-        game.consumeMouseUpdates()
+        screen.mouse.handleLogic()
+        screen.keyboard.handleLogic()
+        screen.consumeKeyboardUpdates()
+        screen.consumeMouseUpdates()
         beginDrawing()
-        game.draw()
+        screen.draw()
         endDrawing()
+        screen = screen.getNextScreen()

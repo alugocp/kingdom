@@ -5,7 +5,6 @@ import kingdom/types
 import kingdom/headers
 import kingdom/math/types
 import kingdom/entities/types
-import kingdom/generation/types
 import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
