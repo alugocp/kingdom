@@ -5,7 +5,6 @@ import kingdom/wrapper/draw
 import kingdom/wrapper/types
 import kingdom/controls/types
 import kingdom/builtin/values
-import kingdom/types
 
 method getHeight*(this: MenuNode): float {.base.} = 0
 method draw*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard

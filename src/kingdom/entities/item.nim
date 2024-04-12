@@ -3,7 +3,7 @@ import std/tables
 import std/options
 import kingdom/entities/types
 import kingdom/math/types
-import kingdom/types
+import kingdom/controls/types
 import kingdom/controls/menu
 
 # Constructor for the Item type

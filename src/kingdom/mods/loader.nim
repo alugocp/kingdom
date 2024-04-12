@@ -1,6 +1,6 @@
 import std/dynlib
 import std/strformat
-import kingdom/types
+import kingdom/screens/types
 
 # Type representing a mod's entry function
 type ModEntryPoint = proc(game: Game): void {.gcsafe, stdcall.}

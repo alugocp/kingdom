@@ -1,6 +1,7 @@
 import kingdom/generation/manager
 import kingdom/controls/keyboard
 import kingdom/controls/mouse
+import kingdom/controls/types
 import kingdom/wrapper/sprites
 import kingdom/wrapper/draw
 import kingdom/entities/types
@@ -8,8 +9,8 @@ import kingdom/builtin/values
 import kingdom/mods/loader
 import kingdom/math/types
 import kingdom/models/world
-import kingdom/types
 import kingdom/controls/menu
+import kingdom/screens/types
 import kingdom/screens/game
 
 # Constructor for the Start type

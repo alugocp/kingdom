@@ -10,8 +10,9 @@ import kingdom/entities/tile
 import kingdom/entities/unit
 import kingdom/entities/item
 import kingdom/entities/signals
-import kingdom/controls/types
 import kingdom/controls/viewport
+import kingdom/controls/types
+import kingdom/controls/menu
 import kingdom/math/hexagons
 import kingdom/math/types
 import kingdom/operators
@@ -19,8 +20,6 @@ import kingdom/wrapper/draw
 import kingdom/wrapper/types
 import kingdom/wrapper/sprites
 import kingdom/builtin/values
-import kingdom/types
-import kingdom/controls/menu
 import kingdom/models/types
 
 # Constructor for the World type

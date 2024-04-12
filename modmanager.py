@@ -53,7 +53,6 @@ def create_new_mod(name) -> Tuple[bool, str]:
     ])
     create_file(f"{name}/mod.nim", [
         "import kingdom/headers",
-        "import kingdom/types",
         "",
         "proc initKingdomMod(game: Game): void {.exportc, dynlib.} =",
         "    echo(\"Write your mod here!\")"

@@ -12,13 +12,13 @@ import kingdom/wrapper/sprites
 import kingdom/wrapper/types
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
+import kingdom/controls/viewport
 import kingdom/controls/mouse
 import kingdom/controls/types
-import kingdom/controls/viewport
+import kingdom/controls/menu
 import kingdom/models/world
 import kingdom/models/types
-import kingdom/controls/menu
-import kingdom/types
+import kingdom/screens/types
 
 proc closeMenu*(this: Game): void
 

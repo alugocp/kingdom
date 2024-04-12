@@ -6,7 +6,7 @@ import kingdom/entities/types
 import kingdom/entities/ability
 import kingdom/entities/item
 import kingdom/math/types
-import kingdom/types
+import kingdom/controls/types
 import kingdom/controls/menu
 
 # Constructor for the Unit type

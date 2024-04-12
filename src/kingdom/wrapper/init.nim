@@ -3,8 +3,8 @@ import std/sets
 import kingdom/controls/types
 import kingdom/controls/mouse
 import kingdom/controls/keyboard
+import kingdom/screens/types
 import kingdom/math/types
-import kingdom/types
 
 # Record mouse state for later consumption
 proc handleLogic(this: MouseState): void =

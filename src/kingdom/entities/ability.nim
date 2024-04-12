@@ -4,7 +4,7 @@ import kingdom/entities/types
 import kingdom/entities/signals
 import kingdom/builtin/channels
 import kingdom/builtin/signals
-import kingdom/types
+import kingdom/controls/types
 import kingdom/controls/menu
 
 # Constructor for the Ability type

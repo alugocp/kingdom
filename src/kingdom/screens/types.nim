@@ -5,25 +5,6 @@ import kingdom/wrapper/types
 import kingdom/models/types
 import kingdom/math/types
 
-# Enum representing the types of UI elements
-type MenuElement* = enum
-    TEXT
-    HEADER
-    BUTTON
-    SPACE
-    LIST
-
-# Parent class for all menu nodes
-type MenuNode* = ref object of RootObj
-    element*: MenuElement
-
-# Top-level menu type
-type Menu* = ref object
-    root*: MenuNode
-    width*: float
-    x*: float
-    y*: float
-
 # Parent type for different game screens
 type Screen* = ref object of RootObj
     keyboard*: KeyboardState

@@ -4,6 +4,7 @@ import std/options
 import kingdom/entities/types
 import kingdom/math/types
 
+# Type to handle game view scrolling and zoom in/out
 type Viewport* = ref object
     scale*: float
     dx*: float
@@ -31,3 +32,22 @@ type MouseState* = ref object
 type KeyboardState* = ref object
     released*: HashSet[int]
     down*: HashSet[int]
+
+# Enum representing the types of UI elements
+type MenuElement* = enum
+    TEXT
+    HEADER
+    BUTTON
+    SPACE
+    LIST
+
+# Parent class for all menu nodes
+type MenuNode* = ref object of RootObj
+    element*: MenuElement
+
+# Top-level menu type
+type Menu* = ref object
+    root*: MenuNode
+    width*: float
+    x*: float
+    y*: float
