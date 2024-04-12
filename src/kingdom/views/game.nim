@@ -18,7 +18,7 @@ import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/models/world
 import kingdom/models/types
-import kingdom/screens/types
+import kingdom/views/types
 
 proc closeMenu*(this: GameView): void
 

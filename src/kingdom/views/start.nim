@@ -10,8 +10,8 @@ import kingdom/mods/loader
 import kingdom/math/types
 import kingdom/models/world
 import kingdom/controls/menu
-import kingdom/screens/types
-import kingdom/screens/game
+import kingdom/views/types
+import kingdom/views/game
 
 # Constructor for the StartView type
 proc newStartView*(): StartView =

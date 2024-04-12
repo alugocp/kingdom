@@ -3,7 +3,7 @@ import std/sets
 import kingdom/controls/types
 import kingdom/controls/mouse
 import kingdom/controls/keyboard
-import kingdom/screens/types
+import kingdom/views/types
 import kingdom/math/types
 
 # Record mouse state for later consumption

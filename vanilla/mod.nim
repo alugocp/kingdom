@@ -7,7 +7,7 @@ import kingdom/entities/types
 import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
-import kingdom/screens/types
+import kingdom/views/types
 
 # Labels for mod content
 const ABILITY_MOVE = "Move"
