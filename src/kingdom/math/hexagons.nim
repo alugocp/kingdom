@@ -1,5 +1,7 @@
+import std/sets
 import std/math
 import std/options
+import std/sequtils
 import std/strformat
 import kingdom/math/types
 
@@ -49,6 +51,20 @@ proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.exportc, d
     if c.x + 1 < bounds.x:
         adjs.add(initCoord(c.x + 1, c.y)) # Right
     return adjs
+
+# Returns a sequence of Coords for hexagons within a given radius of some central point
+proc getRadialHexagonCoords*(c: Coord, bounds: Coord, r: Natural): seq[Coord] =
+    var results = initHashSet[Coord]()
+    var next = initHashSet[Coord]()
+    next.incl(c)
+    for a in 1..r:
+        let outer = next
+        next.clear()
+        for x in outer:
+            let adjs = getAdjacentHexagonCoords(x, bounds).toHashSet()
+            next = next + (adjs - results)
+            results = results + adjs
+    return results.toSeq()
 
 # Converts a HexSide to an integer result
 proc hexSideToInt*(side: HexSides): int =

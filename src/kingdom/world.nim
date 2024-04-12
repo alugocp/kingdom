@@ -98,6 +98,7 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
 
 # Draw this World object
 proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Option[seq[Coord]], view: View, edgeTileSprite: SpriteHandle): void =
+    let visible = getRadialHexagonCoords(initCoord(1, 1), initCoord(this.w, this.h), 4)
     for column in this.tiles:
         for tile in column:
             let coords = getHexagonCenterPoint(initCoord(tile.pos.x, tile.pos.y))
@@ -116,6 +117,10 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
             let units = this.getUnits(tile.pos)
             if units.len > 0:
                 sm.drawSprite(units[0].sprite, view, view.gameToScreen(initPosition(coords.x - 12, coords.y - 12)))
+
+            # Low visibility tiles
+            if not (tile.pos in visible):
+                drawHexagon(view.gameToScreen(coords), DARKER, view)
 
     # Draw the edge tiles
     for x in 0..this.w:
