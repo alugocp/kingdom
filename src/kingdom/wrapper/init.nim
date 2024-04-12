@@ -5,8 +5,6 @@ import kingdom/controls/mouse
 import kingdom/controls/keyboard
 import kingdom/math/types
 import kingdom/types
-import kingdom/start
-import kingdom/game
 
 # Record mouse state for later consumption
 proc handleLogic(this: MouseState): void =

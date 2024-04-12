@@ -98,16 +98,16 @@ proc openTargetMenu*(this: Game): void =
         this.openMenu(node)
 
 # Returns which Screen should be shown in the next frame
-proc getNextScreen*(this: Game): Screen = this
+method getNextScreen*(this: Game): Screen = this
 
 # Draws all elements of this Game object
-proc draw*(this: Game): void =
+method draw*(this: Game): void =
     this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view, this.edgeTileSprite)
     if this.menu.isSome:
         this.menu.get().draw(this.mouse)
 
 # Check for updated keyboard state and see what we have to process
-proc consumeKeyboardUpdates*(this: Game): void =
+method consumeKeyboardUpdates*(this: Game): void =
     let released = this.keyboard.getKeysReleased()
     if released.contains(61): # +
         this.view.zoom(0.1, this.world.w, this.world.h)
@@ -115,7 +115,7 @@ proc consumeKeyboardUpdates*(this: Game): void =
         this.view.zoom(-0.1, this.world.w, this.world.h)
 
 # Check for updated mouse state and see what we have to process
-proc consumeMouseUpdates*(this: Game): void =
+method consumeMouseUpdates*(this: Game): void =
     if this.mouse.down and this.mouse.scrolling:
         this.view.scroll(
             this.mouse.pos.x - this.mouse.posprev.x,
