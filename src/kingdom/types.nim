@@ -1,8 +1,8 @@
 import std/options
 import kingdom/generation/types
 import kingdom/controls/types
-import kingdom/entities/types
 import kingdom/wrapper/types
+import kingdom/models/types
 import kingdom/math/types
 
 # Enum representing the types of UI elements
@@ -23,14 +23,6 @@ type Menu* = ref object
     width*: float
     x*: float
     y*: float
-
-# World type to contain Tile objects
-type World* = ref object
-    units*: seq[seq[seq[Unit]]]
-    items*: seq[seq[seq[Item]]]
-    tiles*: seq[seq[Tile]]
-    w*: Natural
-    h*: Natural
 
 # Parent type for different game screens
 type Screen* = ref object of RootObj
@@ -58,7 +50,7 @@ type Game* = ref object of Screen
     edgeTileSprite*: SpriteHandle
     hoveredHex*: Option[Coord]
     world*: World
-    view*: View
+    view*: Viewport
 
 # Type representing the game's start menu
 type Start* = ref object of Screen

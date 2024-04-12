@@ -39,7 +39,7 @@ proc getSpriteHandle*(this: SpriteManager, id: SheetHandle, x: uint8, y: uint8, 
     return (uint64(id) shl 32) + (uint64(x) shl 24) + (uint64(y) shl 16) + (uint64(w) shl 8) + (h)
 
 # Draws a sprite from a loaded spritesheet
-proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: View, x: float, y: float): void =
+proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: Viewport, x: float, y: float): void =
     # Don't draw a null sprite or a sprite from an unloaded spritesheet
     let id = SheetHandle((sprite and 0xFF00000000'u64) shr 32)
     if sprite == NULL_SPRITE or not this.isSheetLoaded(id):
@@ -53,5 +53,5 @@ proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: View, x: float
     let src = Rectangle(x: float(x1), y: float(y1), width: float(w), height: float(h))
     let dst = Rectangle(x: x, y: y, width: float(w) * view.scale, height: float(h) * view.scale)
     drawTexture(this.loaded[this.spritesheets[id]], src, dst, Vector2(x: 0, y: 0), 0, RayWhite)
-proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: View, pos: Position): void =
+proc drawSprite*(this: SpriteManager, sprite: SpriteHandle, view: Viewport, pos: Position): void =
     this.drawSprite(sprite, view, pos.x, pos.y)

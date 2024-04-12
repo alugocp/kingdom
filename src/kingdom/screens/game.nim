@@ -14,10 +14,11 @@ import kingdom/controls/targeting
 import kingdom/controls/keyboard
 import kingdom/controls/mouse
 import kingdom/controls/types
-import kingdom/controls/view
-import kingdom/world
-import kingdom/types
+import kingdom/controls/viewport
+import kingdom/models/world
+import kingdom/models/types
 import kingdom/controls/menu
+import kingdom/types
 
 proc closeMenu*(this: Game): void
 
@@ -46,7 +47,7 @@ proc newGame*(world: World): Game =
         mouse: newMouseState(),
         hoveredHex: none(Coord),
         menu: none(Menu),
-        view: newView(),
+        view: newViewport(),
         world: world
     )
     g.targeter.onTarget = () => g.closeMenu()

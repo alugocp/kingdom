@@ -3,8 +3,8 @@ import kingdom/generation/types
 import kingdom/entities/types
 import kingdom/controls/types
 import kingdom/wrapper/types
+import kingdom/models/types
 import kingdom/math/types
-import kingdom/types
 
 # src/kingdom/wrapper/sprites.nim
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.importc.}
@@ -42,7 +42,7 @@ proc addSignalHandler*(this: Item, channel: string, handler: SignalHandler[Item]
 proc addSignalHandler*(this: Unit, channel: string, handler: SignalHandler[Unit]): void {.importc: "addSignalHandler_unit"}
 proc addSignalHandler*(this: Tile, channel: string, handler: SignalHandler[Tile]): void {.importc: "addSignalHandler_tile"}
 
-# src/kingdom/world.nim
+# src/kingdom/models/world.nim
 proc getBounds*(this: World): Coord {.importc.}
 proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool {.importc.}
 proc moveUnit*(this: World, u: Unit, c: Coord): void {.importc.}

@@ -33,18 +33,18 @@ proc setBackground*(color: uint32): void =
 #
 
 # Draws a hexagon like the one used for Tiles
-proc drawHexagon*(x: float, y: float, color: uint32, view: View): void =
+proc drawHexagon*(x: float, y: float, color: uint32, view: Viewport): void =
     let v = Vector2(x: x, y: y)
     let c = color.toRaylibColor()
     drawPoly(v, 6, hexagons.SIDE * view.scale, 90, c)
-proc drawHexagon*(pos: Position, color: uint32, view: View): void =
+proc drawHexagon*(pos: Position, color: uint32, view: Viewport): void =
     drawHexagon(pos.x, pos.y, color, view)
 
 # Outlines a hexagon like the one used for Tiles
-proc outlineHexagon*(x: float, y: float, view: View): void =
+proc outlineHexagon*(x: float, y: float, view: Viewport): void =
     let v = Vector2(x: x, y: y)
     drawPolyLines(v, 6, hexagons.SIDE * view.scale, 90, raylib.Black)
-proc outlineHexagon*(pos: Position, view: View): void =
+proc outlineHexagon*(pos: Position, view: Viewport): void =
     outlineHexagon(pos.x, pos.y, view)
 
 #

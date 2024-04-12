@@ -11,16 +11,17 @@ import kingdom/entities/unit
 import kingdom/entities/item
 import kingdom/entities/signals
 import kingdom/controls/types
-import kingdom/controls/view
+import kingdom/controls/viewport
 import kingdom/math/hexagons
 import kingdom/math/types
-import kingdom/stringify
+import kingdom/operators
 import kingdom/wrapper/draw
 import kingdom/wrapper/types
 import kingdom/wrapper/sprites
 import kingdom/builtin/values
 import kingdom/types
 import kingdom/controls/menu
+import kingdom/models/types
 
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
@@ -97,7 +98,7 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
     return node
 
 # Draw this World object
-proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Option[seq[Coord]], view: View, edgeTileSprite: SpriteHandle): void =
+proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Option[seq[Coord]], view: Viewport, edgeTileSprite: SpriteHandle): void =
     let visible = getRadialHexagonCoords(initCoord(1, 1), initCoord(this.w, this.h), 4)
     for column in this.tiles:
         for tile in column:

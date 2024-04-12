@@ -7,7 +7,7 @@ import kingdom/entities/types
 import kingdom/builtin/values
 import kingdom/mods/loader
 import kingdom/math/types
-import kingdom/world
+import kingdom/models/world
 import kingdom/types
 import kingdom/controls/menu
 import kingdom/screens/game

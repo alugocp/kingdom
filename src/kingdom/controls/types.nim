@@ -4,7 +4,7 @@ import std/options
 import kingdom/entities/types
 import kingdom/math/types
 
-type View* = ref object
+type Viewport* = ref object
     scale*: float
     dx*: float
     dy*: float
