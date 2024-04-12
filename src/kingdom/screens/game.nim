@@ -17,7 +17,7 @@ import kingdom/controls/types
 import kingdom/controls/view
 import kingdom/world
 import kingdom/types
-import kingdom/menu
+import kingdom/controls/menu
 
 proc closeMenu*(this: Game): void
 

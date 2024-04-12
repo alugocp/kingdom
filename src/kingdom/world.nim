@@ -20,7 +20,7 @@ import kingdom/wrapper/types
 import kingdom/wrapper/sprites
 import kingdom/builtin/values
 import kingdom/types
-import kingdom/menu
+import kingdom/controls/menu
 
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =

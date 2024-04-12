@@ -4,7 +4,7 @@ import std/options
 import kingdom/entities/types
 import kingdom/math/types
 import kingdom/types
-import kingdom/menu
+import kingdom/controls/menu
 
 # Constructor for the Item type
 proc newItem*(): Item {.exportc, dynlib.} =

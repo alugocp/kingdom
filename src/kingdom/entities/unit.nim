@@ -7,7 +7,7 @@ import kingdom/entities/ability
 import kingdom/entities/item
 import kingdom/math/types
 import kingdom/types
-import kingdom/menu
+import kingdom/controls/menu
 
 # Constructor for the Unit type
 proc newUnit*(): Unit {.exportc, dynlib.} =

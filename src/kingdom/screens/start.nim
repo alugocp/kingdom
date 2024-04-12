@@ -9,8 +9,8 @@ import kingdom/mods/loader
 import kingdom/math/types
 import kingdom/world
 import kingdom/types
-import kingdom/menu
-import kingdom/game
+import kingdom/controls/menu
+import kingdom/screens/game
 
 # Constructor for the Start type
 proc newStart*(): Start =
