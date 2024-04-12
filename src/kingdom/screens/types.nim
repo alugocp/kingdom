@@ -6,18 +6,18 @@ import kingdom/models/types
 import kingdom/math/types
 
 # Parent type for different game screens
-type Screen* = ref object of RootObj
+type View* = ref object of RootObj
     keyboard*: KeyboardState
     mouse*: MouseState
 
-# Empty base implementations for methods in the Screen class
-method getNextScreen*(this: Screen): Screen {.base.} = this
-method draw*(this: Screen): void {.base.} = discard
-method consumeKeyboardUpdates*(this: Screen): void {.base.} = discard
-method consumeMouseUpdates*(this: Screen): void {.base.} = discard
+# Empty base implementations for methods in the View class
+method getNextView*(this: View): View {.base.} = this
+method draw*(this: View): void {.base.} = discard
+method consumeKeyboardUpdates*(this: View): void {.base.} = discard
+method consumeMouseUpdates*(this: View): void {.base.} = discard
 
 # Game type used to aggregate relevant data and used in mod init functions
-type Game* = ref object of Screen
+type GameView* = ref object of View
     menu*: Option[Menu]
     nextAbilityId*: int
     nextUnitId*: int
@@ -34,6 +34,6 @@ type Game* = ref object of Screen
     view*: Viewport
 
 # Type representing the game's start menu
-type Start* = ref object of Screen
+type StartView* = ref object of View
     menu*: Menu
     dead*: bool

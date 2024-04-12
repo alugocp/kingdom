@@ -33,7 +33,7 @@ proc handleLogic(this: KeyboardState): void =
     this.keysPressed(pressed)
 
 # Handles game loop logic
-proc gameLoop*(initial: Screen): void =
+proc gameLoop*(initial: View): void =
     # Initialize the Raylib game window
     initWindow(1200, 800, "Kingdom")
     defer: closeWindow()
@@ -49,4 +49,4 @@ proc gameLoop*(initial: Screen): void =
         beginDrawing()
         screen.draw()
         endDrawing()
-        screen = screen.getNextScreen()
+        screen = screen.getNextView()

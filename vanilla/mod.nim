@@ -17,7 +17,7 @@ const TILE_GRASS = "Grass"
 const TILE_WATER = "Water"
 
 # Mod initialization procedure
-proc initKingdomMod(game: Game): void {.exportc, dynlib.} =
+proc initKingdomMod(game: GameView): void {.exportc, dynlib.} =
     # Register spritesheets and set the edgeTileSprite
     let unitSprites = game.sprites.registerSheet("vanilla", "units")
     let tileSprites = game.sprites.registerSheet("vanilla", "tile")

@@ -13,8 +13,8 @@ import kingdom/controls/menu
 import kingdom/screens/types
 import kingdom/screens/game
 
-# Constructor for the Start type
-proc newStart*(): Start =
+# Constructor for the StartView type
+proc newStartView*(): StartView =
     new result
     result.keyboard = newKeyboardState()
     result.mouse = newMouseState()
@@ -25,12 +25,12 @@ proc newStart*(): Start =
     root.add(newButtonNode("Play", proc (): void = hook.dead = true ))
     result.menu = newMenu(0, 0, 500, root)
 
-# Returns which Screen should be shown in the next frame
-method getNextScreen*(this: Start): Screen =
+# Returns which View should be shown in the next frame
+method getNextView*(this: StartView): View =
     if not this.dead:
         return this
     let world = newWorld(20, 10)
-    let game = newGame(world)
+    let game = newGameView(world)
     discard game.loadMod("vanilla")
     game.sprites.loadAllSheets()
 
@@ -40,15 +40,15 @@ method getNextScreen*(this: Start): Screen =
     discard game.addNewItem("Ring of Strength", initCoord(1, 1))
     return game
 
-# Draws the Menu on this Start object
-method draw*(this: Start): void =
+# Draws the Menu on this StartView object
+method draw*(this: StartView): void =
     setBackground(WHITE)
     this.menu.draw(this.mouse)
 
 # Check for updated keyboard state and see what we have to process
-method consumeKeyboardUpdates*(this: Start): void = discard
+method consumeKeyboardUpdates*(this: StartView): void = discard
 
 # Check for updated mouse state and see what we have to process
-method consumeMouseUpdates*(this: Start): void =
+method consumeMouseUpdates*(this: StartView): void =
     if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
         discard this.menu.checkClick(this.mouse)

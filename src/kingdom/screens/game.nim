@@ -20,11 +20,11 @@ import kingdom/models/world
 import kingdom/models/types
 import kingdom/screens/types
 
-proc closeMenu*(this: Game): void
+proc closeMenu*(this: GameView): void
 
 # Constructor for a Game type
-proc newGame*(world: World): Game =
-    let g = Game(
+proc newGameView*(world: World): GameView =
+    let g = GameView(
         nextAbilityId: 0,
         nextUnitId: 0,
         nextItemId: 0,
@@ -54,7 +54,7 @@ proc newGame*(world: World): Game =
     return g
 
 # Initializes a new Unit instance and puts it in the World
-proc addNewUnit*(this: Game, key: string, pos: Coord): Unit =
+proc addNewUnit*(this: GameView, key: string, pos: Coord): Unit =
     let u = this.unitGeneration.generate(key)
     u.pos = pos
     u.id = this.nextUnitId
@@ -62,7 +62,7 @@ proc addNewUnit*(this: Game, key: string, pos: Coord): Unit =
     this.nextUnitId += 1
 
 # Initializes a new Item instance and puts it in the World
-proc addNewItem*(this: Game, key: string, pos: Coord): Unit =
+proc addNewItem*(this: GameView, key: string, pos: Coord): Unit =
     let i = this.itemGeneration.generate(key)
     i.pos = none(Coord)
     i.id = this.nextItemId
@@ -70,21 +70,21 @@ proc addNewItem*(this: Game, key: string, pos: Coord): Unit =
     this.nextItemId += 1
 
 # Close the currently open Menu in this Game
-proc closeMenu*(this: Game): void =
+proc closeMenu*(this: GameView): void =
     this.menu = none(Menu)
 
 # Open a Menu in this Game
-proc openMenu*(this: Game, menu: Menu): void =
+proc openMenu*(this: GameView, menu: Menu): void =
     this.menu = some(menu)
 
 # Open a Menu in this Game (with default options)
-proc openMenu*(this: Game, root: MenuNode): void =
+proc openMenu*(this: GameView, root: MenuNode): void =
     let m = newMenu(0, 0, 200, root)
     this.menu = some(m)
     m.pack()
 
 # Opens a menu used specifically for targeting
-proc openTargetMenu*(this: Game): void =
+proc openTargetMenu*(this: GameView): void =
     if this.targeter.isUnits():
         let units = this.targeter.units.get()
         let handler = this.targeter.unitHandler.get()
@@ -98,17 +98,17 @@ proc openTargetMenu*(this: Game): void =
             ))
         this.openMenu(node)
 
-# Returns which Screen should be shown in the next frame
-method getNextScreen*(this: Game): Screen = this
+# Returns which View should be shown in the next frame
+method getNextView*(this: GameView): View = this
 
 # Draws all elements of this Game object
-method draw*(this: Game): void =
+method draw*(this: GameView): void =
     this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view, this.edgeTileSprite)
     if this.menu.isSome:
         this.menu.get().draw(this.mouse)
 
 # Check for updated keyboard state and see what we have to process
-method consumeKeyboardUpdates*(this: Game): void =
+method consumeKeyboardUpdates*(this: GameView): void =
     let released = this.keyboard.getKeysReleased()
     if released.contains(61): # +
         this.view.zoom(0.1, this.world.w, this.world.h)
@@ -116,7 +116,7 @@ method consumeKeyboardUpdates*(this: Game): void =
         this.view.zoom(-0.1, this.world.w, this.world.h)
 
 # Check for updated mouse state and see what we have to process
-method consumeMouseUpdates*(this: Game): void =
+method consumeMouseUpdates*(this: GameView): void =
     if this.mouse.down and this.mouse.scrolling:
         this.view.scroll(
             this.mouse.pos.x - this.mouse.posprev.x,
