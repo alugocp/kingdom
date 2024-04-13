@@ -15,6 +15,7 @@ import kingdom/views/game
 # Constructor for the StartView type
 proc newStartView*(rules: GameRuleData): StartView =
     new result
+    result.viewType = ViewType.START
     result.keyboard = newKeyboardState()
     result.mouse = newMouseState()
     result.rules = rules

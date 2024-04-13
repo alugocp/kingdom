@@ -21,6 +21,7 @@ proc closeMenu*(this: GameView): void
 # Constructor for a Game type
 proc newGameView*(rules: GameRuleData, world: World): GameView =
     let g = GameView(
+        viewType: ViewType.GAME,
         nextAbilityId: 0,
         nextUnitId: 0,
         nextItemId: 0,

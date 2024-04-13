@@ -10,7 +10,6 @@ proc newModCoreInterface*(view: View, rules: GameRuleData): ModCoreInterface =
 
 # Gets the current View in this ModCoreInterface as a GameView
 proc getGameView*(this: ModCoreInterface): GameView {.exportc, dynlib.} =
-    if not (this.view is GameView):
+    if this.view.viewType != ViewType.GAME:
         raise newException(Exception, "Current View is not a GameView")
     return GameView(this.view)
-

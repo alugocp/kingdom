@@ -3,8 +3,14 @@ import kingdom/controls/types
 import kingdom/models/types
 import kingdom/math/types
 
+# Enum used to differentiate subtypes of View
+type ViewType* = enum
+    START
+    GAME
+
 # Parent type for different game screens
 type View* = ref object of RootObj
+    viewType*: ViewType
     rules*: GameRuleData
     keyboard*: KeyboardState
     mouse*: MouseState

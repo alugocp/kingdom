@@ -44,7 +44,7 @@ proc gameLoop*(): void =
     defer: closeWindow()
     setTargetFPS(30)
 
-    # Initialize the game logic
+    # Initialize all the game data
     let rules = newGameRuleData()
     let initial = newStartView(rules)
     let state = newModCoreInterface(initial, rules)
