@@ -28,6 +28,5 @@ type GameView* = ref object of View
 
 # Type representing the game's start menu
 type StartView* = ref object of View
-    first*: bool
     menu*: Menu
     dead*: bool

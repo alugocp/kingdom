@@ -26,20 +26,6 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
         nextItemId: 0,
         targeter: newTargeter(),
         rules: rules,
-        #sprites: newSpriteManager(),
-        #edgeTileSprite: NULL_SPRITE,
-        #unitGeneration: GenerationManager[Unit](
-        #    generators: initTable[string, FullGenerator[Unit]]()
-        #),
-        #tileGeneration: GenerationManager[Tile](
-        #    generators: initTable[string, FullGenerator[Tile]]()
-        #),
-        #itemGeneration: GenerationManager[Item](
-        #    generators: initTable[string, FullGenerator[Item]]()
-        #),
-        #abilityGeneration: GenerationManager[Ability](
-        #    generators: initTable[string, FullGenerator[Ability]]()
-        #),
         keyboard: newKeyboardState(),
         mouse: newMouseState(),
         hoveredHex: none(Coord),

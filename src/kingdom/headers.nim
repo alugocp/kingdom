@@ -4,7 +4,12 @@ import kingdom/entities/types
 import kingdom/controls/types
 import kingdom/wrapper/types
 import kingdom/models/types
+import kingdom/views/types
 import kingdom/math/types
+import kingdom/mods/types
+
+# src/kingdom/mods/core.nim
+proc getGameView*(this: ModCoreInterface): GameView {.importc.}
 
 # src/kingdom/wrapper/sprites.nim
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.importc.}

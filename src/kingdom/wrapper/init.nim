@@ -1,10 +1,15 @@
 import raylib
 import std/sets
+import kingdom/wrapper/sprites
 import kingdom/controls/types
 import kingdom/controls/mouse
 import kingdom/controls/keyboard
+import kingdom/models/rules
+import kingdom/views/start
 import kingdom/views/types
 import kingdom/math/types
+import kingdom/mods/loader
+import kingdom/mods/core
 
 # Record mouse state for later consumption
 proc handleLogic(this: MouseState): void =
@@ -33,20 +38,26 @@ proc handleLogic(this: KeyboardState): void =
     this.keysPressed(pressed)
 
 # Handles game loop logic
-proc gameLoop*(initial: View): void =
+proc gameLoop*(): void =
     # Initialize the Raylib game window
     initWindow(1200, 800, "Kingdom")
     defer: closeWindow()
     setTargetFPS(30)
-    var screen = initial
+
+    # Initialize the game logic
+    let rules = newGameRuleData()
+    let initial = newStartView(rules)
+    let state = newModCoreInterface(initial, rules)
+    discard state.loadMod("vanilla")
+    rules.sprites.loadAllSheets()
 
     # Raylib game loop
     while not windowShouldClose():
-        screen.mouse.handleLogic()
-        screen.keyboard.handleLogic()
-        screen.consumeKeyboardUpdates()
-        screen.consumeMouseUpdates()
+        state.view.mouse.handleLogic()
+        state.view.keyboard.handleLogic()
+        state.view.consumeKeyboardUpdates()
+        state.view.consumeMouseUpdates()
         beginDrawing()
-        screen.draw()
+        state.view.draw()
         endDrawing()
-        screen = screen.getNextView()
+        state.view = state.view.getNextView()

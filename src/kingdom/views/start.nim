@@ -2,26 +2,23 @@ import kingdom/generation/manager
 import kingdom/controls/keyboard
 import kingdom/controls/mouse
 import kingdom/controls/types
-import kingdom/wrapper/sprites
 import kingdom/wrapper/draw
 import kingdom/entities/types
 import kingdom/builtin/values
-import kingdom/mods/loader
 import kingdom/math/types
 import kingdom/models/world
-import kingdom/models/rules
+import kingdom/models/types
 import kingdom/controls/menu
 import kingdom/views/types
 import kingdom/views/game
 
 # Constructor for the StartView type
-proc newStartView*(): StartView =
+proc newStartView*(rules: GameRuleData): StartView =
     new result
-    result.rules = newGameRuleData()
     result.keyboard = newKeyboardState()
     result.mouse = newMouseState()
+    result.rules = rules
     result.dead = false
-    result.first = true
     let hook = result
     let root = newListNode()
     root.add(newTextNode("Hello, and welcome to my game!"))
@@ -43,10 +40,6 @@ method getNextView*(this: StartView): View =
 
 # Draws the Menu on this StartView object
 method draw*(this: StartView): void =
-    if this.first:
-        discard this.rules.loadMod("vanilla")
-        this.rules.sprites.loadAllSheets()
-        this.first = false
     setBackground(WHITE)
     this.menu.draw(this.mouse)
 
