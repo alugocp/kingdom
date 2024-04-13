@@ -1,12 +1,11 @@
 import std/options
-import kingdom/generation/types
 import kingdom/controls/types
-import kingdom/wrapper/types
 import kingdom/models/types
 import kingdom/math/types
 
 # Parent type for different game screens
 type View* = ref object of RootObj
+    rules*: GameRuleData
     keyboard*: KeyboardState
     mouse*: MouseState
 
@@ -23,17 +22,12 @@ type GameView* = ref object of View
     nextUnitId*: int
     nextItemId*: int
     targeter*: Targeter
-    sprites*: SpriteManager
-    unitGeneration*: UnitGenerationManager
-    tileGeneration*: TileGenerationManager
-    itemGeneration*: ItemGenerationManager
-    abilityGeneration*: AbilityGenerationManager
-    edgeTileSprite*: SpriteHandle
     hoveredHex*: Option[Coord]
     world*: World
     view*: Viewport
 
 # Type representing the game's start menu
 type StartView* = ref object of View
+    first*: bool
     menu*: Menu
     dead*: bool

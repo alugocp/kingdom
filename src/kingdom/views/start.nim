@@ -9,6 +9,7 @@ import kingdom/builtin/values
 import kingdom/mods/loader
 import kingdom/math/types
 import kingdom/models/world
+import kingdom/models/rules
 import kingdom/controls/menu
 import kingdom/views/types
 import kingdom/views/game
@@ -16,9 +17,11 @@ import kingdom/views/game
 # Constructor for the StartView type
 proc newStartView*(): StartView =
     new result
+    result.rules = newGameRuleData()
     result.keyboard = newKeyboardState()
     result.mouse = newMouseState()
     result.dead = false
+    result.first = true
     let hook = result
     let root = newListNode()
     root.add(newTextNode("Hello, and welcome to my game!"))
@@ -30,18 +33,20 @@ method getNextView*(this: StartView): View =
     if not this.dead:
         return this
     let world = newWorld(20, 10)
-    let game = newGameView(world)
-    discard game.loadMod("vanilla")
-    game.sprites.loadAllSheets()
+    let game = newGameView(this.rules, world)
 
     # Testing code
-    world.build(proc (x: int, y: int): Tile = game.tileGeneration.generate(if x == 1 and y == 0: "Water" else: "Grass"))
+    world.build(proc (x: int, y: int): Tile = game.rules.tileGeneration.generate(if x == 1 and y == 0: "Water" else: "Grass"))
     discard game.addNewUnit("Plasmoid Adventurer", initCoord(0, 0))
     discard game.addNewItem("Ring of Strength", initCoord(1, 1))
     return game
 
 # Draws the Menu on this StartView object
 method draw*(this: StartView): void =
+    if this.first:
+        discard this.rules.loadMod("vanilla")
+        this.rules.sprites.loadAllSheets()
+        this.first = false
     setBackground(WHITE)
     this.menu.draw(this.mouse)
 

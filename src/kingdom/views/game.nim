@@ -1,15 +1,11 @@
 import std/sets
 import std/sugar
-import std/tables
 import std/options
 import std/sequtils
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/generation/manager
-import kingdom/generation/types
 import kingdom/entities/types
-import kingdom/wrapper/sprites
-import kingdom/wrapper/types
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
 import kingdom/controls/viewport
@@ -23,26 +19,27 @@ import kingdom/views/types
 proc closeMenu*(this: GameView): void
 
 # Constructor for a Game type
-proc newGameView*(world: World): GameView =
+proc newGameView*(rules: GameRuleData, world: World): GameView =
     let g = GameView(
         nextAbilityId: 0,
         nextUnitId: 0,
         nextItemId: 0,
         targeter: newTargeter(),
-        sprites: newSpriteManager(),
-        edgeTileSprite: NULL_SPRITE,
-        unitGeneration: GenerationManager[Unit](
-            generators: initTable[string, FullGenerator[Unit]]()
-        ),
-        tileGeneration: GenerationManager[Tile](
-            generators: initTable[string, FullGenerator[Tile]]()
-        ),
-        itemGeneration: GenerationManager[Item](
-            generators: initTable[string, FullGenerator[Item]]()
-        ),
-        abilityGeneration: GenerationManager[Ability](
-            generators: initTable[string, FullGenerator[Ability]]()
-        ),
+        rules: rules,
+        #sprites: newSpriteManager(),
+        #edgeTileSprite: NULL_SPRITE,
+        #unitGeneration: GenerationManager[Unit](
+        #    generators: initTable[string, FullGenerator[Unit]]()
+        #),
+        #tileGeneration: GenerationManager[Tile](
+        #    generators: initTable[string, FullGenerator[Tile]]()
+        #),
+        #itemGeneration: GenerationManager[Item](
+        #    generators: initTable[string, FullGenerator[Item]]()
+        #),
+        #abilityGeneration: GenerationManager[Ability](
+        #    generators: initTable[string, FullGenerator[Ability]]()
+        #),
         keyboard: newKeyboardState(),
         mouse: newMouseState(),
         hoveredHex: none(Coord),
@@ -55,7 +52,7 @@ proc newGameView*(world: World): GameView =
 
 # Initializes a new Unit instance and puts it in the World
 proc addNewUnit*(this: GameView, key: string, pos: Coord): Unit =
-    let u = this.unitGeneration.generate(key)
+    let u = this.rules.unitGeneration.generate(key)
     u.pos = pos
     u.id = this.nextUnitId
     this.world.moveUnit(u, pos)
@@ -63,7 +60,7 @@ proc addNewUnit*(this: GameView, key: string, pos: Coord): Unit =
 
 # Initializes a new Item instance and puts it in the World
 proc addNewItem*(this: GameView, key: string, pos: Coord): Unit =
-    let i = this.itemGeneration.generate(key)
+    let i = this.rules.itemGeneration.generate(key)
     i.pos = none(Coord)
     i.id = this.nextItemId
     this.world.moveItem(i, some(pos))
@@ -103,7 +100,7 @@ method getNextView*(this: GameView): View = this
 
 # Draws all elements of this Game object
 method draw*(this: GameView): void =
-    this.world.draw(this.sprites, this.hoveredHex, this.targeter.coords, this.view, this.edgeTileSprite)
+    this.world.draw(this.rules.sprites, this.hoveredHex, this.targeter.coords, this.view, this.rules.edgeTileSprite)
     if this.menu.isSome:
         this.menu.get().draw(this.mouse)
 

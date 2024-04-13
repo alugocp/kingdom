@@ -7,7 +7,7 @@ import kingdom/entities/types
 import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
-import kingdom/views/types
+import kingdom/models/types
 
 # Labels for mod content
 const ABILITY_MOVE = "Move"
@@ -17,7 +17,7 @@ const TILE_GRASS = "Grass"
 const TILE_WATER = "Water"
 
 # Mod initialization procedure
-proc initKingdomMod(game: GameView): void {.exportc, dynlib.} =
+proc initKingdomMod(game: GameRuleData): void {.exportc, dynlib.} =
     # Register spritesheets and set the edgeTileSprite
     let unitSprites = game.sprites.registerSheet("vanilla", "units")
     let tileSprites = game.sprites.registerSheet("vanilla", "tile")
@@ -38,10 +38,11 @@ proc initKingdomMod(game: GameView): void {.exportc, dynlib.} =
         let ability = newAbility()
         ability.name = ABILITY_MOVE
         ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[AbilityClickedSignalArgs](args)
-            let targets = a.host.pos.getAdjacentHexagonCoords(game.world.getBounds())
-            let filtered = targets.filterIt(game.world.canUnitTravelAcrossTiles(a.host, a.host.pos, it))
-            game.targeter.target(filtered, proc (c: Coord): void = game.world.moveUnit(a.host, c))
+            # let a = cast[AbilityClickedSignalArgs](args)
+            # let targets = a.host.pos.getAdjacentHexagonCoords(game.world.getBounds())
+            # let filtered = targets.filterIt(game.world.canUnitTravelAcrossTiles(a.host, a.host.pos, it))
+            # game.targeter.target(filtered, proc (c: Coord): void = game.world.moveUnit(a.host, c))
+            discard
         )
         return ability
     )

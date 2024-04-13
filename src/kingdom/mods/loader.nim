@@ -1,15 +1,15 @@
 import std/dynlib
 import std/strformat
-import kingdom/views/types
+import kingdom/models/types
 
 # Type representing a mod's entry function
-type ModEntryPoint = proc(game: GameView): void {.gcsafe, stdcall.}
+type ModEntryPoint = proc(game: GameRuleData): void {.gcsafe, stdcall.}
 
 # Platform interface function that will inflate a mod archive file
 proc inflateMod(modname: cstring): void {.importc: "inflate_mod".}
 
 # Loads a mod and runs its init function
-proc loadMod*(game: GameView, modname: string): bool =
+proc loadMod*(game: GameRuleData, modname: string): bool =
     # We cannot import anything that uses std/streams until https://github.com/nim-lang/Nim/pull/23163 is merged
     inflateMod(modname)
 
