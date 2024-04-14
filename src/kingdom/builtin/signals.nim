@@ -23,6 +23,16 @@ proc newCanCrossBorderSignalArgs*(tile: Tile, side: HexSides, border: string): C
     result.tile = tile
     return result
 
+# Payload when calculating a unit's visibility
+type GetVisibilitySignalArgs* = ref object of BaseSignalArgs
+    visibility*: Natural
+
+proc newGetVisibilitySignalArgs*(): GetVisibilitySignalArgs =
+    new result
+    result.channel = GET_VISIBILITY_CHANNEL
+    result.visibility = 1
+    return result
+
 # BUILT-IN TILE SIGNAL ARGS TYPES
 
 # BUILT-IN ABILITY SIGNAL ARGS TYPES

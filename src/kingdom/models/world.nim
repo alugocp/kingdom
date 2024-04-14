@@ -106,8 +106,14 @@ proc getVisibleTiles(this: World, topLeft: Coord, botRight: Coord): HashSet[Coor
             let c = initCoord(x, y)
             if this.contains(c):
                 let units = this.getUnits(c)
-                if units.len > 0:
-                    tiles = tiles + getRadialHexagonCoords(c, botRight, 2)
+                var max = 0
+                for unit in units:
+                    var payload = newGetVisibilitySignalArgs()
+                    unit.handleSignal(@[], payload)
+                    if payload.visibility > max:
+                        max = payload.visibility
+                if max > 0:
+                    tiles = tiles + getRadialHexagonCoords(c, botRight, max)
     return tiles
 
 # Draw this World object

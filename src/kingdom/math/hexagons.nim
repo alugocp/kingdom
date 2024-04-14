@@ -54,6 +54,7 @@ proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.exportc, d
 proc getRadialHexagonCoords*(c: Coord, bounds: Coord, r: Natural): HashSet[Coord] =
     var results = initHashSet[Coord]()
     var next = initHashSet[Coord]()
+    results.incl(c)
     next.incl(c)
     for a in 1..r:
         let outer = next
