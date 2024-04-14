@@ -60,6 +60,7 @@ type Item* = ref object
 type Unit* = ref object
     id*: int
     pos*: Coord
+    player*: int
     sprite*: SpriteHandle
     handlers*: SignalHandlersTable[Unit]
     name*: string

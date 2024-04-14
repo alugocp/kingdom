@@ -4,6 +4,7 @@ import kingdom/entities/types
 import kingdom/entities/signals
 import kingdom/builtin/channels
 import kingdom/builtin/signals
+import kingdom/builtin/values
 import kingdom/controls/types
 import kingdom/controls/menu
 
@@ -18,7 +19,7 @@ proc newAbility*(): Ability {.exportc, dynlib.} =
 # Return a MenuNode describing this Ability
 proc getMenuNode*(this: Ability, host: Unit): MenuNode =
     let node = newListNode()
-    if this.hasSignalHandler(ABILITY_CLICKED_CHANNEL):
+    if host.player == HUMAN_PLAYER and this.hasSignalHandler(ABILITY_CLICKED_CHANNEL):
         node.add(newButtonNode(this.name, proc (): void =
             this.handleSignal(@[], newAbilityClickedSignalArgs(host))
         ))

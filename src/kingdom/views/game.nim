@@ -38,9 +38,10 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
     return g
 
 # Initializes a new Unit instance and puts it in the World
-proc addNewUnit*(this: GameView, key: string, pos: Coord): Unit =
+proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int): Unit =
     let u = this.rules.unitGeneration.generate(key)
     u.pos = pos
+    u.player = player
     u.id = this.nextUnitId
     this.world.moveUnit(u, pos)
     this.nextUnitId += 1

@@ -8,6 +8,7 @@ import kingdom/entities/item
 import kingdom/math/types
 import kingdom/controls/types
 import kingdom/controls/menu
+import kingdom/builtin/values
 
 # Constructor for the Unit type
 proc newUnit*(): Unit {.exportc, dynlib.} =
@@ -16,6 +17,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.name = "unnamed"
     result.desc = none(string)
     result.sprite = NULL_SPRITE
+    result.player = HUMAN_PLAYER
     result.pos = initCoord(0, 0)
     result.handlers = initTable[string, seq[SignalHandler[Unit]]]()
     result.abilities = @[]
@@ -29,6 +31,8 @@ proc getMenuNode*(this: Unit, unequip: (Item) -> void): MenuNode =
     node.add(newHeaderNode(this.name))
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
+    if this.player == HUMAN_PLAYER:
+        node.add(newTextNode("This unit is under your control"))
     if this.abilities.len > 0:
         node.add(newSpaceNode())
         node.add(newTextNode("Abilities:"))
@@ -44,5 +48,5 @@ proc getMenuNode*(this: Unit, unequip: (Item) -> void): MenuNode =
         node.add(newTextNode("Items:"))
         for item in this.items:
             let item1 = item
-            node.add(item.getUnitMenuNode(() => unequip(item1)))
+            node.add(item.getUnitMenuNode(this.player, () => unequip(item1)))
     return node

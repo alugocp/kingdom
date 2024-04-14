@@ -1,6 +1,9 @@
 
 # BUILT-IN VALUES FOR THE GAME CORE
 
+# Human player ID
+const HUMAN_PLAYER* = 0
+
 # Default Tile border value
 const OPEN_BORDER* = "none"
 

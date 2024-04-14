@@ -5,6 +5,7 @@ import kingdom/entities/types
 import kingdom/math/types
 import kingdom/controls/types
 import kingdom/controls/menu
+import kingdom/builtin/values
 
 # Constructor for the Item type
 proc newItem*(): Item {.exportc, dynlib.} =
@@ -17,11 +18,12 @@ proc newItem*(): Item {.exportc, dynlib.} =
     return result
 
 # Return a MenuNode describing this Item when equipped to a Unit
-proc getUnitMenuNode*(this: Item, unequip: () -> void): MenuNode =
+proc getUnitMenuNode*(this: Item, player: int, unequip: () -> void): MenuNode =
     let node = newListNode()
     node.add(newTextNode(this.name))
     node.add(newTextNode(this.desc))
-    node.add(newButtonNode("Unequip", unequip))
+    if player == HUMAN_PLAYER:
+        node.add(newButtonNode("Unequip", unequip))
     return node
 
 # Return a MenuNode describing this Item when it has no host Unit

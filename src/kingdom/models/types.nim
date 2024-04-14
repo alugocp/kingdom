@@ -4,6 +4,7 @@ import kingdom/wrapper/types
 
 # World type to contain Tile objects
 type World* = ref object
+    nextPlayerId*: int
     units*: seq[seq[seq[Unit]]]
     items*: seq[seq[seq[Item]]]
     tiles*: seq[seq[Tile]]

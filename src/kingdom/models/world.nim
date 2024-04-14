@@ -27,6 +27,7 @@ import kingdom/models/types
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
     new result
+    result.nextPlayerId = 1
     result.w = w
     result.h = h
 
@@ -58,6 +59,11 @@ proc getUnits*(this: World, c: Coord): seq[Unit] = this.units[c.x][c.y]
 
 # Retrieves a set of Items on a Tile in this World
 proc getItems*(this: World, c: Coord): seq[Item] = this.items[c.x][c.y]
+
+# Creates a new player ID and returns it
+proc createNewPlayer*(this: World): int =
+    result = this.nextPlayerId
+    this.nextPlayerId += 1
 
 # Moves a Unit from one Tile in this World to another
 proc moveUnit*(this: World, u: Unit, c: Coord): void {.exportc, dynlib.} =
@@ -108,10 +114,11 @@ proc getVisibleTiles(this: World, topLeft: Coord, botRight: Coord): HashSet[Coor
                 let units = this.getUnits(c)
                 var max = 0
                 for unit in units:
-                    var payload = newGetVisibilitySignalArgs()
-                    unit.handleSignal(@[], payload)
-                    if payload.visibility > max:
-                        max = payload.visibility
+                    if unit.player == HUMAN_PLAYER:
+                        var payload = newGetVisibilitySignalArgs()
+                        unit.handleSignal(@[], payload)
+                        if payload.visibility > max:
+                            max = payload.visibility
                 if max > 0:
                     tiles = tiles + getRadialHexagonCoords(c, botRight, max)
     return tiles

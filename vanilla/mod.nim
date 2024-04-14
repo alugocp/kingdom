@@ -14,6 +14,7 @@ import kingdom/mods/types
 const ABILITY_MOVE = "Move"
 const ITEM_RING_OF_STRENGTH = "Ring of Strength"
 const UNIT_PLASMOID_ADVENTURER = "Plasmoid Adventurer"
+const UNIT_FERNANDO_UNFALTERING_GAZE = "Fernando of the Unfaltering Gaze"
 const TILE_GRASS = "Grass"
 const TILE_WATER = "Water"
 
@@ -30,6 +31,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_PLASMOID_ADVENTURER
         unit.desc = some("Slimy guy")
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
+        unit.abilities.add(game.rules.abilityGeneration.generate(ABILITY_MOVE))
+        return unit
+    )
+    game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_UNFALTERING_GAZE, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_FERNANDO_UNFALTERING_GAZE
+        unit.desc = some("He's a notorious Garuda warlock")
+        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 48, 0)
         unit.abilities.add(game.rules.abilityGeneration.generate(ABILITY_MOVE))
         return unit
     )
