@@ -111,7 +111,10 @@ method consumeMouseUpdates*(this: GameView): void =
 
     # check if the user is hovering over a hexagonal Tile
     let hex = getHexagonCoords(this.view.screenToGame(this.mouse.pos))
-    this.hoveredHex = hex
+    if this.world.contains(hex):
+        this.hoveredHex = some(hex)
+    else:
+        this.hoveredHex = none(Coord)
 
     # Process a click event
     if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
@@ -119,15 +122,15 @@ method consumeMouseUpdates*(this: GameView): void =
             let clicked = this.menu.get().checkClick(this.mouse)
             if clicked: return
             else: this.closeMenu()
-        if hex.isSome and this.world.contains(hex.get()):
+        if this.world.contains(hex):
             if this.targeter.isCoords():
-                if this.targeter.coords.get().contains(hex.get()):
-                    this.targeter.coordHandler.get()(hex.get())
+                if this.targeter.coords.get().contains(hex):
+                    this.targeter.coordHandler.get()(hex)
                     this.targeter.cancel()
                     return
                 this.targeter.cancel()
             let node = this.world.getMenuNode(
-                hex.get(),
+                hex,
                 (n: MenuNode) => this.openMenu(n),
                 proc (i: Item): void =
                     let units = this.world.getUnits(i.pos.get())

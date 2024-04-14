@@ -1,6 +1,5 @@
 import std/sets
 import std/math
-import std/options
 import std/sequtils
 import std/strformat
 import kingdom/math/types
@@ -98,30 +97,22 @@ proc getSharedSide*(h1: Coord, h2: Coord): HexSides =
     raise newException(Exception, fmt"The hexagons at {h1} and {h2} don't share any sides")
 
 # Get the coordinates of the hexagon that this position falls into
-proc getHexagonCoords*(p: Position): Option[Coord] =
-    type Vector = object
-        x: int
-        y: int
-    proc initVector(x: int, y: int): Vector = Vector(x: x, y: y)
-    let g = initVector(int(floor(p.x / HALF_W)), int(floor(p.y / HALF_S)))
+proc getHexagonCoords*(p: Position): Coord =
+    let g = initCoord(int(floor(p.x / HALF_W)), int(floor(p.y / HALF_S)))
     if g.y mod 3 == 0:
-        let z = initVector(g.x, int(g.y / 3))
+        let z = initCoord(g.x, int(g.y / 3))
         let l = initPosition(p.x - (float(g.x) * HALF_W), p.y - (float(g.y) * HALF_S))
-        let b = initVector(int(floor((z.x - (z.y mod 2)) / 2)), z.y)
-        var d = initVector(0, 0)
+        let b = initCoord(int(floor((z.x - (z.y mod 2)) / 2)), z.y)
+        var d = initCoord(0, 0)
         if (z.x mod 2) == 0 and (z.y mod 2) == 0 and l.y < HALF_S - (r3n1 * l.x):
-            d = initVector(-1, -1)
+            d = initCoord(-1, -1)
         elif (z.x mod 2) == 1 and (z.y mod 2) == 0 and l.y < r3n1 * l.x:
-            d = initVector(0, -1)
+            d = initCoord(0, -1)
         elif (z.x mod 2) == 0 and (z.y mod 2) == 1 and l.y < r3n1 * l.x:
-            d = initVector(1, -1)
+            d = initCoord(1, -1)
         elif (z.x mod 2) == 1 and (z.y mod 2) == 1 and l.y < HALF_S - (r3n1 * l.x):
-            d = initVector(0, -1)
-        if b.x + d.x >= 0 and b.y + d.y >= 0:
-            return some(initCoord(b.x + d.x, b.y + d.y))
-    else:
-        let hy = int(floor(g.y / 3))
-        let hx = int(floor((g.x - (hy mod 2)) / 2))
-        if hx >= 0 and hy >= 0:
-            return some(initCoord(hx, hy))
-    return none(Coord)
+            d = initCoord(0, -1)
+        return initCoord(b.x + d.x, b.y + d.y)
+    let hy = int(floor(g.y / 3))
+    let hx = int(floor((g.x - (hy mod 2)) / 2))
+    return initCoord(hx, hy)

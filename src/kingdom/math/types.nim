@@ -1,10 +1,10 @@
 
 # Game coordinate type
 type Coord* = object
-    x*: Natural
-    y*: Natural
+    x*: int
+    y*: int
 
-proc initCoord*(x: Natural, y: Natural): Coord = Coord(x: x, y: y)
+proc initCoord*(x: int, y: int): Coord = Coord(x: x, y: y)
 
 # Like a Coordinate but with floats
 type Position* = object
