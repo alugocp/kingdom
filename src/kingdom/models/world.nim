@@ -1,4 +1,5 @@
 import std/math
+import std/sets
 import std/sugar
 import std/tables
 import std/options
@@ -97,17 +98,30 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
         node.add(newButtonNode(i.name, () => open(root)))
     return node
 
+# Return a set of tiles on the screen that you have visibility on
+proc getVisibleTiles(this: World, topLeft: Coord, botRight: Coord): HashSet[Coord] =
+    var tiles = initHashSet[Coord]()
+    for x in topLeft.x..botRight.x:
+        for y in topLeft.y..botRight.y:
+            let c = initCoord(x, y)
+            if this.contains(c):
+                let units = this.getUnits(c)
+                if units.len > 0:
+                    tiles = tiles + getRadialHexagonCoords(c, botRight, 2)
+    return tiles
+
 # Draw this World object
 proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Option[seq[Coord]], view: Viewport, edgeTileSprite: SpriteHandle): void =
-    let visible = getRadialHexagonCoords(initCoord(1, 1), initCoord(this.w, this.h), 4)
-
-    # Find hexagon coords for screen bounds
-    let topLeft = getHexagonCoords(view.screenToGame(initPosition(0, 0)))
-    let botRight = getHexagonCoords(view.screenToGame(getWindowBounds()))
+    # Find hexagon coords for screen bounds and calculate tile visibility
+    let tl = getHexagonCoords(view.screenToGame(initPosition(0, 0)))
+    let br = getHexagonCoords(view.screenToGame(getWindowBounds()))
+    let topLeft = initCoord(tl.x - 1, tl.y - 1)
+    let botRight = initCoord(br.x + 1, br.y + 1)
+    let visible = this.getVisibleTiles(topLeft, botRight)
 
     # Draw every hexagon currently on the screen
-    for x in topLeft.x..botRight.x + 1:
-        for y in topLeft.y..botRight.y + 1:
+    for x in topLeft.x..botRight.x:
+        for y in topLeft.y..botRight.y:
             let center = getHexagonCenterPoint(x, y)
             if x < 0 or x >= this.w or y < 0 or y >= this.h:
                 sm.drawSprite(edgeTileSprite, view, view.gameToScreen(initPosition(center.x - HALF_W, center.y - SIDE)))
@@ -124,13 +138,12 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
                     drawHexagon(view.gameToScreen(center), DARKER, view)
                 outlineHexagon(view.gameToScreen(center), view)
 
-                # Draw any Units on the Tile
-                let units = this.getUnits(tile.pos)
-                if units.len > 0:
-                    sm.drawSprite(units[0].sprite, view, view.gameToScreen(initPosition(center.x - 12, center.y - 12)))
-
-                # Low visibility tiles
-                if not (tile.pos in visible):
+                # Draw Units but only on visible Tiles
+                if tile.pos in visible:
+                    let units = this.getUnits(tile.pos)
+                    if units.len > 0:
+                        sm.drawSprite(units[0].sprite, view, view.gameToScreen(initPosition(center.x - 12, center.y - 12)))
+                else:
                     drawHexagon(view.gameToScreen(center), DARKER, view)
 
 # Checks if the Unit can cross the border from one Tile to another
