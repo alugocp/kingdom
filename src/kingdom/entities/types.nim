@@ -3,6 +3,7 @@ import std/tables
 import std/options
 import kingdom/math/types
 import kingdom/wrapper/types
+import kingdom/builtin/values
 
 # STAT TYPES
 
@@ -61,6 +62,7 @@ type Unit* = ref object
     id*: int
     pos*: Coord
     player*: int
+    party*: Option[int]
     sprite*: SpriteHandle
     handlers*: SignalHandlersTable[Unit]
     name*: string
@@ -80,3 +82,9 @@ type Tile* = ref object
 
 # Combined entity type
 type Entity* = Unit | Tile | Item | Ability
+
+# Party type
+type Party* = ref object
+    members*: array[0..(PARTY_LIMIT - 1), Option[Unit]]
+    id*: int
+    n*: int

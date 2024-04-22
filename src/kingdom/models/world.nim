@@ -31,20 +31,23 @@ proc newWorld*(w: Natural, h: Natural): World =
     result.w = w
     result.h = h
 
+# Initializes a TileData object
+proc initTileData(t: Tile): TileData =
+    result.tile = t
+    result.units = @[]
+    result.items = @[]
+    result.parties = @[]
+
 # Fills out the Tiles in this World
 proc build*(this: World, generate: (x: int, y: int) -> Tile): void =
     var id = 0
     for x in 0..(this.w - 1):
         this.tiles.add(@[])
-        this.units.add(@[])
-        this.items.add(@[])
         for y in 0..(this.h - 1):
             let t = generate(x, y)
             t.id = id
             t.pos = initCoord(x, y)
-            this.tiles[x].add(t)
-            this.units[x].add(@[])
-            this.items[x].add(@[])
+            this.tiles[x].add(initTileData(t))
             id += 1
 
 # Returns the bounds of this World as a Coord
@@ -52,13 +55,16 @@ proc getBounds*(this: World): Coord {.exportc, dynlib.} =
     initCoord(this.w, this.h)
 
 # Retrieves a Tile in this World
-proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y]
+proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y].tile
 
 # Retrieves a set of Units on a Tile in this World
-proc getUnits*(this: World, c: Coord): seq[Unit] = this.units[c.x][c.y]
+proc getUnits*(this: World, c: Coord): seq[Unit] = this.tiles[c.x][c.y].units
 
 # Retrieves a set of Items on a Tile in this World
-proc getItems*(this: World, c: Coord): seq[Item] = this.items[c.x][c.y]
+proc getItems*(this: World, c: Coord): seq[Item] = this.tiles[c.x][c.y].items
+
+# Retrieves a set of Parties on a Tile in this World
+proc getParties*(this: World, c: Coord): seq[Party] = this.parties[c.x][c.y].parties
 
 # Creates a new player ID and returns it
 proc createNewPlayer*(this: World): int =

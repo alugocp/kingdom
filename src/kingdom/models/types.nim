@@ -2,12 +2,16 @@ import kingdom/generation/types
 import kingdom/entities/types
 import kingdom/wrapper/types
 
+type TileData* = object
+    parties*: seq[Party]
+    items*: seq[Item]
+    units*: seq[Unit]
+    tile*: Tile
+
 # World type to contain Tile objects
 type World* = ref object
+    tiles*: seq[seq[TileData]]
     nextPlayerId*: int
-    units*: seq[seq[seq[Unit]]]
-    items*: seq[seq[seq[Item]]]
-    tiles*: seq[seq[Tile]]
     w*: Natural
     h*: Natural
 

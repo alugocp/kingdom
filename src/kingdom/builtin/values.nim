@@ -1,6 +1,9 @@
 
 # BUILT-IN VALUES FOR THE GAME CORE
 
+# Max party size
+const PARTY_LIMIT* = 8
+
 # Human player ID
 const HUMAN_PLAYER* = 0
 
