@@ -50,9 +50,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
             let view = game.getGameView()
             let a = cast[AbilityClickedSignalArgs](args)
-            let targets = a.host.pos.getAdjacentHexagonCoords(view.world.getBounds())
-            let filtered = targets.filterIt(view.world.canUnitTravelAcrossTiles(a.host, a.host.pos, it))
             let party = view.world.getParty(a.host)
+            let targets = a.host.pos.getAdjacentHexagonCoords(view.world.getBounds())
+            # TODO rework this to consider all party members
+            let filtered = targets.filterIt(view.world.canUnitTravelAcrossTiles(a.host, a.host.pos, it))
             view.targeter.target(filtered, proc (c: Coord): void = view.world.moveParty(party, c))
         )
         return ability

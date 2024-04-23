@@ -36,18 +36,26 @@ proc addToParty*(this: Party, u: Unit): void =
     u.party = this.id
     this.n += 1
 
-# Removes some unit from the Party
-proc removeFromParty*(this: Party, u: Unit): void =
+# Removes some unit from the Party and returns true if this party is empty
+proc removeFromParty*(this: Party, u: Unit): bool =
     for a in 0..(this.n - 1):
         if this.members[a].get() == u:
-            u.party = -1
+            u.party = NO_PARTY
             this.n -= 1
             if a < this.n:
                 for b in (a + 1)..this.n:
                     this.members[b - 1] = this.members[b]
             this.members[this.n] = none(Unit)
-            return
+            return this.n == 0
     raise newException(Exception, fmt"Could not remove missing unit {u.name} from the party")
+
+# Moves a Unit from this Party to another and returns true if this party is empty
+proc giveToAnotherParty*(this: Party, other: Party, u: Unit): bool =
+    if this == other:
+        return
+    let empty = this.removeFromParty(u)
+    other.addToParty(u)
+    return empty
 
 # Returns a MenuNode for viewing this Party's data
 proc getMenuNode*(this: Party, open: (MenuNode) -> void, unequip: (Item) -> void): MenuNode =

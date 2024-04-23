@@ -15,7 +15,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     new result
     result.id = 1
     result.name = "unnamed"
-    result.party = -1
+    result.party = NO_PARTY
     result.desc = none(string)
     result.sprite = NULL_SPRITE
     result.player = HUMAN_PLAYER

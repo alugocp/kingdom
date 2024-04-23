@@ -4,6 +4,9 @@
 # Max party size
 const PARTY_LIMIT* = 8
 
+# Null party ID
+const NO_PARTY* = -1
+
 # Human player ID
 const HUMAN_PLAYER* = 0
 
