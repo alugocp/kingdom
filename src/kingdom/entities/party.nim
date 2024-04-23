@@ -7,6 +7,16 @@ import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/builtin/values
 
+# Needed for the constructor
+proc addToParty*(this: Party, u: Unit): void
+
+# Constructor for the Party type
+proc newParty*(id: int, u: Unit): Party =
+    new result
+    result.n = 0
+    result.id = id
+    result.addToParty(u)
+
 # Returns true if this party is not yet full
 proc isPartyFull*(this: Party): bool =
     this.n == PARTY_LIMIT
@@ -23,14 +33,14 @@ proc addToParty*(this: Party, u: Unit): void =
     if this.isPartyFull():
         raise newException(Exception, "Party is already full")
     this.members[this.n] = some(u)
-    u.party = some(this.id)
+    u.party = this.id
     this.n += 1
 
 # Removes some unit from the Party
 proc removeFromParty*(this: Party, u: Unit): void =
     for a in 0..(this.n - 1):
         if this.members[a].get() == u:
-            u.party = none[int]()
+            u.party = -1
             this.n -= 1
             if a < this.n:
                 for b in (a + 1)..this.n:

@@ -50,7 +50,8 @@ proc addSignalHandler*(this: Tile, channel: string, handler: SignalHandler[Tile]
 # src/kingdom/models/world.nim
 proc getBounds*(this: World): Coord {.importc.}
 proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool {.importc.}
-proc moveUnit*(this: World, u: Unit, c: Coord): void {.importc.}
+proc moveParty*(this: World, p: Party, c: Coord): void {.importc.}
+proc getParty*(this: World, u: Unit): Party {.importc.}
 
 # src/kingdom/math/hexagons.nim
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.importc.}

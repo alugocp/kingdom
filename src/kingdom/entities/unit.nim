@@ -15,7 +15,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     new result
     result.id = 1
     result.name = "unnamed"
-    result.party = none(int)
+    result.party = -1
     result.desc = none(string)
     result.sprite = NULL_SPRITE
     result.player = HUMAN_PLAYER
@@ -27,8 +27,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     return result
 
 # Returns true if this Unit is in the same Party as the given Unit
-proc isFellowPartyMember*(this: Unit, u: Unit): bool =
-    this.party.isSome() and u.party.isSome() and this.party.get() == u.party.get()
+proc isFellowPartyMember*(this: Unit, u: Unit): bool = this.party == u.party
 
 # Return a MenuNode describing this Unit and associated actions
 proc getMenuNode*(this: Unit, unequip: (Item) -> void): MenuNode =

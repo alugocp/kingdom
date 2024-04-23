@@ -52,8 +52,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[AbilityClickedSignalArgs](args)
             let targets = a.host.pos.getAdjacentHexagonCoords(view.world.getBounds())
             let filtered = targets.filterIt(view.world.canUnitTravelAcrossTiles(a.host, a.host.pos, it))
-            view.targeter.target(filtered, proc (c: Coord): void = view.world.moveUnit(a.host, c))
-            discard
+            let party = view.world.getParty(a.host)
+            view.targeter.target(filtered, proc (c: Coord): void = view.world.moveParty(party, c))
         )
         return ability
     )

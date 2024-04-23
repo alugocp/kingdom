@@ -10,6 +10,7 @@ import kingdom/entities/types
 import kingdom/entities/tile
 import kingdom/entities/unit
 import kingdom/entities/item
+import kingdom/entities/party
 import kingdom/entities/signals
 import kingdom/controls/viewport
 import kingdom/controls/types
@@ -34,7 +35,6 @@ proc newWorld*(w: Natural, h: Natural): World =
 # Initializes a TileData object
 proc initTileData(t: Tile): TileData =
     result.tile = t
-    result.units = @[]
     result.items = @[]
     result.parties = @[]
 
@@ -58,31 +58,46 @@ proc getBounds*(this: World): Coord {.exportc, dynlib.} =
 proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y].tile
 
 # Retrieves a set of Units on a Tile in this World
-proc getUnits*(this: World, c: Coord): seq[Unit] = this.tiles[c.x][c.y].units
+proc getUnits*(this: World, c: Coord): seq[Unit] =
+    var units = newSeq[Unit]()
+    let parties = this.tiles[c.x][c.y].parties
+    for party in parties:
+        units = concat(units, party.getMembers())
+    return units
 
 # Retrieves a set of Items on a Tile in this World
 proc getItems*(this: World, c: Coord): seq[Item] = this.tiles[c.x][c.y].items
 
 # Retrieves a set of Parties on a Tile in this World
-proc getParties*(this: World, c: Coord): seq[Party] = this.parties[c.x][c.y].parties
+proc getParties*(this: World, c: Coord): seq[Party] = this.tiles[c.x][c.y].parties
+
+# Returns the Party associated with the given Unit
+proc getParty*(this: World, u: Unit): Party {.exportc, dynlib.} =
+    let parties = this.getParties(u.pos)
+    let filtered = parties.filterIt(it.id == u.party)
+    if filtered.len != 0:
+        raise newException(Exception, fmt"Invalid unit/party match length ({filtered.len}), unit's party ID is {u.party}")
+    return filtered[0]
 
 # Creates a new player ID and returns it
 proc createNewPlayer*(this: World): int =
     result = this.nextPlayerId
     this.nextPlayerId += 1
 
-# Moves a Unit from one Tile in this World to another
-proc moveUnit*(this: World, u: Unit, c: Coord): void {.exportc, dynlib.} =
-    this.units[u.pos.x][u.pos.y] = this.units[u.pos.x][u.pos.y].filterIt(it != u)
-    this.units[c.x][c.y].add(u)
-    u.pos = c
+# Moves a Party from one Tile in this World to another
+proc moveParty*(this: World, p: Party, c: Coord): void {.exportc, dynlib.} =
+    let pos = p.getMembers()[0].pos
+    this.tiles[pos.x][pos.y].parties = this.tiles[pos.x][pos.y].parties.filterIt(it != p)
+    this.tiles[c.x][c.y].parties.add(p)
+    for u in p.getMembers():
+        u.pos = c
 
 # Moves an Item from one Tile in this World to another (or to add/remove it from the World)
 proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
     if i.pos.isSome:
-        this.items[i.pos.get().x][i.pos.get().y] = this.items[i.pos.get().x][i.pos.get().y].filterIt(it != i)
+        this.tiles[i.pos.get().x][i.pos.get().y].items = this.tiles[i.pos.get().x][i.pos.get().y].items.filterIt(it != i)
     if c.isSome:
-        this.items[c.get().x][c.get().y].add(i)
+        this.tiles[c.get().x][c.get().y].items.add(i)
     i.pos = c
 
 # Returns true if the World contains a Tile at the given Coord
@@ -91,15 +106,15 @@ proc contains*(this: World, c: Coord): bool = c.x >= 0 and c.y >= 0 and c.x < th
 # Return a MenuNode describing this
 proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item) -> void, unequip: (Unit, Item) -> void): MenuNode =
     let node = newListNode()
-    node.add(newTextNode(fmt"Tile {c}"))
-    let units = this.getUnits(c)
-    if units.len > 0:
+    node.add(newHeaderNode(fmt"Tile at {c}"))
+    let parties = this.getParties(c)
+    for p in parties:
         node.add(newSpaceNode())
-        node.add(newTextNode(fmt"{units.len} unit(s):"))
-    for u in units:
-        let u1 = u
-        let root = u.getMenuNode((i: Item) => unequip(u1, i))
-        node.add(newButtonNode(u.name, () => open(root)))
+        node.add(newTextNode("Another party:"))
+        for u in p.getMembers():
+            let u1 = u
+            let root = u.getMenuNode((i: Item) => unequip(u1, i))
+            node.add(newButtonNode(u.name, () => open(root)))
     let items = this.getItems(c)
     if items.len > 0:
         node.add(newSpaceNode())
@@ -117,14 +132,16 @@ proc getVisibleTiles(this: World, topLeft: Coord, botRight: Coord): HashSet[Coor
         for y in topLeft.y..botRight.y:
             let c = initCoord(x, y)
             if this.contains(c):
-                let units = this.getUnits(c)
+                let parties = this.getParties(c)
                 var max = 0
-                for unit in units:
-                    if unit.player == HUMAN_PLAYER:
-                        var payload = newGetVisibilitySignalArgs()
-                        unit.handleSignal(@[], payload)
-                        if payload.visibility > max:
-                            max = payload.visibility
+                for party in parties:
+                    let units = party.getMembers()
+                    for unit in units:
+                        if unit.player == HUMAN_PLAYER:
+                            var payload = newGetVisibilitySignalArgs()
+                            unit.handleSignal(@[], payload)
+                            if payload.visibility > max:
+                                max = payload.visibility
                 if max > 0:
                     tiles = tiles + getRadialHexagonCoords(c, botRight, max)
     return tiles
@@ -159,9 +176,10 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
 
                 # Draw Units but only on visible Tiles
                 if tile.pos in visible:
-                    let units = this.getUnits(tile.pos)
-                    if units.len > 0:
-                        sm.drawSprite(units[0].sprite, view, view.gameToScreen(initPosition(center.x - 12, center.y - 12)))
+                    let parties = this.getParties(tile.pos)
+                    for party in parties:
+                        let leader = party.getMembers()[0]
+                        sm.drawSprite(leader.sprite, view, view.gameToScreen(initPosition(center.x - 12, center.y - 12)))
                 else:
                     drawHexagon(view.gameToScreen(center), DARKER, view)
 

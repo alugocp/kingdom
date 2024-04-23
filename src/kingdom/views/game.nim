@@ -5,6 +5,7 @@ import std/sequtils
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/generation/manager
+import kingdom/entities/party
 import kingdom/entities/types
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
@@ -39,13 +40,18 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
     return g
 
 # Initializes a new Unit instance and puts it in the World
-proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int): Unit =
+proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit =
     let u = this.rules.unitGeneration.generate(key)
     u.pos = pos
     u.player = player
     u.id = this.nextUnitId
-    this.world.moveUnit(u, pos)
     this.nextUnitId += 1
+    if party.isSome():
+        party.get().addToParty(u)
+    else:
+        let p = newParty(this.nextPartyId, u)
+        this.world.moveParty(p, pos)
+        this.nextPartyId += 1
 
 # Initializes a new Item instance and puts it in the World
 proc addNewItem*(this: GameView, key: string, pos: Coord): Unit =

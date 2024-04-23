@@ -2,10 +2,10 @@ import kingdom/generation/types
 import kingdom/entities/types
 import kingdom/wrapper/types
 
+# Tracks all parallel data on a single Tile
 type TileData* = object
     parties*: seq[Party]
     items*: seq[Item]
-    units*: seq[Unit]
     tile*: Tile
 
 # World type to contain Tile objects
