@@ -75,7 +75,7 @@ proc getParties*(this: World, c: Coord): seq[Party] = this.tiles[c.x][c.y].parti
 proc getParty*(this: World, u: Unit): Party {.exportc, dynlib.} =
     let parties = this.getParties(u.pos)
     let filtered = parties.filterIt(it.id == u.party)
-    if filtered.len != 0:
+    if filtered.len != 1:
         raise newException(Exception, fmt"Invalid unit/party match length ({filtered.len}), unit's party ID is {u.party}")
     return filtered[0]
 
@@ -171,15 +171,27 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
                 if hovered.isSome and hovered.get() == tile.pos:
                     drawHexagon(view.gameToScreen(center), YELLOW, view)
                 elif targeted.isSome and targeted.get().contains(tile.pos):
-                    drawHexagon(view.gameToScreen(center), DARKER, view)
+                    drawHexagon(view.gameToScreen(center), YELLOW, view)
                 outlineHexagon(view.gameToScreen(center), view)
 
                 # Draw Units but only on visible Tiles
                 if tile.pos in visible:
                     let parties = this.getParties(tile.pos)
-                    for party in parties:
-                        let leader = party.getMembers()[0]
-                        sm.drawSprite(leader.sprite, view, view.gameToScreen(initPosition(center.x - 12, center.y - 12)))
+                    for a in 0..(parties.len - 1):
+                        if a > 7: break
+                        let leader = parties[a].getMembers()[0]
+                        var position = initPosition(center.x - 12, center.y - 12)
+                        if parties.len == 2:
+                            position.x = center.x + (48f * float(a)) - 36f
+                        elif parties.len == 3:
+                            position.x = center.x + (32f * float(a)) - 48f
+                        elif parties.len == 4:
+                            position.x = center.x + (48f * float(a mod 2)) - 36f
+                            position.y = if a < 2: (center.y - 24f) else: center.y
+                        elif parties.len != 1:
+                            position.x = center.x + (24f * float(a mod 4)) - 48f
+                            position.y = if a < 4: (center.y - 24f) else: center.y
+                        sm.drawSprite(leader.sprite, view, view.gameToScreen(position))
                 else:
                     drawHexagon(view.gameToScreen(center), DARKER, view)
 
