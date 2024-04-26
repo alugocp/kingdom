@@ -112,17 +112,17 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
         node.add(newSpaceNode())
         node.add(newTextNode("Another party:"))
         for u in p.getMembers():
-            let u1 = u
-            let root = u.getMenuNode((i: Item) => unequip(u1, i))
-            node.add(newButtonNode(u.name, () => open(root)))
+            capture u:
+                let root = u.getMenuNode((i: Item) => unequip(u, i))
+                node.add(newButtonNode(u.name, () => open(root)))
     let items = this.getItems(c)
     if items.len > 0:
         node.add(newSpaceNode())
         node.add(newTextNode(fmt"{items.len} item(s):"))
     for i in items:
-        let i1 = i
-        let root = i.getFreeMenuNode(() => equip(i1))
-        node.add(newButtonNode(i.name, () => open(root)))
+        capture i:
+            let root = i.getFreeMenuNode(() => equip(i))
+            node.add(newButtonNode(i.name, () => open(root)))
     return node
 
 # Return a set of tiles on the screen that you have visibility on
