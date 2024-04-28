@@ -71,3 +71,15 @@ proc newGetStatsSignalArgs*(unit: Unit): GetStatsSignalArgs =
     return result
 
 # BUILT-IN ITEM SIGNAL ARGS TYPES
+type CanBeEquippedSignalArgs* = ref object of BaseSignalArgs
+    equippable*: bool
+    unit*: Unit
+    item*: Item
+
+proc newCanBeEquippedSignalArgs*(unit: Unit, item: Item): CanBeEquippedSignalArgs =
+    new result
+    result.channel = CAN_BE_EQUIPPED_CHANNEL
+    result.equippable = true
+    result.unit = unit
+    result.item = item
+    return result

@@ -5,8 +5,10 @@ import std/sequtils
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/generation/manager
+import kingdom/entities/signals
 import kingdom/entities/party
 import kingdom/entities/types
+import kingdom/builtin/signals
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
 import kingdom/controls/viewport
@@ -154,7 +156,14 @@ method consumeMouseUpdates*(this: GameView): void =
                 # equip
                 proc (i: Item): void =
                     let units = this.world.getUnits(i.pos.get())
-                    this.targeter.target(units, proc (u: Unit): void =
+                    var filtered: seq[Unit] = @[]
+                    for u in units:
+                        capture u:
+                            let payload = newCanBeEquippedSignalArgs(u, i)
+                            i.handleSignal(@[], payload)
+                            if payload.equippable:
+                                filtered.add(u)
+                    this.targeter.target(filtered, proc (u: Unit): void =
                         this.world.moveItem(i, none(Coord))
                         u.items.add(i)
                     )
