@@ -12,6 +12,7 @@ import kingdom/builtin/signals
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
 import kingdom/controls/viewport
+import kingdom/controls/actions
 import kingdom/controls/mouse
 import kingdom/controls/types
 import kingdom/controls/menu
@@ -94,12 +95,12 @@ proc openTargetMenu*(this: GameView): void =
         let handler = this.targeter.unitHandler.get()
         let node = newListNode()
         for u in units:
-            let u1 = u
-            node.add(newButtonNode(u.name, proc (): void =
-                handler(u1)
-                this.targeter.cancel()
-                this.closeMenu()
-            ))
+            capture u:
+                node.add(newButtonNode(u.name, proc (): void =
+                    handler(u)
+                    this.targeter.cancel()
+                    this.closeMenu()
+                ))
         this.openMenu(node)
 
 # Returns which View should be shown in the next frame
@@ -149,8 +150,8 @@ method consumeMouseUpdates*(this: GameView): void =
                     this.targeter.cancel()
                     return
                 this.targeter.cancel()
-            let node = this.world.getMenuNode(
-                hex,
+            let actions = newWorldMenuActions(
+                # open
                 (n: MenuNode) => this.openMenu(n),
 
                 # equip
@@ -200,4 +201,5 @@ method consumeMouseUpdates*(this: GameView): void =
                         root.add(newSpaceNode())
                     this.openMenu(root)
             )
+            let node = this.world.getMenuNode(hex, actions)
             this.openMenu(node)

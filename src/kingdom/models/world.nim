@@ -13,6 +13,7 @@ import kingdom/entities/item
 import kingdom/entities/party
 import kingdom/entities/signals
 import kingdom/controls/viewport
+import kingdom/controls/actions
 import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/math/hexagons
@@ -110,7 +111,7 @@ proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
 proc contains*(this: World, c: Coord): bool = c.x >= 0 and c.y >= 0 and c.x < this.w and c.y < this.h
 
 # Return a MenuNode describing this
-proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item) -> void, unequip: (Unit, Item) -> void, leaveParty: (Unit, Party) -> void, joinParty: (Unit, Party) -> void): MenuNode =
+proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
     let node = newListNode()
     node.add(newHeaderNode(fmt"Tile at {c}"))
     let parties = this.getParties(c)
@@ -120,16 +121,21 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
         for u in p.getMembers():
             capture u:
                 let party = this.getParty(u)
-                let root = u.getMenuNode(party, leaveParty, joinParty, (i: Item) => unequip(u, i))
-                node.add(newButtonNode(u.name, () => open(root)))
+                let unitActions = newUnitMenuActions(
+                    actions.leaveParty,
+                    actions.joinParty,
+                    (i: Item) => actions.unequip(u, i)
+                )
+                let root = u.getMenuNode(party, unitActions)
+                node.add(newButtonNode(u.name, () => actions.open(root)))
     let items = this.getItems(c)
     if items.len > 0:
         node.add(newSpaceNode())
         node.add(newTextNode(fmt"{items.len} item(s):"))
     for i in items:
         capture i:
-            let root = i.getFreeMenuNode(() => equip(i))
-            node.add(newButtonNode(i.name, () => open(root)))
+            let root = i.getFreeMenuNode(() => actions.equip(i))
+            node.add(newButtonNode(i.name, () => actions.open(root)))
     return node
 
 # Return a set of tiles on the screen that you have visibility on

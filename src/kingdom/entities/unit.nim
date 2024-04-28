@@ -8,6 +8,7 @@ import kingdom/entities/item
 import kingdom/math/types
 import kingdom/controls/types
 import kingdom/controls/menu
+import kingdom/controls/actions
 import kingdom/builtin/values
 
 # Constructor for the Unit type
@@ -30,16 +31,16 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
 proc isFellowPartyMember*(this: Unit, u: Unit): bool = this.party == u.party
 
 # Return a MenuNode describing this Unit and associated actions
-proc getMenuNode*(this: Unit, party: Party, leaveParty: (Unit, Party) -> void, joinParty: (Unit, Party) -> void, unequip: (Item) -> void): MenuNode =
+proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
     let node = newListNode()
     node.add(newHeaderNode(this.name))
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
     if this.player == HUMAN_PLAYER:
         node.add(newTextNode("This unit is under your control"))
-        node.add(newButtonNode("Join Party", () => joinParty(this, party)))
+        node.add(newButtonNode("Join Party", () => actions.joinParty(this, party)))
         if party.n > 1:
-            node.add(newButtonNode("Leave Party", () => leaveParty(this, party)))
+            node.add(newButtonNode("Leave Party", () => actions.leaveParty(this, party)))
     if this.abilities.len > 0:
         node.add(newSpaceNode())
         node.add(newTextNode("Abilities:"))
@@ -55,5 +56,5 @@ proc getMenuNode*(this: Unit, party: Party, leaveParty: (Unit, Party) -> void, j
         node.add(newTextNode("Items:"))
         for item in this.items:
             let item1 = item
-            node.add(item.getUnitMenuNode(this.player, () => unequip(item1)))
+            node.add(item.getUnitMenuNode(this.player, () => actions.unequip(item1)))
     return node

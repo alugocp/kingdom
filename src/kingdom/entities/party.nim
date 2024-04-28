@@ -5,6 +5,7 @@ import kingdom/entities/types
 import kingdom/entities/unit
 import kingdom/controls/types
 import kingdom/controls/menu
+import kingdom/controls/actions
 import kingdom/builtin/values
 
 # Needed for the constructor
@@ -61,9 +62,14 @@ proc giveToAnotherParty*(this: Party, other: Party, u: Unit): bool =
 proc getPlayerId*(this: Party): int = this.members[0].get().player
 
 # Returns a MenuNode for viewing this Party's data
-proc getMenuNode*(this: Party, open: (MenuNode) -> void, unequip: (Item) -> void, leaveParty: (Unit, Party) -> void, joinParty: (Unit, Party) -> void): MenuNode =
+proc getMenuNode*(this: Party, actions: PartyMenuActions): MenuNode =
     let node = newListNode()
     for a in 0..(this.n - 1):
         let u = this.members[a].get()
-        node.add(newButtonNode(u.name, () => open(u.getMenuNode(this, leaveParty, joinParty, unequip))))
+        let unitActions = newUnitMenuActions(
+            actions.leaveParty,
+            actions.joinParty,
+            actions.unequip
+        )
+        node.add(newButtonNode(u.name, () => actions.open(u.getMenuNode(this, unitActions))))
     return node
