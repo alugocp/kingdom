@@ -30,13 +30,16 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
 proc isFellowPartyMember*(this: Unit, u: Unit): bool = this.party == u.party
 
 # Return a MenuNode describing this Unit and associated actions
-proc getMenuNode*(this: Unit, unequip: (Item) -> void): MenuNode =
+proc getMenuNode*(this: Unit, party: Party, leaveParty: (Unit, Party) -> void, joinParty: (Unit, Party) -> void, unequip: (Item) -> void): MenuNode =
     let node = newListNode()
     node.add(newHeaderNode(this.name))
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
     if this.player == HUMAN_PLAYER:
         node.add(newTextNode("This unit is under your control"))
+        node.add(newButtonNode("Join Party", () => joinParty(this, party)))
+        if party.n > 1:
+            node.add(newButtonNode("Leave Party", () => leaveParty(this, party)))
     if this.abilities.len > 0:
         node.add(newSpaceNode())
         node.add(newTextNode("Abilities:"))

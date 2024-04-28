@@ -36,6 +36,7 @@ method getNextView*(this: StartView): View =
     # Testing code
     world.build(proc (x: int, y: int): Tile = game.rules.tileGeneration.generate(if x == 1 and y == 0: "Water" else: "Grass"))
     discard game.addNewUnit("Plasmoid Adventurer", initCoord(0, 0), HUMAN_PLAYER)
+    discard game.addNewUnit("Fernando of the Unfaltering Gaze", initCoord(1, 1), HUMAN_PLAYER)
     discard game.addNewUnit("Fernando of the Unfaltering Gaze", initCoord(2, 1), world.createNewPlayer())
     discard game.addNewItem("Ring of Strength", initCoord(1, 1))
     return game

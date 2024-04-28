@@ -92,6 +92,12 @@ proc moveParty*(this: World, p: Party, c: Coord): void {.exportc, dynlib.} =
     for u in p.getMembers():
         u.pos = c
 
+# Deletes a Party from the World
+proc deleteParty*(this: World, p: Party, pos: Coord): void =
+    if p.n > 0:
+        raise newException(Exception, "Cannot delete party with active members")
+    this.tiles[pos.x][pos.y].parties = this.tiles[pos.x][pos.y].parties.filterIt(it != p)
+
 # Moves an Item from one Tile in this World to another (or to add/remove it from the World)
 proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
     if i.pos.isSome:
@@ -104,7 +110,7 @@ proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
 proc contains*(this: World, c: Coord): bool = c.x >= 0 and c.y >= 0 and c.x < this.w and c.y < this.h
 
 # Return a MenuNode describing this
-proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item) -> void, unequip: (Unit, Item) -> void): MenuNode =
+proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item) -> void, unequip: (Unit, Item) -> void, leaveParty: (Unit, Party) -> void, joinParty: (Unit, Party) -> void): MenuNode =
     let node = newListNode()
     node.add(newHeaderNode(fmt"Tile at {c}"))
     let parties = this.getParties(c)
@@ -113,7 +119,8 @@ proc getMenuNode*(this: World, c: Coord, open: (MenuNode) -> void, equip: (Item)
         node.add(newTextNode("Another party:"))
         for u in p.getMembers():
             capture u:
-                let root = u.getMenuNode((i: Item) => unequip(u, i))
+                let party = this.getParty(u)
+                let root = u.getMenuNode(party, leaveParty, joinParty, (i: Item) => unequip(u, i))
                 node.add(newButtonNode(u.name, () => open(root)))
     let items = this.getItems(c)
     if items.len > 0:

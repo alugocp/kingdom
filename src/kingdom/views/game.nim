@@ -39,6 +39,18 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
     g.targeter.onTarget = () => g.closeMenu()
     return g
 
+# Creates a new Party and adds a Unit to it
+proc addUnitToNewParty(this: GameView, u: Unit): void =
+    let p = newParty(this.nextPartyId, u)
+    this.world.moveParty(p, u.pos)
+    this.nextPartyId += 1
+
+# Removes a Unit from a Party and deletes the Party if it's empty
+proc removeUnitFromParty(this: GameView, unit: Unit, party: Party): void =
+    let empty = party.removeFromParty(unit)
+    if empty:
+        this.world.deleteParty(party, unit.pos)
+
 # Initializes a new Unit instance and puts it in the World
 proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit =
     let u = this.rules.unitGeneration.generate(key)
@@ -49,9 +61,7 @@ proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Op
     if party.isSome():
         party.get().addToParty(u)
     else:
-        let p = newParty(this.nextPartyId, u)
-        this.world.moveParty(p, pos)
-        this.nextPartyId += 1
+        this.addUnitToNewParty(u)
 
 # Initializes a new Item instance and puts it in the World
 proc addNewItem*(this: GameView, key: string, pos: Coord): Unit =
@@ -140,6 +150,8 @@ method consumeMouseUpdates*(this: GameView): void =
             let node = this.world.getMenuNode(
                 hex,
                 (n: MenuNode) => this.openMenu(n),
+
+                # equip
                 proc (i: Item): void =
                     let units = this.world.getUnits(i.pos.get())
                     this.targeter.target(units, proc (u: Unit): void =
@@ -147,9 +159,36 @@ method consumeMouseUpdates*(this: GameView): void =
                         u.items.add(i)
                     )
                     this.openTargetMenu(),
+
+                # unequip
                 proc (u: Unit, i: Item): void =
                     u.items = u.items.filterIt(it != i)
                     this.world.moveItem(i, some(u.pos))
-                    this.closeMenu()
+                    this.closeMenu(),
+
+                # leaveParty
+                proc (unit: Unit, party: Party): void =
+                    this.removeUnitFromParty(unit, party)
+                    this.addUnitToNewParty(unit)
+                    this.closeMenu(),
+
+                # joinParty
+                proc (unit: Unit, party: Party): void =
+                    let root = newListNode()
+                    root.add(newHeaderNode("Parties:"))
+                    for p in this.world.getParties(unit.pos):
+                        if p == party or p.getPlayerId() != party.getPlayerId():
+                            continue
+                        root.add(newTextNode("Another party"))
+                        for u in p.getMembers():
+                            root.add(newTextNode(u.name))
+                        capture p:
+                            root.add(newButtonNode("Join this party", proc (): void =
+                                this.removeUnitFromParty(unit, party)
+                                p.addToParty(unit)
+                                this.closeMenu()
+                            ))
+                        root.add(newSpaceNode())
+                    this.openMenu(root)
             )
             this.openMenu(node)

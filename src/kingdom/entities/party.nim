@@ -57,10 +57,13 @@ proc giveToAnotherParty*(this: Party, other: Party, u: Unit): bool =
     other.addToParty(u)
     return empty
 
+# Returns the player ID for the owner of this party
+proc getPlayerId*(this: Party): int = this.members[0].get().player
+
 # Returns a MenuNode for viewing this Party's data
-proc getMenuNode*(this: Party, open: (MenuNode) -> void, unequip: (Item) -> void): MenuNode =
+proc getMenuNode*(this: Party, open: (MenuNode) -> void, unequip: (Item) -> void, leaveParty: (Unit, Party) -> void, joinParty: (Unit, Party) -> void): MenuNode =
     let node = newListNode()
     for a in 0..(this.n - 1):
         let u = this.members[a].get()
-        node.add(newButtonNode(u.name, () => open(u.getMenuNode(unequip))))
+        node.add(newButtonNode(u.name, () => open(u.getMenuNode(this, leaveParty, joinParty, unequip))))
     return node
