@@ -32,6 +32,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Slimy guy")
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
         unit.abilities.add(game.rules.abilityGeneration.generate(ABILITY_MOVE))
+        unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let payload = cast[GetMovementSignalArgs](args)
+            payload.movement = 2
+        )
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_UNFALTERING_GAZE, proc (): Unit =

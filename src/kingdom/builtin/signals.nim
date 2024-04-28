@@ -7,7 +7,7 @@ import kingdom/builtin/values
 
 # BUILT-IN UNIT SIGNAL ARGS TYPES
 
-# Payload when checking if the unit can cross a certain border
+# Payload when checking if the Unit can cross a certain border
 type CanCrossBorderSignalArgs* = ref object of BaseSignalArgs
     canCross*: bool
     side*: HexSides
@@ -23,7 +23,7 @@ proc newCanCrossBorderSignalArgs*(tile: Tile, side: HexSides, border: string): C
     result.tile = tile
     return result
 
-# Payload when calculating a unit's visibility
+# Payload when calculating a Unit's visibility
 type GetVisibilitySignalArgs* = ref object of BaseSignalArgs
     visibility*: Natural
 
@@ -33,11 +33,21 @@ proc newGetVisibilitySignalArgs*(): GetVisibilitySignalArgs =
     result.visibility = 1
     return result
 
+# Payload when calculating a Unit's movement
+type GetMovementSignalArgs* = ref object of BaseSignalArgs
+    movement*: Natural
+
+proc newGetMovementSignalArgs*(): GetMovementSignalArgs =
+    new result
+    result.channel = GET_MOVEMENT_CHANNEL
+    result.movement = 1
+    return result
+
 # BUILT-IN TILE SIGNAL ARGS TYPES
 
 # BUILT-IN ABILITY SIGNAL ARGS TYPES
 
-# Payload when an ability is clicked (for action-based abilities)
+# Payload when an Ability is clicked (for action-based abilities)
 type AbilityClickedSignalArgs* = ref object of BaseSignalArgs
     host*: Unit
 
@@ -47,7 +57,7 @@ proc newAbilityClickedSignalArgs*(host: Unit): AbilityClickedSignalArgs =
     result.host = host
     return result
 
-# Payload when an ability must calculate its potential targets (template for each possible target type)
+# Payload when an Ability must calculate its potential targets (template for each possible target type)
 type GetAbilityTargetsSignalArgs*[T] = ref object of BaseSignalArgs
     host*: Unit
     targets*: seq[T]
@@ -71,6 +81,8 @@ proc newGetStatsSignalArgs*(unit: Unit): GetStatsSignalArgs =
     return result
 
 # BUILT-IN ITEM SIGNAL ARGS TYPES
+
+# Payload when determining if this Item can be equipped by a given Unit
 type CanBeEquippedSignalArgs* = ref object of BaseSignalArgs
     equippable*: bool
     unit*: Unit

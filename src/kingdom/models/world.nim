@@ -128,6 +128,9 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                 )
                 let root = u.getMenuNode(party, unitActions)
                 node.add(newButtonNode(u.name, () => actions.open(root)))
+        if p.getPlayerId() == HUMAN_PLAYER:
+            capture p:
+                node.add(newButtonNode("Move", () => actions.initMoveParty(p)))
     let items = this.getItems(c)
     if items.len > 0:
         node.add(newSpaceNode())
@@ -222,23 +225,24 @@ proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coo
         unit.handleSignal(@[], test2)
     return test1.canCross and test2.canCross
 
-# Return a path from the unit's current position to the destination,
-# making sure to respect which borders that unit can cross.
+# Return a path from the Party's current position to the destination,
+# making sure to respect which borders the Party can cross.
 # This function implements A* algorithm, based on pseudocode from
 # Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)
-proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
+proc pathfind*(this: World, party: Party, dst: Coord, allowedTiles: HashSet[Coord]): seq[Coord]=
     const infinity = high(int)
 
     # Heuristic function for the A* algorithm
     proc dist(c: Coord): int = int(ceil((abs(dst.x - c.x) + abs(dst.y - c.y)) / 2))
 
     # Initialize relevant tables and sets
-    var openSet: seq[Coord] = @[unit.pos]
+    let start = party.getCoord()
+    var openSet: seq[Coord] = @[start]
     var cameFrom = initTable[Coord, Coord]()
     var gScore = initTable[Coord, int]()
     var fScore = initTable[Coord, int]()
-    fScore[unit.pos] = dist(unit.pos)
-    gScore[unit.pos] = 0
+    fScore[start] = dist(start)
+    gScore[start] = 0
 
     # Main algorithm body
     var current: Coord
@@ -247,22 +251,21 @@ proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
 
         # We made it!
         if current == dst:
-            echo("We made it!")
             var path: seq[Coord] = @[current]
             while cameFrom.hasKey(current):
                 current = cameFrom[current]
                 path.insert(current, 0)
-            for c in path:
-                echo(c)
-            return @[]
+            return path
 
         # Filter openSet and check adjacent tiles
         openSet = openSet.filterIt(it != current)
         let neighbors = current.getAdjacentHexagonCoords(initCoord(this.w, this.h))
-        for adj in neighbors:
+        let filtered = neighbors.filterIt(it in allowedTiles)
+        for adj in filtered:
 
             # Skip any neighbors with borders the unit cannot cross
-            if not this.canUnitTravelAcrossTiles(unit, current, adj):
+            let canPartyTravelAcrossTiles = foldl(party.getMembers(), a and this.canUnitTravelAcrossTiles(b, current, adj), true)
+            if not canPartyTravelAcrossTiles:
                 continue
 
             let g = if gScore.hasKey(current): gScore[current] + 1 else : infinity
@@ -274,5 +277,4 @@ proc pathfind*(this: World, unit: Unit, dst: Coord): seq[Coord]=
                     openSet.add(adj)
 
     # Failed state, there is no path :(
-    echo("No way to get there :(")
     return @[]

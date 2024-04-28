@@ -42,16 +42,19 @@ type WorldMenuActions* = object
     unequip*: (Unit, Item) -> void
     leaveParty*: (Unit, Party) -> void
     joinParty*: (Unit, Party) -> void
+    initMoveParty*: (Party) -> void
 
 proc newWorldMenuActions*(
     open: (MenuNode) -> void,
     equip: (Item) -> void,
     unequip: (Unit, Item) -> void,
     leaveParty: (Unit, Party) -> void,
-    joinParty: (Unit, Party) -> void
+    joinParty: (Unit, Party) -> void,
+    initMoveParty: (Party) -> void
 ): WorldMenuActions =
     result.open = open
     result.equip = equip
     result.unequip = unequip
     result.leaveParty = leaveParty
     result.joinParty = joinParty
+    result.initMoveParty = initMoveParty

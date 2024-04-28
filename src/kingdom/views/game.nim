@@ -199,7 +199,20 @@ method consumeMouseUpdates*(this: GameView): void =
                                 this.closeMenu()
                             ))
                         root.add(newSpaceNode())
-                    this.openMenu(root)
+                    this.openMenu(root),
+
+                # initMoveParty
+                proc (party: Party): void =
+                    let max = party.getMaxMovement()
+                    let adjs = party.getCoord().getRadialHexagonCoords(this.world.getBounds(), max)
+                    var targets: seq[Coord] = @[]
+                    for dst in adjs:
+                        if dst == party.getCoord():
+                            continue
+                        let path = this.world.pathfind(party, dst, adjs)
+                        if path.len > 0:
+                            targets.add(dst)
+                    this.targeter.target(targets, proc (c: Coord): void = this.world.moveParty(party, c))
             )
             let node = this.world.getMenuNode(hex, actions)
             this.openMenu(node)
