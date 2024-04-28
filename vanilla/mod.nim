@@ -65,6 +65,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_WATER, proc(): Tile =
         let tile = newTile()
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
+        tile.desc = some("Water that units must swim across")
         tile.setAllBorders("water")
         return tile
     )

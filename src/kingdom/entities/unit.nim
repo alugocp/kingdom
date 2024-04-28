@@ -37,24 +37,32 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
     if this.player == HUMAN_PLAYER:
+        node.add(newSpaceNode())
         node.add(newTextNode("This unit is under your control"))
         node.add(newButtonNode("Join Party", () => actions.joinParty(this, party)))
         if party.n > 1:
             node.add(newButtonNode("Leave Party", () => actions.leaveParty(this, party)))
+    node.add(newSpaceNode())
+
+    # Menu elements for Abilities
     if this.abilities.len > 0:
-        node.add(newSpaceNode())
-        node.add(newTextNode("Abilities:"))
+        node.add(newHeaderNode("Abilities:"))
         for ability in this.abilities:
             node.add(ability.getMenuNode(this))
+            node.add(newSeparatorNode())
+
+    # Menu elements for Statuses
     if this.statuses.len > 0:
-        node.add(newSpaceNode())
-        node.add(newTextNode("Statuses:"))
+        node.add(newHeaderNode("Statuses:"))
         for status in this.statuses:
             node.add(status.getMenuNode(this))
+            node.add(newSeparatorNode())
+
+    # Menu elements for Items
     if this.items.len > 0:
-        node.add(newSpaceNode())
-        node.add(newTextNode("Items:"))
+        node.add(newHeaderNode("Items:"))
         for item in this.items:
-            let item1 = item
-            node.add(item.getUnitMenuNode(this.player, () => actions.unequip(item1)))
+            capture item:
+                node.add(item.getMenuNode(this.player, () => actions.unequip(item)))
+                node.add(newSeparatorNode())
     return node

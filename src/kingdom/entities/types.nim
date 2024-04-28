@@ -76,6 +76,7 @@ type Unit* = ref object
 type Tile* = ref object
     id*: int
     pos*: Coord
+    desc*: Option[string]
     sprite*: SpriteHandle
     handlers*: SignalHandlersTable[Tile]
     borders*: array[0..5, string]

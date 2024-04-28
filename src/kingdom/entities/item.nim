@@ -18,18 +18,10 @@ proc newItem*(): Item {.exportc, dynlib.} =
     return result
 
 # Return a MenuNode describing this Item when equipped to a Unit
-proc getUnitMenuNode*(this: Item, player: int, unequip: () -> void): MenuNode =
+proc getMenuNode*(this: Item, player: int, unequip: () -> void): MenuNode =
     let node = newListNode()
     node.add(newTextNode(this.name))
     node.add(newTextNode(this.desc))
     if player == HUMAN_PLAYER:
         node.add(newButtonNode("Unequip", unequip))
-    return node
-
-# Return a MenuNode describing this Item when it has no host Unit
-proc getFreeMenuNode*(this: Item, equip: () -> void): MenuNode =
-    let node = newListNode()
-    node.add(newHeaderNode(this.name))
-    node.add(newTextNode(this.desc))
-    node.add(newButtonNode("Equip", equip))
     return node

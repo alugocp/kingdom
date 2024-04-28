@@ -36,6 +36,7 @@ type KeyboardState* = ref object
 # Enum representing the types of UI elements
 type MenuElement* = enum
     TEXT
+    SEPARATOR
     HEADER
     BUTTON
     SPACE

@@ -1,4 +1,5 @@
 import std/tables
+import std/options
 import kingdom/wrapper/types
 import kingdom/builtin/values
 import kingdom/entities/types
@@ -10,6 +11,7 @@ proc newTile*(): Tile {.exportc, dynlib.} =
     new result
     result.id = 1
     result.pos = initCoord(0, 0)
+    result.desc = none(string)
     result.sprite = NULL_SPRITE
     result.handlers = initTable[string, seq[SignalHandler[Tile]]]()
     for a in 0..5:

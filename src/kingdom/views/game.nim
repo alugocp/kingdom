@@ -9,6 +9,8 @@ import kingdom/entities/signals
 import kingdom/entities/party
 import kingdom/entities/types
 import kingdom/builtin/signals
+import kingdom/builtin/values
+import kingdom/wrapper/window
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
 import kingdom/controls/viewport
@@ -20,6 +22,10 @@ import kingdom/models/world
 import kingdom/models/types
 import kingdom/views/types
 
+# Width for each Menu in the GameView
+const MENU_WIDTH = 300
+
+# Forward declaration for the constructor
 proc closeMenu*(this: GameView): void
 
 # Constructor for a Game type
@@ -79,12 +85,8 @@ proc closeMenu*(this: GameView): void =
     this.menu = none(Menu)
 
 # Open a Menu in this Game
-proc openMenu*(this: GameView, menu: Menu): void =
-    this.menu = some(menu)
-
-# Open a Menu in this Game (with default options)
-proc openMenu*(this: GameView, root: MenuNode): void =
-    let m = newMenu(0, 0, 200, root)
+proc openMenu(this: GameView, root: MenuNode, right: bool): void =
+    let m = newMenu(if right: getWindowBounds().x - MENU_WIDTH else: 0, 0, MENU_WIDTH, root)
     this.menu = some(m)
     m.pack()
 
@@ -101,7 +103,7 @@ proc openTargetMenu*(this: GameView): void =
                     this.targeter.cancel()
                     this.closeMenu()
                 ))
-        this.openMenu(node)
+        this.openMenu(node, true)
 
 # Returns which View should be shown in the next frame
 method getNextView*(this: GameView): View = this
@@ -110,7 +112,7 @@ method getNextView*(this: GameView): View = this
 method draw*(this: GameView): void =
     this.world.draw(this.rules.sprites, this.hoveredHex, this.targeter.coords, this.view, this.rules.edgeTileSprite)
     if this.menu.isSome:
-        this.menu.get().draw(this.mouse)
+        this.menu.get().draw(this.mouse, true)
 
 # Check for updated keyboard state and see what we have to process
 method consumeKeyboardUpdates*(this: GameView): void =
@@ -150,15 +152,20 @@ method consumeMouseUpdates*(this: GameView): void =
                     this.targeter.cancel()
                     return
                 this.targeter.cancel()
+            if this.world.isTileEmpty(hex):
+                return
+            let right = this.mouse.pos.x < getWindowBounds().x - MENU_WIDTH
             let actions = newWorldMenuActions(
                 # open
-                (n: MenuNode) => this.openMenu(n),
+                (n: MenuNode) => this.openMenu(n, right),
 
                 # equip
                 proc (i: Item): void =
                     let units = this.world.getUnits(i.pos.get())
                     var filtered: seq[Unit] = @[]
                     for u in units:
+                        if u.player != HUMAN_PLAYER:
+                            continue
                         capture u:
                             let payload = newCanBeEquippedSignalArgs(u, i)
                             i.handleSignal(@[], payload)
@@ -199,7 +206,7 @@ method consumeMouseUpdates*(this: GameView): void =
                                 this.closeMenu()
                             ))
                         root.add(newSpaceNode())
-                    this.openMenu(root),
+                    this.openMenu(root, right),
 
                 # initMoveParty
                 proc (party: Party): void =
@@ -215,4 +222,4 @@ method consumeMouseUpdates*(this: GameView): void =
                     this.targeter.target(targets, proc (c: Coord): void = this.world.moveParty(party, c))
             )
             let node = this.world.getMenuNode(hex, actions)
-            this.openMenu(node)
+            this.openMenu(node, right)

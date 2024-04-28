@@ -9,7 +9,6 @@ import kingdom/builtin/signals
 import kingdom/entities/types
 import kingdom/entities/tile
 import kingdom/entities/unit
-import kingdom/entities/item
 import kingdom/entities/party
 import kingdom/entities/signals
 import kingdom/controls/viewport
@@ -110,14 +109,24 @@ proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
 # Returns true if the World contains a Tile at the given Coord
 proc contains*(this: World, c: Coord): bool = c.x >= 0 and c.y >= 0 and c.x < this.w and c.y < this.h
 
+# Returns true if there is nothing of interest on this Tile
+proc isTileEmpty*(this: World, c: Coord): bool =
+    not (this.getTile(c).desc.isSome() or this.getUnits(c).len > 0 or this.getItems(c).len > 0)
+
 # Return a MenuNode describing this
 proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
     let node = newListNode()
-    node.add(newHeaderNode(fmt"Tile at {c}"))
+    let tile = this.getTile(c)
     let parties = this.getParties(c)
+    let items = this.getItems(c)
+    if tile.desc.isSome():
+        node.add(newTextNode(tile.desc.get()))
+        node.add(newSeparatorNode())
+
+    # Menu elements for Parties
+    if parties.len > 0:
+        node.add(newHeaderNode("Parties:"))
     for p in parties:
-        node.add(newSpaceNode())
-        node.add(newTextNode("Another party:"))
         for u in p.getMembers():
             capture u:
                 let party = this.getParty(u)
@@ -127,18 +136,22 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                     (i: Item) => actions.unequip(u, i)
                 )
                 let root = u.getMenuNode(party, unitActions)
-                node.add(newButtonNode(u.name, () => actions.open(root)))
+                node.add(newButtonNode(fmt"+ {u.name}", () => actions.open(root)))
         if p.getPlayerId() == HUMAN_PLAYER:
+            node.add(newSpaceNode())
             capture p:
                 node.add(newButtonNode("Move", () => actions.initMoveParty(p)))
-    let items = this.getItems(c)
+        node.add(newSeparatorNode())
+
+    # Menu elements for Items
     if items.len > 0:
-        node.add(newSpaceNode())
-        node.add(newTextNode(fmt"{items.len} item(s):"))
+        node.add(newHeaderNode(fmt"Items:"))
     for i in items:
         capture i:
-            let root = i.getFreeMenuNode(() => actions.equip(i))
-            node.add(newButtonNode(i.name, () => actions.open(root)))
+            node.add(newTextNode(i.name))
+            node.add(newTextNode(i.desc))
+            node.add(newButtonNode("Equip", () => actions.equip(i)))
+            node.add(newSeparatorNode())
     return node
 
 # Return a set of tiles on the screen that you have visibility on

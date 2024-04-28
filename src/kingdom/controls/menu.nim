@@ -1,6 +1,7 @@
 import std/sugar
 import std/sequtils
 import kingdom/math/types
+import kingdom/wrapper/window
 import kingdom/wrapper/draw
 import kingdom/wrapper/types
 import kingdom/controls/types
@@ -20,14 +21,11 @@ proc newMenu*(x: float, y: float, width: float, root: MenuNode): Menu =
     result.y = y
 
 # Draw every MenuNode in this Menu
-proc draw*(this: Menu, m: MouseState): void =
-    drawRect(this.x, this.y, this.width, this.root.getHeight(), WHITE)
-    let r = Rect(
-        x: this.x,
-        y: this.y,
-        w: this.width,
-        h: this.root.getHeight()
-    )
+proc draw*(this: Menu, m: MouseState, tall: bool = false): void =
+    const M = 5 # Margin value
+    let height = if tall: getWindowBounds().y else: this.root.getHeight()
+    let r = initRect(this.x + M, this.y + M, this.width - (M * 2), height - (M * 2))
+    drawRect(this.x, this.y, this.width, height, WHITE)
     this.root.draw(m, r)
 
 # Propogates a MouseState through this Menu to see if any node was clicked on
@@ -102,10 +100,23 @@ proc newSpaceNode*(): SpaceNode =
     new result
     result.element = MenuElement.SPACE
 
-method getHeight*(this: SpaceNode): float = 10
+method getHeight*(this: SpaceNode): float = 25
 method draw*(this: SpaceNode, m: MouseState, r: Rect): void = discard
 method checkClick*(this: SpaceNode, m: MouseState, r: Rect): void = discard
 method pack*(this: SpaceNode, width: float): void = discard
+
+# Space with a separator line
+type SeparatorNode* = ref object of MenuNode
+
+proc newSeparatorNode*(): SeparatorNode =
+    new result
+    result.element = MenuElement.SEPARATOR
+
+method getHeight*(this: SeparatorNode): float = 25
+method draw*(this: SeparatorNode, m: MouseState, r: Rect): void =
+    drawRect(r.x, r.y + 12, r.w, 1, BLACK)
+method checkClick*(this: SeparatorNode, m: MouseState, r: Rect): void = discard
+method pack*(this: SeparatorNode, width: float): void = discard
 
 # List of MenuNodes
 type ListNode* = ref object of MenuNode
