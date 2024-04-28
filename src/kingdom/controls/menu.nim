@@ -45,14 +45,21 @@ proc pack*(this: Menu): void = this.root.pack(this.width)
 # Text paragraph
 type TextNode* = ref object of MenuNode
     text*: string
+    color*: uint32
 
-proc newTextNode*(text: string): TextNode =
+proc newTextNode*(text: string, color: uint32 = BLACK): TextNode =
     new result
     result.element = MenuElement.TEXT
+    result.color = color
     result.text = text
 
 method getHeight*(this: TextNode): float = getTextSize(this.text).y
-method draw*(this: TextNode, m: MouseState, r: Rect): void = drawText(this.text, r.x, r.y)
+method draw*(this: TextNode, m: MouseState, r: Rect): void =
+    let font = FontSettings(
+        size: REGULAR_FONT.size,
+        color: this.color
+    )
+    drawText(this.text, r.x, r.y, font)
 method checkClick*(this: TextNode, m: MouseState, r: Rect): void = discard
 method pack*(this: TextNode, width: float): void =
     this.text = this.text.wrapText(width)

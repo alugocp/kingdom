@@ -82,13 +82,14 @@ proc drawRect*(x: float, y: float, w: float, h: float, color: uint32): void =
 
 # Inserts newline characters where necessary to wrap text within the given bounds
 proc wrapText*(text: string, width: float, settings: FontSettings = REGULAR_FONT): string =
+    const MARGIN = 25
     let words = text.split()
     let mid = "\n"
     var rebuilt = ""
     var line = ""
     for w in words:
         let lookahead = if line.len > 0: fmt"{line} {w}" else: w
-        if getTextSize(lookahead, settings).x < width:
+        if getTextSize(lookahead, settings).x < width - MARGIN:
             line = lookahead
         else:
             rebuilt = if rebuilt.len > 0: fmt"{rebuilt}{mid}{line}" else: line

@@ -1,6 +1,7 @@
 import std/sugar
 import std/tables
 import std/options
+import std/strformat
 import kingdom/wrapper/types
 import kingdom/entities/types
 import kingdom/entities/ability
@@ -26,6 +27,12 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.statuses = @[]
     result.items = @[]
     return result
+
+# Returns a label for this Unit to be used in Menus
+proc getMenuLabel*(this: Unit): string =
+    if this.player == HUMAN_PLAYER:
+        return fmt"+ {this.name}"
+    return fmt"- {this.name}"
 
 # Returns true if this Unit is in the same Party as the given Unit
 proc isFellowPartyMember*(this: Unit, u: Unit): bool = this.party == u.party

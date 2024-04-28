@@ -8,6 +8,7 @@ import kingdom/generation/manager
 import kingdom/entities/signals
 import kingdom/entities/party
 import kingdom/entities/types
+import kingdom/entities/unit
 import kingdom/builtin/signals
 import kingdom/builtin/values
 import kingdom/wrapper/window
@@ -96,9 +97,11 @@ proc openTargetMenu*(this: GameView): void =
         let units = this.targeter.units.get()
         let handler = this.targeter.unitHandler.get()
         let node = newListNode()
+        node.add(newHeaderNode("Unit targets:"))
         for u in units:
+            node.add(newSpaceNode())
             capture u:
-                node.add(newButtonNode(u.name, proc (): void =
+                node.add(newButtonNode(u.getMenuLabel(), proc (): void =
                     handler(u)
                     this.targeter.cancel()
                     this.closeMenu()
@@ -193,19 +196,20 @@ method consumeMouseUpdates*(this: GameView): void =
                 proc (unit: Unit, party: Party): void =
                     let root = newListNode()
                     root.add(newHeaderNode("Parties:"))
+                    root.add(newSpaceNode())
                     for p in this.world.getParties(unit.pos):
                         if p == party or p.getPlayerId() != party.getPlayerId():
                             continue
-                        root.add(newTextNode("Another party"))
                         for u in p.getMembers():
-                            root.add(newTextNode(u.name))
+                            root.add(newTextNode(u.getMenuLabel()))
+                        root.add(newSpaceNode())
                         capture p:
                             root.add(newButtonNode("Join this party", proc (): void =
                                 this.removeUnitFromParty(unit, party)
                                 p.addToParty(unit)
                                 this.closeMenu()
                             ))
-                        root.add(newSpaceNode())
+                        root.add(newSeparatorNode())
                     this.openMenu(root, right),
 
                 # initMoveParty

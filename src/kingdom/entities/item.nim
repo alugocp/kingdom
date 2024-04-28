@@ -20,7 +20,7 @@ proc newItem*(): Item {.exportc, dynlib.} =
 # Return a MenuNode describing this Item when equipped to a Unit
 proc getMenuNode*(this: Item, player: int, unequip: () -> void): MenuNode =
     let node = newListNode()
-    node.add(newTextNode(this.name))
+    node.add(newTextNode(this.name, GREEN))
     node.add(newTextNode(this.desc))
     if player == HUMAN_PLAYER:
         node.add(newButtonNode("Unequip", unequip))

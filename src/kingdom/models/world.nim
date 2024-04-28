@@ -136,7 +136,7 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                     (i: Item) => actions.unequip(u, i)
                 )
                 let root = u.getMenuNode(party, unitActions)
-                node.add(newButtonNode(fmt"+ {u.name}", () => actions.open(root)))
+                node.add(newButtonNode(u.getMenuLabel(), () => actions.open(root)))
         if p.getPlayerId() == HUMAN_PLAYER:
             node.add(newSpaceNode())
             capture p:
@@ -148,7 +148,7 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
         node.add(newHeaderNode(fmt"Items:"))
     for i in items:
         capture i:
-            node.add(newTextNode(i.name))
+            node.add(newTextNode(i.name, GREEN))
             node.add(newTextNode(i.desc))
             node.add(newButtonNode("Equip", () => actions.equip(i)))
             node.add(newSeparatorNode())
@@ -198,9 +198,9 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
                 # Draw the Tile
                 sm.drawSprite(tile.sprite, view, view.gameToScreen(initPosition(center.x - HALF_W, center.y - SIDE)))
                 if hovered.isSome and hovered.get() == tile.pos:
-                    drawHexagon(view.gameToScreen(center), YELLOW, view)
+                    drawHexagon(view.gameToScreen(center), HIGHLIGHT, view)
                 elif targeted.isSome and targeted.get().contains(tile.pos):
-                    drawHexagon(view.gameToScreen(center), YELLOW, view)
+                    drawHexagon(view.gameToScreen(center), HIGHLIGHT, view)
                 outlineHexagon(view.gameToScreen(center), view)
 
                 # Draw Units but only on visible Tiles
