@@ -1,8 +1,6 @@
 import std/options
-import std/sequtils
 import std/strformat
 import kingdom/headers
-import kingdom/math/types
 import kingdom/entities/types
 import kingdom/builtin/values
 import kingdom/builtin/signals
@@ -11,7 +9,6 @@ import kingdom/models/types
 import kingdom/mods/types
 
 # Labels for mod content
-const ABILITY_MOVE = "Move"
 const ITEM_RING_OF_STRENGTH = "Ring of Strength"
 const UNIT_PLASMOID_ADVENTURER = "Plasmoid Adventurer"
 const UNIT_FERNANDO_UNFALTERING_GAZE = "Fernando of the Unfaltering Gaze"
@@ -31,7 +28,6 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_PLASMOID_ADVENTURER
         unit.desc = some("Slimy guy")
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
-        unit.abilities.add(game.rules.abilityGeneration.generate(ABILITY_MOVE))
         unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
             let payload = cast[GetMovementSignalArgs](args)
             payload.movement = 2
@@ -43,25 +39,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_FERNANDO_UNFALTERING_GAZE
         unit.desc = some("He's a notorious Garuda warlock")
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 48, 0)
-        unit.abilities.add(game.rules.abilityGeneration.generate(ABILITY_MOVE))
         return unit
     )
 
     # Ability generators
-    game.rules.abilityGeneration.addGenerator(ABILITY_MOVE, proc(): Ability =
-        let ability = newAbility()
-        ability.name = ABILITY_MOVE
-        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
-            let view = game.getGameView()
-            let a = cast[AbilityClickedSignalArgs](args)
-            let party = view.world.getParty(a.host)
-            let targets = a.host.pos.getAdjacentHexagonCoords(view.world.getBounds())
-            # TODO rework this to consider all party members
-            let filtered = targets.filterIt(view.world.canUnitTravelAcrossTiles(a.host, a.host.pos, it))
-            view.targeter.target(filtered, proc (c: Coord): void = view.world.moveParty(party, c))
-        )
-        return ability
-    )
 
     # Item generators
     game.rules.itemGeneration.addGenerator(ITEM_RING_OF_STRENGTH, proc(): Item =
