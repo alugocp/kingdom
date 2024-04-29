@@ -14,7 +14,6 @@ proc newAbility*(): Ability {.exportc, dynlib.} =
     result.name = "unnamed ability"
     result.desc = none(string)
     result.handlers = initTable[string, seq[SignalHandler[Ability]]]()
-    return result
 
 # Return a MenuNode describing this Ability
 proc getMenuNode*(this: Ability, host: Unit): MenuNode =

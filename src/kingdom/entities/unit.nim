@@ -21,6 +21,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     new result
     result.id = 1
     result.name = "unnamed"
+    result.baseHealth = 50
     result.party = NO_PARTY
     result.desc = none(string)
     result.sprite = NULL_SPRITE
@@ -34,7 +35,6 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.classification = @[UNKNOWN_CLASS]
     result.level = 1
     result.xp = 0
-    return result
 
 # Returns a label for this Unit to be used in Menus
 proc getMenuLabel*(this: Unit): string =
@@ -53,15 +53,23 @@ proc gainXp*(this: Unit, xp: int): void =
     while this.xp > MAX_XP:
         this.xp -= MAX_XP
         this.level += 1
-        let payload = newLevelupSignalArgs(xp)
+        let payload = newLevelUpSignalArgs(xp)
         this.handleSignal(@[], payload)
+
+# Returns this Unit's maximum health
+proc getMaxHealth*(this: Unit): int =
+    let payload = newGetMaxHealthSignalArgs(this.baseHealth)
+    this.handleSignal(@[], payload)
+    return payload.health
 
 # Return a MenuNode describing this Unit and associated actions
 proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
+    let maxHealth = this.getMaxHealth()
     let node = newListNode()
     node.add(newHeaderNode(this.name))
     node.add(newTextNode(this.classification.join("/")))
     node.add(newTextNode(fmt"Lv. {this.level} ({this.xp}/{MAX_XP} xp)"))
+    node.add(newTextNode(fmt"Health: {maxHealth - this.damageTaken}/{maxHealth}"))
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
     if this.player == HUMAN_PLAYER:

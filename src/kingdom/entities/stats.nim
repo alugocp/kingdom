@@ -4,7 +4,6 @@ import kingdom/entities/types
 proc newStats*(): Stats =
     new result
     result.n = 0
-    return result
 
 # Returns true if this object contains the given stat's label
 proc hasStat*(this: Stats, label: string): bool =

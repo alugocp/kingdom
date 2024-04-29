@@ -52,18 +52,18 @@ proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.exportc, d
 
 # Returns a sequence of Coords for hexagons within a given radius of some central point
 proc getRadialHexagonCoords*(c: Coord, bounds: Coord, r: Natural): HashSet[Coord] =
-    var results = initHashSet[Coord]()
+    var coords = initHashSet[Coord]()
     var next = initHashSet[Coord]()
-    results.incl(c)
+    coords.incl(c)
     next.incl(c)
     for a in 1..r:
         let outer = next
         next.clear()
         for x in outer:
             let adjs = getAdjacentHexagonCoords(x, bounds).toHashSet()
-            next = next + (adjs - results)
-            results = results + adjs
-    return results
+            next = next + (adjs - coords)
+            coords = coords + adjs
+    return coords
 
 # Converts a HexSide to an integer result
 proc hexSideToInt*(side: HexSides): int =

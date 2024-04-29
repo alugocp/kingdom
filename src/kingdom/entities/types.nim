@@ -55,6 +55,7 @@ type Item* = ref object
     id*: int
     name*: string
     desc*: string
+    tags*: HashSet[string]
     handlers*: SignalHandlersTable[Item]
     pos*: Option[Coord]
 
@@ -74,6 +75,8 @@ type Unit* = ref object
     stats*: Stats
     tags*: HashSet[string]
     classification*: seq[string]
+    damageTaken*: int
+    baseHealth*: int
     level*: int
     xp*: int
 
@@ -82,6 +85,7 @@ type Tile* = ref object
     id*: int
     pos*: Coord
     desc*: Option[string]
+    tags*: HashSet[string]
     sprite*: SpriteHandle
     handlers*: SignalHandlersTable[Tile]
     borders*: array[0..5, string]

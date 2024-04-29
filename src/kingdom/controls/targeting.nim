@@ -16,7 +16,6 @@ proc newTargeter*(): Targeter =
     new result
     result.onTarget = proc () = discard
     result.cancel()
-    return result
 
 # Returns true if this Targeter is targeting Coords
 proc isCoords*(this: Targeter): bool = this.coords.isSome

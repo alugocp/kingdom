@@ -8,7 +8,6 @@ proc newFullGenerator[T: Entity](base: Generator[T]): FullGenerator[T] =
     new result
     result.base = base
     result.post = newSeq[Modifier[T]]()
-    return result
 
 # Adds a new Generator to the given manager
 proc addGenerator*[T: Entity](this: GenerationManager[T], key: string, generator: Generator[T]): void =

@@ -1,3 +1,4 @@
+import std/sets
 import std/tables
 import std/options
 import kingdom/wrapper/types
@@ -13,10 +14,10 @@ proc newTile*(): Tile {.exportc, dynlib.} =
     result.pos = initCoord(0, 0)
     result.desc = none(string)
     result.sprite = NULL_SPRITE
+    result.tags = initHashSet[string]()
     result.handlers = initTable[string, seq[SignalHandler[Tile]]]()
     for a in 0..5:
         result.borders[a] = OPEN_BORDER
-    return result
 
 # Sets all border values on this Tile
 proc setAllBorders*(this: Tile, border: string): void {.exportc, dynlib.} =

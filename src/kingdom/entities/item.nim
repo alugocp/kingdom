@@ -1,3 +1,4 @@
+import std/sets
 import std/sugar
 import std/tables
 import std/options
@@ -14,8 +15,8 @@ proc newItem*(): Item {.exportc, dynlib.} =
     result.pos = none(Coord)
     result.name = "unnamed item"
     result.desc = "just some item"
+    result.tags = initHashSet[string]()
     result.handlers = initTable[string, seq[SignalHandler[Item]]]()
-    return result
 
 # Return a MenuNode describing this Item when equipped to a Unit
 proc getMenuNode*(this: Item, player: int, unequip: () -> void): MenuNode =

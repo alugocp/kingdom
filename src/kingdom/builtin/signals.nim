@@ -4,6 +4,7 @@ import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/builtin/channels
 import kingdom/builtin/values
+import kingdom/builtin/types
 
 # BUILT-IN UNIT SIGNAL ARGS TYPES
 
@@ -21,7 +22,6 @@ proc newCanCrossBorderSignalArgs*(tile: Tile, side: HexSides, border: string): C
     result.border = border
     result.side = side
     result.tile = tile
-    return result
 
 # Payload when calculating a Unit's visibility
 type GetVisibilitySignalArgs* = ref object of BaseSignalArgs
@@ -31,7 +31,6 @@ proc newGetVisibilitySignalArgs*(): GetVisibilitySignalArgs =
     new result
     result.channel = GET_VISIBILITY_CHANNEL
     result.visibility = 1
-    return result
 
 # Payload when calculating a Unit's movement
 type GetMovementSignalArgs* = ref object of BaseSignalArgs
@@ -41,7 +40,6 @@ proc newGetMovementSignalArgs*(): GetMovementSignalArgs =
     new result
     result.channel = GET_MOVEMENT_CHANNEL
     result.movement = 1
-    return result
 
 # Payload when a Unit gains XP
 type GainXpSignalArgs* = ref object of BaseSignalArgs
@@ -51,15 +49,33 @@ proc newGainXpSignalArgs*(xp: int): GainXpSignalArgs =
     new result
     result.channel = GAIN_XP_CHANNEL
     result.xp = xp
-    return result
 
 # Payload when a Unit levels up
-type LevelupSignalArgs* = ref object of BaseSignalArgs
+type LevelUpSignalArgs* = ref object of BaseSignalArgs
 
-proc newLevelupSignalArgs*(xp: int): LevelupSignalArgs =
+proc newLevelUpSignalArgs*(xp: int): LevelUpSignalArgs =
     new result
-    result.channel = LEVELUP_CHANNEL
-    return result
+    result.channel = LEVEL_UP_CHANNEL
+
+# Payload to calculate a Unit's max health
+type GetMaxHealthSignalArgs* = ref object of BaseSignalArgs
+    health*: int
+
+proc newGetMaxHealthSignalArgs*(health: int): GetMaxHealthSignalArgs =
+    new result
+    result.channel = GET_MAX_HEALTH_CHANNEL
+    result.health = health
+
+# Payload when a Unit takes damage
+type TakeDamageSignalArgs* = ref object of BaseSignalArgs
+    dtype*: DamageType
+    dmg*: int
+
+proc newTakeDamageSignalArgs*(dtype: DamageType, dmg: int): TakeDamageSignalArgs =
+    new result
+    result.channel = TAKE_DAMAGE_CHANNEL
+    result.dtype = dtype
+    result.dmg = dmg
 
 # BUILT-IN TILE SIGNAL ARGS TYPES
 
@@ -73,7 +89,6 @@ proc newAbilityClickedSignalArgs*(host: Unit): AbilityClickedSignalArgs =
     new result
     result.channel = ABILITY_CLICKED_CHANNEL
     result.host = host
-    return result
 
 # Payload when an Ability must calculate its potential targets (template for each possible target type)
 type GetAbilityTargetsSignalArgs*[T] = ref object of BaseSignalArgs
@@ -85,7 +100,6 @@ proc newGetAbilityCoordTargetsSignalArgs*(host: Unit): GetAbilityTargetsSignalAr
     result.channel = GET_ABILITY_COORD_TARGETS_CHANNEL
     result.host = host
     result.targets = @[]
-    return result
 
 # Payload when calculating a Unit's stats
 type GetStatsSignalArgs* = ref object of BaseSignalArgs
@@ -96,7 +110,6 @@ proc newGetStatsSignalArgs*(unit: Unit): GetStatsSignalArgs =
     new result
     result.unit = unit
     result.stats = newStats()
-    return result
 
 # BUILT-IN ITEM SIGNAL ARGS TYPES
 
@@ -112,4 +125,3 @@ proc newCanBeEquippedSignalArgs*(unit: Unit, item: Item): CanBeEquippedSignalArg
     result.equippable = true
     result.unit = unit
     result.item = item
-    return result
