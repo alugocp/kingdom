@@ -1,16 +1,20 @@
+import std/sets
 import std/sugar
 import std/tables
 import std/options
+import std/strutils
 import std/strformat
 import kingdom/wrapper/types
 import kingdom/entities/types
 import kingdom/entities/ability
+import kingdom/entities/signals
 import kingdom/entities/item
 import kingdom/math/types
 import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/controls/actions
 import kingdom/builtin/values
+import kingdom/builtin/signals
 
 # Constructor for the Unit type
 proc newUnit*(): Unit {.exportc, dynlib.} =
@@ -26,6 +30,10 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.abilities = @[]
     result.statuses = @[]
     result.items = @[]
+    result.tags = initHashSet[string]()
+    result.classification = @[UNKNOWN_CLASS]
+    result.level = 1
+    result.xp = 0
     return result
 
 # Returns a label for this Unit to be used in Menus
@@ -37,10 +45,23 @@ proc getMenuLabel*(this: Unit): string =
 # Returns true if this Unit is in the same Party as the given Unit
 proc isFellowPartyMember*(this: Unit, u: Unit): bool = this.party == u.party
 
+# Handle logic when this Unit gains XP points
+proc gainXp*(this: Unit, xp: int): void =
+    let payload = newGainXpSignalArgs(xp)
+    this.handleSignal(@[], payload)
+    this.xp += payload.xp
+    while this.xp > MAX_XP:
+        this.xp -= MAX_XP
+        this.level += 1
+        let payload = newLevelupSignalArgs(xp)
+        this.handleSignal(@[], payload)
+
 # Return a MenuNode describing this Unit and associated actions
 proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
     let node = newListNode()
     node.add(newHeaderNode(this.name))
+    node.add(newTextNode(this.classification.join("/")))
+    node.add(newTextNode(fmt"Lv. {this.level} ({this.xp}/{MAX_XP} xp)"))
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
     if this.player == HUMAN_PLAYER:

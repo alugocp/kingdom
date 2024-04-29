@@ -43,6 +43,24 @@ proc newGetMovementSignalArgs*(): GetMovementSignalArgs =
     result.movement = 1
     return result
 
+# Payload when a Unit gains XP
+type GainXpSignalArgs* = ref object of BaseSignalArgs
+    xp*: int
+
+proc newGainXpSignalArgs*(xp: int): GainXpSignalArgs =
+    new result
+    result.channel = GAIN_XP_CHANNEL
+    result.xp = xp
+    return result
+
+# Payload when a Unit levels up
+type LevelupSignalArgs* = ref object of BaseSignalArgs
+
+proc newLevelupSignalArgs*(xp: int): LevelupSignalArgs =
+    new result
+    result.channel = LEVELUP_CHANNEL
+    return result
+
 # BUILT-IN TILE SIGNAL ARGS TYPES
 
 # BUILT-IN ABILITY SIGNAL ARGS TYPES

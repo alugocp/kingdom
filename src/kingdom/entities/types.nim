@@ -1,3 +1,4 @@
+import std/sets
 import std/sugar
 import std/tables
 import std/options
@@ -71,6 +72,10 @@ type Unit* = ref object
     abilities*: seq[Ability]
     statuses*: seq[Ability]
     stats*: Stats
+    tags*: HashSet[string]
+    classification*: seq[string]
+    level*: int
+    xp*: int
 
 # Tile type for the in-game map
 type Tile* = ref object

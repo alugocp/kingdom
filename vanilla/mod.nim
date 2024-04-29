@@ -26,7 +26,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_PLASMOID_ADVENTURER, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_PLASMOID_ADVENTURER
-        unit.desc = some("Slimy guy")
+        unit.desc = some("Just a slimy guy")
+        unit.classification = @["Humanoid", "Plasmoid"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
         unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
             let payload = cast[GetMovementSignalArgs](args)
@@ -38,6 +39,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_FERNANDO_UNFALTERING_GAZE
         unit.desc = some("He's a notorious Garuda warlock")
+        unit.classification = @["Humanoid", "Garuda"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 48, 0)
         return unit
     )

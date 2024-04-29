@@ -13,6 +13,12 @@ const HUMAN_PLAYER* = 0
 # Default Tile border value
 const OPEN_BORDER* = "none"
 
+# Default Unit classification value
+const UNKNOWN_CLASS* = "Unknown"
+
+# Max XP for a Unit
+const MAX_XP* = 1000
+
 # Stats
 const STRENGTH* = "Strength"
 
