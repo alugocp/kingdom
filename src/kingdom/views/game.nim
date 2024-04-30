@@ -1,4 +1,5 @@
 import std/sets
+import std/math
 import std/sugar
 import std/options
 import std/sequtils
@@ -45,7 +46,8 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
         hoveredHex: none(Coord),
         menu: none(Menu),
         view: newViewport(),
-        world: world
+        world: world,
+        state: newGameState(0)
     )
     g.targeter.onTarget = () => g.closeMenu()
     return g
@@ -108,6 +110,13 @@ proc openTargetMenu*(this: GameView): void =
                     this.closeMenu()
                 ))
         this.openMenu(node, true)
+
+# Returns how many turns it has been since the given Unit was fed
+proc getUnitHunger*(this: GameView, u: Unit): int =
+    let turnsSinceFeeding = this.state.turn - u.lastTurnFed
+    let payload = newGetMaxHungerSignalArgs(50)
+    u.handleSignal(@[], payload)
+    return int(floor(100 * float(turnsSinceFeeding) / float(payload.hunger)))
 
 # Returns which View should be shown in the next frame
 method getNextView*(this: GameView): View = this
@@ -229,7 +238,10 @@ method consumeMouseUpdates*(this: GameView): void =
                         let path = this.world.pathfind(party, dst, adjs)
                         if path.len > 0:
                             targets.add(dst)
-                    this.targeter.target(targets, proc (c: Coord): void = this.world.moveParty(party, c))
+                    this.targeter.target(targets, proc (c: Coord): void = this.world.moveParty(party, c)),
+
+                # getHunger
+                (u: Unit) => this.getUnitHunger(u)
             )
             let node = this.world.getMenuNode(hex, actions)
             this.openMenu(node, right)

@@ -1,4 +1,5 @@
 import std/options
+import kingdom/builtin/types
 import kingdom/controls/types
 import kingdom/models/types
 import kingdom/math/types
@@ -23,6 +24,7 @@ method consumeMouseUpdates*(this: View): void {.base.} = discard
 
 # Game type used to aggregate relevant data and used in mod init functions
 type GameView* = ref object of View
+    state*: GameState
     menu*: Option[Menu]
     nextAbilityId*: int
     nextPartyId*: int

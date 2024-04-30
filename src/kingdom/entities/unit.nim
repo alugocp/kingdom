@@ -73,6 +73,7 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
     node.add(newHeaderNode(this.name))
     node.add(newTextNode(this.classification.join("/")))
     node.add(newTextNode(fmt"Lv. {this.level} ({this.xp}/{MAX_XP} xp)"))
+    node.add(newTextNode(fmt"Hunger: {actions.getHunger(this)}%"))
     node.add(newTextNode(fmt"Health: {maxHealth - this.damageTaken}/{maxHealth}"))
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))

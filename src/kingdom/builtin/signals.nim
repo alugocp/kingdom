@@ -77,6 +77,15 @@ proc newTakeDamageSignalArgs*(dtype: DamageType, dmg: int): TakeDamageSignalArgs
     result.dtype = dtype
     result.dmg = dmg
 
+# Payload to calculate a Unit's max hunger
+type GetMaxHungerSignalArgs* = ref object of BaseSignalArgs
+    hunger*: int
+
+proc newGetMaxHungerSignalArgs*(hunger: int): GetMaxHungerSignalArgs =
+    new result
+    result.channel = GET_MAX_HUNGER_CHANNEL
+    result.hunger = hunger
+
 # BUILT-IN TILE SIGNAL ARGS TYPES
 
 # BUILT-IN ABILITY SIGNAL ARGS TYPES

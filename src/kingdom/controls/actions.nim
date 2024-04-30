@@ -25,14 +25,17 @@ type UnitMenuActions* = object
     equip*: (InventoryType, Item) -> void
     autoEquip*: (InventoryType, Item) -> void
     unequip*: (InventoryType, Item) -> void
+    getHunger*: (Unit) -> int
 
 proc newUnitMenuActions*(
     leaveParty: (Unit, Party) -> void,
     joinParty: (Unit, Party) -> void,
     equip: (InventoryType, Item) -> void,
     autoEquip: (InventoryType, Item) -> void,
-    unequip: (InventoryType, Item) -> void
+    unequip: (InventoryType, Item) -> void,
+    getHunger: (Unit) -> int
 ): UnitMenuActions =
+    result.getHunger = getHunger
     result.leaveParty = leaveParty
     result.joinParty = joinParty
     result.autoEquip = autoEquip
@@ -47,6 +50,7 @@ type WorldMenuActions* = object
     leaveParty*: (Unit, Party) -> void
     joinParty*: (Unit, Party) -> void
     initMoveParty*: (Party) -> void
+    getHunger*: (Unit) -> int
 
 proc newWorldMenuActions*(
     open: (MenuNode) -> void,
@@ -54,11 +58,13 @@ proc newWorldMenuActions*(
     unequip: (InventoryType, Unit, Item) -> void,
     leaveParty: (Unit, Party) -> void,
     joinParty: (Unit, Party) -> void,
-    initMoveParty: (Party) -> void
+    initMoveParty: (Party) -> void,
+    getHunger: (Unit) -> int
 ): WorldMenuActions =
     result.open = open
     result.equip = equip
     result.unequip = unequip
+    result.getHunger = getHunger
     result.leaveParty = leaveParty
     result.joinParty = joinParty
     result.initMoveParty = initMoveParty

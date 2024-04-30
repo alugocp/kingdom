@@ -78,11 +78,11 @@ type Unit* = ref object
     stats*: Stats
     tags*: HashSet[string]
     classification*: seq[string]
+    lastTurnFed*: int
     damageTaken*: int
     baseHealth*: int
     level*: int
     xp*: int
-    # Implement hunger
 
 # Tile type for the in-game map
 type Tile* = ref object

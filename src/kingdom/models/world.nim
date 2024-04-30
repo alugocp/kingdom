@@ -145,7 +145,8 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                     actions.joinParty,
                     actions.equip,
                     (itype: InventoryType, i: Item) => this.giveItemToUnit(itype, i, u),
-                    (itype: InventoryType, i: Item) => actions.unequip(itype, u, i)
+                    (itype: InventoryType, i: Item) => actions.unequip(itype, u, i),
+                    actions.getHunger
                 )
                 let root = u.getMenuNode(party, unitActions)
                 node.add(newButtonNode(u.getMenuLabel(), () => actions.open(root)))
