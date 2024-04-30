@@ -37,8 +37,11 @@ method getNextView*(this: StartView): View =
 
     # Testing code
     world.build(proc (x: int, y: int): Tile = game.rules.tileGeneration.generate(if x == 1 and y == 0: "Water" else: "Grass"))
-    discard game.addNewUnit("Plasmoid Adventurer", initCoord(0, 0), HUMAN_PLAYER)
-    discard game.addNewUnit("Fernando of the Unfaltering Gaze", initCoord(1, 1), HUMAN_PLAYER)
+    discard game.addNewUnit("Gloop the Adventurer", initCoord(0, 0), HUMAN_PLAYER)
+    discard game.addNewUnit("Barnaclehead", initCoord(1, 1), HUMAN_PLAYER)
+    discard game.addNewUnit("Druid", initCoord(0, 3), HUMAN_PLAYER)
+    discard game.addNewUnit("Hoka and Tatanka", initCoord(1, 3), HUMAN_PLAYER)
+    discard game.addNewUnit("Henrietta", initCoord(2, 3), HUMAN_PLAYER)
     discard game.addNewUnit("Fernando of the Unfaltering Gaze", initCoord(2, 1), world.createNewPlayer())
     discard game.addNewItem("Ring of Strength", initCoord(1, 1))
     world.getTile(initCoord(0, 1)).quest = some(newQuest("Just a test quest...heehee, that rhymes", "Idk pry some rubies or something"))

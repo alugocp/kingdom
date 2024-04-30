@@ -10,8 +10,12 @@ import kingdom/mods/types
 
 # Labels for mod content
 const ITEM_RING_OF_STRENGTH = "Ring of Strength"
-const UNIT_PLASMOID_ADVENTURER = "Plasmoid Adventurer"
+const UNIT_GLOOP = "Gloop the Adventurer"
+const UNIT_BARNACLEHEAD = "Barnaclehead"
 const UNIT_FERNANDO_UNFALTERING_GAZE = "Fernando of the Unfaltering Gaze"
+const UNIT_HENRIETTA = "Henrietta"
+const UNIT_DRUID = "Druid"
+const UNIT_HOKA_AND_TATANKA = "Hoka and Tatanka"
 const TILE_GRASS = "Grass"
 const TILE_WATER = "Water"
 
@@ -23,9 +27,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.edgeTileSprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
 
     # Unit generators
-    game.rules.unitGeneration.addGenerator(UNIT_PLASMOID_ADVENTURER, proc (): Unit =
+    game.rules.unitGeneration.addGenerator(UNIT_GLOOP, proc (): Unit =
         let unit = newUnit()
-        unit.name = UNIT_PLASMOID_ADVENTURER
+        unit.name = UNIT_GLOOP
         unit.desc = some("Just a slimy guy")
         unit.classification = @["Slime", "Plasmoid"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
@@ -35,12 +39,44 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         )
         return unit
     )
+    game.rules.unitGeneration.addGenerator(UNIT_BARNACLEHEAD, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_BARNACLEHEAD
+        unit.desc = some("A coast-dwelling golem crafted by an island wizard")
+        unit.classification = @["Homunculus", "Golem"]
+        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 0)
+        return unit
+    )
     game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_UNFALTERING_GAZE, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_FERNANDO_UNFALTERING_GAZE
         unit.desc = some("He's a notorious Garuda warlock")
         unit.classification = @["Humanoid", "Garuda"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 48, 0)
+        return unit
+    )
+    game.rules.unitGeneration.addGenerator(UNIT_HENRIETTA, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_HENRIETTA
+        unit.desc = some("She was once a knight but has been stuck in polymorph as a chicken")
+        unit.classification = @["Beast", "Bird", "Chicken"]
+        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 72, 0)
+        return unit
+    )
+    game.rules.unitGeneration.addGenerator(UNIT_DRUID, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_DRUID
+        unit.desc = some("Mysterious druid that wields nature magic")
+        unit.classification = @["Humanoid", "Unknown"]
+        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 24)
+        return unit
+    )
+    game.rules.unitGeneration.addGenerator(UNIT_HOKA_AND_TATANKA, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_HOKA_AND_TATANKA
+        unit.desc = some("This duo roams the plains in search of good causes")
+        unit.classification = @["Humanoid", "Human"]
+        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 24)
         return unit
     )
 
