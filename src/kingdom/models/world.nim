@@ -122,7 +122,7 @@ proc contains*(this: World, c: Coord): bool = c.x >= 0 and c.y >= 0 and c.x < th
 
 # Returns true if there is nothing of interest on this Tile
 proc isTileEmpty*(this: World, c: Coord): bool =
-    not (this.getTile(c).desc.isSome() or this.getUnits(c).len > 0 or this.getItems(c).len > 0)
+    not (this.getTile(c).desc.isSome() or this.getTile(c).quest.isSome() or this.getUnits(c).len > 0 or this.getItems(c).len > 0)
 
 # Return a MenuNode describing this
 proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =

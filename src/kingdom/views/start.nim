@@ -46,7 +46,7 @@ method getNextView*(this: StartView): View =
 
 # Draws the Menu on this StartView object
 method draw*(this: StartView): void =
-    setBackground(WHITE)
+    setBackground(MENU_BG)
     this.menu.draw(this.mouse)
 
 # Check for updated keyboard state and see what we have to process

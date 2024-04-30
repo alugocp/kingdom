@@ -31,24 +31,24 @@ type FontSettings* = object
 
 # Default font in the game
 const REGULAR_FONT* = FontSettings(
-    color: values.BLACK,
+    color: MENU_FG,
     size: 20
 )
 
 # Font for links
 const LINK_FONT* = FontSettings(
-    color: values.BLUE,
+    color: MENU_LINK,
     size: 20
 )
 
 # Font for links when they're hovered over
 const HOVER_FONT* = FontSettings(
-    color: LIGHT_BLUE,
+    color: MENU_HOVER,
     size: 20
 )
 
 # Font for headers
 const HEADER_FONT* = FontSettings(
-    color: values.BLACK,
+    color: MENU_FG,
     size: 35
 )

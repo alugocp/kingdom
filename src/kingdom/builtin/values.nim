@@ -24,9 +24,10 @@ const STRENGTH* = "Strength"
 
 # Colors
 const BLACK*      = uint32(0x000000FF)
-const WHITE*      = uint32(0xFFFFFFFF)
 const GREEN*      = uint32(0x00FF00FF)
-const BLUE*       = uint32(0x0000FFFF)
-const LIGHT_BLUE* = uint32(0x000077FF)
 const DARKER*     = uint32(0x00000077)
 const HIGHLIGHT*  = uint32(0x00FFFFAA)
+const MENU_BG*    = uint32(0x3E3E3EFF)
+const MENU_FG*    = uint32(0xF1F1F1FF)
+const MENU_LINK*  = uint32(0x42A5F5FF)
+const MENU_HOVER* = uint32(0x90CAF9FF)

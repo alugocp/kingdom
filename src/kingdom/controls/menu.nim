@@ -25,7 +25,7 @@ proc draw*(this: Menu, m: MouseState, tall: bool = false): void =
     const M = 5 # Margin value
     let height = if tall: getWindowBounds().y else: this.root.getHeight()
     let r = initRect(this.x + M, this.y + M, this.width - (M * 2), height - (M * 2))
-    drawRect(this.x, this.y, this.width, height, WHITE)
+    drawRect(this.x, this.y, this.width, height, MENU_BG)
     this.root.draw(m, r)
 
 # Propogates a MouseState through this Menu to see if any node was clicked on
@@ -47,7 +47,7 @@ type TextNode* = ref object of MenuNode
     text*: string
     color*: uint32
 
-proc newTextNode*(text: string, color: uint32 = BLACK): TextNode =
+proc newTextNode*(text: string, color: uint32 = MENU_FG): TextNode =
     new result
     result.element = MenuElement.TEXT
     result.color = color
