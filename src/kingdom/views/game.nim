@@ -11,6 +11,7 @@ import kingdom/entities/types
 import kingdom/entities/unit
 import kingdom/builtin/signals
 import kingdom/builtin/values
+import kingdom/builtin/types
 import kingdom/wrapper/window
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
@@ -163,26 +164,37 @@ method consumeMouseUpdates*(this: GameView): void =
                 (n: MenuNode) => this.openMenu(n, right),
 
                 # equip
-                proc (i: Item): void =
+                proc (itype: InventoryType, i: Item): void =
                     let units = this.world.getUnits(i.pos.get())
                     var filtered: seq[Unit] = @[]
                     for u in units:
-                        if u.player != HUMAN_PLAYER:
+                        let fullInventory = if itype == InventoryType.EQUIP: u.items.len == u.maxItems else: u.haul.len == u.maxHaul
+                        if u.player != HUMAN_PLAYER or fullInventory:
                             continue
-                        capture u:
+                        if itype == InventoryType.EQUIP:
                             let payload = newCanBeEquippedSignalArgs(u, i)
                             i.handleSignal(@[], payload)
                             if payload.equippable:
+                                capture u:
+                                    filtered.add(u)
+                        else:
+                            capture u:
                                 filtered.add(u)
                     this.targeter.target(filtered, proc (u: Unit): void =
                         this.world.moveItem(i, none(Coord))
-                        u.items.add(i)
+                        if itype == InventoryType.EQUIP:
+                            u.items.add(i)
+                        else:
+                            u.haul.add(i)
                     )
                     this.openTargetMenu(),
 
                 # unequip
-                proc (u: Unit, i: Item): void =
-                    u.items = u.items.filterIt(it != i)
+                proc (itype: InventoryType, u: Unit, i: Item): void =
+                    if itype == InventoryType.EQUIP:
+                        u.items = u.items.filterIt(it != i)
+                    else:
+                        u.haul = u.haul.filterIt(it != i)
                     this.world.moveItem(i, some(u.pos))
                     this.closeMenu(),
 

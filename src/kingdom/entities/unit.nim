@@ -13,8 +13,9 @@ import kingdom/math/types
 import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/controls/actions
-import kingdom/builtin/values
 import kingdom/builtin/signals
+import kingdom/builtin/values
+import kingdom/builtin/types
 
 # Constructor for the Unit type
 proc newUnit*(): Unit {.exportc, dynlib.} =
@@ -30,7 +31,10 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.handlers = initTable[string, seq[SignalHandler[Unit]]]()
     result.abilities = @[]
     result.statuses = @[]
+    result.maxItems = 4
     result.items = @[]
+    result.maxHaul = 4
+    result.haul = @[]
     result.tags = initHashSet[string]()
     result.classification = @[UNKNOWN_CLASS]
     result.level = 1
@@ -94,11 +98,32 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
             node.add(status.getMenuNode(this))
             node.add(newSeparatorNode())
 
-    # Menu elements for Items
-    if this.items.len > 0:
-        node.add(newHeaderNode("Items:"))
-        for item in this.items:
-            capture item:
-                node.add(item.getMenuNode(this.player, () => actions.unequip(item)))
-                node.add(newSeparatorNode())
+    # Menu elements for Items (equipped inventory)
+    if this.maxItems > 0:
+        node.add(newHeaderNode("Equipped Items:"))
+        let label = if this.items.len == 1: "item" else: "items"
+        node.add(newTextNode(fmt"{this.items.len} {label} equipped ({this.maxItems} max)"))
+    for item in this.items:
+        capture item:
+            node.add(item.getMenuNode(
+                some((player: this.player, itype: InventoryType.EQUIP)),
+                () => actions.unequip(InventoryType.EQUIP, item)
+            ))
+            node.add(newSeparatorNode())
+
+    if this.items.len == 0:
+        node.add(newSpaceNode())
+
+    # Menu elements for Items (haul inventory)
+    if this.maxHaul > 0:
+        node.add(newHeaderNode("Hauled Items:"))
+        let label = if this.haul.len == 1: "item" else: "items"
+        node.add(newTextNode(fmt"{this.haul.len} {label} hauled ({this.maxHaul} max)"))
+    for item in this.haul:
+        capture item:
+            node.add(item.getMenuNode(
+                some((player: this.player, itype: InventoryType.HAUL)),
+                () => actions.unequip(InventoryType.HAUL, item)
+            ))
+            node.add(newSeparatorNode())
     return node

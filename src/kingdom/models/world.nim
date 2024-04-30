@@ -5,7 +5,6 @@ import std/tables
 import std/options
 import std/sequtils
 import std/strformat
-import kingdom/builtin/signals
 import kingdom/entities/types
 import kingdom/entities/tile
 import kingdom/entities/unit
@@ -17,13 +16,15 @@ import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/math/hexagons
 import kingdom/math/types
-import kingdom/operators
 import kingdom/wrapper/draw
 import kingdom/wrapper/types
 import kingdom/wrapper/sprites
 import kingdom/wrapper/window
+import kingdom/builtin/signals
 import kingdom/builtin/values
+import kingdom/builtin/types
 import kingdom/models/types
+import kingdom/operators
 
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
@@ -133,7 +134,8 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                 let unitActions = newUnitMenuActions(
                     actions.leaveParty,
                     actions.joinParty,
-                    (i: Item) => actions.unequip(u, i)
+                    actions.equip,
+                    (itype: InventoryType, i: Item) => actions.unequip(itype, u, i)
                 )
                 let root = u.getMenuNode(party, unitActions)
                 node.add(newButtonNode(u.getMenuLabel(), () => actions.open(root)))
@@ -150,7 +152,8 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
         capture i:
             node.add(newTextNode(i.name, GREEN))
             node.add(newTextNode(i.desc))
-            node.add(newButtonNode("Equip", () => actions.equip(i)))
+            node.add(newButtonNode("Equip", () => actions.equip(InventoryType.EQUIP, i)))
+            node.add(newButtonNode("Haul", () => actions.equip(InventoryType.HAUL, i)))
             node.add(newSeparatorNode())
     return node
 

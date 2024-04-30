@@ -69,7 +69,10 @@ type Unit* = ref object
     handlers*: SignalHandlersTable[Unit]
     name*: string
     desc*: Option[string]
+    maxItems*: int
     items*: seq[Item]
+    maxHaul*: int
+    haul*: seq[Item]
     abilities*: seq[Ability]
     statuses*: seq[Ability]
     stats*: Stats
@@ -79,6 +82,7 @@ type Unit* = ref object
     baseHealth*: int
     level*: int
     xp*: int
+    # Implement hunger
 
 # Tile type for the in-game map
 type Tile* = ref object

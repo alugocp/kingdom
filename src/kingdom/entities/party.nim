@@ -87,6 +87,7 @@ proc getMenuNode*(this: Party, actions: PartyMenuActions): MenuNode =
         let unitActions = newUnitMenuActions(
             actions.leaveParty,
             actions.joinParty,
+            actions.equip,
             actions.unequip
         )
         node.add(newButtonNode(u.name, () => actions.open(u.getMenuNode(this, unitActions))))
