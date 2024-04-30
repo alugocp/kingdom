@@ -107,7 +107,11 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
         capture item:
             node.add(item.getMenuNode(
                 some((player: this.player, itype: InventoryType.EQUIP)),
-                () => actions.unequip(InventoryType.EQUIP, item)
+                newItemMenuActions(
+                    (itype: InventoryType) => actions.equip(itype, item),
+                    (itype: InventoryType) => actions.autoEquip(itype, item),
+                    () => actions.unequip(InventoryType.EQUIP, item)
+                )
             ))
             node.add(newSeparatorNode())
 
@@ -123,7 +127,11 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
         capture item:
             node.add(item.getMenuNode(
                 some((player: this.player, itype: InventoryType.HAUL)),
-                () => actions.unequip(InventoryType.HAUL, item)
+                newItemMenuActions(
+                    (itype: InventoryType) => actions.equip(itype, item),
+                    (itype: InventoryType) => actions.autoEquip(itype, item),
+                    () => actions.unequip(InventoryType.HAUL, item)
+                )
             ))
             node.add(newSeparatorNode())
     return node

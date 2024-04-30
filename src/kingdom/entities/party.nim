@@ -1,13 +1,8 @@
-import std/sugar
 import std/options
 import std/strformat
 import kingdom/math/types
 import kingdom/entities/signals
 import kingdom/entities/types
-import kingdom/entities/unit
-import kingdom/controls/types
-import kingdom/controls/menu
-import kingdom/controls/actions
 import kingdom/builtin/signals
 import kingdom/builtin/values
 
@@ -78,17 +73,3 @@ proc giveToAnotherParty*(this: Party, other: Party, u: Unit): bool =
 
 # Returns the player ID for the owner of this party
 proc getPlayerId*(this: Party): int = this.members[0].get().player
-
-# Returns a MenuNode for viewing this Party's data
-proc getMenuNode*(this: Party, actions: PartyMenuActions): MenuNode =
-    let node = newListNode()
-    for a in 0..(this.n - 1):
-        let u = this.members[a].get()
-        let unitActions = newUnitMenuActions(
-            actions.leaveParty,
-            actions.joinParty,
-            actions.equip,
-            actions.unequip
-        )
-        node.add(newButtonNode(u.name, () => actions.open(u.getMenuNode(this, unitActions))))
-    return node

@@ -7,6 +7,7 @@ import std/sequtils
 import std/strformat
 import kingdom/entities/types
 import kingdom/entities/tile
+import kingdom/entities/item
 import kingdom/entities/unit
 import kingdom/entities/party
 import kingdom/entities/signals
@@ -107,6 +108,14 @@ proc moveItem*(this: World, i: Item, c: Option[Coord]): void =
         this.tiles[c.get().x][c.get().y].items.add(i)
     i.pos = c
 
+# Equips an Item to a Unit (works for either InventoryType)
+proc giveItemToUnit*(this: World, itype: InventoryType, i: Item, u: Unit): void =
+    this.moveItem(i, none(Coord))
+    if itype == InventoryType.EQUIP:
+        u.items.add(i)
+    else:
+        u.haul.add(i)
+
 # Returns true if the World contains a Tile at the given Coord
 proc contains*(this: World, c: Coord): bool = c.x >= 0 and c.y >= 0 and c.x < this.w and c.y < this.h
 
@@ -135,6 +144,7 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                     actions.leaveParty,
                     actions.joinParty,
                     actions.equip,
+                    (itype: InventoryType, i: Item) => this.giveItemToUnit(itype, i, u),
                     (itype: InventoryType, i: Item) => actions.unequip(itype, u, i)
                 )
                 let root = u.getMenuNode(party, unitActions)
@@ -150,10 +160,14 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
         node.add(newHeaderNode(fmt"Items:"))
     for i in items:
         capture i:
-            node.add(newTextNode(i.name, GREEN))
-            node.add(newTextNode(i.desc))
-            node.add(newButtonNode("Equip", () => actions.equip(InventoryType.EQUIP, i)))
-            node.add(newButtonNode("Haul", () => actions.equip(InventoryType.HAUL, i)))
+            node.add(i.getMenuNode(
+                none(tuple[player: int, itype: InventoryType]),
+                newItemMenuActions(
+                    (itype: InventoryType) => actions.equip(itype, i),
+                    proc (itype: InventoryType): void = discard,
+                    proc (): void = discard
+                )
+            ))
             node.add(newSeparatorNode())
     return node
 

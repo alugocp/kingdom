@@ -4,6 +4,7 @@ import std/tables
 import std/options
 import kingdom/math/types
 import kingdom/entities/types
+import kingdom/controls/actions
 import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/builtin/values
@@ -20,7 +21,7 @@ proc newItem*(): Item {.exportc, dynlib.} =
     result.handlers = initTable[string, seq[SignalHandler[Item]]]()
 
 # Return a MenuNode describing this Item when equipped to a Unit
-proc getMenuNode*(this: Item, equipData: Option[tuple[player: int, itype: InventoryType]], unequip: () -> void): MenuNode =
+proc getMenuNode*(this: Item, equipData: Option[tuple[player: int, itype: InventoryType]], actions: ItemMenuActions): MenuNode =
     let node = newListNode()
     node.add(newTextNode(this.name, GREEN))
     node.add(newTextNode(this.desc))
@@ -28,12 +29,23 @@ proc getMenuNode*(this: Item, equipData: Option[tuple[player: int, itype: Invent
     # Controls when this Item is in possession of a Unit
     if equipData.isSome():
         let player = equipData.get().player
-        # let itype = equipData.get().itype
+        let itype = equipData.get().itype
         if player != HUMAN_PLAYER:
             return node
-        node.add(newButtonNode("Drop", unequip))
+        if itype == InventoryType.EQUIP:
+            node.add(newButtonNode("Move to haul inventory", proc (): void =
+                actions.unequip()
+                actions.autoEquip(InventoryType.HAUL)
+            ))
+        else:
+            node.add(newButtonNode("Move to equip inventory", proc (): void =
+                actions.unequip()
+                actions.autoEquip(InventoryType.EQUIP)
+            ))
+        node.add(newButtonNode("Drop", actions.unequip))
 
     # Controls when this Item is loose in the World
     else:
-        discard
+        node.add(newButtonNode("Equip", () => actions.equip(InventoryType.EQUIP)))
+        node.add(newButtonNode("Haul", () => actions.equip(InventoryType.HAUL)))
     return node

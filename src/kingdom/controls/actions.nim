@@ -3,44 +3,41 @@ import kingdom/entities/types
 import kingdom/controls/types
 import kingdom/builtin/types
 
+# Item menu actions
+type ItemMenuActions* = object
+    equip*: (InventoryType) -> void
+    autoEquip*: (InventoryType) -> void
+    unequip*: () -> void
+
+proc newItemMenuActions*(
+    equip: (InventoryType) -> void,
+    autoEquip: (InventoryType) -> void,
+    unequip: () -> void
+): ItemMenuActions =
+    result.autoEquip = autoEquip
+    result.unequip = unequip
+    result.equip = equip
+
 # Unit menu actions
 type UnitMenuActions* = object
     leaveParty*: (Unit, Party) -> void
     joinParty*: (Unit, Party) -> void
     equip*: (InventoryType, Item) -> void
+    autoEquip*: (InventoryType, Item) -> void
     unequip*: (InventoryType, Item) -> void
 
 proc newUnitMenuActions*(
     leaveParty: (Unit, Party) -> void,
     joinParty: (Unit, Party) -> void,
     equip: (InventoryType, Item) -> void,
+    autoEquip: (InventoryType, Item) -> void,
     unequip: (InventoryType, Item) -> void
 ): UnitMenuActions =
     result.leaveParty = leaveParty
     result.joinParty = joinParty
+    result.autoEquip = autoEquip
     result.unequip = unequip
     result.equip = equip
-
-# Party menu actions
-type PartyMenuActions* = object
-    open*: (MenuNode) -> void
-    equip*: (InventoryType, Item) -> void
-    unequip*: (InventoryType, Item) -> void
-    leaveParty*: (Unit, Party) -> void
-    joinParty*: (Unit, Party) -> void
-
-proc newPartyMenuActions*(
-    open: (MenuNode) -> void,
-    equip: (InventoryType, Item) -> void,
-    unequip: (InventoryType, Item) -> void,
-    leaveParty: (Unit, Party) -> void,
-    joinParty: (Unit, Party) -> void
-): PartyMenuActions =
-    result.open = open
-    result.equip = equip
-    result.unequip = unequip
-    result.leaveParty = leaveParty
-    result.joinParty = joinParty
 
 # World menu actions
 type WorldMenuActions* = object

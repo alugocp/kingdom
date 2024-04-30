@@ -180,13 +180,7 @@ method consumeMouseUpdates*(this: GameView): void =
                         else:
                             capture u:
                                 filtered.add(u)
-                    this.targeter.target(filtered, proc (u: Unit): void =
-                        this.world.moveItem(i, none(Coord))
-                        if itype == InventoryType.EQUIP:
-                            u.items.add(i)
-                        else:
-                            u.haul.add(i)
-                    )
+                    this.targeter.target(filtered, (u: Unit) => this.world.giveItemToUnit(itype, i, u))
                     this.openTargetMenu(),
 
                 # unequip
