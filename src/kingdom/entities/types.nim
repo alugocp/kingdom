@@ -5,6 +5,7 @@ import std/options
 import kingdom/math/types
 import kingdom/wrapper/types
 import kingdom/builtin/values
+import kingdom/quest
 
 # STAT TYPES
 
@@ -93,6 +94,7 @@ type Tile* = ref object
     sprite*: SpriteHandle
     handlers*: SignalHandlersTable[Tile]
     borders*: array[0..5, string]
+    quest*: Option[Quest]
 
 # Combined entity type
 type Entity* = Unit | Tile | Item | Ability

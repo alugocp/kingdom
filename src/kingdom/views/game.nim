@@ -101,8 +101,10 @@ proc openTargetMenu*(this: GameView): void =
         let handler = this.targeter.unitHandler.get()
         let node = newListNode()
         node.add(newHeaderNode("Unit targets:"))
+        node.add(newSpaceNode())
+        if units.len == 0:
+            node.add(newTextNode("No options available"))
         for u in units:
-            node.add(newSpaceNode())
             capture u:
                 node.add(newButtonNode(u.getMenuLabel(), proc (): void =
                     handler(u)

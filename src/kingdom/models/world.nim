@@ -26,6 +26,7 @@ import kingdom/builtin/values
 import kingdom/builtin/types
 import kingdom/models/types
 import kingdom/operators
+import kingdom/quest
 
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
@@ -131,6 +132,15 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
     let items = this.getItems(c)
     if tile.desc.isSome():
         node.add(newTextNode(tile.desc.get()))
+        node.add(newSeparatorNode())
+    if tile.quest.isSome():
+        let quest = tile.quest.get()
+        node.add(newHeaderNode("Quest:"))
+        node.add(newTextNode(quest.desc))
+        node.add(newSpaceNode())
+        node.add(newTextNode(fmt"Reward: {quest.reward}"))
+        node.add(newSpaceNode())
+        node.add(newTextNode(quest.progressLabel()))
         node.add(newSeparatorNode())
 
     # Menu elements for Parties

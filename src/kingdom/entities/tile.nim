@@ -6,6 +6,7 @@ import kingdom/builtin/values
 import kingdom/entities/types
 import kingdom/math/hexagons
 import kingdom/math/types
+import kingdom/quest
 
 # Constructor for the Tile type
 proc newTile*(): Tile {.exportc, dynlib.} =
@@ -16,6 +17,7 @@ proc newTile*(): Tile {.exportc, dynlib.} =
     result.sprite = NULL_SPRITE
     result.tags = initHashSet[string]()
     result.handlers = initTable[string, seq[SignalHandler[Tile]]]()
+    result.quest = none(Quest)
     for a in 0..5:
         result.borders[a] = OPEN_BORDER
 
