@@ -29,7 +29,7 @@ const TILE_FOREST = "Forest"
 proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # Register spritesheets and set the edgeTileSprite
     let unitSprites = game.rules.sprites.registerSheet("vanilla", "units")
-    let tileSprites = game.rules.sprites.registerSheet("vanilla", "tile")
+    let tileSprites = game.rules.sprites.registerSheet("vanilla", "tiles")
     game.rules.edgeTileSprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
 
     # Unit generators

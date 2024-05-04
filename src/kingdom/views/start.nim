@@ -1,4 +1,3 @@
-import std/random
 import std/options
 import kingdom/generation/manager
 import kingdom/controls/keyboard
@@ -39,8 +38,21 @@ method getNextView*(this: StartView): View =
     # Testing code
     world.build(proc (x: int, y: int): Tile =
         var label = "Grass"
-        if not (x <= 3 and y <= 3):
-            label = sample(["Grass", "Water", "Coast", "Desert", "Cactus", "Island Fortress", "Warlock Tower", "Forest"])
+        if y <= 3:
+            if x > 8: label = "Forest"
+        else:
+            if x <= 6: label = "Water"
+            elif y > 5: label = "Desert"
+        if (y == 3 and x < 6) or (x == 6 and y > 3):
+            label = "Coast"
+        if ((x == 2 or x == 1) and abs(y - 7) <= 1) or (y == 7 and x == 0):
+            label = "Coast"
+        if x == 1 and y == 7:
+            label = "Island Fortress"
+        if x <= 18 and y <= 8 and x > 13 and y > 6:
+            label = "Cactus"
+        if x == 6 and y == 1:
+            label = "Warlock Tower"
         game.rules.tileGeneration.generate(label)
     )
     discard game.addNewUnit("Gloop the Adventurer", initCoord(0, 0), HUMAN_PLAYER)
