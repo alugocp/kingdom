@@ -39,6 +39,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Just a slimy guy")
         unit.classification = @["Slime", "Plasmoid"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
+        unit.stats.setStat("Courage", 3)
+        unit.stats.setStat("Constitution", 3)
+        unit.stats.setStat("Dexterity", 3)
         unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
             let payload = cast[GetMovementSignalArgs](args)
             payload.movement = 2
@@ -51,6 +54,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A coast-dwelling golem crafted by an island wizard")
         unit.classification = @["Homunculus", "Golem"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 0)
+        unit.stats.setStat("Constitution", 5)
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_UNFALTERING_GAZE, proc (): Unit =
@@ -59,6 +63,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("He's a notorious Garuda warlock")
         unit.classification = @["Humanoid", "Garuda"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 48, 0)
+        unit.stats.setStat("Wickedness", 8)
+        unit.stats.setStat("Intellect", 8)
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_HENRIETTA, proc (): Unit =
@@ -75,6 +81,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Mysterious druid that wields nature magic")
         unit.classification = @["Humanoid", "Unknown"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 24)
+        unit.stats.setStat("Wisdom", 6)
+        unit.stats.setStat("Agility", 4)
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_HOKA_AND_TATANKA, proc (): Unit =
@@ -83,6 +91,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This duo roams the plains in search of good causes")
         unit.classification = @["Humanoid", "Human"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 24)
+        unit.stats.setStat("Constitution", 3)
+        unit.stats.setStat("Agility", 3)
+        unit.stats.setStat("Charisma", 3)
         return unit
     )
 

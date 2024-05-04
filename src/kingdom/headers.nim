@@ -47,6 +47,9 @@ proc addSignalHandler*(this: Item, channel: string, handler: SignalHandler[Item]
 proc addSignalHandler*(this: Unit, channel: string, handler: SignalHandler[Unit]): void {.importc: "addSignalHandler_unit"}
 proc addSignalHandler*(this: Tile, channel: string, handler: SignalHandler[Tile]): void {.importc: "addSignalHandler_tile"}
 
+# src/kingdom/entities/stats.nim
+proc setStat*(this: Stats, label: string, stat: int): void {.importc.}
+
 # src/kingdom/models/world.nim
 proc getBounds*(this: World): Coord {.importc.}
 proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool {.importc.}

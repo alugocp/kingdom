@@ -5,6 +5,14 @@ proc newStats*(): Stats =
     new result
     result.n = 0
 
+# Returns all the stat label/value pairs associated with this object
+proc getStats*(this: Stats): seq[tuple[label: string, value: int]] =
+    var stats: seq[tuple[label: string, value: int]] = @[]
+    if this.n > 0: stats.add((label: this.label1, value: this.stat1))
+    if this.n > 1: stats.add((label: this.label2, value: this.stat2))
+    if this.n > 2: stats.add((label: this.label3, value: this.stat3))
+    return stats
+
 # Returns true if this object contains the given stat's label
 proc hasStat*(this: Stats, label: string): bool =
     (this.n > 0 and this.label1 == label) or
@@ -19,7 +27,7 @@ proc getStat*(this: Stats, label: string): int =
     else: 0
 
 # Assigns a numeric value to the given stat label
-proc setStat*(this: Stats, label: string, stat: int): void =
+proc setStat*(this: Stats, label: string, stat: int): void {.exportc, dynlib.} =
     if this.n > 0 and this.label1 == label: this.stat1 = stat
     elif this.n > 1 and this.label2 == label: this.stat2 = stat
     elif this.n > 2 and this.label3 == label: this.stat3 = stat

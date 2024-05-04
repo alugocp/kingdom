@@ -8,6 +8,7 @@ import kingdom/wrapper/types
 import kingdom/entities/types
 import kingdom/entities/ability
 import kingdom/entities/signals
+import kingdom/entities/stats
 import kingdom/entities/item
 import kingdom/math/types
 import kingdom/controls/types
@@ -35,6 +36,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.items = @[]
     result.maxHaul = 4
     result.haul = @[]
+    result.stats = newStats()
     result.tags = initHashSet[string]()
     result.classification = @[UNKNOWN_CLASS]
     result.level = 1
@@ -70,11 +72,14 @@ proc getMaxHealth*(this: Unit): int =
 proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
     let maxHealth = this.getMaxHealth()
     let node = newListNode()
+    let stats = this.stats.getStats()
     node.add(newHeaderNode(this.name))
     node.add(newTextNode(this.classification.join("/")))
     node.add(newTextNode(fmt"Lv. {this.level} ({this.xp}/{MAX_XP} xp)"))
     node.add(newTextNode(fmt"Hunger: {actions.getHunger(this)}%"))
     node.add(newTextNode(fmt"Health: {maxHealth - this.damageTaken}/{maxHealth}"))
+    for stat in stats:
+        node.add(newTextNode(fmt"{stat.value} {stat.label}"))
     if this.desc.isSome:
         node.add(newTextNode(this.desc.get()))
     if this.player == HUMAN_PLAYER:
