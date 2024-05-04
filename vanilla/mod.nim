@@ -18,6 +18,12 @@ const UNIT_DRUID = "Druid"
 const UNIT_HOKA_AND_TATANKA = "Hoka and Tatanka"
 const TILE_GRASS = "Grass"
 const TILE_WATER = "Water"
+const TILE_COAST = "Coast"
+const TILE_DESERT = "Desert"
+const TILE_CACTUS = "Cactus"
+const TILE_ISLAND_FORTRESS = "Island Fortress"
+const TILE_WARLOCK_TOWER = "Warlock Tower"
+const TILE_FOREST = "Forest"
 
 # Mod initialization procedure
 proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
@@ -105,5 +111,35 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
         tile.desc = some("Water that units must swim across")
         tile.setAllBorders("water")
+        return tile
+    )
+    game.rules.tileGeneration.addGenerator(TILE_WARLOCK_TOWER, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 0, 96, 110)
+        return tile
+    )
+    game.rules.tileGeneration.addGenerator(TILE_DESERT, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 0, 96, 110)
+        return tile
+    )
+    game.rules.tileGeneration.addGenerator(TILE_FOREST, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 110, 96, 110)
+        return tile
+    )
+    game.rules.tileGeneration.addGenerator(TILE_COAST, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 110, 96, 110)
+        return tile
+    )
+    game.rules.tileGeneration.addGenerator(TILE_ISLAND_FORTRESS, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 110, 96, 110)
+        return tile
+    )
+    game.rules.tileGeneration.addGenerator(TILE_CACTUS, proc(): Tile =
+        let tile = newTile()
+        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 110, 96, 110)
         return tile
     )

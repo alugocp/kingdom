@@ -13,7 +13,7 @@ proc getGameView*(this: ModCoreInterface): GameView {.importc.}
 
 # src/kingdom/wrapper/sprites.nim
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.importc.}
-proc getSpriteHandle*(this: SpriteManager, id: SheetHandle, x: uint8, y: uint8, w: uint8 = 24, h: uint8 = 24): SpriteHandle {.importc.}
+proc getSpriteHandle*(this: SpriteManager, id: SheetHandle, x: uint16, y: uint16, w: uint8 = 24, h: uint8 = 24): SpriteHandle {.importc.}
 
 # src/kingdom/generation/manager.nim
 proc addGenerator*(this: GenerationManager[Ability], key: string, generator: Generator[Ability]): void {.importc: "addGenerator_ability"}
