@@ -61,7 +61,7 @@ proc getBounds*(this: World): Coord {.exportc, dynlib.} =
 proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y].tile
 
 # Retrieves a set of Units on a Tile in this World
-proc getUnits*(this: World, c: Coord): seq[Unit] =
+proc getUnits*(this: World, c: Coord): seq[Unit] {.exportc, dynlib.} =
     var units = newSeq[Unit]()
     let parties = this.tiles[c.x][c.y].parties
     for party in parties:

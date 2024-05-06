@@ -39,6 +39,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.stats = newStats()
     result.tags = initHashSet[string]()
     result.classification = @[UNKNOWN_CLASS]
+    result.damageTaken = 0
     result.level = 1
     result.xp = 0
 
@@ -67,6 +68,9 @@ proc getMaxHealth*(this: Unit): int =
     let payload = newGetMaxHealthSignalArgs(this.baseHealth)
     this.handleSignal(@[], payload)
     return payload.health
+
+# Returns this Unit's health
+proc getHealth*(this: Unit): int = this.getMaxHealth() - this.damageTaken
 
 # Return a MenuNode describing this Unit and associated actions
 proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
