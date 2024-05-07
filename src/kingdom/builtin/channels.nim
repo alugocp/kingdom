@@ -18,6 +18,7 @@ const GET_MAX_HUNGER_CHANNEL* = "GetMaxHunger"
 # Unit actions
 const GAIN_XP_CHANNEL* = "GainXp"
 const LEVEL_UP_CHANNEL* = "LevelUp"
+const DEAL_DAMAGE_CHANNEL* = "DealDamage"
 const TAKE_DAMAGE_CHANNEL* = "TakeDamage"
 
 # Item properties

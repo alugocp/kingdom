@@ -35,7 +35,7 @@ proc handleSignal*(this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
     for ability in this.abilities:
         ability.handleSignal(unitCtx, args)
     for status in this.statuses:
-        status.handleSignal(unitCtx, args)
+        status.effect.handleSignal(unitCtx, args)
     for item in this.items:
         item.handleSignal(unitCtx, args)
 

@@ -72,6 +72,29 @@ proc getMaxHealth*(this: Unit): int =
 # Returns this Unit's health
 proc getHealth*(this: Unit): int = this.getMaxHealth() - this.damageTaken
 
+# Adds a Status effect to this Unit
+proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.exportc, dynlib.} =
+    let status = Status(
+        effect: ability,
+        lifespan: lifespan,
+        frameAdded: 0
+    )
+    this.statuses.add(status)
+
+# This Unit deals some damage to another Unit
+proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
+    let p1 = newDealDamageSignalArgs(dtype, dmg)
+    this.handleSignal(@[], p1)
+    let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg)
+    u.handleSignal(@[], p2)
+    u.damageTaken += p2.dmg
+
+# Heals some damage taken by this Unit
+proc heal*(this: Unit, dmg: int): void {.exportc, dynlib.} =
+    this.damageTaken -= dmg
+    if this.damageTaken < dmg:
+        this.damageTaken = 0
+
 # Return a MenuNode describing this Unit and associated actions
 proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
     let maxHealth = this.getMaxHealth()
@@ -105,7 +128,7 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
     if this.statuses.len > 0:
         node.add(newHeaderNode("Statuses:"))
         for status in this.statuses:
-            node.add(status.getMenuNode(this))
+            node.add(status.effect.getMenuNode(this))
             node.add(newSeparatorNode())
 
     # Menu elements for Items (equipped inventory)

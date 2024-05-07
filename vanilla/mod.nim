@@ -1,5 +1,5 @@
+import std/sugar
 import std/options
-import std/sequtils
 import std/strformat
 import kingdom/headers
 import kingdom/views/types
@@ -49,6 +49,13 @@ const UNIT_BUCK = "Buck"
 # Abilities
 const ABILITY_STAB = "Stab"
 const ABILITY_ZAP = "Zap"
+const ABILITY_CURE_WOUNDS = "Cure Wounds"
+const ABILITY_CHANT_OF_STRENGTH = "Chant of Strength"
+const ABILITY_CURSE_OF_WEAKNESS = "Curse of Weakness"
+
+# Status effects
+const STATUS_DAMAGE_DEBUFF = "Damage Debuff"
+const STATUS_DAMAGE_BUFF = "Damage Buff"
 
 #
 # HELPER FUNCTIONS
@@ -58,12 +65,9 @@ const ABILITY_ZAP = "Zap"
 proc attack(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void =
     let a = cast[AbilityClickedSignalArgs](args)
     let view = game.getGameView()
-    let units = view.world.getUnits(a.host.pos)
-    let filtered = units.filterIt(it.player != a.host.player)
-    view.targeter.target(filtered, proc (u: Unit): void =
-        let payload = newTakeDamageSignalArgs(dtype, dmg)
-        u.damageTaken += payload.dmg
-    )
+    let enemies = view.world.getEnemies(a.host)
+    view.targeter.target(enemies, (u: Unit) => a.host.dealDamage(u, dtype, dmg))
+
 # Shorthand to give some Unit armor against a certain DamageType
 proc addArmor(u: Unit, dtype: DamageType, dmg: int): void =
     u.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
@@ -205,10 +209,44 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         return unit
     )
 
+    # Acolyte of C'thos
+    game.rules.unitGeneration.addGenerator(UNIT_ACOLYTE_OF_CTHOS, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_ACOLYTE_OF_CTHOS
+        unit.classification = @["Humanoid", "Unknown"]
+        unit.sprite = game.getUnitSprite(unitSprites, 4, 1)
+        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
+        game.giveAbility(unit, ABILITY_ZAP)
+        return unit
+    )
+
+    # Kobold Sycophant
+    game.rules.unitGeneration.addGenerator(UNIT_KOBOLD_SYCOPHANT, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_KOBOLD_SYCOPHANT
+        unit.classification = @["Humanoid", "Kobold"]
+        unit.sprite = game.getUnitSprite(unitSprites, 5, 1)
+        game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
+        game.giveAbility(unit, ABILITY_STAB)
+        return unit
+    )
+
+    # Banshee
+    game.rules.unitGeneration.addGenerator(UNIT_BANSHEE, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_BANSHEE
+        unit.classification = @["Spirit", "Banshee"]
+        unit.sprite = game.getUnitSprite(unitSprites, 6, 1)
+        game.giveAbility(unit, ABILITY_CURSE_OF_WEAKNESS)
+        game.giveAbility(unit, ABILITY_ZAP)
+        return unit
+    )
+
     #
     # ABILITY GENERATORS
     #
 
+    # Stab
     game.rules.abilityGeneration.addGenerator(ABILITY_STAB, proc(): Ability =
         let ability = newAbility()
         ability.name = ABILITY_STAB
@@ -219,12 +257,85 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         return ability
     )
 
+    # Zap
     game.rules.abilityGeneration.addGenerator(ABILITY_ZAP, proc(): Ability =
         let ability = newAbility()
         ability.name = ABILITY_ZAP
         ability.desc = some("Deals 5 magical damage")
         ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
             game.attack(args, DamageType.MAGICAL, 5)
+        )
+        return ability
+    )
+
+    # Cure Wounds
+    game.rules.abilityGeneration.addGenerator(ABILITY_CURE_WOUNDS, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_CURE_WOUNDS
+        ability.desc = some("Heals 6 damage")
+        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[AbilityClickedSignalArgs](args)
+            let view = game.getGameView()
+            let allies = view.world.getAllies(a.host)
+            view.targeter.target(allies, (u: Unit) => u.heal(6))
+        )
+        return ability
+    )
+
+    # Curse of Weakness
+    game.rules.abilityGeneration.addGenerator(ABILITY_CURSE_OF_WEAKNESS, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_CURSE_OF_WEAKNESS
+        ability.desc = some("Debuffs the target's damage")
+        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[AbilityClickedSignalArgs](args)
+            let view = game.getGameView()
+            let enemies = view.world.getEnemies(a.host)
+            view.targeter.target(enemies, (u: Unit) => u.addStatus(3, game.rules.abilityGeneration.generate(STATUS_DAMAGE_DEBUFF)))
+        )
+        return ability
+    )
+
+    # Chant of Strength
+    game.rules.abilityGeneration.addGenerator(ABILITY_CHANT_OF_STRENGTH, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_CHANT_OF_STRENGTH
+        ability.desc = some("Buffs the target's damage")
+        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[AbilityClickedSignalArgs](args)
+            let view = game.getGameView()
+            let allies = view.world.getAllies(a.host)
+            view.targeter.target(allies, (u: Unit) => u.addStatus(3, game.rules.abilityGeneration.generate(STATUS_DAMAGE_BUFF)))
+        )
+        return ability
+    )
+
+    #
+    # STATUS GENERATORS
+    #
+
+    # Damage Debuff
+    game.rules.abilityGeneration.addGenerator(STATUS_DAMAGE_DEBUFF, proc(): Ability =
+        let ability = newAbility()
+        ability.name = STATUS_DAMAGE_DEBUFF
+        ability.desc = some("This unit deals -3 damage")
+        ability.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            a.dmg -= 3
+            if a.dmg < 0:
+                a.dmg = 0
+        )
+        return ability
+    )
+
+    # Damage Buff
+    game.rules.abilityGeneration.addGenerator(STATUS_DAMAGE_BUFF, proc(): Ability =
+        let ability = newAbility()
+        ability.name = STATUS_DAMAGE_BUFF
+        ability.desc = some("This unit deals +3 damage")
+        ability.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            a.dmg += 3
         )
         return ability
     )

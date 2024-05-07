@@ -77,6 +77,17 @@ proc newTakeDamageSignalArgs*(dtype: DamageType, dmg: int): TakeDamageSignalArgs
     result.dtype = dtype
     result.dmg = dmg
 
+# Payload when a Unit deals damage
+type DealDamageSignalArgs* = ref object of BaseSignalArgs
+    dtype*: DamageType
+    dmg*: int
+
+proc newDealDamageSignalArgs*(dtype: DamageType, dmg: int): DealDamageSignalArgs =
+    new result
+    result.channel = DEAL_DAMAGE_CHANNEL
+    result.dtype = dtype
+    result.dmg = dmg
+
 # Payload to calculate a Unit's max hunger
 type GetMaxHungerSignalArgs* = ref object of BaseSignalArgs
     hunger*: int

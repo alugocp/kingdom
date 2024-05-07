@@ -68,6 +68,14 @@ proc getUnits*(this: World, c: Coord): seq[Unit] {.exportc, dynlib.} =
         units = concat(units, party.getMembers())
     return units
 
+# Returns all of a Unit's allies on its same Tile
+proc getAllies*(this: World, u: Unit): seq[Unit] {.exportc, dynlib.} =
+    this.getUnits(u.pos).filterIt(it.player == u.player)
+
+# Returns all of a Unit's enemies on its same Tile
+proc getEnemies*(this: World, u: Unit): seq[Unit] {.exportc, dynlib.} =
+    this.getUnits(u.pos).filterIt(it.player != u.player)
+
 # Retrieves a set of Items on a Tile in this World
 proc getItems*(this: World, c: Coord): seq[Item] = this.tiles[c.x][c.y].items
 

@@ -3,6 +3,7 @@ import kingdom/generation/types
 import kingdom/entities/types
 import kingdom/controls/types
 import kingdom/wrapper/types
+import kingdom/builtin/types
 import kingdom/models/types
 import kingdom/views/types
 import kingdom/math/types
@@ -27,6 +28,9 @@ proc generate*(this: GenerationManager[Tile], key: string): Tile {.importc: "gen
 
 # src/kingdom/entities/unit.nim
 proc newUnit*(): Unit {.importc.}
+proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.importc.}
+proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.importc.}
+proc heal*(this: Unit, dmg: int): void {.importc.}
 
 # src/kingdom/entities/item.nim
 proc newItem*(): Item {.importc.}
@@ -56,6 +60,8 @@ proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coo
 proc moveParty*(this: World, p: Party, c: Coord): void {.importc.}
 proc getParty*(this: World, u: Unit): Party {.importc.}
 proc getUnits*(this: World, c: Coord): seq[Unit] {.importc.}
+proc getAllies*(this: World, u: Unit): seq[Unit] {.importc.}
+proc getEnemies*(this: World, u: Unit): seq[Unit] {.importc.}
 
 # src/kingdom/math/hexagons.nim
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.importc.}

@@ -51,6 +51,11 @@ type Ability* = ref object
     desc*: Option[string]
     handlers*: SignalHandlersTable[Ability]
 
+type Status* = ref object
+    effect*: Ability
+    frameAdded*: uint
+    lifespan*: uint
+
 # Items that can be equipped by a Unit
 type Item* = ref object
     id*: int
@@ -75,7 +80,7 @@ type Unit* = ref object
     maxHaul*: int
     haul*: seq[Item]
     abilities*: seq[Ability]
-    statuses*: seq[Ability]
+    statuses*: seq[Status]
     stats*: Stats
     tags*: HashSet[string]
     classification*: seq[string]
