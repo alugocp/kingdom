@@ -4,7 +4,6 @@ import std/strformat
 import kingdom/headers
 import kingdom/views/types
 import kingdom/models/types
-import kingdom/wrapper/types
 import kingdom/entities/types
 import kingdom/builtin/types
 import kingdom/builtin/values
@@ -52,39 +51,19 @@ const ABILITY_ZAP = "Zap"
 const ABILITY_CURE_WOUNDS = "Cure Wounds"
 const ABILITY_CHANT_OF_STRENGTH = "Chant of Strength"
 const ABILITY_CURSE_OF_WEAKNESS = "Curse of Weakness"
+const ABILITY_HARVEST_CHESTNUT = "Harvest Chestnut"
+const ABILITY_HARVEST_NOPAL = "Harvest Nopal"
+const ABILITY_HARVEST_SALMON = "Harvest Salmon"
 
 # Status effects
 const STATUS_DAMAGE_DEBUFF = "Damage Debuff"
 const STATUS_DAMAGE_BUFF = "Damage Buff"
 
-#
-# HELPER FUNCTIONS
-#
-
-# Collects the code for a basic attack ability
-proc attack(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void =
-    let a = cast[AbilityClickedSignalArgs](args)
-    let view = game.getGameView()
-    let enemies = view.world.getEnemies(a.host)
-    view.targeter.target(enemies, (u: Unit) => a.host.dealDamage(u, dtype, dmg))
-
-# Shorthand to give some Unit armor against a certain DamageType
-proc addArmor(u: Unit, dtype: DamageType, dmg: int): void =
-    u.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-        let a = cast[TakeDamageSignalArgs](args)
-        if a.dtype == dtype:
-            a.dmg -= dmg
-            if a.dmg < 0:
-                a.dmg = 0
-    )
-
-# Shorthand to give some Unit an Ability
-proc giveAbility(game: ModCoreInterface, unit: Unit, ability: string): void =
-    unit.abilities.add(game.rules.abilityGeneration.generate(ability))
-
-# Shorthand to grab a tilesheet sprite
-proc getUnitSprite(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle =
-    game.rules.sprites.getSpriteHandle(sheet, ix * 24, iy * 24, 24, 24)
+# Items
+const ITEM_CHESTNUT = "Chestnut"
+const ITEM_NOPAL = "Nopal"
+const ITEM_VEAL = "Veal"
+const ITEM_SALMON = "Salmon"
 
 #
 # MOD INITIALIZATION PROCEDURE
@@ -310,6 +289,38 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         return ability
     )
 
+    # Harvest Chestnut
+    game.rules.abilityGeneration.addGenerator(ABILITY_HARVEST_CHESTNUT, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_HARVEST_CHESTNUT
+        ability.desc = some("Can harvest chestnuts from forest tiles")
+        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            game.harvest(args, TILE_FOREST, ITEM_CHESTNUT)
+        )
+        return ability
+    )
+
+    # Harvest Nopal
+    game.rules.abilityGeneration.addGenerator(ABILITY_HARVEST_NOPAL, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_HARVEST_NOPAL
+        ability.desc = some("Can harvest nopales from cactus patches")
+        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            game.harvest(args, TILE_CACTUS, ITEM_NOPAL)
+        )
+        return ability
+    )
+
+    game.rules.abilityGeneration.addGenerator(ABILITY_HARVEST_SALMON, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_HARVEST_SALMON
+        ability.desc = some("Can harvest salmon from the water")
+        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            game.harvest(args, TILE_WATER, ITEM_SALMON)
+        )
+        return ability
+    )
+
     #
     # STATUS GENERATORS
     #
@@ -355,49 +366,55 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         return item
     )
 
+    # Food items
+    game.rules.itemGeneration.addGenerator(ITEM_CHESTNUT, proc(): Item = game.createFoodItem(ITEM_CHESTNUT))
+    game.rules.itemGeneration.addGenerator(ITEM_NOPAL, proc(): Item = game.createFoodItem(ITEM_NOPAL))
+    game.rules.itemGeneration.addGenerator(ITEM_VEAL, proc(): Item = game.createFoodItem(ITEM_VEAL))
+    game.rules.itemGeneration.addGenerator(ITEM_SALMON, proc(): Item = game.createFoodItem(ITEM_SALMON))
+
     #
     # TILE GENERATORS
     #
 
     game.rules.tileGeneration.addGenerator(TILE_GRASS, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_GRASS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 0, 96, 110)
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_WATER, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_WATER)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
         tile.desc = some("Water that units must swim across")
         tile.setAllBorders("water")
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_WARLOCK_TOWER, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_WARLOCK_TOWER)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 0, 96, 110)
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_DESERT, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_DESERT)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 0, 96, 110)
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_FOREST, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_FOREST)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 110, 96, 110)
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_COAST, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_COAST)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 110, 96, 110)
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_ISLAND_FORTRESS, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_ISLAND_FORTRESS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 110, 96, 110)
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_CACTUS, proc(): Tile =
-        let tile = newTile()
+        let tile = newTile(TILE_CACTUS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 110, 96, 110)
         return tile
     )

@@ -145,3 +145,12 @@ proc newCanBeEquippedSignalArgs*(unit: Unit, item: Item): CanBeEquippedSignalArg
     result.equippable = true
     result.unit = unit
     result.item = item
+
+# Payload when an Item is consumed
+type ItemConsumedSignalArgs* = ref object of BaseSignalArgs
+    host*: Unit
+
+proc newItemConsumedSignalArgs*(host: Unit): ItemConsumedSignalArgs =
+    new result
+    result.channel = ITEM_CONSUMED_CHANNEL
+    result.host = host

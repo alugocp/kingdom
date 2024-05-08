@@ -70,6 +70,7 @@ proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Op
     u.pos = pos
     u.player = player
     u.id = this.nextUnitId
+    u.feed(this.state)
     this.nextUnitId += 1
     if party.isSome():
         party.get().addToParty(u)
@@ -77,12 +78,13 @@ proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Op
         this.addUnitToNewParty(u)
 
 # Initializes a new Item instance and puts it in the World
-proc addNewItem*(this: GameView, key: string, pos: Coord): Unit =
+proc addNewItem*(this: GameView, key: string, pos: Coord): Item =
     let i = this.rules.itemGeneration.generate(key)
     i.pos = none(Coord)
     i.id = this.nextItemId
     this.world.moveItem(i, some(pos))
     this.nextItemId += 1
+    return i
 
 # Close the currently open Menu in this Game
 proc closeMenu*(this: GameView): void =
@@ -118,7 +120,7 @@ proc getUnitHunger*(this: GameView, u: Unit): int =
     let turnsSinceFeeding = this.state.turn - u.lastTurnFed
     let payload = newGetMaxHungerSignalArgs(50)
     u.handleSignal(@[], payload)
-    return int(floor(100 * float(turnsSinceFeeding) / float(payload.hunger)))
+    return min(100, int(floor(100 * float(turnsSinceFeeding) / float(payload.hunger))))
 
 # Returns which View should be shown in the next frame
 method getNextView*(this: GameView): View = this

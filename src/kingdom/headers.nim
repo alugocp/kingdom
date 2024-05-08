@@ -12,6 +12,14 @@ import kingdom/mods/types
 # src/kingdom/mods/core.nim
 proc getGameView*(this: ModCoreInterface): GameView {.importc.}
 
+# src/kingdom/mods/utils.nim
+proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void {.importc.}
+proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.importc.}
+proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, item: string): void {.importc.}
+proc giveAbility*(game: ModCoreInterface, unit: Unit, ability: string): void {.importc.}
+proc createFoodItem*(game: ModCoreInterface, name: string): Item {.importc.}
+proc addArmor*(u: Unit, dtype: DamageType, dmg: int): void {.importc.}
+
 # src/kingdom/wrapper/sprites.nim
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.importc.}
 proc getSpriteHandle*(this: SpriteManager, id: SheetHandle, x: uint16, y: uint16, w: uint8 = 24, h: uint8 = 24): SpriteHandle {.importc.}
@@ -30,13 +38,14 @@ proc generate*(this: GenerationManager[Tile], key: string): Tile {.importc: "gen
 proc newUnit*(): Unit {.importc.}
 proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.importc.}
 proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.importc.}
+proc feed*(this: Unit, state: GameState): void {.importc.}
 proc heal*(this: Unit, dmg: int): void {.importc.}
 
 # src/kingdom/entities/item.nim
 proc newItem*(): Item {.importc.}
 
 # src/kingdom/entities/tile.nim
-proc newTile*(): Tile {.importc.}
+proc newTile*(name: string): Tile {.importc.}
 proc setAllBorders*(this: Tile, border: string): void {.importc.}
 
 # src/kingdom/entities/ability.nim
@@ -62,6 +71,7 @@ proc getParty*(this: World, u: Unit): Party {.importc.}
 proc getUnits*(this: World, c: Coord): seq[Unit] {.importc.}
 proc getAllies*(this: World, u: Unit): seq[Unit] {.importc.}
 proc getEnemies*(this: World, u: Unit): seq[Unit] {.importc.}
+proc getTile*(this: World, c: Coord): Tile {.importc.}
 
 # src/kingdom/math/hexagons.nim
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.importc.}

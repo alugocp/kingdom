@@ -9,9 +9,10 @@ import kingdom/math/types
 import kingdom/quest
 
 # Constructor for the Tile type
-proc newTile*(): Tile {.exportc, dynlib.} =
+proc newTile*(name: string): Tile {.exportc, dynlib.} =
     new result
     result.id = 1
+    result.name = name
     result.pos = initCoord(0, 0)
     result.desc = none(string)
     result.sprite = NULL_SPRITE

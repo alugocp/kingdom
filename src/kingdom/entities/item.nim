@@ -4,9 +4,11 @@ import std/tables
 import std/options
 import kingdom/math/types
 import kingdom/entities/types
+import kingdom/entities/signals
 import kingdom/controls/actions
 import kingdom/controls/types
 import kingdom/controls/menu
+import kingdom/builtin/channels
 import kingdom/builtin/values
 import kingdom/builtin/types
 
@@ -38,6 +40,8 @@ proc getMenuNode*(this: Item, equipData: Option[tuple[player: int, itype: Invent
                 actions.autoEquip(InventoryType.HAUL)
             ))
         else:
+            if this.hasSignalHandler(ITEM_CONSUMED_CHANNEL):
+                node.add(newButtonNode("Use Item", proc (): void = actions.consume()))
             node.add(newButtonNode("Move to equip inventory", proc (): void =
                 actions.unequip()
                 actions.autoEquip(InventoryType.EQUIP)

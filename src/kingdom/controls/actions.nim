@@ -8,13 +8,16 @@ type ItemMenuActions* = object
     equip*: (InventoryType) -> void
     autoEquip*: (InventoryType) -> void
     unequip*: () -> void
+    consume*: () -> void
 
 proc newItemMenuActions*(
     equip: (InventoryType) -> void,
     autoEquip: (InventoryType) -> void,
-    unequip: () -> void
+    unequip: () -> void,
+    consume: () -> void
 ): ItemMenuActions =
     result.autoEquip = autoEquip
+    result.consume = consume
     result.unequip = unequip
     result.equip = equip
 

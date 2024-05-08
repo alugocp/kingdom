@@ -23,3 +23,6 @@ const TAKE_DAMAGE_CHANNEL* = "TakeDamage"
 
 # Item properties
 const CAN_BE_EQUIPPED_CHANNEL* = "CanBeEquipped"
+
+# Item actions
+const ITEM_CONSUMED_CHANNEL* = "ItemConsumed"

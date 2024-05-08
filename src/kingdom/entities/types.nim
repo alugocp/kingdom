@@ -94,6 +94,7 @@ type Unit* = ref object
 type Tile* = ref object
     id*: int
     pos*: Coord
+    name*: string
     desc*: Option[string]
     tags*: HashSet[string]
     sprite*: SpriteHandle

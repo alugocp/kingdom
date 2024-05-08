@@ -58,7 +58,7 @@ proc getBounds*(this: World): Coord {.exportc, dynlib.} =
     initCoord(this.w, this.h)
 
 # Retrieves a Tile in this World
-proc getTile*(this: World, c: Coord): Tile = this.tiles[c.x][c.y].tile
+proc getTile*(this: World, c: Coord): Tile {.exportc, dynlib.} = this.tiles[c.x][c.y].tile
 
 # Retrieves a set of Units on a Tile in this World
 proc getUnits*(this: World, c: Coord): seq[Unit] {.exportc, dynlib.} =
@@ -184,6 +184,7 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                 newItemMenuActions(
                     (itype: InventoryType) => actions.equip(itype, i),
                     proc (itype: InventoryType): void = discard,
+                    proc (): void = discard,
                     proc (): void = discard
                 )
             ))

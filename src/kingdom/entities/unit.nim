@@ -2,6 +2,7 @@ import std/sets
 import std/sugar
 import std/tables
 import std/options
+import std/sequtils
 import std/strutils
 import std/strformat
 import kingdom/wrapper/types
@@ -42,6 +43,10 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.damageTaken = 0
     result.level = 1
     result.xp = 0
+
+# Feeds this unit to reset its hunger
+proc feed*(this: Unit, state: GameState): void {.exportc, dynlib.} =
+    this.lastTurnFed = state.turn
 
 # Returns a label for this Unit to be used in Menus
 proc getMenuLabel*(this: Unit): string =
@@ -143,7 +148,8 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
                 newItemMenuActions(
                     (itype: InventoryType) => actions.equip(itype, item),
                     (itype: InventoryType) => actions.autoEquip(itype, item),
-                    () => actions.unequip(InventoryType.EQUIP, item)
+                    () => actions.unequip(InventoryType.EQUIP, item),
+                    proc (): void = discard
                 )
             ))
             node.add(newSeparatorNode())
@@ -163,7 +169,11 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
                 newItemMenuActions(
                     (itype: InventoryType) => actions.equip(itype, item),
                     (itype: InventoryType) => actions.autoEquip(itype, item),
-                    () => actions.unequip(InventoryType.HAUL, item)
+                    () => actions.unequip(InventoryType.HAUL, item),
+                    proc (): void =
+                        let payload = newItemConsumedSignalArgs(this)
+                        item.handleSignal(@[], payload)
+                        this.haul = this.haul.filterIt(it != item)
                 )
             ))
             node.add(newSeparatorNode())
