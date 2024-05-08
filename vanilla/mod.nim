@@ -148,6 +148,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_PIKE_GREMLIN, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_PIKE_GREMLIN
+        unit.desc = some("Standard foot soldiers in dark armies")
         unit.classification = @["Beast", "Reptile", "Gremlin"]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 0)
         unit.stats.setStat("Agility", 3)
@@ -159,6 +160,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_SHADE, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_SHADE
+        unit.desc = some("A malevolent spirit which is bound by some master's whim")
         unit.classification = @["Spirit", "Shade"]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 0)
         game.giveAbility(unit, ABILITY_ZAP)
@@ -169,6 +171,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_IRON_BEETLE, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_IRON_BEETLE
+        unit.desc = some("Nearly impenetrable to physical damage")
         unit.classification = @["Beast", "Insect", "Beetle"]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 0)
         unit.stats.setStat("Constitution", 5)
@@ -181,6 +184,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_SLIME_CUBE, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_SLIME_CUBE
+        unit.desc = some("Magic has little effect on this strange creature")
         unit.classification = @["Slime"]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 0)
         game.giveAbility(unit, ABILITY_ZAP)
@@ -192,6 +196,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_ACOLYTE_OF_CTHOS, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_ACOLYTE_OF_CTHOS
+        unit.desc = some("A dark hooded figure who awaits the return of ancient and terrible elder gods")
         unit.classification = @["Humanoid", "Unknown"]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 1)
         game.giveAbility(unit, ABILITY_CURE_WOUNDS)
@@ -203,7 +208,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_KOBOLD_SYCOPHANT, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_KOBOLD_SYCOPHANT
-        unit.classification = @["Humanoid", "Kobold"]
+        unit.desc = some("This small dragonoid riles its comrades through song and dance")
+        unit.classification = @["Dragonoid", "Kobold"]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 1)
         game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
         game.giveAbility(unit, ABILITY_STAB)
@@ -214,10 +220,22 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_BANSHEE, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_BANSHEE
+        unit.desc = some("A vengeful spirit cursed to roam the earth and inflict suffering to whomever crosses its path")
         unit.classification = @["Spirit", "Banshee"]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 1)
         game.giveAbility(unit, ABILITY_CURSE_OF_WEAKNESS)
         game.giveAbility(unit, ABILITY_ZAP)
+        return unit
+    )
+
+    # Buck
+    game.rules.unitGeneration.addGenerator(UNIT_BUCK, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_BUCK
+        unit.desc = some("An adult male deer that can provide meat for your armies")
+        unit.classification = @["Beast", "Mammal", "Deer"]
+        unit.sprite = game.getUnitSprite(unitSprites, 7, 1)
+        game.giveAbility(unit, ABILITY_STAB)
         return unit
     )
 
