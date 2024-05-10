@@ -92,7 +92,7 @@ proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.expor
     this.handleSignal(@[], p1)
     let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg)
     u.handleSignal(@[], p2)
-    u.damageTaken += p2.dmg
+    u.damageTaken += max(p2.dmg, 0)
     if u.getHealth() == 0:
         let p3 = newUnitDiesSignalArgs()
         u.handleSignal(@[], p3)

@@ -18,19 +18,19 @@ proc internalHandleSignal(this: Entity, ctx: SignalContext, step: SignalContextE
         handler(this, concat(ctx, @[step]), args)
 
 # Tells an Ability to handle some incoming signal
-proc handleSignal*(this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+proc handleSignal*(this: Ability, ctx: SignalContext, args: BaseSignalArgs): void {.exportc: "handleSignal_ability", dynlib.} =
     discard internalHandleSignal(this, ctx, (EntityTypes.ABILITY_TYPE, this.id, args.channel), args)
 
 # Tells a Item to handle some incoming signal
-proc handleSignal*(this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+proc handleSignal*(this: Item, ctx: SignalContext, args: BaseSignalArgs): void {.exportc: "handleSignal_item", dynlib.} =
     discard internalHandleSignal(this, ctx, (EntityTypes.ITEM_TYPE, this.id, args.channel), args)
 
 # Tells a Tile to handle some incoming signal
-proc handleSignal*(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+proc handleSignal*(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void {.exportc: "handleSignal_tile", dynlib.} =
     discard internalHandleSignal(this, ctx, (EntityTypes.TILE_TYPE, this.id, args.channel), args)
 
 # Tells a Unit to handle some incoming signal
-proc handleSignal*(this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+proc handleSignal*(this: Unit, ctx: SignalContext, args: BaseSignalArgs): void {.exportc: "handleSignal_unit", dynlib.} =
     let unitCtx = internalHandleSignal(this, ctx, (EntityTypes.UNIT_TYPE, this.id, args.channel), args)
     for ability in this.abilities:
         ability.handleSignal(unitCtx, args)

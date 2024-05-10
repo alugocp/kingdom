@@ -78,7 +78,7 @@ proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Op
         this.addUnitToNewParty(u)
 
 # Initializes a new Item instance and puts it in the World
-proc addNewItem*(this: GameView, key: string, pos: Coord): Item =
+proc addNewItem*(this: GameView, key: string, pos: Coord): Item {.exportc, dynlib.} =
     let i = this.rules.itemGeneration.generate(key)
     i.pos = none(Coord)
     i.id = this.nextItemId

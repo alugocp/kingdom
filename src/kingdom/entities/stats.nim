@@ -20,7 +20,7 @@ proc hasStat*(this: Stats, label: string): bool {.exportc, dynlib.} =
     (this.n > 2 and this.label3 == label)
 
 # Returns the numeric value associated with this stat label
-proc getStat*(this: Stats, label: string): int =
+proc getStat*(this: Stats, label: string): int {.exportc, dynlib.} =
     if this.n > 0 and this.label1 == label: this.stat1
     elif this.n > 1 and this.label2 == label: this.stat2
     elif this.n > 2 and this.label3 == label: this.stat3

@@ -1,5 +1,6 @@
 import std/math
 import std/sugar
+import std/random
 import std/options
 import std/strformat
 import kingdom/headers
@@ -28,6 +29,10 @@ const UNIT_HOKA_AND_TATANKA = "Hoka and Tatanka"
 
 # Stats
 const STAT_CONSTITUTION = "Constitution"
+const STAT_CHARISMA = "Charisma"
+
+# Species
+const SPECIES_SLIME = "Slime"
 
 # Tiles
 const TILE_GRASS = "Grass"
@@ -94,6 +99,20 @@ const ITEM_BAG_OF_MIRTH = "Bag of Mirth"
 const ITEM_KINGSLAYER = "Kingslayer"
 
 #
+# MOD-SPECIFIC SIGNALS
+#
+
+const FISHED_CHANNEL = "Fished"
+type FishedSignalArgs = ref object of BaseSignalArgs
+    host: Unit
+    haul: string
+proc newFishedSignalArgs(host: Unit, haul: string): FishedSignalArgs =
+    new result
+    result.channel = FISHED_CHANNEL
+    result.host = host
+    result.haul = haul
+
+#
 # MOD INITIALIZATION PROCEDURE
 #
 
@@ -112,7 +131,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_GLOOP
         unit.desc = some("Just a slimy guy")
-        unit.classification = @["Slime", "Plasmoid"]
+        unit.classification = @[SPECIES_SLIME, "Plasmoid"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
         unit.stats.setStat("Courage", 3)
         unit.stats.setStat(STAT_CONSTITUTION, 3)
@@ -168,7 +187,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 24)
         unit.stats.setStat(STAT_CONSTITUTION, 3)
         unit.stats.setStat("Agility", 3)
-        unit.stats.setStat("Charisma", 3)
+        unit.stats.setStat(STAT_CHARISMA, 3)
         return unit
     )
 
@@ -213,7 +232,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_SLIME_CUBE
         unit.desc = some("Magic has little effect on this strange creature")
-        unit.classification = @["Slime"]
+        unit.classification = @[SPECIES_SLIME]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 0)
         game.giveAbility(unit, ABILITY_ZAP)
         unit.addArmor(DamageType.MAGICAL, 3)
@@ -363,7 +382,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         ability.name = ABILITY_HARVEST_SALMON
         ability.desc = some("Can harvest salmon from the water")
         ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[AbilityClickedSignalArgs](args)
             game.harvest(args, TILE_WATER, ITEM_SALMON)
+            a.host.handleSignal(@[], newFishedSignalArgs(a.host, ITEM_SALMON))
         )
         return ability
     )
@@ -380,8 +401,6 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         ability.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[DealDamageSignalArgs](args)
             a.dmg -= 3
-            if a.dmg < 0:
-                a.dmg = 0
         )
         return ability
     )
@@ -465,6 +484,121 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         item.addSignalHandler(GAIN_XP_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[GainXpSignalArgs](args)
             a.xp += int(floor(float(a.xp) * 0.25))
+        )
+    )
+
+    # Ring of Satisfaction
+    # Crystal Rose
+
+    # Slimebreaker
+    game.rules.itemGeneration.addGenerator(ITEM_SLIMEBREAKER, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_SLIMEBREAKER
+        item.desc = fmt"+5 damage against {SPECIES_SLIME} enemies"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if SPECIES_SLIME in a.target.classification:
+                a.dmg += 5
+        )
+    )
+
+    # Sorcerous Medallion
+    game.rules.itemGeneration.addGenerator(ITEM_SORCEROUS_MEDALLION, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_SORCEROUS_MEDALLION
+        item.desc = fmt"-1 magical armor, +1 magical damage per {STAT_CHARISMA} point"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if a.dtype == DamageType.MAGICAL and a.attacker.stats.hasStat(STAT_CHARISMA):
+                a.dmg += a.attacker.stats.getStat(STAT_CHARISMA)
+        )
+        item.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[TakeDamageSignalArgs](args)
+            if a.dtype == DamageType.MAGICAL:
+                a.dmg -= 1
+        )
+    )
+
+    # Lucky Fishing Rod
+    game.rules.itemGeneration.addGenerator(ITEM_LUCKY_FISHING_ROD, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_LUCKY_FISHING_ROD
+        item.desc = fmt"20% chance to catch an extra fish when fishing"
+        item.addSignalHandler(FISHED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[FishedSignalArgs](args)
+            if rand(1..100) <= 20:
+                discard game.getGameView().addNewItem(a.haul, a.host.pos)
+        )
+    )
+
+    # Tome of Geomancy
+    game.rules.itemGeneration.addGenerator(ITEM_TOME_OF_GEOMANCY, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_TOME_OF_GEOMANCY
+        item.desc = "Magical attacks become physical"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if a.dtype == DamageType.MAGICAL:
+                a.dtype = DamageType.PHYSICAL
+        )
+    )
+
+    # Iron Sword
+    game.rules.itemGeneration.addGenerator(ITEM_IRON_SWORD, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_IRON_SWORD
+        item.desc = "+2 damage"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            a.dmg += 2
+        )
+    )
+
+    # Chain Mail
+    game.rules.itemGeneration.addGenerator(ITEM_CHAIN_MAIL, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_CHAIN_MAIL
+        item.desc = "+3 physical armor"
+        item.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[TakeDamageSignalArgs](args)
+            if a.dtype == DamageType.PHYSICAL:
+                a.dmg -= 3
+        )
+    )
+
+    # Wizard Robes
+    game.rules.itemGeneration.addGenerator(ITEM_WIZARD_ROBES, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_WIZARD_ROBES
+        item.desc = "+3 magical armor"
+        item.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[TakeDamageSignalArgs](args)
+            if a.dtype == DamageType.MAGICAL:
+                a.dmg -= 3
+        )
+    )
+
+    # Nopal Knife
+
+    # Telescope
+    game.rules.itemGeneration.addGenerator(ITEM_TELESCOPE, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_TELESCOPE
+        item.desc = "+1 vision"
+        item.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetVisibilitySignalArgs](args)
+            a.visibility += 1
+        )
+    )
+
+    # Enchanted Boots
+    game.rules.itemGeneration.addGenerator(ITEM_ENCHANTED_BOOTS, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_ENCHANTED_BOOTS
+        item.desc = "+1 movement"
+        item.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetMovementSignalArgs](args)
+            a.movement += 1
         )
     )
 
