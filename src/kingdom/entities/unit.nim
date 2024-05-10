@@ -75,7 +75,7 @@ proc getMaxHealth*(this: Unit): int =
     return payload.health
 
 # Returns this Unit's health
-proc getHealth*(this: Unit): int = this.getMaxHealth() - this.damageTaken
+proc getHealth*(this: Unit): int = max(this.getMaxHealth() - this.damageTaken, 0)
 
 # Adds a Status effect to this Unit
 proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.exportc, dynlib.} =
@@ -88,11 +88,14 @@ proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.exportc, d
 
 # This Unit deals some damage to another Unit
 proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
-    let p1 = newDealDamageSignalArgs(dtype, dmg)
+    let p1 = newDealDamageSignalArgs(dtype, dmg, this, u)
     this.handleSignal(@[], p1)
     let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg)
     u.handleSignal(@[], p2)
     u.damageTaken += p2.dmg
+    if u.getHealth() == 0:
+        let p3 = newUnitDiesSignalArgs()
+        u.handleSignal(@[], p3)
 
 # Heals some damage taken by this Unit
 proc heal*(this: Unit, dmg: int): void {.exportc, dynlib.} =

@@ -20,6 +20,7 @@ const GAIN_XP_CHANNEL* = "GainXp"
 const LEVEL_UP_CHANNEL* = "LevelUp"
 const DEAL_DAMAGE_CHANNEL* = "DealDamage"
 const TAKE_DAMAGE_CHANNEL* = "TakeDamage"
+const UNIT_DIES_CHANNEL* = "UnitDies"
 
 # Item properties
 const CAN_BE_EQUIPPED_CHANNEL* = "CanBeEquipped"

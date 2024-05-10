@@ -17,6 +17,7 @@ proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dm
 proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.importc.}
 proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, item: string): void {.importc.}
 proc giveAbility*(game: ModCoreInterface, unit: Unit, ability: string): void {.importc.}
+proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.importc.}
 proc createFoodItem*(game: ModCoreInterface, name: string): Item {.importc.}
 proc addArmor*(u: Unit, dtype: DamageType, dmg: int): void {.importc.}
 
@@ -53,6 +54,7 @@ proc newAbility*(): Ability {.importc.}
 
 # src/kingdom/entities/stats.nim
 proc incStat*(this: Stats, label: string, d: int): void {.importc.}
+proc hasStat*(this: Stats, label: string): bool {.importc.}
 
 # src/kingdom/entities/signals.nim
 proc addSignalHandler*(this: Ability, channel: string, handler: SignalHandler[Ability]): void {.importc: "addSignalHandler_ability"}

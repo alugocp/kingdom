@@ -80,11 +80,15 @@ proc newTakeDamageSignalArgs*(dtype: DamageType, dmg: int): TakeDamageSignalArgs
 # Payload when a Unit deals damage
 type DealDamageSignalArgs* = ref object of BaseSignalArgs
     dtype*: DamageType
+    attacker*: Unit
+    target*: Unit
     dmg*: int
 
-proc newDealDamageSignalArgs*(dtype: DamageType, dmg: int): DealDamageSignalArgs =
+proc newDealDamageSignalArgs*(dtype: DamageType, dmg: int, attacker: Unit, target: Unit): DealDamageSignalArgs =
     new result
     result.channel = DEAL_DAMAGE_CHANNEL
+    result.attacker = attacker
+    result.target = target
     result.dtype = dtype
     result.dmg = dmg
 
@@ -96,6 +100,13 @@ proc newGetMaxHungerSignalArgs*(hunger: int): GetMaxHungerSignalArgs =
     new result
     result.channel = GET_MAX_HUNGER_CHANNEL
     result.hunger = hunger
+
+# Payload when a Unit dies
+type UnitDiesSignalArgs* = ref object of BaseSignalArgs
+
+proc newUnitDiesSignalArgs*(): UnitDiesSignalArgs =
+    new result
+    result.channel = UNIT_DIES_CHANNEL
 
 # BUILT-IN TILE SIGNAL ARGS TYPES
 

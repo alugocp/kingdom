@@ -61,3 +61,11 @@ proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, it
     let tile = view.world.getTile(a.host.pos)
     if tile.name == tileType:
         discard view.addNewItem(item, a.host.pos)
+
+# Dictates which Item(s) a Unit will drop when it dies
+proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.exportc, dynlib.} =
+    unit.addSignalHandler(UNIT_DIES_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+        let view = game.getGameView()
+        for item in items:
+            discard view.addNewItem(item, unit.pos)
+    )

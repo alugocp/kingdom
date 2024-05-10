@@ -1,3 +1,4 @@
+import std/math
 import std/sugar
 import std/options
 import std/strformat
@@ -24,6 +25,9 @@ const UNIT_HOKA_AND_TATANKA = "Hoka and Tatanka"
 #
 # LABELS FOR MOD CONTENT
 #
+
+# Stats
+const STAT_CONSTITUTION = "Constitution"
 
 # Tiles
 const TILE_GRASS = "Grass"
@@ -60,10 +64,34 @@ const STATUS_DAMAGE_DEBUFF = "Damage Debuff"
 const STATUS_DAMAGE_BUFF = "Damage Buff"
 
 # Items
+const ITEM_DAGGER_OF_AKHTHEMES = "Dagger of Akhthemes"
+const ITEM_HEROS_HEART = "Hero's Heart"
 const ITEM_CHESTNUT = "Chestnut"
 const ITEM_NOPAL = "Nopal"
 const ITEM_VEAL = "Veal"
 const ITEM_SALMON = "Salmon"
+const ITEM_BAG_OF_GOLD = "Bag of Gold"
+const ITEM_GOLD_COIN = "Gold Coin"
+const ITEM_NOVICES_CHARM = "Novice's Charm"
+const ITEM_SCHOLARLY_AMULET = "Scholarly Amulet"
+const ITEM_RING_OF_SATISFACTION = "Ring of Satisfaction"
+const ITEM_CRYSTAL_ROSE = "Crystal Rose"
+const ITEM_SLIMEBREAKER = "Slimebreaker"
+const ITEM_SORCEROUS_MEDALLION = "Sorcerous Medallion"
+const ITEM_LUCKY_FISHING_ROD = "Lucky Fishing Rod"
+const ITEM_TOME_OF_GEOMANCY = "Tome of Geomancy"
+const ITEM_IRON_SWORD = "Iron Sword"
+const ITEM_CHAIN_MAIL = "Chain Mail"
+const ITEM_WIZARD_ROBES = "Wizard Robes"
+const ITEM_NOPAL_KNIFE = "Nopal Knife"
+const ITEM_TELESCOPE = "Telescope"
+const ITEM_ENCHANTED_BOOTS = "Enchanted Boots"
+const ITEM_AMETHYST_CROWN = "Amethyst Crown"
+const ITEM_GEM_ENCRUSTED_MALLET = "Gem-Encrusted Mallet"
+const ITEM_FEY_WROUGHT_PLATE = "Fey-Wrought Plate"
+const ITEM_CLAMSHELL_OF_FAR_SIGHT = "Clamshell of Far Sight"
+const ITEM_BAG_OF_MIRTH = "Bag of Mirth"
+const ITEM_KINGSLAYER = "Kingslayer"
 
 #
 # MOD INITIALIZATION PROCEDURE
@@ -87,7 +115,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.classification = @["Slime", "Plasmoid"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
         unit.stats.setStat("Courage", 3)
-        unit.stats.setStat("Constitution", 3)
+        unit.stats.setStat(STAT_CONSTITUTION, 3)
         unit.stats.setStat("Dexterity", 3)
         unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
             let payload = cast[GetMovementSignalArgs](args)
@@ -101,7 +129,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A coast-dwelling golem crafted by an island wizard")
         unit.classification = @["Homunculus", "Golem"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 0)
-        unit.stats.setStat("Constitution", 5)
+        unit.stats.setStat(STAT_CONSTITUTION, 5)
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_UNFALTERING_GAZE, proc (): Unit =
@@ -138,7 +166,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This duo roams the plains in search of good causes")
         unit.classification = @["Humanoid", "Human"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 24)
-        unit.stats.setStat("Constitution", 3)
+        unit.stats.setStat(STAT_CONSTITUTION, 3)
         unit.stats.setStat("Agility", 3)
         unit.stats.setStat("Charisma", 3)
         return unit
@@ -174,7 +202,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Nearly impenetrable to physical damage")
         unit.classification = @["Beast", "Insect", "Beetle"]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 0)
-        unit.stats.setStat("Constitution", 5)
+        unit.stats.setStat(STAT_CONSTITUTION, 5)
         game.giveAbility(unit, ABILITY_STAB)
         unit.addArmor(DamageType.PHYSICAL, 3)
         return unit
@@ -236,6 +264,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.classification = @["Beast", "Mammal", "Deer"]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 1)
         game.giveAbility(unit, ABILITY_STAB)
+        game.dropLoot(unit, @[ITEM_VEAL])
         return unit
     )
 
@@ -389,6 +418,55 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.itemGeneration.addGenerator(ITEM_NOPAL, proc(): Item = game.createFoodItem(ITEM_NOPAL))
     game.rules.itemGeneration.addGenerator(ITEM_VEAL, proc(): Item = game.createFoodItem(ITEM_VEAL))
     game.rules.itemGeneration.addGenerator(ITEM_SALMON, proc(): Item = game.createFoodItem(ITEM_SALMON))
+
+    # Dagger of Akhthemes
+    game.rules.itemGeneration.addGenerator(ITEM_DAGGER_OF_AKHTHEMES, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_DAGGER_OF_AKHTHEMES
+        item.desc = fmt"Physical attacks deal +5 damage to targets with a {STAT_CONSTITUTION} stat"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if a.dtype == DamageType.PHYSICAL and a.target.stats.hasStat(STAT_CONSTITUTION):
+                a.dmg += 5
+        )
+    )
+
+    # Hero's Heart
+    game.rules.itemGeneration.addGenerator(ITEM_HEROS_HEART, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_HEROS_HEART
+        item.desc = "+10 max health"
+        item.addSignalHandler(GET_MAX_HEALTH_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetMaxHealthSignalArgs](args)
+            a.health += 10
+        )
+    )
+
+    # Bag of Gold
+    # Gold Coin
+
+    # Novice's Charm
+    game.rules.itemGeneration.addGenerator(ITEM_NOVICES_CHARM, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_NOVICES_CHARM
+        item.desc = "+5 damage for a unit under level 4"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if a.attacker.level < 4:
+                a.dmg += 5
+        )
+    )
+
+    # Scholarly Amulet
+    game.rules.itemGeneration.addGenerator(ITEM_SCHOLARLY_AMULET, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_SCHOLARLY_AMULET
+        item.desc = "+25% XP gain"
+        item.addSignalHandler(GAIN_XP_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GainXpSignalArgs](args)
+            a.xp += int(floor(float(a.xp) * 0.25))
+        )
+    )
 
     #
     # TILE GENERATORS

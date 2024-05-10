@@ -14,7 +14,7 @@ proc getStats*(this: Stats): seq[tuple[label: string, value: int]] =
     return stats
 
 # Returns true if this object contains the given stat's label
-proc hasStat*(this: Stats, label: string): bool =
+proc hasStat*(this: Stats, label: string): bool {.exportc, dynlib.} =
     (this.n > 0 and this.label1 == label) or
     (this.n > 1 and this.label2 == label) or
     (this.n > 2 and this.label3 == label)
