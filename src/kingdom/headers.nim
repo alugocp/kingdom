@@ -43,7 +43,7 @@ proc newUnit*(): Unit {.importc.}
 proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.importc.}
 proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.importc.}
 proc feed*(this: Unit, state: GameState): void {.importc.}
-proc heal*(this: Unit, dmg: int): void {.importc.}
+proc heal*(this: Unit, healer: Unit, health: int): void {.importc.}
 
 # src/kingdom/entities/item.nim
 proc newItem*(): Item {.importc.}

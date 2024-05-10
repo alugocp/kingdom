@@ -26,11 +26,13 @@ proc newCanCrossBorderSignalArgs*(tile: Tile, side: HexSides, border: string): C
 # Payload when calculating a Unit's visibility
 type GetVisibilitySignalArgs* = ref object of BaseSignalArgs
     visibility*: Natural
+    host*: Unit
 
-proc newGetVisibilitySignalArgs*(): GetVisibilitySignalArgs =
+proc newGetVisibilitySignalArgs*(host: Unit): GetVisibilitySignalArgs =
     new result
     result.channel = GET_VISIBILITY_CHANNEL
     result.visibility = 1
+    result.host = host
 
 # Payload when calculating a Unit's movement
 type GetMovementSignalArgs* = ref object of BaseSignalArgs
@@ -107,6 +109,32 @@ type UnitDiesSignalArgs* = ref object of BaseSignalArgs
 proc newUnitDiesSignalArgs*(): UnitDiesSignalArgs =
     new result
     result.channel = UNIT_DIES_CHANNEL
+
+# Payload when a Unit contributes healing towards another Unit
+type GiveHealSignalArgs* = ref object of BaseSignalArgs
+    healer*: Unit
+    target*: Unit
+    health*: int
+
+proc newGiveHealSignalArgs*(health: int, healer: Unit, target: Unit): GiveHealSignalArgs =
+    new result
+    result.channel = GIVE_HEAL_CHANNEL
+    result.healer = healer
+    result.target = target
+    result.health = health
+
+# Payload when a Unit receives healing from another Unit
+type TakeHealSignalArgs* = ref object of BaseSignalArgs
+    healer*: Unit
+    target*: Unit
+    health*: int
+
+proc newTakeHealSignalArgs*(health: int, healer: Unit, target: Unit): TakeHealSignalArgs =
+    new result
+    result.channel = TAKE_HEAL_CHANNEL
+    result.healer = healer
+    result.target = target
+    result.health = health
 
 # BUILT-IN TILE SIGNAL ARGS TYPES
 

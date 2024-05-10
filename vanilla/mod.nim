@@ -322,7 +322,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[AbilityClickedSignalArgs](args)
             let view = game.getGameView()
             let allies = view.world.getAllies(a.host)
-            view.targeter.target(allies, (u: Unit) => u.heal(6))
+            view.targeter.target(allies, (u: Unit) => a.host.heal(u, 6))
         )
         return ability
     )
@@ -599,6 +599,73 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         item.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[GetMovementSignalArgs](args)
             a.movement += 1
+        )
+    )
+
+    # Amethyst Crown
+    game.rules.itemGeneration.addGenerator(ITEM_AMETHYST_CROWN, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_AMETHYST_CROWN
+        item.desc = "+2 restoration from heals"
+        item.addSignalHandler(TAKE_HEAL_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[TakeHealSignalArgs](args)
+            a.health += 2
+        )
+    )
+
+    # Gem-Encrusted Mallet
+    game.rules.itemGeneration.addGenerator(ITEM_GEM_ENCRUSTED_MALLET, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_GEM_ENCRUSTED_MALLET
+        item.desc = "Heals 1 damage when the user deals physical damage"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if a.dtype == DamageType.PHYSICAL:
+                a.attacker.heal(a.attacker, 1)
+        )
+    )
+
+    # Fey-Wrought Plate
+    game.rules.itemGeneration.addGenerator(ITEM_FEY_WROUGHT_PLATE, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_FEY_WROUGHT_PLATE
+        item.desc = "+1 physical armor, +1 magical damage"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if a.dtype == DamageType.MAGICAL:
+                a.dmg += 1
+        )
+        item.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[TakeDamageSignalArgs](args)
+            if a.dtype == DamageType.PHYSICAL:
+                a.dmg -= 1
+        )
+    )
+
+    # Clamshell of Far Sight
+    game.rules.itemGeneration.addGenerator(ITEM_CLAMSHELL_OF_FAR_SIGHT, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_CLAMSHELL_OF_FAR_SIGHT
+        item.desc = "+2 vision on water tiles"
+        item.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetVisibilitySignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.host.pos)
+            if tile.name == TILE_WATER:
+                a.visibility += 2
+        )
+    )
+
+    # Bag of Mirth
+
+    # Kingslayer
+    game.rules.itemGeneration.addGenerator(ITEM_KINGSLAYER, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_KINGSLAYER
+        item.desc = "+10 damage against targets above level 5"
+        item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            if a.target.level > 5:
+                a.dmg += 10
         )
     )
 

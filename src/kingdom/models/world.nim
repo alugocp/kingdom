@@ -204,7 +204,7 @@ proc getVisibleTiles(this: World, topLeft: Coord, botRight: Coord): HashSet[Coor
                     let units = party.getMembers()
                     for unit in units:
                         if unit.player == HUMAN_PLAYER:
-                            var payload = newGetVisibilitySignalArgs()
+                            var payload = newGetVisibilitySignalArgs(unit)
                             unit.handleSignal(@[], payload)
                             if payload.visibility > max:
                                 max = payload.visibility

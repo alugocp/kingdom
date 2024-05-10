@@ -98,10 +98,13 @@ proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.expor
         u.handleSignal(@[], p3)
 
 # Heals some damage taken by this Unit
-proc heal*(this: Unit, dmg: int): void {.exportc, dynlib.} =
-    this.damageTaken -= dmg
-    if this.damageTaken < dmg:
-        this.damageTaken = 0
+proc heal*(this: Unit, target: Unit, health: int): void {.exportc, dynlib.} =
+    let p1 = newGiveHealSignalArgs(health, this, target)
+    this.handleSignal(@[], p1)
+    let p2 = newTakeHealSignalArgs(p1.health, this, target)
+    target.handleSignal(@[], p2)
+    p2.health = max(p2.health, 0)
+    target.damageTaken = max(target.damageTaken - p2.health, 0)
 
 # Return a MenuNode describing this Unit and associated actions
 proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
