@@ -10,7 +10,7 @@ const ABILITY_CLICKED_CHANNEL* = "AbilityClicked"
 const GET_ABILITY_COORD_TARGETS_CHANNEL* = "GetAbilityCoordTargets"
 
 # Unit properties
-const GET_STATS_CHANNEL* = "GetStats"
+const GET_STAT_CHANNEL* = "GetStats"
 const GET_VISIBILITY_CHANNEL* = "GetVisibility"
 const GET_MAX_HEALTH_CHANNEL* = "GetMaxHealth"
 const GET_MAX_HUNGER_CHANNEL* = "GetMaxHunger"
@@ -28,4 +28,5 @@ const UNIT_DIES_CHANNEL* = "UnitDies"
 const CAN_BE_EQUIPPED_CHANNEL* = "CanBeEquipped"
 
 # Item actions
+const ITEM_ACTIVATED_CHANNEL* = "ItemActivated"
 const ITEM_CONSUMED_CHANNEL* = "ItemConsumed"

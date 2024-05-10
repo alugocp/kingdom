@@ -88,6 +88,7 @@ type Unit* = ref object
     damageTaken*: int
     baseHealth*: int
     level*: int
+    gold*: int
     xp*: int
 
 # Tile type for the in-game map

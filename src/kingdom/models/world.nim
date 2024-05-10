@@ -180,7 +180,7 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
     for i in items:
         capture i:
             node.add(i.getMenuNode(
-                none(tuple[player: int, itype: InventoryType]),
+                none(tuple[host: Unit, itype: InventoryType]),
                 newItemMenuActions(
                     (itype: InventoryType) => actions.equip(itype, i),
                     proc (itype: InventoryType): void = discard,

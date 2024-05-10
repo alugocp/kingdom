@@ -1,5 +1,4 @@
 import kingdom/entities/types
-import kingdom/entities/stats
 import kingdom/math/types
 import kingdom/math/hexagons
 import kingdom/builtin/channels
@@ -54,10 +53,12 @@ proc newGainXpSignalArgs*(xp: int): GainXpSignalArgs =
 
 # Payload when a Unit levels up
 type LevelUpSignalArgs* = ref object of BaseSignalArgs
+    host*: Unit
 
-proc newLevelUpSignalArgs*(xp: int): LevelUpSignalArgs =
+proc newLevelUpSignalArgs*(host: Unit): LevelUpSignalArgs =
     new result
     result.channel = LEVEL_UP_CHANNEL
+    result.host = host
 
 # Payload to calculate a Unit's max health
 type GetMaxHealthSignalArgs* = ref object of BaseSignalArgs
@@ -140,7 +141,7 @@ proc newTakeHealSignalArgs*(health: int, healer: Unit, target: Unit): TakeHealSi
 
 # BUILT-IN ABILITY SIGNAL ARGS TYPES
 
-# Payload when an Ability is clicked (for action-based abilities)
+# Payload when an Ability is clicked (for action-based Abilities)
 type AbilityClickedSignalArgs* = ref object of BaseSignalArgs
     host*: Unit
 
@@ -160,29 +161,32 @@ proc newGetAbilityCoordTargetsSignalArgs*(host: Unit): GetAbilityTargetsSignalAr
     result.host = host
     result.targets = @[]
 
-# Payload when calculating a Unit's stats
-type GetStatsSignalArgs* = ref object of BaseSignalArgs
-    unit*: Unit
-    stats*: Stats
+# Payload when calculating a Stat on a Unit
+type GetStatSignalArgs* = ref object of BaseSignalArgs
+    host*: Unit
+    label*: string
+    stat*: int
 
-proc newGetStatsSignalArgs*(unit: Unit): GetStatsSignalArgs =
+proc newGetStatSignalArgs*(host: Unit, label: string, stat: int): GetStatSignalArgs =
     new result
-    result.unit = unit
-    result.stats = newStats()
+    result.channel = GET_STAT_CHANNEL
+    result.host = host
+    result.label = label
+    result.stat = stat
 
 # BUILT-IN ITEM SIGNAL ARGS TYPES
 
 # Payload when determining if this Item can be equipped by a given Unit
 type CanBeEquippedSignalArgs* = ref object of BaseSignalArgs
     equippable*: bool
-    unit*: Unit
+    host*: Unit
     item*: Item
 
-proc newCanBeEquippedSignalArgs*(unit: Unit, item: Item): CanBeEquippedSignalArgs =
+proc newCanBeEquippedSignalArgs*(host: Unit, item: Item): CanBeEquippedSignalArgs =
     new result
     result.channel = CAN_BE_EQUIPPED_CHANNEL
     result.equippable = true
-    result.unit = unit
+    result.host = host
     result.item = item
 
 # Payload when an Item is consumed
@@ -192,4 +196,13 @@ type ItemConsumedSignalArgs* = ref object of BaseSignalArgs
 proc newItemConsumedSignalArgs*(host: Unit): ItemConsumedSignalArgs =
     new result
     result.channel = ITEM_CONSUMED_CHANNEL
+    result.host = host
+
+# Payload when an Item is clicked (for action-based Items)
+type ItemActivatedSignalArgs* = ref object of BaseSignalArgs
+    host*: Unit
+
+proc newItemActivatedSignalArgs*(host: Unit): ItemActivatedSignalArgs =
+    new result
+    result.channel = ITEM_ACTIVATED_CHANNEL
     result.host = host

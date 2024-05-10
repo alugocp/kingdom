@@ -18,6 +18,7 @@ proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: 
 proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, item: string): void {.importc.}
 proc giveAbility*(game: ModCoreInterface, unit: Unit, ability: string): void {.importc.}
 proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.importc.}
+proc createGoldItem*(game: ModCoreInterface, name: string, quantity: int): Item {.importc.}
 proc createFoodItem*(game: ModCoreInterface, name: string): Item {.importc.}
 proc addArmor*(u: Unit, dtype: DamageType, dmg: int): void {.importc.}
 
@@ -56,9 +57,10 @@ proc setAllBorders*(this: Tile, border: string): void {.importc.}
 proc newAbility*(): Ability {.importc.}
 
 # src/kingdom/entities/stats.nim
-proc incStat*(this: Stats, label: string, d: int): void {.importc.}
-proc hasStat*(this: Stats, label: string): bool {.importc.}
-proc getStat*(this: Stats, label: string): int {.importc.}
+proc setStat*(this: Unit, label: string, stat: int): void {.importc.}
+proc incStat*(this: Unit, label: string, d: int): void {.importc.}
+proc hasStat*(this: Unit, label: string): bool {.importc.}
+proc getStat*(this: Unit, label: string): int {.importc.}
 
 # src/kingdom/entities/signals.nim
 proc addSignalHandler*(this: Ability, channel: string, handler: SignalHandler[Ability]): void {.importc: "addSignalHandler_ability"}
@@ -69,9 +71,6 @@ proc handleSignal*(this: Ability, ctx: SignalContext, args: BaseSignalArgs): voi
 proc handleSignal*(this: Item, ctx: SignalContext, args: BaseSignalArgs): void {.importc: "handleSignal_item".}
 proc handleSignal*(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void {.importc: "handleSignal_tile".}
 proc handleSignal*(this: Unit, ctx: SignalContext, args: BaseSignalArgs): void {.importc: "handleSignal_unit".}
-
-# src/kingdom/entities/stats.nim
-proc setStat*(this: Stats, label: string, stat: int): void {.importc.}
 
 # src/kingdom/models/world.nim
 proc getBounds*(this: World): Coord {.importc.}

@@ -8,14 +8,12 @@ import kingdom/views/types
 import kingdom/models/types
 import kingdom/entities/types
 import kingdom/builtin/types
-import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
 import kingdom/models/types
 import kingdom/mods/types
 
 # Unofficial/test content
-const ITEM_RING_OF_STRENGTH = "Ring of Strength"
 const UNIT_GLOOP = "Gloop the Adventurer"
 const UNIT_BARNACLEHEAD = "Barnaclehead"
 const UNIT_FERNANDO_UNFALTERING_GAZE = "Fernando of the Unfaltering Gaze"
@@ -133,9 +131,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Just a slimy guy")
         unit.classification = @[SPECIES_SLIME, "Plasmoid"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
-        unit.stats.setStat("Courage", 3)
-        unit.stats.setStat(STAT_CONSTITUTION, 3)
-        unit.stats.setStat("Dexterity", 3)
+        unit.setStat("Courage", 3)
+        unit.setStat(STAT_CONSTITUTION, 3)
+        unit.setStat("Dexterity", 3)
         unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
             let payload = cast[GetMovementSignalArgs](args)
             payload.movement = 2
@@ -148,7 +146,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A coast-dwelling golem crafted by an island wizard")
         unit.classification = @["Homunculus", "Golem"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 0)
-        unit.stats.setStat(STAT_CONSTITUTION, 5)
+        unit.setStat(STAT_CONSTITUTION, 5)
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_UNFALTERING_GAZE, proc (): Unit =
@@ -157,8 +155,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("He's a notorious Garuda warlock")
         unit.classification = @["Humanoid", "Garuda"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 48, 0)
-        unit.stats.setStat("Wickedness", 8)
-        unit.stats.setStat("Intellect", 8)
+        unit.setStat("Wickedness", 8)
+        unit.setStat("Intellect", 8)
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_HENRIETTA, proc (): Unit =
@@ -175,8 +173,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Mysterious druid that wields nature magic")
         unit.classification = @["Humanoid", "Unknown"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 24)
-        unit.stats.setStat("Wisdom", 6)
-        unit.stats.setStat("Agility", 4)
+        unit.setStat("Wisdom", 6)
+        unit.setStat("Agility", 4)
         return unit
     )
     game.rules.unitGeneration.addGenerator(UNIT_HOKA_AND_TATANKA, proc (): Unit =
@@ -185,9 +183,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This duo roams the plains in search of good causes")
         unit.classification = @["Humanoid", "Human"]
         unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 24)
-        unit.stats.setStat(STAT_CONSTITUTION, 3)
-        unit.stats.setStat("Agility", 3)
-        unit.stats.setStat(STAT_CHARISMA, 3)
+        unit.setStat(STAT_CONSTITUTION, 3)
+        unit.setStat("Agility", 3)
+        unit.setStat(STAT_CHARISMA, 3)
         return unit
     )
 
@@ -198,7 +196,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Standard foot soldiers in dark armies")
         unit.classification = @["Beast", "Reptile", "Gremlin"]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 0)
-        unit.stats.setStat("Agility", 3)
+        unit.setStat("Agility", 3)
         game.giveAbility(unit, ABILITY_STAB)
         return unit
     )
@@ -221,7 +219,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Nearly impenetrable to physical damage")
         unit.classification = @["Beast", "Insect", "Beetle"]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 0)
-        unit.stats.setStat(STAT_CONSTITUTION, 5)
+        unit.setStat(STAT_CONSTITUTION, 5)
         game.giveAbility(unit, ABILITY_STAB)
         unit.addArmor(DamageType.PHYSICAL, 3)
         return unit
@@ -421,17 +419,6 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # ITEM GENERATORS
     #
 
-    game.rules.itemGeneration.addGenerator(ITEM_RING_OF_STRENGTH, proc(): Item =
-        let item = newItem()
-        item.name = ITEM_RING_OF_STRENGTH
-        item.desc = fmt"+2 {STRENGTH}"
-        item.addSignalHandler(GET_STATS_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[GetStatsSignalArgs](args)
-            a.stats.incStat(STRENGTH, 2)
-        )
-        return item
-    )
-
     # Food items
     game.rules.itemGeneration.addGenerator(ITEM_CHESTNUT, proc(): Item = game.createFoodItem(ITEM_CHESTNUT))
     game.rules.itemGeneration.addGenerator(ITEM_NOPAL, proc(): Item = game.createFoodItem(ITEM_NOPAL))
@@ -445,7 +432,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         item.desc = fmt"Physical attacks deal +5 damage to targets with a {STAT_CONSTITUTION} stat"
         item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[DealDamageSignalArgs](args)
-            if a.dtype == DamageType.PHYSICAL and a.target.stats.hasStat(STAT_CONSTITUTION):
+            if a.dtype == DamageType.PHYSICAL and a.target.hasStat(STAT_CONSTITUTION):
                 a.dmg += 5
         )
     )
@@ -461,8 +448,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         )
     )
 
-    # Bag of Gold
-    # Gold Coin
+    # Gold items
+    game.rules.itemGeneration.addGenerator(ITEM_BAG_OF_GOLD, proc(): Item = game.createGoldItem(ITEM_BAG_OF_GOLD, 10))
+    game.rules.itemGeneration.addGenerator(ITEM_GOLD_COIN, proc(): Item = game.createGoldItem(ITEM_GOLD_COIN, 1))
 
     # Novice's Charm
     game.rules.itemGeneration.addGenerator(ITEM_NOVICES_CHARM, proc(): Item =
@@ -509,8 +497,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         item.desc = fmt"-1 magical armor, +1 magical damage per {STAT_CHARISMA} point"
         item.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[DealDamageSignalArgs](args)
-            if a.dtype == DamageType.MAGICAL and a.attacker.stats.hasStat(STAT_CHARISMA):
-                a.dmg += a.attacker.stats.getStat(STAT_CHARISMA)
+            if a.dtype == DamageType.MAGICAL and a.attacker.hasStat(STAT_CHARISMA):
+                a.dmg += a.attacker.getStat(STAT_CHARISMA)
         )
         item.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
             let a = cast[TakeDamageSignalArgs](args)
@@ -579,6 +567,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     )
 
     # Nopal Knife
+    game.rules.itemGeneration.addGenerator(ITEM_NOPAL_KNIFE, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_NOPAL_KNIFE
+        item.desc = "Activate to harvest nopales on desert tiles"
+        item.addSignalHandler(ITEM_ACTIVATED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            game.harvest(args, TILE_CACTUS, ITEM_NOPAL)
+        )
+    )
 
     # Telescope
     game.rules.itemGeneration.addGenerator(ITEM_TELESCOPE, proc(): Item =
@@ -656,6 +652,20 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     )
 
     # Bag of Mirth
+    game.rules.itemGeneration.addGenerator(ITEM_BAG_OF_MIRTH, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_BAG_OF_MIRTH
+        item.desc = fmt"+1 {STAT_CHARISMA} when the user levels up"
+        item.addSignalHandler(CAN_BE_EQUIPPED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[CanBeEquippedSignalArgs](args)
+            a.equippable = a.host.hasStat(STAT_CHARISMA)
+        )
+        item.addSignalHandler(LEVEL_UP_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[LevelUpSignalArgs](args)
+            if a.host.hasStat(STAT_CHARISMA):
+                a.host.incStat(STAT_CHARISMA, 1)
+        )
+    )
 
     # Kingslayer
     game.rules.itemGeneration.addGenerator(ITEM_KINGSLAYER, proc(): Item =

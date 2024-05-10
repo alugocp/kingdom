@@ -61,7 +61,6 @@ method getNextView*(this: StartView): View =
     discard game.addNewUnit("Hoka and Tatanka", initCoord(1, 3), HUMAN_PLAYER)
     discard game.addNewUnit("Henrietta", initCoord(2, 3), HUMAN_PLAYER)
     discard game.addNewUnit("Fernando of the Unfaltering Gaze", initCoord(2, 1), world.createNewPlayer())
-    discard game.addNewItem("Ring of Strength", initCoord(1, 1))
     world.getTile(initCoord(0, 1)).quest = some(newQuest("Just a test quest...heehee, that rhymes", "Idk pry some rubies or something"))
     return game
 

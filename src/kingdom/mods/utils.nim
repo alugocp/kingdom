@@ -1,4 +1,5 @@
 import std/sugar
+import std/strformat
 import kingdom/generation/manager
 import kingdom/controls/targeting
 import kingdom/views/types
@@ -51,6 +52,17 @@ proc createFoodItem*(game: ModCoreInterface, name: string): Item {.exportc, dynl
     item.addSignalHandler(ITEM_CONSUMED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
         let a = cast[ItemConsumedSignalArgs](args)
         a.host.feed(game.getGameView().state)
+    )
+    return item
+
+# Sets up an Item as gold
+proc createGoldItem*(game: ModCoreInterface, name: string, quantity: int): Item {.exportc, dynlib.} =
+    let item = newItem()
+    item.name = name
+    item.desc = fmt"Worth {quantity} gold"
+    item.addSignalHandler(ITEM_CONSUMED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[ItemConsumedSignalArgs](args)
+        a.host.gold += quantity
     )
     return item
 

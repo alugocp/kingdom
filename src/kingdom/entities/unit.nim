@@ -42,6 +42,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     result.classification = @[UNKNOWN_CLASS]
     result.damageTaken = 0
     result.level = 1
+    result.gold = 0
     result.xp = 0
 
 # Feeds this unit to reset its hunger
@@ -65,7 +66,7 @@ proc gainXp*(this: Unit, xp: int): void =
     while this.xp > MAX_XP:
         this.xp -= MAX_XP
         this.level += 1
-        let payload = newLevelUpSignalArgs(xp)
+        let payload = newLevelUpSignalArgs(this)
         this.handleSignal(@[], payload)
 
 # Returns this Unit's maximum health
@@ -110,7 +111,7 @@ proc heal*(this: Unit, target: Unit, health: int): void {.exportc, dynlib.} =
 proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
     let maxHealth = this.getMaxHealth()
     let node = newListNode()
-    let stats = this.stats.getStats()
+    let stats = this.getStats()
     node.add(newHeaderNode(this.name))
     node.add(newTextNode(this.classification.join("/")))
     node.add(newTextNode(fmt"Lv. {this.level} ({this.xp}/{MAX_XP} xp)"))
@@ -150,7 +151,7 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
     for item in this.items:
         capture item:
             node.add(item.getMenuNode(
-                some((player: this.player, itype: InventoryType.EQUIP)),
+                some((host: this, itype: InventoryType.EQUIP)),
                 newItemMenuActions(
                     (itype: InventoryType) => actions.equip(itype, item),
                     (itype: InventoryType) => actions.autoEquip(itype, item),
@@ -171,7 +172,7 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
     for item in this.haul:
         capture item:
             node.add(item.getMenuNode(
-                some((player: this.player, itype: InventoryType.HAUL)),
+                some((host: this, itype: InventoryType.HAUL)),
                 newItemMenuActions(
                     (itype: InventoryType) => actions.equip(itype, item),
                     (itype: InventoryType) => actions.autoEquip(itype, item),

@@ -9,6 +9,7 @@ import kingdom/controls/actions
 import kingdom/controls/types
 import kingdom/controls/menu
 import kingdom/builtin/channels
+import kingdom/builtin/signals
 import kingdom/builtin/values
 import kingdom/builtin/types
 
@@ -23,18 +24,23 @@ proc newItem*(): Item {.exportc, dynlib.} =
     result.handlers = initTable[string, seq[SignalHandler[Item]]]()
 
 # Return a MenuNode describing this Item when equipped to a Unit
-proc getMenuNode*(this: Item, equipData: Option[tuple[player: int, itype: InventoryType]], actions: ItemMenuActions): MenuNode =
+proc getMenuNode*(this: Item, equipData: Option[tuple[host: Unit, itype: InventoryType]], actions: ItemMenuActions): MenuNode =
     let node = newListNode()
     node.add(newTextNode(this.name, GREEN))
     node.add(newTextNode(this.desc))
 
     # Controls when this Item is in possession of a Unit
     if equipData.isSome():
-        let player = equipData.get().player
-        let itype = equipData.get().itype
+        let edata = equipData.get()
+        let player = edata.host.player
+        let itype = edata.itype
         if player != HUMAN_PLAYER:
             return node
         if itype == InventoryType.EQUIP:
+            if player == HUMAN_PLAYER and this.hasSignalHandler(ITEM_ACTIVATED_CHANNEL):
+                node.add(newButtonNode("Activate", proc (): void =
+                    this.handleSignal(@[], newItemActivatedSignalArgs(edata.host))
+                ))
             node.add(newButtonNode("Move to haul inventory", proc (): void =
                 actions.unequip()
                 actions.autoEquip(InventoryType.HAUL)
