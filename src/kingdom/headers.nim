@@ -13,9 +13,10 @@ import kingdom/mods/types
 proc getGameView*(this: ModCoreInterface): GameView {.importc.}
 
 # src/kingdom/mods/utils.nim
-proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void {.importc.}
 proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.importc.}
 proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, item: string): void {.importc.}
+proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void {.importc.}
+proc modifyUserStat*(game: ModCoreInterface, item: Item, label: string, value: int): void {.importc.}
 proc giveAbility*(game: ModCoreInterface, unit: Unit, ability: string): void {.importc.}
 proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.importc.}
 proc createGoldItem*(game: ModCoreInterface, name: string, quantity: int): Item {.importc.}

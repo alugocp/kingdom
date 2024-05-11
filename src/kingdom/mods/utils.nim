@@ -9,6 +9,7 @@ import kingdom/wrapper/sprites
 import kingdom/wrapper/types
 import kingdom/entities/signals
 import kingdom/entities/types
+import kingdom/entities/stats
 import kingdom/entities/unit
 import kingdom/entities/item
 import kingdom/builtin/types
@@ -80,4 +81,16 @@ proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.e
         let view = game.getGameView()
         for item in items:
             discard view.addNewItem(item, unit.pos)
+    )
+
+# Sets up an Item to have a basic +/- effect on some Stat
+proc modifyUserStat*(game: ModCoreInterface, item: Item, label: string, value: int): void {.exportc, dynlib.} =
+    item.addSignalHandler(CAN_BE_EQUIPPED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[CanBeEquippedSignalArgs](args)
+        a.equippable = a.host.hasStat(label)
+    )
+    item.addSignalHandler(GET_STAT_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[GetStatSignalArgs](args)
+        if a.label == label:
+            a.stat += value
     )

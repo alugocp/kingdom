@@ -77,7 +77,7 @@ const ITEM_BAG_OF_GOLD = "Bag of Gold"
 const ITEM_GOLD_COIN = "Gold Coin"
 const ITEM_NOVICES_CHARM = "Novice's Charm"
 const ITEM_SCHOLARLY_AMULET = "Scholarly Amulet"
-const ITEM_RING_OF_SATISFACTION = "Ring of Satisfaction"
+const ITEM_STONE_RING = "Stone Ring"
 const ITEM_CRYSTAL_ROSE = "Crystal Rose"
 const ITEM_SLIMEBREAKER = "Slimebreaker"
 const ITEM_SORCEROUS_MEDALLION = "Sorcerous Medallion"
@@ -476,7 +476,20 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     )
 
     # Ring of Satisfaction
+    game.rules.itemGeneration.addGenerator(ITEM_STONE_RING, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_STONE_RING
+        item.desc = fmt"+2 {STAT_CONSTITUTION}"
+        game.modifyUserStat(item, STAT_CONSTITUTION, 2)
+    )
+
     # Crystal Rose
+    game.rules.itemGeneration.addGenerator(ITEM_CRYSTAL_ROSE, proc(): Item =
+        let item = newItem()
+        item.name = ITEM_CRYSTAL_ROSE
+        item.desc = fmt"+2 {STAT_CHARISMA}"
+        game.modifyUserStat(item, STAT_CHARISMA, 2)
+    )
 
     # Slimebreaker
     game.rules.itemGeneration.addGenerator(ITEM_SLIMEBREAKER, proc(): Item =
