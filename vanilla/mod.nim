@@ -28,6 +28,11 @@ const UNIT_HOKA_AND_TATANKA = "Hoka and Tatanka"
 # Stats
 const STAT_CONSTITUTION = "Constitution"
 const STAT_CHARISMA = "Charisma"
+const STAT_AGILITY = "Agility"
+const STAT_DEXTERITY = "Dexterity"
+const STAT_STRENGTH = "Strength"
+const STAT_WISDOM = "Wisdom"
+const STAT_INTELLIGENCE = "Intelligence"
 
 # Species
 const SPECIES_SLIME = "Slime"
@@ -51,6 +56,24 @@ const UNIT_ACOLYTE_OF_CTHOS = "Acolyte of C'thos"
 const UNIT_KOBOLD_SYCOPHANT = "Kobold Sycophant"
 const UNIT_BANSHEE = "Banshee"
 const UNIT_BUCK = "Buck"
+const UNIT_SIR_EOINN = "Sir Eoinn"
+const UNIT_IXTOLOLOTLI = "Ixtololotli"
+const UNIT_ELDER_USQUANIGODI = "Elder Usquanigodi"
+const UNIT_LADY_MARIA = "Lady Maria"
+const UNIT_JACK_THE_SCOUNDREL = "Jack the Scoundrel"
+const UNIT_GLUB_STRONGFIN = "Glub Strongfin"
+const UNIT_DORRIE = "Dorrie"
+const UNIT_DRUIDIC_HERMIT = "Druidic Hermit"
+const UNIT_BATO = "Bato"
+const UNIT_HARDIN_REDBEARD = "Hardin Redbeard"
+const UNIT_TUNDE_THE_SORCEROR = "Tunde the Sorceror"
+const UNIT_RANGER_DAWISGALA = "Ranger Dawisgala"
+const UNIT_MALLARD_THE_MAGE = "Mallard the Mage"
+const UNIT_MIZTON_OF_THE_WASTES = "Mizton of the Wastes"
+const UNIT_GUROCH_THE_IMPENETRABLE = "Guroch the Impenetrable"
+const UNIT_HUGINN_BLACKFEATHER = "Huginn Blackfeather"
+const UNIT_AZDWAGIT_HALF_DJINN = "Azdwagit Half-Djinn"
+const UNIT_ISSLIS_THE_SEARING_DEATH = "Iss'lis the Searing Death"
 
 # Abilities
 const ABILITY_STAB = "Stab"
@@ -282,6 +305,94 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.getUnitSprite(unitSprites, 7, 1)
         game.giveAbility(unit, ABILITY_STAB)
         game.dropLoot(unit, @[ITEM_VEAL])
+        return unit
+    )
+
+    # Sir Eoinn
+    game.rules.unitGeneration.addGenerator(UNIT_SIR_EOINN, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_SIR_EOINN
+        unit.desc = some("He's a paladin of great standing with the Dwarven high council")
+        unit.classification = @["Humanoid", "Dwarf"]
+        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.setStat(STAT_CONSTITUTION, 8)
+        unit.setStat(STAT_STRENGTH, 5)
+        unit.setStat(STAT_WISDOM, 5)
+        unit.addArmor(DamageType.PHYSICAL, 3)
+        game.giveAbility(unit, ABILITY_STAB)
+        unit.setVision(1)
+        unit.setSpeed(1)
+        return unit
+    )
+
+    # Ixtololotli
+    game.rules.unitGeneration.addGenerator(UNIT_IXTOLOLOTLI, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_IXTOLOLOTLI
+        unit.desc = some("An elf ranger from the steaming jungles of the far West")
+        unit.classification = @["Humanoid", "Elf"]
+        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.setStat(STAT_AGILITY, 7)
+        unit.setStat(STAT_CHARISMA, 4)
+        unit.setStat(STAT_WISDOM, 4)
+        game.giveAbility(unit, ABILITY_STAB)
+        unit.setMaxHunger(20)
+        unit.setVision(3)
+        unit.setSpeed(3)
+        return unit
+    )
+
+    # Elder Usquanigodi
+    game.rules.unitGeneration.addGenerator(UNIT_ELDER_USQUANIGODI, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_ELDER_USQUANIGODI
+        unit.desc = some("She's a medicine woman from the chestnut woods of the far West. +3 damage on forest tiles")
+        unit.classification = @["Humanoid", "Human"]
+        unit.sprite = game.getUnitSprite(unitSprites, 1, 2)
+        unit.setStat(STAT_WISDOM, 8)
+        unit.setStat(STAT_INTELLIGENCE, 5)
+        game.giveAbility(unit, ABILITY_ZAP)
+        game.giveAbility(unit, ABILITY_HARVEST_CHESTNUT)
+        unit.setVision(2)
+        unit.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            let tile = game.getGameView().world.getTile(this.pos)
+            if tile.name == TILE_FOREST:
+                a.dmg += 3
+        )
+        return unit
+    )
+
+    # Lady Maria
+    game.rules.unitGeneration.addGenerator(UNIT_LADY_MARIA, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_LADY_MARIA
+        unit.desc = some("A cleric of the holy light who rides to vanquish evil")
+        unit.classification = @["Humanoid", "Human"]
+        unit.sprite = game.getUnitSprite(unitSprites, 1, 2)
+        unit.setStat(STAT_INTELLIGENCE, 6)
+        unit.setStat(STAT_AGILITY, 8)
+        game.giveAbility(unit, ABILITY_ZAP)
+        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
+        unit.addArmor(DamageType.PHYSICAL, -3)
+        unit.setSpeed(3)
+        return unit
+    )
+
+    # Jack the Scoundrel
+    game.rules.unitGeneration.addGenerator(UNIT_JACK_THE_SCOUNDREL, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_JACK_THE_SCOUNDREL
+        unit.desc = some("This human has cheated death on nearly a hundred different adventures at sea")
+        unit.classification = @["Humanoid", "Human"]
+        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.setStat(STAT_DEXTERITY, 8)
+        unit.setStat(STAT_CHARISMA, 10)
+        unit.setStat(STAT_WISDOM, 7)
+        game.giveAbility(unit, ABILITY_STAB)
+        game.giveAbility(unit, ABILITY_HARVEST_SALMON)
+        unit.addArmor(DamageType.MAGICAL, 3)
+        unit.setSpeed(2)
         return unit
     )
 

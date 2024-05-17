@@ -94,3 +94,24 @@ proc modifyUserStat*(game: ModCoreInterface, item: Item, label: string, value: i
         if a.label == label:
             a.stat += value
     )
+
+# Sets this Unit's movement value
+proc setSpeed*(this: Unit, speed: int): void {.exportc, dynlib.} =
+    this.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[GetMovementSignalArgs](args)
+        a.movement = speed
+    )
+
+# Sets this Unit's visibility value
+proc setVision*(this: Unit, vision: int): void {.exportc, dynlib.} =
+    this.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[GetVisibilitySignalArgs](args)
+        a.visibility = vision
+    )
+
+# Sets this Unit's max hunger value
+proc setMaxHunger*(this: Unit, hunger: int): void {.exportc, dynlib.} =
+    this.addSignalHandler(GET_MAX_HUNGER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[GetMaxHungerSignalArgs](args)
+        a.hunger = hunger
+    )

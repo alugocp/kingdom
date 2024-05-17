@@ -22,6 +22,9 @@ proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.i
 proc createGoldItem*(game: ModCoreInterface, name: string, quantity: int): Item {.importc.}
 proc createFoodItem*(game: ModCoreInterface, name: string): Item {.importc.}
 proc addArmor*(u: Unit, dtype: DamageType, dmg: int): void {.importc.}
+proc setMaxHunger*(this: Unit, hunger: int): void {.importc.}
+proc setVision*(this: Unit, vision: int): void {.importc.}
+proc setSpeed*(this: Unit, speed: int): void {.importc.}
 
 # src/kingdom/views/game.nim
 proc addNewItem*(this: GameView, key: string, pos: Coord): Item {.importc.}

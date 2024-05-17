@@ -118,7 +118,7 @@ proc openTargetMenu*(this: GameView): void =
 # Returns how many turns it has been since the given Unit was fed
 proc getUnitHunger*(this: GameView, u: Unit): int =
     let turnsSinceFeeding = this.state.turn - u.lastTurnFed
-    let payload = newGetMaxHungerSignalArgs(50)
+    let payload = newGetMaxHungerSignalArgs(DEFAULT_MAX_HUNGER)
     u.handleSignal(@[], payload)
     return min(100, int(floor(100 * float(turnsSinceFeeding) / float(payload.hunger))))
 

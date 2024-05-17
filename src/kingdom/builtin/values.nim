@@ -19,8 +19,8 @@ const UNKNOWN_CLASS* = "Unknown"
 # Max XP for a Unit
 const MAX_XP* = 1000
 
-# Stats
-const STRENGTH* = "Strength"
+# Default max hunger value
+const DEFAULT_MAX_HUNGER* = 50
 
 # Colors
 const BLACK*      = uint32(0x000000FF)
