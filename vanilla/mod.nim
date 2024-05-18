@@ -1130,15 +1130,15 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_WARLOCK_TOWER, proc(): Tile =
         let tile = newTile(TILE_WARLOCK_TOWER)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 0, 96, 110)
-        #tile.quest = some(newKillEnemyQuest(
-        #    game, 1, UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, "Nothing lol",
-        #    proc (this: Tile, game: ModCoreInterface): void =
-        #        discard
-        #))
-        #tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
-        #    let view = game.getGameView()
-        #    discard view.addNewUnit(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, this.pos, view.world.createNewPlayer())
-        #)
+        tile.quest = some(newKillEnemyQuest(
+            game, 1, UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, "Nothing lol",
+            proc (this: Tile, game: ModCoreInterface): void =
+                discard
+        ))
+        tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+            let view = game.getGameView()
+            discard view.addNewUnit(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, this.pos, view.world.createNewPlayer())
+        )
     )
 
     # Desert
@@ -1151,15 +1151,15 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_FOREST, proc(): Tile =
         let tile = newTile(TILE_FOREST)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 110, 96, 110)
-        #tile.quest = some(newKillEnemyQuest(
-        #    game, 1, UNIT_BUCK, "Nothing lol",
-        #    proc (this: Tile, game: ModCoreInterface): void =
-        #        discard
-        #))
-        #tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
-        #    let view = game.getGameView()
-        #    discard view.addNewUnit(UNIT_BUCK, this.pos, view.world.createNewPlayer())
-        #)
+        tile.quest = some(newKillEnemyQuest(
+            game, 1, UNIT_BUCK, "Nothing lol",
+            proc (this: Tile, game: ModCoreInterface): void =
+                discard
+        ))
+        tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+            let view = game.getGameView()
+            discard view.addNewUnit(UNIT_BUCK, this.pos, view.world.createNewPlayer())
+        )
     )
 
     # Coast
@@ -1172,15 +1172,15 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_ISLAND_FORTRESS, proc(): Tile =
         let tile = newTile(TILE_ISLAND_FORTRESS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 110, 96, 110)
-        #tile.quest = some(newKillEnemyQuest(
-        #    game, 1, UNIT_BALOR_THE_SEA_DEVIL, "Nothing lol",
-        #    proc (this: Tile, game: ModCoreInterface): void =
-        #        discard
-        #))
-        #tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
-        #    let view = game.getGameView()
-        #    discard view.addNewUnit(UNIT_BALOR_THE_SEA_DEVIL, this.pos, view.world.createNewPlayer())
-        #)
+        tile.quest = some(newKillEnemyQuest(
+            game, 1, UNIT_BALOR_THE_SEA_DEVIL, "Nothing lol",
+            proc (this: Tile, game: ModCoreInterface): void =
+                discard
+        ))
+        tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+            let view = game.getGameView()
+            discard view.addNewUnit(UNIT_BALOR_THE_SEA_DEVIL, this.pos, view.world.createNewPlayer())
+        )
     )
 
     # Cactus

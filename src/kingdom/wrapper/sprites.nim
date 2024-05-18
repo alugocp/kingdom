@@ -4,6 +4,7 @@ import std/strformat
 import kingdom/math/types
 import kingdom/wrapper/types
 import kingdom/controls/types
+import kingdom/operators
 
 # Constructor for the SpriteManager type
 proc newSpriteManager*(): SpriteManager =
@@ -15,7 +16,7 @@ proc newSpriteManager*(): SpriteManager =
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.exportc, dynlib.} =
     let i = SheetHandle(this.spritesheets.len)
     if i >= 255:
-        raise newException(Exception, "Cannot register more than 255 spritesheets")
+        ERROR("Cannot register more than 255 spritesheets")
     this.spritesheets.add(fmt"out/mods/{modname}/assets/{filename}.png")
     return i
 

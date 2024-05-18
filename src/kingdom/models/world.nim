@@ -53,12 +53,6 @@ proc build*(this: World, generate: (x: int, y: int) -> Tile): void =
             this.tiles[x].add(initTileData(t))
             id += 1
 
-    # Init all Tiles
-    #let payload = newInitSignalArgs()
-    #for x in 0..(this.w - 1):
-    #    for y in 0..(this.h - 1):
-    #        this.tiles[x][y].tile.handleSignal(@[], payload)
-
 # Returns the bounds of this World as a Coord
 proc getBounds*(this: World): Coord {.exportc, dynlib.} =
     initCoord(this.w, this.h)
@@ -93,7 +87,7 @@ proc getParty*(this: World, u: Unit): Party {.exportc, dynlib.} =
     let parties = this.getParties(u.pos)
     let filtered = parties.filterIt(it.id == u.party)
     if filtered.len != 1:
-        raise newException(Exception, fmt"Invalid unit/party match length ({filtered.len}), unit's party ID is {u.party}")
+        ERROR(fmt"Invalid unit/party match length ({filtered.len}), unit's party ID is {u.party}")
     return filtered[0]
 
 # Creates a new player ID and returns it
@@ -112,7 +106,7 @@ proc moveParty*(this: World, p: Party, c: Coord): void {.exportc, dynlib.} =
 # Deletes a Party from the World
 proc deleteParty*(this: World, p: Party, pos: Coord): void =
     if p.n > 0:
-        raise newException(Exception, "Cannot delete party with active members")
+        ERROR("Cannot delete party with active members")
     this.tiles[pos.x][pos.y].parties = this.tiles[pos.x][pos.y].parties.filterIt(it != p)
 
 # Moves an Item from one Tile in this World to another (or to add/remove it from the World)

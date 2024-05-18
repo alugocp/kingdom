@@ -60,4 +60,7 @@ proc gameLoop*(): void =
         beginDrawing()
         state.view.draw()
         endDrawing()
-        state.view = state.view.getNextView()
+        let nextView = state.view.getNextView()
+        if state.view != nextView:
+            state.view = nextView
+            nextView.initView()

@@ -18,6 +18,7 @@ type View* = ref object of RootObj
 
 # Empty base implementations for methods in the View class
 method getNextView*(this: View): View {.base.} = this
+method initView*(this: View): void {.base.} = discard
 method draw*(this: View): void {.base.} = discard
 method consumeKeyboardUpdates*(this: View): void {.base.} = discard
 method consumeMouseUpdates*(this: View): void {.base.} = discard

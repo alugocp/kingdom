@@ -2,6 +2,7 @@ import std/sets
 import std/math
 import std/strformat
 import kingdom/math/types
+import kingdom/operators
 
 # Constants for optimal calculation
 const r3 = sqrt(3.0)
@@ -94,7 +95,7 @@ proc getSharedSide*(h1: Coord, h2: Coord): HexSides =
     if h2.x == h1.x + dx + 1 and h2.y == h1.y + 1: return BOT_RIGHT
     if h2.x == h1.x - 1 and h2.y == h1.y: return LEFT
     if h2.x == h1.x + 1 and h2.y == h1.y: return RIGHT
-    raise newException(Exception, fmt"The hexagons at {h1} and {h2} don't share any sides")
+    ERROR(fmt"The hexagons at {h1} and {h2} don't share any sides")
 
 # Get the coordinates of the hexagon that this position falls into
 proc getHexagonCoords*(p: Position): Coord =

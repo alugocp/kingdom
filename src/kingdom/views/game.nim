@@ -52,6 +52,13 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
     g.targeter.onTarget = () => g.closeMenu()
     return g
 
+# Inits all Tiles in the World
+method initView*(this: GameView): void =
+    let payload = newInitSignalArgs()
+    for x in 0..(this.world.w - 1):
+        for y in 0..(this.world.h - 1):
+            this.world.getTile(initCoord(x, y)).handleSignal(@[], payload)
+
 # Creates a new Party and adds a Unit to it
 proc addUnitToNewParty(this: GameView, u: Unit): void =
     let p = newParty(this.nextPartyId, u)

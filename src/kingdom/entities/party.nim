@@ -5,6 +5,7 @@ import kingdom/entities/signals
 import kingdom/entities/types
 import kingdom/builtin/signals
 import kingdom/builtin/values
+import kingdom/operators
 
 # Needed for the constructor
 proc addToParty*(this: Party, u: Unit): void
@@ -23,7 +24,7 @@ proc isPartyFull*(this: Party): bool =
 # Returns all the Units in this Party
 proc getMembers*(this: Party): seq[Unit] =
     if this.n == 0:
-        raise newException(Exception, "Illegal member access on empty party")
+        ERROR("Illegal member access on empty party")
     var members = newSeq[Unit]()
     for a in 0..(this.n - 1):
         members.add(this.members[a].get())
@@ -45,7 +46,7 @@ proc getMaxMovement*(this: Party): int =
 # Adds some unit to the Party
 proc addToParty*(this: Party, u: Unit): void =
     if this.isPartyFull():
-        raise newException(Exception, "Party is already full")
+        Error("Party is already full")
     this.members[this.n] = some(u)
     u.party = this.id
     this.n += 1
@@ -61,7 +62,7 @@ proc removeFromParty*(this: Party, u: Unit): bool =
                     this.members[b - 1] = this.members[b]
             this.members[this.n] = none(Unit)
             return this.n == 0
-    raise newException(Exception, fmt"Could not remove missing unit {u.name} from the party")
+    Error(fmt"Could not remove missing unit {u.name} from the party")
 
 # Moves a Unit from this Party to another and returns true if this party is empty
 proc giveToAnotherParty*(this: Party, other: Party, u: Unit): bool =
