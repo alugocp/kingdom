@@ -37,7 +37,7 @@ proc getCoord*(this: Party): Coord = this.getMembers()[0].pos
 proc getMaxMovement*(this: Party): int =
     var max: Option[Natural] = none(Natural)
     for u in this.getMembers():
-        let payload = newGetMovementSignalArgs()
+        let payload = newGetMovementSignalArgs(u)
         u.handleSignal(@[], payload)
         if max.isNone() or max.get() > payload.movement:
             max = some(payload.movement)

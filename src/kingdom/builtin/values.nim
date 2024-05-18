@@ -1,10 +1,10 @@
 
 # BUILT-IN VALUES FOR THE GAME CORE
 
-# Max party size
+# Max Party size
 const PARTY_LIMIT* = 8
 
-# Null party ID
+# Null Party ID
 const NO_PARTY* = -1
 
 # Human player ID
@@ -19,8 +19,10 @@ const UNKNOWN_CLASS* = "Unknown"
 # Max XP for a Unit
 const MAX_XP* = 1000
 
-# Default max hunger value
+# Default Unit values
 const DEFAULT_MAX_HUNGER* = 50
+const DEFAULT_VISIBILITY* = 1
+const DEFAULT_MOVEMENT* = 2
 
 # Colors
 const BLACK*      = uint32(0x000000FF)

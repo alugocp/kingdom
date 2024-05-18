@@ -1,4 +1,5 @@
 import std/sugar
+import std/options
 import std/strformat
 import kingdom/generation/manager
 import kingdom/controls/targeting
@@ -8,6 +9,7 @@ import kingdom/models/types
 import kingdom/wrapper/sprites
 import kingdom/wrapper/types
 import kingdom/entities/signals
+import kingdom/entities/ability
 import kingdom/entities/types
 import kingdom/entities/stats
 import kingdom/entities/unit
@@ -15,10 +17,12 @@ import kingdom/entities/item
 import kingdom/builtin/types
 import kingdom/builtin/signals
 import kingdom/builtin/channels
+import kingdom/builtin/values
 import kingdom/models/world
 import kingdom/models/types
 import kingdom/mods/types
 import kingdom/mods/core
+import kingdom/operators
 
 # Collects the code for a basic attack ability
 proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
@@ -27,23 +31,44 @@ proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dm
     let enemies = view.world.getEnemies(a.host)
     view.targeter.target(enemies, (u: Unit) => a.host.dealDamage(u, dtype, dmg))
 
+# Instantiates a basic attack Ability
+proc basicAttack*(game: ModCoreInterface, name: string, dtype: DamageType, dmg: int): Ability {.exportc, dynlib.} =
+    let ability = newAbility()
+    ability.name = name
+    ability.desc = some(fmt"Deals {dmg} {dtype} damage")
+    ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+        game.attack(args, dtype, dmg)
+    )
+    return ability
+
 # Shorthand to give some Unit armor against a certain DamageType
-proc addArmor*(u: Unit, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
-    u.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+proc addArmor*(unit: Unit, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
+    let armor = newAbility()
+    if dtype == DamageType.PHYSICAL:
+        armor.name = "Physical Armor"
+    else:
+        armor.name = "Magical Armor"
+    armor.desc = some(fmt"{dmg} armor against {dtype} attacks")
+    armor.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
         let a = cast[TakeDamageSignalArgs](args)
         if a.dtype == dtype:
             a.dmg -= dmg
             if a.dmg < 0:
                 a.dmg = 0
     )
+    unit.abilities.add(armor)
 
 # Shorthand to give some Unit an Ability
-proc giveAbility*(game: ModCoreInterface, unit: Unit, ability: string): void {.exportc, dynlib.} =
-    unit.abilities.add(game.rules.abilityGeneration.generate(ability))
+proc ability*(this: Unit, game: ModCoreInterface, ability: string): void {.exportc, dynlib.} =
+    this.abilities.add(game.rules.abilityGeneration.generate(ability))
 
-# Shorthand to grab a tilesheet sprite
+# Shorthand to grab a Tile tilesheet sprite
 proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.exportc, dynlib.} =
     game.rules.sprites.getSpriteHandle(sheet, ix * 24, iy * 24, 24, 24)
+
+# Shorthand to grab a Unit tilesheet sprite
+proc getTileSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.exportc, dynlib.} =
+    game.rules.sprites.getSpriteHandle(sheet, ix * 96, iy * 110, 96, 110)
 
 # Sets up an Item as food
 proc createFoodItem*(game: ModCoreInterface, name: string): Item {.exportc, dynlib.} =
@@ -76,7 +101,7 @@ proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, it
         discard view.addNewItem(item, a.host.pos)
 
 # Dictates which Item(s) a Unit will drop when it dies
-proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.exportc, dynlib.} =
+proc dropLoot*(unit: Unit, game: ModCoreInterface, items: seq[string]): void {.exportc, dynlib.} =
     unit.addSignalHandler(UNIT_DIES_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
         let view = game.getGameView()
         for item in items:
@@ -84,7 +109,7 @@ proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.e
     )
 
 # Sets up an Item to have a basic +/- effect on some Stat
-proc modifyUserStat*(game: ModCoreInterface, item: Item, label: string, value: int): void {.exportc, dynlib.} =
+proc modifyUserStat*(item: Item, game: ModCoreInterface, label: string, value: int): void {.exportc, dynlib.} =
     item.addSignalHandler(CAN_BE_EQUIPPED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
         let a = cast[CanBeEquippedSignalArgs](args)
         a.equippable = a.host.hasStat(label)
@@ -96,22 +121,28 @@ proc modifyUserStat*(game: ModCoreInterface, item: Item, label: string, value: i
     )
 
 # Sets this Unit's movement value
-proc setSpeed*(this: Unit, speed: int): void {.exportc, dynlib.} =
-    this.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+proc setSpeed*(unit: Unit, speed: int): void {.exportc, dynlib.} =
+    if speed == DEFAULT_MOVEMENT:
+        return
+    unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
         let a = cast[GetMovementSignalArgs](args)
         a.movement = speed
     )
 
 # Sets this Unit's visibility value
-proc setVision*(this: Unit, vision: int): void {.exportc, dynlib.} =
-    this.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+proc setVision*(unit: Unit, vision: int): void {.exportc, dynlib.} =
+    if vision == DEFAULT_VISIBILITY:
+        return
+    unit.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
         let a = cast[GetVisibilitySignalArgs](args)
         a.visibility = vision
     )
 
 # Sets this Unit's max hunger value
-proc setMaxHunger*(this: Unit, hunger: int): void {.exportc, dynlib.} =
-    this.addSignalHandler(GET_MAX_HUNGER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+proc setMaxHunger*(unit: Unit, hunger: int): void {.exportc, dynlib.} =
+    if hunger == DEFAULT_MAX_HUNGER:
+        return
+    unit.addSignalHandler(GET_MAX_HUNGER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
         let a = cast[GetMaxHungerSignalArgs](args)
         a.hunger = hunger
     )

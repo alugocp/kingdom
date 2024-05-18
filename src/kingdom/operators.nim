@@ -5,6 +5,9 @@ import kingdom/builtin/types
 # Stringify the Coord type
 proc `$`*(this: Coord): string = fmt"({this.x}, {this.y})"
 
+# Stringify the DamageType type
+proc `$`*(this: DamageType): string = return if this == DamageType.PHYSICAL: "physical" else: "magical"
+
 # Raises an Exception and prints it to the console
 proc ERROR*(err: string): void =
     echo(err)

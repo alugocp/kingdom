@@ -104,7 +104,9 @@ const UNIT_ISSLIS_THE_SEARING_DEATH = "Iss'lis the Searing Death"
 
 # Abilities
 const ABILITY_STAB = "Stab"
+const ABILITY_CLOBBER = "Clobber"
 const ABILITY_ZAP = "Zap"
+const ABILITY_ELDRITCH_BLAST = "Eldritch Blast"
 const ABILITY_CURE_WOUNDS = "Cure Wounds"
 const ABILITY_CHANT_OF_STRENGTH = "Chant of Strength"
 const ABILITY_CURSE_OF_WEAKNESS = "Curse of Weakness"
@@ -112,6 +114,12 @@ const ABILITY_HARVEST_CHESTNUT = "Harvest Chestnut"
 const ABILITY_HARVEST_NOPAL = "Harvest Nopal"
 const ABILITY_HARVEST_SALMON = "Harvest Salmon"
 const ABILITY_FLAMING_FANGS = "Flaming Fangs"
+const ABILITY_FOREST_DEFENDER = "Forest Defender"
+const ABILITY_AQUATIC_ATHLETE = "Aquatic Athlete"
+const ABILITY_SWIM = "Swim"
+const ABILITY_FERRY = "Ferry"
+const ABILITY_SEED_MAGIC = "Seed Magic"
+const ABILITY_DESERT_ROVER = "Desert Rover"
 
 # Status effects
 const STATUS_DAMAGE_DEBUFF = "Damage Debuff"
@@ -203,7 +211,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.classification = @[SPECIES_BEAST, SPECIES_REPTILE, SPECIES_GREMLIN]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 0)
         unit.setStat("Agility", 3)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_STAB)
         return unit
     )
 
@@ -214,7 +222,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A malevolent spirit which is bound by some master's whim")
         unit.classification = @[SPECIES_SPIRIT, SPECIES_SHADE]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 0)
-        game.giveAbility(unit, ABILITY_ZAP)
+        unit.ability(game, ABILITY_ZAP)
         return unit
     )
 
@@ -226,7 +234,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.classification = @[SPECIES_BEAST, SPECIES_INSECT, SPECIES_BEETLE]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 0)
         unit.setStat(STAT_CONSTITUTION, 5)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_STAB)
         unit.addArmor(DamageType.PHYSICAL, 3)
         return unit
     )
@@ -238,7 +246,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Magic has little effect on this strange creature")
         unit.classification = @[SPECIES_SLIME]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 0)
-        game.giveAbility(unit, ABILITY_ZAP)
+        unit.ability(game, ABILITY_ZAP)
         unit.addArmor(DamageType.MAGICAL, 3)
         return unit
     )
@@ -250,8 +258,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A dark hooded figure who awaits the return of ancient and terrible elder gods")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_UNKNOWN]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 1)
-        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
-        game.giveAbility(unit, ABILITY_ZAP)
+        unit.ability(game, ABILITY_CURE_WOUNDS)
+        unit.ability(game, ABILITY_ZAP)
         return unit
     )
 
@@ -262,8 +270,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This small dragonoid riles its comrades through song and dance")
         unit.classification = @[SPECIES_DRAGONOID, SPECIES_KOBOLD]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 1)
-        game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_CHANT_OF_STRENGTH)
+        unit.ability(game, ABILITY_STAB)
         return unit
     )
 
@@ -274,8 +282,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A vengeful spirit cursed to roam the earth and inflict suffering to whomever crosses its path")
         unit.classification = @[SPECIES_SPIRIT, SPECIES_BANSHEE]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 1)
-        game.giveAbility(unit, ABILITY_CURSE_OF_WEAKNESS)
-        game.giveAbility(unit, ABILITY_ZAP)
+        unit.ability(game, ABILITY_CURSE_OF_WEAKNESS)
+        unit.ability(game, ABILITY_ZAP)
         return unit
     )
 
@@ -286,8 +294,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("An adult male deer that can provide meat for your armies")
         unit.classification = @[SPECIES_BEAST, SPECIES_MAMMAL, SPECIES_DEER]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 1)
-        game.giveAbility(unit, ABILITY_STAB)
-        game.dropLoot(unit, @[ITEM_VEAL])
+        unit.ability(game, ABILITY_STAB)
+        unit.dropLoot(game, @[ITEM_VEAL])
         return unit
     )
 
@@ -298,7 +306,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This Garuda warlock strikes down entire armies from atop his wicked tower")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
         unit.sprite = game.getUnitSprite(unitSprites, 2, 0)
-        game.giveAbility(unit, ABILITY_ZAP)
+        unit.ability(game, ABILITY_ELDRITCH_BLAST)
         return unit
     )
 
@@ -309,7 +317,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A wicked Fomorian necromancer who casts wicked magic beneath the waves")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_FOMOR]
         unit.sprite = game.getUnitSprite(unitSprites, 0, 2)
-        game.giveAbility(unit, ABILITY_ZAP)
+        unit.ability(game, ABILITY_ELDRITCH_BLAST)
         return unit
     )
 
@@ -324,7 +332,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_STRENGTH, 5)
         unit.setStat(STAT_WISDOM, 5)
         unit.addArmor(DamageType.PHYSICAL, 3)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_STAB)
         unit.setVision(1)
         unit.setSpeed(1)
         return unit
@@ -340,7 +348,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_AGILITY, 7)
         unit.setStat(STAT_CHARISMA, 4)
         unit.setStat(STAT_WISDOM, 4)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_STAB)
         unit.setMaxHunger(20)
         unit.setVision(3)
         unit.setSpeed(3)
@@ -351,20 +359,15 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.unitGeneration.addGenerator(UNIT_ELDER_USQUANIGODI, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_ELDER_USQUANIGODI
-        unit.desc = some("She's a medicine woman from the chestnut woods of the far West. +3 damage on forest tiles")
+        unit.desc = some("She's a medicine woman from the chestnut woods of the far West")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
         unit.sprite = game.getUnitSprite(unitSprites, 1, 2)
         unit.setStat(STAT_WISDOM, 8)
         unit.setStat(STAT_INTELLIGENCE, 5)
-        game.giveAbility(unit, ABILITY_ZAP)
-        game.giveAbility(unit, ABILITY_HARVEST_CHESTNUT)
+        unit.ability(game, ABILITY_ZAP)
+        unit.ability(game, ABILITY_HARVEST_CHESTNUT)
+        unit.ability(game, ABILITY_FOREST_DEFENDER)
         unit.setVision(2)
-        unit.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[DealDamageSignalArgs](args)
-            let tile = game.getGameView().world.getTile(this.pos)
-            if tile.name == TILE_FOREST:
-                a.dmg += 3
-        )
         return unit
     )
 
@@ -377,8 +380,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.getUnitSprite(unitSprites, 1, 2)
         unit.setStat(STAT_INTELLIGENCE, 6)
         unit.setStat(STAT_AGILITY, 8)
-        game.giveAbility(unit, ABILITY_ZAP)
-        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
+        unit.ability(game, ABILITY_ZAP)
+        unit.ability(game, ABILITY_CURE_WOUNDS)
         unit.addArmor(DamageType.PHYSICAL, -3)
         unit.setSpeed(3)
         return unit
@@ -394,8 +397,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_DEXTERITY, 8)
         unit.setStat(STAT_CHARISMA, 10)
         unit.setStat(STAT_WISDOM, 7)
-        game.giveAbility(unit, ABILITY_STAB)
-        game.giveAbility(unit, ABILITY_HARVEST_SALMON)
+        unit.ability(game, ABILITY_STAB)
+        unit.ability(game, ABILITY_HARVEST_SALMON)
         unit.addArmor(DamageType.MAGICAL, 3)
         unit.setSpeed(2)
         return unit
@@ -410,32 +413,11 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
         unit.setStat(STAT_STRENGTH, 8)
         unit.setStat(STAT_DEXTERITY, 4)
-        game.giveAbility(unit, ABILITY_STAB)
-        game.giveAbility(unit, ABILITY_HARVEST_SALMON)
+        unit.ability(game, ABILITY_STAB)
+        unit.ability(game, ABILITY_HARVEST_SALMON)
+        unit.ability(game, ABILITY_SWIM)
+        unit.ability(game, ABILITY_AQUATIC_ATHLETE)
         unit.setSpeed(2)
-        unit.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[TakeDamageSignalArgs](args)
-            let tile = game.getGameView().world.getTile(this.pos)
-            if tile.name != TILE_WATER:
-                a.dmg -= 3
-        )
-        unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[GetMovementSignalArgs](args)
-            let tile = game.getGameView().world.getTile(this.pos)
-            if tile.name == TILE_WATER:
-                a.movement += 2
-        )
-        unit.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[GetVisibilitySignalArgs](args)
-            let tile = game.getGameView().world.getTile(this.pos)
-            if tile.name == TILE_WATER:
-                a.visibility += 3
-        )
-        unit.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[CanCrossBorderSignalArgs](args)
-            if a.border == BORDER_WATER:
-                a.canCross = MovementType.CROSS
-        )
         return unit
     )
 
@@ -450,14 +432,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.baseHealth = 150
         unit.setStat(STAT_STRENGTH, 10)
         unit.setStat(STAT_CONSTITUTION, 10)
+        unit.ability(game, ABILITY_FERRY)
         unit.setSpeed(2)
-        unit.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[CanCrossBorderSignalArgs](args)
-            if a.border == BORDER_WATER:
-                a.canCross = MovementType.OVERRIDE
-            else:
-                a.canCross = MovementType.BLOCKED
-        )
 
         return unit
     )
@@ -470,17 +446,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.classification = @[SPECIES_HUMANOID, SPECIES_UNKNOWN]
         unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
         unit.setStat(STAT_WISDOM, 10)
-        game.giveAbility(unit, ABILITY_ZAP)
+        unit.ability(game, ABILITY_ZAP)
+        unit.ability(game, ABILITY_SEED_MAGIC)
         unit.setVision(4)
         unit.setSpeed(2)
-        unit.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[DealDamageSignalArgs](args)
-            var plants = initHashSet[string]()
-            for item in unit.haul:
-                if item.tags.contains(TAG_PLANT):
-                    plants.incl(item.name)
-            a.dmg += plants.len
-        )
         return unit
     )
 
@@ -494,7 +463,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.maxHaul = 20
         unit.setStat(STAT_CONSTITUTION, 10)
         unit.setStat(STAT_STRENGTH, 8)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_CLOBBER)
         unit.setMaxHunger(100)
         unit.setVision(2)
         unit.setSpeed(1)
@@ -510,7 +479,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
         unit.setStat(STAT_CONSTITUTION, 8)
         unit.setStat(STAT_INTELLIGENCE, 5)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_STAB)
         unit.addArmor(DamageType.PHYSICAL, 3)
         unit.addArmor(DamageType.MAGICAL, 3)
         unit.setSpeed(1)
@@ -530,8 +499,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
         unit.setStat(STAT_INTELLIGENCE, 9)
         unit.setStat(STAT_DEXTERITY, 6)
-        game.giveAbility(unit, ABILITY_ZAP)
-        game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
+        unit.ability(game, ABILITY_ELDRITCH_BLAST)
+        unit.ability(game, ABILITY_CHANT_OF_STRENGTH)
         unit.setVision(2)
         unit.setSpeed(2)
         return unit
@@ -547,8 +516,8 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_AGILITY, 8)
         unit.setStat(STAT_DEXTERITY, 6)
         unit.setStat(STAT_STRENGTH, 4)
-        game.giveAbility(unit, ABILITY_STAB)
-        game.giveAbility(unit, ABILITY_HARVEST_CHESTNUT)
+        unit.ability(game, ABILITY_STAB)
+        unit.ability(game, ABILITY_HARVEST_CHESTNUT)
         unit.addArmor(DamageType.PHYSICAL, 2)
         unit.setVision(1)
         unit.setSpeed(3)
@@ -564,16 +533,12 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
         unit.setStat(STAT_INTELLIGENCE, 8)
         unit.setStat(STAT_DEXTERITY, 5)
-        game.giveAbility(unit, ABILITY_ZAP)
-        game.giveAbility(unit, ABILITY_HARVEST_SALMON)
+        unit.ability(game, ABILITY_ZAP)
+        unit.ability(game, ABILITY_HARVEST_SALMON)
+        unit.ability(game, ABILITY_SWIM)
         unit.addArmor(DamageType.PHYSICAL, 2)
         unit.setVision(1)
         unit.setSpeed(2)
-        unit.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[CanCrossBorderSignalArgs](args)
-            if a.border == BORDER_WATER:
-                a.canCross = MovementType.CROSS
-        )
         return unit
     )
 
@@ -587,27 +552,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_WISDOM, 6)
         unit.setStat(STAT_AGILITY, 8)
         unit.setStat(STAT_STRENGTH, 6)
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_CLOBBER)
+        unit.ability(game, ABILITY_DESERT_ROVER)
         unit.setVision(1)
         unit.setSpeed(2)
-        unit.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[DealDamageSignalArgs](args)
-            let tile = game.getGameView().world.getTile(this.pos)
-            if tile.name == TILE_DESERT:
-                a.dmg -= 3
-        )
-        unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[GetMovementSignalArgs](args)
-            let tile = game.getGameView().world.getTile(this.pos)
-            if tile.name == TILE_DESERT:
-                a.movement += 2
-        )
-        unit.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[GetVisibilitySignalArgs](args)
-            let tile = game.getGameView().world.getTile(this.pos)
-            if tile.name == TILE_DESERT:
-                a.visibility += 3
-        )
         return unit
     )
 
@@ -621,7 +569,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_CONSTITUTION, 10)
         unit.setStat(STAT_STRENGTH, 8)
         unit.maxHaul = 10
-        game.giveAbility(unit, ABILITY_STAB)
+        unit.ability(game, ABILITY_STAB)
         unit.addArmor(DamageType.PHYSICAL, 5)
         unit.addArmor(DamageType.MAGICAL, 5)
         unit.setVision(1)
@@ -639,9 +587,9 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_INTELLIGENCE, 10)
         unit.setStat(STAT_DEXTERITY, 8)
         unit.setStat(STAT_WISDOM, 6)
-        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
-        game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
-        game.giveAbility(unit, ABILITY_CURSE_OF_WEAKNESS)
+        unit.ability(game, ABILITY_CURE_WOUNDS)
+        unit.ability(game, ABILITY_CHANT_OF_STRENGTH)
+        unit.ability(game, ABILITY_CURSE_OF_WEAKNESS)
         unit.addArmor(DamageType.PHYSICAL, -2)
         unit.addArmor(DamageType.MAGICAL, -2)
         unit.setVision(1)
@@ -659,7 +607,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_INTELLIGENCE, 6)
         unit.setStat(STAT_AGILITY, 8)
         unit.setStat(STAT_STRENGTH, 5)
-        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
+        unit.ability(game, ABILITY_CURE_WOUNDS)
         unit.setVision(1)
         unit.setSpeed(3)
         return unit
@@ -674,7 +622,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
         unit.setStat(STAT_INTELLIGENCE, 7)
         unit.setStat(STAT_DEXTERITY, 8)
-        game.giveAbility(unit, ABILITY_FLAMING_FANGS)
+        unit.ability(game, ABILITY_FLAMING_FANGS)
         unit.setVision(1)
         unit.setSpeed(2)
         return unit
@@ -684,27 +632,11 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # ABILITY GENERATORS
     #
 
-    # Stab
-    game.rules.abilityGeneration.addGenerator(ABILITY_STAB, proc(): Ability =
-        let ability = newAbility()
-        ability.name = ABILITY_STAB
-        ability.desc = some("Deals 5 physical damage")
-        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
-            game.attack(args, DamageType.PHYSICAL, 5)
-        )
-        return ability
-    )
-
-    # Zap
-    game.rules.abilityGeneration.addGenerator(ABILITY_ZAP, proc(): Ability =
-        let ability = newAbility()
-        ability.name = ABILITY_ZAP
-        ability.desc = some("Deals 5 magical damage")
-        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
-            game.attack(args, DamageType.MAGICAL, 5)
-        )
-        return ability
-    )
+    # Basic attack Abilities
+    game.rules.abilityGeneration.addGenerator(ABILITY_STAB, proc(): Ability = game.basicAttack(ABILITY_STAB, DamageType.PHYSICAL, 5))
+    game.rules.abilityGeneration.addGenerator(ABILITY_ZAP, proc(): Ability = game.basicAttack(ABILITY_ZAP, DamageType.MAGICAL, 5))
+    game.rules.abilityGeneration.addGenerator(ABILITY_CLOBBER, proc(): Ability = game.basicAttack(ABILITY_CLOBBER, DamageType.PHYSICAL, 10))
+    game.rules.abilityGeneration.addGenerator(ABILITY_ELDRITCH_BLAST, proc(): Ability = game.basicAttack(ABILITY_ELDRITCH_BLAST, DamageType.MAGICAL, 10))
 
     # Cure Wounds
     game.rules.abilityGeneration.addGenerator(ABILITY_CURE_WOUNDS, proc(): Ability =
@@ -796,6 +728,116 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             else:
                 this.addTag(TAG_PHYSICAL)
                 game.attack(args, DamageType.PHYSICAL, 10)
+        )
+        return ability
+    )
+
+    # Forest Defender
+    game.rules.abilityGeneration.addGenerator(ABILITY_FOREST_DEFENDER, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_FOREST_DEFENDER
+        ability.desc = some("+3 damage on forest tiles")
+        ability.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.attacker.pos)
+            if tile.name == TILE_FOREST:
+                a.dmg += 3
+        )
+        return ability
+    )
+
+    # Aquatic Athlete
+    game.rules.abilityGeneration.addGenerator(ABILITY_AQUATIC_ATHLETE, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_AQUATIC_ATHLETE
+        ability.desc = some("-3 armor outside on land, +2 speed and +3 vision in water")
+        ability.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[TakeDamageSignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.target.pos)
+            if tile.name != TILE_WATER:
+                a.dmg -= 3
+        )
+        ability.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetMovementSignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.host.pos)
+            if tile.name == TILE_WATER:
+                a.movement += 2
+        )
+        ability.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetVisibilitySignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.host.pos)
+            if tile.name == TILE_WATER:
+                a.visibility += 3
+        )
+        return ability
+    )
+
+    # Swim
+    game.rules.abilityGeneration.addGenerator(ABILITY_SWIM, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_SWIM
+        ability.desc = some("This unit can move on water tiles")
+        ability.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[CanCrossBorderSignalArgs](args)
+            if a.border == BORDER_WATER:
+                a.canCross = MovementType.CROSS
+        )
+        return ability
+    )
+
+    # Ferry
+    game.rules.abilityGeneration.addGenerator(ABILITY_FERRY, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_FERRY
+        ability.desc = some("This unit can carry its party members across water")
+        ability.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[CanCrossBorderSignalArgs](args)
+            if a.border == BORDER_WATER:
+                a.canCross = MovementType.OVERRIDE
+            else:
+                a.canCross = MovementType.BLOCKED
+        )
+        return ability
+    )
+
+    # Seed Magic
+    game.rules.abilityGeneration.addGenerator(ABILITY_SEED_MAGIC, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_SEED_MAGIC
+        ability.desc = some("+1 damage for each plant item in this unit's haul inventory")
+        ability.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            var plants = initHashSet[string]()
+            for item in a.attacker.haul:
+                if item.tags.contains(TAG_PLANT):
+                    plants.incl(item.name)
+            a.dmg += plants.len
+        )
+        return ability
+    )
+
+    # Desert Rover
+    game.rules.abilityGeneration.addGenerator(ABILITY_DESERT_ROVER, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_DESERT_ROVER
+        ability.desc = some("+2 speed, +3 vision, -3 damage on desert tiles")
+        ability.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.attacker.pos)
+            if tile.name == TILE_DESERT:
+                a.dmg -= 3
+        )
+        ability.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetMovementSignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.host.pos)
+            if tile.name == TILE_DESERT:
+                a.movement += 2
+        )
+        ability.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetVisibilitySignalArgs](args)
+            let tile = game.getGameView().world.getTile(a.host.pos)
+            if tile.name == TILE_DESERT:
+                a.visibility += 3
         )
         return ability
     )
@@ -905,7 +947,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let item = newItem()
         item.name = ITEM_STONE_RING
         item.desc = fmt"+2 {STAT_CONSTITUTION}"
-        game.modifyUserStat(item, STAT_CONSTITUTION, 2)
+        item.modifyUserStat(game, STAT_CONSTITUTION, 2)
         return item
     )
 
@@ -914,7 +956,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let item = newItem()
         item.name = ITEM_CRYSTAL_ROSE
         item.desc = fmt"+2 {STAT_CHARISMA}"
-        game.modifyUserStat(item, STAT_CHARISMA, 2)
+        item.modifyUserStat(game, STAT_CHARISMA, 2)
         return item
     )
 

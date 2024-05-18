@@ -39,17 +39,19 @@ type GetVisibilitySignalArgs* = ref object of BaseSignalArgs
 proc newGetVisibilitySignalArgs*(host: Unit): GetVisibilitySignalArgs =
     new result
     result.channel = GET_VISIBILITY_CHANNEL
-    result.visibility = 1
+    result.visibility = DEFAULT_VISIBILITY
     result.host = host
 
 # Payload when calculating a Unit's movement
 type GetMovementSignalArgs* = ref object of BaseSignalArgs
     movement*: Natural
+    host*: Unit
 
-proc newGetMovementSignalArgs*(): GetMovementSignalArgs =
+proc newGetMovementSignalArgs*(host: Unit): GetMovementSignalArgs =
     new result
     result.channel = GET_MOVEMENT_CHANNEL
-    result.movement = 1
+    result.movement = DEFAULT_MOVEMENT
+    result.host = host
 
 # Payload when a Unit gains XP
 type GainXpSignalArgs* = ref object of BaseSignalArgs
@@ -80,12 +82,16 @@ proc newGetMaxHealthSignalArgs*(health: int): GetMaxHealthSignalArgs =
 
 # Payload when a Unit takes damage
 type TakeDamageSignalArgs* = ref object of BaseSignalArgs
+    attacker*: Unit
+    target*: Unit
     dtype*: DamageType
     dmg*: int
 
-proc newTakeDamageSignalArgs*(dtype: DamageType, dmg: int): TakeDamageSignalArgs =
+proc newTakeDamageSignalArgs*(dtype: DamageType, dmg: int, attacker: Unit, target: Unit): TakeDamageSignalArgs =
     new result
     result.channel = TAKE_DAMAGE_CHANNEL
+    result.attacker = attacker
+    result.target = target
     result.dtype = dtype
     result.dmg = dmg
 
@@ -124,10 +130,10 @@ proc newDealDamageSignalArgs*(dtype: DamageType, dmg: int, attacker: Unit, targe
 type GetMaxHungerSignalArgs* = ref object of BaseSignalArgs
     hunger*: int
 
-proc newGetMaxHungerSignalArgs*(hunger: int): GetMaxHungerSignalArgs =
+proc newGetMaxHungerSignalArgs*(): GetMaxHungerSignalArgs =
     new result
     result.channel = GET_MAX_HUNGER_CHANNEL
-    result.hunger = hunger
+    result.hunger = DEFAULT_MAX_HUNGER
 
 # Payload when a Unit dies
 type UnitDiesSignalArgs* = ref object of BaseSignalArgs

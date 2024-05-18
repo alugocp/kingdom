@@ -91,7 +91,7 @@ proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.exportc, d
 proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
     let p1 = newDealDamageSignalArgs(dtype, dmg, this, u)
     this.handleSignal(@[], p1)
-    let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg)
+    let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg, this, u)
     u.handleSignal(@[], p2)
     u.damageTaken += max(p2.dmg, 0)
     if u.getHealth() == 0:

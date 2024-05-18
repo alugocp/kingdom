@@ -15,17 +15,19 @@ proc getGameView*(this: ModCoreInterface): GameView {.importc.}
 
 # src/kingdom/mods/utils.nim
 proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.importc.}
+proc getTileSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.importc.}
 proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, item: string): void {.importc.}
 proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void {.importc.}
-proc modifyUserStat*(game: ModCoreInterface, item: Item, label: string, value: int): void {.importc.}
-proc giveAbility*(game: ModCoreInterface, unit: Unit, ability: string): void {.importc.}
-proc dropLoot*(game: ModCoreInterface, unit: Unit, items: seq[string]): void {.importc.}
+proc basicAttack*(game: ModCoreInterface, name: string, dtype: DamageType, dmg: int): Ability {.importc.}
+proc modifyUserStat*(item: Item, game: ModCoreInterface, label: string, value: int): void {.importc.}
+proc ability*(this: Unit, game: ModCoreInterface, ability: string): void {.importc.}
+proc dropLoot*(unit: Unit, game: ModCoreInterface, items: seq[string]): void {.importc.}
 proc createGoldItem*(game: ModCoreInterface, name: string, quantity: int): Item {.importc.}
 proc createFoodItem*(game: ModCoreInterface, name: string): Item {.importc.}
-proc addArmor*(u: Unit, dtype: DamageType, dmg: int): void {.importc.}
-proc setMaxHunger*(this: Unit, hunger: int): void {.importc.}
-proc setVision*(this: Unit, vision: int): void {.importc.}
-proc setSpeed*(this: Unit, speed: int): void {.importc.}
+proc addArmor*(unit: Unit, dtype: DamageType, dmg: int): void {.importc.}
+proc setMaxHunger*(unit: Unit, hunger: int): void {.importc.}
+proc setVision*(unit: Unit, vision: int): void {.importc.}
+proc setSpeed*(unit: Unit, speed: int): void {.importc.}
 
 # src/kingdom/views/game.nim
 proc addNewItem*(this: GameView, key: string, pos: Coord): Item {.importc.}
