@@ -9,7 +9,7 @@ import kingdom/builtin/types
 
 # Payload when checking if the Unit can cross a certain border
 type CanCrossBorderSignalArgs* = ref object of BaseSignalArgs
-    canCross*: bool
+    canCross*: MovementType
     side*: HexSides
     border*: string
     tile*: Tile
@@ -17,7 +17,7 @@ type CanCrossBorderSignalArgs* = ref object of BaseSignalArgs
 proc newCanCrossBorderSignalArgs*(tile: Tile, side: HexSides, border: string): CanCrossBorderSignalArgs =
     new result
     result.channel = CAN_CROSS_BORDER_CHANNEL
-    result.canCross = (border == OPEN_BORDER)
+    result.canCross = if border == OPEN_BORDER: MovementType.CROSS else: MovementType.BLOCKED
     result.border = border
     result.side = side
     result.tile = tile

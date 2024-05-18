@@ -52,6 +52,7 @@ proc heal*(this: Unit, healer: Unit, health: int): void {.importc.}
 
 # src/kingdom/entities/item.nim
 proc newItem*(): Item {.importc.}
+proc addTag*(this: Item, tag: string): void {.importc.}
 
 # src/kingdom/entities/tile.nim
 proc newTile*(name: string): Tile {.importc.}
@@ -78,7 +79,7 @@ proc handleSignal*(this: Unit, ctx: SignalContext, args: BaseSignalArgs): void {
 
 # src/kingdom/models/world.nim
 proc getBounds*(this: World): Coord {.importc.}
-proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool {.importc.}
+proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): MovementType {.importc.}
 proc moveParty*(this: World, p: Party, c: Coord): void {.importc.}
 proc getParty*(this: World, u: Unit): Party {.importc.}
 proc getUnits*(this: World, c: Coord): seq[Unit] {.importc.}

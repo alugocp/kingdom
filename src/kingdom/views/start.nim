@@ -55,12 +55,12 @@ method getNextView*(this: StartView): View =
             label = "Warlock Tower"
         game.rules.tileGeneration.generate(label)
     )
-    discard game.addNewUnit("Gloop the Adventurer", initCoord(0, 0), HUMAN_PLAYER)
-    discard game.addNewUnit("Barnaclehead", initCoord(1, 1), HUMAN_PLAYER)
-    discard game.addNewUnit("Druid", initCoord(0, 3), HUMAN_PLAYER)
-    discard game.addNewUnit("Hoka and Tatanka", initCoord(1, 3), HUMAN_PLAYER)
-    discard game.addNewUnit("Henrietta", initCoord(2, 3), HUMAN_PLAYER)
-    discard game.addNewUnit("Fernando of the Unfaltering Gaze", initCoord(2, 1), world.createNewPlayer())
+    discard game.addNewUnit("Bato", initCoord(0, 0), HUMAN_PLAYER)
+    discard game.addNewUnit("Elder Usquanigodi", initCoord(1, 1), HUMAN_PLAYER)
+    discard game.addNewUnit("Druidic Hermit", initCoord(0, 3), HUMAN_PLAYER)
+    discard game.addNewUnit("Glub Strongfin", initCoord(1, 3), HUMAN_PLAYER)
+    discard game.addNewUnit("Ixtololotli", initCoord(2, 3), HUMAN_PLAYER)
+    discard game.addNewUnit("Slime Cube", initCoord(2, 1), world.createNewPlayer())
     world.getTile(initCoord(0, 1)).quest = some(newQuest("Just a test quest...heehee, that rhymes", "Idk pry some rubies or something"))
     return game
 

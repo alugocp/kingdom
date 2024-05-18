@@ -4,6 +4,7 @@
 # Movement
 const CAN_CROSS_BORDER_CHANNEL* = "CanCrossBorder"
 const GET_MOVEMENT_CHANNEL* = "GetMovement"
+const PARTY_MOVEMENT_OVERRIDE_CHANNEL* = "PartyMovementOverride"
 
 # Abilities
 const ABILITY_CLICKED_CHANNEL* = "AbilityClicked"

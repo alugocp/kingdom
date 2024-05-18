@@ -262,18 +262,18 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
                     drawHexagon(view.gameToScreen(center), DARKER, view)
 
 # Checks if the Unit can cross the border from one Tile to another
-proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): bool {.exportc, dynlib.} =
+proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coord): MovementType {.exportc, dynlib.} =
     let side = getSharedSide(current, adj)
     let opp = getOppositeSide(side)
     let tile1 = this.getTile(current)
     let tile2 = this.getTile(adj)
     var test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getBorder(side))
     var test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getBorder(opp))
-    if not test1.canCross:
+    if test1.canCross == MovementType.BLOCKED:
         unit.handleSignal(@[], test1)
-    if not test2.canCross:
+    if test2.canCross == MovementType.BLOCKED:
         unit.handleSignal(@[], test2)
-    return test1.canCross and test2.canCross
+    return test1.canCross * test2.canCross
 
 # Return a path from the Party's current position to the destination,
 # making sure to respect which borders the Party can cross.
@@ -314,8 +314,8 @@ proc pathfind*(this: World, party: Party, dst: Coord, allowedTiles: HashSet[Coor
         for adj in filtered:
 
             # Skip any neighbors with borders the unit cannot cross
-            let canPartyTravelAcrossTiles = foldl(party.getMembers(), a and this.canUnitTravelAcrossTiles(b, current, adj), true)
-            if not canPartyTravelAcrossTiles:
+            let canPartyTravelAcrossTiles = foldl(party.getMembers(), a * this.canUnitTravelAcrossTiles(b, current, adj), MovementType.CROSS)
+            if canPartyTravelAcrossTiles == MovementType.BLOCKED:
                 continue
 
             let g = if gScore.hasKey(current): gScore[current] + 1 else : infinity

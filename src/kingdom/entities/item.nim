@@ -23,6 +23,10 @@ proc newItem*(): Item {.exportc, dynlib.} =
     result.tags = initHashSet[string]()
     result.handlers = initTable[string, seq[SignalHandler[Item]]]()
 
+# Adds a tag to this Item
+proc addTag*(this: Item, tag: string): void {.exportc, dynlib.} =
+    this.tags.incl(tag)
+
 # Return a MenuNode describing this Item when equipped to a Unit
 proc getMenuNode*(this: Item, equipData: Option[tuple[host: Unit, itype: InventoryType]], actions: ItemMenuActions): MenuNode =
     let node = newListNode()

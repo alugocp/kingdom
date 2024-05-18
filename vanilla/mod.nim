@@ -1,3 +1,4 @@
+import std/sets
 import std/math
 import std/sugar
 import std/random
@@ -13,14 +14,6 @@ import kingdom/builtin/channels
 import kingdom/models/types
 import kingdom/mods/types
 
-# Unofficial/test content
-const UNIT_GLOOP = "Gloop the Adventurer"
-const UNIT_BARNACLEHEAD = "Barnaclehead"
-const UNIT_FERNANDO_UNFALTERING_GAZE = "Fernando of the Unfaltering Gaze"
-const UNIT_HENRIETTA = "Henrietta"
-const UNIT_DRUID = "Druid"
-const UNIT_HOKA_AND_TATANKA = "Hoka and Tatanka"
-
 #
 # LABELS FOR MOD CONTENT
 #
@@ -34,8 +27,34 @@ const STAT_STRENGTH = "Strength"
 const STAT_WISDOM = "Wisdom"
 const STAT_INTELLIGENCE = "Intelligence"
 
+# Tags
+const TAG_PLANT = "Plant"
+
+# Borders
+const BORDER_WATER = "water"
+
 # Species
+const SPECIES_PLESIOSAUR = "Plesiosaur"
+const SPECIES_DRAGONOID = "Dragonoid"
+const SPECIES_HUMANOID = "Humanoid"
+const SPECIES_UNKNOWN = "Unknown"
+const SPECIES_MERFOLK = "Merfolk"
+const SPECIES_REPTILE = "Reptile"
+const SPECIES_GREMLIN = "Gremlin"
+const SPECIES_BANSHEE = "Banshee"
+const SPECIES_SPIRIT = "Spirit"
+const SPECIES_MAMMAL = "Mammal"
+const SPECIES_BEETLE = "Beetle"
+const SPECIES_INSECT = "Insect"
+const SPECIES_KOBOLD = "Kobold"
+const SPECIES_HUMAN = "Human"
 const SPECIES_SLIME = "Slime"
+const SPECIES_DWARF = "Dwarf"
+const SPECIES_BEAST = "Beast"
+const SPECIES_TROLL = "Troll"
+const SPECIES_SHADE = "Shade"
+const SPECIES_DEER = "Deer"
+const SPECIES_ELF = "Elf"
 
 # Tiles
 const TILE_GRASS = "Grass"
@@ -148,76 +167,12 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # UNIT GENERATORS
     #
 
-    game.rules.unitGeneration.addGenerator(UNIT_GLOOP, proc (): Unit =
-        let unit = newUnit()
-        unit.name = UNIT_GLOOP
-        unit.desc = some("Just a slimy guy")
-        unit.classification = @[SPECIES_SLIME, "Plasmoid"]
-        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 0)
-        unit.setStat("Courage", 3)
-        unit.setStat(STAT_CONSTITUTION, 3)
-        unit.setStat("Dexterity", 3)
-        unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let payload = cast[GetMovementSignalArgs](args)
-            payload.movement = 2
-        )
-        return unit
-    )
-    game.rules.unitGeneration.addGenerator(UNIT_BARNACLEHEAD, proc (): Unit =
-        let unit = newUnit()
-        unit.name = UNIT_BARNACLEHEAD
-        unit.desc = some("A coast-dwelling golem crafted by an island wizard")
-        unit.classification = @["Homunculus", "Golem"]
-        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 0)
-        unit.setStat(STAT_CONSTITUTION, 5)
-        return unit
-    )
-    game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_UNFALTERING_GAZE, proc (): Unit =
-        let unit = newUnit()
-        unit.name = UNIT_FERNANDO_UNFALTERING_GAZE
-        unit.desc = some("He's a notorious Garuda warlock")
-        unit.classification = @["Humanoid", "Garuda"]
-        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 48, 0)
-        unit.setStat("Wickedness", 8)
-        unit.setStat("Intellect", 8)
-        return unit
-    )
-    game.rules.unitGeneration.addGenerator(UNIT_HENRIETTA, proc (): Unit =
-        let unit = newUnit()
-        unit.name = UNIT_HENRIETTA
-        unit.desc = some("She was once a knight but has been stuck in polymorph as a chicken")
-        unit.classification = @["Beast", "Bird", "Chicken"]
-        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 72, 0)
-        return unit
-    )
-    game.rules.unitGeneration.addGenerator(UNIT_DRUID, proc (): Unit =
-        let unit = newUnit()
-        unit.name = UNIT_DRUID
-        unit.desc = some("Mysterious druid that wields nature magic")
-        unit.classification = @["Humanoid", "Unknown"]
-        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 0, 24)
-        unit.setStat("Wisdom", 6)
-        unit.setStat("Agility", 4)
-        return unit
-    )
-    game.rules.unitGeneration.addGenerator(UNIT_HOKA_AND_TATANKA, proc (): Unit =
-        let unit = newUnit()
-        unit.name = UNIT_HOKA_AND_TATANKA
-        unit.desc = some("This duo roams the plains in search of good causes")
-        unit.classification = @["Humanoid", "Human"]
-        unit.sprite = game.rules.sprites.getSpriteHandle(unitSprites, 24, 24)
-        unit.setStat(STAT_CONSTITUTION, 3)
-        unit.setStat("Agility", 3)
-        unit.setStat(STAT_CHARISMA, 3)
-        return unit
-    )
-
     # Pike Gremlin
     game.rules.unitGeneration.addGenerator(UNIT_PIKE_GREMLIN, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_PIKE_GREMLIN
         unit.desc = some("Standard foot soldiers in dark armies")
-        unit.classification = @["Beast", "Reptile", "Gremlin"]
+        unit.classification = @[SPECIES_BEAST, SPECIES_REPTILE, SPECIES_GREMLIN]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 0)
         unit.setStat("Agility", 3)
         game.giveAbility(unit, ABILITY_STAB)
@@ -229,7 +184,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_SHADE
         unit.desc = some("A malevolent spirit which is bound by some master's whim")
-        unit.classification = @["Spirit", "Shade"]
+        unit.classification = @[SPECIES_SPIRIT, SPECIES_SHADE]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 0)
         game.giveAbility(unit, ABILITY_ZAP)
         return unit
@@ -240,7 +195,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_IRON_BEETLE
         unit.desc = some("Nearly impenetrable to physical damage")
-        unit.classification = @["Beast", "Insect", "Beetle"]
+        unit.classification = @[SPECIES_BEAST, SPECIES_INSECT, SPECIES_BEETLE]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 0)
         unit.setStat(STAT_CONSTITUTION, 5)
         game.giveAbility(unit, ABILITY_STAB)
@@ -265,7 +220,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_ACOLYTE_OF_CTHOS
         unit.desc = some("A dark hooded figure who awaits the return of ancient and terrible elder gods")
-        unit.classification = @["Humanoid", "Unknown"]
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_UNKNOWN]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 1)
         game.giveAbility(unit, ABILITY_CURE_WOUNDS)
         game.giveAbility(unit, ABILITY_ZAP)
@@ -277,7 +232,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_KOBOLD_SYCOPHANT
         unit.desc = some("This small dragonoid riles its comrades through song and dance")
-        unit.classification = @["Dragonoid", "Kobold"]
+        unit.classification = @[SPECIES_DRAGONOID, SPECIES_KOBOLD]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 1)
         game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
         game.giveAbility(unit, ABILITY_STAB)
@@ -289,7 +244,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_BANSHEE
         unit.desc = some("A vengeful spirit cursed to roam the earth and inflict suffering to whomever crosses its path")
-        unit.classification = @["Spirit", "Banshee"]
+        unit.classification = @[SPECIES_SPIRIT, SPECIES_BANSHEE]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 1)
         game.giveAbility(unit, ABILITY_CURSE_OF_WEAKNESS)
         game.giveAbility(unit, ABILITY_ZAP)
@@ -301,7 +256,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_BUCK
         unit.desc = some("An adult male deer that can provide meat for your armies")
-        unit.classification = @["Beast", "Mammal", "Deer"]
+        unit.classification = @[SPECIES_BEAST, SPECIES_MAMMAL, SPECIES_DEER]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 1)
         game.giveAbility(unit, ABILITY_STAB)
         game.dropLoot(unit, @[ITEM_VEAL])
@@ -313,7 +268,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_SIR_EOINN
         unit.desc = some("He's a paladin of great standing with the Dwarven high council")
-        unit.classification = @["Humanoid", "Dwarf"]
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_DWARF]
         unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
         unit.setStat(STAT_CONSTITUTION, 8)
         unit.setStat(STAT_STRENGTH, 5)
@@ -330,7 +285,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_IXTOLOLOTLI
         unit.desc = some("An elf ranger from the steaming jungles of the far West")
-        unit.classification = @["Humanoid", "Elf"]
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_ELF]
         unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
         unit.setStat(STAT_AGILITY, 7)
         unit.setStat(STAT_CHARISMA, 4)
@@ -347,7 +302,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_ELDER_USQUANIGODI
         unit.desc = some("She's a medicine woman from the chestnut woods of the far West. +3 damage on forest tiles")
-        unit.classification = @["Humanoid", "Human"]
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
         unit.sprite = game.getUnitSprite(unitSprites, 1, 2)
         unit.setStat(STAT_WISDOM, 8)
         unit.setStat(STAT_INTELLIGENCE, 5)
@@ -368,7 +323,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_LADY_MARIA
         unit.desc = some("A cleric of the holy light who rides to vanquish evil")
-        unit.classification = @["Humanoid", "Human"]
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
         unit.sprite = game.getUnitSprite(unitSprites, 1, 2)
         unit.setStat(STAT_INTELLIGENCE, 6)
         unit.setStat(STAT_AGILITY, 8)
@@ -384,7 +339,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let unit = newUnit()
         unit.name = UNIT_JACK_THE_SCOUNDREL
         unit.desc = some("This human has cheated death on nearly a hundred different adventures at sea")
-        unit.classification = @["Humanoid", "Human"]
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
         unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
         unit.setStat(STAT_DEXTERITY, 8)
         unit.setStat(STAT_CHARISMA, 10)
@@ -393,6 +348,106 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         game.giveAbility(unit, ABILITY_HARVEST_SALMON)
         unit.addArmor(DamageType.MAGICAL, 3)
         unit.setSpeed(2)
+        return unit
+    )
+
+    # Glub Strongfin
+    game.rules.unitGeneration.addGenerator(UNIT_GLUB_STRONGFIN, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_GLUB_STRONGFIN
+        unit.desc = some("A highly skilled and experienced Merfolk warrior")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_MERFOLK]
+        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.setStat(STAT_STRENGTH, 8)
+        unit.setStat(STAT_DEXTERITY, 4)
+        game.giveAbility(unit, ABILITY_STAB)
+        game.giveAbility(unit, ABILITY_HARVEST_SALMON)
+        unit.setSpeed(2)
+        unit.addSignalHandler(TAKE_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[TakeDamageSignalArgs](args)
+            let tile = game.getGameView().world.getTile(this.pos)
+            if tile.name != TILE_WATER:
+                a.dmg -= 3
+        )
+        unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetMovementSignalArgs](args)
+            let tile = game.getGameView().world.getTile(this.pos)
+            if tile.name == TILE_WATER:
+                a.movement += 2
+        )
+        unit.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetVisibilitySignalArgs](args)
+            let tile = game.getGameView().world.getTile(this.pos)
+            if tile.name == TILE_WATER:
+                a.visibility += 3
+        )
+        unit.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[CanCrossBorderSignalArgs](args)
+            if a.border == BORDER_WATER:
+                a.canCross = MovementType.CROSS
+        )
+        return unit
+    )
+
+    # Dorrie
+    game.rules.unitGeneration.addGenerator(UNIT_DORRIE, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_DORRIE
+        unit.desc = some("A gentle giant of the seas who can carry land creatures on her back")
+        unit.classification = @[SPECIES_BEAST, SPECIES_PLESIOSAUR]
+        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.maxHaul = 20
+        unit.baseHealth = 150
+        unit.setStat(STAT_STRENGTH, 10)
+        unit.setStat(STAT_CONSTITUTION, 10)
+        unit.setSpeed(2)
+        unit.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[CanCrossBorderSignalArgs](args)
+            if a.border == BORDER_WATER:
+                a.canCross = MovementType.OVERRIDE
+            else:
+                a.canCross = MovementType.BLOCKED
+        )
+
+        return unit
+    )
+
+    # Druidic Hermit
+    game.rules.unitGeneration.addGenerator(UNIT_DRUIDIC_HERMIT, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_DRUIDIC_HERMIT
+        unit.desc = some("This druid keeps to themself and is seldom seen outside the forest")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_UNKNOWN]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_WISDOM, 10)
+        game.giveAbility(unit, ABILITY_ZAP)
+        unit.setVision(4)
+        unit.setSpeed(2)
+        unit.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            var plants = initHashSet[string]()
+            for item in unit.haul:
+                if item.tags.contains(TAG_PLANT):
+                    plants.incl(item.name)
+            a.dmg += plants.len
+        )
+        return unit
+    )
+
+    # Bato
+    game.rules.unitGeneration.addGenerator(UNIT_BATO, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_BATO
+        unit.desc = some("This lumbering Troll is slow but can haul large amounts of loot")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_TROLL]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.maxHaul = 20
+        unit.setStat(STAT_CONSTITUTION, 10)
+        unit.setStat(STAT_STRENGTH, 8)
+        game.giveAbility(unit, ABILITY_STAB)
+        unit.setMaxHunger(100)
+        unit.setVision(2)
+        unit.setSpeed(1)
         return unit
     )
 
@@ -531,8 +586,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     #
 
     # Food items
-    game.rules.itemGeneration.addGenerator(ITEM_CHESTNUT, proc(): Item = game.createFoodItem(ITEM_CHESTNUT))
-    game.rules.itemGeneration.addGenerator(ITEM_NOPAL, proc(): Item = game.createFoodItem(ITEM_NOPAL))
+    game.rules.itemGeneration.addGenerator(ITEM_CHESTNUT, proc(): Item =
+        let item = game.createFoodItem(ITEM_CHESTNUT)
+        item.addTag(TAG_PLANT)
+    )
+    game.rules.itemGeneration.addGenerator(ITEM_NOPAL, proc(): Item =
+        let item = game.createFoodItem(ITEM_NOPAL)
+        item.addTag(TAG_PLANT)
+    )
     game.rules.itemGeneration.addGenerator(ITEM_VEAL, proc(): Item = game.createFoodItem(ITEM_VEAL))
     game.rules.itemGeneration.addGenerator(ITEM_SALMON, proc(): Item = game.createFoodItem(ITEM_SALMON))
 
@@ -816,7 +877,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         let tile = newTile(TILE_WATER)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
         tile.desc = some("Water that units must swim across")
-        tile.setAllBorders("water")
+        tile.setAllBorders(BORDER_WATER)
         return tile
     )
     game.rules.tileGeneration.addGenerator(TILE_WARLOCK_TOWER, proc(): Tile =
