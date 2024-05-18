@@ -51,7 +51,7 @@ method getNextView*(this: StartView): View =
             label = "Cactus"
         if x == 6 and y == 1:
             label = "Warlock Tower"
-        game.rules.tileGeneration.generate(label)
+        return game.rules.tileGeneration.generate(label)
     )
     discard game.addNewUnit("Bato", initCoord(0, 0), HUMAN_PLAYER)
     discard game.addNewUnit("Elder Usquanigodi", initCoord(1, 1), HUMAN_PLAYER)

@@ -178,6 +178,7 @@ proc newKillEnemyQuest(game: ModCoreInterface, n: int, enemy: string, reward: st
         QUEST_COMPLETE_CHANNEL,
         (this: Tile, ctx: SignalContext, args: BaseSignalArgs) => giveReward(this, game)
     )
+    return quest
 
 #
 # MOD INITIALIZATION PROCEDURE
@@ -298,6 +299,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
         unit.sprite = game.getUnitSprite(unitSprites, 2, 0)
         game.giveAbility(unit, ABILITY_ZAP)
+        return unit
     )
 
     # Balor th Sea-Devil
@@ -308,6 +310,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.classification = @[SPECIES_HUMANOID, SPECIES_FOMOR]
         unit.sprite = game.getUnitSprite(unitSprites, 0, 2)
         game.giveAbility(unit, ABILITY_ZAP)
+        return unit
     )
 
     # Sir Eoinn
@@ -833,10 +836,12 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.itemGeneration.addGenerator(ITEM_CHESTNUT, proc(): Item =
         let item = game.createFoodItem(ITEM_CHESTNUT)
         item.addTag(TAG_PLANT)
+        return item
     )
     game.rules.itemGeneration.addGenerator(ITEM_NOPAL, proc(): Item =
         let item = game.createFoodItem(ITEM_NOPAL)
         item.addTag(TAG_PLANT)
+        return item
     )
     game.rules.itemGeneration.addGenerator(ITEM_VEAL, proc(): Item = game.createFoodItem(ITEM_VEAL))
     game.rules.itemGeneration.addGenerator(ITEM_SALMON, proc(): Item = game.createFoodItem(ITEM_SALMON))
@@ -851,6 +856,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.dtype == DamageType.PHYSICAL and a.target.hasStat(STAT_CONSTITUTION):
                 a.dmg += 5
         )
+        return item
     )
 
     # Hero's Heart
@@ -862,6 +868,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[GetMaxHealthSignalArgs](args)
             a.health += 10
         )
+        return item
     )
 
     # Gold items
@@ -878,6 +885,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.attacker.level < 4:
                 a.dmg += 5
         )
+        return item
     )
 
     # Scholarly Amulet
@@ -889,6 +897,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[GainXpSignalArgs](args)
             a.xp += int(floor(float(a.xp) * 0.25))
         )
+        return item
     )
 
     # Ring of Satisfaction
@@ -897,6 +906,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         item.name = ITEM_STONE_RING
         item.desc = fmt"+2 {STAT_CONSTITUTION}"
         game.modifyUserStat(item, STAT_CONSTITUTION, 2)
+        return item
     )
 
     # Crystal Rose
@@ -905,6 +915,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         item.name = ITEM_CRYSTAL_ROSE
         item.desc = fmt"+2 {STAT_CHARISMA}"
         game.modifyUserStat(item, STAT_CHARISMA, 2)
+        return item
     )
 
     # Slimebreaker
@@ -917,6 +928,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if SPECIES_SLIME in a.target.classification:
                 a.dmg += 5
         )
+        return item
     )
 
     # Sorcerous Medallion
@@ -934,6 +946,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.dtype == DamageType.MAGICAL:
                 a.dmg -= 1
         )
+        return item
     )
 
     # Lucky Fishing Rod
@@ -946,6 +959,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if rand(1..100) <= 20:
                 discard game.getGameView().addNewItem(a.haul, a.host.pos)
         )
+        return item
     )
 
     # Tome of Geomancy
@@ -958,6 +972,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.dtype == DamageType.MAGICAL:
                 a.dtype = DamageType.PHYSICAL
         )
+        return item
     )
 
     # Iron Sword
@@ -969,6 +984,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[DealDamageSignalArgs](args)
             a.dmg += 2
         )
+        return item
     )
 
     # Chain Mail
@@ -981,6 +997,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.dtype == DamageType.PHYSICAL:
                 a.dmg -= 3
         )
+        return item
     )
 
     # Wizard Robes
@@ -993,6 +1010,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.dtype == DamageType.MAGICAL:
                 a.dmg -= 3
         )
+        return item
     )
 
     # Nopal Knife
@@ -1003,6 +1021,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         item.addSignalHandler(ITEM_ACTIVATED_CHANNEL, proc (this: Item, ctx: SignalContext, args: BaseSignalArgs): void =
             game.harvest(args, TILE_CACTUS, ITEM_NOPAL)
         )
+        return item
     )
 
     # Telescope
@@ -1014,6 +1033,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[GetVisibilitySignalArgs](args)
             a.visibility += 1
         )
+        return item
     )
 
     # Enchanted Boots
@@ -1025,6 +1045,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[GetMovementSignalArgs](args)
             a.movement += 1
         )
+        return item
     )
 
     # Amethyst Crown
@@ -1036,6 +1057,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[TakeHealSignalArgs](args)
             a.health += 2
         )
+        return item
     )
 
     # Gem-Encrusted Mallet
@@ -1048,6 +1070,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.dtype == DamageType.PHYSICAL:
                 a.attacker.heal(a.attacker, 1)
         )
+        return item
     )
 
     # Fey-Wrought Plate
@@ -1065,6 +1088,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.dtype == DamageType.PHYSICAL:
                 a.dmg -= 1
         )
+        return item
     )
 
     # Clamshell of Far Sight
@@ -1078,6 +1102,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if tile.name == TILE_WATER:
                 a.visibility += 2
         )
+        return item
     )
 
     # Bag of Mirth
@@ -1094,6 +1119,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.host.hasStat(STAT_CHARISMA):
                 a.host.incStat(STAT_CHARISMA, 1)
         )
+        return item
     )
 
     # Kingslayer
@@ -1106,6 +1132,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             if a.target.level > 5:
                 a.dmg += 10
         )
+        return item
     )
 
     #
@@ -1116,6 +1143,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_GRASS, proc(): Tile =
         let tile = newTile(TILE_GRASS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 0, 96, 110)
+        return tile
     )
 
     # Water
@@ -1124,6 +1152,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
         tile.desc = some("Water that units must swim across")
         tile.setAllBorders(BORDER_WATER)
+        return tile
     )
 
     # Warlock Tower
@@ -1139,12 +1168,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let view = game.getGameView()
             discard view.addNewUnit(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, this.pos, view.world.createNewPlayer())
         )
+        return tile
     )
 
     # Desert
     game.rules.tileGeneration.addGenerator(TILE_DESERT, proc(): Tile =
         let tile = newTile(TILE_DESERT)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 0, 96, 110)
+        return tile
     )
 
     # Forest
@@ -1160,12 +1191,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let view = game.getGameView()
             discard view.addNewUnit(UNIT_BUCK, this.pos, view.world.createNewPlayer())
         )
+        return tile
     )
 
     # Coast
     game.rules.tileGeneration.addGenerator(TILE_COAST, proc(): Tile =
         let tile = newTile(TILE_COAST)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 110, 96, 110)
+        return tile
     )
 
     # Island Fortress
@@ -1181,10 +1214,12 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let view = game.getGameView()
             discard view.addNewUnit(UNIT_BALOR_THE_SEA_DEVIL, this.pos, view.world.createNewPlayer())
         )
+        return tile
     )
 
     # Cactus
     game.rules.tileGeneration.addGenerator(TILE_CACTUS, proc(): Tile =
         let tile = newTile(TILE_CACTUS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 110, 96, 110)
+        return tile
     )
