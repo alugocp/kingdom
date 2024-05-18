@@ -1,6 +1,12 @@
 
 # BUILT-IN SIGNAL HANDLER CHANNELS
 
+# Lifecycle
+const INIT_CHANNEL* = "Init"
+
+# Quests
+const QUEST_COMPLETE_CHANNEL* = "QuestComplete"
+
 # Movement
 const CAN_CROSS_BORDER_CHANNEL* = "CanCrossBorder"
 const GET_MOVEMENT_CHANNEL* = "GetMovement"

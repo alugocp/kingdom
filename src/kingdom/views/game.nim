@@ -65,7 +65,7 @@ proc removeUnitFromParty(this: GameView, unit: Unit, party: Party): void =
         this.world.deleteParty(party, unit.pos)
 
 # Initializes a new Unit instance and puts it in the World
-proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit =
+proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit {.exportc, dynlib.} =
     let u = this.rules.unitGeneration.generate(key)
     u.pos = pos
     u.player = player

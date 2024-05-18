@@ -1,4 +1,3 @@
-import std/options
 import kingdom/generation/manager
 import kingdom/controls/keyboard
 import kingdom/controls/mouse
@@ -12,7 +11,6 @@ import kingdom/models/types
 import kingdom/controls/menu
 import kingdom/views/types
 import kingdom/views/game
-import kingdom/quest
 
 # Constructor for the StartView type
 proc newStartView*(rules: GameRuleData): StartView =
@@ -61,7 +59,6 @@ method getNextView*(this: StartView): View =
     discard game.addNewUnit("Glub Strongfin", initCoord(1, 3), HUMAN_PLAYER)
     discard game.addNewUnit("Ixtololotli", initCoord(2, 3), HUMAN_PLAYER)
     discard game.addNewUnit("Slime Cube", initCoord(2, 1), world.createNewPlayer())
-    world.getTile(initCoord(0, 1)).quest = some(newQuest("Just a test quest...heehee, that rhymes", "Idk pry some rubies or something"))
     return game
 
 # Draws the Menu on this StartView object

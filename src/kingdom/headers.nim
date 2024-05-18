@@ -1,4 +1,5 @@
 import std/sugar
+import std/options
 import kingdom/generation/types
 import kingdom/entities/types
 import kingdom/controls/types
@@ -28,6 +29,7 @@ proc setSpeed*(this: Unit, speed: int): void {.importc.}
 
 # src/kingdom/views/game.nim
 proc addNewItem*(this: GameView, key: string, pos: Coord): Item {.importc.}
+proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit {.importc.}
 
 # src/kingdom/wrapper/sprites.nim
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.importc.}
@@ -75,10 +77,14 @@ proc addSignalHandler*(this: Ability, channel: string, handler: SignalHandler[Ab
 proc addSignalHandler*(this: Item, channel: string, handler: SignalHandler[Item]): void {.importc: "addSignalHandler_item"}
 proc addSignalHandler*(this: Unit, channel: string, handler: SignalHandler[Unit]): void {.importc: "addSignalHandler_unit"}
 proc addSignalHandler*(this: Tile, channel: string, handler: SignalHandler[Tile]): void {.importc: "addSignalHandler_tile"}
+proc addSignalHandler*(this: Quest, channel: string, handler: SignalHandler[Tile]): void {.importc: "addSignalHandler_quest"}
 proc handleSignal*(this: Ability, ctx: SignalContext, args: BaseSignalArgs): void {.importc: "handleSignal_ability".}
 proc handleSignal*(this: Item, ctx: SignalContext, args: BaseSignalArgs): void {.importc: "handleSignal_item".}
 proc handleSignal*(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void {.importc: "handleSignal_tile".}
 proc handleSignal*(this: Unit, ctx: SignalContext, args: BaseSignalArgs): void {.importc: "handleSignal_unit".}
+
+# src/kingdom/entities/quest.nim
+proc newQuest*(goal: int, progressLabel: (x: int, n: int) -> string, desc: string, reward: string): Quest {.importc.}
 
 # src/kingdom/models/world.nim
 proc getBounds*(this: World): Coord {.importc.}
@@ -89,6 +95,7 @@ proc getUnits*(this: World, c: Coord): seq[Unit] {.importc.}
 proc getAllies*(this: World, u: Unit): seq[Unit] {.importc.}
 proc getEnemies*(this: World, u: Unit): seq[Unit] {.importc.}
 proc getTile*(this: World, c: Coord): Tile {.importc.}
+proc createNewPlayer*(this: World): int {.importc.}
 
 # src/kingdom/math/hexagons.nim
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.importc.}

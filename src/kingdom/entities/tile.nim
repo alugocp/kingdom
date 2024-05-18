@@ -6,7 +6,6 @@ import kingdom/builtin/values
 import kingdom/entities/types
 import kingdom/math/hexagons
 import kingdom/math/types
-import kingdom/quest
 
 # Constructor for the Tile type
 proc newTile*(name: string): Tile {.exportc, dynlib.} =

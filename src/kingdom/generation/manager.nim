@@ -12,6 +12,7 @@ proc newFullGenerator[T: Entity](base: Generator[T]): FullGenerator[T] =
 # Adds a new Generator to the given manager
 proc addGenerator*[T: Entity](this: GenerationManager[T], key: string, generator: Generator[T]): void =
     if this.generators.hasKey(key):
+        echo fmt"Generator '{key}' already exists"
         raise newException(Exception, fmt"Generator '{key}' already exists")
     let full = newFullGenerator[T](generator)
     this.generators[key] = full
@@ -34,6 +35,7 @@ proc addModifier*[T: Entity](this: GenerationManager[T], key: string, modifier: 
 # Request the given manager to generate some Entity
 proc generate*[T: Entity](this: GenerationManager[T], key: string): T =
     if not this.generators.hasKey(key):
+        echo fmt"Generator '{key}' does not exist"
         raise newException(Exception, fmt"Generator '{key}' does not exist")
     let full = this.generators[key]
     var x = full.base()

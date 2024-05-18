@@ -5,6 +5,15 @@ import kingdom/builtin/channels
 import kingdom/builtin/values
 import kingdom/builtin/types
 
+# BUILT-IN GENERIC SIGNAL ARGS TYPES
+
+# Payload when this Entity is initialized
+type InitSignalArgs* = ref object of BaseSignalArgs
+
+proc newInitSignalArgs*(): InitSignalArgs =
+    new result
+    result.channel = INIT_CHANNEL
+
 # BUILT-IN UNIT SIGNAL ARGS TYPES
 
 # Payload when checking if the Unit can cross a certain border
@@ -154,6 +163,13 @@ proc newTakeHealSignalArgs*(health: int, healer: Unit, target: Unit): TakeHealSi
     result.health = health
 
 # BUILT-IN TILE SIGNAL ARGS TYPES
+
+# Payload when a Quest is completed
+type QuestCompleteSignalArgs* = ref object of BaseSignalArgs
+
+proc newQuestCompleteSignalArgs*(): QuestCompleteSignalArgs =
+    new result
+    result.channel = QUEST_COMPLETE_CHANNEL
 
 # BUILT-IN ABILITY SIGNAL ARGS TYPES
 

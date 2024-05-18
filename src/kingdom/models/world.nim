@@ -11,6 +11,7 @@ import kingdom/entities/item
 import kingdom/entities/unit
 import kingdom/entities/party
 import kingdom/entities/signals
+import kingdom/entities/quest
 import kingdom/controls/viewport
 import kingdom/controls/actions
 import kingdom/controls/types
@@ -26,7 +27,6 @@ import kingdom/builtin/values
 import kingdom/builtin/types
 import kingdom/models/types
 import kingdom/operators
-import kingdom/quest
 
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
@@ -52,6 +52,12 @@ proc build*(this: World, generate: (x: int, y: int) -> Tile): void =
             t.pos = initCoord(x, y)
             this.tiles[x].add(initTileData(t))
             id += 1
+
+    # Init all Tiles
+    #let payload = newInitSignalArgs()
+    #for x in 0..(this.w - 1):
+    #    for y in 0..(this.h - 1):
+    #        this.tiles[x][y].tile.handleSignal(@[], payload)
 
 # Returns the bounds of this World as a Coord
 proc getBounds*(this: World): Coord {.exportc, dynlib.} =
@@ -91,7 +97,7 @@ proc getParty*(this: World, u: Unit): Party {.exportc, dynlib.} =
     return filtered[0]
 
 # Creates a new player ID and returns it
-proc createNewPlayer*(this: World): int =
+proc createNewPlayer*(this: World): int {.exportc, dynlib.} =
     result = this.nextPlayerId
     this.nextPlayerId += 1
 
@@ -148,7 +154,7 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
         node.add(newSpaceNode())
         node.add(newTextNode(fmt"Reward: {quest.reward}"))
         node.add(newSpaceNode())
-        node.add(newTextNode(quest.progressLabel()))
+        node.add(newTextNode(quest.getProgressLabel()))
         node.add(newSeparatorNode())
 
     # Menu elements for Parties

@@ -162,6 +162,24 @@ proc newFishedSignalArgs(host: Unit, haul: string): FishedSignalArgs =
     result.haul = haul
 
 #
+# QUEST GENERATORS
+#
+
+# A Quest where you must eradicate all instances of some Unit on this Tile
+
+proc newKillEnemyQuest(game: ModCoreInterface, n: int, enemy: string, reward: string, giveReward: (this: Tile, game: ModCoreInterface) -> void): Quest =
+    let quest = newQuest(
+        n,
+        (a: int, n: int) => fmt"{a}/{n} {enemy} units killed",
+        fmt"Kill {n} {enemy} units on this tile",
+        reward
+    )
+    quest.addSignalHandler(
+        QUEST_COMPLETE_CHANNEL,
+        (this: Tile, ctx: SignalContext, args: BaseSignalArgs) => giveReward(this, game)
+    )
+
+#
 # MOD INITIALIZATION PROCEDURE
 #
 
@@ -1094,45 +1112,79 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # TILE GENERATORS
     #
 
+    # Grass
     game.rules.tileGeneration.addGenerator(TILE_GRASS, proc(): Tile =
         let tile = newTile(TILE_GRASS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 0, 96, 110)
-        return tile
     )
+
+    # Water
     game.rules.tileGeneration.addGenerator(TILE_WATER, proc(): Tile =
         let tile = newTile(TILE_WATER)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
         tile.desc = some("Water that units must swim across")
         tile.setAllBorders(BORDER_WATER)
-        return tile
     )
+
+    # Warlock Tower
     game.rules.tileGeneration.addGenerator(TILE_WARLOCK_TOWER, proc(): Tile =
         let tile = newTile(TILE_WARLOCK_TOWER)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 0, 96, 110)
-        return tile
+        #tile.quest = some(newKillEnemyQuest(
+        #    game, 1, UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, "Nothing lol",
+        #    proc (this: Tile, game: ModCoreInterface): void =
+        #        discard
+        #))
+        #tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        #    let view = game.getGameView()
+        #    discard view.addNewUnit(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, this.pos, view.world.createNewPlayer())
+        #)
     )
+
+    # Desert
     game.rules.tileGeneration.addGenerator(TILE_DESERT, proc(): Tile =
         let tile = newTile(TILE_DESERT)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 0, 96, 110)
-        return tile
     )
+
+    # Forest
     game.rules.tileGeneration.addGenerator(TILE_FOREST, proc(): Tile =
         let tile = newTile(TILE_FOREST)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 110, 96, 110)
-        return tile
+        #tile.quest = some(newKillEnemyQuest(
+        #    game, 1, UNIT_BUCK, "Nothing lol",
+        #    proc (this: Tile, game: ModCoreInterface): void =
+        #        discard
+        #))
+        #tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        #    let view = game.getGameView()
+        #    discard view.addNewUnit(UNIT_BUCK, this.pos, view.world.createNewPlayer())
+        #)
     )
+
+    # Coast
     game.rules.tileGeneration.addGenerator(TILE_COAST, proc(): Tile =
         let tile = newTile(TILE_COAST)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 110, 96, 110)
-        return tile
     )
+
+    # Island Fortress
     game.rules.tileGeneration.addGenerator(TILE_ISLAND_FORTRESS, proc(): Tile =
         let tile = newTile(TILE_ISLAND_FORTRESS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 110, 96, 110)
-        return tile
+        #tile.quest = some(newKillEnemyQuest(
+        #    game, 1, UNIT_BALOR_THE_SEA_DEVIL, "Nothing lol",
+        #    proc (this: Tile, game: ModCoreInterface): void =
+        #        discard
+        #))
+        #tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        #    let view = game.getGameView()
+        #    discard view.addNewUnit(UNIT_BALOR_THE_SEA_DEVIL, this.pos, view.world.createNewPlayer())
+        #)
     )
+
+    # Cactus
     game.rules.tileGeneration.addGenerator(TILE_CACTUS, proc(): Tile =
         let tile = newTile(TILE_CACTUS)
         tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 110, 96, 110)
-        return tile
     )

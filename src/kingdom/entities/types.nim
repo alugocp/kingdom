@@ -5,7 +5,6 @@ import std/options
 import kingdom/math/types
 import kingdom/wrapper/types
 import kingdom/builtin/values
-import kingdom/quest
 
 # STAT TYPES
 
@@ -92,17 +91,27 @@ type Unit* = ref object
     gold*: int
     xp*: int
 
-# Tile type for the in-game map
-type Tile* = ref object
-    id*: int
-    pos*: Coord
-    name*: string
-    desc*: Option[string]
-    tags*: HashSet[string]
-    sprite*: SpriteHandle
-    handlers*: SignalHandlersTable[Tile]
-    borders*: array[0..5, string]
-    quest*: Option[Quest]
+type
+    # Type representing a Tile's Quest
+    Quest* = ref object
+        handlers*: SignalHandlersTable[Tile]
+        progressLabel*: (x: int, n: int) -> string
+        progress*: int
+        goal*: int
+        reward*: string
+        desc*: string
+
+    # Tile type for the in-game map
+    Tile* = ref object
+        id*: int
+        pos*: Coord
+        name*: string
+        desc*: Option[string]
+        tags*: HashSet[string]
+        sprite*: SpriteHandle
+        handlers*: SignalHandlersTable[Tile]
+        borders*: array[0..5, string]
+        quest*: Option[Quest]
 
 # Combined entity type
 type Entity* = Unit | Tile | Item | Ability
