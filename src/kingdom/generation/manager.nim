@@ -38,6 +38,8 @@ proc generate*[T: Entity](this: GenerationManager[T], key: string): T =
         ERROR(fmt"Generator '{key}' does not exist")
     let full = this.generators[key]
     var x = full.base()
+    if x.isNil():
+        ERROR(fmt"Generator '{key}' returned nil, please add an explicit return statement")
     for p in full.post:
         p(x)
     return x

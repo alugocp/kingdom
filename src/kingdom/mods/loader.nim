@@ -1,6 +1,7 @@
 import std/dynlib
 import std/strformat
 import kingdom/mods/types
+import kingdom/operators
 
 # Type representing a mod's entry function
 type ModEntryPoint = proc(game: ModCoreInterface): void {.gcsafe, stdcall.}
@@ -9,7 +10,7 @@ type ModEntryPoint = proc(game: ModCoreInterface): void {.gcsafe, stdcall.}
 proc inflateMod(modname: cstring): void {.importc: "inflate_mod".}
 
 # Loads a mod and runs its init function
-proc loadMod*(game: ModCoreInterface, modname: string): bool =
+proc loadMod*(game: ModCoreInterface, modname: string): void =
     # We cannot import anything that uses std/streams until https://github.com/nim-lang/Nim/pull/23163 is merged
     inflateMod(modname)
 
@@ -17,16 +18,12 @@ proc loadMod*(game: ModCoreInterface, modname: string): bool =
     let filepath = fmt"out/mods/{modname}/out/{modname}-linux"
     let lib = loadLib(filepath)
     if lib == nil:
-        echo fmt"Error loading mod '{modname}'"
-        return false
+        ERROR(fmt"Error loading mod '{modname}', check that it exists and that the headers.nim file is up-to-date")
 
     # Grab the mod entry point function
     let initKingdomMod = cast[ModEntryPoint](lib.symAddr("initKingdomMod"))
     if initKingdomMod == nil:
-        echo fmt"Could not load init function from mod library '{modname}'"
-        unloadLib(lib)
-        return false
+        ERROR(fmt"Function 'initKingdomMod' is missing from mod library '{modname}'")
 
     # Run the init function and return
     game.initKingdomMod()
-    return true

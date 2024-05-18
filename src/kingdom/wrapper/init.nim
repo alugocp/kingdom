@@ -48,7 +48,7 @@ proc gameLoop*(): void =
     let rules = newGameRuleData()
     let initial = newStartView(rules)
     let state = newModCoreInterface(initial, rules)
-    discard state.loadMod("vanilla")
+    state.loadMod("vanilla")
     rules.sprites.loadAllSheets()
 
     # Raylib game loop
