@@ -50,6 +50,7 @@ type Ability* = ref object
     name*: string
     desc*: Option[string]
     handlers*: SignalHandlersTable[Ability]
+    tags*: HashSet[string]
 
 type Status* = ref object
     effect*: Ability

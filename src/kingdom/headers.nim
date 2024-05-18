@@ -52,7 +52,7 @@ proc heal*(this: Unit, healer: Unit, health: int): void {.importc.}
 
 # src/kingdom/entities/item.nim
 proc newItem*(): Item {.importc.}
-proc addTag*(this: Item, tag: string): void {.importc.}
+proc addTag*(this: Item, tag: string): void {.importc: "addTag_item".}
 
 # src/kingdom/entities/tile.nim
 proc newTile*(name: string): Tile {.importc.}
@@ -60,6 +60,9 @@ proc setAllBorders*(this: Tile, border: string): void {.importc.}
 
 # src/kingdom/entities/ability.nim
 proc newAbility*(): Ability {.importc.}
+proc addTag*(this: Ability, tag: string): void {.importc: "addTag_ability".}
+proc hasTag*(this: Ability, tag: string): bool {.importc: "hasTag_ability".}
+proc dropTag*(this: Ability, tag: string): void {.importc: "dropTag_ability".}
 
 # src/kingdom/entities/stats.nim
 proc setStat*(this: Unit, label: string, stat: int): void {.importc.}

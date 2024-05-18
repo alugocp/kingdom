@@ -24,7 +24,7 @@ proc newItem*(): Item {.exportc, dynlib.} =
     result.handlers = initTable[string, seq[SignalHandler[Item]]]()
 
 # Adds a tag to this Item
-proc addTag*(this: Item, tag: string): void {.exportc, dynlib.} =
+proc addTag*(this: Item, tag: string): void {.exportc: "addTag_item", dynlib.} =
     this.tags.incl(tag)
 
 # Return a MenuNode describing this Item when equipped to a Unit

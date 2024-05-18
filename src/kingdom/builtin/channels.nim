@@ -25,6 +25,9 @@ const GIVE_HEAL_CHANNEL* = "GiveHeal"
 const TAKE_HEAL_CHANNEL* = "TakeHeal"
 const UNIT_DIES_CHANNEL* = "UnitDies"
 
+# Party support
+const PARTY_MEMBER_TAKE_DAMAGE_CHANNEL* = "PartyMemberTakeDamage"
+
 # Item properties
 const CAN_BE_EQUIPPED_CHANNEL* = "CanBeEquipped"
 

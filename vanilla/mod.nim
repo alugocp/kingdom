@@ -34,6 +34,7 @@ const TAG_PLANT = "Plant"
 const BORDER_WATER = "water"
 
 # Species
+const SPECIES_HALF_DJINN = "Half-Djinn"
 const SPECIES_PLESIOSAUR = "Plesiosaur"
 const SPECIES_DRAGONOID = "Dragonoid"
 const SPECIES_HUMANOID = "Humanoid"
@@ -47,13 +48,18 @@ const SPECIES_MAMMAL = "Mammal"
 const SPECIES_BEETLE = "Beetle"
 const SPECIES_INSECT = "Insect"
 const SPECIES_KOBOLD = "Kobold"
+const SPECIES_GARUDA = "Garuda"
+const SPECIES_RAKSHA = "Raksha"
 const SPECIES_HUMAN = "Human"
+const SPECIES_FOMOR = "Fomor"
 const SPECIES_SLIME = "Slime"
 const SPECIES_DWARF = "Dwarf"
 const SPECIES_BEAST = "Beast"
 const SPECIES_TROLL = "Troll"
 const SPECIES_SHADE = "Shade"
 const SPECIES_DEER = "Deer"
+const SPECIES_NAGA = "Naga"
+const SPECIES_OGRE = "Ogre"
 const SPECIES_ELF = "Elf"
 
 # Tiles
@@ -75,6 +81,8 @@ const UNIT_ACOLYTE_OF_CTHOS = "Acolyte of C'thos"
 const UNIT_KOBOLD_SYCOPHANT = "Kobold Sycophant"
 const UNIT_BANSHEE = "Banshee"
 const UNIT_BUCK = "Buck"
+const UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE = "Fernando of the Unfaltering Gaze"
+const UNIT_BALOR_THE_SEA_DEVIL = "Balor the Sea-Devil"
 const UNIT_SIR_EOINN = "Sir Eoinn"
 const UNIT_IXTOLOLOTLI = "Ixtololotli"
 const UNIT_ELDER_USQUANIGODI = "Elder Usquanigodi"
@@ -103,6 +111,7 @@ const ABILITY_CURSE_OF_WEAKNESS = "Curse of Weakness"
 const ABILITY_HARVEST_CHESTNUT = "Harvest Chestnut"
 const ABILITY_HARVEST_NOPAL = "Harvest Nopal"
 const ABILITY_HARVEST_SALMON = "Harvest Salmon"
+const ABILITY_FLAMING_FANGS = "Flaming Fangs"
 
 # Status effects
 const STATUS_DAMAGE_DEBUFF = "Damage Debuff"
@@ -261,6 +270,26 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         game.giveAbility(unit, ABILITY_STAB)
         game.dropLoot(unit, @[ITEM_VEAL])
         return unit
+    )
+
+    # Fernando of the Unfaltering Gaze
+    game.rules.unitGeneration.addGenerator(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE
+        unit.desc = some("This Garuda warlock strikes down entire armies from atop his wicked tower")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
+        unit.sprite = game.getUnitSprite(unitSprites, 2, 0)
+        game.giveAbility(unit, ABILITY_ZAP)
+    )
+
+    # Balor th Sea-Devil
+    game.rules.unitGeneration.addGenerator(UNIT_BALOR_THE_SEA_DEVIL, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_BALOR_THE_SEA_DEVIL
+        unit.desc = some("A wicked Fomorian necromancer who casts wicked magic beneath the waves")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_FOMOR]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 2)
+        game.giveAbility(unit, ABILITY_ZAP)
     )
 
     # Sir Eoinn
@@ -451,6 +480,185 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         return unit
     )
 
+    # Hardin Redbeard
+    game.rules.unitGeneration.addGenerator(UNIT_HARDIN_REDBEARD, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_HARDIN_REDBEARD
+        unit.desc = some("Dwarf battlesmith who crafts enchanted armor")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_DWARF]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_CONSTITUTION, 8)
+        unit.setStat(STAT_INTELLIGENCE, 5)
+        game.giveAbility(unit, ABILITY_STAB)
+        unit.addArmor(DamageType.PHYSICAL, 3)
+        unit.addArmor(DamageType.MAGICAL, 3)
+        unit.setSpeed(1)
+        unit.addSignalHandler(PARTY_MEMBER_TAKE_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[PartyMemberTakeDamageSignalArgs](args)
+            a.dmg -= 1
+        )
+        return unit
+    )
+
+    # Tunde the Sorceror
+    game.rules.unitGeneration.addGenerator(UNIT_TUNDE_THE_SORCEROR, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_TUNDE_THE_SORCEROR
+        unit.desc = some("A powerful sorceror from the southern plains")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_INTELLIGENCE, 9)
+        unit.setStat(STAT_DEXTERITY, 6)
+        game.giveAbility(unit, ABILITY_ZAP)
+        game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
+        unit.setVision(2)
+        unit.setSpeed(2)
+        return unit
+    )
+
+    # Ranger Dawisgala
+    game.rules.unitGeneration.addGenerator(UNIT_RANGER_DAWISGALA, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_RANGER_DAWISGALA
+        unit.desc = some("He is a sentinel of the Chestnut groves in the West")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_AGILITY, 8)
+        unit.setStat(STAT_DEXTERITY, 6)
+        unit.setStat(STAT_STRENGTH, 4)
+        game.giveAbility(unit, ABILITY_STAB)
+        game.giveAbility(unit, ABILITY_HARVEST_CHESTNUT)
+        unit.addArmor(DamageType.PHYSICAL, 2)
+        unit.setVision(1)
+        unit.setSpeed(3)
+        return unit
+    )
+
+    # Mallard the Mage
+    game.rules.unitGeneration.addGenerator(UNIT_MALLARD_THE_MAGE, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_MALLARD_THE_MAGE
+        unit.desc = some("A spellcaster from the great marshes")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_INTELLIGENCE, 8)
+        unit.setStat(STAT_DEXTERITY, 5)
+        game.giveAbility(unit, ABILITY_ZAP)
+        game.giveAbility(unit, ABILITY_HARVEST_SALMON)
+        unit.addArmor(DamageType.PHYSICAL, 2)
+        unit.setVision(1)
+        unit.setSpeed(2)
+        unit.addSignalHandler(CAN_CROSS_BORDER_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[CanCrossBorderSignalArgs](args)
+            if a.border == BORDER_WATER:
+                a.canCross = MovementType.CROSS
+        )
+        return unit
+    )
+
+    # Mizton of the Wastes
+    game.rules.unitGeneration.addGenerator(UNIT_MIZTON_OF_THE_WASTES, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_MIZTON_OF_THE_WASTES
+        unit.desc = some("This Raksha warrior roams the desert highlands")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_RAKSHA]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_WISDOM, 6)
+        unit.setStat(STAT_AGILITY, 8)
+        unit.setStat(STAT_STRENGTH, 6)
+        game.giveAbility(unit, ABILITY_STAB)
+        unit.setVision(1)
+        unit.setSpeed(2)
+        unit.addSignalHandler(DEAL_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[DealDamageSignalArgs](args)
+            let tile = game.getGameView().world.getTile(this.pos)
+            if tile.name == TILE_DESERT:
+                a.dmg -= 3
+        )
+        unit.addSignalHandler(GET_MOVEMENT_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetMovementSignalArgs](args)
+            let tile = game.getGameView().world.getTile(this.pos)
+            if tile.name == TILE_DESERT:
+                a.movement += 2
+        )
+        unit.addSignalHandler(GET_VISIBILITY_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[GetVisibilitySignalArgs](args)
+            let tile = game.getGameView().world.getTile(this.pos)
+            if tile.name == TILE_DESERT:
+                a.visibility += 3
+        )
+        return unit
+    )
+
+    # Guroch the Impenetrable
+    game.rules.unitGeneration.addGenerator(UNIT_GUROCH_THE_IMPENETRABLE, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_GUROCH_THE_IMPENETRABLE
+        unit.desc = some("This Ogre makes a living transporting important goods between the kingdoms")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_OGRE]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_CONSTITUTION, 10)
+        unit.setStat(STAT_STRENGTH, 8)
+        unit.maxHaul = 10
+        game.giveAbility(unit, ABILITY_STAB)
+        unit.addArmor(DamageType.PHYSICAL, 5)
+        unit.addArmor(DamageType.MAGICAL, 5)
+        unit.setVision(1)
+        unit.setSpeed(1)
+        return unit
+    )
+
+    # Huginn Blackfeather
+    game.rules.unitGeneration.addGenerator(UNIT_HUGINN_BLACKFEATHER, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_HUGINN_BLACKFEATHER
+        unit.desc = some("A Garuda spellcaster who prefers to avoid the front lines")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_INTELLIGENCE, 10)
+        unit.setStat(STAT_DEXTERITY, 8)
+        unit.setStat(STAT_WISDOM, 6)
+        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
+        game.giveAbility(unit, ABILITY_CHANT_OF_STRENGTH)
+        game.giveAbility(unit, ABILITY_CURSE_OF_WEAKNESS)
+        unit.addArmor(DamageType.PHYSICAL, -2)
+        unit.addArmor(DamageType.MAGICAL, -2)
+        unit.setVision(1)
+        unit.setSpeed(2)
+        return unit
+    )
+
+    # Azdwagit Half-Djinn
+    game.rules.unitGeneration.addGenerator(UNIT_AZDWAGIT_HALF_DJINN, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_AZDWAGIT_HALF_DJINN
+        unit.desc = some("This warrior uses his inherent magical abilities to heal his allies")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_HALF_DJINN]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_INTELLIGENCE, 6)
+        unit.setStat(STAT_AGILITY, 8)
+        unit.setStat(STAT_STRENGTH, 5)
+        game.giveAbility(unit, ABILITY_CURE_WOUNDS)
+        unit.setVision(1)
+        unit.setSpeed(3)
+        return unit
+    )
+
+    # Iss'lis the Searing Death
+    game.rules.unitGeneration.addGenerator(UNIT_ISSLIS_THE_SEARING_DEATH, proc (): Unit =
+        let unit = newUnit()
+        unit.name = UNIT_ISSLIS_THE_SEARING_DEATH
+        unit.desc = some("This Naga battlemage enhances their venomous fangs by conjuring fire")
+        unit.classification = @[SPECIES_HUMANOID, SPECIES_NAGA]
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.setStat(STAT_INTELLIGENCE, 7)
+        unit.setStat(STAT_DEXTERITY, 8)
+        game.giveAbility(unit, ABILITY_FLAMING_FANGS)
+        unit.setVision(1)
+        unit.setSpeed(2)
+        return unit
+    )
+
     #
     # ABILITY GENERATORS
     #
@@ -541,6 +749,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         return ability
     )
 
+    # Harvest Salmon
     game.rules.abilityGeneration.addGenerator(ABILITY_HARVEST_SALMON, proc(): Ability =
         let ability = newAbility()
         ability.name = ABILITY_HARVEST_SALMON
@@ -549,6 +758,23 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[AbilityClickedSignalArgs](args)
             game.harvest(args, TILE_WATER, ITEM_SALMON)
             a.host.handleSignal(@[], newFishedSignalArgs(a.host, ITEM_SALMON))
+        )
+        return ability
+    )
+
+    # Flaming Fangs
+    game.rules.abilityGeneration.addGenerator(ABILITY_FLAMING_FANGS, proc(): Ability =
+        const TAG_PHYSICAL = "PHYSICAL DAMAGE"
+        let ability = newAbility()
+        ability.name = ABILITY_FLAMING_FANGS
+        ability.desc = some("Deals 10 damage that alternates between physical and magical")
+        ability.addSignalHandler(ABILITY_CLICKED_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            if this.hasTag(TAG_PHYSICAL):
+                this.dropTag(TAG_PHYSICAL)
+                game.attack(args, DamageType.MAGICAL, 10)
+            else:
+                this.addTag(TAG_PHYSICAL)
+                game.attack(args, DamageType.PHYSICAL, 10)
         )
         return ability
     )
