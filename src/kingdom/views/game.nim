@@ -99,7 +99,7 @@ proc closeMenu*(this: GameView): void =
 
 # Open a Menu in this Game
 proc openMenu(this: GameView, root: MenuNode, right: bool): void =
-    let m = newMenu(if right: getWindowBounds().x - MENU_WIDTH else: 0, 0, MENU_WIDTH, root)
+    let m = newMenu(if right: getWindowBounds().x - MENU_WIDTH else: 0, 0, MENU_WIDTH, true, root)
     this.menu = some(m)
     m.pack()
 
@@ -149,6 +149,9 @@ method consumeKeyboardUpdates*(this: GameView): void =
 # Check for updated mouse state and see what we have to process
 method consumeMouseUpdates*(this: GameView): void =
     if this.mouse.down and this.mouse.scrolling:
+        if this.menu.isSome() and this.mouse.posdown.within(this.menu.get().getMenuMouseRect()):
+            this.menu.get().handleScroll(this.mouse)
+            return
         this.view.scroll(
             this.mouse.pos.x - this.mouse.posprev.x,
             this.mouse.pos.y - this.mouse.posprev.y,

@@ -7,37 +7,64 @@ import kingdom/wrapper/types
 import kingdom/controls/types
 import kingdom/builtin/values
 
+# Menu margin value
+const M = 5
+
 method getHeight*(this: MenuNode): float {.base.} = 0
 method draw*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
 method checkClick*(this: MenuNode, m: MouseState, r: Rect): void {.base.} = discard
 method pack*(this: MenuNode, width: float): void {.base.} = discard
 
 # Constructor for Menu type
-proc newMenu*(x: float, y: float, width: float, root: MenuNode): Menu =
+proc newMenu*(x: float, y: float, width: float, tall: bool, root: MenuNode): Menu =
     new result
     result.root = root
+    result.tall = tall
+    result.offset = 0
     result.width = width
     result.x = x
     result.y = y
 
+# Returns the height of the Menu UI
+proc getMenuHeight(this: Menu): float =
+    if this.tall: getWindowBounds().y else: this.root.getHeight()
+
+# Returns true if this Menu should allow for scrolling
+proc shouldScroll(this: Menu): bool =
+    this.root.getHeight() > this.getMenuHeight()
+
 # Draw every MenuNode in this Menu
 proc draw*(this: Menu, m: MouseState, tall: bool = false): void =
-    const M = 5 # Margin value
-    let height = if tall: getWindowBounds().y else: this.root.getHeight()
-    let r = initRect(this.x + M, this.y + M, this.width - (M * 2), height - (M * 2))
+    let height = this.getMenuHeight()
+    let r = initRect(this.x + M, this.y + M, this.width - (M * 3), height - (M * 2))
     drawRect(this.x, this.y, this.width, height, MENU_BG)
-    this.root.draw(m, r)
+    let r1 = initRect(r.x, r.y - this.offset, r.w, r.h)
+    this.root.draw(m, r1)
+    if this.shouldScroll():
+        let rootHeight = this.root.getHeight()
+        drawRect(this.x + this.width - M, this.y + this.offset, M, (height * height) / rootHeight, MENU_LINK)
 
-# Propogates a MouseState through this Menu to see if any node was clicked on
-proc checkClick*(this: Menu, mouse: MouseState): bool =
-    let r = Rect(
+# Returns a Rect associated with the Menu's interactive area
+proc getMenuMouseRect*(this: Menu): Rect =
+    Rect(
         x: this.x,
         y: this.y,
         w: this.width,
         h: this.root.getHeight()
     )
+
+# Propogates a MouseState through this Menu to see if any node was clicked on
+proc checkClick*(this: Menu, mouse: MouseState): bool =
+    let r = this.getMenuMouseRect()
     this.root.checkClick(mouse, r)
     return mouse.pos.within(r)
+
+# Handles scroll logic for this Menu
+proc handleScroll*(this: Menu, mouse: MouseState): void =
+    if this.shouldScroll():
+        let coeff = if mouse.posdown.x >= this.x + this.width - M: 1.0 else: -1.0
+        let diff = coeff * (mouse.pos.y - mouse.posprev.y)
+        this.offset = max(0, min(this.root.getHeight() - this.getMenuHeight(), this.offset + diff))
 
 # Recursively text wraps each child node to this Menu's width
 proc pack*(this: Menu): void = this.root.pack(this.width)
@@ -136,7 +163,7 @@ proc newListNode*(nodes: seq[MenuNode] = @[]): ListNode =
 proc add*(this: ListNode, node: MenuNode): void =
     this.nodes.add(node)
 
-method getHeight*(this: ListNode): float = this.nodes.foldl(a + b.getHeight(), 0.0)
+method getHeight*(this: ListNode): float = this.nodes.foldl(a + b.getHeight(), float(M))
 method draw*(this: ListNode, m: MouseState, r: Rect): void =
     var r1 = r
     for n in this.nodes:

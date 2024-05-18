@@ -49,6 +49,8 @@ type MenuNode* = ref object of RootObj
 # Top-level menu type
 type Menu* = ref object
     root*: MenuNode
+    tall*: bool
+    offset*: float
     width*: float
     x*: float
     y*: float

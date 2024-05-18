@@ -24,7 +24,7 @@ proc newStartView*(rules: GameRuleData): StartView =
     let root = newListNode()
     root.add(newTextNode("Hello, and welcome to my game!"))
     root.add(newButtonNode("Play", proc (): void = hook.dead = true ))
-    result.menu = newMenu(0, 0, 500, root)
+    result.menu = newMenu(0, 0, 500, false, root)
 
 # Returns which View should be shown in the next frame
 method getNextView*(this: StartView): View =
