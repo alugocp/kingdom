@@ -217,8 +217,8 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
     # Find hexagon coords for screen bounds and calculate tile visibility
     let tl = getHexagonCoords(view.screenToGame(initPosition(0, 0)))
     let br = getHexagonCoords(view.screenToGame(getWindowBounds()))
-    let topLeft = initCoord(tl.x - 1, tl.y - 1)
-    let botRight = initCoord(br.x + 1, br.y + 1)
+    let topLeft = initCoord(tl.x - 3, tl.y - 3)
+    let botRight = initCoord(br.x + 3, br.y + 3)
     let visible = this.getVisibleTiles(topLeft, botRight)
 
     # Draw every hexagon currently on the screen
@@ -228,6 +228,7 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
             if x < 0 or x >= this.w or y < 0 or y >= this.h:
                 sm.drawSprite(edgeTileSprite, view, view.gameToScreen(initPosition(center.x - HALF_W, center.y - SIDE)))
                 outlineHexagon(view.gameToScreen(center), view)
+                drawHexagon(view.gameToScreen(center), DARKER, view)
             else:
                 let center = getHexagonCenterPoint(initCoord(x, y))
                 let tile = this.getTile(initCoord(x, y))

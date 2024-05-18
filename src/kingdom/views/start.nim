@@ -32,14 +32,14 @@ proc newStartView*(rules: GameRuleData): StartView =
 method getNextView*(this: StartView): View =
     if not this.dead:
         return this
-    let world = newWorld(20, 10)
+    let world = newWorld(14, 10)
     let game = newGameView(this.rules, world)
 
     # Testing code
     world.build(proc (x: int, y: int): Tile =
         var label = "Grass"
         if y <= 3:
-            if x > 8: label = "Forest"
+            if x > 6: label = "Forest"
         else:
             if x <= 6: label = "Water"
             elif y > 5: label = "Desert"
@@ -49,7 +49,7 @@ method getNextView*(this: StartView): View =
             label = "Coast"
         if x == 1 and y == 7:
             label = "Island Fortress"
-        if x <= 18 and y <= 8 and x > 13 and y > 6:
+        if x <= 12 and y <= 8 and x > 7 and y > 6:
             label = "Cactus"
         if x == 6 and y == 1:
             label = "Warlock Tower"
