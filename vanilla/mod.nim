@@ -227,6 +227,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A malevolent spirit which is bound by some master's whim")
         unit.classification = @[SPECIES_SPIRIT, SPECIES_SHADE]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 0)
+        unit.baseHealth = 10
         unit.ability(game, ABILITY_ZAP)
         return unit
     )
@@ -238,6 +239,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Nearly impenetrable to physical damage")
         unit.classification = @[SPECIES_BEAST, SPECIES_INSECT, SPECIES_BEETLE]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 0)
+        unit.baseHealth = 10
         unit.setStat(STAT_CONSTITUTION, 5)
         unit.ability(game, ABILITY_STAB)
         unit.addArmor(DamageType.PHYSICAL, 3)
@@ -251,6 +253,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Magic has little effect on this strange creature")
         unit.classification = @[SPECIES_SLIME]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 0)
+        unit.baseHealth = 10
         unit.ability(game, ABILITY_ZAP)
         unit.addArmor(DamageType.MAGICAL, 3)
         return unit
@@ -263,6 +266,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A dark hooded figure who awaits the return of ancient and terrible elder gods")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_UNKNOWN]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 1)
+        unit.baseHealth = 10
         unit.ability(game, ABILITY_CURE_WOUNDS)
         unit.ability(game, ABILITY_ZAP)
         return unit
@@ -275,6 +279,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This small dragonoid riles its comrades through song and dance")
         unit.classification = @[SPECIES_DRAGONOID, SPECIES_KOBOLD]
         unit.sprite = game.getUnitSprite(unitSprites, 5, 1)
+        unit.baseHealth = 10
         unit.ability(game, ABILITY_CHANT_OF_STRENGTH)
         unit.ability(game, ABILITY_STAB)
         return unit
@@ -287,6 +292,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A vengeful spirit cursed to roam the earth and inflict suffering to whomever crosses its path")
         unit.classification = @[SPECIES_SPIRIT, SPECIES_BANSHEE]
         unit.sprite = game.getUnitSprite(unitSprites, 6, 1)
+        unit.baseHealth = 10
         unit.ability(game, ABILITY_CURSE_OF_WEAKNESS)
         unit.ability(game, ABILITY_ZAP)
         return unit
@@ -299,6 +305,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("An adult male deer that can provide meat for your armies")
         unit.classification = @[SPECIES_BEAST, SPECIES_MAMMAL, SPECIES_DEER]
         unit.sprite = game.getUnitSprite(unitSprites, 7, 1)
+        unit.baseHealth = 5
         unit.ability(game, ABILITY_STAB)
         unit.dropLoot(game, @[ITEM_VEAL])
         return unit
@@ -311,7 +318,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This Garuda warlock strikes down entire armies from atop his wicked tower")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
         unit.sprite = game.getUnitSprite(unitSprites, 2, 0)
-        unit.baseHealth = 100
+        unit.baseHealth = 35
         unit.setStat(STAT_DEXTERITY, 8)
         unit.setStat(STAT_INTELLIGENCE, 8)
         unit.ability(game, ABILITY_ELDRITCH_BLAST)
@@ -325,7 +332,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("A wicked Fomorian necromancer who casts wicked magic beneath the waves")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_FOMOR]
         unit.sprite = game.getUnitSprite(unitSprites, 0, 2)
-        unit.baseHealth = 100
+        unit.baseHealth = 35
         unit.setStat(STAT_CONSTITUTION, 8)
         unit.setStat(STAT_INTELLIGENCE, 8)
         unit.ability(game, ABILITY_ELDRITCH_BLAST)

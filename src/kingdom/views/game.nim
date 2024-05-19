@@ -158,7 +158,7 @@ method getNextView*(this: GameView): View = this
 # Draws all elements of this Game object
 method draw*(this: GameView): void =
     this.world.draw(this.rules.sprites, this.hoveredHex, this.targeter.coords, this.view, this.rules.edgeTileSprite)
-    if this.menu.isSome:
+    if this.menu.isSome():
         this.menu.get().draw(this.mouse, true)
 
 # Check for updated keyboard state and see what we have to process
@@ -191,7 +191,7 @@ method consumeMouseUpdates*(this: GameView): void =
 
     # Process a click event
     if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
-        if this.menu.isSome:
+        if this.menu.isSome():
             let clicked = this.menu.get().checkClick(this.mouse)
             if clicked: return
             else: this.closeMenu()

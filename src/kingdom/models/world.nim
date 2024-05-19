@@ -169,7 +169,8 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
     if parties.len > 0:
         node.add(newHeaderNode("Parties:"))
     for p in parties:
-        for u in p.getMembers():
+        let members = p.getMembers()
+        for u in members:
             capture u:
                 let party = this.getParty(u)
                 let unitActions = newUnitMenuActions(

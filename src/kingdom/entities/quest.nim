@@ -25,3 +25,4 @@ proc tickQuest*(this: Tile): void {.exportc, dynlib.} =
         quest.progress += 1
         if quest.progress == quest.goal:
             this.handleSignal(@[], newQuestCompleteSignalArgs())
+            this.quest = none(Quest)
