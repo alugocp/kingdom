@@ -29,6 +29,7 @@ const MAX_PLAYERS_PER_TILE* = 2
 const DEFAULT_MAX_HUNGER* = 50
 const DEFAULT_VISIBILITY* = 1
 const DEFAULT_MOVEMENT* = 2
+const DEFAULT_BASE_HEALTH* = 50
 
 # Colors
 const BLACK*      = uint32(0x000000FF)

@@ -146,3 +146,16 @@ proc setMaxHunger*(unit: Unit, hunger: int): void {.exportc, dynlib.} =
         let a = cast[GetMaxHungerSignalArgs](args)
         a.hunger = hunger
     )
+
+# Sets up a Tile to have a string of encounters
+proc encounters*(tile: Tile, game: ModCoreInterface, enemies: seq[string]): void {.exportc, dynlib.} =
+    var index = 0
+    tile.addSignalHandler(UNIT_KILLED_CHANNEL, proc(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[UnitKilledSignalArgs](args)
+        if a.killed.name == enemies[index] and index < enemies.len - 1:
+            index += 1
+            discard game.getGameView().addNewUnit(enemies[index], this.pos, AMBIENT_PLAYER)
+    )
+    tile.addSignalHandler(INIT_CHANNEL, proc(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        discard game.getGameView().addNewUnit(enemies[0], this.pos, AMBIENT_PLAYER)
+    )

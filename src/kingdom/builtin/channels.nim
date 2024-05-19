@@ -6,6 +6,7 @@ const INIT_CHANNEL* = "Init"
 
 # Quests
 const QUEST_COMPLETE_CHANNEL* = "QuestComplete"
+const UNIT_KILLED_CHANNEL* = "UnitKilled"
 
 # Movement
 const CAN_CROSS_BORDER_CHANNEL* = "CanCrossBorder"

@@ -20,6 +20,7 @@ proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, it
 proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dmg: int): void {.importc.}
 proc basicAttack*(game: ModCoreInterface, name: string, dtype: DamageType, dmg: int): Ability {.importc.}
 proc modifyUserStat*(item: Item, game: ModCoreInterface, label: string, value: int): void {.importc.}
+proc encounters*(tile: Tile, game: ModCoreInterface, enemies: seq[string]): void {.importc.}
 proc ability*(this: Unit, game: ModCoreInterface, ability: string): void {.importc.}
 proc dropLoot*(unit: Unit, game: ModCoreInterface, items: seq[string]): void {.importc.}
 proc createGoldItem*(game: ModCoreInterface, name: string, quantity: int): Item {.importc.}
@@ -87,6 +88,7 @@ proc handleSignal*(this: Unit, ctx: SignalContext, args: BaseSignalArgs): void {
 
 # src/kingdom/entities/quest.nim
 proc newQuest*(goal: int, progressLabel: (x: int, n: int) -> string, desc: string, reward: string): Quest {.importc.}
+proc tickQuest*(this: Tile): void {.importc.}
 
 # src/kingdom/models/world.nim
 proc getBounds*(this: World): Coord {.importc.}

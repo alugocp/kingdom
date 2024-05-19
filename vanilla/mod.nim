@@ -174,7 +174,6 @@ proc newFishedSignalArgs(host: Unit, haul: string): FishedSignalArgs =
 #
 
 # A Quest where you must eradicate all instances of some Unit on this Tile
-
 proc newKillEnemyQuest(game: ModCoreInterface, n: int, enemy: string, reward: string, giveReward: (this: Tile, game: ModCoreInterface) -> void): Quest =
     let quest = newQuest(
         n,
@@ -182,9 +181,14 @@ proc newKillEnemyQuest(game: ModCoreInterface, n: int, enemy: string, reward: st
         fmt"Kill {n} {enemy} units on this tile",
         reward
     )
+    quest.addSignalHandler(UNIT_KILLED_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[UnitKilledSignalArgs](args)
+        if a.killed.name == enemy:
+            this.tickQuest()
+    )
     quest.addSignalHandler(
         QUEST_COMPLETE_CHANNEL,
-        (this: Tile, ctx: SignalContext, args: BaseSignalArgs) => giveReward(this, game)
+        (this: Tile, ctx: SignalContext, args: BaseSignalArgs) => this.giveReward(game)
     )
     return quest
 
@@ -210,7 +214,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Standard foot soldiers in dark armies")
         unit.classification = @[SPECIES_BEAST, SPECIES_REPTILE, SPECIES_GREMLIN]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 0)
-        unit.setStat("Agility", 3)
+        unit.setStat(STAT_AGILITY, 3)
         unit.ability(game, ABILITY_STAB)
         return unit
     )
@@ -306,17 +310,23 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("This Garuda warlock strikes down entire armies from atop his wicked tower")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
         unit.sprite = game.getUnitSprite(unitSprites, 2, 0)
+        unit.baseHealth = 100
+        unit.setStat(STAT_DEXTERITY, 8)
+        unit.setStat(STAT_INTELLIGENCE, 8)
         unit.ability(game, ABILITY_ELDRITCH_BLAST)
         return unit
     )
 
-    # Balor th Sea-Devil
+    # Balor the Sea-Devil
     game.rules.unitGeneration.addGenerator(UNIT_BALOR_THE_SEA_DEVIL, proc (): Unit =
         let unit = newUnit()
         unit.name = UNIT_BALOR_THE_SEA_DEVIL
         unit.desc = some("A wicked Fomorian necromancer who casts wicked magic beneath the waves")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_FOMOR]
         unit.sprite = game.getUnitSprite(unitSprites, 0, 2)
+        unit.baseHealth = 100
+        unit.setStat(STAT_CONSTITUTION, 8)
+        unit.setStat(STAT_INTELLIGENCE, 8)
         unit.ability(game, ABILITY_ELDRITCH_BLAST)
         return unit
     )
@@ -1192,7 +1202,6 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_WATER, proc(): Tile =
         let tile = newTile(TILE_WATER)
         tile.sprite = game.getTileSprite(tileSprites, 1, 0)
-        tile.desc = some("Water that units must swim across")
         tile.setAllBorders(BORDER_WATER)
         return tile
     )
@@ -1201,15 +1210,19 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_WARLOCK_TOWER, proc(): Tile =
         let tile = newTile(TILE_WARLOCK_TOWER)
         tile.sprite = game.getTileSprite(tileSprites, 2, 0)
+        tile.desc = some("The towering lair of a wicked warlock")
         tile.quest = some(newKillEnemyQuest(
             game, 1, UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, "Nothing lol",
             proc (this: Tile, game: ModCoreInterface): void =
                 discard
         ))
-        tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
-            let view = game.getGameView()
-            discard view.addNewUnit(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, this.pos, AMBIENT_PLAYER)
-        )
+        tile.encounters(game, @[
+            UNIT_SLIME_CUBE,
+            UNIT_KOBOLD_SYCOPHANT,
+            UNIT_PIKE_GREMLIN,
+            UNIT_SHADE,
+            UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE
+        ])
         return tile
     )
 
@@ -1229,10 +1242,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             proc (this: Tile, game: ModCoreInterface): void =
                 discard
         ))
-        tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
-            let view = game.getGameView()
-            discard view.addNewUnit(UNIT_BUCK, this.pos, AMBIENT_PLAYER)
-        )
+        tile.encounters(game, @[UNIT_BUCK])
         return tile
     )
 
@@ -1247,15 +1257,19 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     game.rules.tileGeneration.addGenerator(TILE_ISLAND_FORTRESS, proc(): Tile =
         let tile = newTile(TILE_ISLAND_FORTRESS)
         tile.sprite = game.getTileSprite(tileSprites, 2, 1)
+        tile.desc = some("The fortress houses one of the ocean's most formidable tyrants")
         tile.quest = some(newKillEnemyQuest(
             game, 1, UNIT_BALOR_THE_SEA_DEVIL, "Nothing lol",
             proc (this: Tile, game: ModCoreInterface): void =
                 discard
         ))
-        tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
-            let view = game.getGameView()
-            discard view.addNewUnit(UNIT_BALOR_THE_SEA_DEVIL, this.pos, AMBIENT_PLAYER)
-        )
+        tile.encounters(game, @[
+            UNIT_IRON_BEETLE,
+            UNIT_PIKE_GREMLIN,
+            UNIT_PIKE_GREMLIN,
+            UNIT_SLIME_CUBE,
+            UNIT_BALOR_THE_SEA_DEVIL
+        ])
         return tile
     )
 

@@ -19,7 +19,7 @@ proc newQuest*(goal: int, progressLabel: (x: int, n: int) -> string, desc: strin
 proc getProgressLabel*(this: Quest): string = this.progressLabel(this.progress, this.goal)
 
 # Handle logic whenever the player makes progress on this Quest
-proc tickQuest*(this: Tile): void =
+proc tickQuest*(this: Tile): void {.exportc, dynlib.} =
     if this.quest.isSome():
         let quest = this.quest.get()
         quest.progress += 1

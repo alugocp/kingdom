@@ -24,7 +24,7 @@ proc newUnit*(): Unit {.exportc, dynlib.} =
     new result
     result.id = 1
     result.name = "unnamed"
-    result.baseHealth = 50
+    result.baseHealth = DEFAULT_BASE_HEALTH
     result.party = NO_PARTY
     result.desc = none(string)
     result.sprite = NULL_SPRITE

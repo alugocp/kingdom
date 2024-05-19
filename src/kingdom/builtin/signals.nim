@@ -177,6 +177,15 @@ proc newQuestCompleteSignalArgs*(): QuestCompleteSignalArgs =
     new result
     result.channel = QUEST_COMPLETE_CHANNEL
 
+# Payload when a Unit is killed on this Tile
+type UnitKilledSignalArgs* = ref object of BaseSignalArgs
+    killed*: Unit
+
+proc newUnitKilledSignalArgs*(killed: Unit): UnitKilledSignalArgs =
+    new result
+    result.channel = UNIT_KILLED_CHANNEL
+    result.killed = killed
+
 # BUILT-IN ABILITY SIGNAL ARGS TYPES
 
 # Payload when an Ability is clicked (for action-based Abilities)
