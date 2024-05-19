@@ -1212,9 +1212,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         tile.sprite = game.getTileSprite(tileSprites, 2, 0)
         tile.desc = some("The towering lair of a wicked warlock")
         tile.quest = some(newKillEnemyQuest(
-            game, 1, UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, "Nothing lol",
+            game, 1, UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, "The warlock's prisoner and loot",
             proc (this: Tile, game: ModCoreInterface): void =
-                discard
+                let view = game.getGameView()
+                discard view.addNewUnit(UNIT_GLUB_STRONGFIN, this.pos, HUMAN_PLAYER)
+                discard view.addNewItem(ITEM_HEROS_HEART, this.pos)
+                discard view.addNewItem(ITEM_SLIMEBREAKER, this.pos)
+                discard view.addNewItem(ITEM_SORCEROUS_MEDALLION, this.pos)
+                discard view.addNewItem(ITEM_GEM_ENCRUSTED_MALLET, this.pos)
         ))
         tile.encounters(game, @[
             UNIT_SLIME_CUBE,
@@ -1259,9 +1264,13 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         tile.sprite = game.getTileSprite(tileSprites, 2, 1)
         tile.desc = some("The fortress houses one of the ocean's most formidable tyrants")
         tile.quest = some(newKillEnemyQuest(
-            game, 1, UNIT_BALOR_THE_SEA_DEVIL, "Nothing lol",
+            game, 1, UNIT_BALOR_THE_SEA_DEVIL, "The tyrant's prisoner and loot",
             proc (this: Tile, game: ModCoreInterface): void =
-                discard
+                let view = game.getGameView()
+                discard view.addNewUnit(UNIT_MALLARD_THE_MAGE, this.pos, HUMAN_PLAYER)
+                discard view.addNewItem(ITEM_AMETHYST_CROWN, this.pos)
+                discard view.addNewItem(ITEM_CLAMSHELL_OF_FAR_SIGHT, this.pos)
+                discard view.addNewItem(ITEM_KINGSLAYER, this.pos)
         ))
         tile.encounters(game, @[
             UNIT_IRON_BEETLE,

@@ -14,6 +14,7 @@ import kingdom/mods/types
 proc getGameView*(this: ModCoreInterface): GameView {.importc.}
 
 # src/kingdom/mods/utils.nim
+proc ambientPartyQuest*(tile: Tile, game: GameView, enemies: seq[string], reward: string, giveReward: (this: Tile, game: GameView) -> void): void {.importc.}
 proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.importc.}
 proc getTileSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.importc.}
 proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, item: string): void {.importc.}

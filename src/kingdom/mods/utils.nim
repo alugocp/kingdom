@@ -12,6 +12,7 @@ import kingdom/entities/signals
 import kingdom/entities/ability
 import kingdom/entities/types
 import kingdom/entities/stats
+import kingdom/entities/quest
 import kingdom/entities/unit
 import kingdom/entities/item
 import kingdom/builtin/types
@@ -159,3 +160,27 @@ proc encounters*(tile: Tile, game: ModCoreInterface, enemies: seq[string]): void
     tile.addSignalHandler(INIT_CHANNEL, proc(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
         discard game.getGameView().addNewUnit(enemies[0], this.pos, AMBIENT_PLAYER)
     )
+
+# Sets up a Tile with some enemies and a Quest to slay them all
+# TODO change the GameView to ModCoreInterface when this function actually gets used in mod code
+proc ambientPartyQuest*(tile: Tile, game: GameView, enemies: seq[string], reward: string, giveReward: (this: Tile, game: GameView) -> void): void {.exportc, dynlib.} =
+    let quest = newQuest(
+        enemies.len,
+        (a: int, n: int) => fmt"{a}/{n} enemies killed",
+        fmt"Kill all the enemies on this tile",
+        reward
+    )
+    quest.addSignalHandler(UNIT_KILLED_CHANNEL, proc(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        let a = cast[UnitKilledSignalArgs](args)
+        if a.killed.player == AMBIENT_PLAYER:
+            this.tickQuest()
+    )
+    quest.addSignalHandler(INIT_CHANNEL, proc(this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
+        for enemy in enemies:
+            discard game.addNewUnit(enemy, this.pos, AMBIENT_PLAYER)
+    )
+    quest.addSignalHandler(
+        QUEST_COMPLETE_CHANNEL,
+        (this: Tile, ctx: SignalContext, args: BaseSignalArgs) => this.giveReward(game)
+    )
+    tile.quest = some(quest)

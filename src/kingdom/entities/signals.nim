@@ -61,7 +61,7 @@ proc addSignalHandler1*(this: Unit, channel: string, handler: SignalHandler[Unit
     addSignalHandler(this, channel, handler)
 proc addSignalHandler1*(this: Tile, channel: string, handler: SignalHandler[Tile]): void {.exportc: "addSignalHandler_tile", dynlib.} =
     addSignalHandler(this, channel, handler)
-proc addSignalHandler1*(this: Quest, channel: string, handler: SignalHandler[Tile]): void {.exportc: "addSignalHandler_quest", dynlib.} =
+proc addSignalHandler*(this: Quest, channel: string, handler: SignalHandler[Tile]): void {.exportc: "addSignalHandler_quest", dynlib.} =
     if not this.hasSignalHandler(channel):
         this.handlers[channel] = @[]
     this.handlers[channel].add(handler)
