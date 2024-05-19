@@ -1,3 +1,4 @@
+import kingdom/builtin/values
 
 # Enum for types of damage in the game
 type DamageType* = enum
@@ -16,9 +17,23 @@ type MovementType* = enum
     BLOCKED,
     CROSS
 
+# Collected information about each player in the game
+type PlayerData* = object
+    id*: int
+    numUnits*: int
+
+proc newPlayerData*(id: int): PlayerData =
+    result.numUnits = 0
+    result.id = id
+
 # Global data to be used during any given frame
 type GameState* = object
+    players*: seq[PlayerData]
     turn*: int
 
 proc newGameState*(turn: int): GameState =
+    result.players = @[
+        newPlayerData(HUMAN_PLAYER),
+        newPlayerData(AMBIENT_PLAYER)
+    ]
     result.turn = turn

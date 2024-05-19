@@ -30,7 +30,8 @@ proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dm
     let a = cast[AbilityClickedSignalArgs](args)
     let view = game.getGameView()
     let enemies = view.world.getEnemies(a.host)
-    view.targeter.target(enemies, (u: Unit) => a.host.dealDamage(u, dtype, dmg))
+    view.targeter.target(enemies, (u: Unit) => a.host.dealDamage(view, u, dtype, dmg))
+    view.openTargetMenu()
 
 # Instantiates a basic attack Ability
 proc basicAttack*(game: ModCoreInterface, name: string, dtype: DamageType, dmg: int): Ability {.exportc, dynlib.} =

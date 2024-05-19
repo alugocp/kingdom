@@ -214,6 +214,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.desc = some("Standard foot soldiers in dark armies")
         unit.classification = @[SPECIES_BEAST, SPECIES_REPTILE, SPECIES_GREMLIN]
         unit.sprite = game.getUnitSprite(unitSprites, 4, 0)
+        unit.baseHealth = 10
         unit.setStat(STAT_AGILITY, 3)
         unit.ability(game, ABILITY_STAB)
         return unit

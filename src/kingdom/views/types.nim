@@ -27,6 +27,7 @@ method consumeMouseUpdates*(this: View): void {.base.} = discard
 type GameView* = ref object of View
     state*: GameState
     menu*: Option[Menu]
+    nextPlayerId*: int
     nextAbilityId*: int
     nextPartyId*: int
     nextUnitId*: int

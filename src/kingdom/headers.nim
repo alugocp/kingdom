@@ -34,6 +34,8 @@ proc setSpeed*(unit: Unit, speed: int): void {.importc.}
 # src/kingdom/views/game.nim
 proc addNewItem*(this: GameView, key: string, pos: Coord): Item {.importc.}
 proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit {.importc.}
+proc dealDamage*(this: Unit, game: GameView, u: Unit, dtype: DamageType, dmg: int): void {.importc.}
+proc createNewPlayer*(this: GameView): int {.importc.}
 
 # src/kingdom/wrapper/sprites.nim
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.importc.}
@@ -52,7 +54,6 @@ proc generate*(this: GenerationManager[Tile], key: string): Tile {.importc: "gen
 # src/kingdom/entities/unit.nim
 proc newUnit*(): Unit {.importc.}
 proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.importc.}
-proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.importc.}
 proc feed*(this: Unit, state: GameState): void {.importc.}
 proc heal*(this: Unit, healer: Unit, health: int): void {.importc.}
 
@@ -100,7 +101,6 @@ proc getUnits*(this: World, c: Coord): seq[Unit] {.importc.}
 proc getAllies*(this: World, u: Unit): seq[Unit] {.importc.}
 proc getEnemies*(this: World, u: Unit): seq[Unit] {.importc.}
 proc getTile*(this: World, c: Coord): Tile {.importc.}
-proc createNewPlayer*(this: World): int {.importc.}
 
 # src/kingdom/math/hexagons.nim
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.importc.}

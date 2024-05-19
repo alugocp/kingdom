@@ -1,9 +1,9 @@
-import "std/sugar"
-import "std/tables"
-import "std/options"
-import "kingdom/entities/types"
-import "kingdom/entities/signals"
-import "kingdom/builtin/signals"
+import std/sugar
+import std/tables
+import std/options
+import kingdom/entities/types
+import kingdom/entities/signals
+import kingdom/builtin/signals
 
 # Constructor for the Quest type
 proc newQuest*(goal: int, progressLabel: (x: int, n: int) -> string, desc: string, reward: string): Quest {.exportc, dynlib.} =

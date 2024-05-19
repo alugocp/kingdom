@@ -11,7 +11,6 @@ type TileData* = object
 # World type to contain Tile objects
 type World* = ref object
     tiles*: seq[seq[TileData]]
-    nextPlayerId*: int
     w*: Natural
     h*: Natural
 

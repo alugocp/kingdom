@@ -31,7 +31,6 @@ import kingdom/operators
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
     new result
-    result.nextPlayerId = AMBIENT_PLAYER + 1
     result.w = w
     result.h = h
 
@@ -98,11 +97,6 @@ proc getParty*(this: World, u: Unit): Party {.exportc, dynlib.} =
         ERROR(fmt"Invalid unit/party match length ({filtered.len}), unit's party ID is {u.party}")
     return filtered[0]
 
-# Creates a new player ID and returns it
-proc createNewPlayer*(this: World): int {.exportc, dynlib.} =
-    result = this.nextPlayerId
-    this.nextPlayerId += 1
-
 # Returns true if the given Tile has room for this Party
 proc canTileReceiveParty*(this: World, p: Party, c: Coord): bool =
     let players = this.getPlayers(c)
@@ -127,7 +121,7 @@ proc moveParty*(this: World, p: Party, c: Coord): void {.exportc, dynlib.} =
 proc deleteParty*(this: World, p: Party, pos: Coord): void =
     if p.n > 0:
         ERROR("Cannot delete party with active members")
-    this.tiles[pos.x][pos.y].parties = this.tiles[pos.x][pos.y].parties.filterIt(it != p)
+    this.tiles[pos.x][pos.y].parties.delete(this.tiles[pos.x][pos.y].parties.find(p))
 
 # Moves an Item from one Tile in this World to another (or to add/remove it from the World)
 proc moveItem*(this: World, i: Item, c: Option[Coord]): void =

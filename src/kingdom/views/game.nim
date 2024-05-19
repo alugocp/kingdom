@@ -41,6 +41,7 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
         nextItemId: 0,
         targeter: newTargeter(),
         rules: rules,
+        nextPlayerId: AMBIENT_PLAYER + 1,
         keyboard: newKeyboardState(),
         mouse: newMouseState(),
         hoveredHex: none(Coord),
@@ -74,6 +75,7 @@ proc removeUnitFromParty(this: GameView, unit: Unit, party: Party): void =
 # Initializes a new Unit instance and puts it in the World
 proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit {.exportc, dynlib.} =
     let u = this.rules.unitGeneration.generate(key)
+    this.state.players[player].numUnits += 1
     u.pos = pos
     u.player = player
     u.id = this.nextUnitId
@@ -92,6 +94,27 @@ proc addNewItem*(this: GameView, key: string, pos: Coord): Item {.exportc, dynli
     this.world.moveItem(i, some(pos))
     this.nextItemId += 1
     return i
+
+# Creates a new player ID and returns it
+proc createNewPlayer*(this: GameView): int {.exportc, dynlib.} =
+    this.state.players.add(newPlayerData(this.nextPlayerId))
+    result = this.nextPlayerId
+    this.nextPlayerId += 1
+
+# This Unit deals some damage to another Unit
+proc dealDamage*(this: Unit, game: GameView, u: Unit, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
+    let p1 = newDealDamageSignalArgs(dtype, dmg, this, u)
+    this.handleSignal(@[], p1)
+    let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg, this, u)
+    u.handleSignal(@[], p2)
+    u.damageTaken += max(p2.dmg, 0)
+    if u.getHealth() == 0:
+        let p3 = newUnitDiesSignalArgs()
+        u.handleSignal(@[], p3)
+        let p4 = newUnitKilledSignalArgs(u)
+        game.world.getTile(u.pos).handleSignal(@[], p4)
+        game.removeUnitFromParty(u, game.world.getParty(u))
+        game.state.players[u.player].numUnits -= 1
 
 # Close the currently open Menu in this Game
 proc closeMenu*(this: GameView): void =
@@ -116,9 +139,9 @@ proc openTargetMenu*(this: GameView): void =
         for u in units:
             capture u:
                 node.add(newButtonNode(u.getMenuLabel(), proc (): void =
-                    handler(u)
                     this.targeter.cancel()
                     this.closeMenu()
+                    handler(u)
                 ))
         this.openMenu(node, true)
 

@@ -87,17 +87,6 @@ proc addStatus*(this: Unit, lifespan: uint, ability: Ability): void {.exportc, d
     )
     this.statuses.add(status)
 
-# This Unit deals some damage to another Unit
-proc dealDamage*(this: Unit, u: Unit, dtype: DamageType, dmg: int): void {.exportc, dynlib.} =
-    let p1 = newDealDamageSignalArgs(dtype, dmg, this, u)
-    this.handleSignal(@[], p1)
-    let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg, this, u)
-    u.handleSignal(@[], p2)
-    u.damageTaken += max(p2.dmg, 0)
-    if u.getHealth() == 0:
-        let p3 = newUnitDiesSignalArgs()
-        u.handleSignal(@[], p3)
-
 # Heals some damage taken by this Unit
 proc heal*(this: Unit, target: Unit, health: int): void {.exportc, dynlib.} =
     let p1 = newGiveHealSignalArgs(health, this, target)
@@ -132,16 +121,16 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
     # Menu elements for Abilities
     if this.abilities.len > 0:
         node.add(newHeaderNode("Abilities:"))
-        for ability in this.abilities:
-            node.add(ability.getMenuNode(this))
-            node.add(newSeparatorNode())
+    for ability in this.abilities:
+        node.add(ability.getMenuNode(this))
+        node.add(newSeparatorNode())
 
     # Menu elements for Statuses
     if this.statuses.len > 0:
         node.add(newHeaderNode("Statuses:"))
-        for status in this.statuses:
-            node.add(status.effect.getMenuNode(this))
-            node.add(newSeparatorNode())
+    for status in this.statuses:
+        node.add(status.effect.getMenuNode(this))
+        node.add(newSeparatorNode())
 
     # Menu elements for Items (equipped inventory)
     if this.maxItems > 0:
