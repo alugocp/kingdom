@@ -17,7 +17,7 @@ const AMBIENT_PLAYER* = 1
 const OPEN_BORDER* = "none"
 
 # Default Unit classification value
-const UNKNOWN_CLASS* = "Unknown"
+const SPECIES_UNKNOWN* = "Unknown"
 
 # Max XP for a Unit
 const MAX_XP* = 1000

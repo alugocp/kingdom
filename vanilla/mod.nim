@@ -39,7 +39,6 @@ const SPECIES_HALF_DJINN = "Half-Djinn"
 const SPECIES_PLESIOSAUR = "Plesiosaur"
 const SPECIES_DRAGONOID = "Dragonoid"
 const SPECIES_HUMANOID = "Humanoid"
-const SPECIES_UNKNOWN = "Unknown"
 const SPECIES_MERFOLK = "Merfolk"
 const SPECIES_REPTILE = "Reptile"
 const SPECIES_GREMLIN = "Gremlin"
@@ -1185,14 +1184,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # Grass
     game.rules.tileGeneration.addGenerator(TILE_GRASS, proc(): Tile =
         let tile = newTile(TILE_GRASS)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 0, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 0, 0)
         return tile
     )
 
     # Water
     game.rules.tileGeneration.addGenerator(TILE_WATER, proc(): Tile =
         let tile = newTile(TILE_WATER)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 0, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 1, 0)
         tile.desc = some("Water that units must swim across")
         tile.setAllBorders(BORDER_WATER)
         return tile
@@ -1201,7 +1200,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # Warlock Tower
     game.rules.tileGeneration.addGenerator(TILE_WARLOCK_TOWER, proc(): Tile =
         let tile = newTile(TILE_WARLOCK_TOWER)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 0, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 2, 0)
         tile.quest = some(newKillEnemyQuest(
             game, 1, UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, "Nothing lol",
             proc (this: Tile, game: ModCoreInterface): void =
@@ -1217,14 +1216,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # Desert
     game.rules.tileGeneration.addGenerator(TILE_DESERT, proc(): Tile =
         let tile = newTile(TILE_DESERT)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 0, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 3, 0)
         return tile
     )
 
     # Forest
     game.rules.tileGeneration.addGenerator(TILE_FOREST, proc(): Tile =
         let tile = newTile(TILE_FOREST)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 0, 110, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 0, 1)
         tile.quest = some(newKillEnemyQuest(
             game, 1, UNIT_BUCK, "Nothing lol",
             proc (this: Tile, game: ModCoreInterface): void =
@@ -1240,14 +1239,14 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # Coast
     game.rules.tileGeneration.addGenerator(TILE_COAST, proc(): Tile =
         let tile = newTile(TILE_COAST)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 96, 110, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 1, 1)
         return tile
     )
 
     # Island Fortress
     game.rules.tileGeneration.addGenerator(TILE_ISLAND_FORTRESS, proc(): Tile =
         let tile = newTile(TILE_ISLAND_FORTRESS)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 192, 110, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 2, 1)
         tile.quest = some(newKillEnemyQuest(
             game, 1, UNIT_BALOR_THE_SEA_DEVIL, "Nothing lol",
             proc (this: Tile, game: ModCoreInterface): void =
@@ -1263,6 +1262,6 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
     # Cactus
     game.rules.tileGeneration.addGenerator(TILE_CACTUS, proc(): Tile =
         let tile = newTile(TILE_CACTUS)
-        tile.sprite = game.rules.sprites.getSpriteHandle(tileSprites, 288, 110, 96, 110)
+        tile.sprite = game.getTileSprite(tileSprites, 3, 1)
         return tile
     )
