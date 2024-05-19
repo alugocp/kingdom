@@ -82,6 +82,14 @@ proc getItems*(this: World, c: Coord): seq[Item] = this.tiles[c.x][c.y].items
 # Retrieves a set of Parties on a Tile in this World
 proc getParties*(this: World, c: Coord): seq[Party] = this.tiles[c.x][c.y].parties
 
+# Returns the players on a given Tile in this World
+proc getPlayers*(this: World, pos: Coord): HashSet[int] =
+    var players = initHashSet[int]()
+    let parties = this.getParties(pos)
+    for party in parties:
+        players.incl(party.getPlayerId())
+    return players
+
 # Returns the Party associated with the given Unit
 proc getParty*(this: World, u: Unit): Party {.exportc, dynlib.} =
     let parties = this.getParties(u.pos)
@@ -95,11 +103,23 @@ proc createNewPlayer*(this: World): int {.exportc, dynlib.} =
     result = this.nextPlayerId
     this.nextPlayerId += 1
 
+# Returns true if the given Tile has room for this Party
+proc canTileReceiveParty*(this: World, p: Party, c: Coord): bool =
+    let players = this.getPlayers(c)
+    return players.len < MAX_PLAYERS_PER_TILE or players.contains(p.getPlayerId())
+
 # Moves a Party from one Tile in this World to another
 proc moveParty*(this: World, p: Party, c: Coord): void {.exportc, dynlib.} =
+    if not this.canTileReceiveParty(p, c):
+        ERROR(fmt"Tile {c} cannot receive the party with player ID {p.getPlayerId()}")
     let pos = p.getMembers()[0].pos
     this.tiles[pos.x][pos.y].parties = this.tiles[pos.x][pos.y].parties.filterIt(it != p)
-    this.tiles[c.x][c.y].parties.add(p)
+    var index = 0
+    for party in this.tiles[c.x][c.y].parties:
+        if party.getPlayerId() >= p.getPlayerId():
+            break
+        index += 1
+    this.tiles[c.x][c.y].parties.insert(p, index)
     for u in p.getMembers():
         u.pos = c
 
@@ -244,21 +264,18 @@ proc draw*(this: World, sm: SpriteManager, hovered: Option[Coord], targeted: Opt
                 # Draw Units but only on visible Tiles
                 if tile.pos in visible:
                     let parties = this.getParties(tile.pos)
-                    for a in 0..(parties.len - 1):
-                        if a > 7: break
-                        let leader = parties[a].getMembers()[0]
-                        var position = initPosition(center.x - 12, center.y - 12)
-                        if parties.len == 2:
-                            position.x = center.x + (48f * float(a)) - 36f
-                        elif parties.len == 3:
-                            position.x = center.x + (32f * float(a)) - 48f
-                        elif parties.len == 4:
-                            position.x = center.x + (48f * float(a mod 2)) - 36f
-                            position.y = if a < 2: (center.y - 24f) else: center.y
-                        elif parties.len != 1:
-                            position.x = center.x + (24f * float(a mod 4)) - 48f
-                            position.y = if a < 4: (center.y - 24f) else: center.y
+                    let players = this.getPlayers(tile.pos)
+                    if players.len == 1:
+                        let leader = parties[0].getMembers()[0]
+                        let position = initPosition(center.x - 24, center.y - 24)
                         sm.drawSprite(leader.sprite, view, view.gameToScreen(position))
+                    elif players.len == 2:
+                        let leader1 = parties[0].getMembers()[0]
+                        let pos1 = initPosition(center.x - 48, center.y - 24)
+                        let leader2 = parties.filterIt(it.getPlayerId() != leader1.player)[0].getMembers()[0]
+                        let pos2 = initPosition(center.x, center.y - 24)
+                        sm.drawSprite(leader1.sprite, view, view.gameToScreen(pos1))
+                        sm.drawSprite(leader2.sprite, view, view.gameToScreen(pos2))
                 else:
                     drawHexagon(view.gameToScreen(center), DARKER, view)
 

@@ -22,6 +22,9 @@ const SPECIES_UNKNOWN* = "Unknown"
 # Max XP for a Unit
 const MAX_XP* = 1000
 
+# Max unique players per Tile
+const MAX_PLAYERS_PER_TILE* = 2
+
 # Default Unit values
 const DEFAULT_MAX_HUNGER* = 50
 const DEFAULT_VISIBILITY* = 1

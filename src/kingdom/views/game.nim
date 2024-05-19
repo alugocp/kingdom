@@ -250,7 +250,7 @@ method consumeMouseUpdates*(this: GameView): void =
                         if dst == party.getCoord():
                             continue
                         let path = this.world.pathfind(party, dst, adjs)
-                        if path.len > 0:
+                        if path.len > 0 and this.world.canTileReceiveParty(party, dst):
                             targets.add(dst)
                     this.targeter.target(targets, proc (c: Coord): void = this.world.moveParty(party, c)),
 

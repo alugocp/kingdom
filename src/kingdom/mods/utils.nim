@@ -64,7 +64,7 @@ proc ability*(this: Unit, game: ModCoreInterface, ability: string): void {.expor
 
 # Shorthand to grab a Tile tilesheet sprite
 proc getUnitSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.exportc, dynlib.} =
-    game.rules.sprites.getSpriteHandle(sheet, ix * 24, iy * 24, 24, 24)
+    game.rules.sprites.getSpriteHandle(sheet, ix * 48, iy * 48, 48, 48)
 
 # Shorthand to grab a Unit tilesheet sprite
 proc getTileSprite*(game: ModCoreInterface, sheet: SheetHandle, ix: uint16, iy: uint16): SpriteHandle {.exportc, dynlib.} =
