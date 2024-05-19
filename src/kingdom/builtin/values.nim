@@ -10,6 +10,9 @@ const NO_PARTY* = -1
 # Human player ID
 const HUMAN_PLAYER* = 0
 
+# Ambient player ID
+const AMBIENT_PLAYER* = 1
+
 # Default Tile border value
 const OPEN_BORDER* = "none"
 

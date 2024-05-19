@@ -31,7 +31,7 @@ import kingdom/operators
 # Constructor for the World type
 proc newWorld*(w: Natural, h: Natural): World =
     new result
-    result.nextPlayerId = 1
+    result.nextPlayerId = AMBIENT_PLAYER + 1
     result.w = w
     result.h = h
 

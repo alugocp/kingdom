@@ -9,6 +9,7 @@ import kingdom/views/types
 import kingdom/models/types
 import kingdom/entities/types
 import kingdom/builtin/types
+import kingdom/builtin/values
 import kingdom/builtin/signals
 import kingdom/builtin/channels
 import kingdom/models/types
@@ -1208,7 +1209,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         ))
         tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
             let view = game.getGameView()
-            discard view.addNewUnit(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, this.pos, view.world.createNewPlayer())
+            discard view.addNewUnit(UNIT_FERNANDO_OF_THE_UNFALTERING_GAZE, this.pos, AMBIENT_PLAYER)
         )
         return tile
     )
@@ -1231,7 +1232,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         ))
         tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
             let view = game.getGameView()
-            discard view.addNewUnit(UNIT_BUCK, this.pos, view.world.createNewPlayer())
+            discard view.addNewUnit(UNIT_BUCK, this.pos, AMBIENT_PLAYER)
         )
         return tile
     )
@@ -1254,7 +1255,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         ))
         tile.addSignalHandler(INIT_CHANNEL, proc (this: Tile, ctx: SignalContext, args: BaseSignalArgs): void =
             let view = game.getGameView()
-            discard view.addNewUnit(UNIT_BALOR_THE_SEA_DEVIL, this.pos, view.world.createNewPlayer())
+            discard view.addNewUnit(UNIT_BALOR_THE_SEA_DEVIL, this.pos, AMBIENT_PLAYER)
         )
         return tile
     )
