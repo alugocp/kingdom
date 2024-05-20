@@ -363,7 +363,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_IXTOLOLOTLI
         unit.desc = some("An elf ranger from the steaming jungles of the far West")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_ELF]
-        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.sprite = game.getUnitSprite(unitSprites, 3, 2)
         unit.setStat(STAT_AGILITY, 7)
         unit.setStat(STAT_CHARISMA, 4)
         unit.setStat(STAT_WISDOM, 4)
@@ -495,7 +495,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_HARDIN_REDBEARD
         unit.desc = some("Dwarf battlesmith who crafts enchanted armor")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_DWARF]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 3, 1)
         unit.setStat(STAT_CONSTITUTION, 8)
         unit.setStat(STAT_INTELLIGENCE, 5)
         unit.ability(game, ABILITY_STAB)
