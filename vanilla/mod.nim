@@ -396,7 +396,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_LADY_MARIA
         unit.desc = some("A cleric of the holy light who rides to vanquish evil")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
-        unit.sprite = game.getUnitSprite(unitSprites, 1, 2)
+        unit.sprite = game.getUnitSprite(unitSprites, 4, 2)
         unit.setStat(STAT_INTELLIGENCE, 6)
         unit.setStat(STAT_AGILITY, 8)
         unit.ability(game, ABILITY_ZAP)
@@ -412,7 +412,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_JACK_THE_SCOUNDREL
         unit.desc = some("This human has cheated death on nearly a hundred different adventures at sea")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
-        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.sprite = game.getUnitSprite(unitSprites, 5, 2)
         unit.setStat(STAT_DEXTERITY, 8)
         unit.setStat(STAT_CHARISMA, 10)
         unit.setStat(STAT_WISDOM, 7)
@@ -429,7 +429,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_GLUB_STRONGFIN
         unit.desc = some("A highly skilled and experienced Merfolk warrior")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_MERFOLK]
-        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.sprite = game.getUnitSprite(unitSprites, 6, 2)
         unit.setStat(STAT_STRENGTH, 8)
         unit.setStat(STAT_DEXTERITY, 4)
         unit.ability(game, ABILITY_STAB)
@@ -446,7 +446,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_DORRIE
         unit.desc = some("A gentle giant of the seas who can carry land creatures on her back")
         unit.classification = @[SPECIES_BEAST, SPECIES_PLESIOSAUR]
-        unit.sprite = game.getUnitSprite(unitSprites, 2, 2)
+        unit.sprite = game.getUnitSprite(unitSprites, 7, 2)
         unit.maxHaul = 20
         unit.baseHealth = 150
         unit.setStat(STAT_STRENGTH, 10)
@@ -478,7 +478,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_BATO
         unit.desc = some("This lumbering Troll is slow but can haul large amounts of loot")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_TROLL]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 0, 3)
         unit.maxHaul = 20
         unit.setStat(STAT_CONSTITUTION, 10)
         unit.setStat(STAT_STRENGTH, 8)
