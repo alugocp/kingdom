@@ -17,6 +17,12 @@ type MovementType* = enum
     BLOCKED,
     CROSS
 
+# Enum describing the states a single match can be in
+type MatchState* = enum
+    ONGOING,
+    VICTORY,
+    DEFEAT
+
 # Collected information about each player in the game
 type PlayerData* = object
     id*: int
@@ -29,6 +35,7 @@ proc newPlayerData*(id: int): PlayerData =
 # Global data to be used during any given frame
 type GameState* = object
     players*: seq[PlayerData]
+    match*: MatchState
     turn*: int
 
 proc newGameState*(turn: int): GameState =
@@ -36,4 +43,5 @@ proc newGameState*(turn: int): GameState =
         newPlayerData(HUMAN_PLAYER),
         newPlayerData(AMBIENT_PLAYER)
     ]
+    result.match = MatchState.ONGOING
     result.turn = turn

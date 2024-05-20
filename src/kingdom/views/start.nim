@@ -1,14 +1,16 @@
+import std/options
 import kingdom/generation/manager
 import kingdom/controls/keyboard
 import kingdom/controls/mouse
 import kingdom/controls/types
+import kingdom/controls/menu
 import kingdom/wrapper/draw
 import kingdom/entities/types
 import kingdom/builtin/values
+import kingdom/builtin/types
 import kingdom/math/types
 import kingdom/models/world
 import kingdom/models/types
-import kingdom/controls/menu
 import kingdom/views/types
 import kingdom/views/game
 import kingdom/mods/utils
@@ -231,6 +233,12 @@ method getNextView*(this: StartView): View =
             discard game.addNewItem("Fey-Wrought Plate", this.pos)
     )
     return game
+
+# Logic for when the GameView should return to a StartView
+method getNextView*(this: GameView): View =
+    if this.state.match != MatchState.ONGOING and this.menu.isNone():
+        return newStartView(this.rules)
+    return this
 
 # Draws the Menu on this StartView object
 method draw*(this: StartView): void =

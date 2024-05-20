@@ -58,6 +58,7 @@ proc gameLoop*(): void =
         state.view.consumeKeyboardUpdates()
         state.view.consumeMouseUpdates()
         beginDrawing()
+        state.view.frame()
         state.view.draw()
         endDrawing()
         let nextView = state.view.getNextView()

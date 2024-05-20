@@ -145,15 +145,34 @@ proc openTargetMenu*(this: GameView): void =
                 ))
         this.openMenu(node, true)
 
+# Logic that gets run every frame
+method frame*(this: GameView): void =
+    if this.state.match != MatchState.ONGOING:
+        return
+
+    # Victory/defeat criteria check
+    let playerUnits = this.state.players[HUMAN_PLAYER].numUnits
+    if playerUnits == 0:
+        this.state.match = MatchState.DEFEAT
+        let root = newListNode()
+        root.add(newHeaderNode("Defeat"))
+        root.add(newButtonNode("Continue", () => this.closeMenu()))
+        this.openMenu(root, true)
+        return
+    if this.state.players.foldl(a + b.numUnits, 0) - playerUnits == 0:
+        this.state.match = MatchState.VICTORY
+        let root = newListNode()
+        root.add(newHeaderNode("Victory"))
+        root.add(newButtonNode("Continue", () => this.closeMenu()))
+        this.openMenu(root, true)
+        return
+
 # Returns how many turns it has been since the given Unit was fed
 proc getUnitHunger*(this: GameView, u: Unit): int =
     let turnsSinceFeeding = this.state.turn - u.lastTurnFed
     let payload = newGetMaxHungerSignalArgs()
     u.handleSignal(@[], payload)
     return min(100, int(floor(100 * float(turnsSinceFeeding) / float(payload.hunger))))
-
-# Returns which View should be shown in the next frame
-method getNextView*(this: GameView): View = this
 
 # Draws all elements of this Game object
 method draw*(this: GameView): void =
@@ -193,8 +212,12 @@ method consumeMouseUpdates*(this: GameView): void =
     if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
         if this.menu.isSome():
             let clicked = this.menu.get().checkClick(this.mouse)
-            if clicked: return
-            else: this.closeMenu()
+            if clicked:
+                return
+            elif this.state.match == MatchState.ONGOING:
+                this.closeMenu()
+        if this.state.match != MatchState.ONGOING:
+            return
         if this.world.contains(hex):
             if this.targeter.isCoords():
                 if this.targeter.coords.get().contains(hex):
