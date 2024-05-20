@@ -96,14 +96,13 @@ proc newTakeDamageSignalArgs*(dtype: DamageType, dmg: int, attacker: Unit, targe
     result.dmg = dmg
 
 # Payload when a party member takes damage
-# TODO implement this signal later
 type PartyMemberTakeDamageSignalArgs* = ref object of BaseSignalArgs
     attacker*: Unit
     target*: Unit
     dtype*: DamageType
     dmg*: int
 
-proc newPartyMemberTakeDamageSignalArgs*(target: Unit, attacker: Unit, dtype: DamageType, dmg: int): PartyMemberTakeDamageSignalArgs =
+proc newPartyMemberTakeDamageSignalArgs*(dtype: DamageType, dmg: int, attacker: Unit, target: Unit): PartyMemberTakeDamageSignalArgs =
     new result
     result.channel = PARTY_MEMBER_TAKE_DAMAGE_CHANNEL
     result.attacker = attacker

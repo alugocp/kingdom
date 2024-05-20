@@ -120,6 +120,7 @@ const ABILITY_SWIM = "Swim"
 const ABILITY_FERRY = "Ferry"
 const ABILITY_SEED_MAGIC = "Seed Magic"
 const ABILITY_DESERT_ROVER = "Desert Rover"
+const ABILITY_PROTECTORS_AURA = "Protector's Aura"
 
 # Status effects
 const STATUS_DAMAGE_DEBUFF = "Damage Debuff"
@@ -498,13 +499,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.setStat(STAT_CONSTITUTION, 8)
         unit.setStat(STAT_INTELLIGENCE, 5)
         unit.ability(game, ABILITY_STAB)
+        unit.ability(game, ABILITY_PROTECTORS_AURA)
         unit.addArmor(DamageType.PHYSICAL, 3)
         unit.addArmor(DamageType.MAGICAL, 3)
         unit.setSpeed(1)
-        unit.addSignalHandler(PARTY_MEMBER_TAKE_DAMAGE_CHANNEL, proc (this: Unit, ctx: SignalContext, args: BaseSignalArgs): void =
-            let a = cast[PartyMemberTakeDamageSignalArgs](args)
-            a.dmg -= 1
-        )
         return unit
     )
 
@@ -856,6 +854,18 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let tile = game.getGameView().world.getTile(a.host.pos)
             if tile.name == TILE_DESERT:
                 a.visibility += 3
+        )
+        return ability
+    )
+
+    # Protector's Aura
+    game.rules.abilityGeneration.addGenerator(ABILITY_PROTECTORS_AURA, proc(): Ability =
+        let ability = newAbility()
+        ability.name = ABILITY_PROTECTORS_AURA
+        ability.desc = some("+1 armor for party members")
+        ability.addSignalHandler(PARTY_MEMBER_TAKE_DAMAGE_CHANNEL, proc (this: Ability, ctx: SignalContext, args: BaseSignalArgs): void =
+            let a = cast[PartyMemberTakeDamageSignalArgs](args)
+            a.dmg -= 1
         )
         return ability
     )

@@ -50,7 +50,8 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
         world: world,
         state: newGameState(0)
     )
-    g.targeter.onTarget = () => g.closeMenu()
+    let g1 {.cursor.} = g
+    g.targeter.onTarget = () => g1.closeMenu()
     return g
 
 # Inits all Tiles in the World
@@ -107,12 +108,12 @@ proc dealDamage*(this: Unit, game: GameView, u: Unit, dtype: DamageType, dmg: in
     this.handleSignal(@[], p1)
     let p2 = newTakeDamageSignalArgs(p1.dtype, p1.dmg, this, u)
     u.handleSignal(@[], p2)
-    u.damageTaken += max(p2.dmg, 0)
+    let p3 = newPartyMemberTakeDamageSignalArgs(p2.dtype, p2.dmg, this, u)
+    u.handleSignal(@[], p3)
+    u.damageTaken += max(p3.dmg, 0)
     if u.getHealth() == 0:
-        let p3 = newUnitDiesSignalArgs()
-        u.handleSignal(@[], p3)
-        let p4 = newUnitKilledSignalArgs(u)
-        game.world.getTile(u.pos).handleSignal(@[], p4)
+        u.handleSignal(@[], newUnitDiesSignalArgs())
+        game.world.getTile(u.pos).handleSignal(@[], newUnitKilledSignalArgs(u))
         game.removeUnitFromParty(u, game.world.getParty(u))
         game.state.players[u.player].numUnits -= 1
 
