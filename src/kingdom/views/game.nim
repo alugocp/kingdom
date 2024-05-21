@@ -1,6 +1,7 @@
 import std/sets
 import std/math
 import std/sugar
+import std/tables
 import std/options
 import std/sequtils
 import kingdom/math/types
@@ -48,7 +49,11 @@ proc newGameView*(rules: GameRuleData, world: World): GameView =
         menu: none(Menu),
         view: newViewport(),
         world: world,
-        state: newGameState(0)
+        state: newGameState(0),
+        unitActions: UnitActions(
+            moved: initTable[Unit, int](),
+            acted: initHashSet[Unit]()
+        )
     )
     let g1 {.cursor.} = g
     g.targeter.onTarget = () => g1.closeMenu()
@@ -123,6 +128,8 @@ proc closeMenu*(this: GameView): void =
 
 # Open a Menu in this Game
 proc openMenu(this: GameView, root: MenuNode, right: bool): void =
+    if this.state.turnPlayer != HUMAN_PLAYER:
+        return
     let m = newMenu(if right: getWindowBounds().x - MENU_WIDTH else: 0, 0, MENU_WIDTH, true, root)
     this.menu = some(m)
     m.pack()
@@ -145,6 +152,17 @@ proc openTargetMenu*(this: GameView): void =
                     handler(u)
                 ))
         this.openMenu(node, true)
+
+# Logic to handle changing turn state from one player to another
+proc nextPlayerTurn*(this: GameView): void =
+    this.unitActions.moved.clear()
+    this.unitActions.acted.clear()
+    if this.state.turnPlayer == this.nextPlayerId - 1:
+        this.state.turnPlayer = HUMAN_PLAYER
+    else:
+        if this.state.turnPlayer == HUMAN_PLAYER:
+            this.closeMenu()
+        this.state.turnPlayer += 1
 
 # Logic that gets run every frame
 method frame*(this: GameView): void =
@@ -290,16 +308,22 @@ method consumeMouseUpdates*(this: GameView): void =
 
                 # initMoveParty
                 proc (party: Party): void =
-                    let max = party.getMaxMovement()
+                    let max = party.getMaxMovement(this.unitActions.moved)
                     let adjs = party.getCoord().getRadialHexagonCoords(this.world.getBounds(), max)
+                    var distances = initTable[Coord, int]()
                     var targets: seq[Coord] = @[]
                     for dst in adjs:
                         if dst == party.getCoord():
                             continue
                         let path = this.world.pathfind(party, dst, adjs)
                         if path.len > 0 and this.world.canTileReceiveParty(party, dst):
+                            distances[dst] = path.len - 1
                             targets.add(dst)
-                    this.targeter.target(targets, proc (c: Coord): void = this.world.moveParty(party, c)),
+                    this.targeter.target(targets, proc (c: Coord): void =
+                        for u in party.getMembers():
+                            this.unitActions.moved[u] = this.unitActions.moved.getOrDefault(u, 0) + distances[c]
+                        this.world.moveParty(party, c)
+                    ),
 
                 # getHunger
                 (u: Unit) => this.getUnitHunger(u)

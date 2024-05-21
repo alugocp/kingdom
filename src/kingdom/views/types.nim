@@ -1,6 +1,9 @@
+import std/sets
+import std/tables
 import std/options
 import kingdom/builtin/types
 import kingdom/controls/types
+import kingdom/entities/types
 import kingdom/models/types
 import kingdom/math/types
 
@@ -24,8 +27,14 @@ method frame*(this: View): void {.base.} = discard
 method consumeKeyboardUpdates*(this: View): void {.base.} = discard
 method consumeMouseUpdates*(this: View): void {.base.} = discard
 
+# Tracks which Units have moved/acted this turn
+type UnitActions* = object
+    moved*: Table[Unit, int]
+    acted*: HashSet[Unit]
+
 # Game type used to aggregate relevant data and used in mod init functions
 type GameView* = ref object of View
+    unitActions*: UnitActions
     state*: GameState
     menu*: Option[Menu]
     nextPlayerId*: int

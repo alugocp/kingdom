@@ -280,12 +280,10 @@ proc canUnitTravelAcrossTiles*(this: World, unit: Unit, current: Coord, adj: Coo
     let opp = getOppositeSide(side)
     let tile1 = this.getTile(current)
     let tile2 = this.getTile(adj)
-    var test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getBorder(side))
-    var test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getBorder(opp))
-    if test1.canCross == MovementType.BLOCKED:
-        unit.handleSignal(@[], test1)
-    if test2.canCross == MovementType.BLOCKED:
-        unit.handleSignal(@[], test2)
+    let test1 = newCanCrossBorderSignalArgs(tile1, side, tile1.getBorder(side))
+    let test2 = newCanCrossBorderSignalArgs(tile2, opp, tile2.getBorder(opp))
+    unit.handleSignal(@[], test1)
+    unit.handleSignal(@[], test2)
     return test1.canCross * test2.canCross
 
 # Return a path from the Party's current position to the destination,

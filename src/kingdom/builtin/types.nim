@@ -36,6 +36,7 @@ proc newPlayerData*(id: int): PlayerData =
 type GameState* = object
     players*: seq[PlayerData]
     match*: MatchState
+    turnPlayer*: int
     turn*: int
 
 proc newGameState*(turn: int): GameState =
@@ -43,5 +44,6 @@ proc newGameState*(turn: int): GameState =
         newPlayerData(HUMAN_PLAYER),
         newPlayerData(AMBIENT_PLAYER)
     ]
+    result.turnPlayer = HUMAN_PLAYER
     result.match = MatchState.ONGOING
     result.turn = turn

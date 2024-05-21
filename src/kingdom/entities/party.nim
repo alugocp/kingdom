@@ -1,3 +1,4 @@
+import std/tables
 import std/options
 import std/strformat
 import kingdom/math/types
@@ -34,14 +35,15 @@ proc getMembers*(this: Party): seq[Unit] =
 proc getCoord*(this: Party): Coord = this.getMembers()[0].pos
 
 # Returns the minimum movement value of any Unit in this Party (max amount the entire Party can move)
-proc getMaxMovement*(this: Party): int =
-    var max: Option[Natural] = none(Natural)
+proc getMaxMovement*(this: Party, unitsMoved: Table[Unit,int]): int =
+    var maximum: Option[int] = none(int)
     for u in this.getMembers():
         let payload = newGetMovementSignalArgs(u)
         u.handleSignal(@[], payload)
-        if max.isNone() or max.get() > payload.movement:
-            max = some(payload.movement)
-    return if max.isSome(): max.get() else: 1
+        let remaining = max(0, payload.movement - unitsMoved.getOrDefault(u, 0))
+        if maximum.isNone() or maximum.get() > remaining:
+            maximum = some(remaining)
+    return if maximum.isSome(): maximum.get() else: 1
 
 # Adds some unit to the Party
 proc addToParty*(this: Party, u: Unit): void =

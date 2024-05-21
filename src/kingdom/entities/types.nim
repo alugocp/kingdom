@@ -1,6 +1,7 @@
 import std/sets
 import std/sugar
 import std/tables
+import std/hashes
 import std/options
 import kingdom/math/types
 import kingdom/wrapper/types
@@ -90,6 +91,9 @@ type Unit* = ref object
     level*: int
     gold*: int
     xp*: int
+
+# Hash function so Units can be keys in tables
+proc hash*(this: Unit): Hash = this.id
 
 type
     # Type representing a Tile's Quest
