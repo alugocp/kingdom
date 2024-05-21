@@ -160,6 +160,7 @@ const ITEM_KINGSLAYER = "Kingslayer"
 # MOD-SPECIFIC SIGNALS
 #
 
+# Payload for when a Unit goes fishin'
 const FISHED_CHANNEL = "Fished"
 type FishedSignalArgs = ref object of BaseSignalArgs
     host: Unit
@@ -512,7 +513,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_TUNDE_THE_SORCEROR
         unit.desc = some("A powerful sorceror from the southern plains")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 1, 3)
         unit.setStat(STAT_INTELLIGENCE, 9)
         unit.setStat(STAT_DEXTERITY, 6)
         unit.ability(game, ABILITY_ELDRITCH_BLAST)
@@ -528,7 +529,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_RANGER_DAWISGALA
         unit.desc = some("He is a sentinel of the Chestnut groves in the West")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_HUMAN]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 2, 3)
         unit.setStat(STAT_AGILITY, 8)
         unit.setStat(STAT_DEXTERITY, 6)
         unit.setStat(STAT_STRENGTH, 4)
@@ -546,7 +547,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_MALLARD_THE_MAGE
         unit.desc = some("A spellcaster from the great marshes")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 3, 3)
         unit.setStat(STAT_INTELLIGENCE, 8)
         unit.setStat(STAT_DEXTERITY, 5)
         unit.ability(game, ABILITY_ZAP)
@@ -564,7 +565,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_MIZTON_OF_THE_WASTES
         unit.desc = some("This Raksha warrior roams the desert highlands")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_RAKSHA]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 4, 3)
         unit.setStat(STAT_WISDOM, 6)
         unit.setStat(STAT_AGILITY, 8)
         unit.setStat(STAT_STRENGTH, 6)
@@ -581,7 +582,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_GUROCH_THE_IMPENETRABLE
         unit.desc = some("This Ogre makes a living transporting important goods between the kingdoms")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_OGRE]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 5, 3)
         unit.setStat(STAT_CONSTITUTION, 10)
         unit.setStat(STAT_STRENGTH, 8)
         unit.maxHaul = 10
@@ -599,7 +600,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_HUGINN_BLACKFEATHER
         unit.desc = some("A Garuda spellcaster who prefers to avoid the front lines")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_GARUDA]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 6, 3)
         unit.setStat(STAT_INTELLIGENCE, 10)
         unit.setStat(STAT_DEXTERITY, 8)
         unit.setStat(STAT_WISDOM, 6)
@@ -619,7 +620,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_AZDWAGIT_HALF_DJINN
         unit.desc = some("This warrior uses his inherent magical abilities to heal his allies")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_HALF_DJINN]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 7, 3)
         unit.setStat(STAT_INTELLIGENCE, 6)
         unit.setStat(STAT_AGILITY, 8)
         unit.setStat(STAT_STRENGTH, 5)
@@ -635,7 +636,7 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
         unit.name = UNIT_ISSLIS_THE_SEARING_DEATH
         unit.desc = some("This Naga battlemage enhances their venomous fangs by conjuring fire")
         unit.classification = @[SPECIES_HUMANOID, SPECIES_NAGA]
-        unit.sprite = game.getUnitSprite(unitSprites, 0, 1)
+        unit.sprite = game.getUnitSprite(unitSprites, 7, 3)
         unit.setStat(STAT_INTELLIGENCE, 7)
         unit.setStat(STAT_DEXTERITY, 8)
         unit.ability(game, ABILITY_FLAMING_FANGS)
