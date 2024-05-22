@@ -97,7 +97,7 @@ proc heal*(this: Unit, target: Unit, health: int): void {.exportc, dynlib.} =
     target.damageTaken = max(target.damageTaken - p2.health, 0)
 
 # Return a MenuNode describing this Unit and associated actions
-proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode =
+proc getMenuNode*(this: Unit, party: Party, unitCanAct: bool, actions: UnitMenuActions): MenuNode =
     let maxHealth = this.getMaxHealth()
     let node = newListNode()
     let stats = this.getStats()
@@ -122,14 +122,14 @@ proc getMenuNode*(this: Unit, party: Party, actions: UnitMenuActions): MenuNode 
     if this.abilities.len > 0:
         node.add(newHeaderNode("Abilities:"))
     for ability in this.abilities:
-        node.add(ability.getMenuNode(this))
+        node.add(ability.getMenuNode(this, unitCanAct))
         node.add(newSeparatorNode())
 
     # Menu elements for Statuses
     if this.statuses.len > 0:
         node.add(newHeaderNode("Statuses:"))
     for status in this.statuses:
-        node.add(status.effect.getMenuNode(this))
+        node.add(status.effect.getMenuNode(this, unitCanAct))
         node.add(newSeparatorNode())
 
     # Menu elements for Items (equipped inventory)

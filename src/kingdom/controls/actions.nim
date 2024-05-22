@@ -54,6 +54,7 @@ type WorldMenuActions* = object
     joinParty*: (Unit, Party) -> void
     initMoveParty*: (Party) -> void
     getHunger*: (Unit) -> int
+    canUnitAct*: (Unit) -> bool
 
 proc newWorldMenuActions*(
     open: (MenuNode) -> void,
@@ -62,7 +63,8 @@ proc newWorldMenuActions*(
     leaveParty: (Unit, Party) -> void,
     joinParty: (Unit, Party) -> void,
     initMoveParty: (Party) -> void,
-    getHunger: (Unit) -> int
+    getHunger: (Unit) -> int,
+    canUnitAct: (Unit) -> bool
 ): WorldMenuActions =
     result.open = open
     result.equip = equip
@@ -71,3 +73,4 @@ proc newWorldMenuActions*(
     result.leaveParty = leaveParty
     result.joinParty = joinParty
     result.initMoveParty = initMoveParty
+    result.canUnitAct = canUnitAct

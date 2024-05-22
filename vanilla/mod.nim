@@ -664,7 +664,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[AbilityClickedSignalArgs](args)
             let view = game.getGameView()
             let allies = view.world.getAllies(a.host)
-            view.targeter.target(allies, (u: Unit) => a.host.heal(u, 6))
+            view.targeter.target(allies, proc (u: Unit): void =
+                a.host.heal(u, 6)
+                view.unitHasActed(a.host)
+            )
         )
         return ability
     )
@@ -678,7 +681,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[AbilityClickedSignalArgs](args)
             let view = game.getGameView()
             let enemies = view.world.getEnemies(a.host)
-            view.targeter.target(enemies, (u: Unit) => u.addStatus(3, game.rules.abilityGeneration.generate(STATUS_DAMAGE_DEBUFF)))
+            view.targeter.target(enemies, proc (u: Unit): void =
+                u.addStatus(3, game.rules.abilityGeneration.generate(STATUS_DAMAGE_DEBUFF))
+                view.unitHasActed(a.host)
+            )
         )
         return ability
     )
@@ -692,7 +698,10 @@ proc initKingdomMod(game: ModCoreInterface): void {.exportc, dynlib.} =
             let a = cast[AbilityClickedSignalArgs](args)
             let view = game.getGameView()
             let allies = view.world.getAllies(a.host)
-            view.targeter.target(allies, (u: Unit) => u.addStatus(3, game.rules.abilityGeneration.generate(STATUS_DAMAGE_BUFF)))
+            view.targeter.target(allies, proc (u: Unit): void =
+                u.addStatus(3, game.rules.abilityGeneration.generate(STATUS_DAMAGE_BUFF))
+                view.unitHasActed(a.host)
+            )
         )
         return ability
     )

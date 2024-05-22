@@ -30,7 +30,10 @@ proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dm
     let a = cast[AbilityClickedSignalArgs](args)
     let view = game.getGameView()
     let enemies = view.world.getEnemies(a.host)
-    view.targeter.target(enemies, (u: Unit) => a.host.dealDamage(view, u, dtype, dmg))
+    view.targeter.target(enemies, proc (u: Unit): void =
+        a.host.dealDamage(view, u, dtype, dmg)
+        view.unitHasActed(a.host)
+    )
     view.openTargetMenu()
 
 # Instantiates a basic attack Ability
@@ -101,6 +104,7 @@ proc harvest*(game: ModCoreInterface, args: BaseSignalArgs, tileType: string, it
     let tile = view.world.getTile(a.host.pos)
     if tile.name == tileType:
         discard view.addNewItem(item, a.host.pos)
+        view.unitHasActed(a.host)
 
 # Dictates which Item(s) a Unit will drop when it dies
 proc dropLoot*(unit: Unit, game: ModCoreInterface, items: seq[string]): void {.exportc, dynlib.} =

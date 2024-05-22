@@ -35,6 +35,7 @@ proc setSpeed*(unit: Unit, speed: int): void {.importc.}
 proc addNewItem*(this: GameView, key: string, pos: Coord): Item {.importc.}
 proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit {.importc.}
 proc dealDamage*(this: Unit, game: GameView, u: Unit, dtype: DamageType, dmg: int): void {.importc.}
+proc unitHasActed*(this: GameView, u: Unit): void {.importc.}
 proc createNewPlayer*(this: GameView): int {.importc.}
 
 # src/kingdom/wrapper/sprites.nim

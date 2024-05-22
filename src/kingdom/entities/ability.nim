@@ -30,9 +30,9 @@ proc dropTag*(this: Ability, tag: string): void {.exportc: "dropTag_ability", dy
     this.tags.excl(tag)
 
 # Return a MenuNode describing this Ability
-proc getMenuNode*(this: Ability, host: Unit): MenuNode =
+proc getMenuNode*(this: Ability, host: Unit, hostCanAct: bool): MenuNode =
     let node = newListNode()
-    if host.player == HUMAN_PLAYER and this.hasSignalHandler(ABILITY_CLICKED_CHANNEL):
+    if hostCanAct and host.player == HUMAN_PLAYER and this.hasSignalHandler(ABILITY_CLICKED_CHANNEL):
         node.add(newButtonNode(this.name, proc (): void =
             this.handleSignal(@[], newAbilityClickedSignalArgs(host))
         ))

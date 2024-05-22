@@ -164,6 +164,10 @@ proc nextPlayerTurn*(this: GameView): void =
             this.closeMenu()
         this.state.turnPlayer += 1
 
+# Marks the given unit as having acted during this turn
+proc unitHasActed*(this: GameView, u: Unit): void {.exportc, dynlib.} =
+    this.unitActions.acted.incl(u)
+
 # Logic that gets run every frame
 method frame*(this: GameView): void =
     if this.state.match != MatchState.ONGOING:
@@ -326,7 +330,10 @@ method consumeMouseUpdates*(this: GameView): void =
                     ),
 
                 # getHunger
-                (u: Unit) => this.getUnitHunger(u)
+                (u: Unit) => this.getUnitHunger(u),
+
+                # canUnitAct
+                (u: Unit) => not this.unitActions.acted.contains(u)
             )
             let node = this.world.getMenuNode(hex, actions)
             this.openMenu(node, right)

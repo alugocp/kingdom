@@ -181,7 +181,7 @@ proc getMenuNode*(this: World, c: Coord, actions: WorldMenuActions): MenuNode =
                     (itype: InventoryType, i: Item) => actions.unequip(itype, u, i),
                     actions.getHunger
                 )
-                let root = u.getMenuNode(party, unitActions)
+                let root = u.getMenuNode(party, actions.canUnitAct(u), unitActions)
                 node.add(newButtonNode(u.getMenuLabel(), () => actions.open(root)))
         if p.getPlayerId() == HUMAN_PLAYER:
             node.add(newSpaceNode())
