@@ -51,7 +51,7 @@ proc getMenuNode*(this: Item, equipData: Option[tuple[host: Unit, itype: Invento
             ))
         else:
             if this.hasSignalHandler(ITEM_CONSUMED_CHANNEL):
-                node.add(newButtonNode("Use Item", proc (): void = actions.consume()))
+                node.add(newButtonNode("Use Item", actions.consume))
             node.add(newButtonNode("Move to equip inventory", proc (): void =
                 actions.unequip()
                 actions.autoEquip(InventoryType.EQUIP)

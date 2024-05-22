@@ -170,6 +170,7 @@ proc getMenuNode*(this: Unit, party: Party, unitCanAct: bool, actions: UnitMenuA
                         let payload = newItemConsumedSignalArgs(this)
                         item.handleSignal(@[], payload)
                         this.haul = this.haul.filterIt(it != item)
+                        actions.close()
                 )
             ))
             node.add(newSeparatorNode())

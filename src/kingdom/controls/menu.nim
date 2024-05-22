@@ -48,7 +48,7 @@ proc draw*(this: Menu, m: MouseState, tall: bool = false): void =
 proc getMenuMouseRect*(this: Menu): Rect =
     Rect(
         x: this.x,
-        y: this.y,
+        y: this.y - this.offset,
         w: this.width,
         h: this.root.getHeight()
     )

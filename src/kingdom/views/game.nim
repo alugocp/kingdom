@@ -255,6 +255,9 @@ method consumeMouseUpdates*(this: GameView): void =
                 # open
                 (n: MenuNode) => this.openMenu(n, right),
 
+                # close
+                () => this.closeMenu(),
+
                 # equip
                 proc (itype: InventoryType, i: Item): void =
                     let units = this.world.getUnits(i.pos.get())
