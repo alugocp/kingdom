@@ -15,6 +15,7 @@ import kingdom/builtin/signals
 import kingdom/builtin/values
 import kingdom/builtin/types
 import kingdom/wrapper/window
+import kingdom/wrapper/draw
 import kingdom/controls/targeting
 import kingdom/controls/keyboard
 import kingdom/controls/viewport
@@ -28,6 +29,9 @@ import kingdom/views/types
 
 # Width for each Menu in the GameView
 const MENU_WIDTH = 300
+
+# Width for the game menu button
+const GAME_MENU_BUTTON = 96
 
 # Forward declaration for the constructor
 proc closeMenu*(this: GameView): void
@@ -168,6 +172,13 @@ proc nextPlayerTurn*(this: GameView): void =
 proc unitHasActed*(this: GameView, u: Unit): void {.exportc, dynlib.} =
     this.unitActions.acted.incl(u)
 
+# Opens a menu for global actions during a match
+proc openGameMenu*(this: GameView): void =
+    let node = newListNode()
+    node.add(newHeaderNode("Game Menu"))
+    node.add(newButtonNode("End Turn", () => this.nextPlayerTurn()))
+    this.openMenu(node, true)
+
 # Logic that gets run every frame
 method frame*(this: GameView): void =
     if this.state.match != MatchState.ONGOING:
@@ -190,6 +201,11 @@ method frame*(this: GameView): void =
         this.openMenu(root, true)
         return
 
+    # Run one AI player's logic per frame
+    if this.state.turnPlayer != HUMAN_PLAYER:
+        # TODO run player AI logic here
+        this.nextPlayerTurn()
+
 # Returns how many turns it has been since the given Unit was fed
 proc getUnitHunger*(this: GameView, u: Unit): int =
     let turnsSinceFeeding = this.state.turn - u.lastTurnFed
@@ -200,6 +216,9 @@ proc getUnitHunger*(this: GameView, u: Unit): int =
 # Draws all elements of this Game object
 method draw*(this: GameView): void =
     this.world.draw(this.rules.sprites, this.hoveredHex, this.targeter.coords, this.view, this.rules.edgeTileSprite)
+    if this.state.turnPlayer == HUMAN_PLAYER:
+        let bounds = getWindowBounds()
+        drawRect(bounds.x - GAME_MENU_BUTTON, bounds.y - GAME_MENU_BUTTON, GAME_MENU_BUTTON, GAME_MENU_BUTTON, MENU_BG)
     if this.menu.isSome():
         this.menu.get().draw(this.mouse, true)
 
@@ -213,6 +232,7 @@ method consumeKeyboardUpdates*(this: GameView): void =
 
 # Check for updated mouse state and see what we have to process
 method consumeMouseUpdates*(this: GameView): void =
+    # Handle scroll action, either on a Menu or on the World
     if this.mouse.down and this.mouse.scrolling:
         if this.menu.isSome() and this.mouse.posdown.within(this.menu.get().getMenuMouseRect()):
             this.menu.get().handleScroll(this.mouse)
@@ -233,14 +253,26 @@ method consumeMouseUpdates*(this: GameView): void =
 
     # Process a click event
     if not this.mouse.down and this.mouse.wasDown and not this.mouse.wasScrolling:
+        let bounds = getWindowBounds()
+
+        # Check for click on a menu
         if this.menu.isSome():
             let clicked = this.menu.get().checkClick(this.mouse)
             if clicked:
                 return
             elif this.state.match == MatchState.ONGOING:
                 this.closeMenu()
+
+        # Check for click on game menu button
+        elif this.mouse.posdown.x >= bounds.x - GAME_MENU_BUTTON and this.mouse.posdown.y >= bounds.y - GAME_MENU_BUTTON:
+            this.openGameMenu()
+            return
+
+        # Automatically close an open Menu when you click elsewhere (if the match is ongoing)
         if this.state.match != MatchState.ONGOING:
             return
+
+        # Logic for when you click on a hex tile
         if this.world.contains(hex):
             if this.targeter.isCoords():
                 if this.targeter.coords.get().contains(hex):
