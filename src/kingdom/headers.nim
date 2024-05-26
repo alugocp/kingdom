@@ -37,6 +37,7 @@ proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Op
 proc dealDamage*(this: Unit, game: GameView, u: Unit, dtype: DamageType, dmg: int): void {.importc.}
 proc unitHasActed*(this: GameView, u: Unit): void {.importc.}
 proc createNewPlayer*(this: GameView): int {.importc.}
+proc openTargetMenu*(this: GameView): void {.importc.}
 
 # src/kingdom/wrapper/sprites.nim
 proc registerSheet*(this: SpriteManager, modname: string, filename: string): SheetHandle {.importc.}
@@ -107,5 +108,5 @@ proc getTile*(this: World, c: Coord): Tile {.importc.}
 proc getAdjacentHexagonCoords*(c: Coord, bounds: Coord): seq[Coord] {.importc.}
 
 # src/kingdom/controls/targeting.nim
-proc target*(this: Targeter, coords: seq[Coord], coordHandler: (c: Coord) -> void): void {.importc: "target_coords".}
-proc target*(this: Targeter, units: seq[Unit], unitHandler: (c: Unit) -> void): void {.importc: "target_units".}
+proc target*(this: Targeter, player: int, coords: seq[Coord], coordHandler: (c: Coord) -> void): void {.importc: "target_coords".}
+proc target*(this: Targeter, player: int, units: seq[Unit], unitHandler: (c: Unit) -> void): void {.importc: "target_units".}

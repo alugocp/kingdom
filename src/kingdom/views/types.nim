@@ -35,6 +35,7 @@ type UnitActions* = object
 # Game type used to aggregate relevant data and used in mod init functions
 type GameView* = ref object of View
     unitActions*: UnitActions
+    npcParties*: seq[Party]
     state*: GameState
     menu*: Option[Menu]
     nextPlayerId*: int

@@ -30,7 +30,7 @@ proc attack*(game: ModCoreInterface, args: BaseSignalArgs, dtype: DamageType, dm
     let a = cast[AbilityClickedSignalArgs](args)
     let view = game.getGameView()
     let enemies = view.world.getEnemies(a.host)
-    view.targeter.target(enemies, proc (u: Unit): void =
+    view.targeter.target(a.host.player, enemies, proc (u: Unit): void =
         a.host.dealDamage(view, u, dtype, dmg)
         view.unitHasActed(a.host)
     )

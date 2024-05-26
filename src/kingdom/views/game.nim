@@ -11,6 +11,7 @@ import kingdom/entities/signals
 import kingdom/entities/party
 import kingdom/entities/types
 import kingdom/entities/unit
+import kingdom/builtin/channels
 import kingdom/builtin/signals
 import kingdom/builtin/values
 import kingdom/builtin/types
@@ -75,12 +76,16 @@ proc addUnitToNewParty(this: GameView, u: Unit): void =
     let p = newParty(this.nextPartyId, u)
     this.world.moveParty(p, u.pos)
     this.nextPartyId += 1
+    if u.player != HUMAN_PLAYER:
+        this.npcParties.add(p)
 
 # Removes a Unit from a Party and deletes the Party if it's empty
 proc removeUnitFromParty(this: GameView, unit: Unit, party: Party): void =
     let empty = party.removeFromParty(unit)
     if empty:
         this.world.deleteParty(party, unit.pos)
+        if this.npcParties.contains(party):
+            this.npcParties = this.npcParties.filterIt(it != party)
 
 # Initializes a new Unit instance and puts it in the World
 proc addNewUnit*(this: GameView, key: string, pos: Coord, player: int, party: Option[Party] = none(Party)): Unit {.exportc, dynlib.} =
@@ -139,7 +144,7 @@ proc openMenu(this: GameView, root: MenuNode, right: bool): void =
     m.pack()
 
 # Opens a menu used specifically for targeting
-proc openTargetMenu*(this: GameView): void =
+proc openTargetMenu*(this: GameView): void {.exportc, dynlib.} =
     if this.targeter.isUnits():
         let units = this.targeter.units.get()
         let handler = this.targeter.unitHandler.get()
@@ -203,7 +208,13 @@ method frame*(this: GameView): void =
 
     # Run one AI player's logic per frame
     if this.state.turnPlayer != HUMAN_PLAYER:
-        # TODO run player AI logic here
+        for p in this.npcParties:
+            let pos = p.getCoord()
+            if p.getPlayerId() == this.state.turnPlayer and this.world.getPlayers(pos).len > 1:
+                for u in p.getMembers():
+                    let abilities = u.abilities.filterIt(it.hasSignalHandler(ABILITY_CLICKED_CHANNEL))
+                    if abilities.len > 0:
+                        abilities[0].handleSignal(@[], newAbilityClickedSignalArgs(u))
         this.nextPlayerTurn()
 
 # Returns how many turns it has been since the given Unit was fed
@@ -307,7 +318,7 @@ method consumeMouseUpdates*(this: GameView): void =
                         else:
                             capture u:
                                 filtered.add(u)
-                    this.targeter.target(filtered, (u: Unit) => this.world.giveItemToUnit(itype, i, u))
+                    this.targeter.target(HUMAN_PLAYER, filtered, (u: Unit) => this.world.giveItemToUnit(itype, i, u))
                     this.openTargetMenu(),
 
                 # unequip
@@ -358,7 +369,7 @@ method consumeMouseUpdates*(this: GameView): void =
                         if path.len > 0 and this.world.canTileReceiveParty(party, dst):
                             distances[dst] = path.len - 1
                             targets.add(dst)
-                    this.targeter.target(targets, proc (c: Coord): void =
+                    this.targeter.target(HUMAN_PLAYER, targets, proc (c: Coord): void =
                         for u in party.getMembers():
                             this.unitActions.moved[u] = this.unitActions.moved.getOrDefault(u, 0) + distances[c]
                         this.world.moveParty(party, c)
