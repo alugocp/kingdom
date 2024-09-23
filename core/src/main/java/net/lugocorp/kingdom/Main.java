@@ -17,7 +17,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        image = new Texture("icons.png");
         font = new BitmapFont();
     }
 
@@ -26,7 +26,7 @@ public class Main extends ApplicationAdapter {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         batch.begin();
         batch.draw(image, 140, 210);
-        font.draw(batch, "Hello, world!", 10, 20);
+        font.draw(batch, "Kingdom Game", 10, 20);
         batch.end();
     }
 
