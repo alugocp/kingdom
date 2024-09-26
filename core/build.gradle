@@ -1,3 +1,7 @@
+plugins {
+   id "com.diffplug.spotless" version "5.16.0"
+}
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 eclipse.project.name = appName + '-core'
 
@@ -7,5 +11,16 @@ dependencies {
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
+  }
+}
+
+spotless {
+  java {
+    eclipse()
+    trimTrailingWhitespace()
+    indentWithSpaces(4)
+    endWithNewline()
+    importOrder()
+    replaceRegex("No space between package and imports", "package ([\\w\\.]+);\\n\\n\\nimport", "package \$1;\nimport")
   }
 }

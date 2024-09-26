@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.world;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
-import net.lugocorp.kingdom.game.Tile;
-import net.lugocorp.kingdom.math.Point;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import net.lugocorp.kingdom.game.Tile;
+import net.lugocorp.kingdom.math.Point;
 
 /**
  * Properties and logic for the physical game map

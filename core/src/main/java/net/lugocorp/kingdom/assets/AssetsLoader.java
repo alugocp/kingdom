@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.assets;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 /**
  * Wraps the logic for loading 3D model assets into the game

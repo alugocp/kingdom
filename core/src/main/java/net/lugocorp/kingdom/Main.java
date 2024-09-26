@@ -1,23 +1,23 @@
 package net.lugocorp.kingdom;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.Model;
-import net.lugocorp.kingdom.assets.AssetsLoader;
-import net.lugocorp.kingdom.world.WorldGenerator;
-import net.lugocorp.kingdom.world.World;
+import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.Optional;
+import net.lugocorp.kingdom.assets.AssetsLoader;
+import net.lugocorp.kingdom.world.World;
+import net.lugocorp.kingdom.world.WorldGenerator;
 
 public class Main implements ApplicationListener {
     private SpriteBatch spriteBatch;
@@ -44,7 +44,7 @@ public class Main implements ApplicationListener {
         this.camController = new GameCameraController(this.cam);
         Gdx.input.setInputProcessor(this.camController);
         this.cam.position.set(5f, 5f, 0f);
-        this.cam.lookAt(0,0,0);
+        this.cam.lookAt(0, 0, 0);
         this.cam.near = 1f;
         this.cam.far = 300f;
         this.cam.update();
@@ -87,11 +87,14 @@ public class Main implements ApplicationListener {
     }
 
     @Override
-    public void resize(int w, int h) {}
+    public void resize(int w, int h) {
+    }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 }

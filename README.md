@@ -9,6 +9,7 @@ This project uses [Gradle](https://gradle.org/) as a build system and dependency
 - `gradle lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
 - `gradle lwjgl3:run`: starts the application.
 - `gradle test`: runs unit tests (if any).
+- `gradle spotlessApply`: reformats the business logic code
 
 ## 3D Models
 You can create new models for this game using Blockbench and [fbx-conv](https://github.com/libgdx/fbx-conv).
