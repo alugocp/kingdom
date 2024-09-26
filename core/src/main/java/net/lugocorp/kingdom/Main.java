@@ -14,83 +14,76 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.Model;
+import net.lugocorp.kingdom.assets.AssetsLoader;
+import net.lugocorp.kingdom.world.WorldGenerator;
+import net.lugocorp.kingdom.world.World;
+import java.util.Optional;
 
 public class Main implements ApplicationListener {
-    private SpriteBatch batch;
-    // private BitmapFont font;
-    // private Texture image;
-    public PerspectiveCamera cam;
-    public GameCameraController camController;
-    public ModelBatch modelBatch;
-    public AssetManager assets;
-    public ModelInstance instance;
-    public Environment environment;
-    public boolean loading;
+    private SpriteBatch spriteBatch;
+    private PerspectiveCamera cam;
+    private GameCameraController camController;
+    private ModelBatch modelBatch;
+    private AssetsLoader assets;
+    private Environment environment;
+    private Optional<World> world = Optional.empty();
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        // image = new Texture("icons.png");
-        // font = new BitmapFont();
+        // 2D setup
+        this.spriteBatch = new SpriteBatch();
 
-        // 3D stuff
-        modelBatch = new ModelBatch();
-        environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        // 3D setup
+        this.modelBatch = new ModelBatch();
+        this.environment = new Environment();
+        this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        this.environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-        cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(5f, 5f, 0f);
-        cam.lookAt(0,0,0);
-        cam.near = 1f;
-        cam.far = 300f;
-        cam.update();
+        // Camera
+        this.cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camController = new GameCameraController(this.cam);
+        Gdx.input.setInputProcessor(this.camController);
+        this.cam.position.set(5f, 5f, 0f);
+        this.cam.lookAt(0,0,0);
+        this.cam.near = 1f;
+        this.cam.far = 300f;
+        this.cam.update();
 
-        camController = new GameCameraController(cam);
-        Gdx.input.setInputProcessor(camController);
-
-        assets = new AssetManager();
-        assets.load("tile.g3db", Model.class);
-        loading = true;
-    }
-
-    private void doneLoading() {
-        Model model = assets.get("tile.g3db", Model.class);
-        instance = new ModelInstance(model);
-        loading = false;
+        // Assets
+        this.assets = new AssetsLoader(new AssetManager());
+        this.assets.load();
     }
 
     @Override
     public void render() {
+        // Frame setup
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-
-        if (loading && assets.update()) {
-            this.doneLoading();
-        }
-        camController.update();
-
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        this.camController.update();
 
-        modelBatch.begin(cam);
-        if (instance != null) {
-            modelBatch.render(instance, environment);
+        // Check for loaded assets
+        this.assets.doOnLoad(() -> {
+            this.world = Optional.of(new WorldGenerator().generateWorld(this.assets, 10, 5));
+        });
+
+        // Draw 3D assets
+        this.modelBatch.begin(this.cam);
+        if (this.world.isPresent()) {
+            this.modelBatch.render(this.world.get().getModelInstances(), this.environment);
         }
-        modelBatch.end();
+        this.modelBatch.end();
 
-        batch.begin();
-        // batch.draw(image, 140, 210);
-        // font.draw(batch, "Kingdom Game", 10, 20);
-        batch.end();
+        // Draw 2D assets
+        this.spriteBatch.begin();
+        this.spriteBatch.end();
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        // image.dispose();
-        // font.dispose();
-        modelBatch.dispose();
-        assets.dispose();
+        this.spriteBatch.dispose();
+        this.modelBatch.dispose();
+        this.assets.dispose();
     }
 
     @Override
