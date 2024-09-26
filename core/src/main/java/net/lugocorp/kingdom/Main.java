@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom;
-
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -17,13 +15,12 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.Model;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends ApplicationAdapter {
+public class Main implements ApplicationListener {
     private SpriteBatch batch;
-    private BitmapFont font;
-    private Texture image;
+    // private BitmapFont font;
+    // private Texture image;
     public PerspectiveCamera cam;
-    public CameraInputController camController;
+    public GameCameraController camController;
     public ModelBatch modelBatch;
     public AssetManager assets;
     public ModelInstance instance;
@@ -33,8 +30,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        image = new Texture("icons.png");
-        font = new BitmapFont();
+        // image = new Texture("icons.png");
+        // font = new BitmapFont();
 
         // 3D stuff
         modelBatch = new ModelBatch();
@@ -43,13 +40,13 @@ public class Main extends ApplicationAdapter {
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(1f, 1f, 1f);
+        cam.position.set(5f, 5f, 0f);
         cam.lookAt(0,0,0);
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
 
-        camController = new CameraInputController(cam);
+        camController = new GameCameraController(cam);
         Gdx.input.setInputProcessor(camController);
 
         assets = new AssetManager();
@@ -75,7 +72,6 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        // Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
         modelBatch.begin(cam);
         if (instance != null) {
             modelBatch.render(instance, environment);
@@ -83,17 +79,26 @@ public class Main extends ApplicationAdapter {
         modelBatch.end();
 
         batch.begin();
-        batch.draw(image, 140, 210);
-        font.draw(batch, "Kingdom Game", 10, 20);
+        // batch.draw(image, 140, 210);
+        // font.draw(batch, "Kingdom Game", 10, 20);
         batch.end();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        image.dispose();
-        font.dispose();
+        // image.dispose();
+        // font.dispose();
         modelBatch.dispose();
         assets.dispose();
     }
+
+    @Override
+    public void resize(int w, int h) {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
 }
