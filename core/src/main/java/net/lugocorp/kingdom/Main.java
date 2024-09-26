@@ -53,12 +53,12 @@ public class Main extends ApplicationAdapter {
         Gdx.input.setInputProcessor(camController);
 
         assets = new AssetManager();
-        assets.load("tile.obj", Model.class);
+        assets.load("tile.g3db", Model.class);
         loading = true;
     }
 
     private void doneLoading() {
-        Model model = assets.get("tile.obj", Model.class);
+        Model model = assets.get("tile.g3db", Model.class);
         instance = new ModelInstance(model);
         loading = false;
     }
@@ -75,6 +75,7 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        // Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
         modelBatch.begin(cam);
         if (instance != null) {
             modelBatch.render(instance, environment);
