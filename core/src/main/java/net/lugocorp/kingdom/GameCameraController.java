@@ -30,7 +30,7 @@ class GameCameraController extends CameraInputController {
             return false;
         }
         Point p = this.prev.get();
-        this.camera.translate(Coords.getVector((float) (x - p.x) / 100, (float) (p.y - y) / 100));
+        this.camera.translate(Coords.raw.vector((float) (x - p.x) / 100, 0f, (float) (p.y - y) / 100));
         this.prev = Optional.of(new Point(x, y));
         this.camera.update();
         return true;

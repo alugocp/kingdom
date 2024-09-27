@@ -3,11 +3,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Wraps the logic for loading 3D model assets into the game
  */
 public class AssetsLoader {
+    private final Map<String, Float> heights = new HashMap<>();
     private final AssetManager assets;
     private boolean loading = true;
 
@@ -30,6 +33,7 @@ public class AssetsLoader {
      */
     public void load() {
         this.assets.load("tile.g3db", Model.class);
+        this.assets.load("crystal.g3db", Model.class);
     }
 
     /**
@@ -37,9 +41,21 @@ public class AssetsLoader {
      */
     public ModelInstance createModelInstance(String name) {
         Model model = assets.get(String.format("%s.g3db", name), Model.class);
-        BoundingBox box = new BoundingBox();
-        model.calculateBoundingBox(box);
         return new ModelInstance(model);
+    }
+
+    /**
+     * Returns the height of a given model by its name (calculates the height if
+     * necessary)
+     */
+    public float getModelHeight(String name) {
+        if (!this.heights.containsKey(name)) {
+            Model model = assets.get(String.format("%s.g3db", name), Model.class);
+            BoundingBox box = new BoundingBox();
+            model.calculateBoundingBox(box);
+            this.heights.put(name, box.getHeight());
+        }
+        return this.heights.get(name);
     }
 
     /**

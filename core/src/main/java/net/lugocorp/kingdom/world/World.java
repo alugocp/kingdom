@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.lugocorp.kingdom.game.Tile;
+import net.lugocorp.kingdom.game.Unit;
 import net.lugocorp.kingdom.math.Point;
 
 /**
@@ -66,10 +67,14 @@ public class World {
         Array<ModelInstance> models = new Array<>();
         for (int x = 0; x < this.w; x++) {
             for (int y = 0; y < this.h; y++) {
-                Optional<ModelInstance> instance = this.getTile(x, y).flatMap((Tile t) -> t.getModelInstance());
-                if (instance.isPresent()) {
-                    models.add(instance.get());
+                Optional<Tile> tile = this.getTile(x, y);
+                if (!tile.isPresent()) {
+                    continue;
                 }
+                // tile.get().building.flatMap((Building b) ->
+                // b.getModelInstance()).ifPresent((ModelInstance m) -> models.add(m));
+                tile.get().unit.flatMap((Unit u) -> u.getModelInstance()).ifPresent((ModelInstance m) -> models.add(m));
+                tile.get().getModelInstance().ifPresent((ModelInstance m) -> models.add(m));
             }
         }
         return models;

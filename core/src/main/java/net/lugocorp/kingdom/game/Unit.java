@@ -4,16 +4,14 @@ import java.util.Optional;
 import net.lugocorp.kingdom.Modellable;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.math.Hexagons;
 
-public class Tile extends Modellable {
-    // public Optional<Building> building = Optional.empty();
-    public Optional<Unit> unit = Optional.empty();
+public class Unit extends Modellable {
 
     /** {@inheritdoc} */
     public void setModelInstance(AssetsLoader assets, String name, int x, int y, int z) {
         ModelInstance model = assets.createModelInstance(name);
         model.transform.setTranslation(Coords.grid.vector(x, y, z));
+        model.transform.translate(Coords.raw.vector(0, assets.getModelHeight(name) / 2f, 0));
         this.model = Optional.of(model);
     }
 }
