@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.assets;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 /**
  * Wraps the logic for loading 3D model assets into the game
@@ -36,6 +37,8 @@ public class AssetsLoader {
      */
     public ModelInstance createModelInstance(String name) {
         Model model = assets.get(String.format("%s.g3db", name), Model.class);
+        BoundingBox box = new BoundingBox();
+        model.calculateBoundingBox(box);
         return new ModelInstance(model);
     }
 
