@@ -4,8 +4,10 @@ import java.util.Optional;
 import net.lugocorp.kingdom.Modellable;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.event.EventReceiver;
 
 public class Unit extends Modellable {
+    public final EventReceiver events = new EventReceiver();
 
     /** {@inheritdoc} */
     public void setModelInstance(AssetsLoader assets, String name, int x, int y, int z) {
