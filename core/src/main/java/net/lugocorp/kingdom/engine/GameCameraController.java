@@ -6,7 +6,10 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 
 public class GameCameraController extends CameraInputController {
+    private static final float MAX_ZOOM = 3.0f;
+    private static final float MIN_ZOOM = -2.0f;
     private Optional<Point> prev = Optional.empty();
+    private float currentZoom = 0.0f;
 
     public GameCameraController(Camera camera) {
         super(camera);
@@ -34,5 +37,13 @@ public class GameCameraController extends CameraInputController {
         this.prev = Optional.of(new Point(x, y));
         this.camera.update();
         return true;
+    }
+
+    @Override
+    public boolean zoom(float amount) {
+        final float diff = Math.max(GameCameraController.MIN_ZOOM,
+                Math.min(GameCameraController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
+        this.currentZoom += diff;
+        return diff == 0 ? false : super.zoom(amount);
     }
 }
