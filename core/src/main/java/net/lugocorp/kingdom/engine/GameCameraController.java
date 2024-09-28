@@ -1,14 +1,14 @@
-package net.lugocorp.kingdom;
+package net.lugocorp.kingdom.engine;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import java.util.Optional;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 
-class GameCameraController extends CameraInputController {
+public class GameCameraController extends CameraInputController {
     private Optional<Point> prev = Optional.empty();
 
-    GameCameraController(Camera camera) {
+    public GameCameraController(Camera camera) {
         super(camera);
     }
 

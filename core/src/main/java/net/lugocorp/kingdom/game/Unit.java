@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.game;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import java.util.Optional;
-import net.lugocorp.kingdom.Modellable;
 import net.lugocorp.kingdom.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.Modellable;
+import net.lugocorp.kingdom.events.EventReceiver;
 import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.event.EventReceiver;
 
 public class Unit extends Modellable {
     public final EventReceiver events = new EventReceiver();

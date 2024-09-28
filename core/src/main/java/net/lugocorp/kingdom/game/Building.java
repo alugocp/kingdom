@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import java.util.Optional;
-import net.lugocorp.kingdom.Modellable;
 import net.lugocorp.kingdom.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.math.Coords;
 
 public class Building extends Modellable {

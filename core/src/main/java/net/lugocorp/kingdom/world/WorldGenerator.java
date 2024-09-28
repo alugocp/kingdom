@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.world;
 import java.util.Optional;
 import net.lugocorp.kingdom.assets.AssetsLoader;
+import net.lugocorp.kingdom.game.Building;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.game.Unit;
-import net.lugocorp.kingdom.game.Building;
 
 /**
  * This class handles world generation logic

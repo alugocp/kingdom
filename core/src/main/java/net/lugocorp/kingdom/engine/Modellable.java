@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom;
+package net.lugocorp.kingdom.engine;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import java.util.Optional;
 import net.lugocorp.kingdom.assets.AssetsLoader;

@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.event;
+package net.lugocorp.kingdom.events;
 import java.util.HashMap;
 import java.util.Map;
 
