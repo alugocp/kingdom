@@ -3,6 +3,7 @@ import java.util.Optional;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.game.Unit;
+import net.lugocorp.kingdom.game.Building;
 
 /**
  * This class handles world generation logic
@@ -20,14 +21,16 @@ public class WorldGenerator {
                 final int y1 = y;
                 w.getTile(x, y).ifPresent((Tile t) -> t.setModelInstance(assets, "tile", x1,
                         (x1 == 2 && y1 == 0) ? 2 : ((x1 == 0 && y1 == 0) ? 1 : 0), y1));
-                if (x == 0 && y == 1) {
-                    w.getTile(x, y).ifPresent((Tile t) -> {
-                        t.unit = Optional.of(new Unit());
-                        t.unit.get().setModelInstance(assets, "crystal", 0, 0, 1);
-                    });
-                }
             }
         }
+        w.getTile(0, 1).ifPresent((Tile t) -> {
+            t.unit = Optional.of(new Unit());
+            t.unit.get().setModelInstance(assets, "crystal", 0, 0, 1);
+        });
+        w.getTile(3, 2).ifPresent((Tile t) -> {
+            t.building = Optional.of(new Building());
+            t.building.get().setModelInstance(assets, "mine", 3, 0, 2);
+        });
         return w;
     }
 }

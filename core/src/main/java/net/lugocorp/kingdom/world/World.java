@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.game.Unit;
+import net.lugocorp.kingdom.game.Building;
 import net.lugocorp.kingdom.math.Point;
 
 /**
@@ -71,8 +72,7 @@ public class World {
                 if (!tile.isPresent()) {
                     continue;
                 }
-                // tile.get().building.flatMap((Building b) ->
-                // b.getModelInstance()).ifPresent((ModelInstance m) -> models.add(m));
+                tile.get().building.flatMap((Building b) -> b.getModelInstance()).ifPresent((ModelInstance m) -> models.add(m));
                 tile.get().unit.flatMap((Unit u) -> u.getModelInstance()).ifPresent((ModelInstance m) -> models.add(m));
                 tile.get().getModelInstance().ifPresent((ModelInstance m) -> models.add(m));
             }
