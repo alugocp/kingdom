@@ -1,9 +1,11 @@
 package net.lugocorp.kingdom.engine;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import java.util.Optional;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Hexagons;
 
 public class GameCameraController extends CameraInputController {
     private static final float MAX_ZOOM = 3.0f;
@@ -45,5 +47,14 @@ public class GameCameraController extends CameraInputController {
                 Math.min(GameCameraController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
         this.currentZoom += diff;
         return diff == 0 ? false : super.zoom(amount);
+    }
+
+    @Override
+    public boolean mouseMoved​(int x, int y) {
+        /*Vector3 v = this.camera.unproject(new Vector3((float)x, (float)y, 1f));
+        v.x /= (Hexagons.DEPTH - Hexagons.DEPTH_DIFF);
+        v.y /= Hexagons.HEIGHT / 2f;
+        System.out.println(v);*/
+        return true;
     }
 }

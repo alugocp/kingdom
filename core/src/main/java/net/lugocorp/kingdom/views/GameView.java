@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 import java.util.function.Function;
 import net.lugocorp.kingdom.assets.AssetsLoader;
@@ -22,6 +23,9 @@ import net.lugocorp.kingdom.engine.GameCameraController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.world.World;
 import net.lugocorp.kingdom.world.WorldGenerator;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
 
 public class GameView implements View {
     private SpriteBatch spriteBatch;
@@ -62,6 +66,36 @@ public class GameView implements View {
         this.cam.near = 1f;
         this.cam.far = 300f;
         this.cam.update();
+
+        Vector3 v3 = new Vector3();
+        System.out.println("350, 263");
+        System.out.println(this.game.world.getTile(0, 1).get().model.get().transform.getTranslation(v3));
+        Vector3 near = this.cam.unproject(new Vector3(350, 263, 0));
+        Vector3 far = this.cam.unproject(new Vector3(350, 263, 1));
+        System.out.println(near);
+        System.out.println(far);
+        float weight = near.y / (near.y - far.y);
+        Vector3 middle = new Vector3(
+            near.x - weight * (near.x - far.x),
+            near.y - weight * (near.y - far.y),
+            near.z - weight * (near.z - far.z)
+        );
+        System.out.println(middle);
+        int minZ = (int)Math.floor(middle.x / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
+        int minX = (int)Math.floor(middle.z - (minZ % 2 == 0 ? 0 : (Hexagons.WIDTH / 2)) / Hexagons.WIDTH);
+        float lowestDist2 = Integer.MAX_VALUE;
+        Point closestPoint = null;
+        for (int a = 0; a < 2; a++) {
+            for (int b = 0; b < 2; b++) {
+                System.out.println(String.format("%d, %d", minX + a, minZ + b));
+                float dist = Coords.grid.vector(minX + a, 0, minZ + b).dst2(middle);
+                if (dist < lowestDist2) {
+                    lowestDist2 = dist;
+                    closestPoint = new Point(minX + a, minZ + b);
+                }
+            }
+        }
+        System.out.println(closestPoint);
     }
 
     @Override
