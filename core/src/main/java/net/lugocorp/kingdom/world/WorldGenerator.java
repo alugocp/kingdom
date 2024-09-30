@@ -19,8 +19,7 @@ public class WorldGenerator {
             for (int y = 0; y < height; y++) {
                 final int x1 = x;
                 final int y1 = y;
-                w.getTile(x, y).ifPresent((Tile t) -> t.setModelInstance(assets, "tile", x1,
-                        (x1 == 2 && y1 == 0) ? 2 : ((x1 == 0 && y1 == 0) ? 1 : 0), y1));
+                w.getTile(x, y).ifPresent((Tile t) -> t.setModelInstance(assets, "tile", x1, 0, y1));
             }
         }
         w.getTile(0, 1).ifPresent((Tile t) -> {

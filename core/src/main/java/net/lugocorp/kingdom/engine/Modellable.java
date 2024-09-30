@@ -7,7 +7,7 @@ import net.lugocorp.kingdom.assets.AssetsLoader;
  * Represents any object that can have an associated in-game model
  */
 public abstract class Modellable {
-    public Optional<ModelInstance> model = Optional.empty();
+    protected Optional<ModelInstance> model = Optional.empty();
 
     /**
      * Retrieves this Modellable's ModelInstance if one exists

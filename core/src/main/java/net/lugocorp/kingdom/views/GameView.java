@@ -28,10 +28,10 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 
 public class GameView implements View {
-    private SpriteBatch spriteBatch;
-    private PerspectiveCamera cam;
+    private SpriteBatch sprites;
+    private PerspectiveCamera camera;
     private GameCameraController camController;
-    private ModelBatch modelBatch;
+    private ModelBatch models;
     private Environment environment;
     private final AssetsLoader assets;
     private final Game game;
@@ -49,53 +49,23 @@ public class GameView implements View {
     @Override
     public void start(Function<View, Void> navigate) {
         // 2D setup
-        this.spriteBatch = new SpriteBatch();
+        this.sprites = new SpriteBatch();
 
         // 3D setup
-        this.modelBatch = new ModelBatch();
+        this.models = new ModelBatch();
         this.environment = new Environment();
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         this.environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         // Camera
-        this.cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.camController = new GameCameraController(this.cam);
+        this.camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camController = new GameCameraController(this.camera);
         Gdx.input.setInputProcessor(this.camController);
-        this.cam.position.set(5f, 5f, 0f);
-        this.cam.lookAt(0, 0, 0);
-        this.cam.near = 1f;
-        this.cam.far = 300f;
-        this.cam.update();
-
-        Vector3 v3 = new Vector3();
-        System.out.println("350, 263");
-        System.out.println(this.game.world.getTile(0, 1).get().model.get().transform.getTranslation(v3));
-        Vector3 near = this.cam.unproject(new Vector3(350, 263, 0));
-        Vector3 far = this.cam.unproject(new Vector3(350, 263, 1));
-        System.out.println(near);
-        System.out.println(far);
-        float weight = near.y / (near.y - far.y);
-        Vector3 middle = new Vector3(
-            near.x - weight * (near.x - far.x),
-            near.y - weight * (near.y - far.y),
-            near.z - weight * (near.z - far.z)
-        );
-        System.out.println(middle);
-        int minZ = (int)Math.floor(middle.x / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
-        int minX = (int)Math.floor(middle.z - (minZ % 2 == 0 ? 0 : (Hexagons.WIDTH / 2)) / Hexagons.WIDTH);
-        float lowestDist2 = Integer.MAX_VALUE;
-        Point closestPoint = null;
-        for (int a = 0; a < 2; a++) {
-            for (int b = 0; b < 2; b++) {
-                System.out.println(String.format("%d, %d", minX + a, minZ + b));
-                float dist = Coords.grid.vector(minX + a, 0, minZ + b).dst2(middle);
-                if (dist < lowestDist2) {
-                    lowestDist2 = dist;
-                    closestPoint = new Point(minX + a, minZ + b);
-                }
-            }
-        }
-        System.out.println(closestPoint);
+        this.camera.position.set(5f, 5f, 0f);
+        this.camera.lookAt(0, 0, 0);
+        this.camera.near = 1f;
+        this.camera.far = 300f;
+        this.camera.update();
     }
 
     @Override
@@ -103,19 +73,19 @@ public class GameView implements View {
         this.camController.update();
 
         // Draw 3D assets
-        this.modelBatch.begin(this.cam);
-        this.modelBatch.render(this.game.world.getModelInstances(), this.environment);
-        this.modelBatch.end();
+        this.models.begin(this.camera);
+        this.models.render(this.game.world.getModelInstances(), this.environment);
+        this.models.end();
 
         // Draw 2D assets
-        this.spriteBatch.begin();
-        this.spriteBatch.end();
+        this.sprites.begin();
+        this.sprites.end();
     }
 
     @Override
     public void dispose() {
-        this.spriteBatch.dispose();
-        this.modelBatch.dispose();
+        this.sprites.dispose();
+        this.models.dispose();
         this.assets.dispose();
     }
 }

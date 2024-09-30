@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.engine;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import java.util.Optional;
@@ -51,10 +53,28 @@ public class GameCameraController extends CameraInputController {
 
     @Override
     public boolean mouseMoved​(int x, int y) {
-        /*Vector3 v = this.camera.unproject(new Vector3((float)x, (float)y, 1f));
-        v.x /= (Hexagons.DEPTH - Hexagons.DEPTH_DIFF);
-        v.y /= Hexagons.HEIGHT / 2f;
-        System.out.println(v);*/
+        Ray ray = this.camera.getPickRay(x, y);
+        float distance = ((Hexagons.HEIGHT / 2) - ray.origin.y) / ray.direction.y;
+        Vector3 endpoint = ray.getEndPoint(new Vector3(), distance);
+        Vector2 middle = new Vector2(-endpoint.z, endpoint.x);
+        System.out.print("\r                                                                                                    \r");
+        System.out.print(middle);
+        System.out.print(" -> ");
+        int minZ = (int)Math.floor(endpoint.x / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
+        float lowestDist2 = Integer.MAX_VALUE;
+        Point closestPoint = null;
+        for (int a = 0; a < 2; a++) {
+            int minX = (int)Math.floor((-endpoint.z / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
+            for (int b = 0; b < 2; b++) {
+                float dist = Coords.grid.vector(minX + b, 0, minZ + a).dst2(endpoint);
+                if (dist < lowestDist2) {
+                    lowestDist2 = dist;
+                    closestPoint = new Point(minX + b, minZ + a);
+                }
+            }
+        }
+        System.out.print(closestPoint);
+        System.out.flush();
         return true;
     }
 }
