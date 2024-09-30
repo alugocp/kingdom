@@ -1,22 +1,25 @@
 package net.lugocorp.kingdom.engine;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import java.util.Optional;
+import java.util.function.Function;
 import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
 
 public class GameCameraController extends CameraInputController {
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
+    private final Function<Point, Void> setHoveredTile;
     private Optional<Point> prev = Optional.empty();
     private float currentZoom = 0.0f;
 
-    public GameCameraController(Camera camera) {
+    public GameCameraController(Camera camera, Function<Point, Void> setHoveredTile) {
         super(camera);
+        this.setHoveredTile = setHoveredTile;
     }
 
     @Override
@@ -53,18 +56,17 @@ public class GameCameraController extends CameraInputController {
 
     @Override
     public boolean mouseMoved​(int x, int y) {
+        // Cast out a ray from the mouseover point and find its point along the Y = 0
+        // plane.
+        // Then find which hexagon that point falls in on the world grid.
         Ray ray = this.camera.getPickRay(x, y);
-        float distance = ((Hexagons.HEIGHT / 2) - ray.origin.y) / ray.direction.y;
+        float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
         Vector3 endpoint = ray.getEndPoint(new Vector3(), distance);
-        Vector2 middle = new Vector2(-endpoint.z, endpoint.x);
-        System.out.print("\r                                                                                                    \r");
-        System.out.print(middle);
-        System.out.print(" -> ");
-        int minZ = (int)Math.floor(endpoint.x / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
+        int minZ = (int) Math.floor(endpoint.x / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
         float lowestDist2 = Integer.MAX_VALUE;
         Point closestPoint = null;
         for (int a = 0; a < 2; a++) {
-            int minX = (int)Math.floor((-endpoint.z / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
+            int minX = (int) Math.floor((-endpoint.z / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
             for (int b = 0; b < 2; b++) {
                 float dist = Coords.grid.vector(minX + b, 0, minZ + a).dst2(endpoint);
                 if (dist < lowestDist2) {
@@ -73,8 +75,7 @@ public class GameCameraController extends CameraInputController {
                 }
             }
         }
-        System.out.print(closestPoint);
-        System.out.flush();
+        this.setHoveredTile.apply(closestPoint);
         return true;
     }
 }
