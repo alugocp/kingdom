@@ -11,6 +11,8 @@ import net.lugocorp.kingdom.world.World;
 public class Game {
     public Optional<Point> hoveredTile = Optional.empty();
     public final StratifiedEventReceiver buildingHandlers = new StratifiedEventReceiver();
+    public final StratifiedEventReceiver abilityHandlers = new StratifiedEventReceiver();
+    public final StratifiedEventReceiver itemHandlers = new StratifiedEventReceiver();
     public final StratifiedEventReceiver unitHandlers = new StratifiedEventReceiver();
     public final StratifiedEventReceiver tileHandlers = new StratifiedEventReceiver();
     public final World world;

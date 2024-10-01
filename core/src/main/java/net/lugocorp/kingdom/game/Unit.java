@@ -1,13 +1,35 @@
 package net.lugocorp.kingdom.game;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.engine.Modellable;
-import net.lugocorp.kingdom.events.EventReceiver;
+import net.lugocorp.kingdom.events.Event;
+import net.lugocorp.kingdom.events.EventTarget;
 import net.lugocorp.kingdom.math.Coords;
 
-public class Unit extends Modellable {
-    public final EventReceiver events = new EventReceiver();
+/**
+ * A single controllable entity (or NPC) that the player can interact with
+ * in-game
+ */
+public class Unit extends Modellable implements EventTarget {
+    public final String name;
+    public Optional<Ability> active1 = Optional.empty();
+    public Optional<Ability> active2 = Optional.empty();
+    public List<Ability> passives = new ArrayList<>();
+    public Inventory equipped = new Inventory(2);
+    public Inventory haul = new Inventory(4);
+
+    public Unit(String name) {
+        this.name = name;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void handleEvent(Game g, Event e) {
+        g.unitHandlers.handle(this.name, e);
+    }
 
     /** {@inheritdoc} */
     public void setModelInstance(AssetsLoader assets, String name, int x, int y, int z) {

@@ -23,11 +23,11 @@ public class WorldGenerator {
             }
         }
         w.getTile(0, 1).ifPresent((Tile t) -> {
-            t.unit = Optional.of(new Unit());
+            t.unit = Optional.of(new Unit("Crystal"));
             t.unit.get().setModelInstance(assets, "crystal", 0, 0, 1);
         });
         w.getTile(3, 2).ifPresent((Tile t) -> {
-            t.building = Optional.of(new Building());
+            t.building = Optional.of(new Building("Mine"));
             t.building.get().setModelInstance(assets, "mine", 3, 0, 2);
         });
         return w;

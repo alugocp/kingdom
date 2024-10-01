@@ -24,7 +24,7 @@ public class World {
         for (int x = 0; x < w; x++) {
             List<Tile> column = new ArrayList<Tile>();
             for (int y = 0; y < h; y++) {
-                column.add(new Tile());
+                column.add(new Tile("Grassland"));
             }
             this.grid.add(column);
         }
