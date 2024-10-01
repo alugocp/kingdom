@@ -29,7 +29,7 @@ public class Tile extends Modellable implements EventTarget {
     /** {@inheritdoc} */
     public void setModelInstance(AssetsLoader assets, String name, int x, int y, int z) {
         ModelInstance model = assets.createModelInstance(name);
-        model.transform.setTranslation(Coords.grid.vector(x, y, z));
+        model.transform.setTranslation(Coords.grid.vector(x, z));
         this.model = Optional.of(model);
     }
 }

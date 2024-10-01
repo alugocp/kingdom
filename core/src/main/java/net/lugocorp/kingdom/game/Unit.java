@@ -34,7 +34,7 @@ public class Unit extends Modellable implements EventTarget {
     /** {@inheritdoc} */
     public void setModelInstance(AssetsLoader assets, String name, int x, int y, int z) {
         ModelInstance model = assets.createModelInstance(name);
-        model.transform.setTranslation(Coords.grid.vector(x, y, z));
+        model.transform.setTranslation(Coords.grid.vector(x, z));
         model.transform.translate(Coords.raw.vector(0, assets.getModelHeight(name) / 2f, 0));
         this.model = Optional.of(model);
     }

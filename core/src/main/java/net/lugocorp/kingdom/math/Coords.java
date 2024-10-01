@@ -27,10 +27,9 @@ public class Coords {
         /**
          * Converts a 2D coordinate to a 3D vector that libGDX will understand
          */
-        public Vector3 vector(int x, int y, int z) {
+        public Vector3 vector(int x, int z) {
             final float x_diff = (z % 2 == 0) ? 0f : 0.5f;
-            return new Vector3(z * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF), y * Hexagons.HEIGHT / 2f,
-                    -(x + x_diff) * Hexagons.WIDTH);
+            return new Vector3(z * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF), 0f, -(x + x_diff) * Hexagons.WIDTH);
         }
     }
 }

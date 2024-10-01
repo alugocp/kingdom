@@ -67,7 +67,7 @@ public class GameCameraController extends CameraInputController {
         for (int a = 0; a < 2; a++) {
             int minX = (int) Math.floor((-endpoint.z / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
             for (int b = 0; b < 2; b++) {
-                float dist = Coords.grid.vector(minX + b, 0, minZ + a).dst2(endpoint);
+                float dist = Coords.grid.vector(minX + b, minZ + a).dst2(endpoint);
                 if (dist < lowestDist2) {
                     lowestDist2 = dist;
                     closestPoint = new Point(minX + b, minZ + a);

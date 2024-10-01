@@ -71,7 +71,7 @@ public class GameView implements View {
         this.models.render(this.game.world.getModelInstances(), this.environment);
         if (this.game.hoveredTile.isPresent()) {
             this.tileHighlight.transform
-                    .setTranslation(Coords.grid.vector(this.game.hoveredTile.get().x, 0, this.game.hoveredTile.get().y)
+                    .setTranslation(Coords.grid.vector(this.game.hoveredTile.get().x, this.game.hoveredTile.get().y)
                             .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.1f, 0f)));
             this.models.render(this.tileHighlight, this.environment);
         }
