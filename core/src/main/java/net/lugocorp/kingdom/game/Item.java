@@ -16,6 +16,6 @@ public class Item implements EventTarget {
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.events.item.handle(this.name, e);
+        g.events.item.handle(g, this.name, e);
     }
 }

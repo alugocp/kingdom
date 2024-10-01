@@ -6,25 +6,26 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import net.lugocorp.kingdom.core.Events;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.views.LoadingGameView;
 import net.lugocorp.kingdom.views.View;
 
 public class Main implements ApplicationListener {
     private View view;
 
-    Main() {
+    public Main() {
         EventHandlerBundle events = new EventHandlerBundle();
-        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (Event event) -> {
+        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (Game g, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(assets, "crystal");
+            e.blob.setModelInstance(g.assets, "crystal");
         });
-        events.building.addEventHandler("Mine", "GenerateBuildingEvent", (Event event) -> {
+        events.building.addEventHandler("Mine", "GenerateBuildingEvent", (Game g, Event event) -> {
             Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-            e.blob.setModelInstance(assets, "mine");
+            e.blob.setModelInstance(g.assets, "mine");
         });
-        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (Event event) -> {
+        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (Game g, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(assets, "tile");
+            e.blob.setModelInstance(g.assets, "tile");
         });
         this.view = new LoadingGameView(events);
     }

@@ -16,7 +16,7 @@ public class Game {
     public final World world;
 
     public Game(AssetsLoader assets, EventHandlerBundle events, World world) {
-        this.generator = new Generator(events);
+        this.generator = new Generator(this);
         this.assets = assets;
         this.events = events;
         this.world = world;

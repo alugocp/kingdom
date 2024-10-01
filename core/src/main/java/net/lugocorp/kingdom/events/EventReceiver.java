@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import net.lugocorp.kingdom.game.Game;
 
 /**
  * Handles arbitrary incoming Events
@@ -27,13 +28,13 @@ public class EventReceiver {
     /**
      * Runs the relevant EventHandler logic for a given Event
      */
-    public void handle(Event e) {
+    public void handle(Game g, Event e) {
         if (!this.handlers.containsKey(e.channel)) {
             return;
         }
         List<IdentifiedEventHandler> handlers = this.handlers.get(e.channel);
         for (IdentifiedEventHandler handler : handlers) {
-            handler.handler.handle(e);
+            handler.handler.handle(g, e);
         }
     }
 

@@ -16,6 +16,6 @@ public class Ability implements EventTarget {
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.events.ability.handle(this.name, e);
+        g.events.ability.handle(g, this.name, e);
     }
 }

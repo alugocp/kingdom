@@ -29,7 +29,7 @@ public class Unit extends Modellable implements EventTarget {
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.events.unit.handle(this.name, e);
+        g.events.unit.handle(g, this.name, e);
     }
 
     /** {@inheritdoc} */

@@ -21,8 +21,17 @@ public class WorldGenerator {
         w.getTile(0, 1).ifPresent((Tile t) -> {
             t.unit = Optional.of(game.generator.unit("Crystal", 0, 1));
         });
+        w.getTile(3, 1).ifPresent((Tile t) -> {
+            t.unit = Optional.of(game.generator.unit("Crystal", 3, 1));
+        });
         w.getTile(3, 2).ifPresent((Tile t) -> {
             t.building = Optional.of(game.generator.building("Mine", 3, 2));
+        });
+        w.getTile(3, 1).ifPresent((Tile t) -> {
+            t.building = Optional.of(game.generator.building("Mine", 3, 1));
+        });
+        w.getTile(4, 2).ifPresent((Tile t) -> {
+            t.building = Optional.of(game.generator.building("Mine", 4, 2));
         });
     }
 }

@@ -24,7 +24,7 @@ public class Tile extends Modellable implements EventTarget {
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.events.tile.handle(this.name, e);
+        g.events.tile.handle(g, this.name, e);
     }
 
     /** {@inheritdoc} */
