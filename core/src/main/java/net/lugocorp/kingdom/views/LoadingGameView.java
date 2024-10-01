@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.function.Function;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.views.GameView;
 import net.lugocorp.kingdom.world.World;
 import net.lugocorp.kingdom.world.WorldGenerator;
 

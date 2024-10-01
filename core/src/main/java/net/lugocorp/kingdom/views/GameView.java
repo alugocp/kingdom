@@ -1,33 +1,20 @@
 package net.lugocorp.kingdom.views;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.ScreenUtils;
-import java.util.Optional;
 import java.util.function.Function;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.engine.GameCameraController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
-import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.world.World;
-import net.lugocorp.kingdom.world.WorldGenerator;
 
 public class GameView implements View {
     private SpriteBatch sprites;

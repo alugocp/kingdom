@@ -1,5 +1,5 @@
 plugins {
-   id "com.diffplug.spotless" version "5.16.0"
+   id "com.diffplug.spotless" version "6.7.1"
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -21,6 +21,7 @@ spotless {
     indentWithSpaces(4)
     endWithNewline()
     importOrder()
+    removeUnusedImports()
     replaceRegex("No space between package and imports", "package ([\\w\\.]+);\\n\\n\\nimport", "package \$1;\nimport")
   }
 }

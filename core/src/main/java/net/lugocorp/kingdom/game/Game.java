@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import java.util.Optional;
 import net.lugocorp.kingdom.events.StratifiedEventReceiver;
 import net.lugocorp.kingdom.math.Point;
