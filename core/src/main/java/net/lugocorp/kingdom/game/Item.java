@@ -9,13 +9,13 @@ public class Item implements EventTarget {
     public final String name;
     public String desc = "";
 
-    public Item(String name) {
+    Item(String name) {
         this.name = name;
     }
 
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.itemHandlers.handle(this.name, e);
+        g.events.item.handle(this.name, e);
     }
 }

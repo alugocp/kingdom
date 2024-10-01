@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import java.util.function.Function;
-import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.engine.GameCameraController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.math.Coords;
@@ -23,15 +22,13 @@ public class GameView implements View {
     private ModelBatch models;
     private Environment environment;
     private final ModelInstance tileHighlight;
-    private final AssetsLoader assets;
     private final Game game;
 
-    GameView(AssetsLoader assets, Game game) {
-        this.assets = assets;
+    GameView(Game game) {
         this.game = game;
 
         // Tile highlight
-        this.tileHighlight = this.assets.createModelInstance("Selector");
+        this.tileHighlight = this.game.assets.createModelInstance("Selector");
         this.tileHighlight.materials.get(0).set(new BlendingAttribute(0.5f));
     }
 
@@ -86,6 +83,6 @@ public class GameView implements View {
     public void dispose() {
         this.sprites.dispose();
         this.models.dispose();
-        this.assets.dispose();
+        this.game.assets.dispose();
     }
 }

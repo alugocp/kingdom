@@ -8,6 +8,27 @@ import net.lugocorp.kingdom.assets.AssetsLoader;
  */
 public abstract class Modellable {
     protected Optional<ModelInstance> model = Optional.empty();
+    protected int x;
+    protected int y;
+
+    public Modellable(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Gets the current x position (in grid space)
+     */
+    public int getX() {
+        return this.x;
+    }
+
+    /**
+     * Gets the current y position (in grid space)
+     */
+    public int getY() {
+        return this.y;
+    }
 
     /**
      * Retrieves this Modellable's ModelInstance if one exists
@@ -20,5 +41,5 @@ public abstract class Modellable {
      * Applies a ModelInstance to this object and sets its position in the render
      * area
      */
-    public abstract void setModelInstance(AssetsLoader assets, String name, int x, int y, int z);
+    public abstract void setModelInstance(AssetsLoader assets, String name);
 }

@@ -15,20 +15,21 @@ import net.lugocorp.kingdom.math.Coords;
 public class Building extends Modellable implements EventTarget {
     public final String name;
 
-    public Building(String name) {
+    Building(String name, int x, int y) {
+        super(x, y);
         this.name = name;
     }
 
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.buildingHandlers.handle(this.name, e);
+        g.events.building.handle(this.name, e);
     }
 
     /** {@inheritdoc} */
-    public void setModelInstance(AssetsLoader assets, String name, int x, int y, int z) {
+    public void setModelInstance(AssetsLoader assets, String name) {
         ModelInstance model = assets.createModelInstance(name);
-        model.transform.setTranslation(Coords.grid.vector(x, z));
+        model.transform.setTranslation(Coords.grid.vector(this.x, this.y));
         model.transform.translate(Coords.raw.vector(0, assets.getModelHeight(name) / 2f, 0));
         this.model = Optional.of(model);
 

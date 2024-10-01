@@ -9,13 +9,13 @@ public class Ability implements EventTarget {
     public final String name;
     public String desc = "";
 
-    public Ability(String name) {
+    Ability(String name) {
         this.name = name;
     }
 
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.abilityHandlers.handle(this.name, e);
+        g.events.ability.handle(this.name, e);
     }
 }

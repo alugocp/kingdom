@@ -24,10 +24,17 @@ public class World {
         for (int x = 0; x < w; x++) {
             List<Tile> column = new ArrayList<Tile>();
             for (int y = 0; y < h; y++) {
-                column.add(new Tile("Grassland"));
+                column.add(null);
             }
             this.grid.add(column);
         }
+    }
+
+    /**
+     * Sets the Tile at the specified position in the grid
+     */
+    public void setTile(Tile t, int x, int y) {
+        this.grid.get(x).set(y, t);
     }
 
     /**
@@ -58,7 +65,25 @@ public class World {
         if (!this.isInBounds(x, y)) {
             return Optional.empty();
         }
-        return Optional.of(this.grid.get(x).get(y));
+        Tile t = this.grid.get(x).get(y);
+        if (t == null) {
+            return Optional.empty();
+        }
+        return Optional.of(t);
+    }
+
+    /**
+     * Returns World width
+     */
+    public int getWidth() {
+        return this.w;
+    }
+
+    /**
+     * Returns World height
+     */
+    public int getHeight() {
+        return this.h;
     }
 
     /**

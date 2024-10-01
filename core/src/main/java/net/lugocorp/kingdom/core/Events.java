@@ -1,0 +1,51 @@
+package net.lugocorp.kingdom.core;
+import net.lugocorp.kingdom.events.Event;
+import net.lugocorp.kingdom.game.Building;
+import net.lugocorp.kingdom.game.Tile;
+import net.lugocorp.kingdom.game.Unit;
+
+/**
+ * Contains a collection of Events that are integral to the game's core
+ * mechanics
+ */
+public class Events {
+
+    /**
+     * Template for the generator Events
+     */
+    private static abstract class GenerateBlobEventTemplate<T> extends Event {
+        public final T blob;
+
+        private GenerateBlobEventTemplate(String channel, T blob) {
+            super(channel);
+            this.blob = blob;
+        }
+    }
+
+    /**
+     * Generator Event for new Tiles
+     */
+    public static class GenerateTileEvent extends GenerateBlobEventTemplate<Tile> {
+        public GenerateTileEvent(Tile blob) {
+            super("GenerateTileEvent", blob);
+        }
+    }
+
+    /**
+     * Generator Event for new Units
+     */
+    public static class GenerateUnitEvent extends GenerateBlobEventTemplate<Unit> {
+        public GenerateUnitEvent(Unit blob) {
+            super("GenerateUnitEvent", blob);
+        }
+    }
+
+    /**
+     * Generator Event for new Buildings
+     */
+    public static class GenerateBuildingEvent extends GenerateBlobEventTemplate<Building> {
+        public GenerateBuildingEvent(Building blob) {
+            super("GenerateBuildingEvent", blob);
+        }
+    }
+}

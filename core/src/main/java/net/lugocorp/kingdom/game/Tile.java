@@ -16,20 +16,21 @@ public class Tile extends Modellable implements EventTarget {
     public Optional<Unit> unit = Optional.empty();
     public final String name;
 
-    public Tile(String name) {
+    Tile(String name, int x, int y) {
+        super(x, y);
         this.name = name;
     }
 
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
-        g.tileHandlers.handle(this.name, e);
+        g.events.tile.handle(this.name, e);
     }
 
     /** {@inheritdoc} */
-    public void setModelInstance(AssetsLoader assets, String name, int x, int y, int z) {
+    public void setModelInstance(AssetsLoader assets, String name) {
         ModelInstance model = assets.createModelInstance(name);
-        model.transform.setTranslation(Coords.grid.vector(x, z));
+        model.transform.setTranslation(Coords.grid.vector(this.x, this.y));
         this.model = Optional.of(model);
     }
 }

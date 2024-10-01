@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game;
 import java.util.Optional;
-import net.lugocorp.kingdom.events.StratifiedEventReceiver;
+import net.lugocorp.kingdom.assets.AssetsLoader;
+import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.world.World;
 
@@ -9,14 +10,15 @@ import net.lugocorp.kingdom.world.World;
  */
 public class Game {
     public Optional<Point> hoveredTile = Optional.empty();
-    public final StratifiedEventReceiver buildingHandlers = new StratifiedEventReceiver();
-    public final StratifiedEventReceiver abilityHandlers = new StratifiedEventReceiver();
-    public final StratifiedEventReceiver itemHandlers = new StratifiedEventReceiver();
-    public final StratifiedEventReceiver unitHandlers = new StratifiedEventReceiver();
-    public final StratifiedEventReceiver tileHandlers = new StratifiedEventReceiver();
+    public final EventHandlerBundle events;
+    public final AssetsLoader assets;
+    public final Generator generator;
     public final World world;
 
-    public Game(World world) {
+    public Game(AssetsLoader assets, EventHandlerBundle events, World world) {
+        this.generator = new Generator(events);
+        this.assets = assets;
+        this.events = events;
         this.world = world;
     }
 
