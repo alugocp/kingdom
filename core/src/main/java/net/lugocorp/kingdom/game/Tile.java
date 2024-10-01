@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
-import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
@@ -28,9 +27,7 @@ public class Tile extends Modellable implements EventTarget {
     }
 
     /** {@inheritdoc} */
-    public void setModelInstance(AssetsLoader assets, String name) {
-        ModelInstance model = assets.createModelInstance(name);
-        model.transform.setTranslation(Coords.grid.vector(this.x, this.y));
-        this.model = Optional.of(model);
+    public Vector3 getPositionVector() {
+        return Coords.grid.vector(this.getX(), this.getY());
     }
 }

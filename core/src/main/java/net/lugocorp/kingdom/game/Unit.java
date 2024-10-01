@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.game;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Hexagons;
 
 /**
  * A single controllable entity (or NPC) that the player can interact with
@@ -33,10 +33,7 @@ public class Unit extends Modellable implements EventTarget {
     }
 
     /** {@inheritdoc} */
-    public void setModelInstance(AssetsLoader assets, String name) {
-        ModelInstance model = assets.createModelInstance(name);
-        model.transform.setTranslation(Coords.grid.vector(this.x, this.y));
-        model.transform.translate(Coords.raw.vector(0, assets.getModelHeight(name) / 2f, 0));
-        this.model = Optional.of(model);
+    public Vector3 getPositionVector() {
+        return Coords.grid.vector(this.getX(), this.getY()).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
     }
 }
