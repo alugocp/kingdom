@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import java.util.Optional;
-import java.util.function.Function;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.views.GameView;
 
 /**
  * Handles all user control input for the GameView
@@ -15,18 +15,16 @@ import net.lugocorp.kingdom.math.Point;
 public class GameViewController extends CameraInputController {
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
-    private final Function<Point, Void> setHoveredTile;
     private final MenuController menu;
-    private final Runnable closeMenu;
+    private final GameView view;
     private Optional<Point> prev = Optional.empty();
     private float currentZoom = 0.0f;
+    private boolean dragging = false;
 
-    public GameViewController(MenuController menu, Camera camera, Function<Point, Void> setHoveredTile,
-            Runnable closeMenu) {
+    public GameViewController(GameView view, MenuController menu, Camera camera) {
         super(camera);
-        this.setHoveredTile = setHoveredTile;
-        this.closeMenu = closeMenu;
         this.menu = menu;
+        this.view = view;
     }
 
     @Override
@@ -42,10 +40,12 @@ public class GameViewController extends CameraInputController {
     public boolean touchUp(int x, int y, int pointer, int button) {
         if (this.menu.touchUp(x, y, pointer, button)) {
             return true;
-        } else {
-            this.closeMenu.run();
+        }
+        if (!this.dragging) {
+            this.view.openTileMenu();
         }
         this.prev = Optional.empty();
+        this.dragging = false;
         return true;
     }
 
@@ -61,6 +61,7 @@ public class GameViewController extends CameraInputController {
         this.camera.translate(Coords.raw.vector((float) (x - p.x) / 100, 0f, (float) (p.y - y) / 100));
         this.prev = Optional.of(new Point(x, y));
         this.camera.update();
+        this.dragging = true;
         return true;
     }
 
@@ -95,7 +96,7 @@ public class GameViewController extends CameraInputController {
                 }
             }
         }
-        this.setHoveredTile.apply(closestPoint);
+        this.view.setHoveredTile(closestPoint);
         return true;
     }
 }

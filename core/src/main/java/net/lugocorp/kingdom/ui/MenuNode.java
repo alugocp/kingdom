@@ -6,7 +6,7 @@ import net.lugocorp.kingdom.math.Rect;
 /**
  * Interface representing anything visible in a Menu
  */
-interface MenuNode {
+public interface MenuNode {
     public int getHeight();
     public void pack(int width);
     public void draw(Graphics graphics, Rect bounds);

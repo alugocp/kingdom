@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -22,5 +23,11 @@ public class Graphics {
 
     public static class Fonts {
         public final BitmapFont basic = new BitmapFont();
+        public final BitmapFont header = new BitmapFont();
+        public final BitmapFont button = new BitmapFont();
+
+        Fonts() {
+            this.button.setColor(Color.TEAL);
+        }
     }
 }

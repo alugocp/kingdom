@@ -12,12 +12,12 @@ import net.lugocorp.kingdom.math.Rect;
  * MenuNode item containing text
  */
 public class TextNode implements MenuNode {
-    private final BitmapFont font;
     private final List<String> lines = new ArrayList<>();
+    protected BitmapFont font;
 
-    public TextNode(BitmapFont font, String message) {
+    public TextNode(Graphics graphics, String message) {
+        this.font = graphics.fonts.basic;
         this.lines.add(message);
-        this.font = font;
     }
 
     /** {@inheritdoc} */

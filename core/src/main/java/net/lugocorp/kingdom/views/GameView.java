@@ -13,20 +13,21 @@ import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
-import net.lugocorp.kingdom.ui.ListNode;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.Menu;
-import net.lugocorp.kingdom.ui.TextNode;
 
 public class GameView implements View {
     private final Game game;
     private final Graphics graphics;
     private final ModelInstance tileHighlight;
+    private Optional<Point> hoveredTile = Optional.empty();
+    private Optional<Menu> menu = Optional.empty();
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
-    private Optional<Menu> menu = Optional.empty();
 
     GameView(Graphics graphics, Game game) {
         this.graphics = graphics;
@@ -37,6 +38,36 @@ public class GameView implements View {
         this.tileHighlight.materials.get(0).set(new BlendingAttribute(0.5f));
     }
 
+    /**
+     * Keeps track of the currently hovered Tile
+     */
+    public void setHoveredTile(Point p) {
+        if (this.game.world.isInBounds(p)) {
+            this.hoveredTile = Optional.of(p);
+        } else {
+            this.hoveredTile = Optional.empty();
+        }
+    }
+
+    /**
+     * Handles click logic on a Tile (open a Menu for said Tile)
+     */
+    public void openTileMenu() {
+        if (this.menu.isPresent()) {
+            this.menu = Optional.empty();
+            return;
+        }
+        if (!this.hoveredTile.isPresent()) {
+            return;
+        }
+        Optional<Tile> t = this.game.world.getTile(this.hoveredTile.get());
+        if (!t.isPresent()) {
+            return;
+        }
+        Menu m = new Menu(0, 0, 250, true, t.get().getMenuContent(this.graphics));
+        this.menu = Optional.of(m);
+    }
+
     @Override
     public Color getBackgroundColor() {
         return new Color(0.8f, 1.0f, 1.0f, 1f);
@@ -44,10 +75,6 @@ public class GameView implements View {
 
     @Override
     public void start(Function<View, Void> navigate) {
-        // 2D setup
-        this.menu = Optional.of(new Menu(0, 0, 100, true,
-                new ListNode().add(new TextNode(this.graphics.fonts.basic, "Hello, World! This is text wrap"))));
-
         // 3D setup
         this.environment = new Environment();
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -58,8 +85,7 @@ public class GameView implements View {
 
         // Camera
         this.camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.camController = new GameViewController(menuController, this.camera, this.game::setHoveredTile,
-                () -> this.menu = Optional.empty());
+        this.camController = new GameViewController(this, menuController, this.camera);
         Gdx.input.setInputProcessor(this.camController);
         this.camera.position.set(5f, 5f, 0f);
         this.camera.lookAt(0, 0, 0);
@@ -75,9 +101,9 @@ public class GameView implements View {
         // Draw 3D assets
         this.graphics.models.begin(this.camera);
         this.graphics.models.render(this.game.world.getModelInstances(), this.environment);
-        if (this.game.hoveredTile.isPresent()) {
+        if (this.hoveredTile.isPresent()) {
             this.tileHighlight.transform
-                    .setTranslation(Coords.grid.vector(this.game.hoveredTile.get().x, this.game.hoveredTile.get().y)
+                    .setTranslation(Coords.grid.vector(this.hoveredTile.get().x, this.hoveredTile.get().y)
                             .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.1f, 0f)));
             this.graphics.models.render(this.tileHighlight, this.environment);
         }
