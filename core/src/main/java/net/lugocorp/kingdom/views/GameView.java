@@ -17,7 +17,7 @@ import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.ui.Menu;
+import net.lugocorp.kingdom.menu.Menu;
 
 public class GameView implements View {
     private final Game game;

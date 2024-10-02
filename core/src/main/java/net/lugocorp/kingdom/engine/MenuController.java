@@ -4,7 +4,7 @@ import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;
 import java.util.function.Function;
 import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.ui.Menu;
+import net.lugocorp.kingdom.menu.Menu;
 
 /**
  * Handles all user input meant for Menu objects in the game

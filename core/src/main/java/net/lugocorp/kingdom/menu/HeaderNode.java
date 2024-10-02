@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui;
+package net.lugocorp.kingdom.menu;
 import net.lugocorp.kingdom.engine.Graphics;
 
 public class HeaderNode extends TextNode {

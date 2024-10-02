@@ -6,10 +6,10 @@ import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
 import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.ui.ListNode;
-import net.lugocorp.kingdom.ui.MenuNode;
-import net.lugocorp.kingdom.ui.MenuSubject;
-import net.lugocorp.kingdom.ui.TextNode;
+import net.lugocorp.kingdom.menu.ListNode;
+import net.lugocorp.kingdom.menu.MenuNode;
+import net.lugocorp.kingdom.menu.MenuSubject;
+import net.lugocorp.kingdom.menu.TextNode;
 
 /**
  * Represents a single hexagon in the game world and its corresponding
