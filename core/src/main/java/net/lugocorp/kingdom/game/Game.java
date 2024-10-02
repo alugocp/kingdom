@@ -23,7 +23,7 @@ public class Game {
     }
 
     /**
-     * Used by the {@link GameCameraController} to set the currently hovered tile
+     * Used by the {@link GameViewController} to set the currently hovered tile
      */
     public Void setHoveredTile(Point p) {
         if (this.world.isInBounds(p)) {

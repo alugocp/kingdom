@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.ScreenUtils;
 import net.lugocorp.kingdom.core.Events;
+import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.Game;
@@ -11,9 +12,19 @@ import net.lugocorp.kingdom.views.LoadingGameView;
 import net.lugocorp.kingdom.views.View;
 
 public class Main implements ApplicationListener {
+    private Graphics graphics;
     private View view;
 
-    public Main() {
+    public Void navigate(View v) {
+        this.view.dispose();
+        this.view = v;
+        v.start(this::navigate);
+        return null;
+    }
+
+    @Override
+    public void create() {
+        // START MOD TESTING
         EventHandlerBundle events = new EventHandlerBundle();
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (Game g, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -27,18 +38,10 @@ public class Main implements ApplicationListener {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(g.assets, "tile");
         });
-        this.view = new LoadingGameView(events);
-    }
+        // END MOD TESTING
 
-    public Void navigate(View v) {
-        this.view.dispose();
-        this.view = v;
-        v.start(this::navigate);
-        return null;
-    }
-
-    @Override
-    public void create() {
+        this.graphics = new Graphics();
+        this.view = new LoadingGameView(this.graphics, events);
         this.view.start(this::navigate);
     }
 
@@ -54,6 +57,7 @@ public class Main implements ApplicationListener {
     @Override
     public void dispose() {
         this.view.dispose();
+        this.graphics.dispose();
     }
 
     @Override

@@ -9,32 +9,46 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 
-public class GameCameraController extends CameraInputController {
+/**
+ * Handles all user control input for the GameView
+ */
+public class GameViewController extends CameraInputController {
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
     private final Function<Point, Void> setHoveredTile;
+    private final MenuController menu;
     private Optional<Point> prev = Optional.empty();
     private float currentZoom = 0.0f;
 
-    public GameCameraController(Camera camera, Function<Point, Void> setHoveredTile) {
+    public GameViewController(MenuController menu, Camera camera, Function<Point, Void> setHoveredTile) {
         super(camera);
         this.setHoveredTile = setHoveredTile;
+        this.menu = menu;
     }
 
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
+        if (this.menu.touchDown(x, y, pointer, button)) {
+            return true;
+        }
         this.prev = Optional.of(new Point(x, y));
         return true;
     }
 
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
+        if (this.menu.touchUp(x, y, pointer, button)) {
+            return true;
+        }
         this.prev = Optional.empty();
         return true;
     }
 
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
+        if (this.menu.touchDragged(x, y, pointer)) {
+            return true;
+        }
         if (!this.prev.isPresent()) {
             return false;
         }
@@ -47,8 +61,11 @@ public class GameCameraController extends CameraInputController {
 
     @Override
     public boolean zoom(float amount) {
-        final float diff = Math.max(GameCameraController.MIN_ZOOM,
-                Math.min(GameCameraController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
+        if (this.menu.scrolled(0, amount)) {
+            return true;
+        }
+        final float diff = Math.max(GameViewController.MIN_ZOOM,
+                Math.min(GameViewController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
         this.currentZoom += diff;
         return diff == 0 ? false : super.zoom(amount);
     }
@@ -56,8 +73,7 @@ public class GameCameraController extends CameraInputController {
     @Override
     public boolean mouseMoved​(int x, int y) {
         // Cast out a ray from the mouseover point and find its point along the Y = 0
-        // plane.
-        // Then find which hexagon that point falls in on the world grid.
+        // plane. Then find which hexagon that point falls in on the world grid.
         Ray ray = this.camera.getPickRay(x, y);
         float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
         Vector3 endpoint = ray.getEndPoint(new Vector3(), distance);
