@@ -17,12 +17,15 @@ public class GameViewController extends CameraInputController {
     private static final float MIN_ZOOM = -2.0f;
     private final Function<Point, Void> setHoveredTile;
     private final MenuController menu;
+    private final Runnable closeMenu;
     private Optional<Point> prev = Optional.empty();
     private float currentZoom = 0.0f;
 
-    public GameViewController(MenuController menu, Camera camera, Function<Point, Void> setHoveredTile) {
+    public GameViewController(MenuController menu, Camera camera, Function<Point, Void> setHoveredTile,
+            Runnable closeMenu) {
         super(camera);
         this.setHoveredTile = setHoveredTile;
+        this.closeMenu = closeMenu;
         this.menu = menu;
     }
 
@@ -39,6 +42,8 @@ public class GameViewController extends CameraInputController {
     public boolean touchUp(int x, int y, int pointer, int button) {
         if (this.menu.touchUp(x, y, pointer, button)) {
             return true;
+        } else {
+            this.closeMenu.run();
         }
         this.prev = Optional.empty();
         return true;

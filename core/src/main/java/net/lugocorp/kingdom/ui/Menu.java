@@ -1,9 +1,8 @@
 package net.lugocorp.kingdom.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 
@@ -49,7 +48,7 @@ public class Menu {
      * Returns a Rect associated with the Menu's interactive area
      */
     public Rect getBoundingRect() {
-        return new Rect(this.x, this.y - this.offset, this.width, this.root.getHeight());
+        return new Rect(this.x, this.y, this.width, this.getHeight());
     }
 
     /**
@@ -62,20 +61,20 @@ public class Menu {
     /**
      * Draws every MenuNode in this Menu
      */
-    public void draw(SpriteBatch batch, ShapeRenderer shapes) {
+    public void draw(Graphics graphics) {
         final int h = this.getHeight();
-        shapes.begin(ShapeType.Filled);
-        shapes.setColor(Color.BLACK);
-        shapes.rect(this.x, this.y, this.width, h);
-        shapes.end();
-        this.root.draw(batch, shapes, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
+        graphics.shapes.begin(ShapeType.Filled);
+        graphics.shapes.setColor(Color.BLACK);
+        graphics.shapes.rect(this.x, this.y, this.width, h);
+        graphics.shapes.end();
+        this.root.draw(graphics, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), h - (Menu.MARGIN * 2)));
         if (this.shouldScroll()) {
             final int rh = this.root.getHeight();
-            shapes.begin(ShapeType.Filled);
-            shapes.setColor(Color.TEAL);
-            shapes.rect(this.x + this.width - Menu.MARGIN, this.y + this.offset, Menu.MARGIN, (h * h) / rh);
-            shapes.end();
+            graphics.shapes.begin(ShapeType.Filled);
+            graphics.shapes.setColor(Color.TEAL);
+            graphics.shapes.rect(this.x + this.width - Menu.MARGIN, this.y + this.offset, Menu.MARGIN, (h * h) / rh);
+            graphics.shapes.end();
         }
     }
 

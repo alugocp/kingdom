@@ -1,8 +1,7 @@
 package net.lugocorp.kingdom.ui;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.ArrayList;
 import java.util.List;
+import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 
@@ -40,11 +39,11 @@ public class ListNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer shapes, Rect bounds) {
+    public void draw(Graphics graphics, Rect bounds) {
         int y = bounds.y;
         for (MenuNode child : this.children) {
             final Rect r = new Rect(bounds.x, y, bounds.w, child.getHeight());
-            child.draw(batch, shapes, r);
+            child.draw(graphics, r);
             y += r.h;
         }
     }

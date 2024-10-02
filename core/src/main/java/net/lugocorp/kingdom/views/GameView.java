@@ -26,7 +26,7 @@ public class GameView implements View {
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
-    private Menu menu;
+    private Optional<Menu> menu = Optional.empty();
 
     GameView(Graphics graphics, Game game) {
         this.graphics = graphics;
@@ -45,8 +45,8 @@ public class GameView implements View {
     @Override
     public void start(Function<View, Void> navigate) {
         // 2D setup
-        this.menu = new Menu(0, 0, 100, true, new ListNode().add(new TextNode(this.graphics.fonts.basic, "Hello,"))
-                .add(new TextNode(this.graphics.fonts.basic, "  World!")));
+        this.menu = Optional.of(new Menu(0, 0, 100, true,
+                new ListNode().add(new TextNode(this.graphics.fonts.basic, "Hello, World! This is text wrap"))));
 
         // 3D setup
         this.environment = new Environment();
@@ -54,11 +54,12 @@ public class GameView implements View {
         this.environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         // Menus
-        MenuController menuController = new MenuController((Void _nope) -> Optional.of(this.menu));
+        MenuController menuController = new MenuController((Void _nope) -> this.menu);
 
         // Camera
         this.camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.camController = new GameViewController(menuController, this.camera, this.game::setHoveredTile);
+        this.camController = new GameViewController(menuController, this.camera, this.game::setHoveredTile,
+                () -> this.menu = Optional.empty());
         Gdx.input.setInputProcessor(this.camController);
         this.camera.position.set(5f, 5f, 0f);
         this.camera.lookAt(0, 0, 0);
@@ -83,7 +84,7 @@ public class GameView implements View {
         this.graphics.models.end();
 
         // Draw 2D assets
-        this.menu.draw(this.graphics.sprites, this.graphics.shapes);
+        this.menu.ifPresent((Menu m) -> m.draw(this.graphics));
     }
 
     @Override
