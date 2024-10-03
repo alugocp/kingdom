@@ -9,11 +9,31 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * Contains all the objects used to render things in the application
  */
 public class Graphics {
-    public final ShapeRenderer shapes = new ShapeRenderer();
-    public final SpriteBatch sprites = new SpriteBatch();
-    public final ModelBatch models = new ModelBatch();
-    public final Fonts fonts = new Graphics.Fonts();
+    public final ShapeRenderer shapes;
+    public final SpriteBatch sprites;
+    public final ModelBatch models;
+    public final Fonts fonts;
 
+    /**
+     * Constructor used for initial use
+     */
+    public Graphics() {
+        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(), new Graphics.Fonts());
+    }
+
+    /**
+     * Constructor used for subclasses
+     */
+    Graphics(ShapeRenderer shapes, SpriteBatch sprites, ModelBatch models, Fonts fonts) {
+        this.shapes = shapes;
+        this.sprites = sprites;
+        this.models = models;
+        this.fonts = fonts;
+    }
+
+    /**
+     * Calls the resources' dispose() methods
+     */
     public void dispose() {
         this.sprites.dispose();
         this.shapes.dispose();
@@ -21,6 +41,9 @@ public class Graphics {
         this.fonts.basic.dispose();
     }
 
+    /**
+     * This nested class contains all the application fonts
+     */
     public static class Fonts {
         public final BitmapFont basic = new BitmapFont();
         public final BitmapFont header = new BitmapFont();

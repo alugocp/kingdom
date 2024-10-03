@@ -28,15 +28,15 @@ public class Main implements ApplicationListener {
         EventHandlerBundle events = new EventHandlerBundle();
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (Game g, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(g.assets, "crystal");
+            e.blob.setModelInstance(g.graphics.loaders.assets, "crystal");
         });
         events.building.addEventHandler("Mine", "GenerateBuildingEvent", (Game g, Event event) -> {
             Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-            e.blob.setModelInstance(g.assets, "mine");
+            e.blob.setModelInstance(g.graphics.loaders.assets, "mine");
         });
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (Game g, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(g.assets, "tile");
+            e.blob.setModelInstance(g.graphics.loaders.assets, "tile");
         });
         // END MOD TESTING
 

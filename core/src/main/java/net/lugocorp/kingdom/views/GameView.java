@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import java.util.Optional;
 import java.util.function.Function;
 import net.lugocorp.kingdom.engine.GameViewController;
-import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.Tile;
@@ -21,7 +20,6 @@ import net.lugocorp.kingdom.menu.Menu;
 
 public class GameView implements View {
     private final Game game;
-    private final Graphics graphics;
     private final ModelInstance tileHighlight;
     private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
@@ -29,12 +27,11 @@ public class GameView implements View {
     private PerspectiveCamera camera;
     private Environment environment;
 
-    GameView(Graphics graphics, Game game) {
-        this.graphics = graphics;
+    GameView(Game game) {
         this.game = game;
 
         // Tile highlight
-        this.tileHighlight = this.game.assets.createModelInstance("Selector");
+        this.tileHighlight = this.game.graphics.loaders.assets.createModelInstance("Selector");
         this.tileHighlight.materials.get(0).set(new BlendingAttribute(0.5f));
     }
 
@@ -64,7 +61,7 @@ public class GameView implements View {
         if (!t.isPresent()) {
             return;
         }
-        Menu m = new Menu(0, 0, 250, true, t.get().getMenuContent(this.graphics));
+        Menu m = new Menu(0, 0, 250, true, t.get().getMenuContent(this.game.graphics));
         this.menu = Optional.of(m);
     }
 
@@ -99,22 +96,22 @@ public class GameView implements View {
         this.camController.update();
 
         // Draw 3D assets
-        this.graphics.models.begin(this.camera);
-        this.graphics.models.render(this.game.world.getModelInstances(), this.environment);
+        this.game.graphics.models.begin(this.camera);
+        this.game.graphics.models.render(this.game.world.getModelInstances(), this.environment);
         if (this.hoveredTile.isPresent()) {
             this.tileHighlight.transform
                     .setTranslation(Coords.grid.vector(this.hoveredTile.get().x, this.hoveredTile.get().y)
                             .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.1f, 0f)));
-            this.graphics.models.render(this.tileHighlight, this.environment);
+            this.game.graphics.models.render(this.tileHighlight, this.environment);
         }
-        this.graphics.models.end();
+        this.game.graphics.models.end();
 
         // Draw 2D assets
-        this.menu.ifPresent((Menu m) -> m.draw(this.graphics));
+        this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
     }
 
     @Override
     public void dispose() {
-        this.game.assets.dispose();
+        this.game.graphics.dispose();
     }
 }

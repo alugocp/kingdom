@@ -3,6 +3,9 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 
+/**
+ * Like a TextNode but it stands out and does something when you click it
+ */
 public class ButtonNode extends TextNode {
     private final Runnable action;
 

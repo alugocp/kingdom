@@ -3,6 +3,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 
@@ -71,9 +72,11 @@ public class Menu {
                 this.width - (Menu.MARGIN * 3), h - (Menu.MARGIN * 2)));
         if (this.shouldScroll()) {
             final int rh = this.root.getHeight();
+            Rect flip = Coords.screen.flip(this.x + this.width - Menu.MARGIN, this.y + this.offset, Menu.MARGIN,
+                    (h * h) / rh);
             graphics.shapes.begin(ShapeType.Filled);
             graphics.shapes.setColor(Color.TEAL);
-            graphics.shapes.rect(this.x + this.width - Menu.MARGIN, this.y + this.offset, Menu.MARGIN, (h * h) / rh);
+            graphics.shapes.rect(flip.x, flip.y, flip.w, flip.h);
             graphics.shapes.end();
         }
     }
