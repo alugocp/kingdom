@@ -51,6 +51,10 @@ public class LoadingGameView implements View {
     }
 
     @Override
+    public void resize(int w, int h) {
+    }
+
+    @Override
     public void dispose() {
     }
 }

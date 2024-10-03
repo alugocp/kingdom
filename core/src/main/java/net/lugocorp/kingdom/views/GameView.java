@@ -111,6 +111,13 @@ public class GameView implements View {
     }
 
     @Override
+    public void resize(int w, int h) {
+        this.camera.viewportWidth = w;
+        this.camera.viewportHeight = h;
+        this.camera.update();
+    }
+
+    @Override
     public void dispose() {
         this.game.graphics.dispose();
     }

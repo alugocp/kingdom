@@ -40,8 +40,7 @@ public class Menu {
      */
     public void scroll(int dy) {
         if (this.shouldScroll()) {
-            final int coeff = (Gdx.input.isTouched() && Gdx.input.getX() >= this.x + this.width - Menu.MARGIN) ? 1 : -1;
-            this.offset = Math.max(0, Math.min(this.root.getHeight() - this.getHeight(), this.offset + (coeff * dy)));
+            this.offset = Math.max(0, Math.min(this.root.getHeight() - this.getHeight(), this.offset + dy));
         }
     }
 

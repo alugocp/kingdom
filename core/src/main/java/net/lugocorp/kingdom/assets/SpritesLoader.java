@@ -17,8 +17,8 @@ public class SpritesLoader {
      */
     public void loadAndRegister() {
         this.load("icons");
-        this.register("placeholder", "icons", 0, 0);
-        this.register("potion", "icons", 1, 0);
+        this.register("placeholder", "icons", InventoryNode.SIDE, 0, 0);
+        this.register("potion", "icons", InventoryNode.SIDE, 1, 0);
     }
 
     /**
@@ -38,9 +38,8 @@ public class SpritesLoader {
     /**
      * Registers a sprite from a previously loaded texture
      */
-    private void register(String name, String texture, int x, int y) {
-        this.sprites.put(name,
-                new TextureRegion(this.textures.get(texture), x, y, InventoryNode.SIDE, InventoryNode.SIDE));
+    private void register(String name, String texture, int side, int x, int y) {
+        this.sprites.put(name, new TextureRegion(this.textures.get(texture), x * side, y * side, side, side));
     }
 
     /**

@@ -9,5 +9,6 @@ public interface View {
     public Color getBackgroundColor();
     public void start(Function<View, Void> navigate);
     public void render();
+    public void resize(int w, int h);
     public void dispose();
 }

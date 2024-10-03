@@ -40,6 +40,7 @@ public class Main implements ApplicationListener {
         });
         // END MOD TESTING
 
+        Gdx.graphics.setResizable(true);
         this.graphics = new Graphics();
         this.view = new LoadingGameView(this.graphics, events);
         this.view.start(this::navigate);
@@ -62,6 +63,7 @@ public class Main implements ApplicationListener {
 
     @Override
     public void resize(int w, int h) {
+        view.resize(w, h);
     }
 
     @Override
