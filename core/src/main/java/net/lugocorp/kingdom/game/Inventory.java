@@ -49,6 +49,6 @@ public class Inventory {
      * Returns some nodes for a Menu
      */
     public MenuNode getMenuContent(GameGraphics graphics) {
-        return new InventoryNode(graphics.loaders.sprites, this);
+        return new InventoryNode(graphics, this);
     }
 }

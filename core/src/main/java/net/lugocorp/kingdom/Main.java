@@ -3,6 +3,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.ScreenUtils;
+import java.util.Optional;
 import net.lugocorp.kingdom.core.Events;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.events.Event;
@@ -29,6 +30,7 @@ public class Main implements ApplicationListener {
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (Game g, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(g.graphics.loaders.assets, "crystal");
+            e.blob.equipped.add(g.generator.item("Potion"));
         });
         events.building.addEventHandler("Mine", "GenerateBuildingEvent", (Game g, Event event) -> {
             Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -37,6 +39,11 @@ public class Main implements ApplicationListener {
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (Game g, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(g.graphics.loaders.assets, "tile");
+        });
+        events.item.addEventHandler("Potion", "GenerateItemEvent", (Game g, Event event) -> {
+            Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+            e.blob.desc = "Consume to restore a unit's health";
+            e.blob.icon = Optional.of("potion");
         });
         // END MOD TESTING
 

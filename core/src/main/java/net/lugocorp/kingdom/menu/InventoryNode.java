@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.menu;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import net.lugocorp.kingdom.assets.SpritesLoader;
+import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Inventory;
 import net.lugocorp.kingdom.game.Item;
@@ -14,13 +14,13 @@ import net.lugocorp.kingdom.math.Rect;
 public class InventoryNode implements MenuNode {
     private static final int MARGIN = 2;
     public static final int SIDE = 50;
-    private final SpritesLoader sprites;
+    private final GameGraphics graphics;
     private final Inventory items;
     private int cols;
     private int rows;
 
-    public InventoryNode(SpritesLoader sprites, Inventory items) {
-        this.sprites = sprites;
+    public InventoryNode(GameGraphics graphics, Inventory items) {
+        this.graphics = graphics;
         this.items = items;
     }
 
@@ -49,11 +49,11 @@ public class InventoryNode implements MenuNode {
                 if (index >= this.items.getMax()) {
                     break;
                 }
-                TextureRegion icon = this.sprites.get("placeholder");
+                TextureRegion icon = this.graphics.loaders.sprites.get("placeholder");
                 if (index < this.items.getSize()) {
                     Item item = this.items.get(index);
                     if (item.icon.isPresent()) {
-                        icon = this.sprites.get(item.icon.get());
+                        icon = this.graphics.loaders.sprites.get(item.icon.get());
                     }
                 }
                 graphics.sprites.draw(icon, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
@@ -63,6 +63,20 @@ public class InventoryNode implements MenuNode {
     }
 
     @Override
-    public void click(Rect bounds, Point p) {
+    public void click(Menu menu, Rect bounds, Point p) {
+        int x = (p.x - bounds.x) / InventoryNode.SIDE;
+        int y = (p.y - bounds.y) / InventoryNode.SIDE;
+        int i = (cols * y) + x;
+
+        // No item in particular was clicked, nothing to do here
+        if (i >= this.items.getSize()) {
+            return;
+        }
+
+        // Set mini menu for the selected item
+        Item item = this.items.get(i);
+        ListNode root = new ListNode().add(new HeaderNode(this.graphics, item.name))
+                .add(new TextNode(this.graphics, item.desc));
+        menu.setMiniMenu(root, p.x, p.y);
     }
 }

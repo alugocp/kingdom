@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.core;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.game.Building;
+import net.lugocorp.kingdom.game.Item;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.game.Unit;
 
@@ -46,6 +47,15 @@ public class Events {
     public static class GenerateBuildingEvent extends GenerateBlobEventTemplate<Building> {
         public GenerateBuildingEvent(Building blob) {
             super("GenerateBuildingEvent", blob);
+        }
+    }
+
+    /**
+     * Generator Event for new Items
+     */
+    public static class GenerateItemEvent extends GenerateBlobEventTemplate<Item> {
+        public GenerateItemEvent(Item blob) {
+            super("GenerateItemEvent", blob);
         }
     }
 }

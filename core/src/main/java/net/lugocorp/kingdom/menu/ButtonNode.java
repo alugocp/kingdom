@@ -17,7 +17,7 @@ public class ButtonNode extends TextNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Rect bounds, Point p) {
+    public void click(Menu menu, Rect bounds, Point p) {
         this.action.run();
     }
 }

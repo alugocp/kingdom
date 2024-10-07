@@ -50,12 +50,12 @@ public class ListNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Rect bounds, Point p) {
+    public void click(Menu menu, Rect bounds, Point p) {
         int y = bounds.y;
         for (MenuNode child : this.children) {
             final Rect r = new Rect(bounds.x, y, bounds.w, child.getHeight());
             if (r.contains(p)) {
-                child.click(r, p);
+                child.click(menu, r, p);
             }
             y += r.h;
         }

@@ -10,5 +10,5 @@ public interface MenuNode {
     public int getHeight();
     public void pack(int width);
     public void draw(Graphics graphics, Rect bounds);
-    public void click(Rect bounds, Point p);
+    public void click(Menu menu, Rect bounds, Point p);
 }

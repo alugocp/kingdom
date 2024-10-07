@@ -38,4 +38,13 @@ public class Generator {
         this.game.events.building.handle(this.game, name, e);
         return e.blob;
     }
+
+    /**
+     * Generates a new Item
+     */
+    public Item item(String name) {
+        Events.GenerateItemEvent e = new Events.GenerateItemEvent(new Item(name));
+        this.game.events.item.handle(this.game, name, e);
+        return e.blob;
+    }
 }

@@ -74,7 +74,7 @@ public class TextNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Rect bounds, Point p) {
+    public void click(Menu menu, Rect bounds, Point p) {
         // No-op
     }
 }
