@@ -27,6 +27,7 @@ public class GameViewController extends CameraInputController {
         this.view = view;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
         if (this.menu.touchDown(x, y, pointer, button)) {
@@ -36,6 +37,7 @@ public class GameViewController extends CameraInputController {
         return true;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         if (this.menu.touchUp(x, y, pointer, button)) {
@@ -49,6 +51,7 @@ public class GameViewController extends CameraInputController {
         return true;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
         if (this.menu.touchDragged(x, y, pointer)) {
@@ -65,6 +68,7 @@ public class GameViewController extends CameraInputController {
         return true;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean zoom(float amount) {
         if (this.menu.scrolled(0, amount)) {
@@ -76,6 +80,7 @@ public class GameViewController extends CameraInputController {
         return diff == 0 ? false : super.zoom(amount);
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean mouseMoved​(int x, int y) {
         // Cast out a ray from the mouseover point and find its point along the Y = 0

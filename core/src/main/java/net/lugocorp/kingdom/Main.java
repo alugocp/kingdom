@@ -24,6 +24,7 @@ public class Main implements ApplicationListener {
         return null;
     }
 
+    /** {@inheritdoc} */
     @Override
     public void create() {
         // START MOD TESTING
@@ -57,6 +58,7 @@ public class Main implements ApplicationListener {
         this.view.start(this::navigate);
     }
 
+    /** {@inheritdoc} */
     @Override
     public void render() {
         ScreenUtils.clear(this.view.getBackgroundColor());
@@ -66,21 +68,25 @@ public class Main implements ApplicationListener {
         this.view.render();
     }
 
+    /** {@inheritdoc} */
     @Override
     public void dispose() {
         this.view.dispose();
         this.graphics.dispose();
     }
 
+    /** {@inheritdoc} */
     @Override
     public void resize(int w, int h) {
         view.resize(w, h);
     }
 
+    /** {@inheritdoc} */
     @Override
     public void pause() {
     }
 
+    /** {@inheritdoc} */
     @Override
     public void resume() {
     }

@@ -26,12 +26,14 @@ public class MenuController implements InputProcessor {
         return menu.isPresent() && menu.get().getBoundingRect().contains(p);
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
         this.prev = Optional.of(new Point(x, y));
         return this.isInMenu(this.prev.get());
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
         this.dragging = true;
@@ -41,6 +43,7 @@ public class MenuController implements InputProcessor {
         return false;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean touchUp​(int x, int y, int pointer, int button) {
         if (!this.dragging) {
@@ -51,6 +54,7 @@ public class MenuController implements InputProcessor {
         return this.isInMenu(new Point(x, y));
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean scrolled​(float dx, float dy) {
         if (this.isInMenu(new Point(Gdx.input.getX(), Gdx.input.getY()))) {
@@ -60,26 +64,31 @@ public class MenuController implements InputProcessor {
         return false;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean touchCancelled​(int x, int y, int pointer, int button) {
         return false;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean mouseMoved​(int x, int y) {
         return false;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean keyDown​(int keycode) {
         return false;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean keyTyped​(char character) {
         return false;
     }
 
+    /** {@inheritdoc} */
     @Override
     public boolean keyUp​(int keycode) {
         return false;

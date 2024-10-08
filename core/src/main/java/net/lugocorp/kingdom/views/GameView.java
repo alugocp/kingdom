@@ -74,11 +74,13 @@ public class GameView implements View {
                 .of(new Menu(0, 0, 250, true, t.get().getMenuContent(this, this.menuCoords.x, this.menuCoords.y)));
     }
 
+    /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
         return new Color(0.8f, 1.0f, 1.0f, 1f);
     }
 
+    /** {@inheritdoc} */
     @Override
     public void start(Function<View, Void> navigate) {
         // 3D setup
@@ -100,6 +102,7 @@ public class GameView implements View {
         this.camera.update();
     }
 
+    /** {@inheritdoc} */
     @Override
     public void render() {
         this.camController.update();
@@ -119,6 +122,7 @@ public class GameView implements View {
         this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
     }
 
+    /** {@inheritdoc} */
     @Override
     public void resize(int w, int h) {
         this.camera.viewportWidth = w;
@@ -126,6 +130,7 @@ public class GameView implements View {
         this.camera.update();
     }
 
+    /** {@inheritdoc} */
     @Override
     public void dispose() {
         this.game.graphics.dispose();

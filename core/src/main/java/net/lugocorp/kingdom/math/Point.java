@@ -12,6 +12,7 @@ public class Point {
         this.y = y;
     }
 
+    /** {@inheritdoc} */
     @Override
     public String toString() {
         return String.format("(%d, %d)", this.x, this.y);

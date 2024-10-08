@@ -23,6 +23,7 @@ public class Rect {
         return p.x >= this.x && p.x <= this.x + this.w && p.y >= this.y && p.y <= this.y + this.h;
     }
 
+    /** {@inheritdoc} */
     @Override
     public String toString() {
         return String.format("(%d, %d, %d, %d)", this.x, this.y, this.w, this.h);

@@ -26,11 +26,13 @@ public class LoadingGameView implements View {
         this.events = events;
     }
 
+    /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
         return new Color(0.2f, 0.2f, 0.2f, 1.0f);
     }
 
+    /** {@inheritdoc} */
     @Override
     public void start(Function<View, Void> navigate) {
         this.navigate = navigate;
@@ -40,6 +42,7 @@ public class LoadingGameView implements View {
         this.assets.load();
     }
 
+    /** {@inheritdoc} */
     @Override
     public void render() {
         this.assets.doOnLoad(() -> {
@@ -50,10 +53,12 @@ public class LoadingGameView implements View {
         });
     }
 
+    /** {@inheritdoc} */
     @Override
     public void resize(int w, int h) {
     }
 
+    /** {@inheritdoc} */
     @Override
     public void dispose() {
     }
