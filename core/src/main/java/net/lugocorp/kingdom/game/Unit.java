@@ -1,14 +1,20 @@
 package net.lugocorp.kingdom.game;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import net.lugocorp.kingdom.core.Events.CanUnitMoveEvent;
+import net.lugocorp.kingdom.core.Events.UnitMoveDistanceEvent;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
 import net.lugocorp.kingdom.game.Inventory.InventoryType;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.menu.ButtonNode;
 import net.lugocorp.kingdom.menu.HeaderNode;
 import net.lugocorp.kingdom.menu.ListNode;
 import net.lugocorp.kingdom.menu.MenuNode;
@@ -33,6 +39,79 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
         this.name = name;
     }
 
+    /**
+     * Returns the maximum distance that this Unit can move in a turn
+     */
+    private int getMaxMoveDistance(Game g) {
+        UnitMoveDistanceEvent event = new UnitMoveDistanceEvent(this);
+        this.handleEvent(g, event);
+        return event.distance;
+    }
+
+    /**
+     * Returns the list of Points that this Unit can move to
+     */
+    private Set<Point> getMoveTargets(Game g) {
+        int max = this.getMaxMoveDistance(g);
+        if (max == 0) {
+            return new HashSet<Point>();
+        }
+        Point origin = new Point(this.x, this.y);
+        Set<Point> next = new HashSet<>();
+        Set<Point> targets = new HashSet<>();
+        Set<Point> visited = new HashSet<>();
+        Set<Point> adj = Hexagons.getNeighbors(origin, 1);
+        visited.add(origin);
+        for (int a = 0; a < max; a++) {
+            for (Point p : adj) {
+                // Optimization: skip already visited Points
+                if (visited.contains(p)) {
+                    continue;
+                }
+                visited.add(p);
+
+                // Units cannot walk on Tiles that don't exist or already have a Unit
+                Optional<Tile> t = g.world.getTile(p);
+                if (!t.isPresent()) {
+                    continue;
+                }
+                Tile tile = t.get();
+                if (tile.unit.isPresent()) {
+                    continue;
+                }
+
+                // Use event handler to check if this Unit can move here
+                CanUnitMoveEvent event = new CanUnitMoveEvent(this, tile);
+                this.handleEvent(g, event);
+                if (!event.possible) {
+                    continue;
+                }
+                targets.add(p);
+                if (a < max - 1) {
+                    next.addAll(Hexagons.getNeighbors(p, 1));
+                }
+            }
+            visited.addAll(adj);
+            adj.clear();
+            adj.addAll(next);
+            next.clear();
+        }
+        return targets;
+    }
+
+    /**
+     * Moves this Unit to another Tile in the grid
+     */
+    private void move(Game g, Point p) {
+        Tile origin = g.world.getTile(this.x, this.y).get();
+        Tile destin = g.world.getTile(p).get();
+        origin.unit = Optional.empty();
+        destin.unit = Optional.of(this);
+        this.x = p.x;
+        this.y = p.y;
+        this.resetModelPosition();
+    }
+
     /** {@inheritdoc} */
     @Override
     public void handleEvent(Game g, Event e) {
@@ -41,13 +120,15 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
 
     /** {@inheritdoc} */
     public Vector3 getPositionVector() {
-        return Coords.grid.vector(this.getX(), this.getY()).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
+        return Coords.grid.vector(this.x, this.y).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
     }
 
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {
         ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
+        node.add(new ButtonNode(view.game.graphics, "Move",
+                () -> view.selectTiles(this.getMoveTargets(view.game), (Point p) -> this.move(view.game, p))));
         this.active1.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         this.active2.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         for (Ability a : this.passives) {

@@ -33,7 +33,7 @@ public class Building extends Modellable implements EventTarget, MenuSubject {
 
     /** {@inheritdoc} */
     public Vector3 getPositionVector() {
-        return Coords.grid.vector(this.getX(), this.getY()).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
+        return Coords.grid.vector(this.x, this.y).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
     }
 
     /** {@inheritdoc} */

@@ -58,4 +58,33 @@ public class Events {
             super("GenerateItemEvent", blob);
         }
     }
+
+    /**
+     * This event is fired whenever a Unit calculates whether it can move onto some
+     * Tile
+     */
+    public static class CanUnitMoveEvent extends Event {
+        public final Unit unit;
+        public final Tile tile;
+        public boolean possible = true;
+
+        public CanUnitMoveEvent(Unit unit, Tile tile) {
+            super("CanUnitMoveEvent");
+            this.unit = unit;
+            this.tile = tile;
+        }
+    }
+
+    /**
+     * Calculates how far a Unit can move
+     */
+    public static class UnitMoveDistanceEvent extends Event {
+        public final Unit unit;
+        public int distance = 1;
+
+        public UnitMoveDistanceEvent(Unit unit) {
+            super("UnitMoveDistanceEvent");
+            this.unit = unit;
+        }
+    }
 }

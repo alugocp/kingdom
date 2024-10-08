@@ -36,7 +36,7 @@ public class Tile extends Modellable implements EventTarget, MenuSubject {
 
     /** {@inheritdoc} */
     public Vector3 getPositionVector() {
-        return Coords.grid.vector(this.getX(), this.getY());
+        return Coords.grid.vector(this.x, this.y);
     }
 
     /** {@inheritdoc} */

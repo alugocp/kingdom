@@ -17,7 +17,7 @@ public class Hexagons {
      * the grid
      */
     public static Set<Point> getNeighbors(Point p, int r) {
-        double thresh = Math.pow(Hexagons.WIDTH * r, 2);
+        double thresh = Math.pow(Hexagons.WIDTH * r, 2) * 1.01; // 1.01 accounts for rounding errors
         float[] p1 = Coords.grid.coordinates(p.x, p.y);
         Set<Point> coords = new HashSet<>();
         for (int dx = -r; dx <= r; dx++) {

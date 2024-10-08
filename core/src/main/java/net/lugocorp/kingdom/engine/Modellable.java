@@ -8,10 +8,10 @@ import net.lugocorp.kingdom.assets.AssetsLoader;
  * Represents any object that can have an associated in-game model
  */
 public abstract class Modellable {
-    protected Optional<ModelInstance> model = Optional.empty();
     private float h = 0f;
-    private int x;
-    private int y;
+    protected Optional<ModelInstance> model = Optional.empty();
+    protected int x;
+    protected int y;
 
     public Modellable(int x, int y) {
         this.x = x;
@@ -58,19 +58,15 @@ public abstract class Modellable {
      */
     public void setModelInstance(AssetsLoader assets, String name) {
         ModelInstance model = assets.createModelInstance(name);
-        model.transform.setTranslation(this.getPositionVector());
         this.h = assets.getModelHeight(name);
         this.model = Optional.of(model);
+        this.resetModelPosition();
     }
 
     /**
-     * Moves this object's model to a new location in grid space
+     * Moves this object's model to the correct location in grid space
      */
-    public void move(int x, int y) {
-        this.x = x;
-        this.y = y;
-        if (this.model.isPresent()) {
-            this.model.get().transform.setTranslation(this.getPositionVector());
-        }
+    public void resetModelPosition() {
+        this.model.ifPresent((ModelInstance model) -> model.transform.setTranslation(this.getPositionVector()));
     }
 }
