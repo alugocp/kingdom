@@ -17,11 +17,13 @@ public class Main implements ApplicationListener {
     private Graphics graphics;
     private View view;
 
-    public Void navigate(View v) {
+    /**
+     * Causes the application to swap out its current View
+     */
+    public void navigate(View v) {
         this.view.dispose();
         this.view = v;
-        v.start(this::navigate);
-        return null;
+        v.start((View v1) -> this.navigate(v1));
     }
 
     /** {@inheritdoc} */

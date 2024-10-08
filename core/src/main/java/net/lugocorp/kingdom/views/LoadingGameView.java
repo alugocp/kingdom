@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.views;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import java.util.function.Function;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.utils.Consumer;
 import net.lugocorp.kingdom.world.World;
 import net.lugocorp.kingdom.world.WorldGenerator;
 
@@ -17,7 +17,7 @@ import net.lugocorp.kingdom.world.WorldGenerator;
 public class LoadingGameView implements View {
     private final Graphics graphics;
     private final EventHandlerBundle events;
-    private Function<View, Void> navigate;
+    private Consumer<View> navigate;
     private SpritesLoader sprites;
     private AssetsLoader assets;
 
@@ -34,7 +34,7 @@ public class LoadingGameView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void start(Function<View, Void> navigate) {
+    public void start(Consumer<View> navigate) {
         this.navigate = navigate;
         this.sprites = new SpritesLoader();
         this.sprites.loadAndRegister();
@@ -49,7 +49,7 @@ public class LoadingGameView implements View {
             Game game = new Game(new GameGraphics(this.graphics, this.assets, this.sprites), this.events,
                     new World(10, 5));
             new WorldGenerator().generateWorld(game);
-            this.navigate.apply(new GameView(game));
+            this.navigate.run(new GameView(game));
         });
     }
 

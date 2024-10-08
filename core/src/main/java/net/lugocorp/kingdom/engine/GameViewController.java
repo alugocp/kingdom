@@ -44,7 +44,11 @@ public class GameViewController extends CameraInputController {
             return true;
         }
         if (!this.dragging) {
-            this.view.openTileMenu();
+            if (this.view.isHoveringSelectionTile()) {
+                this.view.triggerSelectionAction();
+            } else {
+                this.view.openTileMenu();
+            }
         }
         this.prev = Optional.empty();
         this.dragging = false;

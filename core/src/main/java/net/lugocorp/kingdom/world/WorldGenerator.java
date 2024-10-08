@@ -21,6 +21,9 @@ public class WorldGenerator {
         w.getTile(0, 1).ifPresent((Tile t) -> {
             t.unit = Optional.of(game.generator.unit("Crystal", 0, 1));
         });
+        w.getTile(1, 1).ifPresent((Tile t) -> {
+            t.unit = Optional.of(game.generator.unit("Crystal", 1, 1));
+        });
         w.getTile(3, 1).ifPresent((Tile t) -> {
             t.unit = Optional.of(game.generator.unit("Crystal", 3, 1));
         });

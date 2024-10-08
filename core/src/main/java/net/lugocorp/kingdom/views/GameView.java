@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.Set;
 import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
@@ -17,11 +17,13 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.utils.Consumer;
 
 public class GameView implements View {
     private final ModelInstance tileHighlight;
     private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
+    private Optional<TileSelection> selection = Optional.empty();
     private Point menuCoords = new Point(0, 0);
     private GameViewController camController;
     private PerspectiveCamera camera;
@@ -45,6 +47,31 @@ public class GameView implements View {
         } else {
             this.hoveredTile = Optional.empty();
         }
+    }
+
+    /**
+     * Sets the currently selected Tiles
+     */
+    public void selectTiles(Set<Point> points, Consumer<Point> action) {
+        this.selection = Optional.of(new TileSelection(points, action));
+        this.menu = Optional.empty();
+    }
+
+    /**
+     * Returns true if the player is hovering over a Tile in the current
+     * TileSelection (if any)
+     */
+    public boolean isHoveringSelectionTile() {
+        return this.selection.isPresent() && this.hoveredTile.isPresent()
+                && this.selection.get().points.contains(this.hoveredTile.get());
+    }
+
+    /**
+     * Confirms the user's selected Tile and kicks off the associated action
+     */
+    public void triggerSelectionAction() {
+        this.selection.get().action.run(this.hoveredTile.get());
+        this.selection = Optional.empty();
     }
 
     /**
@@ -82,14 +109,14 @@ public class GameView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void start(Function<View, Void> navigate) {
+    public void start(Consumer<View> navigate) {
         // 3D setup
         this.environment = new Environment();
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         this.environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         // Menus
-        MenuController menuController = new MenuController((Void _nope) -> this.menu);
+        MenuController menuController = new MenuController(() -> this.menu);
 
         // Camera
         this.camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -110,6 +137,13 @@ public class GameView implements View {
         // Draw 3D assets
         this.game.graphics.models.begin(this.camera);
         this.game.graphics.models.render(this.game.world.getModelInstances(), this.environment);
+        if (this.selection.isPresent()) {
+            for (Point p : this.selection.get().points) {
+                this.tileHighlight.transform.setTranslation(
+                        Coords.grid.vector(p.x, p.y).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.05f, 0f)));
+                this.game.graphics.models.render(this.tileHighlight, this.environment);
+            }
+        }
         if (this.hoveredTile.isPresent()) {
             this.tileHighlight.transform
                     .setTranslation(Coords.grid.vector(this.hoveredTile.get().x, this.hoveredTile.get().y)
@@ -134,5 +168,19 @@ public class GameView implements View {
     @Override
     public void dispose() {
         this.game.graphics.dispose();
+    }
+
+    /**
+     * This nested class represents a selection of Tiles with some action to perform
+     * on the result
+     */
+    private static class TileSelection {
+        private final Consumer<Point> action;
+        private final Set<Point> points;
+
+        private TileSelection(Set<Point> points, Consumer<Point> action) {
+            this.points = points;
+            this.action = action;
+        }
     }
 }

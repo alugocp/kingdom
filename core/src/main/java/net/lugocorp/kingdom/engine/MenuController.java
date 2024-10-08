@@ -2,19 +2,19 @@ package net.lugocorp.kingdom.engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;
-import java.util.function.Function;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.utils.Producer;
 
 /**
  * Handles all user input meant for Menu objects in the game
  */
 public class MenuController implements InputProcessor {
-    private final Function<Void, Optional<Menu>> getMenu;
+    private final Producer<Optional<Menu>> getMenu;
     private Optional<Point> prev = Optional.empty();
     private boolean dragging = false;
 
-    public MenuController(Function<Void, Optional<Menu>> getMenu) {
+    public MenuController(Producer<Optional<Menu>> getMenu) {
         this.getMenu = getMenu;
     }
 
@@ -22,7 +22,7 @@ public class MenuController implements InputProcessor {
      * Returns true if the given Point falls within the current Menu
      */
     private boolean isInMenu(Point p) {
-        final Optional<Menu> menu = this.getMenu.apply(null);
+        final Optional<Menu> menu = this.getMenu.run();
         return menu.isPresent() && menu.get().getBoundingRect().contains(p);
     }
 
@@ -47,7 +47,7 @@ public class MenuController implements InputProcessor {
     @Override
     public boolean touchUp​(int x, int y, int pointer, int button) {
         if (!this.dragging) {
-            this.getMenu.apply(null).ifPresent((Menu m) -> m.click(new Point(x, y)));
+            this.getMenu.run().ifPresent((Menu m) -> m.click(new Point(x, y)));
         }
         this.dragging = false;
         this.prev = Optional.empty();
@@ -58,7 +58,7 @@ public class MenuController implements InputProcessor {
     @Override
     public boolean scrolled​(float dx, float dy) {
         if (this.isInMenu(new Point(Gdx.input.getX(), Gdx.input.getY()))) {
-            this.getMenu.apply(null).ifPresent((Menu m) -> m.scroll((int) dy * -20));
+            this.getMenu.run().ifPresent((Menu m) -> m.scroll((int) dy * -20));
             return true;
         }
         return false;
