@@ -27,11 +27,19 @@ public class Coords {
      */
     public static class GridCoords {
         /**
-         * Converts a 2D coordinate to a 3D vector that libGDX will understand
+         * Converts a 2D grid coordinate to a 3D vector that libGDX will understand
          */
         public Vector3 vector(int x, int z) {
-            final float x_diff = (z % 2 == 0) ? 0f : 0.5f;
-            return new Vector3(z * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF), 0f, -(x + x_diff) * Hexagons.WIDTH);
+            return new Vector3(z * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF), 0f,
+                    -(x + ((z % 2 == 0) ? 0f : 0.5f)) * Hexagons.WIDTH);
+        }
+
+        /**
+         * Converts a 2D grid coordinate to its actual 2D coordinate
+         */
+        public float[] coordinates(int x, int y) {
+            return new float[]{(x + ((y % 2 == 0) ? 0f : 0.5f)) * Hexagons.WIDTH,
+                    y * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF)};
         }
     }
 

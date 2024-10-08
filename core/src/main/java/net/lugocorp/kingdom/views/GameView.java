@@ -78,9 +78,9 @@ public class GameView implements View {
      * Handles click logic on a Tile (open a Menu for said Tile)
      */
     public void openTileMenu() {
+        this.selection = Optional.empty();
         if (this.menu.isPresent()) {
             this.menu = Optional.empty();
-            return;
         }
         if (!this.hoveredTile.isPresent()) {
             return;

@@ -14,6 +14,18 @@ public class Point {
 
     /** {@inheritdoc} */
     @Override
+    public boolean equals(Object o) {
+        return o != null && (o instanceof Point) && o.hashCode() == this.hashCode();
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public int hashCode() {
+        return (this.y * 10000) + this.x;
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public String toString() {
         return String.format("(%d, %d)", this.x, this.y);
     }

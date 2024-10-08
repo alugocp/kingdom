@@ -46,12 +46,13 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchUp​(int x, int y, int pointer, int button) {
+        boolean result = this.isInMenu(new Point(x, y));
         if (!this.dragging) {
             this.getMenu.run().ifPresent((Menu m) -> m.click(new Point(x, y)));
         }
         this.dragging = false;
         this.prev = Optional.empty();
-        return this.isInMenu(new Point(x, y));
+        return result;
     }
 
     /** {@inheritdoc} */

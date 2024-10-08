@@ -1,6 +1,8 @@
 package net.lugocorp.kingdom.menu;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Inventory;
 import net.lugocorp.kingdom.game.Inventory.InventoryType;
@@ -8,6 +10,7 @@ import net.lugocorp.kingdom.game.Item;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.game.Unit;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.views.GameView;
@@ -92,16 +95,24 @@ public class InventoryNode implements MenuNode {
 
         // Equip / pick up / drop options
         if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
-                && this.canUnitTakeItem(InventoryType.EQUIP)) {
+                && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
             root.add(new ButtonNode(this.view.game.graphics, "Equip",
                     () -> this.unitTakesItem(InventoryType.EQUIP, item)));
         }
-        if (this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL)) {
+        if (this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
             root.add(new ButtonNode(this.view.game.graphics, "Pick up",
                     () -> this.unitTakesItem(InventoryType.HAUL, item)));
         }
         if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
             root.add(new ButtonNode(this.view.game.graphics, "Drop", () -> this.unitDropsItem(item)));
+        }
+        if ((this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
+                || this.items.type == InventoryType.HAUL) {
+            Set<Point> recipients = this.getGiftRecipients();
+            if (recipients.size() > 0) {
+                root.add(new ButtonNode(this.view.game.graphics, "Give",
+                        () -> this.view.selectTiles(recipients, (Point p1) -> this.giftItemToUnit(p1, item))));
+            }
         }
         menu.setMiniMenu(root, p.x, p.y);
     }
@@ -110,10 +121,12 @@ public class InventoryNode implements MenuNode {
      * Returns true if the Unit on the currently open Tile can take another Item in
      * the specified Inventory
      */
-    private boolean canUnitTakeItem(int type) {
-        Optional<Unit> unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
-        return unit.isPresent() && (type == InventoryType.EQUIP && !unit.get().equipped.isFull())
-                || (type == InventoryType.HAUL && !unit.get().haul.isFull());
+    private boolean canUnitTakeItem(int type, Optional<Unit> unit) {
+        if (!unit.isPresent()) {
+            unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
+        }
+        return unit.isPresent() && ((type == InventoryType.EQUIP && !unit.get().equipped.isFull())
+                || (type == InventoryType.HAUL && !unit.get().haul.isFull()));
     }
 
     /**
@@ -144,6 +157,31 @@ public class InventoryNode implements MenuNode {
     private void unitDropsItem(Item item) {
         Tile tile = this.view.game.world.getTile(this.x, this.y).get();
         this.items.transfer(tile.items, item);
+        this.view.refreshMenu();
+    }
+
+    /**
+     * Returns a list of Points with Units there that can receive an Item
+     */
+    private Set<Point> getGiftRecipients() {
+        Set<Point> points = Hexagons.getNeighbors(new Point(this.x, this.y), 1);
+        Set<Point> valid = new HashSet<>();
+        for (Point p : points) {
+            Optional<Tile> tile = this.view.game.world.getTile(p);
+            if (tile.isPresent() && tile.get().unit.isPresent()
+                    && this.canUnitTakeItem(InventoryType.HAUL, tile.get().unit)) {
+                valid.add(p);
+            }
+        }
+        return valid;
+    }
+
+    /**
+     * Transfers the specified Item to the Unit at the given location
+     */
+    private void giftItemToUnit(Point p, Item item) {
+        Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
+        this.items.transfer(unit.haul, item);
         this.view.refreshMenu();
     }
 }
