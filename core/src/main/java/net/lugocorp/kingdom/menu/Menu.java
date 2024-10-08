@@ -105,7 +105,6 @@ public class Menu {
      */
     public boolean click(Point p) {
         if (this.mini.isPresent() && this.mini.get().click(p)) {
-            this.mini = Optional.empty();
             return true;
         }
         this.mini = Optional.empty();

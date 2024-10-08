@@ -1,12 +1,16 @@
 package net.lugocorp.kingdom.menu;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import net.lugocorp.kingdom.engine.GameGraphics;
+import java.util.Optional;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Inventory;
+import net.lugocorp.kingdom.game.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.Item;
+import net.lugocorp.kingdom.game.Tile;
+import net.lugocorp.kingdom.game.Unit;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
+import net.lugocorp.kingdom.views.GameView;
 
 /**
  * A node that displays some Inventory
@@ -14,27 +18,34 @@ import net.lugocorp.kingdom.math.Rect;
 public class InventoryNode implements MenuNode {
     private static final int MARGIN = 2;
     public static final int SIDE = 50;
-    private final GameGraphics graphics;
     private final Inventory items;
+    private final GameView view;
+    private final int x;
+    private final int y;
     private int cols;
     private int rows;
 
-    public InventoryNode(GameGraphics graphics, Inventory items) {
-        this.graphics = graphics;
+    public InventoryNode(GameView view, Inventory items, int x, int y) {
         this.items = items;
+        this.view = view;
+        this.x = x;
+        this.y = y;
     }
 
+    /** {@inheritdoc} */
     @Override
     public int getHeight() {
         return this.rows * (InventoryNode.SIDE + InventoryNode.MARGIN);
     }
 
+    /** {@inheritdoc} */
     @Override
     public void pack(int width) {
         this.cols = (int) (width / (InventoryNode.SIDE + InventoryNode.MARGIN));
         this.rows = this.items.getMax() == 0 ? 0 : (int) Math.ceil(this.items.getMax() / (float) this.cols);
     }
 
+    /** {@inheritdoc} */
     @Override
     public void draw(Graphics graphics, Rect bounds) {
         if (this.items.getMax() == 0) {
@@ -49,11 +60,11 @@ public class InventoryNode implements MenuNode {
                 if (index >= this.items.getMax()) {
                     break;
                 }
-                TextureRegion icon = this.graphics.loaders.sprites.get("placeholder");
+                TextureRegion icon = this.view.game.graphics.loaders.sprites.get("placeholder");
                 if (index < this.items.getSize()) {
                     Item item = this.items.get(index);
                     if (item.icon.isPresent()) {
-                        icon = this.graphics.loaders.sprites.get(item.icon.get());
+                        icon = this.view.game.graphics.loaders.sprites.get(item.icon.get());
                     }
                 }
                 graphics.sprites.draw(icon, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
@@ -62,6 +73,7 @@ public class InventoryNode implements MenuNode {
         graphics.sprites.end();
     }
 
+    /** {@inheritdoc} */
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
         int x = (p.x - bounds.x) / InventoryNode.SIDE;
@@ -74,9 +86,64 @@ public class InventoryNode implements MenuNode {
         }
 
         // Set mini menu for the selected item
-        Item item = this.items.get(i);
-        ListNode root = new ListNode().add(new HeaderNode(this.graphics, item.name))
-                .add(new TextNode(this.graphics, item.desc));
+        final Item item = this.items.get(i);
+        ListNode root = new ListNode().add(new HeaderNode(this.view.game.graphics, item.name))
+                .add(new TextNode(this.view.game.graphics, item.desc));
+
+        // Equip / pick up / drop options
+        if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
+                && this.canUnitTakeItem(InventoryType.EQUIP)) {
+            root.add(new ButtonNode(this.view.game.graphics, "Equip",
+                    () -> this.unitTakesItem(InventoryType.EQUIP, item)));
+        }
+        if (this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL)) {
+            root.add(new ButtonNode(this.view.game.graphics, "Pick up",
+                    () -> this.unitTakesItem(InventoryType.HAUL, item)));
+        }
+        if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
+            root.add(new ButtonNode(this.view.game.graphics, "Drop", () -> this.unitDropsItem(item)));
+        }
         menu.setMiniMenu(root, p.x, p.y);
+    }
+
+    /**
+     * Returns true if the Unit on the currently open Tile can take another Item in
+     * the specified Inventory
+     */
+    private boolean canUnitTakeItem(int type) {
+        Optional<Unit> unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
+        return unit.isPresent() && (type == InventoryType.EQUIP && !unit.get().equipped.isFull())
+                || (type == InventoryType.HAUL && !unit.get().haul.isFull());
+    }
+
+    /**
+     * The Unit on the currently open tile picks up or equips the specified Item
+     */
+    private void unitTakesItem(int type, Item item) {
+        Unit unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit).get();
+        if (type == InventoryType.EQUIP) {
+            this.items.transfer(unit.equipped, item);
+        }
+        if (type == InventoryType.HAUL) {
+            this.items.transfer(unit.haul, item);
+        }
+        this.view.refreshMenu();
+    }
+
+    /**
+     * Returns true if the Unit on the currently open Tile can drop an item here
+     */
+    private boolean canUnitDropItem() {
+        Optional<Tile> tile = this.view.game.world.getTile(this.x, this.y);
+        return tile.isPresent() && !tile.get().items.isFull();
+    }
+
+    /**
+     * The Unit on the currently open tile drops the specified Item
+     */
+    private void unitDropsItem(Item item) {
+        Tile tile = this.view.game.world.getTile(this.x, this.y).get();
+        this.items.transfer(tile.items, item);
+        this.view.refreshMenu();
     }
 }

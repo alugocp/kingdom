@@ -1,19 +1,22 @@
 package net.lugocorp.kingdom.game;
 import java.util.ArrayList;
 import java.util.List;
-import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.menu.InventoryNode;
 import net.lugocorp.kingdom.menu.MenuNode;
+import net.lugocorp.kingdom.menu.MenuSubject;
+import net.lugocorp.kingdom.views.GameView;
 
 /**
  * Represents a list of items with a max size
  */
-public class Inventory {
+public class Inventory implements MenuSubject {
     private final List<Item> items;
     private final int max;
+    public final int type;
 
-    Inventory(int max) {
+    Inventory(int type, int max) {
         this.items = new ArrayList<Item>(max);
+        this.type = type;
         this.max = max;
     }
 
@@ -32,6 +35,13 @@ public class Inventory {
     }
 
     /**
+     * Returns true if this Inventory cannot fit any more Items
+     */
+    public boolean isFull() {
+        return this.getSize() >= this.getMax();
+    }
+
+    /**
      * Adds an Item to this Inventory
      */
     public void add(Item item) {
@@ -46,9 +56,26 @@ public class Inventory {
     }
 
     /**
-     * Returns some nodes for a Menu
+     * Moves the specified Item from this Inventory to another one
      */
-    public MenuNode getMenuContent(GameGraphics graphics) {
-        return new InventoryNode(graphics, this);
+    public void transfer(Inventory inventory, Item item) {
+        if (this.items.remove(item)) {
+            inventory.add(item);
+        }
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public MenuNode getMenuContent(GameView view, int x, int y) {
+        return new InventoryNode(view, this, x, y);
+    }
+
+    /**
+     * Nested class enum representing the different types of inventory
+     */
+    public static class InventoryType {
+        public static final int EQUIP = 2;
+        public static final int HAUL = 1;
+        public static final int FREE = 0;
     }
 }

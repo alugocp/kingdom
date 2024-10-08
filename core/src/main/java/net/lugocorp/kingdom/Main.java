@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.views.LoadingGameView;
 import net.lugocorp.kingdom.views.View;
 
@@ -30,7 +31,10 @@ public class Main implements ApplicationListener {
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (Game g, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(g.graphics.loaders.assets, "crystal");
-            e.blob.equipped.add(g.generator.item("Potion"));
+
+            // Place a free item at this unit's location
+            Optional<Tile> tile = g.world.getTile(e.blob.getX(), e.blob.getY());
+            tile.ifPresent((Tile t) -> t.items.add(g.generator.item("Potion")));
         });
         events.building.addEventHandler("Mine", "GenerateBuildingEvent", (Game g, Event event) -> {
             Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;

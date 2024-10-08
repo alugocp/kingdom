@@ -19,13 +19,14 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 
 public class GameView implements View {
-    private final Game game;
     private final ModelInstance tileHighlight;
     private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
+    private Point menuCoords = new Point(0, 0);
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
+    public final Game game;
 
     GameView(Game game) {
         this.game = game;
@@ -57,12 +58,20 @@ public class GameView implements View {
         if (!this.hoveredTile.isPresent()) {
             return;
         }
-        Optional<Tile> t = this.game.world.getTile(this.hoveredTile.get());
+        this.menuCoords = this.hoveredTile.get();
+        this.refreshMenu();
+    }
+
+    /**
+     * Opens the Menu that is set in this View's recent memory
+     */
+    public void refreshMenu() {
+        Optional<Tile> t = this.game.world.getTile(this.menuCoords);
         if (!t.isPresent()) {
             return;
         }
-        Menu m = new Menu(0, 0, 250, true, t.get().getMenuContent(this.game.graphics));
-        this.menu = Optional.of(m);
+        this.menu = Optional
+                .of(new Menu(0, 0, 250, true, t.get().getMenuContent(this, this.menuCoords.x, this.menuCoords.y)));
     }
 
     @Override

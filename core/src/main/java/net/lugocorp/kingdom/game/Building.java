@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
-import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
@@ -10,11 +9,13 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.menu.HeaderNode;
 import net.lugocorp.kingdom.menu.ListNode;
 import net.lugocorp.kingdom.menu.MenuNode;
+import net.lugocorp.kingdom.menu.MenuSubject;
+import net.lugocorp.kingdom.views.GameView;
 
 /**
  * Some structure that can be built on top of a Tile to modify its properties
  */
-public class Building extends Modellable implements EventTarget {
+public class Building extends Modellable implements EventTarget, MenuSubject {
     private Optional<Ability> ability = Optional.empty();
     public final String name;
     public Optional<Inventory> items = Optional.empty();
@@ -37,11 +38,11 @@ public class Building extends Modellable implements EventTarget {
 
     /** {@inheritdoc} */
     @Override
-    public MenuNode getMenuContent(GameGraphics graphics) {
-        ListNode node = new ListNode().add(new HeaderNode(graphics, this.name));
-        this.ability.ifPresent((Ability a) -> node.add(a.getMenuContent(graphics)));
+    public MenuNode getMenuContent(GameView view, int x, int y) {
+        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
+        this.ability.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         if (this.items.isPresent()) {
-            node.add(this.items.get().getMenuContent(graphics));
+            node.add(this.items.get().getMenuContent(view, x, y));
         }
         return node;
     }

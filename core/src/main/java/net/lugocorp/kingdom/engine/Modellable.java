@@ -3,7 +3,6 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 import net.lugocorp.kingdom.assets.AssetsLoader;
-import net.lugocorp.kingdom.menu.MenuNode;
 
 /**
  * Represents any object that can have an associated in-game model
@@ -24,11 +23,6 @@ public abstract class Modellable {
      * for its model
      */
     protected abstract Vector3 getPositionVector();
-
-    /**
-     * Returns some nodes for a Menu
-     */
-    public abstract MenuNode getMenuContent(GameGraphics graphics);
 
     /**
      * Gets the current x position (in grid space)
