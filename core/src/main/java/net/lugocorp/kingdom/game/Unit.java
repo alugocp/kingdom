@@ -14,13 +14,13 @@ import net.lugocorp.kingdom.game.Inventory.InventoryType;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.menu.ButtonNode;
-import net.lugocorp.kingdom.menu.HeaderNode;
-import net.lugocorp.kingdom.menu.ListNode;
-import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.menu.MenuSubject;
-import net.lugocorp.kingdom.menu.TextNode;
-import net.lugocorp.kingdom.views.GameView;
+import net.lugocorp.kingdom.ui.menu.ButtonNode;
+import net.lugocorp.kingdom.ui.menu.HeaderNode;
+import net.lugocorp.kingdom.ui.menu.ListNode;
+import net.lugocorp.kingdom.ui.menu.MenuNode;
+import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.menu.TextNode;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * A single controllable entity (or NPC) that the player can interact with

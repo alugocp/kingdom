@@ -3,7 +3,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;
 import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.Producer;
 
 /**

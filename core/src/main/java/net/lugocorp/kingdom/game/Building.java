@@ -6,11 +6,11 @@ import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
-import net.lugocorp.kingdom.menu.HeaderNode;
-import net.lugocorp.kingdom.menu.ListNode;
-import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.menu.MenuSubject;
-import net.lugocorp.kingdom.views.GameView;
+import net.lugocorp.kingdom.ui.menu.HeaderNode;
+import net.lugocorp.kingdom.ui.menu.ListNode;
+import net.lugocorp.kingdom.ui.menu.MenuNode;
+import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * Some structure that can be built on top of a Tile to modify its properties

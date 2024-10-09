@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.menu;
+package net.lugocorp.kingdom.ui.menu;
 import java.util.ArrayList;
 import java.util.List;
 import net.lugocorp.kingdom.engine.Graphics;

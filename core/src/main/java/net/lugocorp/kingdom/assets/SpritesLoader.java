@@ -3,7 +3,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashMap;
 import java.util.Map;
-import net.lugocorp.kingdom.menu.InventoryNode;
+import net.lugocorp.kingdom.ui.menu.InventoryNode;
 
 /**
  * Wraps the logic for loading 2D sprite assets into the game

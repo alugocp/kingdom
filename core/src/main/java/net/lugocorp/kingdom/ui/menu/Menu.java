@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.menu;
+package net.lugocorp.kingdom.ui.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -67,7 +67,7 @@ public class Menu {
      * Returns the height of the Menu UI
      */
     private int getHeight() {
-        return this.tall ? Gdx.graphics.getHeight() : this.root.getHeight();
+        return this.tall ? (Gdx.graphics.getHeight() - this.y) : this.root.getHeight();
     }
 
     /**

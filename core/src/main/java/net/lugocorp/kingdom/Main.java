@@ -10,8 +10,8 @@ import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.Tile;
-import net.lugocorp.kingdom.views.LoadingGameView;
-import net.lugocorp.kingdom.views.View;
+import net.lugocorp.kingdom.ui.views.LoadingGameView;
+import net.lugocorp.kingdom.ui.views.View;
 
 public class Main implements ApplicationListener {
     private Graphics graphics;

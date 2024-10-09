@@ -1,5 +1,5 @@
-package net.lugocorp.kingdom.menu;
-import net.lugocorp.kingdom.views.GameView;
+package net.lugocorp.kingdom.ui.menu;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * This interface should be implemented for anything that appears in an in-game

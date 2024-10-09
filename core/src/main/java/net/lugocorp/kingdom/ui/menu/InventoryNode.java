@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.menu;
+package net.lugocorp.kingdom.ui.menu;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashSet;
 import java.util.Optional;
@@ -13,7 +13,7 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
-import net.lugocorp.kingdom.views.GameView;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * A node that displays some Inventory

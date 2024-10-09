@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.views;
+package net.lugocorp.kingdom.ui.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -16,7 +16,8 @@ import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.ui.Hud;
+import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.Consumer;
 
 public class GameView implements View {
@@ -97,8 +98,8 @@ public class GameView implements View {
         if (!t.isPresent()) {
             return;
         }
-        this.menu = Optional
-                .of(new Menu(0, 0, 250, true, t.get().getMenuContent(this, this.menuCoords.x, this.menuCoords.y)));
+        this.menu = Optional.of(
+                new Menu(0, Hud.HEIGHT, 250, true, t.get().getMenuContent(this, this.menuCoords.x, this.menuCoords.y)));
     }
 
     /** {@inheritdoc} */
@@ -154,6 +155,7 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
+        Hud.render(this.game.graphics);
     }
 
     /** {@inheritdoc} */

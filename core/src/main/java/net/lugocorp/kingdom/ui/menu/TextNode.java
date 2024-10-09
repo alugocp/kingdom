@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.menu;
+package net.lugocorp.kingdom.ui.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;

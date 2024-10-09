@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
-import net.lugocorp.kingdom.menu.ListNode;
-import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.menu.MenuSubject;
-import net.lugocorp.kingdom.menu.TextNode;
-import net.lugocorp.kingdom.views.GameView;
+import net.lugocorp.kingdom.ui.menu.ListNode;
+import net.lugocorp.kingdom.ui.menu.MenuNode;
+import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.menu.TextNode;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * A passive or active effect that Units, Buildings and Tiles can use

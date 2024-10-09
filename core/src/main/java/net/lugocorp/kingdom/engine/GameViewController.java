@@ -7,7 +7,7 @@ import java.util.Optional;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.views.GameView;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * Handles all user control input for the GameView
