@@ -47,10 +47,11 @@ public class Logger {
             float alpha = (a == 0 && this.timer > Logger.MAX_TIMER - Logger.FADE_OUT)
                     ? (float) (Logger.MAX_TIMER - this.timer) / Logger.FADE_OUT
                     : 1f;
-            this.graphics.sprites.setColor(Color.RED.r, Color.RED.g, Color.RED.b, alpha);
+            this.graphics.fonts.basic.setColor(Color.RED.r, Color.RED.g, Color.RED.b, alpha);
             this.graphics.fonts.basic.draw(this.graphics.sprites, lm.message, (Gdx.graphics.getWidth() - lm.w) / 2, y);
             y += lm.h + Logger.MARGIN;
         }
+        this.graphics.fonts.basic.setColor(Color.WHITE);
         this.graphics.sprites.end();
         if (this.timer == Logger.MAX_TIMER) {
             this.messages.remove(0);
