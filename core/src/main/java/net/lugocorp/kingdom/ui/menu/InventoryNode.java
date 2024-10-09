@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashSet;
 import java.util.Optional;
@@ -55,6 +56,7 @@ public class InventoryNode implements MenuNode {
             return;
         }
         graphics.sprites.begin();
+        graphics.sprites.setColor(Color.WHITE);
         for (int a = 0; a < this.rows; a++) {
             Rect flip = Coords.screen.flip(bounds.x, bounds.y + a * (InventoryNode.SIDE + InventoryNode.MARGIN),
                     bounds.w, InventoryNode.SIDE + InventoryNode.MARGIN);
@@ -108,11 +110,9 @@ public class InventoryNode implements MenuNode {
         }
         if ((this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
                 || this.items.type == InventoryType.HAUL) {
-            Set<Point> recipients = this.getGiftRecipients();
-            if (recipients.size() > 0) {
-                root.add(new ButtonNode(this.view.game.graphics, "Give",
-                        () -> this.view.selectTiles(recipients, (Point p1) -> this.giftItemToUnit(p1, item))));
-            }
+            root.add(new ButtonNode(this.view.game.graphics, "Give",
+                    () -> this.view.selectTiles(this.getGiftRecipients(), "No nearby units can receive this gift",
+                            (Point p1) -> this.giftItemToUnit(p1, item))));
         }
         menu.setMiniMenu(root, p.x, p.y);
     }

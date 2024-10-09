@@ -12,16 +12,20 @@ import java.util.Set;
 import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.Player;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.Hud;
+import net.lugocorp.kingdom.ui.Logger;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.Consumer;
 
 public class GameView implements View {
+    private final Logger logger;
     private final ModelInstance tileHighlight;
+    private final Player human = new Player();
     private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
     private Optional<TileSelection> selection = Optional.empty();
@@ -33,6 +37,7 @@ public class GameView implements View {
 
     GameView(Game game) {
         this.game = game;
+        this.logger = new Logger(game.graphics);
 
         // Tile highlight
         this.tileHighlight = this.game.graphics.loaders.assets.createModelInstance("Selector");
@@ -53,7 +58,11 @@ public class GameView implements View {
     /**
      * Sets the currently selected Tiles
      */
-    public void selectTiles(Set<Point> points, Consumer<Point> action) {
+    public void selectTiles(Set<Point> points, String error, Consumer<Point> action) {
+        if (points.size() == 0) {
+            this.logger.log(error);
+            return;
+        }
         this.selection = Optional.of(new TileSelection(points, action));
         this.menu = Optional.empty();
     }
@@ -155,7 +164,8 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
-        Hud.render(this.game.graphics);
+        Hud.render(this.game.graphics, this.human);
+        this.logger.render();
     }
 
     /** {@inheritdoc} */

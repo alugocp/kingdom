@@ -127,8 +127,8 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {
         ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
-        node.add(new ButtonNode(view.game.graphics, "Move",
-                () -> view.selectTiles(this.getMoveTargets(view.game), (Point p) -> this.move(view.game, p))));
+        node.add(new ButtonNode(view.game.graphics, "Move", () -> view.selectTiles(this.getMoveTargets(view.game),
+                "This unit cannot move", (Point p) -> this.move(view.game, p))));
         this.active1.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         this.active2.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         for (Ability a : this.passives) {
