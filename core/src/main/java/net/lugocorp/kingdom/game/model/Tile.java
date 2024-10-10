@@ -1,6 +1,4 @@
 package net.lugocorp.kingdom.game.model;
-import com.badlogic.gdx.math.Vector3;
-import java.util.Optional;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
@@ -13,6 +11,8 @@ import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.math.Vector3;
+import java.util.Optional;
 
 /**
  * Represents a single hexagon in the game world and its corresponding

@@ -20,8 +20,8 @@ spotless {
     trimTrailingWhitespace()
     indentWithSpaces(4)
     endWithNewline()
-    importOrder()
+    importOrder('net.lugocorp', 'com.badlogic', 'java')
     removeUnusedImports()
-    replaceRegex("No space between package and imports", "package ([\\w\\.]+);\\n\\n\\nimport", "package \$1;\nimport")
+    replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
   }
 }

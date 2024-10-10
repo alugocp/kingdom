@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.events;
+import net.lugocorp.kingdom.game.Game;
 import java.util.HashMap;
 import java.util.Map;
-import net.lugocorp.kingdom.game.Game;
 
 /**
  * Handles arbitrary incoming Events on arbitrary members of some group

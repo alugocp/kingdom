@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.ui.menu;
-import java.util.ArrayList;
-import java.util.List;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MenuNode item containing many child nodes

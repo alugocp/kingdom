@@ -1,12 +1,12 @@
 package net.lugocorp.kingdom.ui.menu;
+import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import java.util.ArrayList;
 import java.util.List;
-import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.math.Rect;
 
 /**
  * MenuNode item containing text

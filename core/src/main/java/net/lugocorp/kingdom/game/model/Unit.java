@@ -1,10 +1,4 @@
 package net.lugocorp.kingdom.game.model;
-import com.badlogic.gdx.math.Vector3;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import net.lugocorp.kingdom.core.Events.CanUnitMoveEvent;
 import net.lugocorp.kingdom.core.Events.UnitMoveDistanceEvent;
 import net.lugocorp.kingdom.engine.Modellable;
@@ -22,6 +16,12 @@ import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.math.Vector3;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * A single controllable entity (or NPC) that the player can interact with

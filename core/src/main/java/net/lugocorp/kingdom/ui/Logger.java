@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.ui;
+import net.lugocorp.kingdom.engine.GameGraphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import java.util.ArrayList;
 import java.util.List;
-import net.lugocorp.kingdom.engine.GameGraphics;
 
 /**
  * Handles UI for log messages

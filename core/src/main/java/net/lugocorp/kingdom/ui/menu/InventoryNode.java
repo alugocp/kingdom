@@ -1,9 +1,4 @@
 package net.lugocorp.kingdom.ui.menu;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
@@ -16,6 +11,11 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * A node that displays some Inventory

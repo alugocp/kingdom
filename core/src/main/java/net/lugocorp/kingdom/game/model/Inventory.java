@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.game.model;
-import java.util.ArrayList;
-import java.util.List;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a list of items with a max size

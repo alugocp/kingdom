@@ -1,6 +1,4 @@
 package net.lugocorp.kingdom.game.model;
-import com.badlogic.gdx.math.Vector3;
-import java.util.Optional;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
@@ -12,6 +10,8 @@ import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.math.Vector3;
+import java.util.Optional;
 
 /**
  * Some structure that can be built on top of a Tile to modify its properties

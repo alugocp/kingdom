@@ -1,12 +1,12 @@
 package net.lugocorp.kingdom.ui.menu;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import java.util.Optional;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import java.util.Optional;
 
 /**
  * Contains the logic to display some vertical menu content

@@ -1,6 +1,4 @@
 package net.lugocorp.kingdom.game.mechanics;
-import com.badlogic.gdx.Gdx;
-import java.util.Optional;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.Hud;
@@ -9,6 +7,8 @@ import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.Gdx;
+import java.util.Optional;
 
 /**
  * This class manages the logic for new Unit acquisition

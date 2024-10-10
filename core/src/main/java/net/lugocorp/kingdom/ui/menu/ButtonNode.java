@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.menu;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
  * Like a TextNode but it stands out and does something when you click it

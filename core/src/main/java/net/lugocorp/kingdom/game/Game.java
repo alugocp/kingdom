@@ -1,9 +1,4 @@
 package net.lugocorp.kingdom.game;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
@@ -13,6 +8,11 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.world.World;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Stores all the data for a single ongoing game

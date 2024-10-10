@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.engine;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import java.util.Optional;
-import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.math.Hexagons;
-import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * Handles all user control input for the GameView

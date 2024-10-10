@@ -1,6 +1,4 @@
 package net.lugocorp.kingdom.ui.views;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import net.lugocorp.kingdom.assets.AssetsLoader;
 import net.lugocorp.kingdom.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.GameGraphics;
@@ -10,6 +8,8 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.utils.Consumer;
 import net.lugocorp.kingdom.world.World;
 import net.lugocorp.kingdom.world.WorldGenerator;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * View for when we're loading a new game

@@ -1,9 +1,4 @@
 package net.lugocorp.kingdom;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.utils.ScreenUtils;
-import java.util.Optional;
 import net.lugocorp.kingdom.core.Events;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.events.Event;
@@ -12,6 +7,11 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.ScreenUtils;
+import java.util.Optional;
 
 public class Main implements ApplicationListener {
     private Graphics graphics;

@@ -1,8 +1,4 @@
 package net.lugocorp.kingdom.ui;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.math.Coords;
@@ -11,6 +7,10 @@ import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * This class handles rendering the Player's HUD UI

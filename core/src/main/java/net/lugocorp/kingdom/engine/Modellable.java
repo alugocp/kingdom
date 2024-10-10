@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.engine;
+import net.lugocorp.kingdom.assets.AssetsLoader;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
-import net.lugocorp.kingdom.assets.AssetsLoader;
 
 /**
  * Represents any object that can have an associated in-game model
