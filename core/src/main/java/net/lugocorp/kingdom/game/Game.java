@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.world.World;
 public class Game {
     private final Set<Unit> unitsThatHaveActed = new HashSet<>();
     private Player turnPlayer = new Player("you", true);
+    private boolean canPlayerAct = false;
     public final List<Player> comps = new ArrayList<>();
     public final EventHandlerBundle events;
     public final GameGraphics graphics;
@@ -30,18 +31,17 @@ public class Game {
     }
 
     /**
-     * Returns the turn Player
+     * Returns true when the turn Player is the human
      */
-    public Player getTurnPlayer() {
-        return this.turnPlayer;
+    public boolean canHumanPlayerAct() {
+        return this.turnPlayer.isHumanPlayer() && this.canPlayerAct;
     }
 
     /**
      * Sets up the next turn Player
      */
     public void iterateTurnPlayer() {
-        this.unitsThatHaveActed.clear();
-        if (this.turnPlayer == this.human) {
+        if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = this.comps.get(0);
         } else {
             int index = this.comps.indexOf(this.turnPlayer);
@@ -50,6 +50,26 @@ public class Game {
             } else {
                 this.turnPlayer = this.comps.get(index + 1);
             }
+        }
+        this.kickOffTurn();
+    }
+
+    /**
+     * Runs the per-turn logic and then allows the turn Player to act
+     */
+    public void kickOffTurn() {
+        // Run per-turn calculations for the turn Player
+        this.canPlayerAct = false;
+        // TODO run this logic in another thread for optimization
+        this.unitsThatHaveActed.clear();
+        this.turnPlayer.gainUnitPoints();
+
+        // Allow the turn Player to act
+        this.canPlayerAct = true;
+        if (!this.turnPlayer.isHumanPlayer()) {
+            // TODO implement AI here on another thread
+            // Call refreshMenu() afterwards and iterateTurnPlayer()
+            this.iterateTurnPlayer();
         }
     }
 

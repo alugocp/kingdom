@@ -111,6 +111,7 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
         this.x = p.x;
         this.y = p.y;
         this.resetModelPosition();
+        this.leader.ifPresent((Player p1) -> g.setLeader(destin, p1));
     }
 
     /** {@inheritdoc} */

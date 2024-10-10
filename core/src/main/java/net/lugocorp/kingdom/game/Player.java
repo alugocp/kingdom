@@ -4,6 +4,7 @@ package net.lugocorp.kingdom.game;
  * Represents a human or AI that is playing the game
  */
 public class Player {
+    public static final int MAX_UNIT_POINTS = 100;
     private final boolean human;
     public final String name;
     public int unitPoints = 0;
@@ -21,5 +22,12 @@ public class Player {
      */
     public boolean isHumanPlayer() {
         return this.human;
+    }
+
+    /**
+     * Controls how many unit points a Player gets each turn
+     */
+    public void gainUnitPoints() {
+        this.unitPoints += (int) Math.floor(20f * this.bareTiles / this.tiles);
     }
 }

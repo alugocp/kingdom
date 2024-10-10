@@ -25,7 +25,7 @@ public class GameViewController extends CameraInputController {
     public GameViewController(GameView view, MenuController menu, Camera camera) {
         super(camera);
         this.turnMenu = new MenuController(
-                () -> view.game.getTurnPlayer().isHumanPlayer() ? Optional.of(view.hud.turnMenu) : Optional.empty());
+                () -> view.game.canHumanPlayerAct() ? Optional.of(view.hud.turnMenu) : Optional.empty());
         this.menu = menu;
         this.view = view;
     }

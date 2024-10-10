@@ -59,7 +59,7 @@ public class GameView implements View {
      * Sets the currently selected Tiles
      */
     public void selectTiles(Set<Point> points, String error, Consumer<Point> action) {
-        if (!this.game.getTurnPlayer().isHumanPlayer()) {
+        if (!this.game.canHumanPlayerAct()) {
             this.logger.log("You cannot act outside your turn");
             return;
         }
@@ -144,6 +144,9 @@ public class GameView implements View {
         this.camera.near = 1f;
         this.camera.far = 300f;
         this.camera.update();
+
+        // Kick off the Player's turn
+        this.game.kickOffTurn();
     }
 
     /** {@inheritdoc} */

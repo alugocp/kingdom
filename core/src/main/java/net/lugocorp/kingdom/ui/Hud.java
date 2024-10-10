@@ -24,10 +24,21 @@ public class Hud {
         this.turnMenu = new Menu(Gdx.graphics.getWidth() - 150, Hud.HEIGHT, 150, false,
                 new ListNode().add(new ButtonNode(this.view.game.graphics, "End Turn", () -> {
                     this.view.game.iterateTurnPlayer();
-                    // TODO remove this second call and instead kick off AI player logic
-                    this.view.game.iterateTurnPlayer();
                     this.view.refreshMenu(true);
                 })));
+    }
+
+    /**
+     * Cuts the length of a displayed number
+     */
+    private String prettyInt(int value) {
+        if (value > 999999) {
+            return "999K+";
+        }
+        if (value > 999) {
+            return String.format("%dK", (int) Math.floor((float) value / 1000));
+        }
+        return String.format("%d", value);
     }
 
     /**
@@ -46,13 +57,15 @@ public class Hud {
 
         // Draw Player stats
         this.view.game.graphics.sprites.begin();
-        font.draw(this.view.game.graphics.sprites, String.format("Gold: %d", p.gold), 15, Gdx.graphics.getHeight() - 5);
-        font.draw(this.view.game.graphics.sprites, String.format("Unit Points: %d", p.unitPoints), 215,
+        font.draw(this.view.game.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15,
+                Gdx.graphics.getHeight() - 5);
+        font.draw(this.view.game.graphics.sprites,
+                String.format("Unit Points: %d / %d", p.unitPoints, Player.MAX_UNIT_POINTS), 215,
                 Gdx.graphics.getHeight() - 5);
         this.view.game.graphics.sprites.end();
 
         // Draw the "End Turn" button
-        if (this.view.game.getTurnPlayer().isHumanPlayer()) {
+        if (this.view.game.canHumanPlayerAct()) {
             this.turnMenu.draw(this.view.game.graphics);
         }
     }
