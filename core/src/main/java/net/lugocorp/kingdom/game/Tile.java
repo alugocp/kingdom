@@ -20,6 +20,7 @@ public class Tile extends Modellable implements EventTarget, MenuSubject {
     private Optional<Ability> ability = Optional.empty();
     public final String name;
     public final Inventory items = new Inventory(InventoryType.FREE, 10);
+    public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
     public Optional<Unit> unit = Optional.empty();
 

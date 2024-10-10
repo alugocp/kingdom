@@ -4,6 +4,22 @@ package net.lugocorp.kingdom.game;
  * Represents a human or AI that is playing the game
  */
 public class Player {
+    private final boolean human;
+    public final String name;
     public int unitPoints = 0;
+    public int bareTiles = 0;
+    public int tiles = 0;
     public int gold = 0;
+
+    public Player(String name, boolean human) {
+        this.human = human;
+        this.name = name;
+    }
+
+    /**
+     * Returns true if this Player represents the human
+     */
+    public boolean isHumanPlayer() {
+        return this.human;
+    }
 }

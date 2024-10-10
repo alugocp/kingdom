@@ -12,7 +12,6 @@ import java.util.Set;
 import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.Player;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
@@ -23,9 +22,7 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.Consumer;
 
 public class GameView implements View {
-    private final Logger logger;
     private final ModelInstance tileHighlight;
-    private final Player human = new Player();
     private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
     private Optional<TileSelection> selection = Optional.empty();
@@ -33,11 +30,14 @@ public class GameView implements View {
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
+    public final Logger logger;
     public final Game game;
+    public final Hud hud;
 
     GameView(Game game) {
         this.game = game;
         this.logger = new Logger(game.graphics);
+        this.hud = new Hud(this);
 
         // Tile highlight
         this.tileHighlight = this.game.graphics.loaders.assets.createModelInstance("Selector");
@@ -59,6 +59,10 @@ public class GameView implements View {
      * Sets the currently selected Tiles
      */
     public void selectTiles(Set<Point> points, String error, Consumer<Point> action) {
+        if (!this.game.getTurnPlayer().isHumanPlayer()) {
+            this.logger.log("You cannot act outside your turn");
+            return;
+        }
         if (points.size() == 0) {
             this.logger.log(error);
             return;
@@ -96,13 +100,16 @@ public class GameView implements View {
             return;
         }
         this.menuCoords = this.hoveredTile.get();
-        this.refreshMenu();
+        this.refreshMenu(false);
     }
 
     /**
      * Opens the Menu that is set in this View's recent memory
      */
-    public void refreshMenu() {
+    public void refreshMenu(boolean onlyIfCurrentlyOpen) {
+        if (onlyIfCurrentlyOpen && !this.menu.isPresent()) {
+            return;
+        }
         Optional<Tile> t = this.game.world.getTile(this.menuCoords);
         if (!t.isPresent()) {
             return;
@@ -164,7 +171,7 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
-        Hud.render(this.game.graphics, this.human);
+        this.hud.render();
         this.logger.render();
     }
 

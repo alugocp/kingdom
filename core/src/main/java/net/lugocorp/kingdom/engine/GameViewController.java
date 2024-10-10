@@ -15,6 +15,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 public class GameViewController extends CameraInputController {
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
+    private final MenuController turnMenu;
     private final MenuController menu;
     private final GameView view;
     private Optional<Point> prev = Optional.empty();
@@ -23,6 +24,8 @@ public class GameViewController extends CameraInputController {
 
     public GameViewController(GameView view, MenuController menu, Camera camera) {
         super(camera);
+        this.turnMenu = new MenuController(
+                () -> view.game.getTurnPlayer().isHumanPlayer() ? Optional.of(view.hud.turnMenu) : Optional.empty());
         this.menu = menu;
         this.view = view;
     }
@@ -33,6 +36,9 @@ public class GameViewController extends CameraInputController {
         if (this.menu.touchDown(x, y, pointer, button)) {
             return true;
         }
+        if (this.turnMenu.touchDown(x, y, pointer, button)) {
+            return true;
+        }
         this.prev = Optional.of(new Point(x, y));
         return true;
     }
@@ -41,6 +47,9 @@ public class GameViewController extends CameraInputController {
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         if (this.menu.touchUp(x, y, pointer, button)) {
+            return true;
+        }
+        if (this.turnMenu.touchUp(x, y, pointer, button)) {
             return true;
         }
         if (!this.dragging) {
@@ -59,6 +68,9 @@ public class GameViewController extends CameraInputController {
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
         if (this.menu.touchDragged(x, y, pointer)) {
+            return true;
+        }
+        if (this.turnMenu.touchDragged(x, y, pointer)) {
             return true;
         }
         if (!this.prev.isPresent()) {

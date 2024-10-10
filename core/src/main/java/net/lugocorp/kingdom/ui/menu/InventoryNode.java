@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Inventory;
 import net.lugocorp.kingdom.game.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.Item;
+import net.lugocorp.kingdom.game.Player;
 import net.lugocorp.kingdom.game.Tile;
 import net.lugocorp.kingdom.game.Unit;
 import net.lugocorp.kingdom.math.Coords;
@@ -95,24 +96,29 @@ public class InventoryNode implements MenuNode {
         ListNode root = new ListNode().add(new HeaderNode(this.view.game.graphics, item.name))
                 .add(new TextNode(this.view.game.graphics, item.desc));
 
-        // Equip / pick up / drop options
-        if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
-                && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
-            root.add(new ButtonNode(this.view.game.graphics, "Equip",
-                    () -> this.unitTakesItem(InventoryType.EQUIP, item)));
-        }
-        if (this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
-            root.add(new ButtonNode(this.view.game.graphics, "Pick up",
-                    () -> this.unitTakesItem(InventoryType.HAUL, item)));
-        }
-        if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
-            root.add(new ButtonNode(this.view.game.graphics, "Drop", () -> this.unitDropsItem(item)));
-        }
-        if ((this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
-                || this.items.type == InventoryType.HAUL) {
-            root.add(new ButtonNode(this.view.game.graphics, "Give",
-                    () -> this.view.selectTiles(this.getGiftRecipients(), "No nearby units can receive this gift",
-                            (Point p1) -> this.giftItemToUnit(p1, item))));
+        // Equip / pick up / drop options (only if the human Player occupies this space)
+        boolean actions = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t1) -> t1.unit)
+                .flatMap((Unit u1) -> u1.leader)
+                .map((Player p1) -> p1.isHumanPlayer() && p1 == this.view.game.getTurnPlayer()).orElse(false);
+        if (actions) {
+            if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
+                    && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
+                root.add(new ButtonNode(this.view.game.graphics, "Equip",
+                        () -> this.unitTakesItem(InventoryType.EQUIP, item)));
+            }
+            if (this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
+                root.add(new ButtonNode(this.view.game.graphics, "Pick up",
+                        () -> this.unitTakesItem(InventoryType.HAUL, item)));
+            }
+            if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
+                root.add(new ButtonNode(this.view.game.graphics, "Drop", () -> this.unitDropsItem(item)));
+            }
+            if ((this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
+                    || this.items.type == InventoryType.HAUL) {
+                root.add(new ButtonNode(this.view.game.graphics, "Give",
+                        () -> this.view.selectTiles(this.getGiftRecipients(), "No nearby units can receive this gift",
+                                (Point p1) -> this.giftItemToUnit(p1, item))));
+            }
         }
         menu.setMiniMenu(root, p.x, p.y);
     }
@@ -140,7 +146,7 @@ public class InventoryNode implements MenuNode {
         if (type == InventoryType.HAUL) {
             this.items.transfer(unit.haul, item);
         }
-        this.view.refreshMenu();
+        this.view.refreshMenu(false);
     }
 
     /**
@@ -157,7 +163,7 @@ public class InventoryNode implements MenuNode {
     private void unitDropsItem(Item item) {
         Tile tile = this.view.game.world.getTile(this.x, this.y).get();
         this.items.transfer(tile.items, item);
-        this.view.refreshMenu();
+        this.view.refreshMenu(false);
     }
 
     /**
@@ -182,6 +188,6 @@ public class InventoryNode implements MenuNode {
     private void giftItemToUnit(Point p, Item item) {
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
-        this.view.refreshMenu();
+        this.view.refreshMenu(false);
     }
 }

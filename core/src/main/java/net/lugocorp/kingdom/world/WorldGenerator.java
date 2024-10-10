@@ -20,6 +20,7 @@ public class WorldGenerator {
         }
         w.getTile(0, 1).ifPresent((Tile t) -> {
             t.unit = Optional.of(game.generator.unit("Crystal", 0, 1));
+            game.setLeader(t.unit.get(), game.human);
         });
         w.getTile(1, 1).ifPresent((Tile t) -> {
             t.unit = Optional.of(game.generator.unit("Crystal", 1, 1));
@@ -36,5 +37,6 @@ public class WorldGenerator {
         w.getTile(4, 2).ifPresent((Tile t) -> {
             t.building = Optional.of(game.generator.building("Mine", 4, 2));
         });
+        game.addComputerPlayer("AI");
     }
 }

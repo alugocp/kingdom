@@ -28,6 +28,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
  */
 public class Unit extends Modellable implements EventTarget, MenuSubject {
     public final String name;
+    public Optional<Player> leader = Optional.empty();
     public Optional<Ability> active1 = Optional.empty();
     public Optional<Ability> active2 = Optional.empty();
     public List<Ability> passives = new ArrayList<>();
@@ -127,17 +128,31 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {
         ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
-        node.add(new ButtonNode(view.game.graphics, "Move", () -> view.selectTiles(this.getMoveTargets(view.game),
-                "This unit cannot move", (Point p) -> this.move(view.game, p))));
+        if (this.leader.isPresent()) {
+            node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", this.leader.get().name)));
+        }
+        if (this.leader.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
+            ButtonNode move = new ButtonNode(view.game.graphics, "Move",
+                    () -> view.selectTiles(this.getMoveTargets(view.game), "This unit cannot move", (Point p) -> {
+                        this.move(view.game, p);
+                        view.game.unitHasActed(this);
+                    }));
+            if (view.game.hasUnitActed(this)) {
+                move.disable();
+            }
+            node.add(move);
+        }
         this.active1.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         this.active2.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         for (Ability a : this.passives) {
             node.add(a.getMenuContent(view, x, y));
         }
-        node.add(new TextNode(view.game.graphics, "Equipped Items"));
-        node.add(this.equipped.getMenuContent(view, x, y));
-        node.add(new TextNode(view.game.graphics, "Hauled Items"));
-        node.add(this.haul.getMenuContent(view, x, y));
+        if (this.leader.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
+            node.add(new TextNode(view.game.graphics, "Equipped Items"));
+            node.add(this.equipped.getMenuContent(view, x, y));
+            node.add(new TextNode(view.game.graphics, "Hauled Items"));
+            node.add(this.haul.getMenuContent(view, x, y));
+        }
         return node;
     }
 }
