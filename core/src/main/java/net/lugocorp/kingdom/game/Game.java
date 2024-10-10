@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
+import net.lugocorp.kingdom.game.mechanics.NewUnit;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.world.World;
 
 /**
@@ -40,7 +42,7 @@ public class Game {
     /**
      * Sets up the next turn Player
      */
-    public void iterateTurnPlayer() {
+    public void iterateTurnPlayer(GameView view) {
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = this.comps.get(0);
         } else {
@@ -51,25 +53,28 @@ public class Game {
                 this.turnPlayer = this.comps.get(index + 1);
             }
         }
-        this.kickOffTurn();
+        this.kickOffTurn(view);
     }
 
     /**
      * Runs the per-turn logic and then allows the turn Player to act
      */
-    public void kickOffTurn() {
+    public void kickOffTurn(GameView view) {
         // Run per-turn calculations for the turn Player
         this.canPlayerAct = false;
         // TODO run this logic in another thread for optimization
         this.unitsThatHaveActed.clear();
-        this.turnPlayer.gainUnitPoints();
+        this.turnPlayer.unitPoints += NewUnit.getUnitPointsYield(this.turnPlayer.bareTiles, this.turnPlayer.tiles);
+        if (this.turnPlayer.isHumanPlayer() && this.turnPlayer.unitPoints >= NewUnit.MAX_UNIT_POINTS) {
+            view.addPopup(NewUnit.getNewUnitMenu(view));
+        }
 
         // Allow the turn Player to act
         this.canPlayerAct = true;
         if (!this.turnPlayer.isHumanPlayer()) {
             // TODO implement AI here on another thread
             // Call refreshMenu() afterwards and iterateTurnPlayer()
-            this.iterateTurnPlayer();
+            this.iterateTurnPlayer(view);
         }
     }
 

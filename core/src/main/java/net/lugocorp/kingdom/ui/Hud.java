@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import net.lugocorp.kingdom.game.Player;
+import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -15,16 +16,21 @@ import net.lugocorp.kingdom.ui.views.GameView;
  * This class handles rendering the Player's HUD UI
  */
 public class Hud {
+    public static final int BUTTON_WIDTH = 150;
     public static final int HEIGHT = 35;
     private final GameView view;
     public final Menu turnMenu;
 
     public Hud(GameView view) {
         this.view = view;
-        this.turnMenu = new Menu(Gdx.graphics.getWidth() - 150, Hud.HEIGHT, 150, false,
-                new ListNode().add(new ButtonNode(this.view.game.graphics, "End Turn", () -> {
-                    this.view.game.iterateTurnPlayer();
-                    this.view.refreshMenu(true);
+        this.turnMenu = new Menu(Gdx.graphics.getWidth() - Hud.BUTTON_WIDTH, Hud.HEIGHT, Hud.BUTTON_WIDTH, false,
+                new ListNode().add(new ButtonNode(this.view.game.graphics, "Complete Turn", () -> {
+                    if (this.view.getPopup().isPresent()) {
+                        this.view.setShowPopups(true);
+                    } else {
+                        this.view.game.iterateTurnPlayer(this.view);
+                        this.view.refreshMenu(true);
+                    }
                 })));
     }
 
@@ -60,11 +66,11 @@ public class Hud {
         font.draw(this.view.game.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15,
                 Gdx.graphics.getHeight() - 5);
         font.draw(this.view.game.graphics.sprites,
-                String.format("Unit Points: %d / %d", p.unitPoints, Player.MAX_UNIT_POINTS), 215,
+                String.format("Unit Points: %d / %d", p.unitPoints, NewUnit.MAX_UNIT_POINTS), 215,
                 Gdx.graphics.getHeight() - 5);
         this.view.game.graphics.sprites.end();
 
-        // Draw the "End Turn" button
+        // Draw the "Complete Turn" button
         if (this.view.game.canHumanPlayerAct()) {
             this.turnMenu.draw(this.view.game.graphics);
         }

@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
 import net.lugocorp.kingdom.game.Inventory.InventoryType;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
@@ -43,7 +44,9 @@ public class Tile extends Modellable implements EventTarget, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {
-        ListNode node = new ListNode().add(new TextNode(view.game.graphics, this.name));
+        ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> {
+            view.closeMenu();
+        })).add(new TextNode(view.game.graphics, this.name));
         this.ability.ifPresent((Ability a) -> node.add(new TextNode(view.game.graphics, a.desc)));
         node.add(this.items.getMenuContent(view, x, y));
         this.building.ifPresent((Building b) -> node.add(b.getMenuContent(view, x, y)));

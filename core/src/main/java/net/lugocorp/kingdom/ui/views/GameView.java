@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import java.util.ArrayDeque;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.MenuController;
@@ -19,14 +21,17 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.Logger;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.utils.Consumer;
 
 public class GameView implements View {
+    private final Queue<Menu> popups = new ArrayDeque<>();
     private final ModelInstance tileHighlight;
     private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
     private Optional<TileSelection> selection = Optional.empty();
     private Point menuCoords = new Point(0, 0);
+    private boolean showPopups = false;
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
@@ -68,7 +73,7 @@ public class GameView implements View {
             return;
         }
         this.selection = Optional.of(new TileSelection(points, action));
-        this.menu = Optional.empty();
+        this.closeMenu();
     }
 
     /**
@@ -93,9 +98,7 @@ public class GameView implements View {
      */
     public void openTileMenu() {
         this.selection = Optional.empty();
-        if (this.menu.isPresent()) {
-            this.menu = Optional.empty();
-        }
+        this.closeMenu();
         if (!this.hoveredTile.isPresent()) {
             return;
         }
@@ -114,8 +117,54 @@ public class GameView implements View {
         if (!t.isPresent()) {
             return;
         }
-        this.menu = Optional.of(
-                new Menu(0, Hud.HEIGHT, 250, true, t.get().getMenuContent(this, this.menuCoords.x, this.menuCoords.y)));
+        MenuNode node = t.get().getMenuContent(this, this.menuCoords.x, this.menuCoords.y);
+        this.menu = Optional.of(new Menu(0, Hud.HEIGHT, 250, true, node));
+    }
+
+    /**
+     * Closes the currently open Menu
+     */
+    public void closeMenu() {
+        this.menu = Optional.empty();
+    }
+
+    /**
+     * Retrieves the first popup Menu in the queue, if any
+     */
+    public Optional<Menu> getPopup() {
+        return this.popups.isEmpty() ? Optional.empty() : Optional.of(this.popups.peek());
+    }
+
+    /**
+     * Adds a popup Menu to the state
+     */
+    public void addPopup(Menu menu) {
+        this.popups.add(menu);
+        this.showPopups = true;
+    }
+
+    /**
+     * Removes a popup Menu from the queue
+     */
+    public void completePopup() {
+        this.popups.remove();
+        if (this.popups.isEmpty()) {
+            this.showPopups = false;
+        }
+    }
+
+    /**
+     * Shows or hides popup Menus
+     */
+    public void setShowPopups(boolean showPopups) {
+        this.showPopups = showPopups && !this.popups.isEmpty();
+    }
+
+    /**
+     * Returns true if popup Menus are on screen
+     */
+    public boolean isShowingPopups() {
+        return this.showPopups && !this.popups.isEmpty();
     }
 
     /** {@inheritdoc} */
@@ -146,7 +195,7 @@ public class GameView implements View {
         this.camera.update();
 
         // Kick off the Player's turn
-        this.game.kickOffTurn();
+        this.game.kickOffTurn(this);
     }
 
     /** {@inheritdoc} */
@@ -176,6 +225,9 @@ public class GameView implements View {
         this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
         this.hud.render();
         this.logger.render();
+        if (this.isShowingPopups()) {
+            this.popups.peek().draw(this.game.graphics);
+        }
     }
 
     /** {@inheritdoc} */

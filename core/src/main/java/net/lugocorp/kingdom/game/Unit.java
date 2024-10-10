@@ -153,6 +153,9 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
             node.add(this.equipped.getMenuContent(view, x, y));
             node.add(new TextNode(view.game.graphics, "Hauled Items"));
             node.add(this.haul.getMenuContent(view, x, y));
+        } else {
+            node.add(new TextNode(view.game.graphics, String.format("Can equip %d items", this.equipped.getMax())));
+            node.add(new TextNode(view.game.graphics, String.format("Can haul %d items", this.haul.getMax())));
         }
         return node;
     }

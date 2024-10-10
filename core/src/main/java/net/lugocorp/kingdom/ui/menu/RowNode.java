@@ -8,31 +8,23 @@ import net.lugocorp.kingdom.math.Rect;
 /**
  * MenuNode item containing many child nodes
  */
-public class ListNode implements MenuNode {
+public class RowNode implements MenuNode {
     private final List<MenuNode> children = new ArrayList<>();
 
     /**
-     * Adds a child MenuNode to this ListNode
+     * Adds a child MenuNode to this RowNode
      */
-    public ListNode add(MenuNode child) {
+    public RowNode add(MenuNode child) {
         this.children.add(child);
         return this;
     }
-
-    /**
-     * Adds a child MenuNode to the front of this ListNode
-     */
-    /*
-     * public ListNode prepend(MenuNode child) { this.children.add(0, child); return
-     * this; }
-     */
 
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
         int h = 0;
         for (MenuNode child : this.children) {
-            h += child.getHeight();
+            h = Math.max(h, child.getHeight());
         }
         return h;
     }
@@ -41,31 +33,33 @@ public class ListNode implements MenuNode {
     @Override
     public void pack(int width) {
         for (MenuNode child : this.children) {
-            child.pack(width);
+            child.pack(width / this.children.size());
         }
     }
 
     /** {@inheritdoc} */
     @Override
     public void draw(Graphics graphics, Rect bounds) {
-        int y = bounds.y;
+        int x = bounds.x;
+        int w = bounds.w / this.children.size();
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(bounds.x, y, bounds.w, child.getHeight());
+            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
             child.draw(graphics, r);
-            y += r.h;
+            x += w;
         }
     }
 
     /** {@inheritdoc} */
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
-        int y = bounds.y;
+        int x = bounds.x;
+        int w = bounds.w / this.children.size();
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(bounds.x, y, bounds.w, child.getHeight());
+            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
             if (r.contains(p)) {
                 child.click(menu, r, p);
             }
-            y += r.h;
+            x += w;
         }
     }
 }
