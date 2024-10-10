@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game;
+package net.lugocorp.kingdom.game.model;
 import java.util.ArrayList;
 import java.util.List;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;

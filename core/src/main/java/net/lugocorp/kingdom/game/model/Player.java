@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game;
+package net.lugocorp.kingdom.game.model;
 
 /**
  * Represents a human or AI that is playing the game

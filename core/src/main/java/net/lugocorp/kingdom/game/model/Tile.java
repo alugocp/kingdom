@@ -1,10 +1,11 @@
-package net.lugocorp.kingdom.game;
+package net.lugocorp.kingdom.game.model;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
-import net.lugocorp.kingdom.game.Inventory.InventoryType;
+import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;

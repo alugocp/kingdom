@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.world;
 import java.util.Optional;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.Tile;
+import net.lugocorp.kingdom.game.model.Tile;
 
 /**
  * This class handles world generation logic

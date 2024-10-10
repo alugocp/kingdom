@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.mechanics;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
-import net.lugocorp.kingdom.game.Tile;
-import net.lugocorp.kingdom.game.Unit;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;

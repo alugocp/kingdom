@@ -9,7 +9,7 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.Tile;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
 

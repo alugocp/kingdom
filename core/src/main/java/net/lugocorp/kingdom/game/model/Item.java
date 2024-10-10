@@ -1,7 +1,8 @@
-package net.lugocorp.kingdom.game;
+package net.lugocorp.kingdom.game.model;
 import java.util.Optional;
 import net.lugocorp.kingdom.events.Event;
 import net.lugocorp.kingdom.events.EventTarget;
+import net.lugocorp.kingdom.game.Game;
 
 /**
  * An in-game pickup to be used by Units

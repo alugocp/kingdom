@@ -14,7 +14,7 @@ import java.util.Set;
 import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.Tile;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;

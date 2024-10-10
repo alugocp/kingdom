@@ -7,6 +7,10 @@ import java.util.Set;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
+import net.lugocorp.kingdom.game.model.Generator;
+import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.world.World;
 

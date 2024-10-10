@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.core;
 import net.lugocorp.kingdom.events.Event;
-import net.lugocorp.kingdom.game.Building;
-import net.lugocorp.kingdom.game.Item;
-import net.lugocorp.kingdom.game.Tile;
-import net.lugocorp.kingdom.game.Unit;
+import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 
 /**
  * Contains a collection of Events that are integral to the game's core

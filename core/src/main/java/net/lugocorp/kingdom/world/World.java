@@ -4,9 +4,9 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import net.lugocorp.kingdom.game.Building;
-import net.lugocorp.kingdom.game.Tile;
-import net.lugocorp.kingdom.game.Unit;
+import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
 
 /**
