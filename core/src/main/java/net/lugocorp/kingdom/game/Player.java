@@ -22,4 +22,20 @@ public class Player {
     public boolean isHumanPlayer() {
         return this.human;
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean equals(Object o) {
+        if (o != null && o instanceof Player) {
+            Player p = (Player) o;
+            return p.name == this.name;
+        }
+        return false;
+    }
 }

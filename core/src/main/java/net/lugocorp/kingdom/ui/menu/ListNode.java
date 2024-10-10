@@ -19,14 +19,6 @@ public class ListNode implements MenuNode {
         return this;
     }
 
-    /**
-     * Adds a child MenuNode to the front of this ListNode
-     */
-    /*
-     * public ListNode prepend(MenuNode child) { this.children.add(0, child); return
-     * this; }
-     */
-
     /** {@inheritdoc} */
     @Override
     public int getHeight() {

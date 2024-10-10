@@ -15,7 +15,11 @@ public class Point {
     /** {@inheritdoc} */
     @Override
     public boolean equals(Object o) {
-        return o != null && (o instanceof Point) && o.hashCode() == this.hashCode();
+        if (o != null && o instanceof Point) {
+            Point p = (Point) o;
+            return p.x == this.x && p.y == this.y;
+        }
+        return false;
     }
 
     /** {@inheritdoc} */

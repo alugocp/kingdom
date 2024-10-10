@@ -125,14 +125,21 @@ public class InventoryNode implements MenuNode {
 
     /**
      * Returns true if the Unit on the currently open Tile can take another Item in
-     * the specified Inventory
+     * the specified Inventory. The "unit" parameter will be empty if you're
+     * checking against a free Item. Otherwise, it will contain the Unit (if any) on
+     * the tile that you're trying to gift the Item to.
      */
     private boolean canUnitTakeItem(int type, Optional<Unit> unit) {
-        if (!unit.isPresent()) {
-            unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
+        Optional<Unit> focal = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
+        if (unit.isPresent()) {
+            if (!unit.get().leader.equals(focal.get().leader)) {
+                return false;
+            }
+        } else {
+            unit = focal;
         }
-        return unit.isPresent() && ((type == InventoryType.EQUIP && !unit.get().equipped.isFull())
-                || (type == InventoryType.HAUL && !unit.get().haul.isFull()));
+        return (type == InventoryType.EQUIP && !unit.get().equipped.isFull())
+                || (type == InventoryType.HAUL && !unit.get().haul.isFull());
     }
 
     /**
