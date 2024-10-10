@@ -25,8 +25,8 @@ public class Hud {
         this.view = view;
         this.turnMenu = new Menu(Gdx.graphics.getWidth() - Hud.BUTTON_WIDTH, Hud.HEIGHT, Hud.BUTTON_WIDTH, false,
                 new ListNode().add(new ButtonNode(this.view.game.graphics, "Complete Turn", () -> {
-                    if (this.view.getPopup().isPresent()) {
-                        this.view.setShowPopups(true);
+                    if (this.view.popups.get().isPresent()) {
+                        this.view.popups.setDisplay(true);
                     } else {
                         this.view.game.iterateTurnPlayer(this.view);
                         this.view.refreshMenu(true);

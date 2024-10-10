@@ -70,7 +70,7 @@ public class Game {
         this.unitsThatHaveActed.clear();
         this.turnPlayer.unitPoints += NewUnit.getUnitPointsYield(this.turnPlayer.bareTiles, this.turnPlayer.tiles);
         if (this.turnPlayer.isHumanPlayer() && this.turnPlayer.unitPoints >= NewUnit.MAX_UNIT_POINTS) {
-            view.addPopup(NewUnit.getNewUnitMenu(view));
+            view.popups.add(NewUnit.getNewUnitMenu(view));
         }
 
         // Allow the turn Player to act

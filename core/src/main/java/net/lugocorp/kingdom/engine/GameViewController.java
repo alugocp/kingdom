@@ -25,8 +25,9 @@ public class GameViewController extends CameraInputController {
 
     public GameViewController(GameView view, MenuController menu, Camera camera) {
         super(camera);
-        this.popupMenu = new MenuController(
-                () -> view.game.canHumanPlayerAct() && view.isShowingPopups() ? view.getPopup() : Optional.empty());
+        this.popupMenu = new MenuController(() -> view.game.canHumanPlayerAct() && view.popups.isDisplayed()
+                ? view.popups.get()
+                : Optional.empty());
         this.turnMenu = new MenuController(
                 () -> view.game.canHumanPlayerAct() ? Optional.of(view.hud.turnMenu) : Optional.empty());
         this.tileMenu = menu;
@@ -54,8 +55,8 @@ public class GameViewController extends CameraInputController {
     public boolean touchUp(int x, int y, int pointer, int button) {
         if (this.popupMenu.touchUp(x, y, pointer, button)) {
             return true;
-        } else if (this.view.isShowingPopups()) {
-            this.view.setShowPopups(false);
+        } else if (this.view.popups.isDisplayed()) {
+            this.view.popups.setDisplay(false);
         }
         if (this.tileMenu.touchUp(x, y, pointer, button)) {
             return true;

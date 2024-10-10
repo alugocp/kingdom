@@ -32,7 +32,7 @@ public class NewUnit {
         Unit u1 = view.game.generator.unit("Crystal", 0, 0);
         Unit u2 = view.game.generator.unit("Crystal", 0, 0);
         Unit u3 = view.game.generator.unit("Crystal", 0, 0);
-        ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.setShowPopups(false)))
+        ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new RowNode().add(u1.getMenuContent(view, 0, 0)).add(u2.getMenuContent(view, 0, 0))
                         .add(u3.getMenuContent(view, 0, 0)))
                 .add(new RowNode().add(new ButtonNode(view.game.graphics, "Choose", () -> NewUnit.choose(view, u1)))
@@ -46,7 +46,7 @@ public class NewUnit {
      */
     private static void choose(GameView view, Unit u) {
         view.game.human.unitPoints -= NewUnit.MAX_UNIT_POINTS;
-        view.completePopup();
+        view.popups.complete();
         view.game.world.getTile(u.getX(), u.getY()).ifPresent((Tile t) -> {
             if (t.unit.isPresent()) {
                 view.logger.log("Cannot spawn unit on occupied tile");

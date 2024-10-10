@@ -25,16 +25,15 @@ import java.util.Queue;
 import java.util.Set;
 
 public class GameView implements View {
-    private final Queue<Menu> popups = new ArrayDeque<>();
     private final ModelInstance tileHighlight;
     private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
     private Optional<TileSelection> selection = Optional.empty();
     private Point menuCoords = new Point(0, 0);
-    private boolean showPopups = false;
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
+    public final Popups popups = new Popups();
     public final Logger logger;
     public final Game game;
     public final Hud hud;
@@ -128,45 +127,6 @@ public class GameView implements View {
         this.menu = Optional.empty();
     }
 
-    /**
-     * Retrieves the first popup Menu in the queue, if any
-     */
-    public Optional<Menu> getPopup() {
-        return this.popups.isEmpty() ? Optional.empty() : Optional.of(this.popups.peek());
-    }
-
-    /**
-     * Adds a popup Menu to the state
-     */
-    public void addPopup(Menu menu) {
-        this.popups.add(menu);
-        this.showPopups = true;
-    }
-
-    /**
-     * Removes a popup Menu from the queue
-     */
-    public void completePopup() {
-        this.popups.remove();
-        if (this.popups.isEmpty()) {
-            this.showPopups = false;
-        }
-    }
-
-    /**
-     * Shows or hides popup Menus
-     */
-    public void setShowPopups(boolean showPopups) {
-        this.showPopups = showPopups && !this.popups.isEmpty();
-    }
-
-    /**
-     * Returns true if popup Menus are on screen
-     */
-    public boolean isShowingPopups() {
-        return this.showPopups && !this.popups.isEmpty();
-    }
-
     /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
@@ -225,8 +185,8 @@ public class GameView implements View {
         this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
         this.hud.render();
         this.logger.render();
-        if (this.isShowingPopups()) {
-            this.popups.peek().draw(this.game.graphics);
+        if (this.popups.isDisplayed()) {
+            this.popups.queue.peek().draw(this.game.graphics);
         }
     }
 
@@ -255,6 +215,53 @@ public class GameView implements View {
         private TileSelection(Set<Point> points, Consumer<Point> action) {
             this.points = points;
             this.action = action;
+        }
+    }
+
+    /**
+     * This nested class handles popup Menu logic
+     */
+    public static class Popups {
+        private final Queue<Menu> queue = new ArrayDeque<>();
+        private boolean display = false;
+
+        /**
+         * Retrieves the first popup Menu in the queue, if any
+         */
+        public Optional<Menu> get() {
+            return this.queue.isEmpty() ? Optional.empty() : Optional.of(this.queue.peek());
+        }
+
+        /**
+         * Adds a popup Menu to the state
+         */
+        public void add(Menu menu) {
+            this.queue.add(menu);
+            this.display = true;
+        }
+
+        /**
+         * Removes a popup Menu from the queue
+         */
+        public void complete() {
+            this.queue.remove();
+            if (this.queue.isEmpty()) {
+                this.display = false;
+            }
+        }
+
+        /**
+         * Shows or hides popup Menus
+         */
+        public void setDisplay(boolean display) {
+            this.display = display && !this.queue.isEmpty();
+        }
+
+        /**
+         * Returns true if popup Menus are on screen
+         */
+        public boolean isDisplayed() {
+            return this.display && !this.queue.isEmpty();
         }
     }
 }
