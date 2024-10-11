@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.events.EventHandlerBundle;
+import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Player;
@@ -22,6 +23,7 @@ public class Game {
     private Player turnPlayer = new Player("you", true);
     private boolean canPlayerAct = false;
     public final List<Player> comps = new ArrayList<>();
+    public final Mechanics mechanics = new Mechanics();
     public final EventHandlerBundle events;
     public final GameGraphics graphics;
     public final Generator generator;
@@ -68,9 +70,10 @@ public class Game {
         this.canPlayerAct = false;
         // TODO run this logic in another thread for optimization
         this.unitsThatHaveActed.clear();
-        this.turnPlayer.unitPoints += NewUnit.getUnitPointsYield(this.turnPlayer.bareTiles, this.turnPlayer.tiles);
+        this.turnPlayer.unitPoints += this.mechanics.newUnits.getUnitPointsYield(this.turnPlayer.bareTiles,
+                this.turnPlayer.tiles);
         if (this.turnPlayer.isHumanPlayer() && this.turnPlayer.unitPoints >= NewUnit.MAX_UNIT_POINTS) {
-            view.popups.add(NewUnit.getNewUnitMenu(view));
+            view.popups.add(this.mechanics.newUnits.getNewUnitMenu(view));
         }
 
         // Allow the turn Player to act

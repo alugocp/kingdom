@@ -1,10 +1,13 @@
 package net.lugocorp.kingdom.game.model;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents a human or AI that is playing the game
  */
 public class Player {
     private final boolean human;
+    public final Set<Artifact> artifacts = new HashSet<>();
     public final String name;
     public int unitPoints = 0;
     public int bareTiles = 0;

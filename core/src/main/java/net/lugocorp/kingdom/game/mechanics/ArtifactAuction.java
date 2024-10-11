@@ -1,7 +1,9 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.Hud;
+import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -10,8 +12,10 @@ import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.Gdx;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -20,7 +24,7 @@ import java.util.Set;
  * This class manages the logic for artifact auctions
  */
 public class ArtifactAuction {
-    private static final Random random = new Random();
+    private final Random random = new Random();
     private Auction auction = new Auction();
 
     /**
@@ -59,6 +63,44 @@ public class ArtifactAuction {
     }
 
     /**
+     * Instantiates the Menu that will appear after an Auction has concluded
+     */
+    public Menu getFollowUpMenu(GameView view) {
+        // Inform the human Player if they did not win the Auction
+        if (!this.auction.getWinner(this.random).isHumanPlayer()) {
+            return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false,
+                    new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
+                            .add(new TextNode(view.game.graphics, "You did not win the auction"))
+                            .add(new ButtonNode(view.game.graphics, "Okay", () -> view.popups.complete())));
+        }
+
+        // Populate the Menu with ArtifactNodes if the human Player did win the Auction
+        int a = 0;
+        int width = Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2);
+        int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
+        ListNode node = new ListNode()
+                .add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)));
+        // TODO populate this list of Artifacts
+        List<Artifact> artifacts = new ArrayList<>();
+        while (a < artifacts.size()) {
+            RowNode row1 = new RowNode();
+            RowNode row2 = new RowNode();
+            for (int b = 0; b < columns && a < artifacts.size(); b++) {
+                final Artifact artifact = artifacts.get(a);
+                row1.add(new ArtifactNode(view.game.graphics, artifact));
+                row2.add(new ButtonNode(view.game.graphics, "Choose", () -> {
+                    artifact.claim(view.game.human);
+                    view.popups.complete();
+                }));
+                a++;
+            }
+            node.add(row1);
+            node.add(row2);
+        }
+        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, width, false, node);
+    }
+
+    /**
      * Nested class that contains a single artifact auction's data
      */
     public static class Auction {
@@ -81,7 +123,7 @@ public class ArtifactAuction {
         /**
          * Retrieves the winner of this Auction
          */
-        private Player getWinner() {
+        private Player getWinner(Random random) {
             Set<Player> winners = new HashSet<>();
             int maxBid = 0;
             for (Player bidder : this.bids.keySet()) {
@@ -96,7 +138,7 @@ public class ArtifactAuction {
             }
             Player[] w = new Player[winners.size()];
             winners.toArray(w);
-            return w[ArtifactAuction.random.nextInt(w.length)];
+            return w[random.nextInt(w.length)];
         }
     }
 }

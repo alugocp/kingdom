@@ -11,5 +11,5 @@ public interface EventTarget {
      * Allows implementing classes to call into Game's StratifiedEventReceivers
      * using the correct name value
      */
-    void handleEvent(Game g, Event e);
+    public void handleEvent(Game g, Event e);
 }

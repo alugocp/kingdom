@@ -54,5 +54,12 @@ public class Coords {
         public Rect flip(int x, int y, int w, int h) {
             return new Rect(x, Gdx.graphics.getHeight() - y - h, w, h);
         }
+
+        /**
+         * Calls the other flip method but with a Rect input
+         */
+        public Rect flip(Rect r) {
+            return this.flip(r.x, r.y, r.w, r.h);
+        }
     }
 }

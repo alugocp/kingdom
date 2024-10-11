@@ -20,14 +20,14 @@ public class NewUnit {
     /**
      * Returns the number of unit points that a Player should get each turn
      */
-    public static int getUnitPointsYield(int bareTiles, int tiles) {
+    public int getUnitPointsYield(int bareTiles, int tiles) {
         return (int) Math.floor(20f * bareTiles / tiles);
     }
 
     /**
      * Instantiates a popup Menu to handle the new Unit acquisition UI
      */
-    public static Menu getNewUnitMenu(GameView view) {
+    public Menu getNewUnitMenu(GameView view) {
         // TODO pick a random point to spawn the Unit before this point
         // TODO randomly select the Unit options here
         Unit u1 = view.game.generator.unit("Crystal", 0, 0);
@@ -37,16 +37,16 @@ public class NewUnit {
                 .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
                 .add(new RowNode().add(u1.getMenuContent(view, 0, 0)).add(u2.getMenuContent(view, 0, 0))
                         .add(u3.getMenuContent(view, 0, 0)))
-                .add(new RowNode().add(new ButtonNode(view.game.graphics, "Choose", () -> NewUnit.choose(view, u1)))
-                        .add(new ButtonNode(view.game.graphics, "Choose", () -> NewUnit.choose(view, u2)))
-                        .add(new ButtonNode(view.game.graphics, "Choose", () -> NewUnit.choose(view, u3))));
+                .add(new RowNode().add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u1)))
+                        .add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u2)))
+                        .add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u3))));
         return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
     }
 
     /**
      * Completes the associated popup Menu and spawns a new Unit in the World
      */
-    private static void choose(GameView view, Unit u) {
+    private void choose(GameView view, Unit u) {
         view.game.human.unitPoints -= NewUnit.MAX_UNIT_POINTS;
         view.popups.complete();
         view.game.world.getTile(u.getX(), u.getY()).ifPresent((Tile t) -> {

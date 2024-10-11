@@ -5,6 +5,7 @@ package net.lugocorp.kingdom.events;
  */
 public class EventHandlerBundle {
     public final StratifiedEventReceiver building = new StratifiedEventReceiver();
+    public final StratifiedEventReceiver artifact = new StratifiedEventReceiver();
     public final StratifiedEventReceiver ability = new StratifiedEventReceiver();
     public final StratifiedEventReceiver item = new StratifiedEventReceiver();
     public final StratifiedEventReceiver unit = new StratifiedEventReceiver();
