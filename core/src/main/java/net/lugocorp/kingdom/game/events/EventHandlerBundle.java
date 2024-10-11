@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.events;
+package net.lugocorp.kingdom.game.events;
 
 /**
  * A neat package to contain all of our StratifiedEventReceivers

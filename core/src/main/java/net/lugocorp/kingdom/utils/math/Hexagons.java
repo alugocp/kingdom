@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.math;
+package net.lugocorp.kingdom.utils.math;
 import java.util.HashSet;
 import java.util.Set;
 

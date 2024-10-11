@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.events;
+package net.lugocorp.kingdom.game.events;
 
 /**
  * Contains relevant data for some incoming event

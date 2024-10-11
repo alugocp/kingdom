@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.game.model.Player;
-import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.math.Rect;
+import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Rect;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;

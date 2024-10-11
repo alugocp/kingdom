@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.assets.AssetsLoader;
-import net.lugocorp.kingdom.assets.SpritesLoader;
+import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.events.EventHandlerBundle;
+import net.lugocorp.kingdom.game.events.EventHandlerBundle;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.utils.Consumer;
-import net.lugocorp.kingdom.world.World;
-import net.lugocorp.kingdom.world.WorldGenerator;
+import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.game.world.WorldGenerator;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 

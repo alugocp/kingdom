@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.core.Events;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.Game;
 
 /**

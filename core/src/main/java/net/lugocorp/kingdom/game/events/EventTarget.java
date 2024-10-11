@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.events;
+package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.game.Game;
 
 /**

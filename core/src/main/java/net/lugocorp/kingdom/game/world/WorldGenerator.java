@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.world;
+package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Tile;
 import java.util.Optional;

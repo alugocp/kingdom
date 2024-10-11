@@ -1,8 +1,8 @@
-package net.lugocorp.kingdom.world;
+package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;

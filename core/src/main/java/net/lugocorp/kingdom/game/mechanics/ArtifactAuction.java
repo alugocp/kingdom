@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Player;
-import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;

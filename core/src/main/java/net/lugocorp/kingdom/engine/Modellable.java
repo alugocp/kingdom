@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.AssetsLoader;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;

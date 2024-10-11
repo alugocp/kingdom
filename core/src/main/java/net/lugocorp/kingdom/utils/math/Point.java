@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.math;
+package net.lugocorp.kingdom.utils.math;
 
 /**
  * Represents a point in a 2D space

@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.assets.AssetsLoader;
-import net.lugocorp.kingdom.assets.SpritesLoader;
+import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 
 /**
  * Extra graphical resources for a GameView

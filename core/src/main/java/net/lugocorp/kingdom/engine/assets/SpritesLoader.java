@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.assets;
+package net.lugocorp.kingdom.engine.assets;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

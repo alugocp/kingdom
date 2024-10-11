@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.Main;
 
 /** Launches the desktop (LWJGL3) application. */

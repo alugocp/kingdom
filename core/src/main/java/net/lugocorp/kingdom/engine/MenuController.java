@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.Producer;
 import com.badlogic.gdx.Gdx;

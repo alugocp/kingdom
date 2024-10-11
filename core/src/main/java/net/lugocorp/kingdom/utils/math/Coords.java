@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.math;
+package net.lugocorp.kingdom.utils.math;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 
