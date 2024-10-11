@@ -14,12 +14,8 @@ public class Point {
 
     /** {@inheritdoc} */
     @Override
-    public boolean equals(Object o) {
-        if (o != null && o instanceof Point) {
-            Point p = (Point) o;
-            return p.x == this.x && p.y == this.y;
-        }
-        return false;
+    public String toString() {
+        return String.format("(%d, %d)", this.x, this.y);
     }
 
     /** {@inheritdoc} */
@@ -30,7 +26,11 @@ public class Point {
 
     /** {@inheritdoc} */
     @Override
-    public String toString() {
-        return String.format("(%d, %d)", this.x, this.y);
+    public boolean equals(Object o) {
+        if (o != null && o instanceof Point) {
+            Point p = (Point) o;
+            return p.x == this.x && p.y == this.y;
+        }
+        return false;
     }
 }

@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
+import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
@@ -33,6 +34,7 @@ public class NewUnit {
         Unit u2 = view.game.generator.unit("Crystal", 0, 0);
         Unit u3 = view.game.generator.unit("Crystal", 0, 0);
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
+                .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
                 .add(new RowNode().add(u1.getMenuContent(view, 0, 0)).add(u2.getMenuContent(view, 0, 0))
                         .add(u3.getMenuContent(view, 0, 0)))
                 .add(new RowNode().add(new ButtonNode(view.game.graphics, "Choose", () -> NewUnit.choose(view, u1)))

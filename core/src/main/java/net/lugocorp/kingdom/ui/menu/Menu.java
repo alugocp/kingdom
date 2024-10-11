@@ -67,7 +67,8 @@ public class Menu {
      * Returns the height of the Menu UI
      */
     private int getHeight() {
-        return this.tall ? (Gdx.graphics.getHeight() - this.y) : this.root.getHeight();
+        int max = Gdx.graphics.getHeight() - this.y;
+        return this.tall ? max : Math.min(max, this.root.getHeight());
     }
 
     /**

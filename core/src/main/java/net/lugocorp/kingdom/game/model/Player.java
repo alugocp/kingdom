@@ -31,6 +31,12 @@ public class Player {
 
     /** {@inheritdoc} */
     @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public boolean equals(Object o) {
         if (o != null && o instanceof Player) {
             Player p = (Player) o;
