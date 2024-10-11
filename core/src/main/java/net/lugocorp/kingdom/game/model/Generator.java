@@ -48,4 +48,22 @@ public class Generator {
         this.game.events.item.handle(this.game, name, e);
         return e.blob;
     }
+
+    /**
+     * Generates a new Ability
+     */
+    public Ability ability(String name) {
+        Events.GenerateAbilityEvent e = new Events.GenerateAbilityEvent(new Ability(name));
+        this.game.events.ability.handle(this.game, name, e);
+        return e.blob;
+    }
+
+    /**
+     * Generates a new Artifact
+     */
+    public Artifact artifact(String name) {
+        Events.GenerateArtifactEvent e = new Events.GenerateArtifactEvent(new Artifact(name));
+        this.game.events.artifact.handle(this.game, name, e);
+        return e.blob;
+    }
 }

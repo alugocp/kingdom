@@ -4,6 +4,8 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.model.Ability;
+import net.lugocorp.kingdom.game.model.Artifact;
 
 /**
  * Contains a collection of Events that are integral to the game's core
@@ -56,6 +58,24 @@ public class Events {
     public static class GenerateItemEvent extends GenerateBlobEventTemplate<Item> {
         public GenerateItemEvent(Item blob) {
             super("GenerateItemEvent", blob);
+        }
+    }
+
+    /**
+     * Generator Event for new Abilities
+     */
+    public static class GenerateAbilityEvent extends GenerateBlobEventTemplate<Ability> {
+        public GenerateAbilityEvent(Ability blob) {
+            super("GenerateAbilityEvent", blob);
+        }
+    }
+
+    /**
+     * Generator Event for new Artifacts
+     */
+    public static class GenerateArtifactEvent extends GenerateBlobEventTemplate<Artifact> {
+        public GenerateArtifactEvent(Artifact blob) {
+            super("GenerateArtifactEvent", blob);
         }
     }
 
