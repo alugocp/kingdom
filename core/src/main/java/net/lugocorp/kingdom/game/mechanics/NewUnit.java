@@ -47,7 +47,6 @@ public class NewUnit {
      * Completes the associated popup Menu and spawns a new Unit in the World
      */
     private void choose(GameView view, Unit u) {
-        view.game.human.unitPoints -= NewUnit.MAX_UNIT_POINTS;
         view.popups.complete();
         view.game.world.getTile(u.getX(), u.getY()).ifPresent((Tile t) -> {
             if (t.unit.isPresent()) {

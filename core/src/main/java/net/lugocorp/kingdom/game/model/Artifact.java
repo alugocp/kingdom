@@ -38,7 +38,7 @@ public class Artifact implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEvent(GameView view, Event e) {
+    public void handleEventWithoutSignalBooster(GameView view, Event e) {
         view.game.events.artifact.handle(view, this, e);
     }
 

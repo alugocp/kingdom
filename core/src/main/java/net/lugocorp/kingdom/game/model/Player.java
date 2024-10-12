@@ -9,6 +9,7 @@ public class Player {
     private final boolean human;
     public final Set<Artifact> artifacts = new HashSet<>();
     public final String name;
+    public int auctionPoints = 0;
     public int unitPoints = 0;
     public int bareTiles = 0;
     public int tiles = 0;

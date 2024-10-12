@@ -18,7 +18,7 @@ public class Item implements EventReceiver {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEvent(GameView view, Event e) {
+    public void handleEventWithoutSignalBooster(GameView view, Event e) {
         view.game.events.item.handle(view, this, e);
     }
 

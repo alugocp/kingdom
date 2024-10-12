@@ -10,7 +10,15 @@ public interface EventReceiver {
     /**
      * API sugar to handle an Event
      */
-    public void handleEvent(GameView g, Event e);
+    public default void handleEvent(GameView view, Event e) {
+        this.handleEventWithoutSignalBooster(view, e);
+        view.game.events.signals.propagate(view, this, e);
+    }
+
+    /**
+     * Handles Events without calling the SignalBooster
+     */
+    public void handleEventWithoutSignalBooster(GameView view, Event e);
 
     /**
      * Returns a key that helps determine which EventHandler to use in an

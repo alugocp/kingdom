@@ -32,7 +32,7 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEvent(GameView view, Event e) {
+    public void handleEventWithoutSignalBooster(GameView view, Event e) {
         view.game.events.tile.handle(view, this, e);
     }
 

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.ui.Hud;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
@@ -24,14 +26,39 @@ import java.util.Set;
  * This class manages the logic for artifact auctions
  */
 public class ArtifactAuction {
+    public static final int MAX_AUCTION_POINTS = 250;
+    public static final int AUCTION_STATE_INACTIVE = 0;
+    public static final int AUCTION_STATE_ACTIVE = 1;
+    public static final int AUCTION_STATE_DONE = 2;
     private final Random random = new Random();
-    private Auction auction = new Auction();
+    private Optional<Auction> auction = Optional.empty();
 
     /**
      * Calculates how much gold a Player must pay to participate in an auction
      */
     public int getBuyInCost(int gold) {
         return (int) Math.floor(gold * 0.2);
+    }
+
+    /**
+     * Retrieves the currently open Auction (if any)
+     */
+    public Optional<Auction> getAuction() {
+        return this.auction;
+    }
+
+    /**
+     * Closes the currently open Auction
+     */
+    public void closeAuction() {
+        this.auction = Optional.empty();
+    }
+
+    /**
+     * Opens a new Auction
+     */
+    public void openNewAuction() {
+        this.auction = Optional.of(new Auction());
     }
 
     /**
@@ -54,11 +81,14 @@ public class ArtifactAuction {
                     }
                     view.popups.setDisplay(false);
                     view.selectTiles(vaults, error, (Point p) -> {
-                        this.auction.addBidder(view.game.human, p);
+                        this.auction.get().addBidder(view.game.human, p);
                         view.game.human.gold -= price;
                         view.popups.complete();
                     });
-                })).add(new ButtonNode(view.game.graphics, "No", () -> view.popups.complete())));
+                })).add(new ButtonNode(view.game.graphics, "No", () -> {
+                    this.auction.get().doNotAddBidder();
+                    view.popups.complete();
+                })));
         return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
     }
 
@@ -67,10 +97,12 @@ public class ArtifactAuction {
      */
     public Menu getFollowUpMenu(GameView view) {
         // Inform the human Player if they did not win the Auction
-        if (!this.auction.getWinner(this.random).isHumanPlayer()) {
+        Optional<Player> winner = this.auction.get().getWinner(this.random);
+        if (winner.map((Player p) -> !p.isHumanPlayer()).orElse(true)) {
             return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false,
                     new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
-                            .add(new TextNode(view.game.graphics, "You did not win the auction"))
+                            .add(new TextNode(view.game.graphics,
+                                    winner.isPresent() ? "You did not win the auction" : "Nobody bid in this auction"))
                             .add(new ButtonNode(view.game.graphics, "Okay", () -> view.popups.complete())));
         }
 
@@ -105,25 +137,53 @@ public class ArtifactAuction {
      */
     public static class Auction {
         private final Map<Player, Point> bids = new HashMap<>();
+        public int decisions = 0;
+
+        /**
+         * Returns true if every Player has made a decision on this Auction
+         */
+        public boolean hasBeenDecided(Game g) {
+            // The +1 is for the human Player
+            return this.decisions == g.comps.size() + 1;
+        }
+
+        /**
+         * Returns true if there are still Players who have not seen the results of this
+         * Auction
+         */
+        public boolean notEveryoneHasSeenResults() {
+            return this.decisions > 0;
+        }
+
+        /**
+         * Called when a Player decides not to bid
+         */
+        public void doNotAddBidder() {
+            this.decisions++;
+        }
 
         /**
          * Adds a new bid to this Auction
          */
         public void addBidder(Player bidder, Point p) {
             this.bids.put(bidder, p);
+            this.decisions++;
         }
 
         /**
-         * Returns true if this Auction has any bids
+         * Called when a Player has seen the Auction results
          */
-        private boolean hasBids() {
-            return this.bids.size() > 0;
+        public void hasSeenResults() {
+            this.decisions--;
         }
 
         /**
          * Retrieves the winner of this Auction
          */
-        private Player getWinner(Random random) {
+        private Optional<Player> getWinner(Random random) {
+            if (this.bids.size() == 0) {
+                return Optional.empty();
+            }
             Set<Player> winners = new HashSet<>();
             int maxBid = 0;
             for (Player bidder : this.bids.keySet()) {
@@ -138,7 +198,7 @@ public class ArtifactAuction {
             }
             Player[] w = new Player[winners.size()];
             winners.toArray(w);
-            return w[random.nextInt(w.length)];
+            return Optional.of(w[random.nextInt(w.length)]);
         }
     }
 }

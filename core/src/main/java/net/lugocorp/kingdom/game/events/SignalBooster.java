@@ -15,10 +15,14 @@ public class SignalBooster {
     /**
      * Broadcasts an Event with all listening EventReceivers
      */
-    public void propagate(GameView view, Event e) {
+    public void propagate(GameView view, EventReceiver original, Event e) {
         if (this.receivers.containsKey(e.channel)) {
             for (EventReceiver r : receivers.get(e.channel)) {
-                r.handleEvent(view, e);
+                if (r == original) {
+                    // Prevent infinite loops
+                    continue;
+                }
+                r.handleEventWithoutSignalBooster(view, e);
             }
         }
     }

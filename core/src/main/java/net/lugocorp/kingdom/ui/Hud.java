@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui;
+import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -67,6 +68,9 @@ public class Hud {
                 Gdx.graphics.getHeight() - 5);
         font.draw(this.view.game.graphics.sprites,
                 String.format("Unit Points: %d / %d", p.unitPoints, NewUnit.MAX_UNIT_POINTS), 215,
+                Gdx.graphics.getHeight() - 5);
+        font.draw(this.view.game.graphics.sprites,
+                String.format("Auction Points: %d / %d", p.auctionPoints, ArtifactAuction.MAX_AUCTION_POINTS), 415,
                 Gdx.graphics.getHeight() - 5);
         this.view.game.graphics.sprites.end();
 

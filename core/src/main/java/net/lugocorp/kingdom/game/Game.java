@@ -1,6 +1,8 @@
 package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
+import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.game.model.Generator;
@@ -72,8 +74,28 @@ public class Game {
         this.unitsThatHaveActed.clear();
         this.turnPlayer.unitPoints += this.mechanics.newUnits.getUnitPointsYield(this.turnPlayer.bareTiles,
                 this.turnPlayer.tiles);
-        if (this.turnPlayer.isHumanPlayer() && this.turnPlayer.unitPoints >= NewUnit.MAX_UNIT_POINTS) {
-            view.popups.add(this.mechanics.newUnits.getNewUnitMenu(view));
+        if (this.turnPlayer.isHumanPlayer()) {
+            // Choose a new Unit at the maximum unit points
+            if (this.turnPlayer.unitPoints >= NewUnit.MAX_UNIT_POINTS) {
+                this.turnPlayer.unitPoints -= NewUnit.MAX_UNIT_POINTS;
+                view.popups.add(this.mechanics.newUnits.getNewUnitMenu(view));
+            }
+            // Start a new ArtifactAuction at the maximum auction points
+            if (this.turnPlayer.auctionPoints >= ArtifactAuction.MAX_AUCTION_POINTS
+                    && !this.mechanics.auction.getAuction().isPresent()) {
+                this.turnPlayer.auctionPoints -= ArtifactAuction.MAX_AUCTION_POINTS;
+                this.mechanics.auction.openNewAuction();
+                view.popups.add(this.mechanics.auction.getAuctionBuyInMenu(view));
+            }
+            // Show the aftermatch of any active ArtifactAuction
+            if (this.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(this)).orElse(false)) {
+                if (this.mechanics.auction.getAuction().get().notEveryoneHasSeenResults()) {
+                    this.mechanics.auction.getFollowUpMenu(view);
+                    this.mechanics.auction.getAuction().get().hasSeenResults();
+                } else {
+                    this.mechanics.auction.closeAuction();
+                }
+            }
         }
 
         // Allow the turn Player to act
