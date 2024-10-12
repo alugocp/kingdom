@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.assets.AssetsLoader;
-import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.game.events.EventHandlerBundle;
+import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.utils.Consumer;
+import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
+import net.lugocorp.kingdom.utils.Consumer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 
@@ -16,12 +16,12 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class LoadingGameView implements View {
     private final Graphics graphics;
-    private final EventHandlerBundle events;
+    private final AllEventHandlers events;
     private Consumer<View> navigate;
     private SpritesLoader sprites;
     private AssetsLoader assets;
 
-    public LoadingGameView(Graphics graphics, EventHandlerBundle events) {
+    public LoadingGameView(Graphics graphics, AllEventHandlers events) {
         this.graphics = graphics;
         this.events = events;
     }

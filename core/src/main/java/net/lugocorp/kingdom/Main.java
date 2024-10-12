@@ -1,10 +1,13 @@
 package net.lugocorp.kingdom;
-import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.game.core.Events;
+import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventHandlerBundle;
-import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
 import com.badlogic.gdx.ApplicationListener;
@@ -30,24 +33,25 @@ public class Main implements ApplicationListener {
     @Override
     public void create() {
         // START MOD TESTING
-        EventHandlerBundle events = new EventHandlerBundle();
-        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (Game g, Event event) -> {
+        AllEventHandlers events = new AllEventHandlers();
+        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(g.graphics.loaders.assets, "crystal");
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
 
             // Place a free item at this unit's location
-            Optional<Tile> tile = g.world.getTile(e.blob.getX(), e.blob.getY());
-            tile.ifPresent((Tile t) -> t.items.add(g.generator.item("Potion")));
+            Optional<Tile> tile = view.game.world.getTile(e.blob.getX(), e.blob.getY());
+            tile.ifPresent((Tile t) -> t.items.add(view.game.generator.item("Potion")));
         });
-        events.building.addEventHandler("Mine", "GenerateBuildingEvent", (Game g, Event event) -> {
-            Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-            e.blob.setModelInstance(g.graphics.loaders.assets, "mine");
-        });
-        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (Game g, Event event) -> {
+        events.building.addEventHandler("Mine", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "mine");
+                });
+        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(g.graphics.loaders.assets, "tile");
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "tile");
         });
-        events.item.addEventHandler("Potion", "GenerateItemEvent", (Game g, Event event) -> {
+        events.item.addEventHandler("Potion", "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
             Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
             e.blob.desc = "Consume to restore a unit's health";
             e.blob.icon = Optional.of("potion");

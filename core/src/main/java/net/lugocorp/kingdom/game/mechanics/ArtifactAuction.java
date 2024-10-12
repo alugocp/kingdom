@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Player;
-import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -11,6 +10,7 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.HashMap;

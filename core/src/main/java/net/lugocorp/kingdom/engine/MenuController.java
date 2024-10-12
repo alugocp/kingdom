@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.Producer;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;

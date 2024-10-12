@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventTarget;
-import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
@@ -11,7 +10,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 /**
  * A passive or active effect that Units, Buildings and Tiles can use
  */
-public class Ability implements EventTarget, MenuSubject {
+public class Ability implements EventReceiver, MenuSubject {
     public final String name;
     public String desc = "";
 
@@ -21,8 +20,14 @@ public class Ability implements EventTarget, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEvent(Game g, Event e) {
-        g.events.ability.handle(g, this.name, e);
+    public void handleEvent(GameView view, Event e) {
+        view.game.events.ability.handle(view, this, e);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getStratifier() {
+        return this.name;
     }
 
     /** {@inheritdoc} */

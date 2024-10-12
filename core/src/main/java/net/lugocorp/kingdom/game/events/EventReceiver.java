@@ -1,53 +1,20 @@
 package net.lugocorp.kingdom.game.events;
-import net.lugocorp.kingdom.game.Game;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
- * Handles arbitrary incoming Events
+ * This interface serves as a wrapper so game objects can call their own
+ * EventReceivers in OOP fashion
  */
-public class EventReceiver {
-    private static Random random = new Random();
-    private Map<String, List<IdentifiedEventHandler>> handlers = new HashMap<>();
+public interface EventReceiver {
 
     /**
-     * Registers a new EventHandler to some channel on this EventReceiver
+     * API sugar to handle an Event
      */
-    public long addEventHandler(String channel, EventHandler handler) {
-        if (!this.handlers.containsKey(channel)) {
-            this.handlers.put(channel, new ArrayList<IdentifiedEventHandler>());
-        }
-        final long id = EventReceiver.random.nextLong();
-        this.handlers.get(channel).add(new IdentifiedEventHandler(handler, id));
-        return id;
-    }
+    public void handleEvent(GameView g, Event e);
 
     /**
-     * Runs the relevant EventHandler logic for a given Event
+     * Returns a key that helps determine which EventHandler to use in an
+     * EventHandlerBundle
      */
-    public void handle(Game g, Event e) {
-        if (!this.handlers.containsKey(e.channel)) {
-            return;
-        }
-        List<IdentifiedEventHandler> handlers = this.handlers.get(e.channel);
-        for (IdentifiedEventHandler handler : handlers) {
-            handler.handler.handle(g, e);
-        }
-    }
-
-    /**
-     * Nested class to bind an EventHandler with an identifier
-     */
-    private static class IdentifiedEventHandler {
-        final EventHandler handler;
-        final long id;
-
-        IdentifiedEventHandler(EventHandler handler, long id) {
-            this.handler = handler;
-            this.id = id;
-        }
-    }
+    public String getStratifier();
 }

@@ -1,14 +1,11 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.engine.Modellable;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.core.Events.CanUnitMoveEvent;
 import net.lugocorp.kingdom.game.core.Events.UnitMoveDistanceEvent;
-import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventTarget;
-import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Hexagons;
-import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -16,6 +13,9 @@ import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Hexagons;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +27,7 @@ import java.util.Set;
  * A single controllable entity (or NPC) that the player can interact with
  * in-game
  */
-public class Unit extends Modellable implements EventTarget, MenuSubject {
+public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public final String name;
     public Optional<Player> leader = Optional.empty();
     public Optional<Ability> active1 = Optional.empty();
@@ -44,17 +44,17 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
     /**
      * Returns the maximum distance that this Unit can move in a turn
      */
-    private int getMaxMoveDistance(Game g) {
+    private int getMaxMoveDistance(GameView view) {
         UnitMoveDistanceEvent event = new UnitMoveDistanceEvent(this);
-        this.handleEvent(g, event);
+        this.handleEvent(view, event);
         return event.distance;
     }
 
     /**
      * Returns the list of Points that this Unit can move to
      */
-    private Set<Point> getMoveTargets(Game g) {
-        int max = this.getMaxMoveDistance(g);
+    private Set<Point> getMoveTargets(GameView view) {
+        int max = this.getMaxMoveDistance(view);
         if (max == 0) {
             return new HashSet<Point>();
         }
@@ -73,7 +73,7 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
                 visited.add(p);
 
                 // Units cannot walk on Tiles that don't exist or already have a Unit
-                Optional<Tile> t = g.world.getTile(p);
+                Optional<Tile> t = view.game.world.getTile(p);
                 if (!t.isPresent()) {
                     continue;
                 }
@@ -84,7 +84,7 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
 
                 // Use event handler to check if this Unit can move here
                 CanUnitMoveEvent event = new CanUnitMoveEvent(this, tile);
-                this.handleEvent(g, event);
+                this.handleEvent(view, event);
                 if (!event.possible) {
                     continue;
                 }
@@ -117,8 +117,14 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEvent(Game g, Event e) {
-        g.events.unit.handle(g, this.name, e);
+    public void handleEvent(GameView view, Event e) {
+        view.game.events.unit.handle(view, this, e);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getStratifier() {
+        return this.name;
     }
 
     /** {@inheritdoc} */
@@ -135,7 +141,7 @@ public class Unit extends Modellable implements EventTarget, MenuSubject {
         }
         if (this.leader.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
             ButtonNode move = new ButtonNode(view.game.graphics, "Move",
-                    () -> view.selectTiles(this.getMoveTargets(view.game), "This unit cannot move", (Point p) -> {
+                    () -> view.selectTiles(this.getMoveTargets(view), "This unit cannot move", (Point p) -> {
                         this.move(view.game, p);
                         view.game.unitHasActed(this);
                     }));

@@ -1,14 +1,14 @@
 package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.engine.GameGraphics;
-import net.lugocorp.kingdom.game.events.EventHandlerBundle;
+import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,13 +24,13 @@ public class Game {
     private boolean canPlayerAct = false;
     public final List<Player> comps = new ArrayList<>();
     public final Mechanics mechanics = new Mechanics();
-    public final EventHandlerBundle events;
+    public final AllEventHandlers events;
     public final GameGraphics graphics;
     public final Generator generator;
     public final Player human;
     public final World world;
 
-    public Game(GameGraphics graphics, EventHandlerBundle events, World world) {
+    public Game(GameGraphics graphics, AllEventHandlers events, World world) {
         this.generator = new Generator(this);
         this.human = this.turnPlayer;
         this.graphics = graphics;

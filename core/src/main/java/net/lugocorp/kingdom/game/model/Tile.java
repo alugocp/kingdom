@@ -1,16 +1,15 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventTarget;
-import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
-import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
@@ -18,7 +17,7 @@ import java.util.Optional;
  * Represents a single hexagon in the game world and its corresponding
  * properties
  */
-public class Tile extends Modellable implements EventTarget, MenuSubject {
+public class Tile extends Modellable implements EventReceiver, MenuSubject {
     private Optional<Ability> ability = Optional.empty();
     public final String name;
     public final Inventory items = new Inventory(InventoryType.FREE, 10);
@@ -33,8 +32,14 @@ public class Tile extends Modellable implements EventTarget, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEvent(Game g, Event e) {
-        g.events.tile.handle(g, this.name, e);
+    public void handleEvent(GameView view, Event e) {
+        view.game.events.tile.handle(view, this, e);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getStratifier() {
+        return this.name;
     }
 
     /** {@inheritdoc} */

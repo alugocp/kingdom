@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.game.events;
-import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * This class represents the basic lambda function that powers the Event
  * handling system
  */
-public interface EventHandler<E extends Event> {
-    public void handle(Game game, E event);
+public interface EventHandler<T extends EventReceiver> {
+    public void handle(GameView view, T receiver, Event event);
 }

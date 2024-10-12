@@ -1,22 +1,21 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventTarget;
-import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Hexagons;
+import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
 /**
  * Some structure that can be built on top of a Tile to modify its properties
  */
-public class Building extends Modellable implements EventTarget, MenuSubject {
+public class Building extends Modellable implements EventReceiver, MenuSubject {
     private Optional<Ability> ability = Optional.empty();
     public final String name;
     public Optional<Inventory> items = Optional.empty();
@@ -28,8 +27,14 @@ public class Building extends Modellable implements EventTarget, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEvent(Game g, Event e) {
-        g.events.building.handle(g, this.name, e);
+    public void handleEvent(GameView view, Event e) {
+        view.game.events.building.handle(view, this, e);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getStratifier() {
+        return this.name;
     }
 
     /** {@inheritdoc} */
