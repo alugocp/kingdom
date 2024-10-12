@@ -10,10 +10,20 @@ import net.lugocorp.kingdom.game.model.Unit;
  * A neat package to contain all of our EventHandlerBundles
  */
 public class AllEventHandlers {
-    public final EventHandlerBundle<Building> building = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Artifact> artifact = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Ability> ability = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Item> item = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Unit> unit = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Tile> tile = new EventHandlerBundle<>();
+    public final SignalBooster signals = new SignalBooster();
+    public final EventHandlerBundle<Building> building;
+    public final EventHandlerBundle<Artifact> artifact;
+    public final EventHandlerBundle<Ability> ability;
+    public final EventHandlerBundle<Item> item;
+    public final EventHandlerBundle<Unit> unit;
+    public final EventHandlerBundle<Tile> tile;
+
+    public AllEventHandlers() {
+        this.building = new EventHandlerBundle<>(this.signals);
+        this.artifact = new EventHandlerBundle<>(this.signals);
+        this.ability = new EventHandlerBundle<>(this.signals);
+        this.item = new EventHandlerBundle<>(this.signals);
+        this.unit = new EventHandlerBundle<>(this.signals);
+        this.tile = new EventHandlerBundle<>(this.signals);
+    }
 }

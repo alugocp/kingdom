@@ -10,6 +10,11 @@ import java.util.Map;
  */
 public class EventHandlerBundle<T extends EventReceiver> {
     private Map<String, List<EventHandler<T>>> handlers = new HashMap<>();
+    private final SignalBooster signals;
+
+    public EventHandlerBundle(SignalBooster signals) {
+        this.signals = signals;
+    }
 
     /**
      * Formats the lookup key used in this.handlers

@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 public class Artifact implements EventReceiver, MenuSubject {
     private boolean unlocked = false;
-    private boolean claimed = false;
+    private Optional<Player> owner = Optional.empty();
     public final String name;
     public Optional<String> image = Optional.empty();
     public String desc = "";
@@ -25,15 +25,15 @@ public class Artifact implements EventReceiver, MenuSubject {
      * Marks this Artifact as claimed by the given Player
      */
     public void claim(Player player) {
+        this.owner = Optional.of(player);
         player.artifacts.add(this);
-        this.claimed = false;
     }
 
     /**
      * Returns true if this Artifact should be included in the Auction popup Menu
      */
     public boolean shouldDisplay() {
-        return this.unlocked && !this.claimed;
+        return this.unlocked && !this.owner.isPresent();
     }
 
     /** {@inheritdoc} */
