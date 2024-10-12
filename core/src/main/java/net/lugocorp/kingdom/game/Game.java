@@ -26,13 +26,13 @@ public class Game {
     public final Mechanics mechanics = new Mechanics();
     public final AllEventHandlers events;
     public final GameGraphics graphics;
-    public final Generator generator;
     public final Player human;
     public final World world;
+    public Generator generator;
 
     public Game(GameGraphics graphics, AllEventHandlers events, World world) {
-        this.generator = new Generator(this);
         this.human = this.turnPlayer;
+        this.generator = generator;
         this.graphics = graphics;
         this.events = events;
         this.world = world;

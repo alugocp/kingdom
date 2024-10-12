@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.engine.assets.AssetsLoader;
 import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
 import net.lugocorp.kingdom.utils.Consumer;
@@ -46,10 +47,14 @@ public class LoadingGameView implements View {
     @Override
     public void render() {
         this.assets.doOnLoad(() -> {
+            // TODO clean up the dependencies between these classes and make sure bad
+            // initialization state is impossible
             Game game = new Game(new GameGraphics(this.graphics, this.assets, this.sprites), this.events,
                     new World(10, 5));
+            GameView view = new GameView(game);
+            game.generator = new Generator(view);
             new WorldGenerator().generateWorld(game);
-            this.navigate.run(new GameView(game));
+            this.navigate.run(view);
         });
     }
 
