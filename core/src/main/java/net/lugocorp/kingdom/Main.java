@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -56,6 +57,14 @@ public class Main implements ApplicationListener {
             e.blob.desc = "Consume to restore a unit's health";
             e.blob.icon = Optional.of("potion");
         });
+        events.artifact.addEventHandler("Golden Feather", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "All your units have +1 movement";
+                    e.blob.image = Optional.of("potion");
+                    // TODO put the following in some ArtifactClaimedEvent handler for optimization
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.blob);
+                });
         // END MOD TESTING
 
         Gdx.graphics.setResizable(true);

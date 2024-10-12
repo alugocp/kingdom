@@ -11,7 +11,6 @@ import java.util.Optional;
  * Artifacts are global buffs that Players can bid on
  */
 public class Artifact implements EventReceiver, MenuSubject {
-    private boolean unlocked = false;
     private Optional<Player> owner = Optional.empty();
     public final String name;
     public Optional<String> image = Optional.empty();
@@ -33,7 +32,7 @@ public class Artifact implements EventReceiver, MenuSubject {
      * Returns true if this Artifact should be included in the Auction popup Menu
      */
     public boolean shouldDisplay() {
-        return this.unlocked && !this.owner.isPresent();
+        return !this.owner.isPresent();
     }
 
     /** {@inheritdoc} */

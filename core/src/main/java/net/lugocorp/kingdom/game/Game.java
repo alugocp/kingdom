@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.pools.Content;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class Game {
     private boolean canPlayerAct = false;
     public final List<Player> comps = new ArrayList<>();
     public final Mechanics mechanics = new Mechanics();
+    public final Content content = new Content();
     public final AllEventHandlers events;
     public final GameGraphics graphics;
     public final Player human;
@@ -87,7 +89,7 @@ public class Game {
                 this.mechanics.auction.openNewAuction();
                 view.popups.add(this.mechanics.auction.getAuctionBuyInMenu(view));
             }
-            // Show the aftermatch of any active ArtifactAuction
+            // Show the aftermath of any active ArtifactAuction
             if (this.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(this)).orElse(false)) {
                 if (this.mechanics.auction.getAuction().get().notEveryoneHasSeenResults()) {
                     this.mechanics.auction.getFollowUpMenu(view);

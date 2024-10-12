@@ -32,6 +32,15 @@ public class ArtifactAuction {
     public static final int AUCTION_STATE_DONE = 2;
     private final Random random = new Random();
     private Optional<Auction> auction = Optional.empty();
+    private Set<Artifact> artifacts = new HashSet<>();
+
+    /**
+     * Unlocks a couple initial Artifacts for the Auction system
+     */
+    public void init(Game g) {
+        // TODO repeat this 3 times or so
+        this.artifacts.add(g.content.artifacts.retrieve());
+    }
 
     /**
      * Calculates how much gold a Player must pay to participate in an auction
@@ -117,14 +126,18 @@ public class ArtifactAuction {
         while (a < artifacts.size()) {
             RowNode row1 = new RowNode();
             RowNode row2 = new RowNode();
-            for (int b = 0; b < columns && a < artifacts.size(); b++) {
+            for (int b = 0; b < columns && a < artifacts.size();) {
                 final Artifact artifact = artifacts.get(a);
+                if (!artifact.shouldDisplay()) {
+                    continue;
+                }
                 row1.add(new ArtifactNode(view.game.graphics, artifact));
                 row2.add(new ButtonNode(view.game.graphics, "Choose", () -> {
                     artifact.claim(view.game.human);
                     view.popups.complete();
                 }));
                 a++;
+                b++;
             }
             node.add(row1);
             node.add(row2);

@@ -53,6 +53,8 @@ public class LoadingGameView implements View {
                     new World(10, 5));
             GameView view = new GameView(game);
             game.generator = new Generator(view);
+            game.content.init(game);
+            game.mechanics.auction.init(game);
             new WorldGenerator().generateWorld(game);
             this.navigate.run(view);
         });

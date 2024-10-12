@@ -2,8 +2,12 @@ package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Handles arbitrary incoming Events on arbitrary members of some group
@@ -16,6 +20,21 @@ public class EventHandlerBundle<T extends EventReceiver> {
      */
     private String getKey(String stratifier, String channel) {
         return String.format("%s.%s", stratifier, channel);
+    }
+
+    /**
+     * Returns all registered stratifiers associated with Generate*Event channels
+     */
+    public Set<String> getStratifiers() {
+        Pattern p = Pattern.compile("(.+)\\.Generate[\\w]+Event", Pattern.CASE_INSENSITIVE);
+        Set<String> stratifiers = new HashSet<>();
+        for (String key : this.handlers.keySet()) {
+            Matcher m = p.matcher(key);
+            if (m.matches()) {
+                stratifiers.add(m.group(1));
+            }
+        }
+        return stratifiers;
     }
 
     /**
