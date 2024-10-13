@@ -11,6 +11,7 @@ public class Item implements EventReceiver {
     public Optional<String> icon = Optional.empty();
     public final String name;
     public String desc = "";
+    public int gold = 0;
 
     Item(String name) {
         this.name = name;

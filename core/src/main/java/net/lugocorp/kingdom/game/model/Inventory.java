@@ -64,6 +64,17 @@ public class Inventory implements MenuSubject {
         }
     }
 
+    /**
+     * Returns the sum total of every Item's value in gold
+     */
+    public int getTotalGold() {
+        int sum = 0;
+        for (Item i : this.items) {
+            sum += i.gold;
+        }
+        return sum;
+    }
+
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {

@@ -2,8 +2,10 @@ package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -137,7 +139,7 @@ public class ArtifactAuction {
      */
     public Menu getFollowUpMenu(GameView view) {
         // Inform the human Player if they did not win the Auction
-        Optional<Player> winner = this.auction.get().getWinner(this.random);
+        Optional<Player> winner = this.auction.get().getWinner(view.game.world, this.random);
         if (winner.map((Player p) -> !p.isHumanPlayer()).orElse(true)) {
             return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false,
                     new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
@@ -223,16 +225,25 @@ public class ArtifactAuction {
         }
 
         /**
+         * Returns the total worth of all the Items in the bidder's auctioned Building
+         * (if any)
+         */
+        private int getBidValue(World world, Player bidder) {
+            return world.getTile(this.bids.get(bidder)).flatMap((Tile t) -> t.building).flatMap((Building b) -> b.items)
+                    .map((Inventory i) -> i.getTotalGold()).orElse(0);
+        }
+
+        /**
          * Retrieves the winner of this Auction
          */
-        private Optional<Player> getWinner(Random random) {
+        private Optional<Player> getWinner(World world, Random random) {
             if (this.bids.size() == 0) {
                 return Optional.empty();
             }
             Set<Player> winners = new HashSet<>();
             int maxBid = 0;
             for (Player bidder : this.bids.keySet()) {
-                int bid = 0; // getBidValue(this.bids.get(bidder));
+                int bid = this.getBidValue(world, bidder);
                 if (bid > maxBid) {
                     maxBid = bid;
                     winners.clear();

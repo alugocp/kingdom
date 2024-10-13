@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -48,6 +49,7 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
         ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
         this.ability.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         if (this.items.isPresent()) {
+            node.add(new TextNode(view.game.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
             node.add(this.items.get().getMenuContent(view, x, y));
         }
         return node;
