@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 
@@ -105,6 +106,20 @@ public class Events {
         public UnitMoveDistanceEvent(Unit unit) {
             super("UnitMoveDistanceEvent");
             this.unit = unit;
+        }
+    }
+
+    /**
+     * Triggered when a Player claims an Artifact
+     */
+    public static class ArtifactClaimedEvent extends Event {
+        public final Artifact artifact;
+        public final Player player;
+
+        public ArtifactClaimedEvent(Artifact artifact, Player player) {
+            super("ArtifactClaimedEvent");
+            this.artifact = artifact;
+            this.player = player;
         }
     }
 }

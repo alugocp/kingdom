@@ -36,6 +36,7 @@ public class AssetsLoader {
         this.assets.load("crystal.g3db", Model.class);
         this.assets.load("mine.g3db", Model.class);
         this.assets.load("Selector.g3db", Model.class);
+        this.assets.load("vault.g3db", Model.class);
     }
 
     /**

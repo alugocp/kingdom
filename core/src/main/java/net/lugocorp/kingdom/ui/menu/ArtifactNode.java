@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * A node that displays some Artifact
  */
 public class ArtifactNode implements MenuNode {
-    private static final int HEIGHT = 400;
+    public static final int HEIGHT = 400;
     public static final int WIDTH = 300;
     private final TextureRegion image;
     private final Artifact artifact;

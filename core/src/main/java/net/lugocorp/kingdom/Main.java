@@ -5,6 +5,8 @@ import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Inventory;
+import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -48,6 +50,12 @@ public class Main implements ApplicationListener {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.game.graphics.loaders.assets, "mine");
                 });
+        events.building.addEventHandler("Vault", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "vault");
+                    e.blob.items = Optional.of(new Inventory(InventoryType.HAUL, 24));
+                });
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "tile");
@@ -61,9 +69,19 @@ public class Main implements ApplicationListener {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "All your units have +1 movement";
-                    e.blob.image = Optional.of("potion");
-                    // TODO put the following in some ArtifactClaimedEvent handler for optimization
-                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.blob);
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Golden Feather", "UnitMoveDistanceEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+                    if (e.unit.leader.equals(receiver.getOwner())) {
+                        e.distance++;
+                    }
+                });
+        events.artifact.addEventHandler("Golden Feather", "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
                 });
         // END MOD TESTING
 

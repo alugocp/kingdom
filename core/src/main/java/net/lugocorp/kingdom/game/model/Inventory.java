@@ -14,7 +14,7 @@ public class Inventory implements MenuSubject {
     private final int max;
     public final int type;
 
-    Inventory(int type, int max) {
+    public Inventory(int type, int max) {
         this.items = new ArrayList<Item>(max);
         this.type = type;
         this.max = max;

@@ -91,12 +91,19 @@ public class Game {
             }
             // Show the aftermath of any active ArtifactAuction
             if (this.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(this)).orElse(false)) {
-                if (this.mechanics.auction.getAuction().get().notEveryoneHasSeenResults()) {
-                    this.mechanics.auction.getFollowUpMenu(view);
+                if (this.mechanics.auction.getAuction().get().notEveryoneHasSeenResults(this)) {
+                    view.popups.add(this.mechanics.auction.getFollowUpMenu(view));
                     this.mechanics.auction.getAuction().get().hasSeenResults();
                 } else {
                     this.mechanics.auction.closeAuction();
                 }
+            }
+        } else {
+            // Handle AI player ArtifactAuction logic
+            if (this.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(this)).orElse(false)) {
+                this.mechanics.auction.getAuction().get().hasSeenResults();
+            } else if (this.mechanics.auction.getAuction().isPresent()) {
+                this.mechanics.auction.getAuction().get().doNotAddBidder();
             }
         }
 

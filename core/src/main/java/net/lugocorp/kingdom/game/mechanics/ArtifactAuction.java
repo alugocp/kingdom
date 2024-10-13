@@ -1,7 +1,9 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -32,7 +34,7 @@ public class ArtifactAuction {
     public static final int AUCTION_STATE_DONE = 2;
     private final Random random = new Random();
     private Optional<Auction> auction = Optional.empty();
-    private Set<Artifact> artifacts = new HashSet<>();
+    private List<Artifact> artifacts = new ArrayList<>();
 
     /**
      * Unlocks a couple initial Artifacts for the Auction system
@@ -67,7 +69,27 @@ public class ArtifactAuction {
      * Opens a new Auction
      */
     public void openNewAuction() {
-        this.auction = Optional.of(new Auction());
+        if (this.artifacts.size() > 0) {
+            this.auction = Optional.of(new Auction());
+        }
+    }
+
+    /**
+     * Returns every Point where the human Player owns a vault-like structure
+     */
+    private Set<Point> getAuctionVaults(GameView view) {
+        // TODO for the love of god please optimize this
+        Set<Point> vaults = new HashSet<>();
+        for (int x = 0; x < view.game.world.getWidth(); x++) {
+            for (int y = 0; y < view.game.world.getHeight(); y++) {
+                Tile t = view.game.world.getTile(x, y).get();
+                if (t.leader.map((Player p) -> p == view.game.human).orElse(false)
+                        && t.building.flatMap((Building b) -> b.items).isPresent()) {
+                    vaults.add(new Point(x, y));
+                }
+            }
+        }
+        return vaults;
     }
 
     /**
@@ -75,29 +97,38 @@ public class ArtifactAuction {
      */
     public Menu getAuctionBuyInMenu(GameView view) {
         int price = this.getBuyInCost(view.game.human.gold);
-        ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
-                .add(new HeaderNode(view.game.graphics, "Artifact Auction"))
-                .add(new TextNode(view.game.graphics,
-                        String.format("Pay %d gold to participate in the auction?", price)))
-                .add(new RowNode().add(new ButtonNode(view.game.graphics, "Yes", () -> {
-                    // TODO find all vaults under this player's control
-                    String error = "You have no vaults with items to bargain with";
-                    Set<Point> vaults = new HashSet<>();
-                    if (vaults.size() == 0) {
-                        view.logger.log(error);
+        ListNode node = new ListNode()
+                .add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)));
+        if (this.artifacts.size() > 0) {
+            node.add(new HeaderNode(view.game.graphics, "Artifact Auction"))
+                    .add(new TextNode(view.game.graphics,
+                            String.format("Pay %d gold to participate in the auction?", price)))
+                    .add(new RowNode().add(new ButtonNode(view.game.graphics, "Yes", () -> {
+                        String error = "You have no vaults with items to bargain with";
+                        Set<Point> vaults = this.getAuctionVaults(view);
+                        if (vaults.size() == 0) {
+                            this.auction.get().doNotAddBidder();
+                            view.logger.log(error);
+                            view.popups.complete();
+                            return;
+                        }
+                        view.popups.setDisplay(false);
+                        view.logger.log("Please select a vault with items to bid");
+                        view.selectTiles(vaults, error, (Point p) -> {
+                            this.auction.get().addBidder(view.game.human, p);
+                            view.game.human.gold -= price;
+                            view.popups.complete();
+                        });
+                    })).add(new ButtonNode(view.game.graphics, "No", () -> {
+                        this.auction.get().doNotAddBidder();
                         view.popups.complete();
-                        return;
-                    }
-                    view.popups.setDisplay(false);
-                    view.selectTiles(vaults, error, (Point p) -> {
-                        this.auction.get().addBidder(view.game.human, p);
-                        view.game.human.gold -= price;
+                    })));
+        } else {
+            node.add(new TextNode(view.game.graphics, "There are no artifacts left to auction"))
+                    .add(new ButtonNode(view.game.graphics, "Okay", () -> {
                         view.popups.complete();
-                    });
-                })).add(new ButtonNode(view.game.graphics, "No", () -> {
-                    this.auction.get().doNotAddBidder();
-                    view.popups.complete();
-                })));
+                    }));
+        }
         return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
     }
 
@@ -121,19 +152,18 @@ public class ArtifactAuction {
         int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
         ListNode node = new ListNode()
                 .add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)));
-        // TODO populate this list of Artifacts
-        List<Artifact> artifacts = new ArrayList<>();
         while (a < artifacts.size()) {
             RowNode row1 = new RowNode();
             RowNode row2 = new RowNode();
-            for (int b = 0; b < columns && a < artifacts.size();) {
-                final Artifact artifact = artifacts.get(a);
+            for (int b = 0; b < columns && a < this.artifacts.size();) {
+                final Artifact artifact = this.artifacts.get(a);
                 if (!artifact.shouldDisplay()) {
                     continue;
                 }
                 row1.add(new ArtifactNode(view.game.graphics, artifact));
                 row2.add(new ButtonNode(view.game.graphics, "Choose", () -> {
-                    artifact.claim(view.game.human);
+                    artifact.claim(view, view.game.human);
+                    this.artifacts.remove(artifact);
                     view.popups.complete();
                 }));
                 a++;
@@ -150,6 +180,7 @@ public class ArtifactAuction {
      */
     public static class Auction {
         private final Map<Player, Point> bids = new HashMap<>();
+        public int aftermaths = 0;
         public int decisions = 0;
 
         /**
@@ -164,8 +195,9 @@ public class ArtifactAuction {
          * Returns true if there are still Players who have not seen the results of this
          * Auction
          */
-        public boolean notEveryoneHasSeenResults() {
-            return this.decisions > 0;
+        public boolean notEveryoneHasSeenResults(Game g) {
+            // The +1 is for the human Player
+            return this.aftermaths < g.comps.size() + 1;
         }
 
         /**
@@ -187,7 +219,7 @@ public class ArtifactAuction {
          * Called when a Player has seen the Auction results
          */
         public void hasSeenResults() {
-            this.decisions--;
+            this.aftermaths++;
         }
 
         /**

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.game.core.Events.ArtifactClaimedEvent;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
@@ -23,9 +24,17 @@ public class Artifact implements EventReceiver, MenuSubject {
     /**
      * Marks this Artifact as claimed by the given Player
      */
-    public void claim(Player player) {
+    public void claim(GameView view, Player player) {
         this.owner = Optional.of(player);
         player.artifacts.add(this);
+        this.handleEvent(view, new ArtifactClaimedEvent(this, player));
+    }
+
+    /**
+     * Returns the Player that has claimed this Artifact (if any)
+     */
+    public Optional<Player> getOwner() {
+        return this.owner;
     }
 
     /**
