@@ -5,16 +5,26 @@ import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.pools.Content;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.ui.Hud;
+import net.lugocorp.kingdom.ui.menu.ButtonNode;
+import net.lugocorp.kingdom.ui.menu.ListNode;
+import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,6 +32,7 @@ import java.util.Set;
  * Stores all the data for a single ongoing game
  */
 public class Game {
+    private final Map<Player, List<Building>> playerBuildings = new HashMap<>();
     private final Set<Unit> unitsThatHaveActed = new HashSet<>();
     private Player turnPlayer = new Player("you", true);
     private boolean canPlayerAct = false;
@@ -40,6 +51,7 @@ public class Game {
         this.graphics = graphics;
         this.events = events;
         this.world = world;
+        this.playerBuildings.put(this.human, new ArrayList<Building>());
     }
 
     /**
@@ -77,6 +89,22 @@ public class Game {
         this.turnPlayer.unitPoints += this.mechanics.newUnits.getUnitPointsYield(this.turnPlayer.bareTiles,
                 this.turnPlayer.tiles);
         if (this.turnPlayer.isHumanPlayer()) {
+            // Check human Player win/lose state
+            if (this.hasHumanPlayerLost()) {
+                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2),
+                        false, new ListNode().add(new TextNode(view.game.graphics, "You have lost"))
+                                .add(new ButtonNode(view.game.graphics, "Okay", () -> {
+                                    // TODO return to some main menu
+                                }))));
+            }
+            if (this.hasHumanPlayerWon()) {
+                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2),
+                        false, new ListNode().add(new TextNode(view.game.graphics, "You win!"))
+                                .add(new ButtonNode(view.game.graphics, "Okay", () -> {
+                                    // TODO return to some main menu
+                                }))));
+            }
+
             // Choose a new Unit at the maximum unit points
             if (this.turnPlayer.unitPoints >= NewUnit.MAX_UNIT_POINTS) {
                 this.turnPlayer.unitPoints -= NewUnit.MAX_UNIT_POINTS;
@@ -120,7 +148,9 @@ public class Game {
      * Registers a new AI Player
      */
     public void addComputerPlayer(String name) {
-        this.comps.add(new Player(name, false));
+        Player player = new Player(name, false);
+        this.comps.add(player);
+        this.playerBuildings.put(player, new ArrayList<Building>());
     }
 
     /**
@@ -142,7 +172,12 @@ public class Game {
      */
     public void setLeader(Tile t, Player p) {
         if (!t.leader.isPresent() || t.leader.get() != p) {
-            if (!t.building.isPresent()) {
+            if (t.building.isPresent()) {
+                if (t.leader.isPresent()) {
+                    this.playerBuildings.get(t.leader.get()).remove(t.building.get());
+                }
+                this.playerBuildings.get(p).add(t.building.get());
+            } else {
                 p.bareTiles++;
             }
             p.tiles++;
@@ -156,5 +191,37 @@ public class Game {
     public void setLeader(Unit u, Player p) {
         u.leader = Optional.of(p);
         this.setLeader(this.world.getTile(u.getX(), u.getY()).get(), p);
+    }
+
+    /**
+     * Returns true if the human Player has no buildings left
+     */
+    private boolean hasHumanPlayerLost() {
+        return this.playerBuildings.get(this.human).size() == 0;
+    }
+
+    /**
+     * Returns true if the human Player is the only one that has buildings left
+     */
+    private boolean hasHumanPlayerWon() {
+        for (Player p : this.playerBuildings.keySet()) {
+            if (p != this.human && this.playerBuildings.get(p).size() > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns all Buildings under a Player's control that can store Items
+     */
+    public Set<Point> getVaultBuildings(Player player) {
+        Set<Point> vaults = new HashSet<>();
+        for (Building b : this.playerBuildings.get(player)) {
+            if (b.items.isPresent()) {
+                vaults.add(b.getPoint());
+            }
+        }
+        return vaults;
     }
 }

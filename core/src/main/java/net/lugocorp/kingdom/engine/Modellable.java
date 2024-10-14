@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.engine;
 import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
@@ -36,6 +37,13 @@ public abstract class Modellable {
      */
     public int getY() {
         return this.y;
+    }
+
+    /**
+     * Returns a Point representing this object's position in the World
+     */
+    public Point getPoint() {
+        return new Point(this.x, this.y);
     }
 
     /**

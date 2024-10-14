@@ -77,24 +77,6 @@ public class ArtifactAuction {
     }
 
     /**
-     * Returns every Point where the human Player owns a vault-like structure
-     */
-    private Set<Point> getAuctionVaults(GameView view) {
-        // TODO for the love of god please optimize this
-        Set<Point> vaults = new HashSet<>();
-        for (int x = 0; x < view.game.world.getWidth(); x++) {
-            for (int y = 0; y < view.game.world.getHeight(); y++) {
-                Tile t = view.game.world.getTile(x, y).get();
-                if (t.leader.map((Player p) -> p == view.game.human).orElse(false)
-                        && t.building.flatMap((Building b) -> b.items).isPresent()) {
-                    vaults.add(new Point(x, y));
-                }
-            }
-        }
-        return vaults;
-    }
-
-    /**
      * Instantiates the Menu that allows a human Player to participate in an auction
      */
     public Menu getAuctionBuyInMenu(GameView view) {
@@ -107,7 +89,7 @@ public class ArtifactAuction {
                             String.format("Pay %d gold to participate in the auction?", price)))
                     .add(new RowNode().add(new ButtonNode(view.game.graphics, "Yes", () -> {
                         String error = "You have no vaults with items to bargain with";
-                        Set<Point> vaults = this.getAuctionVaults(view);
+                        Set<Point> vaults = view.game.getVaultBuildings(view.game.human);
                         if (vaults.size() == 0) {
                             this.auction.get().doNotAddBidder();
                             view.logger.log(error);
