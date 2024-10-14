@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
 import net.lugocorp.kingdom.utils.Consumer;
+import net.lugocorp.kingdom.utils.ModLoader;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 
@@ -16,15 +17,14 @@ import com.badlogic.gdx.graphics.Color;
  * View for when we're loading a new game
  */
 public class LoadingGameView implements View {
+    private final AllEventHandlers events = new AllEventHandlers();
     private final Graphics graphics;
-    private final AllEventHandlers events;
     private Consumer<View> navigate;
     private SpritesLoader sprites;
     private AssetsLoader assets;
 
-    public LoadingGameView(Graphics graphics, AllEventHandlers events) {
+    public LoadingGameView(Graphics graphics) {
         this.graphics = graphics;
-        this.events = events;
     }
 
     /** {@inheritdoc} */
@@ -41,6 +41,18 @@ public class LoadingGameView implements View {
         this.sprites.loadAndRegister();
         this.assets = new AssetsLoader(new AssetManager());
         this.assets.load();
+
+        // TODO move this to another loading screen
+        ModLoader mods = new ModLoader();
+        for (String filepath : mods.getMods()) {
+            System.out.println(String.format("Loading mod %s...", filepath));
+            try {
+                mods.loadMod(filepath, this.events);
+            } catch (Exception e) {
+                System.err.println(String.format("Error while loading mod %s", filepath));
+                e.printStackTrace();
+            }
+        }
     }
 
     /** {@inheritdoc} */

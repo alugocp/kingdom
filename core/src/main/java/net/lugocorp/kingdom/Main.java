@@ -1,23 +1,11 @@
 package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.game.core.Events;
-import net.lugocorp.kingdom.game.events.AllEventHandlers;
-import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.model.Artifact;
-import net.lugocorp.kingdom.game.model.Building;
-import net.lugocorp.kingdom.game.model.Inventory;
-import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
-import net.lugocorp.kingdom.game.model.Item;
-import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.ScreenUtils;
-import java.util.Optional;
 
 public class Main implements ApplicationListener {
     private Graphics graphics;
@@ -35,59 +23,9 @@ public class Main implements ApplicationListener {
     /** {@inheritdoc} */
     @Override
     public void create() {
-        // START MOD TESTING
-        AllEventHandlers events = new AllEventHandlers();
-        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
-
-            // Place a free item at this unit's location
-            Optional<Tile> tile = view.game.world.getTile(e.blob.getX(), e.blob.getY());
-            tile.ifPresent((Tile t) -> t.items.add(view.game.generator.item("Potion")));
-        });
-        events.building.addEventHandler("Mine", "GenerateBuildingEvent",
-                (GameView view, Building receiver, Event event) -> {
-                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "mine");
-                });
-        events.building.addEventHandler("Vault", "GenerateBuildingEvent",
-                (GameView view, Building receiver, Event event) -> {
-                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "vault");
-                    e.blob.items = Optional.of(new Inventory(InventoryType.HAUL, 24));
-                });
-        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
-            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "tile");
-        });
-        events.item.addEventHandler("Potion", "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
-            Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
-            e.blob.desc = "Consume to restore a unit's health";
-            e.blob.icon = Optional.of("potion");
-        });
-        events.artifact.addEventHandler("Golden Feather", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "All your units have +1 movement";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Golden Feather", "UnitMoveDistanceEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.leader.equals(receiver.getOwner())) {
-                        e.distance++;
-                    }
-                });
-        events.artifact.addEventHandler("Golden Feather", "ArtifactClaimedEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
-                });
-        // END MOD TESTING
-
         Gdx.graphics.setResizable(true);
         this.graphics = new Graphics();
-        this.view = new LoadingGameView(this.graphics, events);
+        this.view = new LoadingGameView(this.graphics);
         this.view.start(this::navigate);
     }
 

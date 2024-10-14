@@ -1,0 +1,36 @@
+
+plugins {
+   id "com.diffplug.spotless" version "6.7.1"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+dependencies {
+    implementation project(":core")
+}
+
+jar {
+    destinationDirectory = file("../../mods")
+    archiveBaseName = "vanilla"
+    manifest {
+        attributes 'Main-Class': 'net.lugocorp.kingdom.mod.KingdomMod'
+    }
+}
+
+spotless {
+  java {
+    eclipse()
+    trimTrailingWhitespace()
+    indentWithSpaces(4)
+    endWithNewline()
+    importOrder('net.lugocorp', 'com.badlogic', 'java')
+    removeUnusedImports()
+    replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
+  }
+}
