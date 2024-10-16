@@ -21,6 +21,15 @@ public class SpritesLoader {
         this.load("artifacts");
         this.register("placeholder", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
         this.register("potion", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
+        this.register("apple", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
+        this.register("pouch", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
+        this.register("coin", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
+        this.register("sword", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
+        this.register("shield", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
+        this.register("leaf", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
+        this.register("mushroom", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
+        this.register("emerald", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
+        this.register("bone", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
         this.register("golden feather", "artifacts", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
     }
 

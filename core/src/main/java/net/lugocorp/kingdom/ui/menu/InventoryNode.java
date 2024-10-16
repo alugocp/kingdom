@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.game.core.Events.ItemConsumedEvent;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
@@ -101,23 +103,47 @@ public class InventoryNode implements MenuNode {
                 .flatMap((Unit u1) -> u1.leader)
                 .map((Player p1) -> p1.isHumanPlayer() && this.view.game.canHumanPlayerAct()).orElse(false);
         if (actions) {
-            if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
-                    && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
-                root.add(new ButtonNode(this.view.game.graphics, "Equip",
-                        () -> this.unitTakesItem(InventoryType.EQUIP, item)));
-            }
-            if (this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
-                root.add(new ButtonNode(this.view.game.graphics, "Pick up",
-                        () -> this.unitTakesItem(InventoryType.HAUL, item)));
-            }
-            if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
-                root.add(new ButtonNode(this.view.game.graphics, "Drop", () -> this.unitDropsItem(item)));
-            }
-            if ((this.items.type == InventoryType.FREE && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
-                    || this.items.type == InventoryType.HAUL) {
-                root.add(new ButtonNode(this.view.game.graphics, "Give",
-                        () -> this.view.selectTiles(this.getGiftRecipients(), "No nearby units can receive this gift",
-                                (Point p1) -> this.giftItemToUnit(p1, item))));
+            if (this.items.type == InventoryType.BUILDING) {
+                // Building actions for this Item
+                if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Equip onto unit",
+                            () -> this.unitTakesItem(InventoryType.EQUIP, item)));
+                }
+                if (this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Give to unit",
+                            () -> this.unitTakesItem(InventoryType.HAUL, item)));
+                }
+            } else {
+                // Unit actions for this Item
+                if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
+                        && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Equip",
+                            () -> this.unitTakesItem(InventoryType.EQUIP, item)));
+                }
+                if (this.items.type == InventoryType.FREE
+                        && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Pick up",
+                            () -> this.unitTakesItem(InventoryType.HAUL, item)));
+                }
+                if (this.canUnitConsumeItem(item)) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Consume", () -> this.unitConsumesItem(item)));
+                }
+                if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Drop", () -> this.unitDropsItem(item)));
+                }
+                if ((this.items.type == InventoryType.FREE
+                        && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
+                        || this.items.type == InventoryType.HAUL) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Give",
+                            () -> this.view.selectTiles(this.getGiftRecipients(),
+                                    "No nearby units can receive this gift",
+                                    (Point p1) -> this.giftItemToUnit(p1, item))));
+                }
+                if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
+                        && this.canBuildingTakeItem()) {
+                    root.add(new ButtonNode(this.view.game.graphics, "Put in vault",
+                            () -> this.buildingTakesItem(item)));
+                }
             }
         }
         menu.setMiniMenu(root, p.x, p.y);
@@ -126,8 +152,8 @@ public class InventoryNode implements MenuNode {
     /**
      * Returns true if the Unit on the currently open Tile can take another Item in
      * the specified Inventory. The "unit" parameter will be empty if you're
-     * checking against a free Item. Otherwise, it will contain the Unit (if any) on
-     * the tile that you're trying to gift the Item to.
+     * checking against a Building or free Item. Otherwise, it will contain the Unit
+     * (if any) on the Tile that you're trying to gift the Item to.
      */
     private boolean canUnitTakeItem(int type, Optional<Unit> unit) {
         Optional<Unit> focal = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
@@ -137,13 +163,16 @@ public class InventoryNode implements MenuNode {
             }
         } else {
             unit = focal;
+            if (!unit.isPresent()) {
+                return false;
+            }
         }
         return (type == InventoryType.EQUIP && !unit.get().equipped.isFull())
                 || (type == InventoryType.HAUL && !unit.get().haul.isFull());
     }
 
     /**
-     * The Unit on the currently open tile picks up or equips the specified Item
+     * The Unit on the currently open Tile picks up or equips the specified Item
      */
     private void unitTakesItem(int type, Item item) {
         Unit unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit).get();
@@ -165,11 +194,30 @@ public class InventoryNode implements MenuNode {
     }
 
     /**
-     * The Unit on the currently open tile drops the specified Item
+     * The Unit on the currently open Tile drops the specified Item
      */
     private void unitDropsItem(Item item) {
         Tile tile = this.view.game.world.getTile(this.x, this.y).get();
         this.items.transfer(tile.items, item);
+        this.view.refreshMenu(false);
+    }
+
+    /**
+     * Returns true if the given Item can be consumed
+     */
+    private boolean canUnitConsumeItem(Item item) {
+        Optional<Unit> unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
+        return unit.isPresent()
+                && this.view.game.events.item.hasEventHandler(item.getStratifier(), "ItemConsumedEvent");
+    }
+
+    /**
+     * The Unit on the currently open Tile consumes the specified Item
+     */
+    private void unitConsumesItem(Item item) {
+        Unit unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit).get();
+        this.items.remove(item);
+        item.handleEvent(this.view, new ItemConsumedEvent(item, unit));
         this.view.refreshMenu(false);
     }
 
@@ -195,6 +243,26 @@ public class InventoryNode implements MenuNode {
     private void giftItemToUnit(Point p, Item item) {
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
+        this.view.refreshMenu(false);
+    }
+
+    /**
+     * Returns true if the Building on the currently open Tile can take another Item
+     * in its Inventory.
+     */
+    private boolean canBuildingTakeItem() {
+        Optional<Building> building = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.building);
+        Optional<Unit> unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
+        return unit.isPresent()
+                && building.flatMap((Building b) -> b.items).map((Inventory i) -> !i.isFull()).orElse(false);
+    }
+
+    /**
+     * The Building on the currently open Tile picks up or equips the specified Item
+     */
+    private void buildingTakesItem(Item item) {
+        Building building = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.building).get();
+        this.items.transfer(building.items.get(), item);
         this.view.refreshMenu(false);
     }
 }

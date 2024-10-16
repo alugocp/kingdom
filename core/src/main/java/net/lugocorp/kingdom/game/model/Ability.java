@@ -1,6 +1,8 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.game.core.Events.AbilityActivatedEvent;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
@@ -34,8 +36,16 @@ public class Ability implements EventReceiver, MenuSubject {
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {
         ListNode node = new ListNode();
-        // TODO return name as a ButtonNode if the ability has an activation event
-        node.add(new TextNode(view.game.graphics, this.name));
+        Unit wielder = view.game.world.getTile(x, y).flatMap((Tile t) -> t.unit).get();
+        if (wielder.leader.map((Player p) -> p == view.game.human).orElse(false)
+                && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")) {
+            node.add(new ButtonNode(view.game.graphics, this.name, () -> {
+                this.handleEvent(view, new AbilityActivatedEvent(this, wielder));
+                view.refreshMenu(true);
+            }));
+        } else {
+            node.add(new TextNode(view.game.graphics, this.name));
+        }
         node.add(new TextNode(view.game.graphics, this.desc));
         return node;
     }

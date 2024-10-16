@@ -49,6 +49,13 @@ public class Inventory implements MenuSubject {
     }
 
     /**
+     * Removes an Item from this Inventory
+     */
+    public void remove(Item item) {
+        this.items.remove(item);
+    }
+
+    /**
      * Returns the Item at the given index in this Inventory
      */
     public Item get(int index) {
@@ -85,6 +92,7 @@ public class Inventory implements MenuSubject {
      * Nested class enum representing the different types of inventory
      */
     public static class InventoryType {
+        public static final int BUILDING = 3;
         public static final int EQUIP = 2;
         public static final int HAUL = 1;
         public static final int FREE = 0;

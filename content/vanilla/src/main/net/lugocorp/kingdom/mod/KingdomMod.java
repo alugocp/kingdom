@@ -21,10 +21,18 @@ public class KingdomMod {
      * This function is called when the mod is successfully loaded
      */
     public void load(AllEventHandlers events) {
-        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
+
+        /**
+         * Tiles
+         */
+        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
+            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "tile");
         });
+
+        /**
+         * Buildings
+         */
         events.building.addEventHandler("Mine", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -34,17 +42,25 @@ public class KingdomMod {
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.game.graphics.loaders.assets, "vault");
-                    e.blob.items = Optional.of(new Inventory(InventoryType.HAUL, 24));
+                    e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                 });
-        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
-            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "tile");
+        events.building.addEventHandler("Forest", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "forest");
+                });
+
+        /**
+         * Units
+         */
+        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
         });
-        events.item.addEventHandler("Potion", "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
-            Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
-            e.blob.desc = "Consume to restore a unit's health";
-            e.blob.icon = Optional.of("potion");
-        });
+
+        /**
+         * Artifacts
+         */
         events.artifact.addEventHandler("Golden Feather", "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
@@ -63,5 +79,14 @@ public class KingdomMod {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
                 });
+
+        /**
+         * Items
+         */
+        events.item.addEventHandler("Potion", "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
+            Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+            e.blob.desc = "Consume to restore a unit's health";
+            e.blob.icon = Optional.of("potion");
+        });
     }
 }

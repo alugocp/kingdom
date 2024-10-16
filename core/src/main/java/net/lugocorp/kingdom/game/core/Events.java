@@ -122,4 +122,32 @@ public class Events {
             this.player = player;
         }
     }
+
+    /**
+     * Triggered when an Item is consumed
+     */
+    public static class ItemConsumedEvent extends Event {
+        public final Item item;
+        public final Unit consumer;
+
+        public ItemConsumedEvent(Item item, Unit consumer) {
+            super("ItemConsumedEvent");
+            this.consumer = consumer;
+            this.item = item;
+        }
+    }
+
+    /**
+     * Triggered when an Ability is activated
+     */
+    public static class AbilityActivatedEvent extends Event {
+        public final Ability ability;
+        public final Unit wielder;
+
+        public AbilityActivatedEvent(Ability ability, Unit wielder) {
+            super("AbilityActivatedEvent");
+            this.ability = ability;
+            this.wielder = wielder;
+        }
+    }
 }

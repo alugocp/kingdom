@@ -37,6 +37,18 @@ public class WorldGenerator {
         w.getTile(4, 2).ifPresent((Tile t) -> {
             t.building = Optional.of(game.generator.building("Mine", 4, 2));
         });
+        w.getTile(5, 3).ifPresent((Tile t) -> {
+            t.building = Optional.of(game.generator.building("Forest", 5, 3));
+        });
+        w.getTile(6, 3).ifPresent((Tile t) -> {
+            t.building = Optional.of(game.generator.building("Forest", 6, 3));
+        });
+        w.getTile(5, 4).ifPresent((Tile t) -> {
+            t.building = Optional.of(game.generator.building("Forest", 5, 4));
+        });
+        w.getTile(0, 0).ifPresent((Tile t) -> {
+            t.building = Optional.of(game.generator.building("Forest", 0, 0));
+        });
         game.addComputerPlayer("AI");
     }
 }
