@@ -31,7 +31,7 @@ public class NewUnit {
         // TODO pick a random point to spawn the Unit before this point
         // TODO randomly select the Unit options here
         Unit u1 = view.game.generator.unit("Crystal", 0, 0);
-        Unit u2 = view.game.generator.unit("Crystal", 0, 0);
+        Unit u2 = view.game.generator.unit("Axolotl", 0, 0);
         Unit u3 = view.game.generator.unit("Crystal", 0, 0);
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))

@@ -38,6 +38,7 @@ public class AssetsLoader {
         this.assets.load("Selector.g3db", Model.class);
         this.assets.load("vault.g3db", Model.class);
         this.assets.load("forest.g3db", Model.class);
+        this.assets.load("axolotl.g3db", Model.class);
     }
 
     /**

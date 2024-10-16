@@ -57,6 +57,10 @@ public class KingdomMod {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
         });
+        events.unit.addEventHandler("Axolotl", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
+        });
 
         /**
          * Artifacts

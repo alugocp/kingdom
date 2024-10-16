@@ -19,7 +19,7 @@ public class WorldGenerator {
             }
         }
         w.getTile(0, 1).ifPresent((Tile t) -> {
-            t.unit = Optional.of(game.generator.unit("Crystal", 0, 1));
+            t.unit = Optional.of(game.generator.unit("Axolotl", 0, 1));
             game.setLeader(t.unit.get(), game.human);
         });
         w.getTile(1, 1).ifPresent((Tile t) -> {
