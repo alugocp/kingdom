@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.Modellable;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
@@ -10,6 +11,8 @@ import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
@@ -26,6 +29,14 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
         this.name = name;
     }
 
+    /**
+     * Can make this Building's model partially transparent or fully opaque
+     */
+    public void setTransparency(boolean transparent) {
+        this.model.ifPresent(
+                (ModelInstance model) -> model.materials.get(0).set(new BlendingAttribute(transparent ? 0.5f : 1f)));
+    }
+
     /** {@inheritdoc} */
     @Override
     public void handleEventWithoutSignalBooster(GameView view, Event e) {
@@ -36,6 +47,17 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     @Override
     public String getStratifier() {
         return this.name;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void spawn(Game g) {
+        g.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
+            t.building = Optional.of(this);
+            if (t.unit.isPresent()) {
+                this.setTransparency(true);
+            }
+        });
     }
 
     /** {@inheritdoc} */

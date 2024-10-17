@@ -102,17 +102,26 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     }
 
     /**
+     * Sets this Unit's position in the World. Useful for spawning or movement.
+     */
+    public void setPosition(Game g, int x, int y) {
+        Tile destin = g.world.getTile(x, y).get();
+        destin.unit = Optional.of(this);
+        this.x = x;
+        this.y = y;
+        this.resetModelPosition();
+        this.leader.ifPresent((Player p) -> g.setLeader(destin, p));
+        destin.building.ifPresent((Building b) -> b.setTransparency(true));
+    }
+
+    /**
      * Moves this Unit to another Tile in the grid
      */
     private void move(Game g, Point p) {
         Tile origin = g.world.getTile(this.x, this.y).get();
-        Tile destin = g.world.getTile(p).get();
+        origin.building.ifPresent((Building b) -> b.setTransparency(false));
         origin.unit = Optional.empty();
-        destin.unit = Optional.of(this);
-        this.x = p.x;
-        this.y = p.y;
-        this.resetModelPosition();
-        this.leader.ifPresent((Player p1) -> g.setLeader(destin, p1));
+        this.setPosition(g, p.x, p.y);
     }
 
     /** {@inheritdoc} */
@@ -125,6 +134,12 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     @Override
     public String getStratifier() {
         return this.name;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void spawn(Game g) {
+        this.setPosition(g, this.x, this.y);
     }
 
     /** {@inheritdoc} */
