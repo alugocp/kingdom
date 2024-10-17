@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.Optional;
 
 /**
  * A passive or active effect that Units, Buildings and Tiles can use
@@ -36,11 +37,11 @@ public class Ability implements EventReceiver, MenuSubject {
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {
         ListNode node = new ListNode();
-        Unit wielder = view.game.world.getTile(x, y).flatMap((Tile t) -> t.unit).get();
-        if (wielder.leader.map((Player p) -> p == view.game.human).orElse(false)
+        Optional<Unit> wielder = view.game.world.getTile(x, y).flatMap((Tile t) -> t.unit);
+        if (wielder.isPresent() && wielder.get().leader.map((Player p) -> p == view.game.human).orElse(false)
                 && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")) {
             node.add(new ButtonNode(view.game.graphics, this.name, () -> {
-                this.handleEvent(view, new AbilityActivatedEvent(this, wielder));
+                this.handleEvent(view, new AbilityActivatedEvent(this, wielder.get()));
                 view.refreshMenu(true);
             }));
         } else {

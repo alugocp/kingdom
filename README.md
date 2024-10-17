@@ -20,7 +20,8 @@ Then, run `fbx-conv -f <filename>.obj <filename>.g3db` to make the model usable 
 If you modify code under the `content` directory then you must run the following before playing the game again:
 
 ```bash
-gradle build
+rm -f mods/*.jar
+gradle content:vanilla:build
 ```
 
 This will recompile the content JARs located in `mods`.

@@ -147,10 +147,11 @@ public class Game {
     /**
      * Registers a new AI Player
      */
-    public void addComputerPlayer(String name) {
+    public Player addComputerPlayer(String name) {
         Player player = new Player(name, false);
         this.comps.add(player);
         this.playerBuildings.put(player, new ArrayList<Building>());
+        return player;
     }
 
     /**

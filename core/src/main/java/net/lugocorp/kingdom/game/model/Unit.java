@@ -180,6 +180,8 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", this.leader.get().name)));
         }
+        node.add(new TextNode(view.game.graphics,
+                String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         if (this.leader.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
             ButtonNode move = new ButtonNode(view.game.graphics, "Move",
                     () -> view.selectTiles(this.getMoveTargets(view), "This unit cannot move", (Point p) -> {

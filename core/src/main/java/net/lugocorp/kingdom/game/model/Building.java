@@ -79,11 +79,22 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, int x, int y) {
+        Optional<Player> leader = view.game.world.getTile(x, y).flatMap((Tile t) -> t.leader);
         ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
+        if (leader.isPresent()) {
+            node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", leader.get().name)));
+        }
+        node.add(new TextNode(view.game.graphics,
+                String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         this.ability.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
         if (this.items.isPresent()) {
-            node.add(new TextNode(view.game.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
-            node.add(this.items.get().getMenuContent(view, x, y));
+            if (leader.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
+                node.add(new TextNode(view.game.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
+                node.add(this.items.get().getMenuContent(view, x, y));
+            } else {
+                node.add(new TextNode(view.game.graphics,
+                        String.format("Can store %d items", this.items.get().getMax())));
+            }
         }
         return node;
     }

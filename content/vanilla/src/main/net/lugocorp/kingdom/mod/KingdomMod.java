@@ -1,7 +1,11 @@
 package net.lugocorp.kingdom.mod;
+import net.lugocorp.kingdom.game.combat.Damage;
+import net.lugocorp.kingdom.game.combat.Damage.DamageType;
+import net.lugocorp.kingdom.game.core.AbilityLogic;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Inventory;
@@ -56,11 +60,32 @@ public class KingdomMod {
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
+            e.blob.active1 = Optional.of(view.game.generator.ability("Slap"));
         });
         events.unit.addEventHandler("Axolotl", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
+            e.blob.active1 = Optional.of(view.game.generator.ability("Slap"));
         });
+        events.unit.addEventHandler("Frog Gnome", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "frog-gnome");
+        });
+
+        /**
+         * Abilities
+         */
+        events.ability.addEventHandler("Slap", "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    Damage dmg = new Damage(DamageType.IMPACT, 1);
+                    e.blob.desc = String.format("Deals %s", dmg);
+                });
+        events.ability.addEventHandler("Slap", "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
+                    AbilityLogic.attack(view, e.wielder, new Damage(DamageType.IMPACT, 1));
+                });
 
         /**
          * Artifacts

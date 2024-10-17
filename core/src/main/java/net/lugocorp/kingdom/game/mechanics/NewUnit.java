@@ -9,7 +9,6 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.Gdx;
-import java.util.Optional;
 
 /**
  * This class manages the logic for new Unit acquisition
@@ -32,7 +31,7 @@ public class NewUnit {
         // TODO randomly select the Unit options here
         Unit u1 = view.game.generator.unit("Crystal", 0, 0);
         Unit u2 = view.game.generator.unit("Axolotl", 0, 0);
-        Unit u3 = view.game.generator.unit("Crystal", 0, 0);
+        Unit u3 = view.game.generator.unit("Frog Gnome", 0, 0);
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
                 .add(new RowNode().add(u1.getMenuContent(view, 0, 0)).add(u2.getMenuContent(view, 0, 0))
@@ -52,8 +51,8 @@ public class NewUnit {
             if (t.unit.isPresent()) {
                 view.logger.log("Cannot spawn unit on occupied tile");
             } else {
-                t.unit = Optional.of(u);
                 view.game.setLeader(u, view.game.human);
+                u.spawn(view.game);
             }
         });
     }
