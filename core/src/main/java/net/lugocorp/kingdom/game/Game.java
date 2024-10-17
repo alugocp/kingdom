@@ -186,6 +186,18 @@ public class Game {
     }
 
     /**
+     * Removes a Building from the World and from cached Game data
+     */
+    public void removeBuilding(Building b) {
+        Tile t = this.world.getTile(b.getPoint()).get();
+        t.building = Optional.empty();
+        t.leader.ifPresent((Player p) -> {
+            this.playerBuildings.get(p).remove(b);
+            p.bareTiles++;
+        });
+    }
+
+    /**
      * Sets the leader Player for a given Unit
      */
     public void setLeader(Unit u, Player p) {

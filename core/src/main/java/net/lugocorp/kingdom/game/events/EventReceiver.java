@@ -25,4 +25,12 @@ public interface EventReceiver {
      * EventHandlerBundle
      */
     public String getStratifier();
+
+    /**
+     * Call this function when the EventReceiver should no longer listen for Events
+     */
+    public default void deactivate(GameView view) {
+        view.game.events.signals.deactivateListener(this);
+        view.refreshMenu(true);
+    }
 }

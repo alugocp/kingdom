@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
@@ -22,11 +23,13 @@ import java.util.Optional;
 public class Building extends Modellable implements EventReceiver, MenuSubject {
     private Optional<Ability> ability = Optional.empty();
     public final String name;
+    public final HitPoints<Building> health;
     public Optional<Inventory> items = Optional.empty();
 
     Building(String name, int x, int y) {
         super(x, y);
         this.name = name;
+        this.health = new HitPoints<Building>(this);
     }
 
     /**
@@ -35,6 +38,23 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     public void setTransparency(boolean transparent) {
         this.model.ifPresent(
                 (ModelInstance model) -> model.materials.first().set(new BlendingAttribute(transparent ? 0.5f : 1f)));
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void spawn(Game g) {
+        g.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
+            t.building = Optional.of(this);
+            if (t.unit.isPresent()) {
+                this.setTransparency(true);
+            }
+        });
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Vector3 getPositionVector() {
+        return Coords.grid.vector(this.x, this.y).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
     }
 
     /** {@inheritdoc} */
@@ -51,18 +71,9 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void spawn(Game g) {
-        g.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
-            t.building = Optional.of(this);
-            if (t.unit.isPresent()) {
-                this.setTransparency(true);
-            }
-        });
-    }
-
-    /** {@inheritdoc} */
-    public Vector3 getPositionVector() {
-        return Coords.grid.vector(this.x, this.y).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
+    public void deactivate(GameView view) {
+        EventReceiver.super.deactivate(view);
+        view.game.removeBuilding(this);
     }
 
     /** {@inheritdoc} */

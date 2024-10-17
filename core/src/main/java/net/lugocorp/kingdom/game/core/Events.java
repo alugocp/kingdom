@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.core;
+import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
@@ -148,6 +149,65 @@ public class Events {
             super("AbilityActivatedEvent");
             this.ability = ability;
             this.wielder = wielder;
+        }
+    }
+
+    /**
+     * Triggered when some target takes Damage
+     */
+    public static class TakeDamageEvent<T> extends Event {
+        public final Damage dmg;
+        public final T target;
+
+        public TakeDamageEvent(T target, Damage dmg) {
+            super("TakeDamageEvent");
+            this.target = target;
+            this.dmg = dmg;
+        }
+    }
+
+    /**
+     * Triggered when some object attacks another
+     */
+    public static class AttackEvent<A, T> extends Event {
+        public final Damage dmg;
+        public final A attacker;
+        public final T target;
+
+        public AttackEvent(A attacker, T target, Damage dmg) {
+            super("AttackEvent");
+            this.attacker = attacker;
+            this.target = target;
+            this.dmg = dmg;
+        }
+    }
+
+    /**
+     * Triggered when some object attacks another
+     */
+    public static class AttackedEvent<T, A> extends Event {
+        public final Damage dmg;
+        public final A attacker;
+        public final T target;
+
+        public AttackedEvent(T target, A attacker, Damage dmg) {
+            super("AttackedEvent");
+            this.attacker = attacker;
+            this.target = target;
+            this.dmg = dmg;
+        }
+    }
+
+    /**
+     * Calculates how far a Unit can attack
+     */
+    public static class UnitAttackRangeEvent extends Event {
+        public final Unit unit;
+        public int range = 1;
+
+        public UnitAttackRangeEvent(Unit unit) {
+            super("UnitAttackRangeEvent");
+            this.unit = unit;
         }
     }
 }

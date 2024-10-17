@@ -46,4 +46,13 @@ public class SignalBooster {
             this.receivers.get(channel).remove(r);
         }
     }
+
+    /**
+     * Removes an EventReceiver from all channel listener groups
+     */
+    public void deactivateListener(EventReceiver r) {
+        for (String channel : this.receivers.keySet()) {
+            this.removeListener(channel, r);
+        }
+    }
 }

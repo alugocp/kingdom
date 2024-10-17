@@ -21,7 +21,7 @@ import java.util.Optional;
 public class Tile extends Modellable implements EventReceiver, MenuSubject {
     private Optional<Ability> ability = Optional.empty();
     public final String name;
-    public final Inventory items = new Inventory(InventoryType.FREE, 10);
+    public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
     public Optional<Unit> unit = Optional.empty();
@@ -50,6 +50,7 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
     }
 
     /** {@inheritdoc} */
+    @Override
     public Vector3 getPositionVector() {
         return Coords.grid.vector(this.x, this.y);
     }

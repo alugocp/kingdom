@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.core.Events.CanUnitMoveEvent;
-import net.lugocorp.kingdom.game.core.Events.UnitMoveDistanceEvent;
+import net.lugocorp.kingdom.game.combat.HitPoints;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
@@ -29,6 +29,7 @@ import java.util.Set;
  */
 public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public final String name;
+    public final HitPoints<Unit> health;
     public Optional<Player> leader = Optional.empty();
     public Optional<Ability> active1 = Optional.empty();
     public Optional<Ability> active2 = Optional.empty();
@@ -39,15 +40,25 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     Unit(String name, int x, int y) {
         super(x, y);
         this.name = name;
+        this.health = new HitPoints<Unit>(this);
     }
 
     /**
      * Returns the maximum distance that this Unit can move in a turn
      */
     private int getMaxMoveDistance(GameView view) {
-        UnitMoveDistanceEvent event = new UnitMoveDistanceEvent(this);
+        Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(this);
         this.handleEvent(view, event);
         return event.distance;
+    }
+
+    /**
+     * Returns the maximum range that this Unit can attack from
+     */
+    public int getAttackRange(GameView view) {
+        Events.UnitAttackRangeEvent event = new Events.UnitAttackRangeEvent(this);
+        this.handleEvent(view, event);
+        return event.range;
     }
 
     /**
@@ -83,7 +94,7 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
                 }
 
                 // Use event handler to check if this Unit can move here
-                CanUnitMoveEvent event = new CanUnitMoveEvent(this, tile);
+                Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this, tile);
                 this.handleEvent(view, event);
                 if (!event.possible) {
                     continue;
@@ -115,13 +126,32 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     }
 
     /**
-     * Moves this Unit to another Tile in the grid
+     * Removes this Unit from its current position in the World
      */
-    private void move(Game g, Point p) {
+    private void removeFromPosition(Game g) {
         Tile origin = g.world.getTile(this.x, this.y).get();
         origin.building.ifPresent((Building b) -> b.setTransparency(false));
         origin.unit = Optional.empty();
+    }
+
+    /**
+     * Moves this Unit to another Tile in the grid
+     */
+    private void move(Game g, Point p) {
+        this.removeFromPosition(g);
         this.setPosition(g, p.x, p.y);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void spawn(Game g) {
+        this.setPosition(g, this.x, this.y);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Vector3 getPositionVector() {
+        return Coords.grid.vector(this.x, this.y).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
     }
 
     /** {@inheritdoc} */
@@ -138,13 +168,9 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void spawn(Game g) {
-        this.setPosition(g, this.x, this.y);
-    }
-
-    /** {@inheritdoc} */
-    public Vector3 getPositionVector() {
-        return Coords.grid.vector(this.x, this.y).add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
+    public void deactivate(GameView view) {
+        EventReceiver.super.deactivate(view);
+        this.removeFromPosition(view.game);
     }
 
     /** {@inheritdoc} */
