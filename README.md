@@ -16,5 +16,14 @@ You can create new models for this game using Blockbench and [fbx-conv](https://
 Export a Blockbench project as an `obj` file (this will also generate `mtl` and `png` files).
 Then, run `fbx-conv -f <filename>.obj <filename>.g3db` to make the model usable by the game code.
 
+## Modifying content
+If you modify code under the `content` directory then you must run the following before playing the game again:
+
+```bash
+gradle build
+```
+
+This will recompile the content JARs located in `mods`.
+
 ## Notes
 - [libGDX JavaDocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/index.html)

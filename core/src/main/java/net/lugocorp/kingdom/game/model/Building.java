@@ -34,7 +34,7 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
      */
     public void setTransparency(boolean transparent) {
         this.model.ifPresent(
-                (ModelInstance model) -> model.materials.get(0).set(new BlendingAttribute(transparent ? 0.5f : 1f)));
+                (ModelInstance model) -> model.materials.first().set(new BlendingAttribute(transparent ? 0.5f : 1f)));
     }
 
     /** {@inheritdoc} */

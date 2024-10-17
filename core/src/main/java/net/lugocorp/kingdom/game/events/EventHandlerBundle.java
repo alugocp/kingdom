@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  * Handles arbitrary incoming Events on arbitrary members of some group
  */
 public class EventHandlerBundle<T extends EventReceiver> {
+    private final List<EventHandler<T>> empty = new ArrayList<>(0);
     private Map<String, List<EventHandler<T>>> handlers = new HashMap<>();
 
     /**
@@ -61,11 +62,11 @@ public class EventHandlerBundle<T extends EventReceiver> {
      */
     public void handle(GameView view, T receiver, Event e) {
         String key = this.getKey(receiver.getStratifier(), e.channel);
-        if (!this.handlers.containsKey(key)) {
-            System.err.println(String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
-            return;
+        if (e.panic && !this.handlers.containsKey(key)) {
+            throw new RuntimeException(
+                    String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
-        for (EventHandler<T> handler : this.handlers.get(key)) {
+        for (EventHandler<T> handler : this.handlers.getOrDefault(key, this.empty)) {
             handler.handle(view, receiver, e);
         }
     }

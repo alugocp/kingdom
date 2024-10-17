@@ -45,7 +45,7 @@ public class GameView implements View {
 
         // Tile highlight
         this.tileHighlight = this.game.graphics.loaders.assets.createModelInstance("Selector");
-        this.tileHighlight.materials.get(0).set(new BlendingAttribute(0.5f));
+        this.tileHighlight.materials.first().set(new BlendingAttribute(0.5f));
     }
 
     /**

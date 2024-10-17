@@ -21,7 +21,7 @@ public class Events {
         public final T blob;
 
         private GenerateBlobEventTemplate(String channel, T blob) {
-            super(channel);
+            super(channel, true);
             this.blob = blob;
         }
     }
