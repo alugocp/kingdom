@@ -12,6 +12,7 @@ import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
@@ -78,19 +79,20 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public MenuNode getMenuContent(GameView view, int x, int y) {
-        Optional<Player> leader = view.game.world.getTile(x, y).flatMap((Tile t) -> t.leader);
+    public MenuNode getMenuContent(GameView view, Optional<Point> p) {
+        Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
+                .flatMap((Tile t) -> t.leader);
         ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
         if (leader.isPresent()) {
             node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", leader.get().name)));
         }
         node.add(new TextNode(view.game.graphics,
                 String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
-        this.ability.ifPresent((Ability a) -> node.add(a.getMenuContent(view, x, y)));
+        this.ability.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));
         if (this.items.isPresent()) {
-            if (leader.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
+            if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
                 node.add(new TextNode(view.game.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
-                node.add(this.items.get().getMenuContent(view, x, y));
+                node.add(this.items.get().getMenuContent(view, p));
             } else {
                 node.add(new TextNode(view.game.graphics,
                         String.format("Can store %d items", this.items.get().getMax())));

@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**
@@ -58,7 +59,7 @@ public class Artifact implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public MenuNode getMenuContent(GameView view, int x, int y) {
+    public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         return new ArtifactNode(view.game.graphics, this);
     }
 

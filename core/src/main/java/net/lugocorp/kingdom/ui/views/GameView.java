@@ -116,7 +116,7 @@ public class GameView implements View {
         if (!t.isPresent()) {
             return;
         }
-        MenuNode node = t.get().getMenuContent(this, this.menuCoords.x, this.menuCoords.y);
+        MenuNode node = t.get().getMenuContent(this, Optional.of(this.menuCoords));
         this.menu = Optional.of(new Menu(0, Hud.HEIGHT, 250, true, node));
     }
 

@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -27,18 +28,23 @@ public class AbilityLogic {
         int range = attacker.getAttackRange(view);
         Set<Point> unfiltered = Hexagons.getNeighbors(attacker.getPoint(), range);
         for (Point p : unfiltered) {
-            Tile t = view.game.world.getTile(p).get();
-            if (t.unit.isPresent()) {
-                targets.put(p, t.unit.get().health);
+            Optional<Tile> t = view.game.world.getTile(p);
+            if (!t.isPresent()) {
+                continue;
+            }
+            if (t.get().unit.isPresent()) {
+                targets.put(p, t.get().unit.get().health);
                 points.add(p);
-            } else if (t.building.isPresent()) {
-                targets.put(p, t.building.get().health);
+            } else if (t.get().building.isPresent()) {
+                targets.put(p, t.get().building.get().health);
                 points.add(p);
             }
         }
 
         // Have the human Player select which target to attack
-        view.selectTiles(points, "No attack targets are in range",
-                (Point p) -> attacker.health.attack(view, targets.get(p), dmg));
+        view.selectTiles(points, "No attack targets are in range", (Point p) -> {
+            attacker.health.attack(view, targets.get(p), dmg);
+            view.game.unitHasActed(attacker);
+        });
     }
 }

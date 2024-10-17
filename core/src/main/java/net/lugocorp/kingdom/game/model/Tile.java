@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
@@ -57,14 +58,17 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public MenuNode getMenuContent(GameView view, int x, int y) {
+    public MenuNode getMenuContent(GameView view, Optional<Point> p) {
+        if (!p.isPresent()) {
+            throw new RuntimeException("Cannot display unspawned tiles");
+        }
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> {
             view.closeMenu();
         })).add(new TextNode(view.game.graphics, this.name));
         this.ability.ifPresent((Ability a) -> node.add(new TextNode(view.game.graphics, a.desc)));
-        node.add(this.items.getMenuContent(view, x, y));
-        this.building.ifPresent((Building b) -> node.add(b.getMenuContent(view, x, y)));
-        this.unit.ifPresent((Unit u) -> node.add(u.getMenuContent(view, x, y)));
+        node.add(this.items.getMenuContent(view, p));
+        this.building.ifPresent((Building b) -> node.add(b.getMenuContent(view, p)));
+        this.unit.ifPresent((Unit u) -> node.add(u.getMenuContent(view, p)));
         return node;
     }
 }

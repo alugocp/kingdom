@@ -3,8 +3,10 @@ import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a list of items with a max size
@@ -84,8 +86,11 @@ public class Inventory implements MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public MenuNode getMenuContent(GameView view, int x, int y) {
-        return new InventoryNode(view, this, x, y);
+    public MenuNode getMenuContent(GameView view, Optional<Point> p) {
+        if (!p.isPresent()) {
+            throw new RuntimeException("Cannot display inventories of unspawned units/buildings");
+        }
+        return new InventoryNode(view, this, p.get().x, p.get().y);
     }
 
     /**

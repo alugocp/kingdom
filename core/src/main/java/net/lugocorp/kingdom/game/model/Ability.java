@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**
@@ -35,11 +36,13 @@ public class Ability implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public MenuNode getMenuContent(GameView view, int x, int y) {
+    public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         ListNode node = new ListNode();
-        Optional<Unit> wielder = view.game.world.getTile(x, y).flatMap((Tile t) -> t.unit);
-        if (wielder.isPresent() && wielder.get().leader.map((Player p) -> p == view.game.human).orElse(false)
-                && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")) {
+        Optional<Unit> wielder = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
+                .flatMap((Tile t) -> t.unit);
+        if (wielder.isPresent() && wielder.get().leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)
+                && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
+                && !view.game.hasUnitActed(wielder.get())) {
             node.add(new ButtonNode(view.game.graphics, this.name, () -> {
                 this.handleEvent(view, new AbilityActivatedEvent(this, wielder.get()));
                 view.refreshMenu(true);
