@@ -12,7 +12,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.pools.Content;
 import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.ui.Hud;
+import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
@@ -141,7 +141,7 @@ public class Game {
         this.canPlayerAct = true;
         if (!this.turnPlayer.isHumanPlayer()) {
             // TODO implement AI here on another thread
-            // Call refreshMenu() afterwards and iterateTurnPlayer()
+            // Call menu.refresh() afterwards and iterateTurnPlayer()
             this.iterateTurnPlayer(view);
         }
     }

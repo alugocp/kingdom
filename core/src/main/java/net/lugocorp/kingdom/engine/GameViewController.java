@@ -17,7 +17,7 @@ public class GameViewController extends CameraInputController {
     private static final float MIN_ZOOM = -2.0f;
     private final MenuController popupMenu;
     private final MenuController turnMenu;
-    private final MenuController tileMenu;
+    private final MenuController menu;
     private final GameView view;
     private Optional<Point> prev = Optional.empty();
     private float currentZoom = 0.0f;
@@ -30,7 +30,7 @@ public class GameViewController extends CameraInputController {
                 : Optional.empty());
         this.turnMenu = new MenuController(
                 () -> view.game.canHumanPlayerAct() ? Optional.of(view.hud.turnMenu) : Optional.empty());
-        this.tileMenu = menu;
+        this.menu = menu;
         this.view = view;
     }
 
@@ -40,7 +40,7 @@ public class GameViewController extends CameraInputController {
         if (this.popupMenu.touchDown(x, y, pointer, button)) {
             return true;
         }
-        if (this.tileMenu.touchDown(x, y, pointer, button)) {
+        if (this.menu.touchDown(x, y, pointer, button)) {
             return true;
         }
         if (this.turnMenu.touchDown(x, y, pointer, button)) {
@@ -58,7 +58,7 @@ public class GameViewController extends CameraInputController {
         } else if (this.view.popups.isDisplayed()) {
             this.view.popups.setDisplay(false);
         }
-        if (this.tileMenu.touchUp(x, y, pointer, button)) {
+        if (this.menu.touchUp(x, y, pointer, button)) {
             return true;
         }
         if (this.turnMenu.touchUp(x, y, pointer, button)) {
@@ -68,7 +68,7 @@ public class GameViewController extends CameraInputController {
             if (this.view.selector.isHoveringSelectedTile()) {
                 this.view.selector.runSelectionAction();
             } else {
-                this.view.openTileMenu();
+                this.view.menu.open();
             }
         }
         this.prev = Optional.empty();
@@ -82,7 +82,7 @@ public class GameViewController extends CameraInputController {
         if (this.popupMenu.touchDragged(x, y, pointer)) {
             return true;
         }
-        if (this.tileMenu.touchDragged(x, y, pointer)) {
+        if (this.menu.touchDragged(x, y, pointer)) {
             return true;
         }
         if (this.turnMenu.touchDragged(x, y, pointer)) {
@@ -102,7 +102,7 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean zoom(float amount) {
-        if (this.tileMenu.scrolled(0, amount)) {
+        if (this.menu.scrolled(0, amount)) {
             return true;
         }
         final float diff = Math.max(GameViewController.MIN_ZOOM,

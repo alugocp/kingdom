@@ -182,7 +182,7 @@ public class InventoryNode implements MenuNode {
         if (type == InventoryType.HAUL) {
             this.items.transfer(unit.haul, item);
         }
-        this.view.refreshMenu(false);
+        this.view.menu.refresh(false);
     }
 
     /**
@@ -199,7 +199,7 @@ public class InventoryNode implements MenuNode {
     private void unitDropsItem(Item item) {
         Tile tile = this.view.game.world.getTile(this.x, this.y).get();
         this.items.transfer(tile.items, item);
-        this.view.refreshMenu(false);
+        this.view.menu.refresh(false);
     }
 
     /**
@@ -218,7 +218,7 @@ public class InventoryNode implements MenuNode {
         Unit unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit).get();
         this.items.remove(item);
         item.handleEvent(this.view, new ItemConsumedEvent(item, unit));
-        this.view.refreshMenu(false);
+        this.view.menu.refresh(false);
     }
 
     /**
@@ -243,7 +243,7 @@ public class InventoryNode implements MenuNode {
     private void giftItemToUnit(Point p, Item item) {
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
-        this.view.refreshMenu(false);
+        this.view.menu.refresh(false);
     }
 
     /**
@@ -263,6 +263,6 @@ public class InventoryNode implements MenuNode {
     private void buildingTakesItem(Item item) {
         Building building = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.building).get();
         this.items.transfer(building.items.get(), item);
-        this.view.refreshMenu(false);
+        this.view.menu.refresh(false);
     }
 }

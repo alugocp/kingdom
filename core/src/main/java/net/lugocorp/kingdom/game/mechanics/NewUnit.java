@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.Hud;
+import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;

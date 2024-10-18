@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui;
+package net.lugocorp.kingdom.ui.game;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.game.model.Player;
@@ -30,7 +30,7 @@ public class Hud {
                         this.view.popups.setDisplay(true);
                     } else {
                         this.view.game.iterateTurnPlayer(this.view);
-                        this.view.refreshMenu(true);
+                        this.view.menu.refresh(true);
                     }
                 })));
     }

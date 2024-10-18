@@ -45,7 +45,7 @@ public class Ability implements EventReceiver, MenuSubject {
                 && !view.game.hasUnitActed(wielder.get())) {
             node.add(new ButtonNode(view.game.graphics, this.name, () -> {
                 this.handleEvent(view, new AbilityActivatedEvent(this, wielder.get()));
-                view.refreshMenu(true);
+                view.menu.refresh(true);
             }));
         } else {
             node.add(new TextNode(view.game.graphics, this.name));

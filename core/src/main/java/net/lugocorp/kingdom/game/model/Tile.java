@@ -64,7 +64,7 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
             throw new RuntimeException("Cannot display unspawned tiles");
         }
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> {
-            view.closeMenu();
+            view.menu.close();
         })).add(new TextNode(view.game.graphics, this.name));
         this.ability.ifPresent((Ability a) -> node.add(new TextNode(view.game.graphics, a.desc)));
         node.add(this.items.getMenuContent(view, p));

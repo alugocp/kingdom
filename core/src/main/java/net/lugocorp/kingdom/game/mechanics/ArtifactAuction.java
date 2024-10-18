@@ -6,7 +6,7 @@ import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.ui.Hud;
+import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;

@@ -2,14 +2,12 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.ui.Hud;
-import net.lugocorp.kingdom.ui.Logger;
-import net.lugocorp.kingdom.ui.TileSelector;
+import net.lugocorp.kingdom.ui.game.Hud;
+import net.lugocorp.kingdom.ui.game.Logger;
+import net.lugocorp.kingdom.ui.game.TileMenu;
+import net.lugocorp.kingdom.ui.game.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
-import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.utils.Consumer;
-import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -24,13 +22,12 @@ import java.util.Queue;
  * This class handles all the Game runtime logic
  */
 public class GameView implements View {
-    private Optional<Menu> menu = Optional.empty();
-    private Point menuCoords = new Point(0, 0);
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
     public final Popups popups = new Popups();
     public final TileSelector selector;
+    public final TileMenu menu;
     public final Logger logger;
     public final Game game;
     public final Hud hud;
@@ -40,42 +37,7 @@ public class GameView implements View {
         this.logger = new Logger(game.graphics);
         this.hud = new Hud(this);
         this.selector = new TileSelector(this);
-    }
-
-    /**
-     * Handles click logic on a Tile (open a Menu for said Tile)
-     */
-    public void openTileMenu() {
-        Optional<Point> p = this.selector.getHovered();
-        this.selector.deselect();
-        this.closeMenu();
-        if (!p.isPresent()) {
-            return;
-        }
-        this.menuCoords = p.get();
-        this.refreshMenu(false);
-    }
-
-    /**
-     * Opens the Menu that is set in this View's recent memory
-     */
-    public void refreshMenu(boolean onlyIfCurrentlyOpen) {
-        if (onlyIfCurrentlyOpen && !this.menu.isPresent()) {
-            return;
-        }
-        Optional<Tile> t = this.game.world.getTile(this.menuCoords);
-        if (!t.isPresent()) {
-            return;
-        }
-        MenuNode node = t.get().getMenuContent(this, Optional.of(this.menuCoords));
-        this.menu = Optional.of(new Menu(0, Hud.HEIGHT, 250, true, node));
-    }
-
-    /**
-     * Closes the currently open Menu
-     */
-    public void closeMenu() {
-        this.menu = Optional.empty();
+        this.menu = new TileMenu(this);
     }
 
     /** {@inheritdoc} */
@@ -93,7 +55,7 @@ public class GameView implements View {
         this.environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         // Menus
-        MenuController menuController = new MenuController(() -> this.menu);
+        MenuController menuController = new MenuController(() -> this.menu.get());
 
         // Camera
         this.camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -121,7 +83,7 @@ public class GameView implements View {
         this.game.graphics.models.end();
 
         // Draw 2D assets
-        this.menu.ifPresent((Menu m) -> m.draw(this.game.graphics));
+        this.menu.get().ifPresent((Menu m) -> m.draw(this.game.graphics));
         this.hud.render();
         this.logger.render();
         if (this.popups.isDisplayed()) {

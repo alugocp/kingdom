@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui;
+package net.lugocorp.kingdom.ui.game;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Consumer;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -56,7 +56,7 @@ public class TileSelector {
             return;
         }
         this.selection = Optional.of(new TileSelection(points, action));
-        this.view.closeMenu();
+        this.view.menu.close();
     }
 
     /**

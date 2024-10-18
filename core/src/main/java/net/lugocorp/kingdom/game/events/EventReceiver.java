@@ -31,6 +31,6 @@ public interface EventReceiver {
      */
     public default void deactivate(GameView view) {
         view.game.events.signals.deactivateListener(this);
-        view.refreshMenu(true);
+        view.menu.refresh(true);
     }
 }
