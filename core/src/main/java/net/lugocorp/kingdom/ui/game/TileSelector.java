@@ -47,7 +47,7 @@ public class TileSelector {
      * Sets the currently selected Tiles
      */
     public void select(Set<Point> points, String error, Consumer<Point> action) {
-        if (!this.view.game.canHumanPlayerAct()) {
+        if (!this.view.game.mechanics.turns.canHumanPlayerAct()) {
             this.view.logger.log("You cannot act outside your turn");
             return;
         }

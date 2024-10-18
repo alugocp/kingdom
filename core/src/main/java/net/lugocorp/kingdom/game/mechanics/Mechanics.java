@@ -1,9 +1,15 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.game.Game;
 
 /**
  * This class bundles game mechanics classes for easy access
  */
 public class Mechanics {
-    public ArtifactAuction auction = new ArtifactAuction();
-    public NewUnit newUnits = new NewUnit();
+    public final ArtifactAuction auction = new ArtifactAuction();
+    public final NewUnit newUnits = new NewUnit();
+    public final TurnStructure turns;
+
+    public Mechanics(Game game) {
+        this.turns = new TurnStructure(game);
+    }
 }

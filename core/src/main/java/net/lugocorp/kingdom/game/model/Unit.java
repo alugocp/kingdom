@@ -159,6 +159,17 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     @Override
     public void handleEventWithoutSignalBooster(GameView view, Event e) {
         view.game.events.unit.handle(view, this, e);
+        if (e.propagate) {
+            this.active1.ifPresent((Ability a) -> a.handleEventWithoutSignalBooster(view, e));
+            this.active2.ifPresent((Ability a) -> a.handleEventWithoutSignalBooster(view, e));
+            for (Ability a : this.passives) {
+                a.handleEventWithoutSignalBooster(view, e);
+            }
+            for (int a = 0; a < this.equipped.getSize(); a++) {
+                Item i = this.equipped.get(a);
+                i.handleEventWithoutSignalBooster(view, e);
+            }
+        }
     }
 
     /** {@inheritdoc} */
@@ -187,9 +198,9 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
             ButtonNode move = new ButtonNode(view.game.graphics, "Move",
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
                         this.move(view.game, p1);
-                        view.game.unitHasActed(this);
+                        view.game.mechanics.turns.unitHasActed(this);
                     }));
-            if (view.game.hasUnitActed(this)) {
+            if (view.game.mechanics.turns.hasUnitActed(this)) {
                 move.disable();
             }
             node.add(move);

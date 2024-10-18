@@ -68,7 +68,7 @@ public class GameView implements View {
         this.camera.update();
 
         // Kick off the Player's turn
-        this.game.kickOffTurn(this);
+        this.game.mechanics.turns.kickOffTurn(this);
     }
 
     /** {@inheritdoc} */

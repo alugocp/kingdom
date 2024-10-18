@@ -63,6 +63,9 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     @Override
     public void handleEventWithoutSignalBooster(GameView view, Event e) {
         view.game.events.building.handle(view, this, e);
+        if (e.propagate && this.ability.isPresent()) {
+            this.ability.get().handleEventWithoutSignalBooster(view, e);
+        }
     }
 
     /** {@inheritdoc} */

@@ -29,7 +29,7 @@ public class Hud {
                     if (this.view.popups.get().isPresent()) {
                         this.view.popups.setDisplay(true);
                     } else {
-                        this.view.game.iterateTurnPlayer(this.view);
+                        this.view.game.mechanics.turns.iterateTurnPlayer(this.view);
                         this.view.menu.refresh(true);
                     }
                 })));
@@ -75,7 +75,7 @@ public class Hud {
         this.view.game.graphics.sprites.end();
 
         // Draw the "Complete Turn" button
-        if (this.view.game.canHumanPlayerAct()) {
+        if (this.view.game.mechanics.turns.canHumanPlayerAct()) {
             this.turnMenu.draw(this.view.game.graphics);
         }
     }

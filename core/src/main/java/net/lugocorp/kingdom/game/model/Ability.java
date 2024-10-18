@@ -42,7 +42,7 @@ public class Ability implements EventReceiver, MenuSubject {
                 .flatMap((Tile t) -> t.unit);
         if (wielder.isPresent() && wielder.get().leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)
                 && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
-                && !view.game.hasUnitActed(wielder.get())) {
+                && !view.game.mechanics.turns.hasUnitActed(wielder.get())) {
             node.add(new ButtonNode(view.game.graphics, this.name, () -> {
                 this.handleEvent(view, new AbilityActivatedEvent(this, wielder.get()));
                 view.menu.refresh(true);

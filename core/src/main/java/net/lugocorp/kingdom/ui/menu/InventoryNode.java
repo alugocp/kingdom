@@ -101,7 +101,8 @@ public class InventoryNode implements MenuNode {
         // Equip / pick up / drop options (only if the human Player occupies this space)
         boolean actions = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t1) -> t1.unit)
                 .flatMap((Unit u1) -> u1.leader)
-                .map((Player p1) -> p1.isHumanPlayer() && this.view.game.canHumanPlayerAct()).orElse(false);
+                .map((Player p1) -> p1.isHumanPlayer() && this.view.game.mechanics.turns.canHumanPlayerAct())
+                .orElse(false);
         if (actions) {
             if (this.items.type == InventoryType.BUILDING) {
                 // Building actions for this Item

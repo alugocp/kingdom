@@ -23,7 +23,7 @@ public class Events {
         public final T blob;
 
         private GenerateBlobEventTemplate(String channel, T blob) {
-            super(channel, true);
+            super(channel, false, true);
             this.blob = blob;
         }
     }
@@ -221,6 +221,15 @@ public class Events {
         public SpawnEvent(T spawned) {
             super("SpawnEvent");
             this.spawned = spawned;
+        }
+    }
+
+    /**
+     * Triggered when some future turn has been waited for
+     */
+    public static class TickEvent extends Event {
+        public TickEvent() {
+            super("TickEvent", false, false);
         }
     }
 }

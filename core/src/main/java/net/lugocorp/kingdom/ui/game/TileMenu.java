@@ -6,6 +6,9 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
+/**
+ * Handles any Menu that describes a Tile in the World
+ */
 public class TileMenu {
     private final GameView view;
     private Optional<Menu> menu = Optional.empty();
