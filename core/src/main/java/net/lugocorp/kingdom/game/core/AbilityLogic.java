@@ -42,7 +42,7 @@ public class AbilityLogic {
         }
 
         // Have the human Player select which target to attack
-        view.selectTiles(points, "No attack targets are in range", (Point p) -> {
+        view.selector.select(points, "No attack targets are in range", (Point p) -> {
             attacker.health.attack(view, targets.get(p), dmg);
             view.game.unitHasActed(attacker);
         });

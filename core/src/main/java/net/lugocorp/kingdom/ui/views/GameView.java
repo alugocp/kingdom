@@ -5,35 +5,32 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.Hud;
 import net.lugocorp.kingdom.ui.Logger;
+import net.lugocorp.kingdom.ui.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.utils.Consumer;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.Set;
 
+/**
+ * This class handles all the Game runtime logic
+ */
 public class GameView implements View {
-    private final ModelInstance tileHighlight;
-    private Optional<Point> hoveredTile = Optional.empty();
     private Optional<Menu> menu = Optional.empty();
-    private Optional<TileSelection> selection = Optional.empty();
     private Point menuCoords = new Point(0, 0);
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
     public final Popups popups = new Popups();
+    public final TileSelector selector;
     public final Logger logger;
     public final Game game;
     public final Hud hud;
@@ -42,66 +39,20 @@ public class GameView implements View {
         this.game = game;
         this.logger = new Logger(game.graphics);
         this.hud = new Hud(this);
-
-        // Tile highlight
-        this.tileHighlight = this.game.graphics.loaders.assets.createModelInstance("Selector");
-        this.tileHighlight.materials.first().set(new BlendingAttribute(0.5f));
-    }
-
-    /**
-     * Keeps track of the currently hovered Tile
-     */
-    public void setHoveredTile(Point p) {
-        if (this.game.world.isInBounds(p)) {
-            this.hoveredTile = Optional.of(p);
-        } else {
-            this.hoveredTile = Optional.empty();
-        }
-    }
-
-    /**
-     * Sets the currently selected Tiles
-     */
-    public void selectTiles(Set<Point> points, String error, Consumer<Point> action) {
-        if (!this.game.canHumanPlayerAct()) {
-            this.logger.log("You cannot act outside your turn");
-            return;
-        }
-        if (points.size() == 0) {
-            this.logger.log(error);
-            return;
-        }
-        this.selection = Optional.of(new TileSelection(points, action));
-        this.closeMenu();
-    }
-
-    /**
-     * Returns true if the player is hovering over a Tile in the current
-     * TileSelection (if any)
-     */
-    public boolean isHoveringSelectionTile() {
-        return this.selection.isPresent() && this.hoveredTile.isPresent()
-                && this.selection.get().points.contains(this.hoveredTile.get());
-    }
-
-    /**
-     * Confirms the user's selected Tile and kicks off the associated action
-     */
-    public void triggerSelectionAction() {
-        this.selection.get().action.run(this.hoveredTile.get());
-        this.selection = Optional.empty();
+        this.selector = new TileSelector(this);
     }
 
     /**
      * Handles click logic on a Tile (open a Menu for said Tile)
      */
     public void openTileMenu() {
-        this.selection = Optional.empty();
+        Optional<Point> p = this.selector.getHovered();
+        this.selector.deselect();
         this.closeMenu();
-        if (!this.hoveredTile.isPresent()) {
+        if (!p.isPresent()) {
             return;
         }
-        this.menuCoords = this.hoveredTile.get();
+        this.menuCoords = p.get();
         this.refreshMenu(false);
     }
 
@@ -166,19 +117,7 @@ public class GameView implements View {
         // Draw 3D assets
         this.game.graphics.models.begin(this.camera);
         this.game.graphics.models.render(this.game.world.getModelInstances(), this.environment);
-        if (this.selection.isPresent()) {
-            for (Point p : this.selection.get().points) {
-                this.tileHighlight.transform.setTranslation(
-                        Coords.grid.vector(p.x, p.y).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.05f, 0f)));
-                this.game.graphics.models.render(this.tileHighlight, this.environment);
-            }
-        }
-        if (this.hoveredTile.isPresent()) {
-            this.tileHighlight.transform
-                    .setTranslation(Coords.grid.vector(this.hoveredTile.get().x, this.hoveredTile.get().y)
-                            .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.1f, 0f)));
-            this.game.graphics.models.render(this.tileHighlight, this.environment);
-        }
+        this.selector.render(this.environment);
         this.game.graphics.models.end();
 
         // Draw 2D assets
@@ -202,20 +141,6 @@ public class GameView implements View {
     @Override
     public void dispose() {
         this.game.graphics.dispose();
-    }
-
-    /**
-     * This nested class represents a selection of Tiles with some action to perform
-     * on the result
-     */
-    private static class TileSelection {
-        private final Consumer<Point> action;
-        private final Set<Point> points;
-
-        private TileSelection(Set<Point> points, Consumer<Point> action) {
-            this.points = points;
-            this.action = action;
-        }
     }
 
     /**

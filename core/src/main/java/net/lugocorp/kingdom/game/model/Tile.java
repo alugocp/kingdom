@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.Modellable;
-import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
@@ -46,8 +46,9 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void spawn(Game g) {
-        g.world.setTile(this, this.x, this.y);
+    public void spawn(GameView view) {
+        view.game.world.setTile(this, this.x, this.y);
+        this.handleEvent(view, new Events.SpawnEvent<Tile>(this));
     }
 
     /** {@inheritdoc} */

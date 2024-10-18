@@ -44,6 +44,7 @@ public class Game {
     public final Player human;
     public final World world;
     public Generator generator;
+    private int turn = 1;
 
     public Game(GameGraphics graphics, AllEventHandlers events, World world) {
         this.human = this.turnPlayer;
@@ -71,6 +72,7 @@ public class Game {
             int index = this.comps.indexOf(this.turnPlayer);
             if (index == this.comps.size() - 1) {
                 this.turnPlayer = this.human;
+                this.turn++;
             } else {
                 this.turnPlayer = this.comps.get(index + 1);
             }

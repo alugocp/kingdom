@@ -144,8 +144,9 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void spawn(Game g) {
-        this.setPosition(g, this.x, this.y);
+    public void spawn(GameView view) {
+        this.setPosition(view.game, this.x, this.y);
+        this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
     }
 
     /** {@inheritdoc} */
@@ -184,7 +185,7 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
                 String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             ButtonNode move = new ButtonNode(view.game.graphics, "Move",
-                    () -> view.selectTiles(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
+                    () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
                         this.move(view.game, p1);
                         view.game.unitHasActed(this);
                     }));

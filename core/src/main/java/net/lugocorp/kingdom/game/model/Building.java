@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.Modellable;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.combat.HitPoints;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
@@ -43,13 +43,14 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void spawn(Game g) {
-        g.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
+    public void spawn(GameView view) {
+        view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
             if (t.unit.isPresent()) {
                 this.setTransparency(true);
             }
         });
+        this.handleEvent(view, new Events.SpawnEvent<Building>(this));
     }
 
     /** {@inheritdoc} */

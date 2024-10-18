@@ -135,7 +135,7 @@ public class InventoryNode implements MenuNode {
                         && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
                         || this.items.type == InventoryType.HAUL) {
                     root.add(new ButtonNode(this.view.game.graphics, "Give",
-                            () -> this.view.selectTiles(this.getGiftRecipients(),
+                            () -> this.view.selector.select(this.getGiftRecipients(),
                                     "No nearby units can receive this gift",
                                     (Point p1) -> this.giftItemToUnit(p1, item))));
                 }

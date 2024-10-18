@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.core;
+import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
@@ -208,6 +209,18 @@ public class Events {
         public UnitAttackRangeEvent(Unit unit) {
             super("UnitAttackRangeEvent");
             this.unit = unit;
+        }
+    }
+
+    /**
+     * Triggered whenever a Modellable is spawned into the World
+     */
+    public static class SpawnEvent<T extends Modellable> extends Event {
+        public final T spawned;
+
+        public SpawnEvent(T spawned) {
+            super("SpawnEvent");
+            this.spawned = spawned;
         }
     }
 }

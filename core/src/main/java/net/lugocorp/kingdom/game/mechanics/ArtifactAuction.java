@@ -98,7 +98,7 @@ public class ArtifactAuction {
                         }
                         view.popups.setDisplay(false);
                         view.logger.log("Please select a vault with items to bid");
-                        view.selectTiles(vaults, error, (Point p) -> {
+                        view.selector.select(vaults, error, (Point p) -> {
                             this.auction.get().addBidder(view.game.human, p);
                             view.game.human.gold -= price;
                             view.popups.complete();

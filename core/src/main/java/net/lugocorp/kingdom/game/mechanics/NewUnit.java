@@ -53,7 +53,7 @@ public class NewUnit {
                 view.logger.log("Cannot spawn unit on occupied tile");
             } else {
                 view.game.setLeader(u, view.game.human);
-                u.spawn(view.game);
+                u.spawn(view);
             }
         });
     }

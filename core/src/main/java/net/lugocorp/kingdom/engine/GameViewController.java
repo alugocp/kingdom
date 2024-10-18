@@ -65,8 +65,8 @@ public class GameViewController extends CameraInputController {
             return true;
         }
         if (!this.dragging) {
-            if (this.view.isHoveringSelectionTile()) {
-                this.view.triggerSelectionAction();
+            if (this.view.selector.isHoveringSelectedTile()) {
+                this.view.selector.runSelectionAction();
             } else {
                 this.view.openTileMenu();
             }
@@ -132,7 +132,7 @@ public class GameViewController extends CameraInputController {
                 }
             }
         }
-        this.view.setHoveredTile(closestPoint);
+        this.view.selector.hover(closestPoint);
         return true;
     }
 }

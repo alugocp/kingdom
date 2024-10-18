@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine;
 import net.lugocorp.kingdom.engine.assets.AssetsLoader;
-import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
@@ -23,7 +23,7 @@ public abstract class Modellable {
     /**
      * Spawns this loaded object into the World
      */
-    public abstract void spawn(Game g);
+    public abstract void spawn(GameView view);
 
     /**
      * Converts this object's current grid space position into the vector position
