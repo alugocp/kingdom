@@ -15,10 +15,12 @@ import java.util.Optional;
  * A passive or active effect that Units, Buildings and Tiles can use
  */
 public class Ability implements EventReceiver, MenuSubject {
+    public final Unit wielder;
     public final String name;
     public String desc = "";
 
-    Ability(String name) {
+    Ability(Unit wielder, String name) {
+        this.wielder = wielder;
         this.name = name;
     }
 
@@ -38,13 +40,11 @@ public class Ability implements EventReceiver, MenuSubject {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         ListNode node = new ListNode();
-        Optional<Unit> wielder = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
-                .flatMap((Tile t) -> t.unit);
-        if (wielder.isPresent() && wielder.get().leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)
+        if (this.wielder.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)
                 && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
-                && !view.game.mechanics.turns.hasUnitActed(wielder.get())) {
+                && !view.game.mechanics.turns.hasUnitActed(this.wielder)) {
             node.add(new ButtonNode(view.game.graphics, this.name, () -> {
-                this.handleEvent(view, new AbilityActivatedEvent(this, wielder.get()));
+                this.handleEvent(view, new AbilityActivatedEvent(this));
                 view.menu.refresh(true);
             }));
         } else {

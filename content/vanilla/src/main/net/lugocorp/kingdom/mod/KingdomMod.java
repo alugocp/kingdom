@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -41,17 +42,20 @@ public class KingdomMod {
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.game.graphics.loaders.assets, "mine");
+                    e.blob.desc = "Mines provide valuables like gold coins";
                 });
         events.building.addEventHandler("Vault", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.game.graphics.loaders.assets, "vault");
+                    e.blob.desc = "Vaults can store excess items and be used in auctions";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                 });
         events.building.addEventHandler("Forest", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.game.graphics.loaders.assets, "forest");
+                    e.blob.desc = "Don't miss the forest for the trees";
                 });
 
         /**
@@ -60,16 +64,21 @@ public class KingdomMod {
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
-            e.blob.active1 = Optional.of(view.game.generator.ability("Slap"));
+            e.blob.desc = "Mysterious floating sentient crystal being";
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Miner");
         });
         events.unit.addEventHandler("Axolotl", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
-            e.blob.active1 = Optional.of(view.game.generator.ability("Slap"));
+            e.blob.desc = "Salamander-man who was knighted in a faraway realm";
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
         });
         events.unit.addEventHandler("Frog Gnome", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "Just a little gnome and his frog";
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "frog-gnome");
+            e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
         });
 
         /**
@@ -84,8 +93,40 @@ public class KingdomMod {
         events.ability.addEventHandler("Slap", "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
-                    AbilityLogic.attack(view, e.wielder, new Damage(DamageType.IMPACT, 1));
+                    AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1));
                 });
+        events.ability.addEventHandler("Miner", "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests gold coins from mines every 4 turns");
+                });
+        events.ability.addEventHandler("Miner", "SpawnEvent", (GameView view, Ability receiver, Event event) -> {
+            view.game.mechanics.turns.addFutureTick(receiver, 4, true);
+        });
+        events.ability.addEventHandler("Miner", "TickEvent", (GameView view, Ability receiver, Event event) -> {
+            boolean isOnMine = view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
+                    .map((Building b) -> b.name.equals("Mine")).orElse(false);
+            if (isOnMine && !receiver.wielder.haul.isFull()) {
+                receiver.wielder.haul.add(view.game.generator.item("Gold Coin"));
+            }
+        });
+        events.ability.addEventHandler("Shrewd", "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("+100 auction points from vaults every 4 turns");
+                });
+        events.ability.addEventHandler("Shrewd", "SpawnEvent", (GameView view, Ability receiver, Event event) -> {
+            view.game.mechanics.turns.addFutureTick(receiver, 4, true);
+        });
+        events.ability.addEventHandler("Shrewd", "TickEvent", (GameView view, Ability receiver, Event event) -> {
+            boolean isOnVault = view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
+                    .map((Building b) -> b.name.equals("Vault")).orElse(false);
+            if (isOnVault) {
+                receiver.wielder.leader.ifPresent((Player p) -> {
+                    p.auctionPoints += 100;
+                });
+            }
+        });
 
         /**
          * Artifacts
@@ -112,10 +153,17 @@ public class KingdomMod {
         /**
          * Items
          */
-        events.item.addEventHandler("Potion", "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
+        events.item.addEventHandler("Gold Coin", "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
             Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
-            e.blob.desc = "Consume to restore a unit's health";
-            e.blob.icon = Optional.of("potion");
+            e.blob.desc = "Consume to increase your gold";
+            e.blob.icon = Optional.of("coin");
+            e.blob.gold = 1;
+        });
+        events.item.addEventHandler("Gold Coin", "ItemConsumedEvent", (GameView view, Item receiver, Event event) -> {
+            Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
+            e.consumer.leader.ifPresent((Player p) -> {
+                p.gold += receiver.gold;
+            });
         });
     }
 }

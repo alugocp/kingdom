@@ -21,6 +21,7 @@ import java.util.Set;
  * This class handles human and AI Players taking turns during the Game
  */
 public class TurnStructure {
+    // TODO optimize the futures field with a different data structure
     private final List<FutureTick> futures = new ArrayList<>();
     private final Set<Unit> unitsThatHaveActed = new HashSet<>();
     private final Game game;
@@ -51,8 +52,26 @@ public class TurnStructure {
      * Sets up a TickEvent that will trigger on the given EventReceiver in the given
      * number of turns
      */
-    public void addFutureTick(EventReceiver receiver, int turns) {
-        this.futures.add(new TurnStructure.FutureTick(receiver, this.turn + turns));
+    public void addFutureTick(EventReceiver receiver, int turns, boolean repeat) {
+        if (turns < 1) {
+            throw new RuntimeException("You cannot set up a tick for the current or any past turns");
+        }
+        this.futures.add(new TurnStructure.FutureTick(receiver, this.turn + turns, new TickEvent(turns, repeat)));
+    }
+
+    /**
+     * Removes all upcoming FutureTicks associated with the given EventReceiver
+     */
+    public void removeFutureTicks(EventReceiver receiver) {
+        int a = 0;
+        while (a < this.futures.size()) {
+            FutureTick ft = this.futures.get(a);
+            if (ft.receiver == receiver) {
+                this.futures.remove(a);
+            } else {
+                a++;
+            }
+        }
     }
 
     /**
@@ -62,9 +81,12 @@ public class TurnStructure {
         int a = 0;
         while (a < this.futures.size()) {
             FutureTick ft = this.futures.get(a);
-            if (ft.turn <= this.turn) {
+            if (ft.turn == this.turn) {
                 this.futures.remove(a);
-                ft.receiver.handleEvent(view, new TickEvent());
+                ft.receiver.handleEvent(view, ft.event);
+                if (ft.event.repeat) {
+                    this.addFutureTick(ft.receiver, ft.event.turns, true);
+                }
             } else {
                 a++;
             }
@@ -170,10 +192,12 @@ public class TurnStructure {
      */
     private static class FutureTick {
         private final EventReceiver receiver;
+        private final TickEvent event;
         private final int turn;
 
-        private FutureTick(EventReceiver receiver, int turn) {
+        private FutureTick(EventReceiver receiver, int turn, TickEvent event) {
             this.receiver = receiver;
+            this.event = event;
             this.turn = turn;
         }
     }

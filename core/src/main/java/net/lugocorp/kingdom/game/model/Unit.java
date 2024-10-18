@@ -30,17 +30,39 @@ import java.util.Set;
 public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public final String name;
     public final HitPoints<Unit> health;
+    private Optional<Ability> active1 = Optional.empty();
+    private Optional<Ability> active2 = Optional.empty();
     public Optional<Player> leader = Optional.empty();
-    public Optional<Ability> active1 = Optional.empty();
-    public Optional<Ability> active2 = Optional.empty();
     public List<Ability> passives = new ArrayList<>();
     public Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public Inventory haul = new Inventory(InventoryType.HAUL, 4);
+    public String desc = "";
 
     Unit(String name, int x, int y) {
         super(x, y);
         this.name = name;
         this.health = new HitPoints<Unit>(this);
+    }
+
+    /**
+     * Sets up to 2 active Abilities for this Unit
+     */
+    public void setActiveAbilities(Generator g, Optional<String> a1, Optional<String> a2) {
+        a1.ifPresent((String active1) -> {
+            this.active1 = Optional.of(g.ability(this, active1));
+        });
+        a2.ifPresent((String active2) -> {
+            this.active2 = Optional.of(g.ability(this, active2));
+        });
+    }
+
+    /**
+     * Sets some passive Abilities for this Unit
+     */
+    public void setPassiveAbilities(Generator g, String... passives) {
+        for (String p : passives) {
+            this.passives.add(g.ability(this, p));
+        }
     }
 
     /**
@@ -188,7 +210,8 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
+        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name))
+                .add(new TextNode(view.game.graphics, this.desc));
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", this.leader.get().name)));
         }

@@ -52,8 +52,8 @@ public class Generator {
     /**
      * Generates a new Ability
      */
-    public Ability ability(String name) {
-        Events.GenerateAbilityEvent e = new Events.GenerateAbilityEvent(new Ability(name));
+    public Ability ability(Unit wielder, String name) {
+        Events.GenerateAbilityEvent e = new Events.GenerateAbilityEvent(new Ability(wielder, name));
         this.view.game.events.ability.handle(this.view, e.blob, e);
         return e.blob;
     }

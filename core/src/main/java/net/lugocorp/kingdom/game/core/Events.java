@@ -144,12 +144,10 @@ public class Events {
      */
     public static class AbilityActivatedEvent extends Event {
         public final Ability ability;
-        public final Unit wielder;
 
-        public AbilityActivatedEvent(Ability ability, Unit wielder) {
+        public AbilityActivatedEvent(Ability ability) {
             super("AbilityActivatedEvent");
             this.ability = ability;
-            this.wielder = wielder;
         }
     }
 
@@ -228,8 +226,13 @@ public class Events {
      * Triggered when some future turn has been waited for
      */
     public static class TickEvent extends Event {
-        public TickEvent() {
+        public final int turns;
+        public boolean repeat;
+
+        public TickEvent(int turns, boolean repeat) {
             super("TickEvent", false, false);
+            this.repeat = repeat;
+            this.turns = turns;
         }
     }
 }

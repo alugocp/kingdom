@@ -20,12 +20,12 @@ import java.util.Optional;
  * properties
  */
 public class Tile extends Modellable implements EventReceiver, MenuSubject {
-    private Optional<Ability> ability = Optional.empty();
     public final String name;
     public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
     public Optional<Unit> unit = Optional.empty();
+    public String desc = "";
 
     Tile(String name, int x, int y) {
         super(x, y);
@@ -36,9 +36,6 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
     @Override
     public void handleEventWithoutSignalBooster(GameView view, Event e) {
         view.game.events.tile.handle(view, this, e);
-        if (e.propagate && this.ability.isPresent()) {
-            this.ability.get().handleEventWithoutSignalBooster(view, e);
-        }
     }
 
     /** {@inheritdoc} */
@@ -68,8 +65,7 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
         }
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> {
             view.menu.close();
-        })).add(new TextNode(view.game.graphics, this.name));
-        this.ability.ifPresent((Ability a) -> node.add(new TextNode(view.game.graphics, a.desc)));
+        })).add(new TextNode(view.game.graphics, this.name)).add(new TextNode(view.game.graphics, this.desc));
         node.add(this.items.getMenuContent(view, p));
         this.building.ifPresent((Building b) -> node.add(b.getMenuContent(view, p)));
         this.unit.ifPresent((Unit u) -> node.add(u.getMenuContent(view, p)));

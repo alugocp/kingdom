@@ -22,10 +22,10 @@ import java.util.Optional;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends Modellable implements EventReceiver, MenuSubject {
-    private Optional<Ability> ability = Optional.empty();
     public final String name;
     public final HitPoints<Building> health;
     public Optional<Inventory> items = Optional.empty();
+    public String desc = "";
 
     Building(String name, int x, int y) {
         super(x, y);
@@ -63,9 +63,6 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     @Override
     public void handleEventWithoutSignalBooster(GameView view, Event e) {
         view.game.events.building.handle(view, this, e);
-        if (e.propagate && this.ability.isPresent()) {
-            this.ability.get().handleEventWithoutSignalBooster(view, e);
-        }
     }
 
     /** {@inheritdoc} */
@@ -86,13 +83,13 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
                 .flatMap((Tile t) -> t.leader);
-        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name));
+        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name))
+                .add(new TextNode(view.game.graphics, this.desc));
         if (leader.isPresent()) {
             node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", leader.get().name)));
         }
         node.add(new TextNode(view.game.graphics,
                 String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
-        this.ability.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));
         if (this.items.isPresent()) {
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
                 node.add(new TextNode(view.game.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
