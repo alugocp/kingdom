@@ -23,7 +23,7 @@ public class WorldGenerator {
         g.generator.building("Vault", 1, 1).spawn(view);
         g.generator.unit("Crystal", 8, 4).spawn(view);
         g.generator.unit("Crystal", 6, 3).spawn(view);
-        g.generator.unit("Crystal", 8, 1).spawn(view);
+        g.generator.unit("Blob", 8, 1).spawn(view);
         g.generator.building("Vault", 8, 4).spawn(view);
         g.generator.building("Mine", 3, 1).spawn(view);
         g.generator.building("Mine", 3, 3).spawn(view);

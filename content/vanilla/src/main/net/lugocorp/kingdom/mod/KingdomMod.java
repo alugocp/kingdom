@@ -80,6 +80,11 @@ public class KingdomMod {
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "frog-gnome");
             e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
         });
+        events.unit.addEventHandler("Blob", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "A classic slime enemy";
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "blob");
+        });
 
         /**
          * Abilities
