@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.ToonShader;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
 import com.badlogic.gdx.ApplicationListener;
@@ -24,7 +25,9 @@ public class Main implements ApplicationListener {
     @Override
     public void create() {
         Gdx.graphics.setResizable(true);
-        this.graphics = new Graphics();
+        ToonShader shader = new ToonShader();
+        shader.init();
+        this.graphics = new Graphics(shader);
         this.view = new LoadingGameView(this.graphics);
         this.view.start(this::navigate);
     }

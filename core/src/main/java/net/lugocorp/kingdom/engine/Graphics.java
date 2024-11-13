@@ -3,6 +3,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -17,8 +20,17 @@ public class Graphics {
     /**
      * Constructor used for initial use
      */
-    public Graphics() {
-        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(), new Graphics.Fonts());
+    public Graphics(ToonShader shader) {
+        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(new ShaderProvider() {
+            @Override
+            public Shader getShader(Renderable r) {
+                return shader;
+            }
+            @Override
+            public void dispose() {
+                shader.dispose();
+            }
+        }), new Graphics.Fonts());
     }
 
     /**
