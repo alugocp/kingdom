@@ -34,6 +34,7 @@ public class ToonShader implements Shader {
     private int u_diffuseTexture;
     private int u_diffuseColor;
     private int u_opacity;
+    private int u_resolution;
 
     /** {@inheritdoc} */
     @Override
@@ -53,6 +54,7 @@ public class ToonShader implements Shader {
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
         this.u_opacity = this.program.getUniformLocation("u_opacity");
+        this.u_resolution = this.program.getUniformLocation("u_resolution");
     }
 
     /** {@inheritdoc} */
@@ -80,6 +82,7 @@ public class ToonShader implements Shader {
         this.program.setUniformf(this.u_directionalLight, lights.lights.first().direction);
         ColorAttribute ambient = (ColorAttribute) renderable.environment.get(ColorAttribute.AmbientLight);
         this.program.setUniformf(this.u_ambientLight, ambient.color);
+        this.program.setUniformf(this.u_resolution, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Set object uniforms
         Matrix3 normal = new Matrix3();
