@@ -1,9 +1,17 @@
-#ifdef GL_ES 
+/**
+ * References:
+ * https://raw.githubusercontent.com/libgdx/libgdx/refs/heads/master/gdx/res/com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl
+ */
+#ifdef GL_ES
+#define MED mediump
 precision mediump float;
+#else
+#define MED
 #endif
-varying vec2 v_texCoord0;
-uniform sampler2D sample;
+uniform sampler2D u_diffuseTexture;
+uniform vec4 u_diffuseColor;
+varying MED vec2 v_diffuseUV;
 
 void main() {
-    gl_FragColor = texture2D(sample, v_texCoord0);
+    gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
 }
