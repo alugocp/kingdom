@@ -18,28 +18,26 @@ varying vec3 v_ambientLight;
 varying float v_opacity;
 varying vec3 v_normal;
 
+// Return true if the current texture location is close to an edge (different alpha value)
+// This function checks for edges within distance d
 bool outline(float d) {
     float dx = d / u_resolution.x;
     float dy = d / u_resolution.y;
     float a = texture2D(u_diffuseTexture, v_diffuseUV).a;
     return texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, dy)).a != a ||
-    texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, 0)).a != a ||
-    texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, -dy)).a != a ||
-    texture2D(u_diffuseTexture, v_diffuseUV + vec2(0, dy)).a != a ||
-    texture2D(u_diffuseTexture, v_diffuseUV + vec2(0, -dy)).a != a ||
-    texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, dy)).a != a ||
-    texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, 0)).a != a ||
-    texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, -dy)).a != a;
+        texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, -dy)).a != a ||
+        texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, dy)).a != a ||
+        texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, -dy)).a != a;
 }
 
 void main() {
     vec3 normal = v_normal;
     vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
-    if (outline(1.0)) {
+    if (outline(2.0)) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, diffuse.a);
     } else {
         float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
-        if (intensity <= 0.2) {
+        if (intensity == 0.0) {
             gl_FragColor = vec4(0.0, 0.0, 0.0, diffuse.a);
         } else {
             gl_FragColor = diffuse;
