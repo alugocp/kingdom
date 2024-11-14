@@ -76,6 +76,7 @@ public class ToonShader implements Shader {
         // Set lighting uniforms
         DirectionalLightsAttribute lights = (DirectionalLightsAttribute) renderable.environment
                 .get(DirectionalLightsAttribute.Type);
+        // TODO support multiple DirectionalLights
         this.program.setUniformf(this.u_directionalLight, lights.lights.first().direction);
         ColorAttribute ambient = (ColorAttribute) renderable.environment.get(ColorAttribute.AmbientLight);
         this.program.setUniformf(this.u_ambientLight, ambient.color);

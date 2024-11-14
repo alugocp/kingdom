@@ -1,6 +1,7 @@
 /**
  * References:
  * https://raw.githubusercontent.com/libgdx/libgdx/refs/heads/master/gdx/res/com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl
+ * http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/toon-shader-version-ii/
  */
 #ifdef GL_ES
 #define MED mediump
@@ -18,8 +19,11 @@ varying vec3 v_normal;
 
 void main() {
     vec3 normal = v_normal;
-    gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV)
-        * vec4((v_lightDiffuse + v_ambientLight).xyz, 1.0)
-        * u_diffuseColor;
+    float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
+    if (intensity > 0.2) {
+        gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
+    } else {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
     gl_FragColor.a *= v_opacity;
 }

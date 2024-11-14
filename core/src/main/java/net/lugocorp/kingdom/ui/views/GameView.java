@@ -52,7 +52,7 @@ public class GameView implements View {
         // 3D setup
         this.environment = new Environment();
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        this.environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        this.environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.4f, -0.6f, 0f));
 
         // Menus
         MenuController menuController = new MenuController(() -> this.menu.get());
