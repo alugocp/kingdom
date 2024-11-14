@@ -40,11 +40,20 @@ float sobel(vec2 center, float dx, float dy) {
     return sqrt((x * x) + (y * y));
 }
 
+bool outline() {
+    return max(
+        max(
+            sobel(v_diffuseUV, 3.0 / u_resolution.x, 3.0 / u_resolution.y),
+            sobel(v_diffuseUV, 2.0 / u_resolution.x, 2.0 / u_resolution.y)
+        ),
+        sobel(v_diffuseUV, 1.0 / u_resolution.x, 1.0 / u_resolution.y)
+    ) > 0.5;
+}
+
 void main() {
     vec3 normal = v_normal;
-    float c = sobel(v_diffuseUV, 1.0 / u_resolution.x, 1.0 / u_resolution.y);
     vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
-    if (c > 0.5) {
+    if (outline()) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, diffuse.a);
     } else {
         float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
