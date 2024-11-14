@@ -75,7 +75,7 @@ public abstract class Modellable {
     public void setModelInstance(AssetsLoader assets, String name) {
         ModelInstance model = assets.createModelInstance(name);
         // TODO this line makes units disappear behind transparent buildings, find out
-        // why
+        // why (it seems to be related to face culling)
         model.materials.first().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
         this.h = assets.getModelHeight(name);
         this.model = Optional.of(model);
