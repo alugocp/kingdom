@@ -20,10 +20,9 @@ varying vec3 v_normal;
 void main() {
     vec3 normal = v_normal;
     float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
-    if (intensity > 0.2) {
-        gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
-    } else {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
+    if (intensity <= 0.2) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, gl_FragColor.a);
     }
     gl_FragColor.a *= v_opacity;
 }
