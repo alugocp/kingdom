@@ -18,42 +18,24 @@ varying vec3 v_ambientLight;
 varying float v_opacity;
 varying vec3 v_normal;
 
-// Calculates the intensity of the input color
-float intensity(vec4 c){
-    return sqrt((c.x * c.x) + (c.y * c.y) + (c.z * c.z));
-}
-
-// Implements a Sobel filter
-float sobel(vec2 center, float dx, float dy) {
-    float tl = intensity(texture2D(u_diffuseTexture, center + vec2(-dx, dy)));
-    float l = intensity(texture2D(u_diffuseTexture, center + vec2(-dx, 0)));
-    float bl = intensity(texture2D(u_diffuseTexture, center + vec2(-dx, -dy)));
-    float t = intensity(texture2D(u_diffuseTexture, center + vec2(0, dy)));
-    float b = intensity(texture2D(u_diffuseTexture, center + vec2(0, -dy)));
-    float tr = intensity(texture2D(u_diffuseTexture, center + vec2(dx, dy)));
-    float r = intensity(texture2D(u_diffuseTexture, center + vec2(dx, 0)));
-    float br = intensity(texture2D(u_diffuseTexture, center + vec2(dx, -dy)));
-
-    // Multiply by the Sobel matrices
-    float x = tl + (2.0 * l) + bl - tr - (2.0 * r) - br;
-    float y = -tl - (2.0 * t) - tr + bl + (2.0 * b) + br;
-    return sqrt((x * x) + (y * y));
-}
-
-bool outline() {
-    return max(
-        max(
-            sobel(v_diffuseUV, 3.0 / u_resolution.x, 3.0 / u_resolution.y),
-            sobel(v_diffuseUV, 2.0 / u_resolution.x, 2.0 / u_resolution.y)
-        ),
-        sobel(v_diffuseUV, 1.0 / u_resolution.x, 1.0 / u_resolution.y)
-    ) > 0.5;
+bool outline(float d) {
+    float dx = d / u_resolution.x;
+    float dy = d / u_resolution.y;
+    float a = texture2D(u_diffuseTexture, v_diffuseUV).a;
+    return texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, dy)).a != a ||
+    texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, 0)).a != a ||
+    texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, -dy)).a != a ||
+    texture2D(u_diffuseTexture, v_diffuseUV + vec2(0, dy)).a != a ||
+    texture2D(u_diffuseTexture, v_diffuseUV + vec2(0, -dy)).a != a ||
+    texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, dy)).a != a ||
+    texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, 0)).a != a ||
+    texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, -dy)).a != a;
 }
 
 void main() {
     vec3 normal = v_normal;
     vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
-    if (outline()) {
+    if (outline(1.0)) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, diffuse.a);
     } else {
         float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
