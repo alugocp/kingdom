@@ -21,16 +21,8 @@ public class Graphics {
      * Constructor used for initial use
      */
     public Graphics(ToonShader shader) {
-        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(new ShaderProvider() {
-            @Override
-            public Shader getShader(Renderable r) {
-                return shader;
-            }
-            @Override
-            public void dispose() {
-                shader.dispose();
-            }
-        }), new Graphics.Fonts());
+        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(new Graphics.ToonShaderProvider(shader)),
+                new Graphics.Fonts());
     }
 
     /**
@@ -63,6 +55,27 @@ public class Graphics {
 
         Fonts() {
             this.button.setColor(Color.TEAL);
+        }
+    }
+
+    /**
+     * Internal class to provide the given ToonShader
+     */
+    public static class ToonShaderProvider implements ShaderProvider {
+        private final ToonShader shader;
+
+        private ToonShaderProvider(ToonShader shader) {
+            this.shader = shader;
+        }
+
+        @Override
+        public Shader getShader(Renderable r) {
+            return this.shader;
+        }
+
+        @Override
+        public void dispose() {
+            this.shader.dispose();
         }
     }
 }
