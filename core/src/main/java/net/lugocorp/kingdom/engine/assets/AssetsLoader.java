@@ -35,12 +35,13 @@ public class AssetsLoader {
         this.assets.load("tile.g3db", Model.class);
         this.assets.load("crystal.g3db", Model.class);
         this.assets.load("mine.g3db", Model.class);
-        this.assets.load("Selector.g3db", Model.class);
+        this.assets.load("selector.g3db", Model.class);
         this.assets.load("vault.g3db", Model.class);
         this.assets.load("forest.g3db", Model.class);
         this.assets.load("axolotl.g3db", Model.class);
         this.assets.load("frog-gnome.g3db", Model.class);
         this.assets.load("blob.g3db", Model.class);
+        this.assets.load("water.g3db", Model.class);
     }
 
     /**

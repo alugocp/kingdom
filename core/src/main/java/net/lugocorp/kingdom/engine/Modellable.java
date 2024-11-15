@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.assets.AssetsLoader;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
@@ -74,9 +75,9 @@ public abstract class Modellable {
      */
     public void setModelInstance(AssetsLoader assets, String name) {
         ModelInstance model = assets.createModelInstance(name);
-        // TODO this line makes units disappear behind transparent buildings, find out
-        // why (it seems to be related to face culling)
-        model.materials.first().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+        for (Material m : model.materials) {
+            m.set(new BlendingAttribute(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 1.0f));
+        }
         this.h = assets.getModelHeight(name);
         this.model = Optional.of(model);
         this.resetModelPosition();

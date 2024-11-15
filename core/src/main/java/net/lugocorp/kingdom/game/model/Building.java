@@ -13,7 +13,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
@@ -37,8 +37,11 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
      * Can make this Building's model partially transparent or fully opaque
      */
     public void setTransparency(boolean transparent) {
-        this.model.ifPresent(
-                (ModelInstance model) -> model.materials.first().set(new BlendingAttribute(transparent ? 0.5f : 1f)));
+        if (this.model.isPresent()) {
+            for (Material m : this.model.get().materials) {
+                m.set(new BlendingAttribute(transparent ? 0.5f : 1f));
+            }
+        }
     }
 
     /** {@inheritdoc} */

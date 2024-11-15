@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.utils.Consumer;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -20,8 +21,8 @@ public class TileSelector {
     private Optional<Point> hovered = Optional.empty();
 
     public TileSelector(GameView view) {
-        this.highlight = view.game.graphics.loaders.assets.createModelInstance("Selector");
-        this.highlight.materials.first().set(new BlendingAttribute(0.5f));
+        this.highlight = view.game.graphics.loaders.assets.createModelInstance("selector");
+        this.highlight.materials.first().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
         this.view = view;
     }
 
@@ -90,13 +91,13 @@ public class TileSelector {
         if (this.selection.isPresent()) {
             for (Point p : this.selection.get().points) {
                 this.highlight.transform.setTranslation(
-                        Coords.grid.vector(p.x, p.y).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.05f, 0f)));
+                        Coords.grid.vector(p.x, p.y).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.01f, 0f)));
                 this.view.game.graphics.models.render(this.highlight, environment);
             }
         }
         if (this.hovered.isPresent()) {
             this.highlight.transform.setTranslation(Coords.grid.vector(this.hovered.get().x, this.hovered.get().y)
-                    .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.1f, 0f)));
+                    .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.02f, 0f)));
             this.view.game.graphics.models.render(this.highlight, environment);
         }
     }

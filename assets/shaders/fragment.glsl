@@ -32,15 +32,14 @@ bool outline(float d) {
 
 void main() {
     vec3 normal = v_normal;
-    vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
     if (outline(2.0)) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, diffuse.a);
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     } else {
         float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
         if (intensity == 0.0) {
-            gl_FragColor = vec4(0.0, 0.0, 0.0, diffuse.a);
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         } else {
-            gl_FragColor = diffuse;
+            gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
         }
     }
     gl_FragColor.a *= v_opacity;

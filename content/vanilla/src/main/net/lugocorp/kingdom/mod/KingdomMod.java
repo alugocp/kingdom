@@ -34,6 +34,10 @@ public class KingdomMod {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "tile");
         });
+        events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
+            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "water");
+        });
 
         /**
          * Buildings

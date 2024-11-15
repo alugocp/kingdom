@@ -15,7 +15,11 @@ public class WorldGenerator {
         Game g = view.game;
         for (int x = 0; x < g.world.getWidth(); x++) {
             for (int y = 0; y < g.world.getHeight(); y++) {
-                g.generator.tile("Grassland", x, y).spawn(view);
+                if (y == 1 && x >= 4 && x <= 7) {
+                    g.generator.tile("Water", x, y).spawn(view);
+                } else {
+                    g.generator.tile("Grassland", x, y).spawn(view);
+                }
             }
         }
         Player ai = g.addComputerPlayer("AI");
