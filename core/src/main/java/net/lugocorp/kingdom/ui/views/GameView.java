@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.Consumer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -76,11 +77,40 @@ public class GameView implements View {
     public void render() {
         this.camController.update();
 
-        // Draw 3D assets
+        // Set initial OpenGL state
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+        Gdx.gl.glEnable(GL20.GL_STENCIL_TEST);
+        Gdx.gl.glStencilFunc(GL20.GL_ALWAYS, 1, 0xFF);
+        Gdx.gl.glStencilMask(0xFF);
+
+        // Draw all 3D models that shouldn't have outlines
+        Gdx.gl.glStencilMask(0x00);
         this.game.graphics.models.begin(this.camera);
-        this.game.graphics.models.render(this.game.world.getModelInstances(), this.environment);
+        this.game.graphics.models.render(this.game.world.getModelInstances(true), this.environment);
+        this.selector.render(this.environment);
         this.selector.render(this.environment);
         this.game.graphics.models.end();
+
+        // Draw all 3D models that should have outlines
+        Gdx.gl.glStencilMask(0xFF);
+        this.game.graphics.models.begin(this.camera);
+        this.game.graphics.models.render(this.game.world.getModelInstances(false), this.environment);
+        this.game.graphics.models.end();
+
+        // Run the outline shaders
+        Gdx.gl.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF);
+        Gdx.gl.glStencilMask(0x00);
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+        this.game.graphics.outlines.begin(this.camera);
+        this.game.graphics.outlines.render(this.game.world.getModelInstances(false), this.environment);
+        this.game.graphics.outlines.end();
+
+        // If we don't set the stencil mask here then the buffer won't clear
+        Gdx.gl.glStencilMask(0xFF);
+        Gdx.gl.glClear(GL20.GL_STENCIL_BUFFER_BIT);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+        Gdx.gl.glStencilMask(0x00);
 
         // Draw 2D assets
         this.menu.get().ifPresent((Menu m) -> m.draw(this.game.graphics));

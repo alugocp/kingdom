@@ -9,7 +9,7 @@ public class GameGraphics extends Graphics {
     public final Loaders loaders;
 
     public GameGraphics(Graphics g, AssetsLoader assets, SpritesLoader sprites) {
-        super(g.shapes, g.sprites, g.models, g.fonts);
+        super(g.shapes, g.sprites, g.models, g.outlines, g.fonts);
         this.loaders = new Loaders(assets, sprites);
     }
 

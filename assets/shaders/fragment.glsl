@@ -24,10 +24,8 @@ bool outline(float d) {
     float dx = d / u_resolution.x;
     float dy = d / u_resolution.y;
     float a = texture2D(u_diffuseTexture, v_diffuseUV).a;
-    return texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, dy)).a != a ||
-        texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, -dy)).a != a ||
-        texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, dy)).a != a ||
-        texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, -dy)).a != a;
+    return texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, -dy)).a != a ||
+        texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, dy)).a != a;
 }
 
 void main() {

@@ -87,9 +87,11 @@ public class World {
     }
 
     /**
-     * Returns a set of all Models to be rendered for this World
+     * Returns a set of all Models to be rendered for this World, filtered by
+     * justTiles. If true then this method will only return the ModelInstances of
+     * Tiles, and if false then it will return all others.
      */
-    public Array<ModelInstance> getModelInstances() {
+    public Array<ModelInstance> getModelInstances(boolean justTiles) {
         Array<ModelInstance> models = new Array<>();
         for (int x = 0; x < this.w; x++) {
             for (int y = 0; y < this.h; y++) {
@@ -97,10 +99,14 @@ public class World {
                 if (!tile.isPresent()) {
                     continue;
                 }
-                tile.get().building.flatMap((Building b) -> b.getModelInstance())
-                        .ifPresent((ModelInstance m) -> models.add(m));
-                tile.get().unit.flatMap((Unit u) -> u.getModelInstance()).ifPresent((ModelInstance m) -> models.add(m));
-                tile.get().getModelInstance().ifPresent((ModelInstance m) -> models.add(m));
+                if (justTiles) {
+                    tile.get().getModelInstance().ifPresent((ModelInstance m) -> models.add(m));
+                } else {
+                    tile.get().building.flatMap((Building b) -> b.getModelInstance())
+                            .ifPresent((ModelInstance m) -> models.add(m));
+                    tile.get().unit.flatMap((Unit u) -> u.getModelInstance())
+                            .ifPresent((ModelInstance m) -> models.add(m));
+                }
             }
         }
         return models;

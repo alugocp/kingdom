@@ -15,23 +15,25 @@ public class Graphics {
     public final ShapeRenderer shapes;
     public final SpriteBatch sprites;
     public final ModelBatch models;
+    public final ModelBatch outlines;
     public final Fonts fonts;
 
     /**
      * Constructor used for initial use
      */
-    public Graphics(ToonShader shader) {
-        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(new Graphics.ToonShaderProvider(shader)),
-                new Graphics.Fonts());
+    public Graphics(ToonShader toon, OutlineShader outline) {
+        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(new Graphics.BasicShaderProvider(toon)),
+                new ModelBatch(new Graphics.BasicShaderProvider(outline)), new Graphics.Fonts());
     }
 
     /**
      * Constructor used for subclasses
      */
-    Graphics(ShapeRenderer shapes, SpriteBatch sprites, ModelBatch models, Fonts fonts) {
+    Graphics(ShapeRenderer shapes, SpriteBatch sprites, ModelBatch models, ModelBatch outlines, Fonts fonts) {
         this.shapes = shapes;
         this.sprites = sprites;
         this.models = models;
+        this.outlines = outlines;
         this.fonts = fonts;
     }
 
@@ -59,12 +61,12 @@ public class Graphics {
     }
 
     /**
-     * Internal class to provide the given ToonShader
+     * Internal class to provide the given Shader
      */
-    public static class ToonShaderProvider implements ShaderProvider {
-        private final ToonShader shader;
+    public static class BasicShaderProvider implements ShaderProvider {
+        private final Shader shader;
 
-        private ToonShaderProvider(ToonShader shader) {
+        private BasicShaderProvider(Shader shader) {
             this.shader = shader;
         }
 
