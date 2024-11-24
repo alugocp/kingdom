@@ -30,7 +30,7 @@ public class NewUnit {
     public Menu getNewUnitMenu(GameView view) {
         // TODO pick a random point to spawn the Unit before this point
         // TODO randomly select the Unit options here
-        Unit u1 = view.game.generator.unit("Crystal", 0, 0);
+        Unit u1 = view.game.generator.unit("The Druid", 0, 0);
         Unit u2 = view.game.generator.unit("Axolotl", 0, 0);
         Unit u3 = view.game.generator.unit("Frog Gnome", 0, 0);
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))

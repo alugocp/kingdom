@@ -89,6 +89,11 @@ public class KingdomMod {
             e.blob.desc = "A classic slime enemy";
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "blob");
         });
+        events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "A mysterious druid who rarely speaks";
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "druid");
+        });
 
         /**
          * Abilities
