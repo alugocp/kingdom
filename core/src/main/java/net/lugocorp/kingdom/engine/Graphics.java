@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import net.lugocorp.kingdom.engine.shaders.OutlineShader;
+import net.lugocorp.kingdom.engine.shaders.ToonShader;
 
 /**
  * Contains all the objects used to render things in the application

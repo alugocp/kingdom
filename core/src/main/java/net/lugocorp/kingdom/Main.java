@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.engine.OutlineShader;
-import net.lugocorp.kingdom.engine.ToonShader;
+import net.lugocorp.kingdom.engine.shaders.OutlineShader;
+import net.lugocorp.kingdom.engine.shaders.ToonShader;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
 import com.badlogic.gdx.ApplicationListener;

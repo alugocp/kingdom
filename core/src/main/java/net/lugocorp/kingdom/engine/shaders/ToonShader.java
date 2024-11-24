@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine;
+package net.lugocorp.kingdom.engine.shaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,8 +39,8 @@ public class ToonShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void init() {
-        String fragment = Gdx.files.internal("shaders/fragment.glsl").readString();
-        String vertex = Gdx.files.internal("shaders/vertex.glsl").readString();
+        String fragment = Gdx.files.internal("shaders/toon/fragment.glsl").readString();
+        String vertex = Gdx.files.internal("shaders/toon/vertex.glsl").readString();
         this.program = new ShaderProgram(vertex, fragment);
         if (!this.program.isCompiled()) {
             throw new GdxRuntimeException(this.program.getLog());
