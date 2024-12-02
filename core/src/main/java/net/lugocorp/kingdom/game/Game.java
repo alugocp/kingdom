@@ -7,7 +7,6 @@ import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.game.pools.Content;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.Set;
 public class Game {
     private final Map<Player, List<Building>> playerBuildings = new HashMap<>();
     public final List<Player> comps = new ArrayList<>();
-    public final Content content = new Content();
     public final AllEventHandlers events;
     public final GameGraphics graphics;
     public final Mechanics mechanics;
@@ -34,6 +32,7 @@ public class Game {
 
     public Game(GameGraphics graphics, AllEventHandlers events, World world) {
         this.human = new Player("you", true);
+        this.human.auctionPoints = 250;
         this.generator = generator;
         this.graphics = graphics;
         this.events = events;

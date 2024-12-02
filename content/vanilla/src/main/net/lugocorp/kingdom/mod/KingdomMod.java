@@ -148,7 +148,7 @@ public class KingdomMod {
         events.artifact.addEventHandler("Golden Feather", "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "All your units have +1 movement";
+                    e.blob.desc = "All your units have +1 movement (this is a testing artifact)";
                     e.blob.image = Optional.of("golden feather");
                 });
         events.artifact.addEventHandler("Golden Feather", "UnitMoveDistanceEvent",
@@ -162,6 +162,136 @@ public class KingdomMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                });
+        events.artifact.addEventHandler("Cho's Sigil of Haste", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your healing glyph units get +1 movement speed";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Urdin's Scroll of Agility", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your defense glyph units get +1 movement speed";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Sword of Aesethos", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your units have additional critical hit chance";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Kauna's Amulet", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Critical hits or heals don't remove any extra favor from your patrons";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Staff of Wurmdel", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your healing spells restore more health";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Aerog's Anvil", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Get some unit points when one of your units crafts an item";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Orb of Nerketo", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your units have additional visibility";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Shada's Flute", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your patrons generate unit points";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Stones of Thudin", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your vaults take less damage";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("The Chasi Bones", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your nature glyph units have a chance to harvest an additional item";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler("Ucha's Bowl of Plenty", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "+1 option when selecting a new unit";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+        events.artifact.addEventHandler("Nerketo's Helm", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Critical hits against your units are less effective (e.g. 1.1x damage rather than 1.5x)";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+        events.artifact.addEventHandler("Bounty of Ahn-June", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Trade glyph units on your vaults generate more auction points";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+        events.artifact.addEventHandler("Mark of Kung", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your battle glyph units get +1 movement speed";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+        events.artifact.addEventHandler("Chalco's Seal of Protection", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your travel glyph units take less damage";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+        events.artifact.addEventHandler("Poda's Elixir", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Some chance to not spend the glyph when you recruit a unit";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+        events.artifact.addEventHandler("Gaia's Effigy", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Extra unit points each turn";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
+                });
+        events.artifact.addEventHandler("Rod of Adelon", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Chance to immediately recruit an enemy unit when you kill it (fresh copy with reset level/inventory)";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
+                });
+        events.artifact.addEventHandler("Blade of Sanguinor", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your battle glyph units deal extra damage";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
+                });
+        events.artifact.addEventHandler("Cask of Amontior", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "When your units generate favor it also decreases other players' favor with that patron";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
                 });
 
         /**

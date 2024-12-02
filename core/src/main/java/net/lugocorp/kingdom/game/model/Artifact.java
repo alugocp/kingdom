@@ -17,6 +17,7 @@ public class Artifact implements EventReceiver, MenuSubject {
     public final String name;
     public Optional<String> image = Optional.empty();
     public String desc = "";
+    public int chips = 1;
 
     Artifact(String name) {
         this.name = name;

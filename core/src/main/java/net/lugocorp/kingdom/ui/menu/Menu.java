@@ -91,8 +91,8 @@ public class Menu {
                 this.width - (Menu.MARGIN * 3), h - (Menu.MARGIN * 2)));
         if (this.shouldScroll()) {
             final int rh = this.root.getHeight();
-            Rect flip = Coords.screen.flip(this.x + this.width - Menu.MARGIN, this.y + this.offset, Menu.MARGIN,
-                    (h * h) / rh);
+            Rect flip = Coords.screen.flip(this.x + this.width - Menu.MARGIN, this.y + (this.offset * h / rh),
+                    Menu.MARGIN, (h * h) / rh);
             graphics.shapes.begin(ShapeType.Filled);
             graphics.shapes.setColor(Color.TEAL);
             graphics.shapes.rect(flip.x, flip.y, flip.w, flip.h);

@@ -42,8 +42,10 @@ public class ArtifactAuction {
      * Unlocks a couple initial Artifacts for the Auction system
      */
     public void init(Game g) {
-        // TODO repeat this 3 times or so
-        this.artifacts.add(g.content.artifacts.retrieve());
+        Set<String> stratifiers = g.events.artifact.getStratifiers();
+        for (String name : stratifiers) {
+            this.artifacts.add(g.generator.artifact(name));
+        }
     }
 
     /**

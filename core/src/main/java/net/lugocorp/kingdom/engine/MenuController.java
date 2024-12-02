@@ -59,7 +59,7 @@ public class MenuController implements InputProcessor {
     @Override
     public boolean scrolled​(float dx, float dy) {
         if (this.isInMenu(new Point(Gdx.input.getX(), Gdx.input.getY()))) {
-            this.getMenu.run().ifPresent((Menu m) -> m.scroll((int) dy * -20));
+            this.getMenu.run().ifPresent((Menu m) -> m.scroll((int) -dy));
             return true;
         }
         return false;

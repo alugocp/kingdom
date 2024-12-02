@@ -18,8 +18,12 @@ public class ArtifactNode implements MenuNode {
     private final TextNode text;
 
     public ArtifactNode(GameGraphics graphics, Artifact artifact) {
+        String cost = String.format("%s chip", artifact.chips);
+        if (artifact.chips > 1) {
+            cost += "s";
+        }
         this.artifact = artifact;
-        this.text = new TextNode(graphics, String.format("%s: %s", artifact.name, artifact.desc));
+        this.text = new TextNode(graphics, String.format("%s: %s (costs %s)", artifact.name, artifact.desc, cost));
         this.image = graphics.loaders.sprites.get(artifact.image.orElse("placeholder"));
     }
 
@@ -46,7 +50,7 @@ public class ArtifactNode implements MenuNode {
 
         // Draw foreground text
         int h = this.text.getHeight();
-        this.text.draw(graphics, new Rect(bounds.x, bounds.y - h, bounds.w, h));
+        this.text.draw(graphics, new Rect(bounds.x, bounds.y + bounds.h - h, bounds.w, h));
     }
 
     /** {@inheritdoc} */
