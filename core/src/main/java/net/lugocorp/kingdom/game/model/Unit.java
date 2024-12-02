@@ -30,6 +30,8 @@ import java.util.Set;
 public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public final String name;
     public final HitPoints<Unit> health;
+    public Glyph glyph1 = Glyph.BATTLE;
+    public Optional<Glyph> glyph2 = Optional.empty();
     private Optional<Ability> active1 = Optional.empty();
     private Optional<Ability> active2 = Optional.empty();
     public Optional<Player> leader = Optional.empty();

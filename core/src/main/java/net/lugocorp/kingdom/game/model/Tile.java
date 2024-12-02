@@ -25,6 +25,7 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
     public Optional<Unit> unit = Optional.empty();
+    public Glyph glyph = Glyph.BATTLE;
     public String desc = "";
 
     Tile(String name, int x, int y) {
