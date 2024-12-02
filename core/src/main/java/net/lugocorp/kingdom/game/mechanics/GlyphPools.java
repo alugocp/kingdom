@@ -21,10 +21,10 @@ public class GlyphPools {
         for (Glyph glyph : Glyph.values()) {
             this.pools.put(glyph, new ArrayList<String>());
         }
+        Unit u = new Unit("", 0, 0);
         for (String name : g.events.unit.getStratifiers()) {
-            // TODO consider optimization here (perhaps calling the generation events on a
-            // single Unit object, avoids redundant instantiation just to determine Glyphs)
-            Unit u = g.generator.unit(name, 0, 0);
+            u.name = name;
+            g.generator.unitOptimal(u);
             if (u.playable) {
                 this.add(u);
             }

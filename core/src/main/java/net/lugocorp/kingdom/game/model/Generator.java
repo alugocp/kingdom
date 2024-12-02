@@ -26,9 +26,19 @@ public class Generator {
      * Generates a new Unit
      */
     public Unit unit(String name, int x, int y) {
-        Events.GenerateUnitEvent e = new Events.GenerateUnitEvent(new Unit(name, x, y));
+        return this.unitOptimal(new Unit(name, x, y));
+    }
+
+    /**
+     * Calls a generation Event on the given Unit. This is here to avoid
+     * instantiating a new Unit for repetitive Unit generation (like for GlyphPools)
+     * but note that these Units should not be spawned unless a fresh Unit object is
+     * passed in every time.
+     */
+    public Unit unitOptimal(Unit u) {
+        Events.GenerateUnitEvent e = new Events.GenerateUnitEvent(u);
         this.view.game.events.unit.handle(this.view, e.blob, e);
-        return e.blob;
+        return u;
     }
 
     /**
