@@ -28,6 +28,7 @@ import java.util.Set;
  * in-game
  */
 public class Unit extends Modellable implements EventReceiver, MenuSubject {
+    public final Tags tags = new Tags();
     public final String name;
     public final HitPoints<Unit> health;
     public Glyph glyph1 = Glyph.BATTLE;
