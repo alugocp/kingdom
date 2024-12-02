@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.game.Hud;
@@ -7,9 +8,14 @@ import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
+import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This class manages the logic for new Unit acquisition
@@ -25,22 +31,70 @@ public class NewUnit {
     }
 
     /**
-     * Instantiates a popup Menu to handle the new Unit acquisition UI
+     * Returns the Menu to handle new Unit placement
      */
     public Menu getNewUnitMenu(GameView view) {
-        // TODO pick a random point to spawn the Unit before this point
-        // TODO randomly select the Unit options here
-        Unit u1 = view.game.generator.unit("The Druid", 0, 0);
-        Unit u2 = view.game.generator.unit("Axolotl", 0, 0);
-        Unit u3 = view.game.generator.unit("Frog Gnome", 0, 0);
+        ListNode node = new ListNode()
+                .add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)));
+        node.add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
+                .add(new TextNode(view.game.graphics, "Select a tile to recruit your new unit?"))
+                .add(new RowNode().add(new ButtonNode(view.game.graphics, "Yes", () -> {
+                    String error = "You have no space to recruit a new unit";
+                    Set<Point> tiles = view.game.getRecruitmentTiles(view.game.human);
+                    if (tiles.size() == 0) {
+                        view.logger.log(error);
+                        view.popups.complete();
+                        return;
+                    }
+                    view.popups.setDisplay(false);
+                    view.logger.log("Please select a tile to recruit your new unit");
+                    view.selector.select(tiles, error, (Point p) -> {
+                        view.popups.add(this.getUnitSelectionMenu(view, p));
+                        view.popups.complete();
+                    });
+                })).add(new ButtonNode(view.game.graphics, "No", () -> view.popups.complete())));
+        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
+    }
+
+    /**
+     * Returns the Menu to handle new Unit selection
+     */
+    private Menu getUnitSelectionMenu(GameView view, Point p) {
+        // Retrieve the selected Tile's Glyph. This should exist (as per the definition
+        // of
+        // view.game.getRecruitmentTiles()) so if we hit this error then something is
+        // wrong.
+        Optional<Glyph> glyph = view.game.world.getTile(p).flatMap((Tile t) -> t.glyph);
+        if (!glyph.isPresent()) {
+            throw new RuntimeException("Attempt to recruit onto a tile without a glyph");
+        }
+
+        // Create the Menu content for Unit recruitment
+        List<Unit> options = this.getRecruitmentOptions(view, glyph.get(), p);
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
-                .add(new RowNode().add(u1.getMenuContent(view, Optional.empty()))
-                        .add(u2.getMenuContent(view, Optional.empty())).add(u3.getMenuContent(view, Optional.empty())))
-                .add(new RowNode().add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u1)))
-                        .add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u2)))
-                        .add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u3))));
+                .add(new ButtonNode(view.game.graphics, "Do not recruit any unit", () -> view.popups.complete()));
+        RowNode units = new RowNode();
+        RowNode buttons = new RowNode();
+        for (Unit u : options) {
+            units.add(u.getMenuContent(view, Optional.empty()));
+            buttons.add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u)));
+        }
+        node.add(units);
+        node.add(buttons);
         return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
+    }
+
+    /**
+     * Returns the Unit options for recruitment
+     */
+    private List<Unit> getRecruitmentOptions(GameView view, Glyph g, Point p) {
+        List<Unit> options = new ArrayList<>();
+        // TODO pull units from the appropriate glyph pool
+        options.add(view.game.generator.unit("The Druid", p.x, p.y));
+        options.add(view.game.generator.unit("Axolotl", p.x, p.y));
+        options.add(view.game.generator.unit("Frog Gnome", p.x, p.y));
+        return options;
     }
 
     /**
@@ -50,11 +104,17 @@ public class NewUnit {
         view.popups.complete();
         view.game.world.getTile(u.getX(), u.getY()).ifPresent((Tile t) -> {
             if (t.unit.isPresent()) {
-                view.logger.log("Cannot spawn unit on occupied tile");
-            } else {
-                view.game.setLeader(u, view.game.human);
-                u.spawn(view);
+                // We should never hit this, as per the definition of
+                // view.game.getRecruitmentTiles()
+                throw new RuntimeException("Cannot recruit onto an occupied tile");
+                // TODO we can run into the previous error if we have enough unit points
+                // to recruit twice in one turn and select the same tile to recruit onto.
+                // Fix this!!!
             }
+            t.glyph = Optional.empty();
+            view.game.human.unitPoints -= NewUnit.MAX_UNIT_POINTS;
+            view.game.setLeader(u, view.game.human);
+            u.spawn(view);
         });
     }
 }

@@ -24,8 +24,8 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
     public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
+    public Optional<Glyph> glyph = Optional.of(Glyph.BATTLE);
     public Optional<Unit> unit = Optional.empty();
-    public Glyph glyph = Glyph.BATTLE;
     public String desc = "";
 
     Tile(String name, int x, int y) {
@@ -64,7 +64,11 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
         if (!p.isPresent()) {
             throw new RuntimeException("Cannot display unspawned tiles");
         }
-        ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> {
+        ListNode node = new ListNode();
+        if (this.glyph.isPresent()) {
+            node.add(new TextNode(view.game.graphics, String.format("%s glyph", this.glyph.get().label)));
+        }
+        node.add(new ButtonNode(view.game.graphics, "x", () -> {
             view.menu.close();
         })).add(new TextNode(view.game.graphics, this.name)).add(new TextNode(view.game.graphics, this.desc));
         node.add(this.items.getMenuContent(view, p));

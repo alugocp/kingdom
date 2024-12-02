@@ -120,4 +120,24 @@ public class Game {
         }
         return vaults;
     }
+
+    /**
+     * Returns the Points where the Player can recruit a new Unit. The Tiles at
+     * these Points all have the following properties: • Is under the control of the
+     * Player in question • Has a glyph associated with it • Is not occupied by
+     * another Unit
+     */
+    public Set<Point> getRecruitmentTiles(Player player) {
+        // TODO optimize this PLEASE
+        Set<Point> points = new HashSet<>();
+        for (int a = 0; a < this.world.getWidth(); a++) {
+            for (int b = 0; b < this.world.getHeight(); b++) {
+                if (this.world.getTile(a, b).map((Tile t) -> t.leader.isPresent() && t.leader.get() == player
+                        && t.glyph.isPresent() && !t.unit.isPresent()).orElse(false)) {
+                    points.add(new Point(a, b));
+                }
+            }
+        }
+        return points;
+    }
 }

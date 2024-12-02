@@ -147,8 +147,7 @@ public class TurnStructure {
             }
 
             // Choose a new Unit at the maximum unit points
-            if (this.turnPlayer.unitPoints >= NewUnit.MAX_UNIT_POINTS) {
-                this.turnPlayer.unitPoints -= NewUnit.MAX_UNIT_POINTS;
+            for (int a = 0; a < Math.floor(this.turnPlayer.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
                 view.popups.add(this.game.mechanics.newUnits.getNewUnitMenu(view));
             }
             // Start a new ArtifactAuction at the maximum auction points
