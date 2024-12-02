@@ -29,10 +29,10 @@ public class Game {
     public final Player human;
     public final World world;
     public Generator generator;
+    public int auctionPoints = 0;
 
     public Game(GameGraphics graphics, AllEventHandlers events, World world) {
         this.human = new Player("you", true);
-        this.human.auctionPoints = 250;
         this.generator = generator;
         this.graphics = graphics;
         this.events = events;

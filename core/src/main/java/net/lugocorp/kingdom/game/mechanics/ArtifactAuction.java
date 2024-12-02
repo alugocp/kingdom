@@ -136,8 +136,9 @@ public class ArtifactAuction {
         int a = 0;
         int width = Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2);
         int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
-        ListNode node = new ListNode()
-                .add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)));
+        ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
+                .add(new ButtonNode(view.game.graphics, "Buy an artifact next time", () -> view.popups.complete()));
+        view.game.human.auctionChips++;
         while (a < artifacts.size()) {
             RowNode row1 = new RowNode();
             RowNode row2 = new RowNode();
@@ -148,9 +149,14 @@ public class ArtifactAuction {
                 }
                 row1.add(new ArtifactNode(view.game.graphics, artifact));
                 row2.add(new ButtonNode(view.game.graphics, "Choose", () -> {
-                    artifact.claim(view, view.game.human);
-                    this.artifacts.remove(artifact);
-                    view.popups.complete();
+                    if (view.game.human.auctionChips >= artifact.chips) {
+                        view.game.human.auctionChips -= artifact.chips;
+                        artifact.claim(view, view.game.human);
+                        this.artifacts.remove(artifact);
+                        view.popups.complete();
+                    } else {
+                        view.logger.log("You need more auction chips");
+                    }
                 }));
                 a++;
                 b++;

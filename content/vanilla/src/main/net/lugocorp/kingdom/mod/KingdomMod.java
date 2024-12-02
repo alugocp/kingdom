@@ -136,9 +136,7 @@ public class KingdomMod {
             boolean isOnVault = view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
                     .map((Building b) -> b.name.equals("Vault")).orElse(false);
             if (isOnVault) {
-                receiver.wielder.leader.ifPresent((Player p) -> {
-                    p.auctionPoints += 100;
-                });
+                view.game.auctionPoints += 100;
             }
         });
 

@@ -114,11 +114,11 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.menu.get().ifPresent((Menu m) -> m.draw(this.game.graphics));
-        this.hud.render();
-        this.logger.render();
         if (this.popups.isDisplayed()) {
             this.popups.queue.peek().draw(this.game.graphics);
         }
+        this.logger.render();
+        this.hud.render();
     }
 
     /** {@inheritdoc} */

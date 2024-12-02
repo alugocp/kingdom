@@ -152,9 +152,9 @@ public class TurnStructure {
                 view.popups.add(this.game.mechanics.newUnits.getNewUnitMenu(view));
             }
             // Start a new ArtifactAuction at the maximum auction points
-            if (this.turnPlayer.auctionPoints >= ArtifactAuction.MAX_AUCTION_POINTS
+            if (this.game.auctionPoints >= ArtifactAuction.MAX_AUCTION_POINTS
                     && !this.game.mechanics.auction.getAuction().isPresent()) {
-                this.turnPlayer.auctionPoints -= ArtifactAuction.MAX_AUCTION_POINTS;
+                this.game.auctionPoints -= ArtifactAuction.MAX_AUCTION_POINTS;
                 this.game.mechanics.auction.openNewAuction();
                 view.popups.add(this.game.mechanics.auction.getAuctionBuyInMenu(view));
             }
