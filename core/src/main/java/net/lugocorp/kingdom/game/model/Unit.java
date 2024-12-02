@@ -39,6 +39,7 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public List<Ability> passives = new ArrayList<>();
     public Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public Inventory haul = new Inventory(InventoryType.HAUL, 4);
+    public boolean playable = true;
     public String desc = "";
 
     Unit(String name, int x, int y) {

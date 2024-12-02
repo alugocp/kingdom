@@ -90,10 +90,11 @@ public class NewUnit {
      */
     private List<Unit> getRecruitmentOptions(GameView view, Glyph g, Point p) {
         List<Unit> options = new ArrayList<>();
-        // TODO pull units from the appropriate glyph pool
-        options.add(view.game.generator.unit("The Druid", p.x, p.y));
-        options.add(view.game.generator.unit("Axolotl", p.x, p.y));
-        options.add(view.game.generator.unit("Frog Gnome", p.x, p.y));
+        GlyphPools pools = view.game.mechanics.pools;
+        String[] names = pools.random(g, Math.min(pools.remaining(g), 3));
+        for (String name : names) {
+            options.add(view.game.generator.unit(name, p.x, p.y));
+        }
         return options;
     }
 
@@ -102,6 +103,7 @@ public class NewUnit {
      */
     private void choose(GameView view, Unit u) {
         view.popups.complete();
+        view.game.mechanics.pools.remove(u);
         view.game.world.getTile(u.getX(), u.getY()).ifPresent((Tile t) -> {
             if (t.unit.isPresent()) {
                 // We should never hit this, as per the definition of

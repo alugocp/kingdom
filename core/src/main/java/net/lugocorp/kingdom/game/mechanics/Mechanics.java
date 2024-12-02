@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.game.Game;
  */
 public class Mechanics {
     public final ArtifactAuction auction = new ArtifactAuction();
+    public final GlyphPools pools = new GlyphPools();
     public final NewUnit newUnits = new NewUnit();
     public final TurnStructure turns;
 
