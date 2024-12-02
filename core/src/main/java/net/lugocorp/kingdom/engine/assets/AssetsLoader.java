@@ -43,6 +43,8 @@ public class AssetsLoader {
         this.assets.load("blob.g3db", Model.class);
         this.assets.load("water.g3db", Model.class);
         this.assets.load("druid.g3db", Model.class);
+        this.assets.load("placeholder1.g3db", Model.class);
+        this.assets.load("placeholder2.g3db", Model.class);
     }
 
     /**
