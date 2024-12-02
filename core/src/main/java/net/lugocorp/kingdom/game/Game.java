@@ -123,15 +123,16 @@ public class Game {
 
     /**
      * Returns the Points where the Player can recruit a new Unit. The Tiles at
-     * these Points all have the following properties: • Is under the control of the
-     * Player in question • Has a glyph associated with it • Is not occupied by
-     * another Unit
+     * these Points all have the following properties: 1) Is under the control of
+     * the Player in question, 2) Has a glyph associated with it, 3) Is not occupied
+     * by another Unit, 4) The associated glyph has units in its pool
      */
     public Set<Point> getRecruitmentTiles(Player player) {
         // TODO optimize this PLEASE
         Set<Point> points = new HashSet<>();
         for (int a = 0; a < this.world.getWidth(); a++) {
             for (int b = 0; b < this.world.getHeight(); b++) {
+                // TODO the tile should not be considered if the glyph pool no longer has units
                 if (this.world.getTile(a, b).map((Tile t) -> t.leader.isPresent() && t.leader.get() == player
                         && t.glyph.isPresent() && !t.unit.isPresent()).orElse(false)) {
                     points.add(new Point(a, b));

@@ -66,7 +66,7 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
         }
         ListNode node = new ListNode();
         if (this.glyph.isPresent()) {
-            node.add(new TextNode(view.game.graphics, String.format("%s glyph", this.glyph.get().label)));
+            node.add(new TextNode(view.game.graphics, String.format("%s glyph", this.glyph.get())));
         }
         node.add(new ButtonNode(view.game.graphics, "x", () -> {
             view.menu.close();

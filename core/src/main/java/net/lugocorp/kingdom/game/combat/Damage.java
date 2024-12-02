@@ -27,8 +27,9 @@ public class Damage {
         // Blunt instruments, waves, hand-to-hand combat
         IMPACT("impact"),
 
-        // Lightning, fire, holy light, decay
-        BURNING("burning");
+        // Lightning, fire, holy light, decay, acid, magic (anything that causes
+        // sufficiently uniform rapid wear and tear to a surface)
+        SPECIAL("special");
 
         private final String label;
 

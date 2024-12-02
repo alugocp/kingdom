@@ -15,9 +15,9 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
 
 /**
  * This class handles all the Game runtime logic
@@ -115,7 +115,7 @@ public class GameView implements View {
         // Draw 2D assets
         this.menu.get().ifPresent((Menu m) -> m.draw(this.game.graphics));
         if (this.popups.isDisplayed()) {
-            this.popups.queue.peek().draw(this.game.graphics);
+            this.popups.queue.get(0).draw(this.game.graphics);
         }
         this.logger.render();
         this.hud.render();
@@ -139,18 +139,18 @@ public class GameView implements View {
      * This nested class handles popup Menu logic
      */
     public static class Popups {
-        private final Queue<Menu> queue = new ArrayDeque<>();
+        private final List<Menu> queue = new ArrayList<>();
         private boolean display = false;
 
         /**
          * Retrieves the first popup Menu in the queue, if any
          */
         public Optional<Menu> get() {
-            return this.queue.isEmpty() ? Optional.empty() : Optional.of(this.queue.peek());
+            return this.queue.isEmpty() ? Optional.empty() : Optional.of(this.queue.get(0));
         }
 
         /**
-         * Adds a popup Menu to the state
+         * Adds a popup Menu to the state (at the end of the list)
          */
         public void add(Menu menu) {
             this.queue.add(menu);
@@ -158,10 +158,18 @@ public class GameView implements View {
         }
 
         /**
+         * Adds a popup Menu to the state (at the front of the list)
+         */
+        public void addNext(Menu menu) {
+            this.queue.add(0, menu);
+            this.display = true;
+        }
+
+        /**
          * Removes a popup Menu from the queue
          */
         public void complete() {
-            this.queue.remove();
+            this.queue.remove(0);
             if (this.queue.isEmpty()) {
                 this.display = false;
             }

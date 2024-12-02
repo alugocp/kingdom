@@ -49,8 +49,8 @@ public class NewUnit {
                     view.popups.setDisplay(false);
                     view.logger.log("Please select a tile to recruit your new unit");
                     view.selector.select(tiles, error, (Point p) -> {
-                        view.popups.add(this.getUnitSelectionMenu(view, p));
                         view.popups.complete();
+                        view.popups.addNext(this.getUnitSelectionMenu(view, p));
                     });
                 })).add(new ButtonNode(view.game.graphics, "No", () -> view.popups.complete())));
         return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
@@ -107,9 +107,6 @@ public class NewUnit {
                 // We should never hit this, as per the definition of
                 // view.game.getRecruitmentTiles()
                 throw new RuntimeException("Cannot recruit onto an occupied tile");
-                // TODO we can run into the previous error if we have enough unit points
-                // to recruit twice in one turn and select the same tile to recruit onto.
-                // Fix this!!!
             }
             t.glyph = Optional.empty();
             view.game.human.unitPoints -= NewUnit.MAX_UNIT_POINTS;
