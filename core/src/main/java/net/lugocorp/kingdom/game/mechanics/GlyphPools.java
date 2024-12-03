@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.DummyUnit;
 import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
 import java.util.ArrayList;
@@ -21,12 +22,17 @@ public class GlyphPools {
         for (Glyph glyph : Glyph.values()) {
             this.pools.put(glyph, new ArrayList<String>());
         }
-        Unit u = new Unit("", 0, 0);
+        DummyUnit u = new DummyUnit();
         for (String name : g.events.unit.getStratifiers()) {
-            u.name = name;
+            // Set a couple of defaults on the Unit before running the generation event
+            u.setNameOverride(name);
+            u.glyphs.setDefault();
+            u.playable = true;
+
+            // Run the generation event without instantiating a new Unit object
             g.generator.unitOptimal(u);
             if (u.playable) {
-                this.add(u);
+                this.add(name, u.glyphs.get());
             }
         }
     }
@@ -46,6 +52,9 @@ public class GlyphPools {
         int[] indices = new int[n];
         String[] names = new String[n];
         int max = this.pools.get(g).size();
+        if (n > max) {
+            throw new RuntimeException("Pool size is lower than number of requested entries");
+        }
         while (n1 < n) {
             int i = (int) Math.floor(Math.random() * max);
             int a;
@@ -71,22 +80,29 @@ public class GlyphPools {
     }
 
     /**
+     * Adds a name to the pools specified by the given Glyphs
+     */
+    private void add(String name, Glyph[] glyphs) {
+        for (int a = 0; a < glyphs.length; a++) {
+            this.pools.get(glyphs[a]).add(name);
+            System.out.println(String.format("%s -> %s", name, glyphs[a]));
+        }
+    }
+
+    /**
      * Adds a Unit to the pools by their Glyph(s)
      */
     public void add(Unit u) {
-        this.pools.get(u.glyph1).add(u.name);
-        if (u.glyph2.isPresent()) {
-            this.pools.get(u.glyph2.get()).add(u.name);
-        }
+        this.add(u.name, u.glyphs.get());
     }
 
     /**
      * Removes a Unit from the pools by their Glyph(s)
      */
     public void remove(Unit u) {
-        this.pools.get(u.glyph1).remove(u.name);
-        if (u.glyph2.isPresent()) {
-            this.pools.get(u.glyph2.get()).remove(u.name);
+        Glyph[] glyphs = u.glyphs.get();
+        for (int a = 0; a < glyphs.length; a++) {
+            this.pools.get(glyphs[a]).remove(u.name);
         }
     }
 }

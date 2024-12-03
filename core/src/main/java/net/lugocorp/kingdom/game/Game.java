@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Generator;
+import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -41,6 +42,19 @@ public class Game {
     }
 
     /**
+     * This function returns the initial Unit for the given Player. Note that it
+     * does not spawn the Unit, but it does remove them from all relevant
+     * GlyphPools.
+     */
+    public Unit getInitialUnit(Player p, int x, int y, Glyph g) {
+        String name = this.mechanics.pools.random(g, 1)[0];
+        Unit u = this.generator.unit(name, x, y);
+        this.mechanics.pools.remove(u);
+        this.setLeader(u, p);
+        return u;
+    }
+
+    /**
      * Registers a new AI Player
      */
     public Player addComputerPlayer(String name) {
@@ -66,6 +80,18 @@ public class Game {
             p.tiles++;
         }
         t.leader = Optional.of(p);
+    }
+
+    /**
+     * Call this when a Building is spawned into the World. It may need to be
+     * tracked as part of a Player's Buildings.
+     */
+    public void buildingSpawned(Building b) {
+        Tile t = this.world.getTile(b.getPoint()).get();
+        t.leader.ifPresent((Player p) -> {
+            this.playerBuildings.get(p).add(b);
+            p.bareTiles--;
+        });
     }
 
     /**

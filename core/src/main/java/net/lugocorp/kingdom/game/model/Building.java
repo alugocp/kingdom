@@ -53,6 +53,7 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
             if (t.unit.isPresent()) {
                 this.setTransparency(true);
             }
+            view.game.buildingSpawned(this);
         });
         this.handleEvent(view, new Events.SpawnEvent<Building>(this));
     }

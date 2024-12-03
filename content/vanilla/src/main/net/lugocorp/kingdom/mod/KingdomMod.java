@@ -32,7 +32,11 @@ public class KingdomMod {
          */
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "tile");
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "grass");
+        });
+        events.tile.addEventHandler("Rock", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
+            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "rock");
         });
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
@@ -63,15 +67,8 @@ public class KingdomMod {
                 });
 
         /**
-         * Units
+         * Playable units
          */
-        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
-            e.blob.desc = "Mysterious floating sentient crystal being";
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Miner");
-        });
         events.unit.addEventHandler("Axolotl", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
@@ -84,15 +81,28 @@ public class KingdomMod {
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "frog-gnome");
             e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
         });
-        events.unit.addEventHandler("Blob", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "A classic slime enemy";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "blob");
-        });
         events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A mysterious druid who rarely speaks";
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "druid");
+        });
+
+        /**
+         * Non-playable units
+         */
+        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
+            e.blob.desc = "Mysterious floating sentient crystal being";
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Miner");
+            e.blob.playable = false;
+        });
+        events.unit.addEventHandler("Blob", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "A classic slime enemy";
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "blob");
+            e.blob.playable = false;
         });
 
         /**

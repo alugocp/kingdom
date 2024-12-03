@@ -1,7 +1,9 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.Optional;
 
 /**
  * This class handles world generation logic
@@ -15,15 +17,20 @@ public class WorldGenerator {
         Game g = view.game;
         for (int x = 0; x < g.world.getWidth(); x++) {
             for (int y = 0; y < g.world.getHeight(); y++) {
-                if (y == 1 && x >= 4 && x <= 7) {
-                    g.generator.tile("Water", x, y).spawn(view);
+                if (y <= 1 && x >= 4 && x <= 7) {
+                    if (y == 1) {
+                        g.generator.tile("Water", x, y).spawn(view);
+                    } else {
+                        g.generator.tile("Rock", x, y).spawn(view);
+                    }
                 } else {
                     g.generator.tile("Grassland", x, y).spawn(view);
                 }
+                g.world.getTile(x, y).get().glyph = Optional.of(Glyph.random());
             }
         }
         Player ai = g.addComputerPlayer("AI");
-        g.generator.unit("Axolotl", 1, 1).spawn(view);
+        g.getInitialUnit(g.human, 1, 1, Glyph.BATTLE).spawn(view);
         g.generator.building("Vault", 1, 1).spawn(view);
         g.generator.unit("Crystal", 8, 4).spawn(view);
         g.generator.unit("Crystal", 6, 3).spawn(view);
@@ -41,7 +48,6 @@ public class WorldGenerator {
         g.generator.building("Forest", 1, 4).spawn(view);
         g.generator.building("Forest", 2, 4).spawn(view);
         g.generator.building("Mine", 0, 9).spawn(view);
-        g.setLeader(g.world.getTile(1, 1).get().unit.get(), g.human);
         g.setLeader(g.world.getTile(8, 4).get().unit.get(), ai);
         g.setLeader(g.world.getTile(6, 3).get().unit.get(), ai);
         g.setLeader(g.world.getTile(8, 1).get().unit.get(), ai);

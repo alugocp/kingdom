@@ -31,8 +31,7 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public final Tags tags = new Tags();
     public final String name;
     public final HitPoints<Unit> health;
-    public Glyph glyph1 = Glyph.BATTLE;
-    public Optional<Glyph> glyph2 = Optional.empty();
+    public final UnitGlyphs glyphs = new UnitGlyphs();
     private Optional<Ability> active1 = Optional.empty();
     private Optional<Ability> active2 = Optional.empty();
     public Optional<Player> leader = Optional.empty();
@@ -247,5 +246,51 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
             node.add(new TextNode(view.game.graphics, String.format("Can haul %d items", this.haul.getMax())));
         }
         return node;
+    }
+
+    /**
+     * This nested class handles access to a Unit's Glyphs
+     */
+    public class UnitGlyphs {
+        private Optional<Glyph> g2 = Optional.empty();
+        private Glyph g1 = Glyph.BATTLE;
+
+        // No one needs to instantiate this class apart from its host Unit
+        private UnitGlyphs() {
+            this.setDefault();
+        }
+
+        /**
+         * Sets a single Glyph on this Unit
+         */
+        public void set(Glyph g) {
+            this.g2 = Optional.empty();
+            this.g1 = g;
+        }
+
+        /**
+         * Sets two Glyphs on this Unit
+         */
+        public void set(Glyph g1, Glyph g2) {
+            this.g2 = Optional.of(g2);
+            this.g1 = g1;
+        }
+
+        /**
+         * Sets the default Glyphs for this Unit
+         */
+        public void setDefault() {
+            this.set(Glyph.BATTLE);
+        }
+
+        /**
+         * Retrieves the Glyphs associated with this Unit
+         */
+        public Glyph[] get() {
+            if (this.g2.isPresent()) {
+                return new Glyph[]{this.g1, this.g2.get()};
+            }
+            return new Glyph[]{this.g1};
+        }
     }
 }

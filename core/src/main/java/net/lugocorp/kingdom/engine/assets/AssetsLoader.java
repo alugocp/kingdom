@@ -32,7 +32,8 @@ public class AssetsLoader {
      * Loads all the model assets to be used in the game
      */
     public void load() {
-        this.assets.load("tile.g3db", Model.class);
+        this.assets.load("grass.g3db", Model.class);
+        this.assets.load("rock.g3db", Model.class);
         this.assets.load("crystal.g3db", Model.class);
         this.assets.load("mine.g3db", Model.class);
         this.assets.load("selector.g3db", Model.class);
