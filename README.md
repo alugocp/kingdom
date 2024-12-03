@@ -2,6 +2,14 @@
 A turn-based strategy game written in Java with [libGDX](https://libgdx.com/).
 Manage resources and train units as you grow your empire and change the world around you.
 
+## Getting Started
+Run the following commands after a fresh install:
+
+```bash
+./clean-assets.sh
+gradle run
+```
+
 ## Gradle
 This project uses [Gradle](https://gradle.org/) as a build system and dependency manager.
 - `gradle build`: builds sources and archives of every project.
