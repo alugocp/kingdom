@@ -1,20 +1,20 @@
 package net.lugocorp.kingdom.engine;
 import net.lugocorp.kingdom.ui.menu.Menu;
-import net.lugocorp.kingdom.utils.Producer;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Handles all user input meant for Menu objects in the game
  */
 public class MenuController implements InputProcessor {
-    private final Producer<Optional<Menu>> getMenu;
+    private final Supplier<Optional<Menu>> getMenu;
     private Optional<Point> prev = Optional.empty();
     private boolean dragging = false;
 
-    public MenuController(Producer<Optional<Menu>> getMenu) {
+    public MenuController(Supplier<Optional<Menu>> getMenu) {
         this.getMenu = getMenu;
     }
 
@@ -22,7 +22,7 @@ public class MenuController implements InputProcessor {
      * Returns true if the given Point falls within the current Menu
      */
     private boolean isInMenu(Point p) {
-        final Optional<Menu> menu = this.getMenu.run();
+        final Optional<Menu> menu = this.getMenu.get();
         return menu.isPresent() && menu.get().getBoundingRect().contains(p);
     }
 
@@ -48,7 +48,7 @@ public class MenuController implements InputProcessor {
     public boolean touchUp​(int x, int y, int pointer, int button) {
         boolean result = this.isInMenu(new Point(x, y));
         if (!this.dragging) {
-            this.getMenu.run().ifPresent((Menu m) -> m.click(new Point(x, y)));
+            this.getMenu.get().ifPresent((Menu m) -> m.click(new Point(x, y)));
         }
         this.dragging = false;
         this.prev = Optional.empty();
@@ -59,7 +59,7 @@ public class MenuController implements InputProcessor {
     @Override
     public boolean scrolled​(float dx, float dy) {
         if (this.isInMenu(new Point(Gdx.input.getX(), Gdx.input.getY()))) {
-            this.getMenu.run().ifPresent((Menu m) -> m.scroll((int) -dy));
+            this.getMenu.get().ifPresent((Menu m) -> m.scroll((int) -dy));
             return true;
         }
         return false;

@@ -8,10 +8,10 @@ import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
-import net.lugocorp.kingdom.utils.Consumer;
 import net.lugocorp.kingdom.utils.ModLoader;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import java.util.function.Consumer;
 
 /**
  * View for when we're loading a new game
@@ -68,7 +68,7 @@ public class LoadingGameView implements View {
             game.mechanics.auction.init(game);
             game.mechanics.pools.init(game);
             new WorldGenerator().generateWorld(view);
-            this.navigate.run(view);
+            this.navigate.accept(view);
         });
     }
 

@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.utils.Consumer;
 import com.badlogic.gdx.graphics.Color;
+import java.util.function.Consumer;
 
 /**
  * Interface for any screen in the application

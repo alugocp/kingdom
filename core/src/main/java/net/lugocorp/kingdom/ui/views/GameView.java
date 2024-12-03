@@ -7,7 +7,6 @@ import net.lugocorp.kingdom.ui.game.Logger;
 import net.lugocorp.kingdom.ui.game.TileMenu;
 import net.lugocorp.kingdom.ui.game.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
-import net.lugocorp.kingdom.utils.Consumer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * This class handles all the Game runtime logic

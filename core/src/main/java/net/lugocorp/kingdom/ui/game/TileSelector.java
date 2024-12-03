@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.ui.game;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.Consumer;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * This class contains logic for Tile selection by the human Player
@@ -80,7 +80,7 @@ public class TileSelector {
      * Confirms the user's selected Tile and kicks off the associated action
      */
     public void runSelectionAction() {
-        this.selection.get().action.run(this.hovered.get());
+        this.selection.get().action.accept(this.hovered.get());
         this.selection = Optional.empty();
     }
 
