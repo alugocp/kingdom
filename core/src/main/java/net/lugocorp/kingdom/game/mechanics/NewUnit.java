@@ -74,8 +74,8 @@ public class NewUnit {
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
                 .add(new ButtonNode(view.game.graphics, "Do not recruit any unit", () -> view.popups.complete()));
-        RowNode units = new RowNode();
-        RowNode buttons = new RowNode();
+        RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
+        RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         for (Unit u : options) {
             units.add(u.getMenuContent(view, Optional.empty()));
             buttons.add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u)));

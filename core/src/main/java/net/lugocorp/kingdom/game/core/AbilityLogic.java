@@ -51,6 +51,60 @@ public class AbilityLogic {
     }
 
     /**
+     * Ability that heals a Unit
+     */
+    public static void healUnit(GameView view, Unit healer, int hitPoints) {
+        Map<Point, HitPoints> targets = new HashMap<>();
+        Set<Point> points = new HashSet<>();
+
+        // Grab every possible heal target within range
+        Set<Point> unfiltered = Hexagons.getNeighbors(healer.getPoint(), 1);
+        for (Point p : unfiltered) {
+            Optional<Tile> t = view.game.world.getTile(p);
+            if (!t.isPresent()) {
+                continue;
+            }
+            if (t.get().unit.isPresent()) {
+                targets.put(p, t.get().unit.get().health);
+                points.add(p);
+            }
+        }
+
+        // Have the human Player select which target to heal
+        view.selector.select(points, "No heal targets are in range", (Point p) -> {
+            targets.get(p).heal(hitPoints);
+            view.game.mechanics.turns.unitHasActed(healer);
+        });
+    }
+
+    /**
+     * Ability that heals a Building
+     */
+    public static void healBuilding(GameView view, Unit healer, int hitPoints, Function<Building, Boolean> criteria) {
+        Map<Point, HitPoints> targets = new HashMap<>();
+        Set<Point> points = new HashSet<>();
+
+        // Grab every possible heal target within range
+        Set<Point> unfiltered = Hexagons.getNeighbors(healer.getPoint(), 1);
+        for (Point p : unfiltered) {
+            Optional<Tile> t = view.game.world.getTile(p);
+            if (!t.isPresent()) {
+                continue;
+            }
+            if (t.get().building.map(criteria).orElse(false)) {
+                targets.put(p, t.get().building.get().health);
+                points.add(p);
+            }
+        }
+
+        // Have the human Player select which target to heal
+        view.selector.select(points, "No heal targets are in range", (Point p) -> {
+            targets.get(p).heal(hitPoints);
+            view.game.mechanics.turns.unitHasActed(healer);
+        });
+    }
+
+    /**
      * Ability that spawns a building at the caster's location
      */
     public static void build(GameView view, Unit caster, String building) {

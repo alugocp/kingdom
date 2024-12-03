@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -98,14 +99,78 @@ public class KingdomMod {
             e.blob.desc = "A mysterious druid who rarely speaks";
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "druid");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
+            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
         });
         events.unit.addEventHandler("Frog Gnome", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "Just a little gnome and his frog";
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "frog-gnome");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Heal"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
+            e.blob.glyphs.set(Glyph.HEALING, Glyph.TRAVEL);
         });
+        events.unit.addEventHandler("Pickaxe Goblin", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "This Goblin loves his pickaxe";
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
+                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
+                    e.blob.glyphs.set(Glyph.MINING);
+                });
+        events.unit.addEventHandler("Stalagmite Golem", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "A very pointy golem";
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Slap"));
+                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
+                    e.blob.glyphs.set(Glyph.MINING);
+                });
+        events.unit.addEventHandler("Satyr", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "He makes terrariums :)";
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+            e.blob.glyphs.set(Glyph.NATURE, Glyph.TRADE);
+        });
+        events.unit.addEventHandler("Frog Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "A Frog-man that plants trees!";
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+            e.blob.glyphs.set(Glyph.NATURE);
+        });
+        events.unit.addEventHandler("Crocodile Man", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "He has a green thumb";
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.empty());
+                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+                    e.blob.glyphs.set(Glyph.NATURE);
+                });
+        events.unit.addEventHandler("Crocodile Girl", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "A younger Crocodile-person";
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
+                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+                    e.blob.glyphs.set(Glyph.NATURE);
+                });
+        events.unit.addEventHandler("Pottery Ogre", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "He likes working with clay";
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
+                    e.blob.setPassiveAbilities(view.game.generator, "Make Money");
+                    e.blob.glyphs.set(Glyph.TRADE);
+                });
 
         /**
          * Non-playable units
@@ -128,17 +193,37 @@ public class KingdomMod {
         /**
          * Abilities
          */
-        events.ability.addEventHandler("Slap", "GenerateAbilityEvent",
+        // Slap
+        final String ability_slap = "Slap";
+        events.ability.addEventHandler(ability_slap, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     Damage dmg = new Damage(DamageType.IMPACT, 1);
                     e.blob.desc = String.format("Deals %s", dmg);
                 });
-        events.ability.addEventHandler("Slap", "AbilityActivatedEvent",
+        events.ability.addEventHandler(ability_slap, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1)));
+
+        // Heal
+        final String ability_heal = "Heal";
+        events.ability.addEventHandler(ability_heal, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
-                    AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1));
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Heals 5 damage";
                 });
+        events.ability.addEventHandler(ability_heal, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
+
+        // Repair Mine
+        final String ability_repair_mine = "Repair Mine";
+        events.ability.addEventHandler(ability_repair_mine, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Heals a mine for 5 damage";
+                });
+        events.ability.addEventHandler(ability_repair_mine, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.healBuilding(view, receiver.wielder, 5,
+                        (Building b) -> b.name.equals("Mine")));
 
         // Plant Forest
         final String ability_plant_forest = "Plant Forest";
@@ -148,10 +233,27 @@ public class KingdomMod {
                     e.blob.desc = "Plants a forest";
                 });
         events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Forest"));
+
+        // Dig Mine
+        final String ability_dig_mine = "Dig Mine";
+        events.ability.addEventHandler(ability_dig_mine, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
-                    AbilityLogic.build(view, receiver.wielder, "Forest");
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Digs a mine";
                 });
+        events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Mine"));
+
+        // Build Vault
+        final String ability_build_vault = "Build Vault";
+        events.ability.addEventHandler(ability_build_vault, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Builds a vault";
+                });
+        events.ability.addEventHandler(ability_build_vault, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Vault"));
 
         // Mine Coins
         final String ability_mine_coins = "Mine Coins";
@@ -193,6 +295,21 @@ public class KingdomMod {
                         (Building b) -> b.name.equals("Vault"), () -> {
                             view.game.auctionPoints += 100;
                         }));
+
+        // Make Money
+        final String ability_make_money = "Make Money";
+        events.ability.addEventHandler(ability_make_money, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("+5 gold from mines every 4 turns");
+                });
+        events.ability.addEventHandler(ability_make_money, "SpawnEvent", (GameView view, Ability receiver,
+                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+        events.ability.addEventHandler(ability_make_money, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.doOnBuilding(view, receiver.wielder,
+                        (Building b) -> b.name.equals("Mine"), () -> receiver.wielder.leader.ifPresent((Player p) -> {
+                            p.gold += 5;
+                        })));
 
         /**
          * Artifacts

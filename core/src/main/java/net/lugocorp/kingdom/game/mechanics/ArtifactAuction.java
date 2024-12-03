@@ -140,8 +140,8 @@ public class ArtifactAuction {
                 .add(new ButtonNode(view.game.graphics, "Buy an artifact next time", () -> view.popups.complete()));
         view.game.human.auctionChips++;
         while (a < artifacts.size()) {
-            RowNode row1 = new RowNode();
-            RowNode row2 = new RowNode();
+            RowNode row1 = new RowNode().setColumns(3);
+            RowNode row2 = new RowNode().setColumns(3);
             for (int b = 0; b < columns && a < this.artifacts.size();) {
                 final Artifact artifact = this.artifacts.get(a);
                 if (!artifact.shouldDisplay()) {

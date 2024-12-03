@@ -30,6 +30,7 @@ public class ButtonNode extends TextNode {
     /** {@inheritdoc} */
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
+        // TODO I don't think this works when Menu scroll is > 0
         if (!this.disabled) {
             this.action.run();
         }
