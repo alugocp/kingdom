@@ -8,8 +8,9 @@ import java.util.Optional;
  * An in-game pickup to be used by Units
  */
 public class Item implements EventReceiver {
-    public Optional<String> icon = Optional.empty();
     public final String name;
+    public Optional<String> icon = Optional.empty();
+    public Rarity rarity = Rarity.COMMON;
     public String desc = "";
     public int gold = 0;
 
@@ -28,4 +29,22 @@ public class Item implements EventReceiver {
     public String getStratifier() {
         return this.name;
     }
+
+    /**
+     * This nested class tracks relative chance to spawn Items
+     */
+    public static enum Rarity {
+        COMMON("common"), UNCOMMON("uncommon"), RARE("rare");
+
+        public final String label;
+
+        private Rarity(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return this.label;
+        }
+    };
 }

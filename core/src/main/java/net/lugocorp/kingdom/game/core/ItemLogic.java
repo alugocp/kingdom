@@ -1,0 +1,27 @@
+package net.lugocorp.kingdom.game.core;
+import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.model.Player;
+
+/**
+ * This class contains utility functions for writing new Item effects
+ */
+public class ItemLogic {
+
+    /**
+     * Item that can be consumed to increase the Player's gold
+     */
+    public static void valuable(Event event) {
+        Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
+        e.consumer.leader.ifPresent((Player p) -> {
+            p.gold += e.item.gold;
+        });
+    }
+
+    /**
+     * Item that can be consumed to heal the consumer
+     */
+    public static void potion(Event event, int points) {
+        Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
+        e.consumer.health.heal(points);
+    }
+}

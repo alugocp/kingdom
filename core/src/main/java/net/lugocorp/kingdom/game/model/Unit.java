@@ -284,6 +284,13 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
         }
 
         /**
+         * Returns true if this Unit has the given Glyph
+         */
+        public boolean has(Glyph g) {
+            return this.g1 == g || this.g2.map((Glyph g2) -> g2 == g).orElse(false);
+        }
+
+        /**
          * Retrieves the Glyphs associated with this Unit
          */
         public Glyph[] get() {

@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.Damage.DamageType;
 import net.lugocorp.kingdom.game.core.AbilityLogic;
 import net.lugocorp.kingdom.game.core.Events;
+import net.lugocorp.kingdom.game.core.ItemLogic;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
@@ -12,11 +13,9 @@ import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
-import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**
@@ -91,7 +90,7 @@ public class KingdomMod {
             e.blob.desc = "This Raksha speaks to the stones";
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Miner");
+            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
             e.blob.glyphs.set(Glyph.MINING);
         });
         events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
@@ -116,7 +115,7 @@ public class KingdomMod {
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
             e.blob.desc = "Mysterious floating sentient crystal being";
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Miner");
+            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
             e.blob.playable = false;
         });
         events.unit.addEventHandler("Blob", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
@@ -140,87 +139,106 @@ public class KingdomMod {
                     Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
                     AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1));
                 });
-        events.ability.addEventHandler("Plant Forest", "GenerateAbilityEvent",
+
+        // Plant Forest
+        final String ability_plant_forest = "Plant Forest";
+        events.ability.addEventHandler(ability_plant_forest, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Plants a forest";
                 });
-        events.ability.addEventHandler("Plant Forest", "AbilityActivatedEvent",
+        events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
-                    Point p = receiver.wielder.getPoint();
-                    view.game.world.getTile(p).ifPresent((Tile t) -> {
-                        if (t.building.isPresent()) {
-                            view.logger.log("Cannot place another building here");
-                        } else {
-                            view.game.generator.building("Forest", p.x, p.y).spawn(view);
-                        }
-                    });
+                    AbilityLogic.build(view, receiver.wielder, "Forest");
                 });
-        events.ability.addEventHandler("Miner", "GenerateAbilityEvent",
+
+        // Mine Coins
+        final String ability_mine_coins = "Mine Coins";
+        events.ability.addEventHandler(ability_mine_coins, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests gold coins from mines every 4 turns");
                 });
-        events.ability.addEventHandler("Miner", "SpawnEvent", (GameView view, Ability receiver, Event event) -> {
-            view.game.mechanics.turns.addFutureTick(receiver, 4, true);
-        });
-        events.ability.addEventHandler("Miner", "TickEvent", (GameView view, Ability receiver, Event event) -> {
-            boolean isOnMine = view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
-                    .map((Building b) -> b.name.equals("Mine")).orElse(false);
-            if (isOnMine && !receiver.wielder.haul.isFull()) {
-                receiver.wielder.haul.add(view.game.generator.item("Gold Coin"));
-            }
-        });
-        events.ability.addEventHandler("Shrewd", "GenerateAbilityEvent",
+        events.ability.addEventHandler(ability_mine_coins, "SpawnEvent", (GameView view, Ability receiver,
+                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+        events.ability.addEventHandler(ability_mine_coins, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
+                        "Gold Coin", (Building b) -> b.name.equals("Mine")));
+
+        // Pick Apples
+        final String ability_pick_apples = "Pick Apples";
+        events.ability.addEventHandler(ability_pick_apples, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests apples from forests every 4 turns");
+                });
+        events.ability.addEventHandler(ability_pick_apples, "SpawnEvent", (GameView view, Ability receiver,
+                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+        events.ability.addEventHandler(ability_pick_apples, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder, "Apple",
+                        (Building b) -> b.name.equals("Forest")));
+
+        // Shrewd
+        final String ability_shrewd = "Shrewd";
+        events.ability.addEventHandler(ability_shrewd, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("+100 auction points from vaults every 4 turns");
                 });
-        events.ability.addEventHandler("Shrewd", "SpawnEvent", (GameView view, Ability receiver, Event event) -> {
-            view.game.mechanics.turns.addFutureTick(receiver, 4, true);
-        });
-        events.ability.addEventHandler("Shrewd", "TickEvent", (GameView view, Ability receiver, Event event) -> {
-            boolean isOnVault = view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
-                    .map((Building b) -> b.name.equals("Vault")).orElse(false);
-            if (isOnVault) {
-                view.game.auctionPoints += 100;
-            }
-        });
+        events.ability.addEventHandler(ability_shrewd, "SpawnEvent", (GameView view, Ability receiver,
+                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+        events.ability.addEventHandler(ability_shrewd, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.doOnBuilding(view, receiver.wielder,
+                        (Building b) -> b.name.equals("Vault"), () -> {
+                            view.game.auctionPoints += 100;
+                        }));
 
         /**
          * Artifacts
          */
-        events.artifact.addEventHandler("Golden Feather", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "All your units have +1 movement (this is a testing artifact)";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Golden Feather", "UnitMoveDistanceEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.leader.equals(receiver.getOwner())) {
-                        e.distance++;
-                    }
-                });
-        events.artifact.addEventHandler("Golden Feather", "ArtifactClaimedEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
-                });
-        events.artifact.addEventHandler("Cho's Sigil of Haste", "GenerateArtifactEvent",
+        // Cho's Sigil of Haste
+        final String artifact_chos_sigil_of_haste = "Cho's Sigil of Haste";
+        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your healing glyph units get +1 movement speed";
                     e.blob.image = Optional.of("golden feather");
                 });
-        events.artifact.addEventHandler("Urdin's Scroll of Agility", "GenerateArtifactEvent",
+        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                });
+        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "UnitMoveDistanceEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+                    if (e.unit.leader.equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.HEALING)) {
+                        e.distance++;
+                    }
+                });
+
+        // Urdin's Scroll of Agility
+        final String artifact_urdins_scroll_of_agility = "Urdin's Scroll of Agility";
+        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your defense glyph units get +1 movement speed";
                     e.blob.image = Optional.of("golden feather");
                 });
+        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                });
+        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "UnitMoveDistanceEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+                    if (e.unit.leader.equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.DEFENSE)) {
+                        e.distance++;
+                    }
+                });
+
         events.artifact.addEventHandler("Sword of Aesethos", "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
@@ -269,13 +287,22 @@ public class KingdomMod {
                     e.blob.desc = "Your nature glyph units have a chance to harvest an additional item";
                     e.blob.image = Optional.of("golden feather");
                 });
-        events.artifact.addEventHandler("Ucha's Bowl of Plenty", "GenerateArtifactEvent",
+
+        // Ucha's Bowl of Plenty
+        final String artifact_uchas_bowl_of_plenty = "Ucha's Bowl of Plenty";
+        events.artifact.addEventHandler(artifact_uchas_bowl_of_plenty, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "+1 option when selecting a new unit";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                 });
+        events.artifact.addEventHandler(artifact_uchas_bowl_of_plenty, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    e.player.numRecruitmentOptions++;
+                });
+
         events.artifact.addEventHandler("Nerketo's Helm", "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
@@ -343,17 +370,50 @@ public class KingdomMod {
         /**
          * Items
          */
-        events.item.addEventHandler("Gold Coin", "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
+        // Gold Coin
+        final String item_gold_coin = "Gold Coin";
+        events.item.addEventHandler(item_gold_coin, "GenerateItemEvent",
+                (GameView view, Item receiver, Event event) -> {
+                    Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+                    e.blob.desc = "Consume to increase your gold";
+                    e.blob.icon = Optional.of("coin");
+                    e.blob.gold = 1;
+                });
+        events.item.addEventHandler(item_gold_coin, "ItemConsumedEvent",
+                (GameView view, Item receiver, Event event) -> ItemLogic.valuable(event));
+
+        // Emerald
+        final String item_emerald = "Emerald";
+        events.item.addEventHandler(item_emerald, "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
             Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
             e.blob.desc = "Consume to increase your gold";
-            e.blob.icon = Optional.of("coin");
+            e.blob.icon = Optional.of("emerald");
+            e.blob.gold = 10;
+        });
+        events.item.addEventHandler(item_emerald, "ItemConsumedEvent",
+                (GameView view, Item receiver, Event event) -> ItemLogic.valuable(event));
+
+        // Apple
+        final String item_apple = "Apple";
+        events.item.addEventHandler(item_apple, "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
+            Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+            e.blob.desc = "Consume to heal by 2 hit points";
+            e.blob.icon = Optional.of("apple");
             e.blob.gold = 1;
         });
-        events.item.addEventHandler("Gold Coin", "ItemConsumedEvent", (GameView view, Item receiver, Event event) -> {
-            Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-            e.consumer.leader.ifPresent((Player p) -> {
-                p.gold += receiver.gold;
-            });
-        });
+        events.item.addEventHandler(item_apple, "ItemConsumedEvent",
+                (GameView view, Item receiver, Event event) -> ItemLogic.potion(event, 2));
+
+        // Health Potion
+        final String item_health_potion = "Health Potion";
+        events.item.addEventHandler(item_health_potion, "GenerateItemEvent",
+                (GameView view, Item receiver, Event event) -> {
+                    Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+                    e.blob.desc = "Consume to heal by 10 hit points";
+                    e.blob.icon = Optional.of("potion");
+                    e.blob.gold = 1;
+                });
+        events.item.addEventHandler(item_health_potion, "ItemConsumedEvent",
+                (GameView view, Item receiver, Event event) -> ItemLogic.potion(event, 10));
     }
 }

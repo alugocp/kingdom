@@ -96,6 +96,7 @@ public class InventoryNode implements MenuNode {
         // Set mini menu for the selected item
         final Item item = this.items.get(i);
         ListNode root = new ListNode().add(new HeaderNode(this.view.game.graphics, item.name))
+                .add(new TextNode(this.view.game.graphics, item.rarity.toString()))
                 .add(new TextNode(this.view.game.graphics, item.desc));
 
         // Equip / pick up / drop options (only if the human Player occupies this space)

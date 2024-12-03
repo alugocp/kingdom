@@ -16,6 +16,13 @@ public class HitPoints<A extends EventReceiver> {
     }
 
     /**
+     * Heals some damage from these HitPoints
+     */
+    public void heal(int points) {
+        this.set(this.get() + points);
+    }
+
+    /**
      * Runs the logic required for this combatant to take Damage
      */
     public void takeDamage(GameView view, Damage dmg) {
