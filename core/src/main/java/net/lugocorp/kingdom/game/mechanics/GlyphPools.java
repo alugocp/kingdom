@@ -85,7 +85,6 @@ public class GlyphPools {
     private void add(String name, Glyph[] glyphs) {
         for (int a = 0; a < glyphs.length; a++) {
             this.pools.get(glyphs[a]).add(name);
-            System.out.println(String.format("%s -> %s", name, glyphs[a]));
         }
     }
 

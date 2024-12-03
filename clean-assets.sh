@@ -1,4 +1,5 @@
 #!/bin/bash
+# TODO rewrite this as a Gradle script for portability
 
 # Enter the /assets folder
 pushd assets

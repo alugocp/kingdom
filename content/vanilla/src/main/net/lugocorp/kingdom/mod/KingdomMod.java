@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
@@ -15,6 +16,7 @@ import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**
@@ -69,22 +71,41 @@ public class KingdomMod {
         /**
          * Playable units
          */
-        events.unit.addEventHandler("Axolotl", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+        events.unit.addEventHandler("Tlatec", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
-            e.blob.desc = "Salamander-man who was knighted in a faraway realm";
+            e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.glyphs.set(Glyph.BATTLE);
+        });
+        events.unit.addEventHandler("Gloop the Adventurer", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.desc = "This Plasmoid adventurer is eager to prove himself in the dungeons";
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.TRAVEL);
+                });
+        events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "This Raksha speaks to the stones";
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Miner");
+            e.blob.glyphs.set(Glyph.MINING);
+        });
+        events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "A mysterious druid who rarely speaks";
+            e.blob.setModelInstance(view.game.graphics.loaders.assets, "druid");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
+            e.blob.glyphs.set(Glyph.NATURE);
         });
         events.unit.addEventHandler("Frog Gnome", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "Just a little gnome and his frog";
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "frog-gnome");
             e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
-        });
-        events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "A mysterious druid who rarely speaks";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "druid");
         });
 
         /**
@@ -118,6 +139,23 @@ public class KingdomMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
                     AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1));
+                });
+        events.ability.addEventHandler("Plant Forest", "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Plants a forest";
+                });
+        events.ability.addEventHandler("Plant Forest", "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.AbilityActivatedEvent e = (Events.AbilityActivatedEvent) event;
+                    Point p = receiver.wielder.getPoint();
+                    view.game.world.getTile(p).ifPresent((Tile t) -> {
+                        if (t.building.isPresent()) {
+                            view.logger.log("Cannot place another building here");
+                        } else {
+                            view.game.generator.building("Forest", p.x, p.y).spawn(view);
+                        }
+                    });
                 });
         events.ability.addEventHandler("Miner", "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
