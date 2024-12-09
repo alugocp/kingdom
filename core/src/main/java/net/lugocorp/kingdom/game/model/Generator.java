@@ -56,6 +56,7 @@ public class Generator {
     public Patron patron(String name, int x, int y) {
         Events.GeneratePatronEvent e = new Events.GeneratePatronEvent(new Patron(name, x, y));
         this.view.game.events.patron.handle(this.view, e.blob, e);
+        this.view.game.addPatron(e.blob);
         return e.blob;
     }
 

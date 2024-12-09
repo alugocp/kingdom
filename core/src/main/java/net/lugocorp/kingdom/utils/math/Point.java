@@ -4,12 +4,18 @@ package net.lugocorp.kingdom.utils.math;
  * Represents a point in a 2D space
  */
 public class Point {
+    private static final int X_VALUE_CAP = 10000;
     public final int x;
     public final int y;
 
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
+        if (x >= Point.X_VALUE_CAP) {
+            throw new RuntimeException(String.format(
+                    "We cannot initialize points where x >= %d because it disrupts the hash code contract",
+                    Point.X_VALUE_CAP));
+        }
     }
 
     /** {@inheritdoc} */
@@ -21,7 +27,7 @@ public class Point {
     /** {@inheritdoc} */
     @Override
     public int hashCode() {
-        return (this.y * 10000) + this.x;
+        return (this.y * Point.X_VALUE_CAP) + this.x;
     }
 
     /** {@inheritdoc} */

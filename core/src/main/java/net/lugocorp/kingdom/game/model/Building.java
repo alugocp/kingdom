@@ -111,7 +111,7 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public void deactivate(GameView view) {
-        EventReceiver.super.deactivate(view);
+        this.deactivateDefault(view);
         view.game.removeBuilding(this);
     }
 

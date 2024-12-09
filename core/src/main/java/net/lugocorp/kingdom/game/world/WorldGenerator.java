@@ -1,8 +1,11 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Glyph;
+import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**
@@ -30,7 +33,7 @@ public class WorldGenerator {
             }
         }
         Player ai = g.addComputerPlayer("AI");
-        g.getInitialUnit(g.human, 1, 1, Glyph.BATTLE).spawn(view);
+        g.getInitialUnit(g.human, 1, 1, Glyph.WORSHIP).spawn(view);
         g.generator.building("Vault", 1, 1).spawn(view);
         g.generator.unit("Crystal", 8, 4).spawn(view);
         g.generator.unit("Crystal", 6, 3).spawn(view);
@@ -50,6 +53,15 @@ public class WorldGenerator {
         g.generator.building("Mine", 0, 9).spawn(view);
         g.generator.building("Mountain", 6, 2).spawn(view);
         g.generator.patron("Test Patron", 4, 2).spawn(view);
+        g.world.getTile(4, 2).get().building.ifPresent((Building b) -> {
+            Patron p = (Patron) b;
+            p.addToDomain(new Point(3, 1));
+            p.addToDomain(new Point(4, 1));
+            p.addToDomain(new Point(3, 2));
+            p.addToDomain(new Point(5, 2));
+            p.addToDomain(new Point(3, 3));
+            p.addToDomain(new Point(4, 3));
+        });
         g.setLeader(g.world.getTile(8, 4).get().unit.get(), ai);
         g.setLeader(g.world.getTile(6, 3).get().unit.get(), ai);
         g.setLeader(g.world.getTile(8, 1).get().unit.get(), ai);
