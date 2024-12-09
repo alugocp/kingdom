@@ -44,7 +44,7 @@ public class KingdomMod {
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "water");
-            e.blob.obstacle = true;
+            e.blob.setObstacle(true);
         });
 
         /**
@@ -69,6 +69,13 @@ public class KingdomMod {
                     e.blob.setModelInstance(view.game.graphics.loaders.assets, "forest");
                     e.blob.desc = "Don't miss the forest for the trees";
                 });
+        events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.desc = "An immovable object";
+                    e.blob.setObstacle(true);
+                });
 
         /**
          * Patrons
@@ -76,7 +83,7 @@ public class KingdomMod {
         events.patron.addEventHandler("Test Patron", "GeneratePatronEvent",
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
                     e.blob.desc = "Just a patron for testing";
                 });
 

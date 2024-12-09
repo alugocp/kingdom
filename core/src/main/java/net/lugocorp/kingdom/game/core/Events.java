@@ -106,8 +106,8 @@ public class Events {
             super("CanUnitMoveEvent");
             this.unit = unit;
             this.tile = tile;
-            this.canWalkOnTile = !tile.obstacle;
-            this.canWalkOnBuilding = tile.building.map((Building b) -> !b.obstacle).orElse(true);
+            this.canWalkOnTile = !tile.getObstacle();
+            this.canWalkOnBuilding = tile.building.map((Building b) -> !b.getObstacle()).orElse(true);
         }
 
         /**

@@ -22,7 +22,18 @@ public class Patron extends Building {
     Patron(String name, int x, int y) {
         super(name, x, y);
         this.setHealth(new Patron.FavorPoints(this));
-        this.obstacle = true;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void setObstacle(boolean obstacle) {
+        throw new RuntimeException("Cannot change a Patron's obstacle status");
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean getObstacle() {
+        return true;
     }
 
     /** {@inheritdoc} */

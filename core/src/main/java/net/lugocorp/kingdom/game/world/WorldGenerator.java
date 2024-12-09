@@ -48,6 +48,7 @@ public class WorldGenerator {
         g.generator.building("Forest", 1, 4).spawn(view);
         g.generator.building("Forest", 2, 4).spawn(view);
         g.generator.building("Mine", 0, 9).spawn(view);
+        g.generator.building("Mountain", 6, 2).spawn(view);
         g.generator.patron("Test Patron", 4, 2).spawn(view);
         g.setLeader(g.world.getTile(8, 4).get().unit.get(), ai);
         g.setLeader(g.world.getTile(6, 3).get().unit.get(), ai);

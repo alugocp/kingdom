@@ -20,18 +20,34 @@ import java.util.Optional;
  * properties
  */
 public class Tile extends Modellable implements EventReceiver, MenuSubject {
+    private boolean obstacle = false;
     public final String name;
     public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
     public Optional<Glyph> glyph = Optional.of(Glyph.BATTLE);
     public Optional<Unit> unit = Optional.empty();
-    public boolean obstacle = false;
     public String desc = "";
 
     Tile(String name, int x, int y) {
         super(x, y);
         this.name = name;
+    }
+
+    /**
+     * Sets whether or not this Tile is an obstacle. Obstacles cannot be walked on
+     * by default.
+     */
+    public void setObstacle(boolean obstacle) {
+        this.obstacle = obstacle;
+    }
+
+    /**
+     * Returns whether or not this Tile is an obstacle. Obstacles cannot be walked
+     * on by default.
+     */
+    public boolean getObstacle() {
+        return this.obstacle;
     }
 
     /** {@inheritdoc} */

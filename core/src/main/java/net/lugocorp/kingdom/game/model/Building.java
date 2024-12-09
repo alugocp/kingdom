@@ -22,11 +22,11 @@ import java.util.Optional;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends Modellable implements EventReceiver, MenuSubject {
+    private boolean obstacle = false;
+    protected HitPoints<Building> health = null;
     public final Tags tags = new Tags();
     public final String name;
-    protected HitPoints<Building> health = null;
     public Optional<Inventory> items = Optional.empty();
-    public boolean obstacle = false;
     public String desc = "";
 
     Building(String name, int x, int y) {
@@ -48,6 +48,22 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
      */
     protected void setHealth(HitPoints health) {
         this.health = health;
+    }
+
+    /**
+     * Sets whether or not this Building is an obstacle. Obstacles cannot be walked
+     * on by default.
+     */
+    public void setObstacle(boolean obstacle) {
+        this.obstacle = obstacle;
+    }
+
+    /**
+     * Returns whether or not this Building is an obstacle. Obstacles cannot be
+     * walked on by default.
+     */
+    public boolean getObstacle() {
+        return this.obstacle;
     }
 
     /**
