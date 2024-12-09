@@ -7,12 +7,27 @@ import net.lugocorp.kingdom.ui.views.GameView;
  * Stores the hit points of a combatant
  */
 public class HitPoints<A extends EventReceiver> {
+    private boolean vulnerable = true;
     private final A bearer;
     private int value = 1;
     private int max = 1;
 
     public HitPoints(A bearer) {
         this.bearer = bearer;
+    }
+
+    /**
+     * Returns true if the host entity cannot take damage
+     */
+    public boolean isVulnerable() {
+        return this.vulnerable;
+    }
+
+    /**
+     * Makes this object's bearer invulnerable (cannot take damage)
+     */
+    public void invulnerable() {
+        this.vulnerable = false;
     }
 
     /**

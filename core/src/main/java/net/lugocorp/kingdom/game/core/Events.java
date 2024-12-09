@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -56,6 +57,15 @@ public class Events {
     }
 
     /**
+     * Generator Event for new Patrons
+     */
+    public static class GeneratePatronEvent extends GenerateBlobEventTemplate<Patron> {
+        public GeneratePatronEvent(Patron blob) {
+            super("GeneratePatronEvent", blob);
+        }
+    }
+
+    /**
      * Generator Event for new Items
      */
     public static class GenerateItemEvent extends GenerateBlobEventTemplate<Item> {
@@ -89,12 +99,22 @@ public class Events {
     public static class CanUnitMoveEvent extends Event {
         public final Unit unit;
         public final Tile tile;
-        public boolean possible = true;
+        public boolean canWalkOnTile;
+        public boolean canWalkOnBuilding;
 
         public CanUnitMoveEvent(Unit unit, Tile tile) {
             super("CanUnitMoveEvent");
             this.unit = unit;
             this.tile = tile;
+            this.canWalkOnTile = !tile.obstacle;
+            this.canWalkOnBuilding = tile.building.map((Building b) -> !b.obstacle).orElse(true);
+        }
+
+        /**
+         * Returns true if the Unit can walk on this Tile
+         */
+        public boolean possible() {
+            return this.canWalkOnTile && this.canWalkOnBuilding;
         }
     }
 

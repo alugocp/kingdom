@@ -51,6 +51,15 @@ public class Generator {
     }
 
     /**
+     * Generates a new Patron
+     */
+    public Patron patron(String name, int x, int y) {
+        Events.GeneratePatronEvent e = new Events.GeneratePatronEvent(new Patron(name, x, y));
+        this.view.game.events.patron.handle(this.view, e.blob, e);
+        return e.blob;
+    }
+
+    /**
      * Generates a new Item
      */
     public Item item(String name) {

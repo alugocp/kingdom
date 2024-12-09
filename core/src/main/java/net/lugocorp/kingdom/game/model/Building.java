@@ -24,14 +24,30 @@ import java.util.Optional;
 public class Building extends Modellable implements EventReceiver, MenuSubject {
     public final Tags tags = new Tags();
     public final String name;
-    public final HitPoints<Building> health;
+    protected HitPoints<Building> health = null;
     public Optional<Inventory> items = Optional.empty();
+    public boolean obstacle = false;
     public String desc = "";
 
     Building(String name, int x, int y) {
         super(x, y);
         this.name = name;
-        this.health = new HitPoints<Building>(this);
+        this.setHealth(new HitPoints<Building>(this));
+    }
+
+    /**
+     * Secure accessor to this Building's HitPoints
+     */
+    public HitPoints health() {
+        return this.health;
+    }
+
+    /**
+     * Secure way to set this Building's HitPoints. It should not be used outside
+     * this class and its subclasses (the Patron class).
+     */
+    protected void setHealth(HitPoints health) {
+        this.health = health;
     }
 
     /**

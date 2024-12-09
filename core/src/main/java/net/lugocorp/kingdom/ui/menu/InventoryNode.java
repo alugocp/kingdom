@@ -107,7 +107,8 @@ public class InventoryNode implements MenuNode {
         if (actions) {
             if (this.items.type == InventoryType.BUILDING) {
                 // Building actions for this Item
-                if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
+                if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
+                        && !this.itemIsConsumed(this.view, item)) {
                     root.add(new ButtonNode(this.view.game.graphics, "Equip onto unit",
                             () -> this.unitTakesItem(InventoryType.EQUIP, item)));
                 }
@@ -118,7 +119,8 @@ public class InventoryNode implements MenuNode {
             } else {
                 // Unit actions for this Item
                 if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
-                        && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())) {
+                        && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
+                        && !this.itemIsConsumed(this.view, item)) {
                     root.add(new ButtonNode(this.view.game.graphics, "Equip",
                             () -> this.unitTakesItem(InventoryType.EQUIP, item)));
                 }
@@ -149,6 +151,13 @@ public class InventoryNode implements MenuNode {
             }
         }
         menu.setMiniMenu(root, p.x, p.y);
+    }
+
+    /**
+     * Returns true if the given Item has an effect when consumed
+     */
+    public boolean itemIsConsumed(GameView view, Item item) {
+        return view.game.events.item.hasEventHandler(item.getStratifier(), "ItemConsumedEvent");
     }
 
     /**

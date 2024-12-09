@@ -26,6 +26,7 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
     public Optional<Building> building = Optional.empty();
     public Optional<Glyph> glyph = Optional.of(Glyph.BATTLE);
     public Optional<Unit> unit = Optional.empty();
+    public boolean obstacle = false;
     public String desc = "";
 
     Tile(String name, int x, int y) {

@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -43,6 +44,7 @@ public class KingdomMod {
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "water");
+            e.blob.obstacle = true;
         });
 
         /**
@@ -69,6 +71,16 @@ public class KingdomMod {
                 });
 
         /**
+         * Patrons
+         */
+        events.patron.addEventHandler("Test Patron", "GeneratePatronEvent",
+                (GameView view, Patron receiver, Event event) -> {
+                    Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
+                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.desc = "Just a patron for testing";
+                });
+
+        /**
          * Playable units
          */
         events.unit.addEventHandler("Tlatec", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
@@ -76,6 +88,7 @@ public class KingdomMod {
             e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
             e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Swim");
             e.blob.glyphs.set(Glyph.BATTLE);
         });
         events.unit.addEventHandler("Gloop the Adventurer", "GenerateUnitEvent",
@@ -233,7 +246,8 @@ public class KingdomMod {
                     e.blob.desc = "Plants a forest";
                 });
         events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Forest"));
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Forest",
+                        (Tile t) -> t.name.equals("Grassland")));
 
         // Dig Mine
         final String ability_dig_mine = "Dig Mine";
@@ -242,8 +256,8 @@ public class KingdomMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Digs a mine";
                 });
-        events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Mine"));
+        events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.build(view, receiver.wielder, "Mine", (Tile t) -> t.name.equals("Rock")));
 
         // Build Vault
         final String ability_build_vault = "Build Vault";
@@ -252,8 +266,8 @@ public class KingdomMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Builds a vault";
                 });
-        events.ability.addEventHandler(ability_build_vault, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Vault"));
+        events.ability.addEventHandler(ability_build_vault, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.build(view, receiver.wielder, "Vault", (Tile t) -> true));
 
         // Mine Coins
         final String ability_mine_coins = "Mine Coins";
@@ -295,6 +309,21 @@ public class KingdomMod {
                         (Building b) -> b.name.equals("Vault"), () -> {
                             view.game.auctionPoints += 100;
                         }));
+
+        // Swim
+        final String ability_swim = "Swim";
+        events.ability.addEventHandler(ability_swim, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("This unit can swim on water tiles");
+                });
+        events.ability.addEventHandler(ability_swim, "CanUnitMoveEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.CanUnitMoveEvent e = (Events.CanUnitMoveEvent) event;
+                    if (!e.canWalkOnTile && e.tile.name.equals("Water")) {
+                        e.canWalkOnTile = true;
+                    }
+                });
 
         // Make Money
         final String ability_make_money = "Make Money";

@@ -30,15 +30,18 @@ public class AbilityLogic {
         int range = attacker.getAttackRange(view);
         Set<Point> unfiltered = Hexagons.getNeighbors(attacker.getPoint(), range);
         for (Point p : unfiltered) {
-            Optional<Tile> t = view.game.world.getTile(p);
-            if (!t.isPresent()) {
+            Optional<Tile> tile = view.game.world.getTile(p);
+            if (!tile.isPresent()) {
                 continue;
             }
-            if (t.get().unit.isPresent()) {
-                targets.put(p, t.get().unit.get().health);
-                points.add(p);
-            } else if (t.get().building.isPresent()) {
-                targets.put(p, t.get().building.get().health);
+            Tile t = tile.get();
+            if (t.unit.isPresent()) {
+                if (t.unit.get().health.isVulnerable()) {
+                    targets.put(p, t.unit.get().health);
+                    points.add(p);
+                }
+            } else if (t.building.isPresent() && t.building.get().health().isVulnerable()) {
+                targets.put(p, t.building.get().health());
                 points.add(p);
             }
         }
@@ -92,7 +95,7 @@ public class AbilityLogic {
                 continue;
             }
             if (t.get().building.map(criteria).orElse(false)) {
-                targets.put(p, t.get().building.get().health);
+                targets.put(p, t.get().building.get().health());
                 points.add(p);
             }
         }
@@ -107,13 +110,16 @@ public class AbilityLogic {
     /**
      * Ability that spawns a building at the caster's location
      */
-    public static void build(GameView view, Unit caster, String building) {
+    public static void build(GameView view, Unit caster, String building, Function<Tile, Boolean> criteria) {
         Point p = caster.getPoint();
         view.game.world.getTile(p).ifPresent((Tile t) -> {
             if (t.building.isPresent()) {
                 view.logger.log("Cannot place another building here");
-            } else {
+            } else if (criteria.apply(t)) {
                 view.game.generator.building(building, p.x, p.y).spawn(view);
+                view.game.mechanics.turns.unitHasActed(caster);
+            } else {
+                view.logger.log("Invalid tile for this ability");
             }
         });
     }

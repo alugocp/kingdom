@@ -121,7 +121,7 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
                 // Use event handler to check if this Unit can move here
                 Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this, tile);
                 this.handleEvent(view, event);
-                if (!event.possible) {
+                if (!event.possible()) {
                     continue;
                 }
                 targets.add(p);
