@@ -171,7 +171,9 @@ public class Game {
      * Returns the Points where the Player can recruit a new Unit. The Tiles at
      * these Points all have the following properties: 1) Is under the control of
      * the Player in question, 2) Has a glyph associated with it, 3) Is not occupied
-     * by another Unit, 4) The associated glyph has units in its pool
+     * by another Unit, 4) The associated glyph has units in its pool, 5) The Tile
+     * is not an obstacle, 6) If there is a building on the Tile then it is not an
+     * obstacle either
      */
     public Set<Point> getRecruitmentTiles(Player player) {
         // TODO optimize this PLEASE
@@ -180,7 +182,8 @@ public class Game {
             for (int b = 0; b < this.world.getHeight(); b++) {
                 if (this.world.getTile(a, b)
                         .map((Tile t) -> t.leader.isPresent() && t.leader.get() == player && !t.unit.isPresent()
-                                && t.glyph.isPresent() && this.mechanics.pools.remaining(t.glyph.get()) > 0)
+                                && t.glyph.isPresent() && this.mechanics.pools.remaining(t.glyph.get()) > 0
+                                && !t.getObstacle() && !t.building.map((Building b) -> b.getObstacle()).orElse(false))
                         .orElse(false)) {
                     points.add(new Point(a, b));
                 }

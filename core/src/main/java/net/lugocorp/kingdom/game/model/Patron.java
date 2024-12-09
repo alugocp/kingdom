@@ -40,6 +40,9 @@ public class Patron extends Building {
      * specified
      */
     public void addFavor(Player player, int points) {
+        // TODO optimize Patron code by checking for favorite player change here, then
+        // trigger an event to add/remove listeners (no signal boosters if no favorite
+        // player)
         if (!this.favor.containsKey(player)) {
             this.favor.put(player, 0);
         }
