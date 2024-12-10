@@ -76,16 +76,17 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public void eat(Game game) {
         game.mechanics.turns.removeFutureEvents(this, "GetsHungry");
         game.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
-        game.mechanics.turns.addFutureTick("GetsHungry", this, 20, true);
+        game.mechanics.turns.addFutureTick("GetsHungry", this, 20, false);
     }
 
     /**
      * This Unit loses loyalty and may abandon the cause
      */
-    public void loseLoyalty(int points) {
+    public void loseLoyalty(Game g, int points) {
         this.loyalty = Math.max(0, this.loyalty - points);
         if (this.loyalty == 0) {
-
+            g.setLeader(g.world.getTile(this.getPoint()).get(), Optional.empty());
+            this.leader = Optional.empty();
         }
     }
 
@@ -167,7 +168,7 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
         this.x = x;
         this.y = y;
         this.resetModelPosition();
-        this.leader.ifPresent((Player p) -> g.setLeader(destin, p));
+        g.setLeader(destin, this.leader);
         destin.building.ifPresent((Building b) -> b.setTransparency(true));
     }
 
@@ -193,6 +194,7 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public void spawn(GameView view) {
         this.setPosition(view.game, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
+        this.eat(view.game);
     }
 
     /** {@inheritdoc} */

@@ -90,7 +90,6 @@ public class KingdomMod {
         events.patron.addEventHandler("Test Patron", "SpawnEvent", (GameView view, Patron receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.patron.addEventHandler("Test Patron", "TickEvent", (GameView view, Patron receiver, Event event) -> {
-            System.out.println(receiver.getFavoritePlayer().isPresent());
             if (receiver.getFavoritePlayer().isPresent()) {
                 view.game.auctionPoints += 5;
             }

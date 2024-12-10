@@ -52,6 +52,7 @@ public abstract class Modellable {
      * Returns a Point representing this object's position in the World
      */
     public Point getPoint() {
+        // TODO optimize by storing a mutable Point instead
         return new Point(this.x, this.y);
     }
 

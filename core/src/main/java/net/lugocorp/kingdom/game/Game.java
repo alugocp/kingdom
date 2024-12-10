@@ -46,7 +46,7 @@ public class Game {
 
         // Add a default EventHandler so that Units get hungry
         this.events.unit.addDefaultHandler("GetsHungry", (GameView view, Unit receiver, Event event) -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
-        this.events.unit.addDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> receiver.loseLoyalty(1));
+        this.events.unit.addDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> receiver.loseLoyalty(this, 1));
     }
 
     /**
@@ -73,21 +73,39 @@ public class Game {
     }
 
     /**
-     * Sets the leader Player for a given Tile
+     * Calls into the other setLeader()
      */
     public void setLeader(Tile t, Player p) {
-        if (!t.leader.isPresent() || t.leader.get() != p) {
-            if (t.building.isPresent()) {
-                if (t.leader.isPresent()) {
-                    this.playerBuildings.get(t.leader.get()).remove(t.building.get());
+        this.setLeader(t, Optional.of(p));
+    }
+
+    /**
+     * Sets the leader Player for a given Tile
+     */
+    public void setLeader(Tile t, Optional<Player> op) {
+        if (op.isPresent()) {
+            Player p = op.get();
+            if (!t.leader.isPresent() || t.leader.get() != p) {
+                if (t.building.isPresent()) {
+                    if (t.leader.isPresent()) {
+                        this.playerBuildings.get(t.leader.get()).remove(t.building.get());
+                    }
+                    this.playerBuildings.get(p).add(t.building.get());
+                } else {
+                    p.bareTiles++;
                 }
-                this.playerBuildings.get(p).add(t.building.get());
-            } else {
-                p.bareTiles++;
+                p.tiles++;
             }
-            p.tiles++;
+        } else if (t.leader.isPresent()) {
+            Player p = t.leader.get();
+            if (t.building.isPresent()) {
+                this.playerBuildings.get(p).remove(t.building.get());
+            } else {
+                p.bareTiles--;
+            }
+            p.tiles--;
         }
-        t.leader = Optional.of(p);
+        t.leader = op;
     }
 
     /**
