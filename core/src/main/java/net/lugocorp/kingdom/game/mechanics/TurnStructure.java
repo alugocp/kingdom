@@ -13,9 +13,9 @@ import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -83,7 +83,8 @@ public class TurnStructure {
     }
 
     /**
-     * Removes all future Events registered for the given receiver on a single channel
+     * Removes all future Events registered for the given receiver on a single
+     * channel
      */
     public void removeFutureEvents(EventReceiver receiver, String channel) {
         for (FutureTick ft : this.getFutureTicks(receiver, Optional.of(channel))) {

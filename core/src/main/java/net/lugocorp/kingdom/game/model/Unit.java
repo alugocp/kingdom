@@ -85,9 +85,36 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public void loseLoyalty(Game g, int points) {
         this.loyalty = Math.max(0, this.loyalty - points);
         if (this.loyalty == 0) {
+            g.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
             g.setLeader(g.world.getTile(this.getPoint()).get(), Optional.empty());
             this.leader = Optional.empty();
         }
+    }
+
+    /**
+     * Resets this Unit's loyalty
+     */
+    public void resetLoyalty() {
+        this.loyalty = Unit.MAX_LOYALTY;
+    }
+
+    /**
+     * Returns true if this Unit is leaderless and can be picked up by anyone
+     */
+    public boolean isFreeRadical() {
+        return !this.leader.isPresent() && this.loyalty == 0;
+    }
+
+    /**
+     * Recruits this Unit into to a new Player
+     */
+    public void getRecruited(Game game, Player player) {
+        if (!this.isFreeRadical()) {
+            throw new RuntimeException("Cannot recruit another player's unit");
+        }
+        game.mechanics.turns.addFutureTick("HungerStrikes", this, 1, true);
+        game.setLeader(this, player);
+        this.resetLoyalty();
     }
 
     /**
@@ -244,7 +271,13 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
         node.add(new TextNode(view.game.graphics,
                 String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         node.add(new TextNode(view.game.graphics, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
-        node.add(new TextNode(view.game.graphics, String.format("%d turn(s) until hunger strikes", view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry"))));
+        int turnsUntilHungry = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
+        if (turnsUntilHungry < 0) {
+            node.add(new TextNode(view.game.graphics, "This unit is hungry and will lose loyalty until it is fed"));
+        } else {
+            node.add(new TextNode(view.game.graphics,
+                    String.format("%d turn(s) until hunger strikes", turnsUntilHungry)));
+        }
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             ButtonNode move = new ButtonNode(view.game.graphics, "Move",
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {

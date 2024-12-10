@@ -183,6 +183,13 @@ public class InventoryNode implements MenuNode {
     }
 
     /**
+     * Returns true if the given Unit can be recruited using an Item
+     */
+    private boolean canUnitBeRecruitedWithItem(Unit unit) {
+        return unit.isFreeRadical() && !unit.haul.isFull();
+    }
+
+    /**
      * The Unit on the currently open Tile picks up or equips the specified Item
      */
     private void unitTakesItem(int type, Item item) {
@@ -240,8 +247,9 @@ public class InventoryNode implements MenuNode {
         Set<Point> valid = new HashSet<>();
         for (Point p : points) {
             Optional<Tile> tile = this.view.game.world.getTile(p);
-            if (tile.isPresent() && tile.get().unit.isPresent()
-                    && this.canUnitTakeItem(InventoryType.HAUL, tile.get().unit)) {
+            if (tile.isPresent() && tile.get().unit.isPresent() && (this.canUnitTakeItem(InventoryType.HAUL,
+                    tile.get().unit)
+                    || (tile.get().unit.isPresent() && this.canUnitBeRecruitedWithItem(tile.get().unit.get())))) {
                 valid.add(p);
             }
         }
@@ -252,8 +260,13 @@ public class InventoryNode implements MenuNode {
      * Transfers the specified Item to the Unit at the given location
      */
     private void giftItemToUnit(Point p, Item item) {
+        Player leader = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit)
+                .flatMap((Unit u) -> u.leader).get();
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
+        if (unit.isFreeRadical()) {
+            unit.getRecruited(this.view.game, leader);
+        }
         this.view.menu.refresh(false);
     }
 
