@@ -25,6 +25,7 @@ public class ToonShader implements Shader {
     private ShaderProgram program;
     private RenderContext context;
     private Camera camera;
+    private boolean nighttime = false;
     private int u_directionalLight;
     private int u_ambientLight;
     private int u_projViewTrans;
@@ -35,6 +36,7 @@ public class ToonShader implements Shader {
     private int u_diffuseColor;
     private int u_opacity;
     private int u_resolution;
+    private int u_nighttime;
 
     /** {@inheritdoc} */
     @Override
@@ -55,12 +57,20 @@ public class ToonShader implements Shader {
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
         this.u_opacity = this.program.getUniformLocation("u_opacity");
         this.u_resolution = this.program.getUniformLocation("u_resolution");
+        this.u_nighttime = this.program.getUniformLocation("u_nighttime");
     }
 
     /** {@inheritdoc} */
     @Override
     public void dispose() {
         this.program.dispose();
+    }
+
+    /**
+     * Sets whether or not we should render models at night
+     */
+    public void setNighttime(boolean nighttime) {
+        this.nighttime = nighttime;
     }
 
     /** {@inheritdoc} */
@@ -70,6 +80,7 @@ public class ToonShader implements Shader {
         this.context = context;
         this.program.begin();
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
+        this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
     }
 
     /** {@inheritdoc} */

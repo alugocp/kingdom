@@ -183,7 +183,8 @@ public class Game {
                 if (this.world.getTile(a, b)
                         .map((Tile t) -> t.leader.isPresent() && t.leader.get() == player && !t.unit.isPresent()
                                 && t.glyph.isPresent() && this.mechanics.pools.remaining(t.glyph.get()) > 0
-                                && !t.getObstacle() && !t.building.map((Building bldg) -> bldg.getObstacle()).orElse(false))
+                                && !t.getObstacle()
+                                && !t.building.map((Building bldg) -> bldg.getObstacle()).orElse(false))
                         .orElse(false)) {
                     points.add(new Point(a, b));
                 }

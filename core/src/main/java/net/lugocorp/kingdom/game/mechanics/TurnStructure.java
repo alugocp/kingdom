@@ -106,6 +106,7 @@ public class TurnStructure {
     public void iterateTurnPlayer(GameView view) {
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = this.game.comps.get(0);
+            this.startNewTurnGroup();
         } else {
             int index = this.game.comps.indexOf(this.turnPlayer);
             if (index == this.game.comps.size() - 1) {
@@ -117,6 +118,14 @@ public class TurnStructure {
             }
         }
         this.kickOffTurn(view);
+    }
+
+    /**
+     * This function handles logic whenever every player has had a turn
+     */
+    private void startNewTurnGroup() {
+        this.game.mechanics.dayNight.tick();
+        this.game.graphics.getToonShader().setNighttime(this.game.mechanics.dayNight.isNight());
     }
 
     /**

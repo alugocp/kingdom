@@ -10,12 +10,14 @@ uniform mat4 u_projViewTrans;
 uniform vec4 u_diffuseUVTransform;
 uniform mat3 u_normalMatrix;
 uniform float u_opacity;
+uniform float u_nighttime;
 uniform vec3 u_directionalLight;
 uniform vec3 u_ambientLight;
 varying vec3 v_ambientLight;
 varying vec3 v_lightDiffuse;
 varying vec2 v_diffuseUV;
 varying float v_opacity;
+varying float v_nighttime;
 varying vec3 v_normal;
 
 void main() {
@@ -23,6 +25,7 @@ void main() {
     gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
     v_normal = normalize(u_normalMatrix * a_normal);
     v_ambientLight = u_ambientLight;
+    v_nighttime = u_nighttime;
     v_opacity = u_opacity;
 
     // Directional light

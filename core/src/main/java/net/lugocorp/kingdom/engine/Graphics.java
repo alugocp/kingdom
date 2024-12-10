@@ -46,7 +46,22 @@ public class Graphics {
         this.sprites.dispose();
         this.shapes.dispose();
         this.models.dispose();
+        this.outlines.dispose();
         this.fonts.basic.dispose();
+    }
+
+    /**
+     * Returns the ToonShader associated with this object
+     */
+    public ToonShader getToonShader() {
+        return (ToonShader) (((Graphics.BasicShaderProvider) (this.models.getShaderProvider())).shader);
+    }
+
+    /**
+     * Returns the OutlineShader associated with this object
+     */
+    public OutlineShader getOutlineShader() {
+        return (OutlineShader) (((Graphics.BasicShaderProvider) (this.outlines.getShaderProvider())).shader);
     }
 
     /**

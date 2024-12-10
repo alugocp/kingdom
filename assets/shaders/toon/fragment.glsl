@@ -13,6 +13,7 @@ uniform sampler2D u_diffuseTexture;
 uniform vec4 u_diffuseColor;
 uniform vec2 u_resolution;
 varying MED vec2 v_diffuseUV;
+varying float v_nighttime;
 varying vec3 v_lightDiffuse;
 varying vec3 v_ambientLight;
 varying float v_opacity;
@@ -38,6 +39,14 @@ void main() {
             gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         } else {
             gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
+            if (v_nighttime > 0.0) {
+                mat4 darker;
+                darker[0] = vec4(0.8, 0.0, 0.0, 0.0);
+                darker[1] = vec4(0.0, 0.8, 0.0, 0.0);
+                darker[2] = vec4(0.0, 0.0, 0.8, 0.0);
+                darker[3] = vec4(0.0, 0.0, 0.0, 1.0);
+                gl_FragColor = darker * gl_FragColor;
+            }
         }
     }
     gl_FragColor.a *= v_opacity;

@@ -44,7 +44,7 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
-        return new Color(0.8f, 1.0f, 1.0f, 1f);
+        return this.game.mechanics.dayNight.getSkyboxColor();
     }
 
     /** {@inheritdoc} */
