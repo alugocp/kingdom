@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class DayNight {
     private static final int DURATION = 8;
-    private DayNight.State state = DayNight.State.NIGHT;
+    private DayNight.State state = DayNight.State.DAY;
     private int countdown = DayNight.DURATION;
 
     /**

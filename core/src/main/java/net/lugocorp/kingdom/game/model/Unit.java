@@ -28,12 +28,14 @@ import java.util.Set;
  * in-game
  */
 public class Unit extends Modellable implements EventReceiver, MenuSubject {
+    public static final int MAX_LOYALTY = 10;
+    private Optional<Ability> active1 = Optional.empty();
+    private Optional<Ability> active2 = Optional.empty();
+    private int loyalty = Unit.MAX_LOYALTY;
     public final Tags tags = new Tags();
     public final String name;
     public final HitPoints<Unit> health;
     public final UnitGlyphs glyphs = new UnitGlyphs();
-    private Optional<Ability> active1 = Optional.empty();
-    private Optional<Ability> active2 = Optional.empty();
     public Optional<Player> leader = Optional.empty();
     public List<Ability> passives = new ArrayList<>();
     public Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
@@ -65,6 +67,25 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     public void setPassiveAbilities(Generator g, String... passives) {
         for (String p : passives) {
             this.passives.add(g.ability(this, p));
+        }
+    }
+
+    /**
+     * Resets this Unit's hunger
+     */
+    public void eat(Game game) {
+        game.mechanics.turns.removeFutureEvents(this, "GetsHungry");
+        game.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
+        game.mechanics.turns.addFutureTick("GetsHungry", this, 20, true);
+    }
+
+    /**
+     * This Unit loses loyalty and may abandon the cause
+     */
+    public void loseLoyalty(int points) {
+        this.loyalty = Math.max(0, this.loyalty - points);
+        if (this.loyalty == 0) {
+
         }
     }
 
@@ -220,6 +241,8 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
         }
         node.add(new TextNode(view.game.graphics,
                 String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
+        node.add(new TextNode(view.game.graphics, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
+        node.add(new TextNode(view.game.graphics, String.format("%d turn(s) until hunger strikes", view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry"))));
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             ButtonNode move = new ButtonNode(view.game.graphics, "Move",
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {

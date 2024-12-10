@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class EventHandlerBundle<T extends EventReceiver> {
     private final List<EventHandler<T>> empty = new ArrayList<>(0);
     private Map<String, List<EventHandler<T>>> handlers = new HashMap<>();
+    private Map<String, EventHandler<T>> defaults = new HashMap<>();
 
     /**
      * Formats the lookup key used in this.handlers
@@ -43,7 +44,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * EventHandler that listens on the given channel
      */
     public boolean hasEventHandler(String stratifier, String channel) {
-        return this.handlers.containsKey(this.getKey(stratifier, channel));
+        return this.handlers.containsKey(this.getKey(stratifier, channel)) || this.defaults.containsKey(channel);
     }
 
     /**
@@ -58,16 +59,29 @@ public class EventHandlerBundle<T extends EventReceiver> {
     }
 
     /**
+     * Registers a new default EventHandler to some channel on this EventReceiver
+     */
+    public void addDefaultHandler(String channel, EventHandler<T> handler) {
+        this.defaults.put(channel, handler);
+    }
+
+    /**
      * Runs the relevant EventHandler logic for a given name and Event
      */
     public void handle(GameView view, T receiver, Event e) {
         String key = this.getKey(receiver.getStratifier(), e.channel);
-        if (e.panic && !this.handlers.containsKey(key)) {
+        boolean hasHandler = this.handlers.containsKey(key);
+        boolean hasDefault = this.defaults.containsKey(e.channel);
+        if (e.panic && !(hasHandler || hasDefault)) {
             throw new RuntimeException(
                     String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
-        for (EventHandler<T> handler : this.handlers.getOrDefault(key, this.empty)) {
-            handler.handle(view, receiver, e);
+        if (hasHandler) {
+            for (EventHandler<T> handler : this.handlers.get(key)) {
+                handler.handle(view, receiver, e);
+            }
+        } else if (hasDefault) {
+            this.defaults.get(e.channel).handle(view, receiver, e);
         }
     }
 }
