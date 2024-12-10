@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.core;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * This class contains utility functions for writing new Item effects
@@ -23,5 +24,13 @@ public class ItemLogic {
     public static void potion(Event event, int points) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
         e.consumer.health.heal(points);
+    }
+
+    /**
+     * Item that can be consumed to stave off hunger
+     */
+    public static void food(GameView view, Event event) {
+        Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
+        e.consumer.eat(view.game);
     }
 }

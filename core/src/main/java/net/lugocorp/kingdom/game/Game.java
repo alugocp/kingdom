@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.engine.GameGraphics;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
@@ -47,8 +48,13 @@ public class Game {
         // Add a default EventHandler so that Units get hungry
         this.events.unit.addDefaultHandler("GetsHungry", (GameView view, Unit receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
-        this.events.unit.addDefaultHandler("HungerStrikes",
-                (GameView view, Unit receiver, Event event) -> receiver.loseLoyalty(this, 1));
+        this.events.unit.addDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
+            if (receiver.leader.isPresent()) {
+                receiver.loseLoyalty(this, 1);
+            } else {
+                ((Events.RepeatedEvent) event).repeat = false;
+            }
+        });
     }
 
     /**

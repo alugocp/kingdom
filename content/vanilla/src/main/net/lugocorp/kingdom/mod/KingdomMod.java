@@ -604,12 +604,12 @@ public class KingdomMod {
         final String item_apple = "Apple";
         events.item.addEventHandler(item_apple, "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
             Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
-            e.blob.desc = "Consume to heal by 2 hit points";
+            e.blob.desc = "Consume to stave off hunger";
             e.blob.icon = Optional.of("apple");
             e.blob.gold = 1;
         });
         events.item.addEventHandler(item_apple, "ItemConsumedEvent",
-                (GameView view, Item receiver, Event event) -> ItemLogic.potion(event, 2));
+                (GameView view, Item receiver, Event event) -> ItemLogic.food(view, event));
 
         // Health Potion
         final String item_health_potion = "Health Potion";
