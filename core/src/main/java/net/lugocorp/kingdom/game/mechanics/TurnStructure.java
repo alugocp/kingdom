@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.core.Events.TickEvent;
+import net.lugocorp.kingdom.game.core.Events.RepeatedEvent;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.model.Player;
@@ -49,14 +49,14 @@ public class TurnStructure {
     }
 
     /**
-     * Sets up a TickEvent that will trigger on the given EventReceiver in the given
+     * Sets up an Event that will trigger on the given EventReceiver in the given
      * number of turns
      */
-    public void addFutureTick(EventReceiver receiver, int turns, boolean repeat) {
-        if (turns < 1) {
+    public void addFutureTick(String channel, EventReceiver receiver, int interval, boolean repeat) {
+        if (interval < 1) {
             throw new RuntimeException("You cannot set up a tick for the current or any past turns");
         }
-        this.futures.add(new TurnStructure.FutureTick(receiver, this.turn + turns, new TickEvent(turns, repeat)));
+        this.futures.add(new TurnStructure.FutureTick(receiver, channel, this.turn + interval, interval, repeat));
     }
 
     /**
@@ -75,7 +75,7 @@ public class TurnStructure {
     }
 
     /**
-     * Triggers a TickEvent for every FutureTick that has reached its time
+     * Triggers an Event for every FutureTick that has reached its time
      */
     private void checkFutureTicks(GameView view) {
         int a = 0;
@@ -83,9 +83,10 @@ public class TurnStructure {
             FutureTick ft = this.futures.get(a);
             if (ft.turn == this.turn) {
                 this.futures.remove(a);
-                ft.receiver.handleEvent(view, ft.event);
-                if (ft.event.repeat) {
-                    this.addFutureTick(ft.receiver, ft.event.turns, true);
+                RepeatedEvent e = new RepeatedEvent(ft.channel, ft.interval, ft.repeat);
+                ft.receiver.handleEvent(view, e);
+                if (e.repeat) {
+                    this.addFutureTick(ft.channel, ft.receiver, e.interval, true);
                 }
             } else {
                 a++;
@@ -200,12 +201,16 @@ public class TurnStructure {
      */
     private static class FutureTick {
         private final EventReceiver receiver;
-        private final TickEvent event;
+        private final String channel;
+        private final boolean repeat;
+        private final int interval;
         private final int turn;
 
-        private FutureTick(EventReceiver receiver, int turn, TickEvent event) {
+        private FutureTick(EventReceiver receiver, String channel, int turn, int interval, boolean repeat) {
             this.receiver = receiver;
-            this.event = event;
+            this.interval = interval;
+            this.channel = channel;
+            this.repeat = repeat;
             this.turn = turn;
         }
     }

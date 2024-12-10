@@ -88,7 +88,7 @@ public class KingdomMod {
                     e.blob.desc = "Generates auction points if it has a favorite player";
                 });
         events.patron.addEventHandler("Test Patron", "SpawnEvent", (GameView view, Patron receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.patron.addEventHandler("Test Patron", "TickEvent", (GameView view, Patron receiver, Event event) -> {
             System.out.println(receiver.getFavoritePlayer().isPresent());
             if (receiver.getFavoritePlayer().isPresent()) {
@@ -327,7 +327,7 @@ public class KingdomMod {
                     e.blob.desc = String.format("Harvests gold coins from mines every 4 turns");
                 });
         events.ability.addEventHandler(ability_mine_coins, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.ability.addEventHandler(ability_mine_coins, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
                         "Gold Coin", (Building b) -> b.name.equals("Mine")));
@@ -340,7 +340,7 @@ public class KingdomMod {
                     e.blob.desc = String.format("Harvests apples from forests every 4 turns");
                 });
         events.ability.addEventHandler(ability_pick_apples, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.ability.addEventHandler(ability_pick_apples, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder, "Apple",
                         (Building b) -> b.name.equals("Forest")));
@@ -353,7 +353,7 @@ public class KingdomMod {
                     e.blob.desc = String.format("+100 auction points from vaults every 4 turns");
                 });
         events.ability.addEventHandler(ability_shrewd, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.ability.addEventHandler(ability_shrewd, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.doOnBuilding(view, receiver.wielder,
                         (Building b) -> b.name.equals("Vault"), () -> {
@@ -383,7 +383,7 @@ public class KingdomMod {
                     e.blob.desc = String.format("Generates 5 favor with the local patron every 4 turns");
                 });
         events.ability.addEventHandler(ability_worship, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.ability.addEventHandler(ability_worship, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.worship(view, receiver.wielder, 5));
 
@@ -395,7 +395,7 @@ public class KingdomMod {
                     e.blob.desc = String.format("+5 gold from mines every 4 turns");
                 });
         events.ability.addEventHandler(ability_make_money, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick(receiver, 4, true));
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.ability.addEventHandler(ability_make_money, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.doOnBuilding(view, receiver.wielder,
                         (Building b) -> b.name.equals("Mine"), () -> receiver.wielder.leader.ifPresent((Player p) -> {

@@ -93,6 +93,20 @@ public class Events {
     }
 
     /**
+     * Generic repeatable Event with customizable channel name
+     */
+    public static class RepeatedEvent extends Event {
+        public int interval;
+        public boolean repeat;
+
+        public RepeatedEvent(String channel, int interval, boolean repeat) {
+            super(channel, false, false);
+            this.interval = interval;
+            this.repeat = repeat;
+        }
+    }
+
+    /**
      * This event is fired whenever a Unit calculates whether it can move onto some
      * Tile
      */
@@ -239,20 +253,6 @@ public class Events {
         public SpawnEvent(T spawned) {
             super("SpawnEvent");
             this.spawned = spawned;
-        }
-    }
-
-    /**
-     * Triggered when some future turn has been waited for
-     */
-    public static class TickEvent extends Event {
-        public final int turns;
-        public boolean repeat;
-
-        public TickEvent(int turns, boolean repeat) {
-            super("TickEvent", false, false);
-            this.repeat = repeat;
-            this.turns = turns;
         }
     }
 }
