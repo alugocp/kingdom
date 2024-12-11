@@ -82,12 +82,14 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
             throw new RuntimeException("Cannot display unspawned tiles");
         }
         ListNode node = new ListNode();
-        if (this.glyph.isPresent()) {
-            node.add(new TextNode(view.game.graphics, String.format("%s glyph", this.glyph.get())));
-        }
         node.add(new ButtonNode(view.game.graphics, "x", () -> {
             view.menu.close();
         })).add(new TextNode(view.game.graphics, this.name)).add(new TextNode(view.game.graphics, this.desc));
+        if (this.glyph.isPresent()) {
+            node.add(new TextNode(view.game.graphics, String.format("%s glyph", this.glyph.get())));
+        } else {
+            node.add(new TextNode(view.game.graphics, "No glyph on this tile"));
+        }
         node.add(this.items.getMenuContent(view, p));
         this.building.ifPresent((Building b) -> node.add(b.getMenuContent(view, p)));
         this.unit.ifPresent((Unit u) -> node.add(u.getMenuContent(view, p)));

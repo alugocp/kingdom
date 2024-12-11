@@ -12,7 +12,7 @@ import java.util.Optional;
  * Contains the logic to display some vertical menu content
  */
 public class Menu {
-    private static final int MARGIN = 5;
+    private static final int MARGIN = 10;
     private final MenuNode root;
     private final boolean tall;
     private final int width;
@@ -28,7 +28,7 @@ public class Menu {
         this.tall = tall;
         this.x = x;
         this.y = y;
-        root.pack(width);
+        root.pack(width - (Menu.MARGIN * 3));
     }
 
     /**
@@ -68,7 +68,7 @@ public class Menu {
      */
     private int getHeight() {
         int max = Gdx.graphics.getHeight() - this.y;
-        return this.tall ? max : Math.min(max, this.root.getHeight());
+        return this.tall ? max : Math.min(max, this.root.getHeight() + (Menu.MARGIN * 2));
     }
 
     /**

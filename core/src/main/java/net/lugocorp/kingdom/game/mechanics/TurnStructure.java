@@ -169,6 +169,8 @@ public class TurnStructure {
         this.turnPlayer.unitPoints += this.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer.bareTiles,
                 this.turnPlayer.tiles);
         if (this.turnPlayer.isHumanPlayer()) {
+            view.logger.log("It is your turn again");
+
             // Check human Player win/lose state
             if (this.game.hasHumanPlayerLost()) {
                 view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2),

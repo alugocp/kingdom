@@ -73,7 +73,7 @@ public class Graphics {
         public final BitmapFont button = new BitmapFont();
 
         Fonts() {
-            this.button.setColor(Color.TEAL);
+            this.button.setColor(new Color(0.6f, 1f, 1f, 1f));
         }
     }
 

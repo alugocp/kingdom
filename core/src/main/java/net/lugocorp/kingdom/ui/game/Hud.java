@@ -29,6 +29,7 @@ public class Hud {
                     if (this.view.popups.get().isPresent()) {
                         this.view.popups.setDisplay(true);
                     } else {
+                        this.view.logger.log("You have ended your turn");
                         this.view.game.mechanics.turns.iterateTurnPlayer(this.view);
                         this.view.menu.refresh(true);
                     }
@@ -65,15 +66,15 @@ public class Hud {
         // Draw Player stats
         this.view.game.graphics.sprites.begin();
         font.draw(this.view.game.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15,
-                Gdx.graphics.getHeight() - 5);
+                Gdx.graphics.getHeight() - 8);
         font.draw(this.view.game.graphics.sprites,
                 String.format("Unit Points: %d / %d", p.unitPoints, NewUnit.MAX_UNIT_POINTS), 215,
-                Gdx.graphics.getHeight() - 5);
+                Gdx.graphics.getHeight() - 8);
         font.draw(this.view.game.graphics.sprites,
                 String.format("Auction Points: %d / %d", view.game.auctionPoints, ArtifactAuction.MAX_AUCTION_POINTS),
-                415, Gdx.graphics.getHeight() - 5);
+                415, Gdx.graphics.getHeight() - 8);
         font.draw(this.view.game.graphics.sprites, String.format("Auction Chips: %d", p.auctionChips), 615,
-                Gdx.graphics.getHeight() - 5);
+                Gdx.graphics.getHeight() - 8);
         this.view.game.graphics.sprites.end();
 
         // Draw the "Complete Turn" button
