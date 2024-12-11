@@ -9,4 +9,9 @@ public class HeaderNode extends TextNode {
         super(graphics, message);
         this.font = graphics.fonts.header;
     }
+
+    /** {@inheritdoc} */
+    protected int getMargin() {
+        return 5;
+    }
 }

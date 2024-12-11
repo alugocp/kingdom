@@ -20,10 +20,17 @@ public class TextNode implements MenuNode {
         this.lines.add(message);
     }
 
+    /**
+     * Sets the vertical margin for this TextNode
+     */
+    protected int getMargin() {
+        return 2;
+    }
+
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
-        return (int) (this.lines.size() * this.font.getLineHeight());
+        return (int) (this.lines.size() * this.font.getLineHeight()) + (this.getMargin() * 2);
     }
 
     /** {@inheritdoc} */
@@ -64,7 +71,7 @@ public class TextNode implements MenuNode {
     @Override
     public void draw(Graphics graphics, Rect bounds) {
         graphics.sprites.begin();
-        int y = Gdx.graphics.getHeight() - bounds.y;
+        int y = Gdx.graphics.getHeight() - bounds.y - this.getMargin();
         for (int a = 0; a < this.lines.size(); a++) {
             this.font.draw(graphics.sprites, this.lines.get(a), bounds.x, y);
             y -= (int) this.font.getLineHeight();

@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -82,17 +83,16 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
             throw new RuntimeException("Cannot display unspawned tiles");
         }
         ListNode node = new ListNode();
-        node.add(new ButtonNode(view.game.graphics, "x", () -> {
-            view.menu.close();
-        })).add(new TextNode(view.game.graphics, this.name)).add(new TextNode(view.game.graphics, this.desc));
+        node.add(new ButtonNode(view.game.graphics, "x", () -> view.menu.close()));
         if (this.glyph.isPresent()) {
             node.add(new TextNode(view.game.graphics, String.format("%s glyph", this.glyph.get())));
         } else {
             node.add(new TextNode(view.game.graphics, "No glyph on this tile"));
         }
-        node.add(this.items.getMenuContent(view, p));
-        this.building.ifPresent((Building b) -> node.add(b.getMenuContent(view, p)));
-        this.unit.ifPresent((Unit u) -> node.add(u.getMenuContent(view, p)));
+        node.add(new TextNode(view.game.graphics, this.name)).add(new TextNode(view.game.graphics, this.desc))
+                .add(this.items.getMenuContent(view, p));
+        this.building.ifPresent((Building b) -> node.add(new SpacerNode()).add(b.getMenuContent(view, p)));
+        this.unit.ifPresent((Unit u) -> node.add(new SpacerNode()).add(u.getMenuContent(view, p)));
         return node;
     }
 }
