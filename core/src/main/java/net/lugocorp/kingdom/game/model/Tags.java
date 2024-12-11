@@ -6,7 +6,7 @@ import java.util.Optional;
 /**
  * Keeps a collection of mappings between labels and integer values
  */
-class Tags {
+public class Tags {
     private static final String DELIMITER = ":";
     private static final int DEFAULT = 1;
     private final Map<String, Integer> tags = new HashMap<>();

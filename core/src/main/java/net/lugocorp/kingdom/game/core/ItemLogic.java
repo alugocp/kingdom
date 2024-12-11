@@ -31,6 +31,13 @@ public class ItemLogic {
      */
     public static void food(GameView view, Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        e.consumer.eat(view.game);
+        Events.CanEatEvent e1 = new Events.CanEatEvent(e.consumer, e.item);
+        e.consumer.handleEvent(view, e1);
+        if (e1.edible) {
+            e.consumer.eat(view.game);
+        } else {
+            view.logger.log("Item is not edible for this unit");
+            e.consumed = false;
+        }
     }
 }

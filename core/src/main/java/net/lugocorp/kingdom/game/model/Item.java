@@ -9,6 +9,7 @@ import java.util.Optional;
  */
 public class Item implements EventReceiver {
     public final String name;
+    public final Tags tags = new Tags();
     public Optional<String> icon = Optional.empty();
     public Rarity rarity = Rarity.COMMON;
     public String desc = "";

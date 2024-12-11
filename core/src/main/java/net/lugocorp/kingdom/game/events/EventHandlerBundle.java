@@ -61,7 +61,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
     /**
      * Registers a new default EventHandler to some channel on this EventReceiver
      */
-    public void addDefaultHandler(String channel, EventHandler<T> handler) {
+    public void setDefaultHandler(String channel, EventHandler<T> handler) {
         this.defaults.put(channel, handler);
     }
 

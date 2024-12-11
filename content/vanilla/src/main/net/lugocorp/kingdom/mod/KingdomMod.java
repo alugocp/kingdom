@@ -31,6 +31,23 @@ public class KingdomMod {
     public void load(AllEventHandlers events) {
 
         /**
+         * Default handlers
+         */
+        events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
+                Event event) -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
+        events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
+            if (receiver.leader.isPresent()) {
+                receiver.loseLoyalty(view.game, 1);
+            } else {
+                ((Events.RepeatedEvent) event).repeat = false;
+            }
+        });
+        events.unit.setDefaultHandler("CanEatEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.CanEatEvent e = (Events.CanEatEvent) event;
+            e.edible = e.item.tags.has("fruit");
+        });
+
+        /**
          * Tiles
          */
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
@@ -604,6 +621,7 @@ public class KingdomMod {
         final String item_apple = "Apple";
         events.item.addEventHandler(item_apple, "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
             Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+            e.blob.tags.add("fruit");
             e.blob.desc = "Consume to stave off hunger";
             e.blob.icon = Optional.of("apple");
             e.blob.gold = 1;

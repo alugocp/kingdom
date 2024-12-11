@@ -165,6 +165,7 @@ public class Events {
     public static class ItemConsumedEvent extends Event {
         public final Item item;
         public final Unit consumer;
+        public boolean consumed = true;
 
         public ItemConsumedEvent(Item item, Unit consumer) {
             super("ItemConsumedEvent");
@@ -253,6 +254,22 @@ public class Events {
         public SpawnEvent(T spawned) {
             super("SpawnEvent");
             this.spawned = spawned;
+        }
+    }
+
+    /**
+     * Triggered when we need to check if a Unit can eat the given Item to stave off
+     * hunger
+     */
+    public static class CanEatEvent extends Event {
+        public final Unit unit;
+        public final Item item;
+        public boolean edible = false;
+
+        public CanEatEvent(Unit unit, Item item) {
+            super("CanEatEvent");
+            this.unit = unit;
+            this.item = item;
         }
     }
 }
