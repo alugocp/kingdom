@@ -41,6 +41,20 @@ public class GameView implements View {
         this.menu = new TileMenu(this);
     }
 
+    /**
+     * Returns the PerspectiveCamera object
+     */
+    public PerspectiveCamera getCamera() {
+        return this.camera;
+    }
+
+    /**
+     * Returns the Environment object
+     */
+    public Environment getEnvironment() {
+        return this.environment;
+    }
+
     /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
@@ -88,7 +102,6 @@ public class GameView implements View {
         Gdx.gl.glStencilMask(0x00);
         this.game.graphics.models.begin(this.camera);
         this.game.graphics.models.render(this.game.world.getModelInstances(true), this.environment);
-        this.selector.render(this.environment);
         this.selector.render(this.environment);
         this.game.graphics.models.end();
 

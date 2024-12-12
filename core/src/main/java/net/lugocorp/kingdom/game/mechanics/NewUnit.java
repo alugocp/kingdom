@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.menu.ModelNode;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -74,12 +75,17 @@ public class NewUnit {
         ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
                 .add(new ButtonNode(view.game.graphics, "Do not recruit any unit", () -> view.popups.complete()));
+        RowNode previews = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         for (Unit u : options) {
+            // TODO grab the right model for this preview
+            previews.add(new ModelNode(view.getCamera(), view.getEnvironment(), view.game.graphics.loaders.assets,
+                    "crystal"));
             units.add(u.getMenuContent(view, Optional.empty()));
             buttons.add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u)));
         }
+        node.add(previews);
         node.add(units);
         node.add(buttons);
         return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);

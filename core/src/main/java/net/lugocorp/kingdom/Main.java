@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
+import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
@@ -28,11 +29,13 @@ public class Main implements ApplicationListener {
         Gdx.graphics.setResizable(true);
         Gdx.gl.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        PreviewShader preview = new PreviewShader();
         OutlineShader outline = new OutlineShader();
         ToonShader toon = new ToonShader();
+        preview.init();
         outline.init();
         toon.init();
-        this.graphics = new Graphics(toon, outline);
+        this.graphics = new Graphics(toon, outline, preview);
         this.view = new LoadingGameView(this.graphics);
         this.view.start(this::navigate);
     }

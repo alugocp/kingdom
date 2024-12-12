@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.engine;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
+import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,24 +19,28 @@ public class Graphics {
     public final SpriteBatch sprites;
     public final ModelBatch models;
     public final ModelBatch outlines;
+    public final ModelBatch previews;
     public final Fonts fonts;
 
     /**
      * Constructor used for initial use
      */
-    public Graphics(ToonShader toon, OutlineShader outline) {
+    public Graphics(ToonShader toon, OutlineShader outline, PreviewShader preview) {
         this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(new Graphics.BasicShaderProvider(toon)),
-                new ModelBatch(new Graphics.BasicShaderProvider(outline)), new Graphics.Fonts());
+                new ModelBatch(new Graphics.BasicShaderProvider(outline)),
+                new ModelBatch(new Graphics.BasicShaderProvider(preview)), new Graphics.Fonts());
     }
 
     /**
      * Constructor used for subclasses
      */
-    Graphics(ShapeRenderer shapes, SpriteBatch sprites, ModelBatch models, ModelBatch outlines, Fonts fonts) {
+    Graphics(ShapeRenderer shapes, SpriteBatch sprites, ModelBatch models, ModelBatch outlines, ModelBatch previews,
+            Fonts fonts) {
         this.shapes = shapes;
         this.sprites = sprites;
         this.models = models;
         this.outlines = outlines;
+        this.previews = previews;
         this.fonts = fonts;
     }
 
@@ -47,6 +52,7 @@ public class Graphics {
         this.shapes.dispose();
         this.models.dispose();
         this.outlines.dispose();
+        this.previews.dispose();
         this.fonts.basic.dispose();
     }
 
@@ -62,6 +68,13 @@ public class Graphics {
      */
     public OutlineShader getOutlineShader() {
         return (OutlineShader) (((Graphics.BasicShaderProvider) (this.outlines.getShaderProvider())).shader);
+    }
+
+    /**
+     * Returns the PreviewShader associated with this object
+     */
+    public PreviewShader getPreviewShader() {
+        return (PreviewShader) (((Graphics.BasicShaderProvider) (this.previews.getShaderProvider())).shader);
     }
 
     /**

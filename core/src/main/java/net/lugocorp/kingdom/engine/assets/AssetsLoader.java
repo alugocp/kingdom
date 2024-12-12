@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public class AssetsLoader {
     private final Map<String, Float> heights = new HashMap<>();
+    private final Map<String, Float> widths = new HashMap<>();
     private final AssetManager assets;
     private boolean loading = true;
 
@@ -57,17 +58,36 @@ public class AssetsLoader {
     }
 
     /**
+     * Calculates the width and height of the given model
+     */
+    private void calculateDimensions(String name) {
+        Model model = assets.get(String.format("%s.g3db", name), Model.class);
+        BoundingBox box = new BoundingBox();
+        model.calculateBoundingBox(box);
+        this.heights.put(name, box.getHeight());
+        this.widths.put(name, box.getWidth());
+    }
+
+    /**
      * Returns the height of a given model by its name (calculates the height if
      * necessary)
      */
     public float getModelHeight(String name) {
         if (!this.heights.containsKey(name)) {
-            Model model = assets.get(String.format("%s.g3db", name), Model.class);
-            BoundingBox box = new BoundingBox();
-            model.calculateBoundingBox(box);
-            this.heights.put(name, box.getHeight());
+            this.calculateDimensions(name);
         }
         return this.heights.get(name);
+    }
+
+    /**
+     * Returns the width of a given model by its name (calculates the width if
+     * necessary)
+     */
+    public float getModelWidth(String name) {
+        if (!this.widths.containsKey(name)) {
+            this.calculateDimensions(name);
+        }
+        return this.widths.get(name);
     }
 
     /**
