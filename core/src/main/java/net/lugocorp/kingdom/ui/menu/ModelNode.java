@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.assets.AssetsLoader;
-import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.Gdx;
@@ -46,13 +45,14 @@ public class ModelNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(Graphics graphics, Rect bounds) {
-        int y = Gdx.graphics.getHeight() - bounds.y - ModelNode.MARGIN - 1;
         graphics.previews.begin(this.camera);
         Matrix4 proj = new Matrix4();
-        // proj.setScale(this.scale, this.scale, this.scale);
-        proj.setTranslation(Coords.grid.vector(0, 1));
-        // TODO set the right scale and translation for this model and make sure it is
-        // rendered after menu shapes
+        float halfh = Gdx.graphics.getHeight() / 2f;
+        float halfw = Gdx.graphics.getWidth() / 2f;
+        float scale = (bounds.w - (ModelNode.MARGIN * 2)) / (halfw * this.modelWidth);
+        proj.setTranslation((bounds.x + (bounds.w * 0.5f) - halfw) / halfw,
+                (-bounds.y + (bounds.h * 0.75f) - halfh) / halfh, 0);
+        proj.scale(scale, scale, scale);
         graphics.getPreviewShader().setProjViewMatrix(proj);
         graphics.previews.render(this.model, this.environment);
         graphics.previews.end();

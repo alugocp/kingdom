@@ -79,9 +79,8 @@ public class NewUnit {
         RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         for (Unit u : options) {
-            // TODO grab the right model for this preview
             previews.add(new ModelNode(view.getCamera(), view.getEnvironment(), view.game.graphics.loaders.assets,
-                    "crystal"));
+                    u.getModelName()));
             units.add(u.getMenuContent(view, Optional.empty()));
             buttons.add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u)));
         }

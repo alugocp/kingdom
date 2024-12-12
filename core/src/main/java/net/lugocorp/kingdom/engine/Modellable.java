@@ -13,7 +13,7 @@ import java.util.Optional;
  * Represents any object that can have an associated in-game model
  */
 public abstract class Modellable {
-    private float h = 0f;
+    private String modelName;
     protected Optional<ModelInstance> model = Optional.empty();
     protected int x;
     protected int y;
@@ -57,10 +57,10 @@ public abstract class Modellable {
     }
 
     /**
-     * Gets the current y position (in grid space)
+     * Returns the name associated with the current model
      */
-    public float getModelHeight() {
-        return this.h;
+    public String getModelName() {
+        return this.modelName;
     }
 
     /**
@@ -79,7 +79,7 @@ public abstract class Modellable {
         for (Material m : model.materials) {
             m.set(new BlendingAttribute(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 1.0f));
         }
-        this.h = assets.getModelHeight(name);
+        this.modelName = name;
         this.model = Optional.of(model);
         this.resetModelPosition();
     }
