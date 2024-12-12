@@ -35,8 +35,7 @@ public class NewUnit {
      * Returns the Menu to handle new Unit placement
      */
     public Menu getNewUnitMenu(GameView view) {
-        ListNode node = new ListNode()
-                .add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)));
+        ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)));
         node.add(new HeaderNode(view.graphics, "Recruit New Unit"))
                 .add(new TextNode(view.graphics, "Select a tile to recruit your new unit?"))
                 .add(new RowNode().add(new ButtonNode(view.graphics, "Yes", () -> {

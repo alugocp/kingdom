@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.engine.GameGraphics;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.core.Events.RepeatedEvent;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;

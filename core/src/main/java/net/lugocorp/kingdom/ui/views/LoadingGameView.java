@@ -40,7 +40,6 @@ public class LoadingGameView implements View {
         this.sprites = new SpritesLoader();
         this.sprites.loadAndRegister();
         this.assets = new AssetsLoader(new AssetManager());
-        this.assets.load();
 
         // TODO move this to another loading screen
         ModLoader mods = new ModLoader();
@@ -58,19 +57,18 @@ public class LoadingGameView implements View {
     /** {@inheritdoc} */
     @Override
     public void render() {
-        this.assets.doOnLoad(() -> {
-            // TODO clean up the dependencies between these classes and make sure bad
-            // initialization state is impossible
-            GameGraphics graphics = new GameGraphics(this.graphics, this.assets, this.sprites);
-            Game game = new Game(graphics, this.events,
-                    new World(10, 5));
-            GameView view = new GameView(game, graphics);
-            game.generator = new Generator(view);
-            game.mechanics.auction.init(game);
-            game.mechanics.pools.init(game);
-            new WorldGenerator().generateWorld(view);
-            this.navigate.accept(view);
-        });
+        // this.assets.doOnLoad(() -> {
+        // TODO clean up the dependencies between these classes and make sure bad
+        // initialization state is impossible
+        GameGraphics graphics = new GameGraphics(this.graphics, this.assets, this.sprites);
+        Game game = new Game(graphics, this.events, new World(10, 5));
+        GameView view = new GameView(game, graphics);
+        game.generator = new Generator(view);
+        game.mechanics.auction.init(game);
+        game.mechanics.pools.init(game);
+        new WorldGenerator().generateWorld(view);
+        this.navigate.accept(view);
+        // });
     }
 
     /** {@inheritdoc} */

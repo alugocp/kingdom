@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.engine.GameGraphics;
+import net.lugocorp.kingdom.game.Game;
 
 /**
  * This class bundles game mechanics classes for easy access

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.engine.Modellable;
+import net.lugocorp.kingdom.engine.DynamicModellable;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * Some structure that can be built on top of a Tile to modify its properties
  */
-public class Building extends Modellable implements EventReceiver, MenuSubject {
+public class Building extends DynamicModellable implements EventReceiver, MenuSubject {
     private boolean obstacle = false;
     protected HitPoints<Building> health = null;
     public final Tags tags = new Tags();
@@ -77,8 +77,9 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
         }
     }
 
-    /** {@inheritdoc} */
-    @Override
+    /**
+     * Spawns this loaded object into the World
+     */
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
@@ -125,15 +126,13 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
         if (leader.isPresent()) {
             node.add(new TextNode(view.graphics, String.format("Alignment: %s", leader.get().name)));
         }
-        node.add(new TextNode(view.graphics,
-                String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
+        node.add(new TextNode(view.graphics, String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         if (this.items.isPresent()) {
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
                 node.add(new TextNode(view.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
                 node.add(this.items.get().getMenuContent(view, p));
             } else {
-                node.add(new TextNode(view.graphics,
-                        String.format("Can store %d items", this.items.get().getMax())));
+                node.add(new TextNode(view.graphics, String.format("Can store %d items", this.items.get().getMax())));
             }
         }
         return node;

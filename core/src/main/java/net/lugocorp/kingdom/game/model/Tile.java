@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.engine.Modellable;
+import net.lugocorp.kingdom.engine.DynamicModellable;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -20,7 +20,7 @@ import java.util.Optional;
  * Represents a single hexagon in the game world and its corresponding
  * properties
  */
-public class Tile extends Modellable implements EventReceiver, MenuSubject {
+public class Tile extends DynamicModellable implements EventReceiver, MenuSubject {
     private boolean obstacle = false;
     public final String name;
     public final Inventory items = new Inventory(InventoryType.FREE, 4);
@@ -63,8 +63,9 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
         return this.name;
     }
 
-    /** {@inheritdoc} */
-    @Override
+    /**
+     * Spawns this loaded object into the World
+     */
     public void spawn(GameView view) {
         view.game.world.setTile(this, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Tile>(this));

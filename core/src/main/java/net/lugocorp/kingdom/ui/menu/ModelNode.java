@@ -1,12 +1,12 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.engine.assets.AssetsLoader;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 
 /**
@@ -14,15 +14,15 @@ import com.badlogic.gdx.math.Matrix4;
  */
 public class ModelNode implements MenuNode {
     private static int MARGIN = 10;
-    private PerspectiveCamera camera;
-    private Environment environment;
-    private final ModelInstance model;
+    private final Modellable model = new Modellable();
     private final float modelHeight;
     private final float modelWidth;
+    private PerspectiveCamera camera;
+    private Environment environment;
     private float scale = 1f;
 
     public ModelNode(PerspectiveCamera camera, Environment environment, AssetsLoader assets, String name) {
-        this.model = assets.createModelInstance(name);
+        this.model.setModelInstance(assets, name);
         this.modelHeight = assets.getModelHeight(name);
         this.modelWidth = assets.getModelWidth(name);
         this.environment = environment;
@@ -54,7 +54,7 @@ public class ModelNode implements MenuNode {
                 (-bounds.y + (bounds.h * 0.75f) - halfh) / halfh, 0);
         proj.scale(scale, scale, scale);
         graphics.getPreviewShader().setProjViewMatrix(proj);
-        graphics.previews.render(this.model, this.environment);
+        this.model.render(graphics.previews, this.environment);
         graphics.previews.end();
     }
 

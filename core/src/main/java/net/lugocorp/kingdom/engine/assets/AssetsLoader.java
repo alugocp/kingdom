@@ -5,67 +5,54 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Wraps the logic for loading 3D model assets into the game
  */
 public class AssetsLoader {
-    private final Map<String, Float> heights = new HashMap<>();
-    private final Map<String, Float> widths = new HashMap<>();
+    private final Map<String, AssetsLoader.ModelBounds> bounds = new HashMap<>();
     private final AssetManager assets;
-    private boolean loading = true;
 
     public AssetsLoader(AssetManager assets) {
         this.assets = assets;
     }
 
     /**
-     * Runs the given code when all our assets are loaded
+     * Returns the filename for the given 3D model asset
      */
-    public void doOnLoad(Runnable lambda) {
-        if (this.loading && this.assets.update()) {
-            this.loading = false;
-            lambda.run();
-        }
-    }
-
-    /**
-     * Loads all the model assets to be used in the game
-     */
-    public void load() {
-        this.assets.load("grass.g3db", Model.class);
-        this.assets.load("rock.g3db", Model.class);
-        this.assets.load("crystal.g3db", Model.class);
-        this.assets.load("mine.g3db", Model.class);
-        this.assets.load("selector.g3db", Model.class);
-        this.assets.load("vault.g3db", Model.class);
-        this.assets.load("forest.g3db", Model.class);
-        this.assets.load("axolotl.g3db", Model.class);
-        this.assets.load("frog-gnome.g3db", Model.class);
-        this.assets.load("blob.g3db", Model.class);
-        this.assets.load("water.g3db", Model.class);
-        this.assets.load("druid.g3db", Model.class);
-        this.assets.load("placeholder1.g3db", Model.class);
-        this.assets.load("placeholder2.g3db", Model.class);
+    private String getFilename(String name) {
+        return String.format("%s.g3db", name);
     }
 
     /**
      * Creates a new ModelInstance for the Model with the given name
      */
-    public ModelInstance createModelInstance(String name) {
-        Model model = assets.get(String.format("%s.g3db", name), Model.class);
-        return new ModelInstance(model);
+    public Optional<ModelInstance> createModelInstance(String name) {
+        this.assets.update();
+        String filename = this.getFilename(name);
+        Model model = this.assets.get(filename, false);
+        if (model == null) {
+            if (!this.assets.contains(filename, Model.class)) {
+                this.assets.load(filename, Model.class);
+            }
+            return Optional.empty();
+        }
+        return Optional.of(new ModelInstance(model));
     }
 
     /**
      * Calculates the width and height of the given model
      */
-    private void calculateDimensions(String name) {
-        Model model = assets.get(String.format("%s.g3db", name), Model.class);
+    private boolean calculateDimensions(String name) {
+        Model model = this.assets.get(this.getFilename(name), false);
+        if (model == null) {
+            return false;
+        }
         BoundingBox box = new BoundingBox();
         model.calculateBoundingBox(box);
-        this.heights.put(name, box.getHeight());
-        this.widths.put(name, box.getDepth());
+        this.bounds.put(name, new AssetsLoader.ModelBounds(box.getDepth(), box.getHeight(), 0f));
+        return true;
     }
 
     /**
@@ -73,10 +60,10 @@ public class AssetsLoader {
      * necessary)
      */
     public float getModelHeight(String name) {
-        if (!this.heights.containsKey(name)) {
-            this.calculateDimensions(name);
+        if (!this.bounds.containsKey(name) && !this.calculateDimensions(name)) {
+            return 1f;
         }
-        return this.heights.get(name);
+        return this.bounds.get(name).y;
     }
 
     /**
@@ -84,10 +71,10 @@ public class AssetsLoader {
      * necessary)
      */
     public float getModelWidth(String name) {
-        if (!this.widths.containsKey(name)) {
-            this.calculateDimensions(name);
+        if (!this.bounds.containsKey(name) && !this.calculateDimensions(name)) {
+            return 1f;
         }
-        return this.widths.get(name);
+        return this.bounds.get(name).x;
     }
 
     /**
@@ -95,5 +82,20 @@ public class AssetsLoader {
      */
     public void dispose() {
         this.assets.dispose();
+    }
+
+    /**
+     * This nested class contains model bounds data for loaded models
+     */
+    private static class ModelBounds {
+        private final float x;
+        private final float y;
+        private final float z;
+
+        private ModelBounds(float x, float y, float z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
     }
 }

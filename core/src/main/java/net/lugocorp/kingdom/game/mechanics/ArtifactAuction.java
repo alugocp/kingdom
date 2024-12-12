@@ -83,8 +83,7 @@ public class ArtifactAuction {
      */
     public Menu getAuctionBuyInMenu(GameView view) {
         int price = this.getBuyInCost(view.game.human.gold);
-        ListNode node = new ListNode()
-                .add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)));
+        ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)));
         if (this.artifacts.size() > 0) {
             node.add(new HeaderNode(view.graphics, "Artifact Auction"))
                     .add(new TextNode(view.graphics,

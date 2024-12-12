@@ -1,12 +1,11 @@
 package net.lugocorp.kingdom.ui.game;
+import net.lugocorp.kingdom.engine.DynamicModellable;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -15,15 +14,18 @@ import java.util.function.Consumer;
  * This class contains logic for Tile selection by the human Player
  */
 public class TileSelector {
-    private final ModelInstance highlight;
+    private final TileSelector.HighlightModellable highlight = new TileSelector.HighlightModellable();
     private final GameView view;
     private Optional<TileSelection> selection = Optional.empty();
     private Optional<Point> hovered = Optional.empty();
 
     public TileSelector(GameView view) {
-        this.highlight = view.graphics.loaders.assets.createModelInstance("selector");
-        this.highlight.materials.first().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+        // this.highlight =
+        // view.graphics.loaders.assets.createModelInstance("selector");
+        // this.highlight.materials.first().set(new BlendingAttribute(GL20.GL_SRC_ALPHA,
+        // GL20.GL_ONE_MINUS_SRC_ALPHA));
         this.view = view;
+        this.highlight.setModelInstance(view.graphics.loaders.assets, "selector");
     }
 
     /**
@@ -90,15 +92,13 @@ public class TileSelector {
     public void render(Environment environment) {
         if (this.selection.isPresent()) {
             for (Point p : this.selection.get().points) {
-                this.highlight.transform.setTranslation(
-                        Coords.grid.vector(p.x, p.y).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.01f, 0f)));
-                this.view.graphics.models.render(this.highlight, environment);
+                this.highlight.move(p);
+                this.highlight.render(this.view.graphics.models, environment);
             }
         }
         if (this.hovered.isPresent()) {
-            this.highlight.transform.setTranslation(Coords.grid.vector(this.hovered.get().x, this.hovered.get().y)
-                    .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.02f, 0f)));
-            this.view.graphics.models.render(this.highlight, environment);
+            this.highlight.move(this.hovered.get());
+            this.highlight.render(this.view.graphics.models, environment);
         }
     }
 
@@ -113,6 +113,29 @@ public class TileSelector {
         private TileSelection(Set<Point> points, Consumer<Point> action) {
             this.points = points;
             this.action = action;
+        }
+    }
+
+    /**
+     * This nested class extends Modellable so we can model Tile highlights
+     */
+    private static class HighlightModellable extends DynamicModellable {
+        private HighlightModellable() {
+            super(0, 0);
+        }
+
+        @Override
+        public Vector3 getPositionVector() {
+            return Coords.grid.vector(this.getX(), this.getY()).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.01f, 0f));
+        }
+
+        /**
+         * Changes the in-world position of this highlight object
+         */
+        public void move(Point p) {
+            this.x = p.x;
+            this.y = p.y;
+            this.resetModelPosition();
         }
     }
 }

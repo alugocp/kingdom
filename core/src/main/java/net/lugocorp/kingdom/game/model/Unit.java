@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.engine.Modellable;
+import net.lugocorp.kingdom.engine.DynamicModellable;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.core.Events;
@@ -27,7 +27,7 @@ import java.util.Set;
  * A single controllable entity (or NPC) that the player can interact with
  * in-game
  */
-public class Unit extends Modellable implements EventReceiver, MenuSubject {
+public class Unit extends DynamicModellable implements EventReceiver, MenuSubject {
     public static final int MAX_LOYALTY = 10;
     private Optional<Ability> active1 = Optional.empty();
     private Optional<Ability> active2 = Optional.empty();
@@ -216,8 +216,9 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
         this.setPosition(g, p.x, p.y);
     }
 
-    /** {@inheritdoc} */
-    @Override
+    /**
+     * Spawns this loaded object into the World
+     */
     public void spawn(GameView view) {
         this.setPosition(view.game, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
@@ -268,15 +269,13 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.graphics, String.format("Alignment: %s", this.leader.get().name)));
         }
-        node.add(new TextNode(view.graphics,
-                String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
+        node.add(new TextNode(view.graphics, String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         node.add(new TextNode(view.graphics, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
         int turnsUntilHungry = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
         if (turnsUntilHungry < 0) {
             node.add(new TextNode(view.graphics, "This unit is hungry and will lose loyalty until it is fed"));
         } else {
-            node.add(new TextNode(view.graphics,
-                    String.format("%d turn(s) until hunger strikes", turnsUntilHungry)));
+            node.add(new TextNode(view.graphics, String.format("%d turn(s) until hunger strikes", turnsUntilHungry)));
         }
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             if ((this.active1.isPresent() || this.active2.isPresent())

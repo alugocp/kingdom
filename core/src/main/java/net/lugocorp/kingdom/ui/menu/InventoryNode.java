@@ -145,8 +145,7 @@ public class InventoryNode implements MenuNode {
                 }
                 if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
                         && this.canBuildingTakeItem()) {
-                    root.add(new ButtonNode(this.view.graphics, "Put in vault",
-                            () -> this.buildingTakesItem(item)));
+                    root.add(new ButtonNode(this.view.graphics, "Put in vault", () -> this.buildingTakesItem(item)));
                 }
             }
         }
