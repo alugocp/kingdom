@@ -263,27 +263,27 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name))
-                .add(new TextNode(view.game.graphics, this.desc));
+        ListNode node = new ListNode().add(new HeaderNode(view.graphics, this.name))
+                .add(new TextNode(view.graphics, this.desc));
         if (this.leader.isPresent()) {
-            node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", this.leader.get().name)));
+            node.add(new TextNode(view.graphics, String.format("Alignment: %s", this.leader.get().name)));
         }
-        node.add(new TextNode(view.game.graphics,
+        node.add(new TextNode(view.graphics,
                 String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
-        node.add(new TextNode(view.game.graphics, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
+        node.add(new TextNode(view.graphics, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
         int turnsUntilHungry = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
         if (turnsUntilHungry < 0) {
-            node.add(new TextNode(view.game.graphics, "This unit is hungry and will lose loyalty until it is fed"));
+            node.add(new TextNode(view.graphics, "This unit is hungry and will lose loyalty until it is fed"));
         } else {
-            node.add(new TextNode(view.game.graphics,
+            node.add(new TextNode(view.graphics,
                     String.format("%d turn(s) until hunger strikes", turnsUntilHungry)));
         }
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             if ((this.active1.isPresent() || this.active2.isPresent())
                     && view.game.mechanics.turns.hasUnitActed(this)) {
-                node.add(new TextNode(view.game.graphics, "This unit has already acted this turn"));
+                node.add(new TextNode(view.graphics, "This unit has already acted this turn"));
             }
-            node.add(new ActionNode(view.game.graphics, "Move", "", !view.game.mechanics.turns.hasUnitActed(this),
+            node.add(new ActionNode(view.graphics, "Move", "", !view.game.mechanics.turns.hasUnitActed(this),
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
                         this.move(view.game, p1);
                         view.game.mechanics.turns.unitHasActed(this);
@@ -295,13 +295,13 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
             node.add(a.getMenuContent(view, p));
         }
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-            node.add(new TextNode(view.game.graphics, "Equipped Items"));
+            node.add(new TextNode(view.graphics, "Equipped Items"));
             node.add(this.equipped.getMenuContent(view, p));
-            node.add(new TextNode(view.game.graphics, "Hauled Items"));
+            node.add(new TextNode(view.graphics, "Hauled Items"));
             node.add(this.haul.getMenuContent(view, p));
         } else {
-            node.add(new TextNode(view.game.graphics, String.format("Can equip %d items", this.equipped.getMax())));
-            node.add(new TextNode(view.game.graphics, String.format("Can haul %d items", this.haul.getMax())));
+            node.add(new TextNode(view.graphics, String.format("Can equip %d items", this.equipped.getMax())));
+            node.add(new TextNode(view.graphics, String.format("Can haul %d items", this.haul.getMax())));
         }
         return node;
     }

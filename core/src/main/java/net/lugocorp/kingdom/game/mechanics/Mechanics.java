@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.engine.GameGraphics;
 
 /**
  * This class bundles game mechanics classes for easy access
@@ -11,7 +12,7 @@ public class Mechanics {
     public final NewUnit newUnits = new NewUnit();
     public final TurnStructure turns;
 
-    public Mechanics(Game game) {
-        this.turns = new TurnStructure(game);
+    public Mechanics(Game game, GameGraphics graphics) {
+        this.turns = new TurnStructure(game, graphics);
     }
 }

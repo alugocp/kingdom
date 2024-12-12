@@ -114,19 +114,19 @@ public class Patron extends Building {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         Optional<Player> favorite = this.getFavoritePlayer();
-        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name))
-                .add(new TextNode(view.game.graphics, this.desc))
-                .add(new TextNode(view.game.graphics, String.format("Threshold: %d favor", this.threshold)));
+        ListNode node = new ListNode().add(new HeaderNode(view.graphics, this.name))
+                .add(new TextNode(view.graphics, this.desc))
+                .add(new TextNode(view.graphics, String.format("Threshold: %d favor", this.threshold)));
         if (this.favor.size() > 0) {
             for (Player k : this.favor.keySet()) {
                 String label = String.format("%s: %d", k.name, this.favor.get(k));
                 if (favorite.map((Player f) -> k == f).orElse(false)) {
                     label += " (FAVORITE)";
                 }
-                node.add(new TextNode(view.game.graphics, label));
+                node.add(new TextNode(view.graphics, label));
             }
         } else {
-            node.add(new TextNode(view.game.graphics, "No players have gained favor with this patron yet"));
+            node.add(new TextNode(view.graphics, "No players have gained favor with this patron yet"));
         }
         return node;
     }

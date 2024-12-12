@@ -61,9 +61,10 @@ public class LoadingGameView implements View {
         this.assets.doOnLoad(() -> {
             // TODO clean up the dependencies between these classes and make sure bad
             // initialization state is impossible
-            Game game = new Game(new GameGraphics(this.graphics, this.assets, this.sprites), this.events,
+            GameGraphics graphics = new GameGraphics(this.graphics, this.assets, this.sprites);
+            Game game = new Game(graphics, this.events,
                     new World(10, 5));
-            GameView view = new GameView(game);
+            GameView view = new GameView(game, graphics);
             game.generator = new Generator(view);
             game.mechanics.auction.init(game);
             game.mechanics.pools.init(game);

@@ -52,15 +52,15 @@ public class KingdomMod {
          */
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "grass");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "grass");
         });
         events.tile.addEventHandler("Rock", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "rock");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "rock");
         });
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "water");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "water");
             e.blob.setObstacle(true);
         });
 
@@ -70,26 +70,26 @@ public class KingdomMod {
         events.building.addEventHandler("Mine", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "mine");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "mine");
                     e.blob.desc = "Mines provide valuables like gold coins";
                 });
         events.building.addEventHandler("Vault", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "vault");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "vault");
                     e.blob.desc = "Vaults can store excess items and be used in auctions";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                 });
         events.building.addEventHandler("Forest", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "forest");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "forest");
                     e.blob.desc = "Don't miss the forest for the trees";
                 });
         events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder2");
                     e.blob.desc = "An immovable object";
                     e.blob.health().invulnerable();
                     e.blob.setObstacle(true);
@@ -101,7 +101,7 @@ public class KingdomMod {
         events.patron.addEventHandler("Test Patron", "GeneratePatronEvent",
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder1");
                     e.blob.desc = "Generates auction points if it has a favorite player";
                 });
         events.patron.addEventHandler("Test Patron", "SpawnEvent", (GameView view, Patron receiver,
@@ -117,7 +117,7 @@ public class KingdomMod {
          */
         events.unit.addEventHandler("Tlatec", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "axolotl");
             e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Swim");
@@ -126,7 +126,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Gloop the Adventurer", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder1");
                     e.blob.desc = "This Plasmoid adventurer is eager to prove himself in the dungeons";
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.TRAVEL);
@@ -134,7 +134,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Harpy Courrier", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder1");
                     e.blob.desc = "This Harpy is a mail man";
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
                     e.blob.glyphs.set(Glyph.TRAVEL);
@@ -142,7 +142,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "This Raksha speaks to the stones";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder2");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
             e.blob.glyphs.set(Glyph.MINING);
@@ -150,7 +150,7 @@ public class KingdomMod {
         events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A mysterious druid who rarely speaks";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "druid");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "druid");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
@@ -158,7 +158,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Frog Gnome", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "Just a little gnome and his frog";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "frog-gnome");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "frog-gnome");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Heal"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
             e.blob.glyphs.set(Glyph.HEALING, Glyph.TRAVEL);
@@ -167,7 +167,7 @@ public class KingdomMod {
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "This Goblin loves his pickaxe";
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder1");
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
                     e.blob.glyphs.set(Glyph.MINING);
@@ -176,7 +176,7 @@ public class KingdomMod {
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "A very pointy golem";
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder1");
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Slap"));
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
                     e.blob.glyphs.set(Glyph.MINING);
@@ -184,7 +184,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Satyr", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "He makes terrariums :)";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder1");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE, Glyph.TRADE);
@@ -192,7 +192,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Frog Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A Frog-man that plants trees!";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder2");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
@@ -201,7 +201,7 @@ public class KingdomMod {
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "He has a green thumb";
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder2");
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
                     e.blob.glyphs.set(Glyph.NATURE);
@@ -210,7 +210,7 @@ public class KingdomMod {
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "A younger Crocodile-person";
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder1");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder1");
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
                     e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
                     e.blob.glyphs.set(Glyph.NATURE);
@@ -219,7 +219,7 @@ public class KingdomMod {
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "He likes working with clay";
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder2");
                     e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money");
                     e.blob.glyphs.set(Glyph.TRADE);
@@ -228,7 +228,7 @@ public class KingdomMod {
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "He works with patrons";
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder2");
                     e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Worship");
                     e.blob.glyphs.set(Glyph.WORSHIP);
@@ -236,7 +236,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Bat Person", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "He works with patrons";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "placeholder2");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "placeholder2");
             e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Worship");
             e.blob.glyphs.set(Glyph.WORSHIP);
@@ -245,7 +245,7 @@ public class KingdomMod {
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "He works with patrons";
-                    e.blob.setModelInstance(view.game.graphics.loaders.assets, "axolotl");
+                    e.blob.setModelInstance(view.graphics.loaders.assets, "axolotl");
                     e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Worship");
                     e.blob.glyphs.set(Glyph.WORSHIP);
@@ -256,7 +256,7 @@ public class KingdomMod {
          */
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "crystal");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "crystal");
             e.blob.desc = "Mysterious floating sentient crystal being";
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
@@ -265,7 +265,7 @@ public class KingdomMod {
         events.unit.addEventHandler("Blob", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A classic slime enemy";
-            e.blob.setModelInstance(view.game.graphics.loaders.assets, "blob");
+            e.blob.setModelInstance(view.graphics.loaders.assets, "blob");
             e.blob.playable = false;
         });
 

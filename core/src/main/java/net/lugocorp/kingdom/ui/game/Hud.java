@@ -25,7 +25,7 @@ public class Hud {
     public Hud(GameView view) {
         this.view = view;
         this.turnMenu = new Menu(Gdx.graphics.getWidth() - Hud.BUTTON_WIDTH, Hud.HEIGHT, Hud.BUTTON_WIDTH, false,
-                new ListNode().add(new ButtonNode(this.view.game.graphics, "Complete Turn", () -> {
+                new ListNode().add(new ButtonNode(this.view.graphics, "Complete Turn", () -> {
                     if (this.view.popups.get().isPresent()) {
                         this.view.popups.setDisplay(true);
                     } else {
@@ -53,33 +53,33 @@ public class Hud {
      * Draws the HUD UI
      */
     public void render() {
-        BitmapFont font = this.view.game.graphics.fonts.basic;
+        BitmapFont font = this.view.graphics.fonts.basic;
         Player p = this.view.game.human;
 
         // Background
         Rect bg = Coords.screen.flip(0, 0, Gdx.graphics.getWidth(), Hud.HEIGHT);
-        this.view.game.graphics.shapes.begin(ShapeType.Filled);
-        this.view.game.graphics.shapes.setColor(Color.BLACK);
-        this.view.game.graphics.shapes.rect(bg.x, bg.y, bg.w, bg.h);
-        this.view.game.graphics.shapes.end();
+        this.view.graphics.shapes.begin(ShapeType.Filled);
+        this.view.graphics.shapes.setColor(Color.BLACK);
+        this.view.graphics.shapes.rect(bg.x, bg.y, bg.w, bg.h);
+        this.view.graphics.shapes.end();
 
         // Draw Player stats
-        this.view.game.graphics.sprites.begin();
-        font.draw(this.view.game.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15,
+        this.view.graphics.sprites.begin();
+        font.draw(this.view.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15,
                 Gdx.graphics.getHeight() - 8);
-        font.draw(this.view.game.graphics.sprites,
+        font.draw(this.view.graphics.sprites,
                 String.format("Unit Points: %d / %d", p.unitPoints, NewUnit.MAX_UNIT_POINTS), 215,
                 Gdx.graphics.getHeight() - 8);
-        font.draw(this.view.game.graphics.sprites,
+        font.draw(this.view.graphics.sprites,
                 String.format("Auction Points: %d / %d", view.game.auctionPoints, ArtifactAuction.MAX_AUCTION_POINTS),
                 415, Gdx.graphics.getHeight() - 8);
-        font.draw(this.view.game.graphics.sprites, String.format("Auction Chips: %d", p.auctionChips), 615,
+        font.draw(this.view.graphics.sprites, String.format("Auction Chips: %d", p.auctionChips), 615,
                 Gdx.graphics.getHeight() - 8);
-        this.view.game.graphics.sprites.end();
+        this.view.graphics.sprites.end();
 
         // Draw the "Complete Turn" button
         if (this.view.game.mechanics.turns.canHumanPlayerAct()) {
-            this.turnMenu.draw(this.view.game.graphics);
+            this.turnMenu.draw(this.view.graphics);
         }
     }
 }

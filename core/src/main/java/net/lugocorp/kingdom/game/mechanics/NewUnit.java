@@ -36,10 +36,10 @@ public class NewUnit {
      */
     public Menu getNewUnitMenu(GameView view) {
         ListNode node = new ListNode()
-                .add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)));
-        node.add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
-                .add(new TextNode(view.game.graphics, "Select a tile to recruit your new unit?"))
-                .add(new RowNode().add(new ButtonNode(view.game.graphics, "Yes", () -> {
+                .add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)));
+        node.add(new HeaderNode(view.graphics, "Recruit New Unit"))
+                .add(new TextNode(view.graphics, "Select a tile to recruit your new unit?"))
+                .add(new RowNode().add(new ButtonNode(view.graphics, "Yes", () -> {
                     String error = "You have no space to recruit a new unit";
                     Set<Point> tiles = view.game.getRecruitmentTiles(view.game.human);
                     if (tiles.size() == 0) {
@@ -53,7 +53,7 @@ public class NewUnit {
                         view.popups.complete();
                         view.popups.addNext(this.getUnitSelectionMenu(view, p));
                     });
-                })).add(new ButtonNode(view.game.graphics, "No", () -> view.popups.complete())));
+                })).add(new ButtonNode(view.graphics, "No", () -> view.popups.complete())));
         return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
     }
 
@@ -72,17 +72,17 @@ public class NewUnit {
 
         // Create the Menu content for Unit recruitment
         List<Unit> options = this.getRecruitmentOptions(view, glyph.get(), p);
-        ListNode node = new ListNode().add(new ButtonNode(view.game.graphics, "x", () -> view.popups.setDisplay(false)))
-                .add(new HeaderNode(view.game.graphics, "Recruit New Unit"))
-                .add(new ButtonNode(view.game.graphics, "Do not recruit any unit", () -> view.popups.complete()));
+        ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
+                .add(new HeaderNode(view.graphics, "Recruit New Unit"))
+                .add(new ButtonNode(view.graphics, "Do not recruit any unit", () -> view.popups.complete()));
         RowNode previews = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         for (Unit u : options) {
-            previews.add(new ModelNode(view.getCamera(), view.getEnvironment(), view.game.graphics.loaders.assets,
+            previews.add(new ModelNode(view.getCamera(), view.getEnvironment(), view.graphics.loaders.assets,
                     u.getModelName()));
             units.add(u.getMenuContent(view, Optional.empty()));
-            buttons.add(new ButtonNode(view.game.graphics, "Choose", () -> this.choose(view, u)));
+            buttons.add(new ButtonNode(view.graphics, "Choose", () -> this.choose(view, u)));
         }
         node.add(previews);
         node.add(units);

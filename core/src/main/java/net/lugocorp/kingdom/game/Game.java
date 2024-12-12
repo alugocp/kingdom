@@ -27,7 +27,6 @@ public class Game {
     private final Map<Player, List<Building>> playerBuildings = new HashMap<>();
     public final List<Player> comps = new ArrayList<>();
     public final AllEventHandlers events;
-    public final GameGraphics graphics;
     public final Mechanics mechanics;
     public final Player human;
     public final World world;
@@ -36,11 +35,10 @@ public class Game {
 
     public Game(GameGraphics graphics, AllEventHandlers events, World world) {
         this.human = new Player("you", true);
-        this.graphics = graphics;
         this.events = events;
         this.world = world;
         this.playerBuildings.put(this.human, new ArrayList<Building>());
-        this.mechanics = new Mechanics(this);
+        this.mechanics = new Mechanics(this, graphics);
     }
 
     /**

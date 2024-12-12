@@ -120,19 +120,19 @@ public class Building extends Modellable implements EventReceiver, MenuSubject {
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
                 .flatMap((Tile t) -> t.leader);
-        ListNode node = new ListNode().add(new HeaderNode(view.game.graphics, this.name))
-                .add(new TextNode(view.game.graphics, this.desc));
+        ListNode node = new ListNode().add(new HeaderNode(view.graphics, this.name))
+                .add(new TextNode(view.graphics, this.desc));
         if (leader.isPresent()) {
-            node.add(new TextNode(view.game.graphics, String.format("Alignment: %s", leader.get().name)));
+            node.add(new TextNode(view.graphics, String.format("Alignment: %s", leader.get().name)));
         }
-        node.add(new TextNode(view.game.graphics,
+        node.add(new TextNode(view.graphics,
                 String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         if (this.items.isPresent()) {
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-                node.add(new TextNode(view.game.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
+                node.add(new TextNode(view.graphics, String.format("Gold: %d", this.items.get().getTotalGold())));
                 node.add(this.items.get().getMenuContent(view, p));
             } else {
-                node.add(new TextNode(view.game.graphics,
+                node.add(new TextNode(view.graphics,
                         String.format("Can store %d items", this.items.get().getMax())));
             }
         }

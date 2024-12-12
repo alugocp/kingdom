@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.game.core.Events.RepeatedEvent;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
@@ -25,13 +26,15 @@ public class TurnStructure {
     // TODO optimize the futures field with a different data structure
     private final List<FutureTick> futures = new ArrayList<>();
     private final Set<Unit> unitsThatHaveActed = new HashSet<>();
+    private final GameGraphics graphics;
     private final Game game;
     private boolean canPlayerAct = false;
     private Player turnPlayer;
     private int turn = 1;
 
-    public TurnStructure(Game game) {
+    public TurnStructure(Game game, GameGraphics graphics) {
         this.game = game;
+        this.graphics = graphics;
         this.turnPlayer = game.human;
     }
 
@@ -155,7 +158,7 @@ public class TurnStructure {
      */
     private void startNewTurnGroup() {
         this.game.mechanics.dayNight.tick();
-        this.game.graphics.getToonShader().setNighttime(this.game.mechanics.dayNight.isNight());
+        this.graphics.getToonShader().setNighttime(this.game.mechanics.dayNight.isNight());
     }
 
     /**
@@ -174,15 +177,15 @@ public class TurnStructure {
             // Check human Player win/lose state
             if (this.game.hasHumanPlayerLost()) {
                 view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2),
-                        false, new ListNode().add(new TextNode(this.game.graphics, "You have lost"))
-                                .add(new ButtonNode(this.game.graphics, "Okay", () -> {
+                        false, new ListNode().add(new TextNode(this.graphics, "You have lost"))
+                                .add(new ButtonNode(this.graphics, "Okay", () -> {
                                     // TODO return to some main menu
                                 }))));
             }
             if (this.game.hasHumanPlayerWon()) {
                 view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2),
-                        false, new ListNode().add(new TextNode(this.game.graphics, "You win!"))
-                                .add(new ButtonNode(this.game.graphics, "Okay", () -> {
+                        false, new ListNode().add(new TextNode(this.graphics, "You win!"))
+                                .add(new ButtonNode(this.graphics, "Okay", () -> {
                                     // TODO return to some main menu
                                 }))));
             }

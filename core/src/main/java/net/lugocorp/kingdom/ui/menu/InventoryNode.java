@@ -68,11 +68,11 @@ public class InventoryNode implements MenuNode {
                 if (index >= this.items.getMax()) {
                     break;
                 }
-                TextureRegion icon = this.view.game.graphics.loaders.sprites.get("placeholder");
+                TextureRegion icon = this.view.graphics.loaders.sprites.get("placeholder");
                 if (index < this.items.getSize()) {
                     Item item = this.items.get(index);
                     if (item.icon.isPresent()) {
-                        icon = this.view.game.graphics.loaders.sprites.get(item.icon.get());
+                        icon = this.view.graphics.loaders.sprites.get(item.icon.get());
                     }
                 }
                 graphics.sprites.draw(icon, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
@@ -95,9 +95,9 @@ public class InventoryNode implements MenuNode {
 
         // Set mini menu for the selected item
         final Item item = this.items.get(i);
-        ListNode root = new ListNode().add(new HeaderNode(this.view.game.graphics, item.name))
-                .add(new TextNode(this.view.game.graphics, item.rarity.toString()))
-                .add(new TextNode(this.view.game.graphics, item.desc));
+        ListNode root = new ListNode().add(new HeaderNode(this.view.graphics, item.name))
+                .add(new TextNode(this.view.graphics, item.rarity.toString()))
+                .add(new TextNode(this.view.graphics, item.desc));
 
         // Equip / pick up / drop options (only if the human Player occupies this space)
         boolean actions = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t1) -> t1.unit)
@@ -109,11 +109,11 @@ public class InventoryNode implements MenuNode {
                 // Building actions for this Item
                 if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
                         && !this.itemIsConsumed(this.view, item)) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Equip onto unit",
+                    root.add(new ButtonNode(this.view.graphics, "Equip onto unit",
                             () -> this.unitTakesItem(InventoryType.EQUIP, item)));
                 }
                 if (this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Give to unit",
+                    root.add(new ButtonNode(this.view.graphics, "Give to unit",
                             () -> this.unitTakesItem(InventoryType.HAUL, item)));
                 }
             } else {
@@ -121,31 +121,31 @@ public class InventoryNode implements MenuNode {
                 if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
                         && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
                         && !this.itemIsConsumed(this.view, item)) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Equip",
+                    root.add(new ButtonNode(this.view.graphics, "Equip",
                             () -> this.unitTakesItem(InventoryType.EQUIP, item)));
                 }
                 if (this.items.type == InventoryType.FREE
                         && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Pick up",
+                    root.add(new ButtonNode(this.view.graphics, "Pick up",
                             () -> this.unitTakesItem(InventoryType.HAUL, item)));
                 }
                 if (this.canUnitConsumeItem(item)) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Consume", () -> this.unitConsumesItem(item)));
+                    root.add(new ButtonNode(this.view.graphics, "Consume", () -> this.unitConsumesItem(item)));
                 }
                 if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Drop", () -> this.unitDropsItem(item)));
+                    root.add(new ButtonNode(this.view.graphics, "Drop", () -> this.unitDropsItem(item)));
                 }
                 if ((this.items.type == InventoryType.FREE
                         && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
                         || this.items.type == InventoryType.HAUL) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Give",
+                    root.add(new ButtonNode(this.view.graphics, "Give",
                             () -> this.view.selector.select(this.getGiftRecipients(),
                                     "No nearby units can receive this gift",
                                     (Point p1) -> this.giftItemToUnit(p1, item))));
                 }
                 if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
                         && this.canBuildingTakeItem()) {
-                    root.add(new ButtonNode(this.view.game.graphics, "Put in vault",
+                    root.add(new ButtonNode(this.view.graphics, "Put in vault",
                             () -> this.buildingTakesItem(item)));
                 }
             }

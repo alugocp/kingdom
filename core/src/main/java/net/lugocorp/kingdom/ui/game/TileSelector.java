@@ -21,7 +21,7 @@ public class TileSelector {
     private Optional<Point> hovered = Optional.empty();
 
     public TileSelector(GameView view) {
-        this.highlight = view.game.graphics.loaders.assets.createModelInstance("selector");
+        this.highlight = view.graphics.loaders.assets.createModelInstance("selector");
         this.highlight.materials.first().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
         this.view = view;
     }
@@ -92,13 +92,13 @@ public class TileSelector {
             for (Point p : this.selection.get().points) {
                 this.highlight.transform.setTranslation(
                         Coords.grid.vector(p.x, p.y).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.01f, 0f)));
-                this.view.game.graphics.models.render(this.highlight, environment);
+                this.view.graphics.models.render(this.highlight, environment);
             }
         }
         if (this.hovered.isPresent()) {
             this.highlight.transform.setTranslation(Coords.grid.vector(this.hovered.get().x, this.hovered.get().y)
                     .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.02f, 0f)));
-            this.view.game.graphics.models.render(this.highlight, environment);
+            this.view.graphics.models.render(this.highlight, environment);
         }
     }
 
