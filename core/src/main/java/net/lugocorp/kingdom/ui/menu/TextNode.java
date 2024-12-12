@@ -24,7 +24,7 @@ public class TextNode implements MenuNode {
      * Sets the vertical margin for this TextNode
      */
     protected int getMargin() {
-        return 2;
+        return 5;
     }
 
     /** {@inheritdoc} */

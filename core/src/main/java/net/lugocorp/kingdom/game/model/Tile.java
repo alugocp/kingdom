@@ -91,8 +91,8 @@ public class Tile extends Modellable implements EventReceiver, MenuSubject {
         }
         node.add(new TextNode(view.game.graphics, this.name)).add(new TextNode(view.game.graphics, this.desc))
                 .add(this.items.getMenuContent(view, p));
-        this.building.ifPresent((Building b) -> node.add(new SpacerNode()).add(b.getMenuContent(view, p)));
         this.unit.ifPresent((Unit u) -> node.add(new SpacerNode()).add(u.getMenuContent(view, p)));
+        this.building.ifPresent((Building b) -> node.add(new SpacerNode()).add(b.getMenuContent(view, p)));
         return node;
     }
 }

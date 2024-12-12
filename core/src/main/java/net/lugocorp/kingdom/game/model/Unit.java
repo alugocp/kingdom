@@ -6,7 +6,7 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
-import net.lugocorp.kingdom.ui.menu.ButtonNode;
+import net.lugocorp.kingdom.ui.menu.ActionNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
@@ -279,15 +279,15 @@ public class Unit extends Modellable implements EventReceiver, MenuSubject {
                     String.format("%d turn(s) until hunger strikes", turnsUntilHungry)));
         }
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-            ButtonNode move = new ButtonNode(view.game.graphics, "Move",
+            if ((this.active1.isPresent() || this.active2.isPresent())
+                    && view.game.mechanics.turns.hasUnitActed(this)) {
+                node.add(new TextNode(view.game.graphics, "This unit has already acted this turn"));
+            }
+            node.add(new ActionNode(view.game.graphics, "Move", "", !view.game.mechanics.turns.hasUnitActed(this),
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
                         this.move(view.game, p1);
                         view.game.mechanics.turns.unitHasActed(this);
-                    }));
-            if (view.game.mechanics.turns.hasUnitActed(this)) {
-                move.disable();
-            }
-            node.add(move);
+                    })));
         }
         this.active1.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));
         this.active2.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));

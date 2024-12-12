@@ -33,7 +33,7 @@ public class WorldGenerator {
             }
         }
         Player ai = g.addComputerPlayer("AI");
-        g.getInitialUnit(g.human, 1, 1, Glyph.WORSHIP).spawn(view);
+        g.getInitialUnit(g.human, 1, 1, Glyph.BATTLE).spawn(view);
         g.generator.building("Vault", 1, 1).spawn(view);
         g.generator.unit("Crystal", 8, 4).spawn(view);
         g.generator.unit("Crystal", 6, 3).spawn(view);

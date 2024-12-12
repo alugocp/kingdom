@@ -2,11 +2,9 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.core.Events.AbilityActivatedEvent;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.ui.menu.ButtonNode;
-import net.lugocorp.kingdom.ui.menu.ListNode;
+import net.lugocorp.kingdom.ui.menu.ActionNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
-import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
@@ -39,18 +37,13 @@ public class Ability implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        ListNode node = new ListNode();
-        if (this.wielder.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)
-                && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
-                && !view.game.mechanics.turns.hasUnitActed(this.wielder)) {
-            node.add(new ButtonNode(view.game.graphics, this.name, () -> {
-                this.handleEvent(view, new AbilityActivatedEvent(this));
-                view.menu.refresh(true);
-            }));
-        } else {
-            node.add(new TextNode(view.game.graphics, this.name));
-        }
-        node.add(new TextNode(view.game.graphics, this.desc));
-        return node;
+        return new ActionNode(view.game.graphics, this.name, this.desc,
+                this.wielder.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)
+                        && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
+                        && !view.game.mechanics.turns.hasUnitActed(this.wielder),
+                () -> {
+                    this.handleEvent(view, new AbilityActivatedEvent(this));
+                    view.menu.refresh(true);
+                });
     }
 }

@@ -12,6 +12,6 @@ public class HeaderNode extends TextNode {
 
     /** {@inheritdoc} */
     protected int getMargin() {
-        return 5;
+        return 10;
     }
 }
