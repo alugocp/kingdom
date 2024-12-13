@@ -1,15 +1,11 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.engine.assets.AssetsLoader;
-import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
 import net.lugocorp.kingdom.utils.ModLoader;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import java.util.function.Consumer;
 
@@ -20,8 +16,6 @@ public class LoadingGameView implements View {
     private final AllEventHandlers events = new AllEventHandlers();
     private final Graphics graphics;
     private Consumer<View> navigate;
-    private SpritesLoader sprites;
-    private AssetsLoader assets;
 
     public LoadingGameView(Graphics graphics) {
         this.graphics = graphics;
@@ -37,9 +31,6 @@ public class LoadingGameView implements View {
     @Override
     public void start(Consumer<View> navigate) {
         this.navigate = navigate;
-        this.sprites = new SpritesLoader();
-        this.sprites.loadAndRegister();
-        this.assets = new AssetsLoader(new AssetManager());
 
         // TODO move this to another loading screen
         ModLoader mods = new ModLoader();
@@ -57,18 +48,13 @@ public class LoadingGameView implements View {
     /** {@inheritdoc} */
     @Override
     public void render() {
-        // this.assets.doOnLoad(() -> {
-        // TODO clean up the dependencies between these classes and make sure bad
-        // initialization state is impossible
-        GameGraphics graphics = new GameGraphics(this.graphics, this.assets, this.sprites);
-        Game game = new Game(graphics, this.events, new World(10, 5));
-        GameView view = new GameView(game, graphics);
+        Game game = new Game(this.graphics, this.events, new World(10, 5));
+        GameView view = new GameView(game, this.graphics);
         game.generator = new Generator(view);
         game.mechanics.auction.init(game);
         game.mechanics.pools.init(game);
         new WorldGenerator().generateWorld(view);
         this.navigate.accept(view);
-        // });
     }
 
     /** {@inheritdoc} */

@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.engine;
+import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * Contains all the objects used to render things in the application
  */
 public class Graphics {
+    public final Loaders loaders;
     public final ShapeRenderer shapes;
     public final SpriteBatch sprites;
     public final ModelBatch models;
@@ -22,26 +25,15 @@ public class Graphics {
     public final ModelBatch previews;
     public final Fonts fonts;
 
-    /**
-     * Constructor used for initial use
-     */
-    public Graphics(ToonShader toon, OutlineShader outline, PreviewShader preview) {
-        this(new ShapeRenderer(), new SpriteBatch(), new ModelBatch(new Graphics.BasicShaderProvider(toon)),
-                new ModelBatch(new Graphics.BasicShaderProvider(outline)),
-                new ModelBatch(new Graphics.BasicShaderProvider(preview)), new Graphics.Fonts());
-    }
-
-    /**
-     * Constructor used for subclasses
-     */
-    Graphics(ShapeRenderer shapes, SpriteBatch sprites, ModelBatch models, ModelBatch outlines, ModelBatch previews,
-            Fonts fonts) {
-        this.shapes = shapes;
-        this.sprites = sprites;
-        this.models = models;
-        this.outlines = outlines;
-        this.previews = previews;
-        this.fonts = fonts;
+    public Graphics(ToonShader toon, OutlineShader outline, PreviewShader preview, AssetsLoader assets,
+            SpritesLoader sprites) {
+        this.shapes = new ShapeRenderer();
+        this.sprites = new SpriteBatch();
+        this.models = new ModelBatch(new Graphics.BasicShaderProvider(toon));
+        this.outlines = new ModelBatch(new Graphics.BasicShaderProvider(outline));
+        this.previews = new ModelBatch(new Graphics.BasicShaderProvider(preview));
+        this.fonts = new Graphics.Fonts();
+        this.loaders = new Loaders(assets, sprites);
     }
 
     /**
@@ -54,6 +46,8 @@ public class Graphics {
         this.outlines.dispose();
         this.previews.dispose();
         this.fonts.basic.dispose();
+        this.loaders.sprites.dispose();
+        this.loaders.assets.dispose();
     }
 
     /**
@@ -87,6 +81,19 @@ public class Graphics {
 
         Fonts() {
             this.button.setColor(new Color(0.6f, 1f, 1f, 1f));
+        }
+    }
+
+    /**
+     * This nested class contains all asset loaders
+     */
+    public static class Loaders {
+        public final SpritesLoader sprites;
+        public final AssetsLoader assets;
+
+        Loaders(AssetsLoader assets, SpritesLoader sprites) {
+            this.sprites = sprites;
+            this.assets = assets;
         }
     }
 

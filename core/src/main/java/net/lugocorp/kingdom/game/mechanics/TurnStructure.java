@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.engine.GameGraphics;
+import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.core.Events.RepeatedEvent;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -26,13 +26,13 @@ public class TurnStructure {
     // TODO optimize the futures field with a different data structure
     private final List<FutureTick> futures = new ArrayList<>();
     private final Set<Unit> unitsThatHaveActed = new HashSet<>();
-    private final GameGraphics graphics;
+    private final Graphics graphics;
     private final Game game;
     private boolean canPlayerAct = false;
     private Player turnPlayer;
     private int turn = 1;
 
-    public TurnStructure(Game game, GameGraphics graphics) {
+    public TurnStructure(Game game, Graphics graphics) {
         this.game = game;
         this.graphics = graphics;
         this.turnPlayer = game.human;

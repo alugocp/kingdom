@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -17,7 +16,7 @@ public class ArtifactNode implements MenuNode {
     private final Artifact artifact;
     private final TextNode text;
 
-    public ArtifactNode(GameGraphics graphics, Artifact artifact) {
+    public ArtifactNode(Graphics graphics, Artifact artifact) {
         String cost = String.format("%s chip", artifact.chips);
         if (artifact.chips > 1) {
             cost += "s";

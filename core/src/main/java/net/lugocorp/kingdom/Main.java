@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
@@ -7,6 +9,7 @@ import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -29,13 +32,17 @@ public class Main implements ApplicationListener {
         Gdx.graphics.setResizable(true);
         Gdx.gl.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        AssetsLoader assets = new AssetsLoader(new AssetManager());
+        SpritesLoader sprites = new SpritesLoader();
         PreviewShader preview = new PreviewShader();
         OutlineShader outline = new OutlineShader();
         ToonShader toon = new ToonShader();
+        sprites.loadAndRegister();
         preview.init();
         outline.init();
         toon.init();
-        this.graphics = new Graphics(toon, outline, preview);
+        this.graphics = new Graphics(toon, outline, preview, assets, sprites);
+
         this.view = new LoadingGameView(this.graphics);
         this.view.start(this::navigate);
     }

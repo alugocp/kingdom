@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.GameGraphics;
 import net.lugocorp.kingdom.engine.GameViewController;
+import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.ui.game.Hud;
@@ -28,14 +28,14 @@ public class GameView implements View {
     private PerspectiveCamera camera;
     private Environment environment;
     public final Popups popups = new Popups();
-    public final GameGraphics graphics;
+    public final Graphics graphics;
     public final TileSelector selector;
     public final TileMenu menu;
     public final Logger logger;
     public final Game game;
     public final Hud hud;
 
-    GameView(Game game, GameGraphics graphics) {
+    GameView(Game game, Graphics graphics) {
         this.game = game;
         this.graphics = graphics;
         this.logger = new Logger(this.graphics);

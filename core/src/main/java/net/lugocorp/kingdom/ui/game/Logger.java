@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.game;
-import net.lugocorp.kingdom.engine.GameGraphics;
+import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.Gdx;
@@ -19,10 +19,10 @@ public class Logger {
     private static final int MARGIN = 10;
     private final List<LogMessage> messages = new ArrayList<>();
     private final GlyphLayout layout = new GlyphLayout();
-    private final GameGraphics graphics;
+    private final Graphics graphics;
     private int timer = 0;
 
-    public Logger(GameGraphics graphics) {
+    public Logger(Graphics graphics) {
         this.graphics = graphics;
     }
 

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.engine.GameGraphics;
+import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Game;
 
 /**
@@ -12,7 +12,7 @@ public class Mechanics {
     public final NewUnit newUnits = new NewUnit();
     public final TurnStructure turns;
 
-    public Mechanics(Game game, GameGraphics graphics) {
+    public Mechanics(Game game, Graphics graphics) {
         this.turns = new TurnStructure(game, graphics);
     }
 }
