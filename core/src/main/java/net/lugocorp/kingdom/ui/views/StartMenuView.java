@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class StartMenuView implements View {
 
     public StartMenuView(Graphics graphics, AllEventHandlers events) {
         this.graphics = graphics;
-        this.menu = new Menu((Gdx.graphics.getWidth() / 2) - 300, 0, 600, false, new ListNode()
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
                 .add(new HeaderNode(graphics, "Main Menu")).add(new ButtonNode(graphics, "New game", () -> {
                     Game game = new Game(this.graphics, events, new World(10, 5));
                     GameView view = new GameView(game, this.graphics);

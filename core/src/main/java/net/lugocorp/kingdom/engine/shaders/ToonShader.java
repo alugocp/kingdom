@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine.shaders;
+import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -94,7 +95,7 @@ public class ToonShader implements Shader {
         this.program.setUniformf(this.u_directionalLight, lights.lights.first().direction);
         ColorAttribute ambient = (ColorAttribute) renderable.environment.get(ColorAttribute.AmbientLight);
         this.program.setUniformf(this.u_ambientLight, ambient.color);
-        this.program.setUniformf(this.u_resolution, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.program.setUniformf(this.u_resolution, Coords.SIZE.x, Coords.SIZE.y);
 
         // Set object uniforms
         Matrix3 normal = new Matrix3();

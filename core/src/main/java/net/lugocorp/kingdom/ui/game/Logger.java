@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.ui.game;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -52,7 +51,7 @@ public class Logger {
         this.graphics.shapes.begin(ShapeType.Filled);
         for (int a = rows - 1; a >= 0; a--) {
             LogMessage lm = this.messages.get(a);
-            rects[a] = Coords.screen.flip((int) ((Gdx.graphics.getWidth() - lm.w) / 2), (int) y, (int) lm.w,
+            rects[a] = Coords.screen.flip((int) ((Coords.SIZE.x - lm.w) / 2), (int) y, (int) lm.w,
                     (int) (lm.h + Logger.MARGIN));
             alphas[a] = (a == 0 && this.timer > Logger.MAX_TIMER - Logger.FADE_OUT)
                     ? (float) (Logger.MAX_TIMER - this.timer) / Logger.FADE_OUT

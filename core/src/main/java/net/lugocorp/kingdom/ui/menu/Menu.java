@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
@@ -67,7 +66,7 @@ public class Menu {
      * Returns the height of the Menu UI
      */
     private int getHeight() {
-        int max = Gdx.graphics.getHeight() - this.y;
+        int max = Coords.SIZE.y - this.y;
         return this.tall ? max : Math.min(max, this.root.getHeight() + (Menu.MARGIN * 2));
     }
 

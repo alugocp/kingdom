@@ -11,8 +11,8 @@ import net.lugocorp.kingdom.ui.menu.ModelNode;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +53,7 @@ public class NewUnit {
                         view.popups.addNext(this.getUnitSelectionMenu(view, p));
                     });
                 })).add(new ButtonNode(view.graphics, "No", () -> view.popups.complete())));
-        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
+        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false, node);
     }
 
     /**
@@ -86,7 +86,7 @@ public class NewUnit {
         node.add(previews);
         node.add(units);
         node.add(buttons);
-        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
+        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false, node);
     }
 
     /**

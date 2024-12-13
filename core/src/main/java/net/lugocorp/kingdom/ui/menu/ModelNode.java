@@ -2,9 +2,9 @@ package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.math.Matrix4;
@@ -47,8 +47,8 @@ public class ModelNode implements MenuNode {
     public void draw(Graphics graphics, Rect bounds) {
         graphics.previews.begin(this.camera);
         Matrix4 proj = new Matrix4();
-        float halfh = Gdx.graphics.getHeight() / 2f;
-        float halfw = Gdx.graphics.getWidth() / 2f;
+        float halfh = Coords.SIZE.y / 2f;
+        float halfw = Coords.SIZE.x / 2f;
         float scale = (bounds.w - (ModelNode.MARGIN * 2)) / (halfw * this.modelWidth);
         proj.setTranslation((bounds.x + (bounds.w * 0.5f) - halfw) / halfw,
                 (-bounds.y + (bounds.h * 0.75f) - halfh) / halfh, 0);

@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.ui.game.Logger;
 import net.lugocorp.kingdom.ui.game.TileMenu;
 import net.lugocorp.kingdom.ui.game.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -76,7 +77,7 @@ public class GameView implements View {
         MenuController menuController = new MenuController(() -> this.menu.get());
 
         // Camera
-        this.camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
         this.camController = new GameViewController(this, menuController, this.camera);
         Gdx.input.setInputProcessor(this.camController);
         this.camera.position.set(5f, 5f, 0f);

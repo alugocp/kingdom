@@ -15,8 +15,8 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,7 +114,7 @@ public class ArtifactAuction {
                         view.popups.complete();
                     }));
         }
-        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false, node);
+        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false, node);
     }
 
     /**
@@ -124,7 +124,7 @@ public class ArtifactAuction {
         // Inform the human Player if they did not win the Auction
         Optional<Player> winner = this.auction.get().getWinner(view.game.world, this.random);
         if (winner.map((Player p) -> !p.isHumanPlayer()).orElse(true)) {
-            return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2), false,
+            return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false,
                     new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
                             .add(new TextNode(view.graphics,
                                     winner.isPresent() ? "You did not win the auction" : "Nobody bid in this auction"))
@@ -133,7 +133,7 @@ public class ArtifactAuction {
 
         // Populate the Menu with ArtifactNodes if the human Player did win the Auction
         int a = 0;
-        int width = Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2);
+        int width = Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2);
         int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
         ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new ButtonNode(view.graphics, "Buy an artifact next time", () -> view.popups.complete()));

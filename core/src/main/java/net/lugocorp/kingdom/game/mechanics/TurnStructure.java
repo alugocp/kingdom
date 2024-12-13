@@ -12,7 +12,7 @@ import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
-import com.badlogic.gdx.Gdx;
+import net.lugocorp.kingdom.utils.math.Coords;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -176,15 +176,15 @@ public class TurnStructure {
 
             // Check human Player win/lose state
             if (this.game.hasHumanPlayerLost()) {
-                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2),
-                        false, new ListNode().add(new TextNode(this.graphics, "You have lost"))
+                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false,
+                        new ListNode().add(new TextNode(this.graphics, "You have lost"))
                                 .add(new ButtonNode(this.graphics, "Okay", () -> {
                                     // TODO return to some main menu
                                 }))));
             }
             if (this.game.hasHumanPlayerWon()) {
-                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Gdx.graphics.getWidth() - (Hud.BUTTON_WIDTH * 2),
-                        false, new ListNode().add(new TextNode(this.graphics, "You win!"))
+                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false,
+                        new ListNode().add(new TextNode(this.graphics, "You win!"))
                                 .add(new ButtonNode(this.graphics, "Okay", () -> {
                                     // TODO return to some main menu
                                 }))));

@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class TextNode implements MenuNode {
     @Override
     public void draw(Graphics graphics, Rect bounds) {
         graphics.sprites.begin();
-        int y = Gdx.graphics.getHeight() - bounds.y - this.getMargin();
+        int y = Coords.SIZE.y - bounds.y - this.getMargin();
         for (int a = 0; a < this.lines.size(); a++) {
             this.font.draw(graphics.sprites, this.lines.get(a), bounds.x, y);
             y -= (int) this.font.getLineHeight();

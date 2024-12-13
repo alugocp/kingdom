@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
@@ -26,7 +26,7 @@ public class SpacerNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(Graphics graphics, Rect bounds) {
-        int y = Gdx.graphics.getHeight() - bounds.y - SpacerNode.MARGIN - 1;
+        int y = Coords.SIZE.y - bounds.y - SpacerNode.MARGIN - 1;
         graphics.shapes.begin(ShapeType.Filled);
         graphics.shapes.setColor(Color.WHITE);
         graphics.shapes.rect(bounds.x, y, bounds.w, 1);

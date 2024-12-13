@@ -8,7 +8,6 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -24,7 +23,7 @@ public class Hud {
 
     public Hud(GameView view) {
         this.view = view;
-        this.turnMenu = new Menu(Gdx.graphics.getWidth() - Hud.BUTTON_WIDTH, Hud.HEIGHT, Hud.BUTTON_WIDTH, false,
+        this.turnMenu = new Menu(Coords.SIZE.x - Hud.BUTTON_WIDTH, Hud.HEIGHT, Hud.BUTTON_WIDTH, false,
                 new ListNode().add(new ButtonNode(this.view.graphics, "Complete Turn", () -> {
                     if (this.view.popups.get().isPresent()) {
                         this.view.popups.setDisplay(true);
@@ -57,7 +56,7 @@ public class Hud {
         Player p = this.view.game.human;
 
         // Background
-        Rect bg = Coords.screen.flip(0, 0, Gdx.graphics.getWidth(), Hud.HEIGHT);
+        Rect bg = Coords.screen.flip(0, 0, Coords.SIZE.x, Hud.HEIGHT);
         this.view.graphics.shapes.begin(ShapeType.Filled);
         this.view.graphics.shapes.setColor(Color.BLACK);
         this.view.graphics.shapes.rect(bg.x, bg.y, bg.w, bg.h);
@@ -65,16 +64,14 @@ public class Hud {
 
         // Draw Player stats
         this.view.graphics.sprites.begin();
-        font.draw(this.view.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15,
-                Gdx.graphics.getHeight() - 8);
+        font.draw(this.view.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15, Coords.SIZE.y - 8);
         font.draw(this.view.graphics.sprites,
-                String.format("Unit Points: %d / %d", p.unitPoints, NewUnit.MAX_UNIT_POINTS), 215,
-                Gdx.graphics.getHeight() - 8);
+                String.format("Unit Points: %d / %d", p.unitPoints, NewUnit.MAX_UNIT_POINTS), 215, Coords.SIZE.y - 8);
         font.draw(this.view.graphics.sprites,
                 String.format("Auction Points: %d / %d", view.game.auctionPoints, ArtifactAuction.MAX_AUCTION_POINTS),
-                415, Gdx.graphics.getHeight() - 8);
+                415, Coords.SIZE.y - 8);
         font.draw(this.view.graphics.sprites, String.format("Auction Chips: %d", p.auctionChips), 615,
-                Gdx.graphics.getHeight() - 8);
+                Coords.SIZE.y - 8);
         this.view.graphics.sprites.end();
 
         // Draw the "Complete Turn" button

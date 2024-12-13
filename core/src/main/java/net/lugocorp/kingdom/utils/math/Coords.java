@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.utils.math;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 
 /**
  * Conversion logic between coordinate systems
  */
 public class Coords {
+    public static final Point SIZE = new Point(1280, 960);
     public static ScreenCoords screen = new Coords.ScreenCoords();
     public static GridCoords grid = new Coords.GridCoords();
     public static RawCoords raw = new Coords.RawCoords();
@@ -52,7 +52,7 @@ public class Coords {
          * Flips a Rect from top-left origin space into bottom-left origin space
          */
         public Rect flip(int x, int y, int w, int h) {
-            return new Rect(x, Gdx.graphics.getHeight() - y - h, w, h);
+            return new Rect(x, Coords.SIZE.y - y - h, w, h);
         }
 
         /**

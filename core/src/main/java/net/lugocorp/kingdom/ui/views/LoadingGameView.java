@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.utils.ModLoader;
-import com.badlogic.gdx.Gdx;
+import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.graphics.Color;
 import java.util.function.Consumer;
 
@@ -58,8 +58,7 @@ public class LoadingGameView implements View {
             this.navigate.accept(new StartMenuView(this.graphics, this.events));
         }
         this.graphics.sprites.begin();
-        this.graphics.fonts.basic.draw(this.graphics.sprites, "Loading...", Gdx.graphics.getHeight() / 3,
-                Gdx.graphics.getHeight() / 2);
+        this.graphics.fonts.basic.draw(this.graphics.sprites, "Loading...", Coords.SIZE.y / 3, Coords.SIZE.y / 2);
         this.graphics.sprites.end();
     }
 
