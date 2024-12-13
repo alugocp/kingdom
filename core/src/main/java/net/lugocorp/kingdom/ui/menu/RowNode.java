@@ -75,9 +75,10 @@ public class RowNode implements MenuNode {
         int x = bounds.x;
         int w = bounds.w / this.getColumns();
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+            final Rect r = new Rect(x, bounds.y, w, bounds.h);
             if (r.contains(p)) {
                 child.click(menu, r, p);
+                return;
             }
             x += w;
         }

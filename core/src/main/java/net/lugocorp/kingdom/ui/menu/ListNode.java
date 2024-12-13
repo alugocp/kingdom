@@ -84,6 +84,7 @@ public class ListNode implements MenuNode {
             final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
             if (r.contains(p)) {
                 child.click(menu, r, p);
+                return;
             }
             y += r.h;
         }

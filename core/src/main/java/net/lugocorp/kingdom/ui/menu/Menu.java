@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
@@ -116,9 +117,11 @@ public class Menu {
         }
         this.mini = Optional.empty();
         final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
-                this.width - (Menu.MARGIN * 3), this.getHeight() - (Menu.MARGIN * 2));
-        if (bounds.contains(p)) {
-            this.root.click(this, bounds, p);
+                this.width - (Menu.MARGIN * 3), this.root.getHeight() - (Menu.MARGIN * 2));
+        Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
+                p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
+        if (bounds.contains(p1)) {
+            this.root.click(this, bounds, p1);
             return true;
         }
         return false;
