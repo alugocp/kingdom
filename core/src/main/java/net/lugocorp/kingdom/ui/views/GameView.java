@@ -151,7 +151,6 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void dispose() {
-        this.graphics.dispose();
     }
 
     /**

@@ -32,6 +32,8 @@ public class Main implements ApplicationListener {
         Gdx.graphics.setResizable(true);
         Gdx.gl.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        // Graphics object setup
         AssetsLoader assets = new AssetsLoader(new AssetManager());
         SpritesLoader sprites = new SpritesLoader();
         PreviewShader preview = new PreviewShader();
@@ -43,6 +45,7 @@ public class Main implements ApplicationListener {
         toon.init();
         this.graphics = new Graphics(toon, outline, preview, assets, sprites);
 
+        // Set the loading screen view
         this.view = new LoadingGameView(this.graphics);
         this.view.start(this::navigate);
     }
