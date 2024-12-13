@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -32,10 +33,14 @@ public class StartMenuView implements View {
                     GameView view = new GameView(game, this.graphics);
                     game.generator = new Generator(view);
                     game.mechanics.auction.init(game);
+                    game.mechanics.fates.init(game);
                     game.mechanics.pools.init(game);
+                    game.human.fate = game.mechanics.fates.chooseRandomFate();
                     new WorldGenerator().generateWorld(view);
                     this.navigate.accept(view);
-                })));
+                })).add(new TextNode(graphics, "Load game (not implemented yet)"))
+                .add(new TextNode(graphics, "Settings (not implemented yet)"))
+                .add(new TextNode(graphics, "Credits (not implemented yet)")));
     }
 
     /** {@inheritdoc} */

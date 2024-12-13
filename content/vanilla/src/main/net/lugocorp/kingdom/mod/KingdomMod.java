@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
@@ -45,6 +46,20 @@ public class KingdomMod {
         events.unit.setDefaultHandler("CanEatEvent", (GameView view, Unit receiver, Event event) -> {
             Events.CanEatEvent e = (Events.CanEatEvent) event;
             e.edible = e.item.tags.has("fruit");
+        });
+
+        /**
+         * Fates
+         */
+        events.fate.addEventHandler("The Veteran", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("golden feather");
+            e.desc.add("This Fate is under development");
+        });
+        events.fate.addEventHandler("The Usurper", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("golden feather");
+            e.desc.add("This Fate is also under development");
         });
 
         /**

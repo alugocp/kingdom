@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
@@ -89,6 +90,15 @@ public class Events {
     public static class GenerateArtifactEvent extends GenerateBlobEventTemplate<Artifact> {
         public GenerateArtifactEvent(Artifact blob) {
             super("GenerateArtifactEvent", blob);
+        }
+    }
+
+    /**
+     * Generator Event for new Fates
+     */
+    public static class GenerateFateEvent extends GenerateBlobEventTemplate<Fate> {
+        public GenerateFateEvent(Fate blob) {
+            super("GenerateFateEvent", blob);
         }
     }
 

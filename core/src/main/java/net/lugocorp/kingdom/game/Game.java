@@ -34,11 +34,11 @@ public class Game {
     public int auctionPoints = 0;
 
     public Game(Graphics graphics, AllEventHandlers events, World world) {
-        this.human = new Player("you", true);
         this.events = events;
         this.world = world;
-        this.playerBuildings.put(this.human, new ArrayList<Building>());
         this.mechanics = new Mechanics(this, graphics);
+        this.human = new Player("you", null, true);
+        this.playerBuildings.put(this.human, new ArrayList<Building>());
     }
 
     /**
@@ -58,7 +58,7 @@ public class Game {
      * Registers a new AI Player
      */
     public Player addComputerPlayer(String name) {
-        Player player = new Player(name, false);
+        Player player = new Player(name, this.mechanics.fates.chooseRandomFate(), false);
         this.comps.add(player);
         this.playerBuildings.put(player, new ArrayList<Building>());
         return player;

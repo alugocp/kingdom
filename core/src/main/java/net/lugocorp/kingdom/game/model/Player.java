@@ -15,10 +15,12 @@ public class Player {
     public int bareTiles = 0;
     public int tiles = 0;
     public int gold = 0;
+    public Fate fate;
 
-    public Player(String name, boolean human) {
+    public Player(String name, Fate fate, boolean human) {
         this.human = human;
         this.name = name;
+        this.fate = fate;
     }
 
     /**

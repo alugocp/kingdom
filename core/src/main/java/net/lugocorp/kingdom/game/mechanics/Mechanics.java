@@ -11,6 +11,7 @@ public class Mechanics {
     public final GlyphPools pools = new GlyphPools();
     public final DayNight dayNight = new DayNight();
     public final NewUnit newUnits = new NewUnit();
+    public final Fates fates = new Fates();
     public final TurnStructure turns;
 
     public Mechanics(Game game, Graphics graphics) {

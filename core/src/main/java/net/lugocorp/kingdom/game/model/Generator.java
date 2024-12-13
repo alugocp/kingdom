@@ -86,4 +86,13 @@ public class Generator {
         this.view.game.events.artifact.handle(this.view, e.blob, e);
         return e.blob;
     }
+
+    /**
+     * Generates a new Fate
+     */
+    public Fate fate(String name) {
+        Events.GenerateFateEvent e = new Events.GenerateFateEvent(new Fate(name));
+        this.view.game.events.fate.handle(this.view, e.blob, e);
+        return e.blob;
+    }
 }

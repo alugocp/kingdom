@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -19,4 +20,5 @@ public class AllEventHandlers {
     public final EventHandlerBundle<Item> item = new EventHandlerBundle<>();
     public final EventHandlerBundle<Unit> unit = new EventHandlerBundle<>();
     public final EventHandlerBundle<Tile> tile = new EventHandlerBundle<>();
+    public final EventHandlerBundle<Fate> fate = new EventHandlerBundle<>();
 }
