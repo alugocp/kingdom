@@ -20,16 +20,21 @@ public class Hud extends Menu {
         super(0, 0, Coords.SIZE.x, false, new ListNode());
         this.info = new HudInfoNode(view.graphics);
         this.game = view.game;
-        ((ListNode) this.root).add(this.info)
-                .add(new RowNode().add(new ButtonNode(view.graphics, "Complete Turn", () -> {
-                    if (view.popups.get().isPresent()) {
-                        view.popups.setDisplay(true);
-                    } else {
-                        view.logger.log("You have ended your turn");
-                        view.game.mechanics.turns.iterateTurnPlayer(view);
-                        view.menu.refresh(true);
-                    }
-                }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
+        ((ListNode) this.root)
+                .add(this.info).add(
+                        new RowNode()
+                                .add(new ButtonNode(view.graphics, "View Artifacts",
+                                        () -> view.popups
+                                                .addNext(view.game.mechanics.auction.getOwnedArtifactsMenu(view))))
+                                .add(new ButtonNode(view.graphics, "Complete Turn", () -> {
+                                    if (view.popups.get().isPresent()) {
+                                        view.popups.setDisplay(true);
+                                    } else {
+                                        view.logger.log("You have ended your turn");
+                                        view.game.mechanics.turns.iterateTurnPlayer(view);
+                                        view.menu.refresh(true);
+                                    }
+                                }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
         this.pack();
     }
 

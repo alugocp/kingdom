@@ -38,7 +38,7 @@ public class ArtifactAuction {
     private List<Artifact> artifacts = new ArrayList<>();
 
     /**
-     * Unlocks a couple initial Artifacts for the Auction system
+     * Generates all registered Artifacts at the start of the Game
      */
     public void init(Game g) {
         Set<String> stratifiers = g.events.artifact.getStratifiers();
@@ -163,6 +163,32 @@ public class ArtifactAuction {
             }
             node.add(row1);
             node.add(row2);
+        }
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, node);
+    }
+
+    /**
+     * Returns a Menu to show the human Player which Artifacts they've purchased
+     */
+    public Menu getOwnedArtifactsMenu(GameView view) {
+        int a = 0;
+        List<Artifact> artifacts = view.game.human.artifacts;
+        int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
+        int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
+        ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.complete()));
+        if (artifacts.size() == 0) {
+            node.add(new TextNode(view.graphics, "You do not have any artifacts"));
+        } else {
+            while (a < artifacts.size()) {
+                RowNode row = new RowNode().setColumns(3);
+                for (int b = 0; b < columns && a < artifacts.size();) {
+                    final Artifact artifact = artifacts.get(a);
+                    row.add(new ArtifactNode(view.graphics, artifact));
+                    a++;
+                    b++;
+                }
+                node.add(row);
+            }
         }
         return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, node);
     }

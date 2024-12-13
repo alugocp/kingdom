@@ -12,13 +12,15 @@ public class HudInfoNode extends RowNode {
     private final TextNode unitPoints;
     private final TextNode auctionPoints;
     private final TextNode auctionChips;
+    private final TextNode artifacts;
 
     public HudInfoNode(Graphics graphics) {
         this.gold = new TextNode(graphics, "");
         this.unitPoints = new TextNode(graphics, "");
         this.auctionPoints = new TextNode(graphics, "");
         this.auctionChips = new TextNode(graphics, "");
-        this.add(this.gold).add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips);
+        this.artifacts = new TextNode(graphics, "");
+        this.add(this.gold).add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips).add(this.artifacts);
     }
 
     /**
@@ -29,7 +31,8 @@ public class HudInfoNode extends RowNode {
         this.unitPoints.setText(String.format("%d / %d Unit Points", game.human.unitPoints, NewUnit.MAX_UNIT_POINTS));
         this.auctionPoints.setText(
                 String.format("%d / %d Auction Points", game.auctionPoints, ArtifactAuction.MAX_AUCTION_POINTS));
-        this.auctionChips.setText(String.format("%d Auction Chips", game.human.auctionChips));
+        this.auctionChips.setText(this.plural("Auction Chip", game.human.auctionChips));
+        this.artifacts.setText(this.plural("Artifact", game.human.artifacts.size()));
     }
 
     /**
@@ -43,5 +46,15 @@ public class HudInfoNode extends RowNode {
             return String.format("%dK", (int) Math.floor((float) value / 1000));
         }
         return String.format("%d", value);
+    }
+
+    /**
+     * Makes the label singular if the value is 1 and plural otherwise
+     */
+    private String plural(String label, int value) {
+        if (value == 1) {
+            return String.format("1 %s", label);
+        }
+        return String.format("%s %ss", value, label);
     }
 }

@@ -31,7 +31,7 @@ public class Game {
     public final Player human;
     public final World world;
     public Generator generator;
-    public int auctionPoints = 0;
+    public int auctionPoints = 250;
 
     public Game(Graphics graphics, AllEventHandlers events, World world) {
         this.human = new Player("you", true);

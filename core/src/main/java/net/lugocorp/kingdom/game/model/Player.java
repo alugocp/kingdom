@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.game.model;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a human or AI that is playing the game
  */
 public class Player {
     private final boolean human;
-    public final Set<Artifact> artifacts = new HashSet<>();
+    public final List<Artifact> artifacts = new ArrayList<>();
     public final String name;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
