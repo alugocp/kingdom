@@ -6,7 +6,6 @@ import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
@@ -114,7 +113,8 @@ public class ArtifactAuction {
                         view.popups.complete();
                     }));
         }
-        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false, node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                node);
     }
 
     /**
@@ -124,7 +124,8 @@ public class ArtifactAuction {
         // Inform the human Player if they did not win the Auction
         Optional<Player> winner = this.auction.get().getWinner(view.game.world, this.random);
         if (winner.map((Player p) -> !p.isHumanPlayer()).orElse(true)) {
-            return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false,
+            return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
+                    false,
                     new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
                             .add(new TextNode(view.graphics,
                                     winner.isPresent() ? "You did not win the auction" : "Nobody bid in this auction"))
@@ -133,7 +134,7 @@ public class ArtifactAuction {
 
         // Populate the Menu with ArtifactNodes if the human Player did win the Auction
         int a = 0;
-        int width = Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2);
+        int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
         int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
         ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new ButtonNode(view.graphics, "Buy an artifact next time", () -> view.popups.complete()));
@@ -163,7 +164,7 @@ public class ArtifactAuction {
             node.add(row1);
             node.add(row2);
         }
-        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, width, false, node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, node);
     }
 
     /**

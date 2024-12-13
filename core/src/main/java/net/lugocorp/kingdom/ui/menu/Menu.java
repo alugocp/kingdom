@@ -12,7 +12,6 @@ import java.util.Optional;
  */
 public class Menu {
     private static final int MARGIN = 10;
-    private final MenuNode root;
     private final boolean tall;
     private final int width;
     private final int x;
@@ -20,6 +19,7 @@ public class Menu {
     private Optional<Menu> mini = Optional.empty();
     private boolean outlined = false;
     private int offset = 0;
+    protected final MenuNode root;
 
     public Menu(int x, int y, int width, boolean tall, MenuNode root) {
         this.width = width;
@@ -27,7 +27,14 @@ public class Menu {
         this.tall = tall;
         this.x = x;
         this.y = y;
-        root.pack(width - (Menu.MARGIN * 3));
+        this.pack();
+    }
+
+    /**
+     * Packs this Menu's constituent MenuNodes
+     */
+    protected void pack() {
+        this.root.pack(width - (Menu.MARGIN * 3));
     }
 
     /**
@@ -65,7 +72,7 @@ public class Menu {
     /**
      * Returns the height of the Menu UI
      */
-    private int getHeight() {
+    public int getHeight() {
         int max = Coords.SIZE.y - this.y;
         return this.tall ? max : Math.min(max, this.root.getHeight() + (Menu.MARGIN * 2));
     }

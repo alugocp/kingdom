@@ -16,7 +16,7 @@ public class GameViewController extends CameraInputController {
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
     private final MenuController popupMenu;
-    private final MenuController turnMenu;
+    private final MenuController hudMenu;
     private final MenuController menu;
     private final GameView view;
     private Optional<Point> prev = Optional.empty();
@@ -29,9 +29,7 @@ public class GameViewController extends CameraInputController {
                 () -> view.game.mechanics.turns.canHumanPlayerAct() && view.popups.isDisplayed()
                         ? view.popups.get()
                         : Optional.empty());
-        this.turnMenu = new MenuController(() -> view.game.mechanics.turns.canHumanPlayerAct()
-                ? Optional.of(view.hud.turnMenu)
-                : Optional.empty());
+        this.hudMenu = new MenuController(() -> Optional.of(view.hud));
         this.menu = menu;
         this.view = view;
     }
@@ -45,7 +43,7 @@ public class GameViewController extends CameraInputController {
         if (this.menu.touchDown(x, y, pointer, button)) {
             return true;
         }
-        if (this.turnMenu.touchDown(x, y, pointer, button)) {
+        if (this.hudMenu.touchDown(x, y, pointer, button)) {
             return true;
         }
         this.prev = Optional.of(new Point(x, y));
@@ -63,7 +61,7 @@ public class GameViewController extends CameraInputController {
         if (this.menu.touchUp(x, y, pointer, button)) {
             return true;
         }
-        if (this.turnMenu.touchUp(x, y, pointer, button)) {
+        if (this.hudMenu.touchUp(x, y, pointer, button)) {
             return true;
         }
         if (!this.dragging) {
@@ -87,7 +85,7 @@ public class GameViewController extends CameraInputController {
         if (this.menu.touchDragged(x, y, pointer)) {
             return true;
         }
-        if (this.turnMenu.touchDragged(x, y, pointer)) {
+        if (this.hudMenu.touchDragged(x, y, pointer)) {
             return true;
         }
         if (!this.prev.isPresent()) {

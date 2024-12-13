@@ -1,82 +1,42 @@
 package net.lugocorp.kingdom.ui.game;
-import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
-import net.lugocorp.kingdom.game.mechanics.NewUnit;
-import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
+import net.lugocorp.kingdom.ui.menu.HudInfoNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * This class handles rendering the Player's HUD UI
  */
-public class Hud {
-    public static final int BUTTON_WIDTH = 150;
-    public static final int HEIGHT = 35;
-    private final GameView view;
-    public final Menu turnMenu;
+public class Hud extends Menu {
+    private final HudInfoNode info;
+    private final Game game;
 
     public Hud(GameView view) {
-        this.view = view;
-        this.turnMenu = new Menu(Coords.SIZE.x - Hud.BUTTON_WIDTH, Hud.HEIGHT, Hud.BUTTON_WIDTH, false,
-                new ListNode().add(new ButtonNode(this.view.graphics, "Complete Turn", () -> {
-                    if (this.view.popups.get().isPresent()) {
-                        this.view.popups.setDisplay(true);
+        super(0, 0, Coords.SIZE.x, false, new ListNode());
+        this.info = new HudInfoNode(view.graphics);
+        this.game = view.game;
+        ((ListNode) this.root).add(this.info)
+                .add(new RowNode().add(new ButtonNode(view.graphics, "Complete Turn", () -> {
+                    if (view.popups.get().isPresent()) {
+                        view.popups.setDisplay(true);
                     } else {
-                        this.view.logger.log("You have ended your turn");
-                        this.view.game.mechanics.turns.iterateTurnPlayer(this.view);
-                        this.view.menu.refresh(true);
+                        view.logger.log("You have ended your turn");
+                        view.game.mechanics.turns.iterateTurnPlayer(view);
+                        view.menu.refresh(true);
                     }
-                })));
+                }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
+        this.pack();
     }
 
-    /**
-     * Cuts the length of a displayed number
-     */
-    private String prettyInt(int value) {
-        if (value > 999999) {
-            return "999K+";
-        }
-        if (value > 999) {
-            return String.format("%dK", (int) Math.floor((float) value / 1000));
-        }
-        return String.format("%d", value);
-    }
-
-    /**
-     * Draws the HUD UI
-     */
-    public void render() {
-        BitmapFont font = this.view.graphics.fonts.basic;
-        Player p = this.view.game.human;
-
-        // Background
-        Rect bg = Coords.screen.flip(0, 0, Coords.SIZE.x, Hud.HEIGHT);
-        this.view.graphics.shapes.begin(ShapeType.Filled);
-        this.view.graphics.shapes.setColor(Color.BLACK);
-        this.view.graphics.shapes.rect(bg.x, bg.y, bg.w, bg.h);
-        this.view.graphics.shapes.end();
-
-        // Draw Player stats
-        this.view.graphics.sprites.begin();
-        font.draw(this.view.graphics.sprites, String.format("Gold: %s", this.prettyInt(p.gold)), 15, Coords.SIZE.y - 8);
-        font.draw(this.view.graphics.sprites,
-                String.format("Unit Points: %d / %d", p.unitPoints, NewUnit.MAX_UNIT_POINTS), 215, Coords.SIZE.y - 8);
-        font.draw(this.view.graphics.sprites,
-                String.format("Auction Points: %d / %d", view.game.auctionPoints, ArtifactAuction.MAX_AUCTION_POINTS),
-                415, Coords.SIZE.y - 8);
-        font.draw(this.view.graphics.sprites, String.format("Auction Chips: %d", p.auctionChips), 615,
-                Coords.SIZE.y - 8);
-        this.view.graphics.sprites.end();
-
-        // Draw the "Complete Turn" button
-        if (this.view.game.mechanics.turns.canHumanPlayerAct()) {
-            this.turnMenu.draw(this.view.graphics);
-        }
+    /** {@inheritdoc} */
+    @Override
+    public void draw(Graphics graphics) {
+        this.info.updateInfo(this.game);
+        super.draw(graphics);
     }
 }

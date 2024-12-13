@@ -51,7 +51,7 @@ public class TileMenu {
             return;
         }
         MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords));
-        this.menu = Optional.of(new Menu(0, Hud.HEIGHT, 400, true, node));
+        this.menu = Optional.of(new Menu(0, this.view.hud.getHeight(), 400, true, node));
     }
 
     /**

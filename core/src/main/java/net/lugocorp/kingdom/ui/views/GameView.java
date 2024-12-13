@@ -39,8 +39,8 @@ public class GameView implements View {
     GameView(Game game, Graphics graphics) {
         this.game = game;
         this.graphics = graphics;
-        this.logger = new Logger(this.graphics);
         this.hud = new Hud(this);
+        this.logger = new Logger(this);
         this.selector = new TileSelector(this);
         this.menu = new TileMenu(this);
     }
@@ -138,7 +138,7 @@ public class GameView implements View {
             this.popups.queue.get(0).draw(this.graphics);
         }
         this.logger.render();
-        this.hud.render();
+        this.hud.draw(this.graphics);
     }
 
     /** {@inheritdoc} */

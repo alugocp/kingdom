@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -53,7 +52,8 @@ public class NewUnit {
                         view.popups.addNext(this.getUnitSelectionMenu(view, p));
                     });
                 })).add(new ButtonNode(view.graphics, "No", () -> view.popups.complete())));
-        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false, node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                node);
     }
 
     /**
@@ -86,7 +86,8 @@ public class NewUnit {
         node.add(previews);
         node.add(units);
         node.add(buttons);
-        return new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false, node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                node);
     }
 
     /**

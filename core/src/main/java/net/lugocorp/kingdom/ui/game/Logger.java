@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.game;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.Color;
@@ -18,18 +18,18 @@ public class Logger {
     private static final int MARGIN = 10;
     private final List<LogMessage> messages = new ArrayList<>();
     private final GlyphLayout layout = new GlyphLayout();
-    private final Graphics graphics;
+    private final GameView view;
     private int timer = 0;
 
-    public Logger(Graphics graphics) {
-        this.graphics = graphics;
+    public Logger(GameView view) {
+        this.view = view;
     }
 
     /**
      * Adds a new log message to the queue
      */
     public void log(String message) {
-        layout.setText(this.graphics.fonts.basic, message);
+        layout.setText(this.view.graphics.fonts.basic, message);
         messages.add(0, new LogMessage(message, layout.width, layout.height));
         this.timer = 0;
     }
@@ -43,12 +43,12 @@ public class Logger {
         }
         this.timer = Math.min(Logger.MAX_TIMER, this.timer + 50);
         int rows = Math.min(this.messages.size(), Logger.MAX_ROWS);
-        float y = Hud.HEIGHT;
+        float y = this.view.hud.getHeight();
         float[] alphas = new float[rows];
         Rect[] rects = new Rect[rows];
 
         // Draw the background boxes
-        this.graphics.shapes.begin(ShapeType.Filled);
+        this.view.graphics.shapes.begin(ShapeType.Filled);
         for (int a = rows - 1; a >= 0; a--) {
             LogMessage lm = this.messages.get(a);
             rects[a] = Coords.screen.flip((int) ((Coords.SIZE.x - lm.w) / 2), (int) y, (int) lm.w,
@@ -56,23 +56,23 @@ public class Logger {
             alphas[a] = (a == 0 && this.timer > Logger.MAX_TIMER - Logger.FADE_OUT)
                     ? (float) (Logger.MAX_TIMER - this.timer) / Logger.FADE_OUT
                     : 1f;
-            this.graphics.shapes.setColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, alphas[a]);
-            this.graphics.shapes.rect(rects[a].x - Logger.MARGIN, rects[a].y, rects[a].w + (Logger.MARGIN * 2),
+            this.view.graphics.shapes.setColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, alphas[a]);
+            this.view.graphics.shapes.rect(rects[a].x - Logger.MARGIN, rects[a].y, rects[a].w + (Logger.MARGIN * 2),
                     rects[a].h);
             y += lm.h + Logger.MARGIN;
         }
-        this.graphics.shapes.end();
+        this.view.graphics.shapes.end();
 
         // Draw the text
-        this.graphics.sprites.begin();
+        this.view.graphics.sprites.begin();
         for (int a = 0; a < rows; a++) {
             LogMessage lm = this.messages.get(a);
-            this.graphics.fonts.basic.setColor(Color.RED.r, Color.RED.g, Color.RED.b, alphas[a]);
-            this.graphics.fonts.basic.draw(this.graphics.sprites, lm.message, rects[a].x,
+            this.view.graphics.fonts.basic.setColor(Color.RED.r, Color.RED.g, Color.RED.b, alphas[a]);
+            this.view.graphics.fonts.basic.draw(this.view.graphics.sprites, lm.message, rects[a].x,
                     rects[a].y + lm.h + Logger.MARGIN);
         }
-        this.graphics.fonts.basic.setColor(Color.WHITE);
-        this.graphics.sprites.end();
+        this.view.graphics.fonts.basic.setColor(Color.WHITE);
+        this.view.graphics.sprites.end();
 
         // Remove a message when the timer runs out
         if (this.timer == Logger.MAX_TIMER) {

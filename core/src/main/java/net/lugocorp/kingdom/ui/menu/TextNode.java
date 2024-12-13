@@ -14,9 +14,12 @@ import java.util.List;
 public class TextNode implements MenuNode {
     private final List<String> lines = new ArrayList<>();
     protected BitmapFont font;
+    private int width;
+    private int hash;
 
     public TextNode(Graphics graphics, String message) {
         this.font = graphics.fonts.basic;
+        this.hash = message.hashCode();
         this.lines.add(message);
     }
 
@@ -25,6 +28,19 @@ public class TextNode implements MenuNode {
      */
     protected int getMargin() {
         return 5;
+    }
+
+    /**
+     * Updates the content of this TextNode
+     */
+    public void setText(String message) {
+        if (message.hashCode() == this.hash) {
+            return;
+        }
+        this.hash = message.hashCode();
+        this.lines.clear();
+        this.lines.add(message);
+        this.pack(this.width);
     }
 
     /** {@inheritdoc} */
@@ -36,6 +52,7 @@ public class TextNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void pack(int width) {
+        this.width = width;
         GlyphLayout layout = new GlyphLayout();
         String[] message = this.lines.get(0).split(" ");
         String buffer = "";

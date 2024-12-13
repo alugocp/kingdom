@@ -6,7 +6,6 @@ import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
@@ -176,14 +175,16 @@ public class TurnStructure {
 
             // Check human Player win/lose state
             if (this.game.hasHumanPlayerLost()) {
-                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false,
+                view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
+                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                         new ListNode().add(new TextNode(this.graphics, "You have lost"))
                                 .add(new ButtonNode(this.graphics, "Okay", () -> {
                                     // TODO return to some main menu
                                 }))));
             }
             if (this.game.hasHumanPlayerWon()) {
-                view.popups.add(new Menu(Hud.BUTTON_WIDTH, Hud.HEIGHT, Coords.SIZE.x - (Hud.BUTTON_WIDTH * 2), false,
+                view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
+                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                         new ListNode().add(new TextNode(this.graphics, "You win!"))
                                 .add(new ButtonNode(this.graphics, "Okay", () -> {
                                     // TODO return to some main menu
