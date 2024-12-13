@@ -13,8 +13,6 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
@@ -67,24 +65,13 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     }
 
     /**
-     * Can make this Building's model partially transparent or fully opaque
-     */
-    public void setTransparency(boolean transparent) {
-        if (this.model.isPresent()) {
-            for (Material m : this.model.get().materials) {
-                m.set(new BlendingAttribute(transparent ? 0.5f : 1f));
-            }
-        }
-    }
-
-    /**
      * Spawns this loaded object into the World
      */
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
             if (t.unit.isPresent()) {
-                this.setTransparency(true);
+                this.setAlpha(0.5f);
             }
             view.game.buildingSpawned(this);
         });

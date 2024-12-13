@@ -196,7 +196,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         this.y = y;
         this.resetModelPosition();
         g.setLeader(destin, this.leader);
-        destin.building.ifPresent((Building b) -> b.setTransparency(true));
+        destin.building.ifPresent((Building b) -> b.setAlpha(0.5f));
     }
 
     /**
@@ -204,7 +204,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     private void removeFromPosition(Game g) {
         Tile origin = g.world.getTile(this.x, this.y).get();
-        origin.building.ifPresent((Building b) -> b.setTransparency(false));
+        origin.building.ifPresent((Building b) -> b.setAlpha(1f));
         origin.unit = Optional.empty();
     }
 

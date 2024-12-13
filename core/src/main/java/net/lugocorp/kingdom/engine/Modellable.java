@@ -16,6 +16,7 @@ public class Modellable {
     private AssetsLoader assets;
     private String modelName = "PLACEHOLDER";
     protected Optional<ModelInstance> model = Optional.empty();
+    private float alpha = 1f;
 
     /**
      * Returns the name associated with the current model
@@ -31,9 +32,7 @@ public class Modellable {
         if (!this.model.isPresent()) {
             this.model = this.assets.createModelInstance(this.modelName);
             this.model.ifPresent((ModelInstance model) -> {
-                for (Material m : model.materials) {
-                    m.set(new BlendingAttribute(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 1.0f));
-                }
+                this.applyAlpha(model);
                 this.resetModelPosition();
             });
         }
@@ -57,9 +56,26 @@ public class Modellable {
     }
 
     /**
+     * Tells this object how transparent it should be
+     */
+    public void setAlpha(float alpha) {
+        this.alpha = Math.max(0f, Math.min(1f, alpha));
+        this.getModelInstance().ifPresent((ModelInstance model) -> this.applyAlpha(model));
+    }
+
+    /**
+     * Applies the given alpha value to our model
+     */
+    protected void applyAlpha(ModelInstance model) {
+        for (Material m : this.model.get().materials) {
+            m.set(new BlendingAttribute(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, this.alpha));
+        }
+    }
+
+    /**
      * Renders this Modellable's Model if it has one
      */
     public void render(ModelBatch batch, Environment environment) {
-        this.model.ifPresent((ModelInstance model) -> batch.render(model, environment));
+        this.getModelInstance().ifPresent((ModelInstance model) -> batch.render(model, environment));
     }
 }
