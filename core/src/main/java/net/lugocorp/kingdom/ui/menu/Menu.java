@@ -65,7 +65,7 @@ public class Menu {
      * Sets a mini menu on this Menu
      */
     void setMiniMenu(MenuNode root, int x, int y) {
-        Menu menu = new Menu(x, y, 150, false, root);
+        Menu menu = new Menu(x, Math.min(y, Coords.SIZE.y - root.getHeight()), 150, false, root);
         menu.outlined = true;
         this.mini = Optional.of(menu);
     }
