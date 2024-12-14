@@ -17,4 +17,13 @@ public class Mechanics {
     public Mechanics(Game game, Graphics graphics) {
         this.turns = new TurnStructure(game, graphics);
     }
+
+    /**
+     * Initializes mechanics that require GameView to be initialized
+     */
+    public void init(Game game) {
+        this.auction.init(game);
+        this.fates.init(game);
+        this.pools.init(game);
+    }
 }

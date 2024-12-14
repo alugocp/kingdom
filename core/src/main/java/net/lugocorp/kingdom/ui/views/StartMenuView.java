@@ -1,11 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.MenuController;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
-import net.lugocorp.kingdom.game.model.Generator;
-import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.game.world.WorldGenerator;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -25,22 +21,15 @@ public class StartMenuView implements View {
     private final Menu menu;
     private Consumer<View> navigate;
 
-    public StartMenuView(Graphics graphics, AllEventHandlers events) {
+    StartMenuView(Graphics graphics, AllEventHandlers events) {
         this.graphics = graphics;
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
-                .add(new HeaderNode(graphics, "Main Menu")).add(new ButtonNode(graphics, "New game", () -> {
-                    Game game = new Game(this.graphics, events, new World(10, 5));
-                    GameView view = new GameView(game, this.graphics);
-                    game.generator = new Generator(view);
-                    game.mechanics.auction.init(game);
-                    game.mechanics.fates.init(game);
-                    game.mechanics.pools.init(game);
-                    game.human.fate = game.mechanics.fates.chooseRandomFate();
-                    new WorldGenerator().generateWorld(view);
-                    this.navigate.accept(view);
-                })).add(new TextNode(graphics, "Load game (not implemented yet)"))
-                .add(new TextNode(graphics, "Settings (not implemented yet)"))
-                .add(new TextNode(graphics, "Credits (not implemented yet)")));
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
+                new ListNode().add(new HeaderNode(graphics, "Main Menu"))
+                        .add(new ButtonNode(graphics, "New game",
+                                () -> this.navigate.accept(new GameCreationView(graphics, events))))
+                        .add(new TextNode(graphics, "Load game (not implemented yet)"))
+                        .add(new TextNode(graphics, "Settings (not implemented yet)"))
+                        .add(new TextNode(graphics, "Credits (not implemented yet)")));
     }
 
     /** {@inheritdoc} */

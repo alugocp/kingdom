@@ -12,8 +12,8 @@ import java.util.Optional;
  */
 public class Fate implements EventReceiver {
     public final String name;
+    public final List<String> desc = new ArrayList<>();
     public Optional<String> image = Optional.empty();
-    public List<String> desc = new ArrayList<>();
 
     Fate(String name) {
         this.name = name;

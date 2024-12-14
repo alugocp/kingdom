@@ -36,6 +36,7 @@ public class Hud extends Menu {
                                     }
                                 }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
         this.pack();
+        // TODO add a View Fate button
     }
 
     /** {@inheritdoc} */

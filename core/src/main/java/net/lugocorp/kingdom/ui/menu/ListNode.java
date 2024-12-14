@@ -25,11 +25,11 @@ public class ListNode implements MenuNode {
     }
 
     /**
-     * Sets margins for this ListNode
+     * Clears the child MenuNodes form this ListNode
      */
-    /*
-     * public ListNode setMargin(int margin) { this.margin = margin; }
-     */
+    public void clear() {
+        this.children.clear();
+    }
 
     /**
      * Adds a border (and some margin) to this ListNode

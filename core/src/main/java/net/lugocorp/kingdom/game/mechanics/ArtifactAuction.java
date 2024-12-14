@@ -134,14 +134,14 @@ public class ArtifactAuction {
 
         // Populate the Menu with ArtifactNodes if the human Player did win the Auction
         int a = 0;
-        int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
-        int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
+        final int columns = 3;
+        final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
         ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new ButtonNode(view.graphics, "Buy an artifact next time", () -> view.popups.complete()));
         view.game.human.auctionChips++;
         while (a < artifacts.size()) {
-            RowNode row1 = new RowNode().setColumns(3);
-            RowNode row2 = new RowNode().setColumns(3);
+            RowNode row1 = new RowNode().setColumns(columns);
+            RowNode row2 = new RowNode().setColumns(columns);
             for (int b = 0; b < columns && a < this.artifacts.size();) {
                 final Artifact artifact = this.artifacts.get(a);
                 if (!artifact.shouldDisplay()) {
@@ -173,14 +173,14 @@ public class ArtifactAuction {
     public Menu getOwnedArtifactsMenu(GameView view) {
         int a = 0;
         List<Artifact> artifacts = view.game.human.artifacts;
-        int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
-        int columns = (int) Math.floor(width / ArtifactNode.WIDTH);
+        final int columns = 3;
+        final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
         ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.complete()));
         if (artifacts.size() == 0) {
             node.add(new TextNode(view.graphics, "You do not have any artifacts"));
         } else {
             while (a < artifacts.size()) {
-                RowNode row = new RowNode().setColumns(3);
+                RowNode row = new RowNode().setColumns(columns);
                 for (int b = 0; b < columns && a < artifacts.size();) {
                     final Artifact artifact = artifacts.get(a);
                     row.add(new ArtifactNode(view.graphics, artifact));

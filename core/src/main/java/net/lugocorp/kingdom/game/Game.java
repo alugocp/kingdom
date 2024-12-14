@@ -36,8 +36,8 @@ public class Game {
     public Game(Graphics graphics, AllEventHandlers events, World world) {
         this.events = events;
         this.world = world;
-        this.mechanics = new Mechanics(this, graphics);
         this.human = new Player("you", null, true);
+        this.mechanics = new Mechanics(this, graphics);
         this.playerBuildings.put(this.human, new ArrayList<Building>());
     }
 

@@ -54,12 +54,12 @@ public class KingdomMod {
         events.fate.addEventHandler("The Veteran", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
             e.blob.image = Optional.of("golden feather");
-            e.desc.add("This Fate is under development");
+            e.blob.desc.add("This Fate is under development");
         });
         events.fate.addEventHandler("The Usurper", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
             e.blob.image = Optional.of("golden feather");
-            e.desc.add("This Fate is also under development");
+            e.blob.desc.add("This Fate is also under development");
         });
 
         /**

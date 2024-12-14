@@ -29,6 +29,13 @@ public class Fates {
     }
 
     /**
+     * Returns the first registered Fate
+     */
+    public Fate getFirstFate() {
+        return this.fates.get(0);
+    }
+
+    /**
      * Returns a random Fate
      */
     public Fate chooseRandomFate() {
