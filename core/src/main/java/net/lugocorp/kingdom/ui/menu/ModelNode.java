@@ -5,6 +5,8 @@ import net.lugocorp.kingdom.engine.assets.AssetsLoader;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.math.Matrix4;
@@ -45,17 +47,19 @@ public class ModelNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(Graphics graphics, Rect bounds) {
-        graphics.previews.begin(this.camera);
         Matrix4 proj = new Matrix4();
-        float halfh = Coords.SIZE.y / 2f;
         float halfw = Coords.SIZE.x / 2f;
+        float halfh = Coords.SIZE.y / 2f;
         float scale = (bounds.w - (ModelNode.MARGIN * 2)) / (halfw * this.modelWidth);
-        proj.setTranslation((bounds.x + (bounds.w * 0.5f) - halfw) / halfw,
-                (-bounds.y + (bounds.h * 0.75f) - halfh) / halfh, 0);
         proj.scale(scale, scale, scale);
+        proj.setTranslation(((bounds.x + (bounds.w / 2)) - halfw) / halfw,
+                -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, 0f);
+        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         graphics.getPreviewShader().setProjViewMatrix(proj);
+        graphics.previews.begin(this.camera);
         this.model.render(graphics.previews, this.environment);
         graphics.previews.end();
+        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
     }
 
     /** {@inheritdoc} */
