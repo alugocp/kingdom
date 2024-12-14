@@ -4,9 +4,13 @@ import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -17,23 +21,25 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * Contains all the objects used to render things in the application
  */
 public class Graphics {
-    public final Loaders loaders;
-    public final ShapeRenderer shapes;
-    public final SpriteBatch sprites;
+    public final ShapeRenderer shapes = new ShapeRenderer();
+    public final SpriteBatch sprites = new SpriteBatch();
+    public final Fonts fonts = new Graphics.Fonts();
     public final ModelBatch models;
     public final ModelBatch outlines;
     public final ModelBatch previews;
-    public final Fonts fonts;
+    public final Loaders loaders;
 
-    public Graphics(ToonShader toon, OutlineShader outline, PreviewShader preview, AssetsLoader assets,
-            SpritesLoader sprites) {
-        this.shapes = new ShapeRenderer();
-        this.sprites = new SpriteBatch();
-        this.models = new ModelBatch(new Graphics.BasicShaderProvider(toon));
-        this.outlines = new ModelBatch(new Graphics.BasicShaderProvider(outline));
-        this.previews = new ModelBatch(new Graphics.BasicShaderProvider(preview));
-        this.fonts = new Graphics.Fonts();
-        this.loaders = new Loaders(assets, sprites);
+    public Graphics(AssetManager assets) {
+        this.models = new ModelBatch(new Graphics.BasicShaderProvider(new ToonShader()));
+        this.outlines = new ModelBatch(new Graphics.BasicShaderProvider(new OutlineShader()));
+        this.previews = new ModelBatch(new Graphics.BasicShaderProvider(new PreviewShader()));
+        this.loaders = new Loaders(assets);
+
+        // Initialize constituent objects
+        this.loaders.sprites.loadAndRegister();
+        this.getPreviewShader().init();
+        this.getOutlineShader().init();
+        this.getToonShader().init();
     }
 
     /**
@@ -75,12 +81,20 @@ public class Graphics {
      * This nested class contains all the application fonts
      */
     public static class Fonts {
-        public final BitmapFont basic = new BitmapFont();
-        public final BitmapFont header = new BitmapFont();
-        public final BitmapFont button = new BitmapFont();
+        public final BitmapFont header;
+        public final BitmapFont button;
+        public final BitmapFont basic;
 
         Fonts() {
-            this.button.setColor(new Color(0.6f, 1f, 1f, 1f));
+            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("DejaVuSans.ttf"));
+            FreeTypeFontParameter param = new FreeTypeFontParameter();
+            param.size = 32;
+            this.header = generator.generateFont(param);
+            param.size = 18;
+            this.basic = generator.generateFont(param);
+            param.color = new Color(0.6f, 1f, 1f, 1f);
+            this.button = generator.generateFont(param);
+            generator.dispose();
         }
     }
 
@@ -88,12 +102,11 @@ public class Graphics {
      * This nested class contains all asset loaders
      */
     public static class Loaders {
-        public final SpritesLoader sprites;
+        public final SpritesLoader sprites = new SpritesLoader();
         public final AssetsLoader assets;
 
-        Loaders(AssetsLoader assets, SpritesLoader sprites) {
-            this.sprites = sprites;
-            this.assets = assets;
+        Loaders(AssetManager assets) {
+            this.assets = new AssetsLoader(assets);
         }
     }
 

@@ -53,7 +53,8 @@ public class ArtifactNode implements MenuNode {
 
         // Draw foreground text
         int h = this.text.getHeight();
-        this.text.draw(graphics, new Rect(bounds.x + ArtifactNode.MARGIN, bounds.y + bounds.h - h - ArtifactNode.MARGIN, bounds.w, h));
+        this.text.draw(graphics,
+                new Rect(bounds.x + ArtifactNode.MARGIN, bounds.y + bounds.h - h - ArtifactNode.MARGIN, bounds.w, h));
     }
 
     /** {@inheritdoc} */
