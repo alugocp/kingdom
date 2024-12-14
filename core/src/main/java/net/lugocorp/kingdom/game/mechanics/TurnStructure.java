@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.core.Events.RepeatedEvent;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -25,15 +24,11 @@ public class TurnStructure {
     // TODO optimize the futures field with a different data structure
     private final List<FutureTick> futures = new ArrayList<>();
     private final Set<Unit> unitsThatHaveActed = new HashSet<>();
-    private final Graphics graphics;
-    private final Game game;
     private boolean canPlayerAct = false;
     private Player turnPlayer;
     private int turn = 1;
 
-    public TurnStructure(Game game, Graphics graphics) {
-        this.game = game;
-        this.graphics = graphics;
+    public TurnStructure(Game game) {
         this.turnPlayer = game.human;
     }
 
@@ -137,16 +132,16 @@ public class TurnStructure {
      */
     public void iterateTurnPlayer(GameView view) {
         if (this.turnPlayer.isHumanPlayer()) {
-            this.turnPlayer = this.game.comps.get(0);
+            this.turnPlayer = view.game.comps.get(0);
         } else {
-            int index = this.game.comps.indexOf(this.turnPlayer);
-            if (index == this.game.comps.size() - 1) {
-                this.turnPlayer = this.game.human;
+            int index = view.game.comps.indexOf(this.turnPlayer);
+            if (index == view.game.comps.size() - 1) {
+                this.turnPlayer = view.game.human;
                 this.turn++;
                 this.checkFutureTicks(view);
-                this.startNewTurnGroup();
+                this.startNewTurnGroup(view);
             } else {
-                this.turnPlayer = this.game.comps.get(index + 1);
+                this.turnPlayer = view.game.comps.get(index + 1);
             }
         }
         this.kickOffTurn(view);
@@ -155,9 +150,9 @@ public class TurnStructure {
     /**
      * This function handles logic whenever every player has had a turn
      */
-    private void startNewTurnGroup() {
-        this.game.mechanics.dayNight.tick();
-        this.graphics.getToonShader().setNighttime(this.game.mechanics.dayNight.isNight());
+    private void startNewTurnGroup(GameView view) {
+        view.game.mechanics.dayNight.tick();
+        view.graphics.getToonShader().setNighttime(view.game.mechanics.dayNight.isNight());
     }
 
     /**
@@ -168,57 +163,53 @@ public class TurnStructure {
         this.canPlayerAct = false;
         // TODO run this logic in another thread for optimization
         this.unitsThatHaveActed.clear();
-        this.turnPlayer.unitPoints += this.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer.bareTiles,
+        this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer.bareTiles,
                 this.turnPlayer.tiles);
         if (this.turnPlayer.isHumanPlayer()) {
             view.logger.log("It is your turn again");
 
             // Check human Player win/lose state
-            if (this.game.hasHumanPlayerLost()) {
+            if (view.game.hasHumanPlayerLost()) {
                 view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(this.graphics, "You have lost"))
-                                .add(new ButtonNode(this.graphics, "Okay", () -> {
-                                    // TODO return to some main menu
-                                }))));
+                        new ListNode().add(new TextNode(view.graphics, "You have lost"))
+                                .add(new ButtonNode(view.graphics, "Okay", () -> view.close()))));
             }
-            if (this.game.hasHumanPlayerWon()) {
+            if (view.game.hasHumanPlayerWon()) {
                 view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(this.graphics, "You win!"))
-                                .add(new ButtonNode(this.graphics, "Okay", () -> {
-                                    // TODO return to some main menu
-                                }))));
+                        new ListNode().add(new TextNode(view.graphics, "You win!"))
+                                .add(new ButtonNode(view.graphics, "Okay", () -> view.close()))));
             }
 
             // Choose a new Unit at the maximum unit points
             for (int a = 0; a < Math.floor(this.turnPlayer.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
-                view.popups.add(this.game.mechanics.newUnits.getNewUnitMenu(view));
+                view.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
             }
             // Start a new ArtifactAuction at the maximum auction points
-            if (this.game.auctionPoints >= ArtifactAuction.MAX_AUCTION_POINTS
-                    && !this.game.mechanics.auction.getAuction().isPresent()) {
-                this.game.auctionPoints -= ArtifactAuction.MAX_AUCTION_POINTS;
-                this.game.mechanics.auction.openNewAuction();
-                view.popups.add(this.game.mechanics.auction.getAuctionBuyInMenu(view));
+            if (view.game.auctionPoints >= ArtifactAuction.MAX_AUCTION_POINTS
+                    && !view.game.mechanics.auction.getAuction().isPresent()) {
+                view.game.auctionPoints -= ArtifactAuction.MAX_AUCTION_POINTS;
+                view.game.mechanics.auction.openNewAuction();
+                view.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view));
             }
             // Show the aftermath of any active ArtifactAuction
-            if (this.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(this.game))
+            if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
                     .orElse(false)) {
-                if (this.game.mechanics.auction.getAuction().get().notEveryoneHasSeenResults(this.game)) {
-                    view.popups.add(this.game.mechanics.auction.getFollowUpMenu(view));
-                    this.game.mechanics.auction.getAuction().get().hasSeenResults();
+                if (view.game.mechanics.auction.getAuction().get().notEveryoneHasSeenResults(view.game)) {
+                    view.popups.add(view.game.mechanics.auction.getFollowUpMenu(view));
+                    view.game.mechanics.auction.getAuction().get().hasSeenResults();
                 } else {
-                    this.game.mechanics.auction.closeAuction();
+                    view.game.mechanics.auction.closeAuction();
                 }
             }
         } else {
             // Handle AI player ArtifactAuction logic
-            if (this.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(this.game))
+            if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
                     .orElse(false)) {
-                this.game.mechanics.auction.getAuction().get().hasSeenResults();
-            } else if (this.game.mechanics.auction.getAuction().isPresent()) {
-                this.game.mechanics.auction.getAuction().get().doNotAddBidder();
+                view.game.mechanics.auction.getAuction().get().hasSeenResults();
+            } else if (view.game.mechanics.auction.getAuction().isPresent()) {
+                view.game.mechanics.auction.getAuction().get().doNotAddBidder();
             }
         }
 

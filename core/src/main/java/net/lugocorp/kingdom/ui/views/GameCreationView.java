@@ -32,7 +32,7 @@ public class GameCreationView implements View {
 
     GameCreationView(Graphics graphics, AllEventHandlers events) {
         // Initialize Game and GameView state for world generation logic
-        this.game = new Game(graphics, events, new World(10, 5));
+        this.game = new Game(events, new World(10, 5));
         this.view = new GameView(this.game, graphics);
         this.game.generator = new Generator(this.view);
         this.game.mechanics.init(this.game);

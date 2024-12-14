@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.Game;
 
 /**
@@ -14,8 +13,8 @@ public class Mechanics {
     public final Fates fates = new Fates();
     public final TurnStructure turns;
 
-    public Mechanics(Game game, Graphics graphics) {
-        this.turns = new TurnStructure(game, graphics);
+    public Mechanics(Game game) {
+        this.turns = new TurnStructure(game);
     }
 
     /**

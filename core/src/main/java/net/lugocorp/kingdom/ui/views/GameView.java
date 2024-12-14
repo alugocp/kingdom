@@ -35,6 +35,8 @@ public class GameView implements View {
     public final Logger logger;
     public final Game game;
     public final Hud hud;
+    private Consumer<View> navigate = (View v) -> {
+    };
 
     GameView(Game game, Graphics graphics) {
         this.game = game;
@@ -59,6 +61,13 @@ public class GameView implements View {
         return this.environment;
     }
 
+    /**
+     * Returns to the StartMenuView
+     */
+    public void close() {
+        this.navigate.accept(new StartMenuView(this.graphics, this.game.events));
+    }
+
     /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
@@ -68,6 +77,8 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void start(Consumer<View> navigate) {
+        this.navigate = navigate;
+
         // 3D setup
         this.environment = new Environment();
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));

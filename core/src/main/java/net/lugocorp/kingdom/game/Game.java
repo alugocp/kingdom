@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game;
-import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.model.Building;
@@ -33,11 +32,11 @@ public class Game {
     public Generator generator;
     public int auctionPoints = 0;
 
-    public Game(Graphics graphics, AllEventHandlers events, World world) {
+    public Game(AllEventHandlers events, World world) {
         this.events = events;
         this.world = world;
         this.human = new Player("you", null, true);
-        this.mechanics = new Mechanics(this, graphics);
+        this.mechanics = new Mechanics(this);
         this.playerBuildings.put(this.human, new ArrayList<Building>());
     }
 
