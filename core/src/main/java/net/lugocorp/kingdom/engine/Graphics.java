@@ -88,11 +88,12 @@ public class Graphics {
         Fonts() {
             FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("DejaVuSans.ttf"));
             FreeTypeFontParameter param = new FreeTypeFontParameter();
-            param.size = 32;
+            param.size = 36;
             this.header = generator.generateFont(param);
             param.size = 18;
             this.basic = generator.generateFont(param);
             param.color = new Color(0.6f, 1f, 1f, 1f);
+            param.size = 24;
             this.button = generator.generateFont(param);
             generator.dispose();
         }

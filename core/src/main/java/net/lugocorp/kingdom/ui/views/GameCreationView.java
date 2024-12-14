@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.ui.menu.FateViewNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
+import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -84,7 +85,7 @@ public class GameCreationView implements View {
                 .add(new ButtonNode(view.graphics, "Choose", () -> {
                     new WorldGenerator().generateWorld(this.view);
                     this.navigate.accept(this.view);
-                }))).add(display).add(options);
+                })).add(new TextNode(view.graphics, "Select a fate"))).add(display).add(options);
 
         // Set up RowNodes of FateNodes
         int a = 0;

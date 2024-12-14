@@ -51,15 +51,47 @@ public class KingdomMod {
         /**
          * Fates
          */
+        events.fate.addEventHandler("The Raider", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("raider");
+            e.blob.desc.add("Playstyle: High-risk aggro");
+        });
+        events.fate.addEventHandler("The Merchant", "GenerateFateEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+                    e.blob.image = Optional.of("merchant");
+                    e.blob.desc.add("Playstyle: Market control");
+                });
         events.fate.addEventHandler("The Veteran", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("golden feather");
-            e.blob.desc.add("This Fate is under development");
+            e.blob.image = Optional.of("veteran");
+            e.blob.desc.add("Playstyle: Military production");
         });
+        events.fate.addEventHandler("The Devout", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("devout");
+            e.blob.desc.add("Playstyle: Patron collection");
+        });
+        events.fate.addEventHandler("The Sentinel", "GenerateFateEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+                    e.blob.image = Optional.of("sentinel");
+                    e.blob.desc.add("Playstyle: Defensive expansion");
+                });
         events.fate.addEventHandler("The Usurper", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("golden feather");
-            e.blob.desc.add("This Fate is also under development");
+            e.blob.image = Optional.of("usurper");
+            e.blob.desc.add("Playstyle: Early market bonus into unit production");
+        });
+        events.fate.addEventHandler("The Forager", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("forager");
+            e.blob.desc.add("Playstyle: Resource accumulation");
+        });
+        events.fate.addEventHandler("The Teacher", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("teacher");
+            e.blob.desc.add("Playstyle: Investment into a smaller group of elite units");
         });
 
         /**
