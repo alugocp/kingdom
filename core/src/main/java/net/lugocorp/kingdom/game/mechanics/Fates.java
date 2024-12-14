@@ -1,6 +1,12 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Fate;
+import net.lugocorp.kingdom.ui.menu.ButtonNode;
+import net.lugocorp.kingdom.ui.menu.FateViewNode;
+import net.lugocorp.kingdom.ui.menu.ListNode;
+import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Coords;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,5 +46,15 @@ public class Fates {
      */
     public Fate chooseRandomFate() {
         return this.fates.get((int) Math.floor(Math.random() * this.fates.size()));
+    }
+
+    /**
+     * Returns a Menu so the player can view their own Fate
+     */
+    public Menu getPlayerFateMenu(GameView view) {
+        final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false,
+                new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.complete()))
+                        .add(new FateViewNode(view.graphics, view.game.human.fate)));
     }
 }
