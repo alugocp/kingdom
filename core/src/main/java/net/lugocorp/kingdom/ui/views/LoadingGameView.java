@@ -3,14 +3,8 @@ import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.utils.ModLoader;
 import net.lugocorp.kingdom.utils.math.Coords;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.function.Consumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * View for when we're loading a new game
@@ -39,47 +33,32 @@ public class LoadingGameView implements View {
         // Initiate mod loading in a separate Thread
         new Thread(() -> {
             ModLoader mods = new ModLoader();
+            try {
+                mods.resetModAssetsLocation();
+            } catch (Exception e) {
+                System.err.println("Could not load any mod data");
+                e.printStackTrace();
+                this.loaded = true;
+                return;
+            }
             for (String filepath : mods.getMods()) {
-                System.out.println(String.format("Loading mod %s...", filepath));
+                String key = mods.getModKey(filepath);
+                System.out.println(String.format("Loading mod '%s'...", key));
 
                 // Load mod code
                 try {
-                    mods.loadMod(filepath, this.events);
+                    mods.loadMod(key, filepath, this.events);
                 } catch (Exception e) {
-                    System.err.println(String.format("Error while loading mod %s", filepath));
+                    System.err.println(String.format("Error while loading mod '%s'", key));
                     e.printStackTrace();
                     continue;
                 }
 
+                // Extract mod assets
                 try {
-                    // Set up the mod unzip site
-                    File site = Gdx.files.external("kingdom/extracted").file();
-                    if (site.exists()) {
-                        site.delete();
-                    }
-                    site.mkdirs();
-
-                    // Unzip mod assets
-                    ZipEntry entry = null;
-                    ZipInputStream input = new ZipInputStream(new FileInputStream(filepath));
-                    while ((entry = input.getNextEntry()) != null) {
-                        File file = Gdx.files.external(String.format("kingdom/extracted/%s", entry.getName())).file();
-                        if (entry.isDirectory()) {
-                            file.mkdir();
-                        } else {
-                            file.createNewFile();
-                            int len = 0;
-                            byte[] buffer = new byte[1024];
-                            FileOutputStream output = new FileOutputStream(file);
-                            while ((len = input.read(buffer)) > 0) {
-                                output.write(buffer, 0, len);
-                            }
-                            output.close();
-                        }
-                    }
-                    input.close();
+                    mods.unzipAssets(key, filepath, this.graphics.loaders.assets.getModAssetsMap());
                 } catch (Exception e) {
-                    System.err.println(String.format("Did not load any assets from mod %s", filepath));
+                    System.err.println(String.format("Did not load any assets from mod '%s'", key));
                     e.printStackTrace();
                 }
             }

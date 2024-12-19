@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.mod;
+import net.lugocorp.kingdom.engine.GameMod;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.Damage.DamageType;
 import net.lugocorp.kingdom.game.core.AbilityLogic;
@@ -24,11 +25,22 @@ import java.util.Optional;
 /**
  * This mod defines all the content for version 1.0 of the base game
  */
-public class KingdomMod {
+public class KingdomMod implements GameMod {
 
-    /**
-     * This function is called when the mod is successfully loaded
-     */
+    /** {@inheritdoc} */
+    @Override
+    public String getName() {
+        return "Vanilla";
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getDescription() {
+        return "Contains all of the base content for this game.";
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public void load(AllEventHandlers events) {
 
         /**

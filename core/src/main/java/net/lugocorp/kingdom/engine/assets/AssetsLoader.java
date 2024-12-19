@@ -1,4 +1,7 @@
 package net.lugocorp.kingdom.engine.assets;
+import net.lugocorp.kingdom.utils.ModAssetManager;
+import net.lugocorp.kingdom.utils.ModLoader;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -11,6 +14,7 @@ import java.util.Optional;
  * Wraps the logic for loading 3D model assets into the game
  */
 public class AssetsLoader {
+    private final ModAssetManager modAssetsMap = new ModAssetManager();
     private final Map<String, AssetsLoader.ModelBounds> bounds = new HashMap<>();
     private final AssetManager assets;
 
@@ -19,10 +23,23 @@ public class AssetsLoader {
     }
 
     /**
+     * Returns the mod assets map object
+     */
+    public ModAssetManager getModAssetsMap() {
+        return this.modAssetsMap;
+    }
+
+    /**
      * Returns the filename for the given 3D model asset
      */
     private String getFilename(String name) {
-        return String.format("%s.g3db", name);
+        String filepath = String.format("%s.g3db", name);
+        String result = this.modAssetsMap
+                .get(filepath).map((String key) -> Gdx.files
+                        .external(String.format("%s/%s/%s", ModLoader.ASSETS_BASE, key, filepath)).path())
+                .orElse(filepath);
+        System.out.println(String.format("%s -> %s", name, result));
+        return result;
     }
 
     /**

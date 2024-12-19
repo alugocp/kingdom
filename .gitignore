@@ -164,6 +164,6 @@ Thumbs.db
 **/resource-config.json
 
 ## Kingdom game:
-/assets/*.g3db
 /content/build
 /mods/*.jar
+*.g3db
