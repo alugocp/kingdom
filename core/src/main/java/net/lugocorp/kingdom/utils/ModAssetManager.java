@@ -13,7 +13,6 @@ public class ModAssetManager {
      * Sets which mod name to associate with the given resource filepath
      */
     public void put(String path, String mod) {
-        System.out.println(String.format("%s: %s", path, mod));
         this.resourceMods.put(path, mod);
     }
 

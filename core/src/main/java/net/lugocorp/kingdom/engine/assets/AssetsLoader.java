@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.utils.ModAssetManager;
 import net.lugocorp.kingdom.utils.ModLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -16,11 +17,8 @@ import java.util.Optional;
 public class AssetsLoader {
     private final ModAssetManager modAssetsMap = new ModAssetManager();
     private final Map<String, AssetsLoader.ModelBounds> bounds = new HashMap<>();
-    private final AssetManager assets;
-
-    public AssetsLoader(AssetManager assets) {
-        this.assets = assets;
-    }
+    private final AssetManager external = new AssetManager(new ExternalFileHandleResolver());
+    private final AssetManager internal = new AssetManager();
 
     /**
      * Returns the mod assets map object
@@ -30,28 +28,37 @@ public class AssetsLoader {
     }
 
     /**
+     * Returns the appropriate AssetManager to handle the given resource
+     */
+    private AssetManager getAssetManager(String name) {
+        if (this.modAssetsMap.get(String.format("%s.g3db", name)).isPresent()) {
+            return this.external;
+        }
+        return this.internal;
+    }
+
+    /**
      * Returns the filename for the given 3D model asset
      */
     private String getFilename(String name) {
         String filepath = String.format("%s.g3db", name);
-        String result = this.modAssetsMap
+        return this.modAssetsMap
                 .get(filepath).map((String key) -> Gdx.files
                         .external(String.format("%s/%s/%s", ModLoader.ASSETS_BASE, key, filepath)).path())
                 .orElse(filepath);
-        System.out.println(String.format("%s -> %s", name, result));
-        return result;
     }
 
     /**
      * Creates a new ModelInstance for the Model with the given name
      */
     public Optional<ModelInstance> createModelInstance(String name) {
-        this.assets.update();
+        AssetManager assets = this.getAssetManager(name);
+        assets.update();
         String filename = this.getFilename(name);
-        Model model = this.assets.get(filename, false);
+        Model model = assets.get(filename, false);
         if (model == null) {
-            if (!this.assets.contains(filename, Model.class)) {
-                this.assets.load(filename, Model.class);
+            if (!assets.contains(filename, Model.class)) {
+                assets.load(filename, Model.class);
             }
             return Optional.empty();
         }
@@ -64,8 +71,9 @@ public class AssetsLoader {
      */
     public void checkForUnload(String name) {
         String filename = this.getFilename(name);
-        if (this.assets.getReferenceCount(filename) == 0) {
-            this.assets.unload(filename);
+        AssetManager assets = this.getAssetManager(name);
+        if (assets.getReferenceCount(filename) == 0) {
+            assets.unload(filename);
         }
     }
 
@@ -73,7 +81,8 @@ public class AssetsLoader {
      * Calculates the width and height of the given model
      */
     private boolean calculateDimensions(String name) {
-        Model model = this.assets.get(this.getFilename(name), false);
+        AssetManager assets = this.getAssetManager(name);
+        Model model = assets.get(this.getFilename(name), false);
         if (model == null) {
             return false;
         }
@@ -109,7 +118,8 @@ public class AssetsLoader {
      * Calls into the AssetManager's dispose() method
      */
     public void dispose() {
-        this.assets.dispose();
+        this.internal.dispose();
+        this.external.dispose();
     }
 
     /**

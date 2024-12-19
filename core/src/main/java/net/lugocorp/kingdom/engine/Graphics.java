@@ -5,7 +5,6 @@ import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,17 +22,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class Graphics {
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
+    public final Loaders loaders = new Loaders();
     public final Fonts fonts = new Fonts();
     public final ModelBatch models;
     public final ModelBatch outlines;
     public final ModelBatch previews;
-    public final Loaders loaders;
 
-    public Graphics(AssetManager assets) {
+    public Graphics() {
         this.models = new ModelBatch(new BasicShaderProvider(new ToonShader()));
         this.outlines = new ModelBatch(new BasicShaderProvider(new OutlineShader()));
         this.previews = new ModelBatch(new BasicShaderProvider(new PreviewShader()));
-        this.loaders = new Loaders(assets);
 
         // Initialize constituent objects
         this.loaders.sprites.loadAndRegister();
@@ -104,11 +102,8 @@ public class Graphics {
      */
     public static class Loaders {
         public final SpritesLoader sprites = new SpritesLoader();
-        public final AssetsLoader assets;
+        public final AssetsLoader assets = new AssetsLoader();
 
-        Loaders(AssetManager assets) {
-            this.assets = new AssetsLoader(assets);
-        }
     }
 
     /**
