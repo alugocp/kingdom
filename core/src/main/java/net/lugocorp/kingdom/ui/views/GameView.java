@@ -169,6 +169,7 @@ public class GameView implements View {
      * This nested class handles popup Menu logic
      */
     public static class Popups {
+        private final List<Boolean> required = new ArrayList<>();
         private final List<Menu> queue = new ArrayList<>();
         private boolean display = false;
 
@@ -183,6 +184,7 @@ public class GameView implements View {
          * Adds a popup Menu to the state (at the end of the list)
          */
         public void add(Menu menu) {
+            this.required.add(0, true);
             this.queue.add(menu);
             this.display = true;
         }
@@ -191,6 +193,16 @@ public class GameView implements View {
          * Adds a popup Menu to the state (at the front of the list)
          */
         public void addNext(Menu menu) {
+            this.required.add(0, true);
+            this.queue.add(0, menu);
+            this.display = true;
+        }
+
+        /**
+         * Adds an unrequired popup Menu to the state (at the front of the list)
+         */
+        public void addNextUnrequired(Menu menu) {
+            this.required.add(0, false);
             this.queue.add(0, menu);
             this.display = true;
         }
@@ -200,6 +212,7 @@ public class GameView implements View {
          */
         public void complete() {
             this.queue.remove(0);
+            this.required.remove(0);
             if (this.queue.isEmpty()) {
                 this.display = false;
             }
@@ -209,6 +222,9 @@ public class GameView implements View {
          * Shows or hides popup Menus
          */
         public void setDisplay(boolean display) {
+            while (!display && this.required.size() > 0 && !this.required.get(0)) {
+                this.complete();
+            }
             this.display = display && !this.queue.isEmpty();
         }
 
