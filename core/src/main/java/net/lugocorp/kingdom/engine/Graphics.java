@@ -23,16 +23,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class Graphics {
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
-    public final Fonts fonts = new Graphics.Fonts();
+    public final Fonts fonts = new Fonts();
     public final ModelBatch models;
     public final ModelBatch outlines;
     public final ModelBatch previews;
     public final Loaders loaders;
 
     public Graphics(AssetManager assets) {
-        this.models = new ModelBatch(new Graphics.BasicShaderProvider(new ToonShader()));
-        this.outlines = new ModelBatch(new Graphics.BasicShaderProvider(new OutlineShader()));
-        this.previews = new ModelBatch(new Graphics.BasicShaderProvider(new PreviewShader()));
+        this.models = new ModelBatch(new BasicShaderProvider(new ToonShader()));
+        this.outlines = new ModelBatch(new BasicShaderProvider(new OutlineShader()));
+        this.previews = new ModelBatch(new BasicShaderProvider(new PreviewShader()));
         this.loaders = new Loaders(assets);
 
         // Initialize constituent objects

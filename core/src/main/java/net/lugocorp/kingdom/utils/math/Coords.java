@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class Coords {
     public static final Point SIZE = new Point(1280, 960);
-    public static ScreenCoords screen = new Coords.ScreenCoords();
-    public static GridCoords grid = new Coords.GridCoords();
-    public static RawCoords raw = new Coords.RawCoords();
+    public static ScreenCoords screen = new ScreenCoords();
+    public static GridCoords grid = new GridCoords();
+    public static RawCoords raw = new RawCoords();
 
     /**
      * This nested class handles packaging raw numbers into a libGDX Vector3

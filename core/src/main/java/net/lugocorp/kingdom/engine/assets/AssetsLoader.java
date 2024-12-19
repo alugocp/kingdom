@@ -51,7 +51,7 @@ public class AssetsLoader {
         }
         BoundingBox box = new BoundingBox();
         model.calculateBoundingBox(box);
-        this.bounds.put(name, new AssetsLoader.ModelBounds(box.getDepth(), box.getHeight(), 0f));
+        this.bounds.put(name, new ModelBounds(box.getDepth(), box.getHeight(), 0f));
         return true;
     }
 

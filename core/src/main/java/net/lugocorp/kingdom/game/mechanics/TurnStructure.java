@@ -54,7 +54,7 @@ public class TurnStructure {
         if (interval < 1) {
             throw new RuntimeException("You cannot set up a tick for the current or any past turns");
         }
-        this.futures.add(new TurnStructure.FutureTick(receiver, channel, this.turn + interval, interval, repeat));
+        this.futures.add(new FutureTick(receiver, channel, this.turn + interval, interval, repeat));
     }
 
     /**

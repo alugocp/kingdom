@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * This class contains logic for Tile selection by the human Player
  */
 public class TileSelector {
-    private final TileSelector.HighlightModellable highlight = new TileSelector.HighlightModellable();
+    private final TileSelector.HighlightModellable highlight = new HighlightModellable();
     private final GameView view;
     private Optional<TileSelection> selection = Optional.empty();
     private Optional<Point> hovered = Optional.empty();
