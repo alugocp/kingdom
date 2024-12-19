@@ -120,16 +120,23 @@ public class ArtifactAuction {
     /**
      * Instantiates the Menu that will appear after an Auction has concluded
      */
-    public Menu getFollowUpMenu(GameView view) {
+    public Menu getFollowUpMenu(GameView view, boolean firstIteration) {
         // Inform the human Player if they did not win the Auction
-        Optional<Player> winner = this.auction.get().getWinner(view.game.world, this.random);
-        if (winner.map((Player p) -> !p.isHumanPlayer()).orElse(true)) {
-            return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
-                    false,
-                    new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
-                            .add(new TextNode(view.graphics,
-                                    winner.isPresent() ? "You did not win the auction" : "Nobody bid in this auction"))
-                            .add(new ButtonNode(view.graphics, "Okay", () -> view.popups.complete())));
+        Optional<Player> winner = Optional.of(view.game.human);
+        if (firstIteration) {
+            view.game.human.auctionChips++;
+        } else {
+            winner = this.auction.get().getWinner(view.game.world, this.random);
+            if (winner.map((Player p) -> !p.isHumanPlayer()).orElse(true)) {
+                return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
+                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                        new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
+                                .add(new TextNode(view.graphics,
+                                        winner.isPresent()
+                                                ? "You did not win the auction"
+                                                : "Nobody bid in this auction"))
+                                .add(new ButtonNode(view.graphics, "Okay", () -> view.popups.complete())));
+            }
         }
 
         // Populate the Menu with ArtifactNodes if the human Player did win the Auction
@@ -138,7 +145,6 @@ public class ArtifactAuction {
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
         ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new ButtonNode(view.graphics, "Buy an artifact next time", () -> view.popups.complete()));
-        view.game.human.auctionChips++;
         while (a < artifacts.size()) {
             RowNode row1 = new RowNode().setColumns(columns);
             RowNode row2 = new RowNode().setColumns(columns);
@@ -154,6 +160,9 @@ public class ArtifactAuction {
                         artifact.claim(view, view.game.human);
                         this.artifacts.remove(artifact);
                         view.popups.complete();
+                        if (view.game.human.auctionChips > 0) {
+                            view.popups.add(this.getFollowUpMenu(view, false));
+                        }
                     } else {
                         view.logger.log("You need more auction chips");
                     }

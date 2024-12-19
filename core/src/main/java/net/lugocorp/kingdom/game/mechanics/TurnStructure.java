@@ -197,7 +197,7 @@ public class TurnStructure {
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
                     .orElse(false)) {
                 if (view.game.mechanics.auction.getAuction().get().notEveryoneHasSeenResults(view.game)) {
-                    view.popups.add(view.game.mechanics.auction.getFollowUpMenu(view));
+                    view.popups.add(view.game.mechanics.auction.getFollowUpMenu(view, true));
                     view.game.mechanics.auction.getAuction().get().hasSeenResults();
                 } else {
                     view.game.mechanics.auction.closeAuction();
