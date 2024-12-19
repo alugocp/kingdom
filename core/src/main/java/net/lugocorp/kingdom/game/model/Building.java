@@ -101,6 +101,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     public void deactivate(GameView view) {
         this.deactivateDefault(view);
         view.game.removeBuilding(this);
+        this.dispose();
     }
 
     /** {@inheritdoc} */

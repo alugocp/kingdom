@@ -259,6 +259,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     public void deactivate(GameView view) {
         EventReceiver.super.deactivate(view);
         this.removeFromPosition(view.game);
+        this.dispose();
     }
 
     /** {@inheritdoc} */

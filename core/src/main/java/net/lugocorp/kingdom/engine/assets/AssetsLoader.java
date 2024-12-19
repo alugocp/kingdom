@@ -42,6 +42,17 @@ public class AssetsLoader {
     }
 
     /**
+     * Unloads the assets associated with the given name if they are no longer
+     * needed
+     */
+    public void checkForUnload(String name) {
+        String filename = this.getFilename(name);
+        if (this.assets.getReferenceCount(filename) == 0) {
+            this.assets.unload(filename);
+        }
+    }
+
+    /**
      * Calculates the width and height of the given model
      */
     private boolean calculateDimensions(String name) {

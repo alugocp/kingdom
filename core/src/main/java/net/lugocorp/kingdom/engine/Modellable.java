@@ -15,8 +15,8 @@ import java.util.Optional;
 public class Modellable {
     private AssetsLoader assets;
     private String modelName = "PLACEHOLDER";
-    protected Optional<ModelInstance> model = Optional.empty();
     private float alpha = 1f;
+    protected Optional<ModelInstance> model = Optional.empty();
 
     /**
      * Returns the name associated with the current model
@@ -70,6 +70,13 @@ public class Modellable {
         for (Material m : this.model.get().materials) {
             m.set(new BlendingAttribute(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, this.alpha));
         }
+    }
+
+    /**
+     * Unloads the assets associated with this object if they are no longer needed
+     */
+    protected void dispose() {
+        this.assets.checkForUnload(this.modelName);
     }
 
     /**
