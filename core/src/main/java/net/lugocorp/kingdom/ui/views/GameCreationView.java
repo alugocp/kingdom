@@ -77,6 +77,7 @@ public class GameCreationView implements View {
      * Returns a Menu to that allows the player to view and select a Fate
      */
     private Menu getFateSelectionMenu(GameView view) {
+        view.game.human.fate = view.game.mechanics.fates.getFirstFate();
         ListNode options = new ListNode();
         FateViewNode display = new FateViewNode(view.graphics, view.game.mechanics.fates.getFirstFate());
         ListNode root = new ListNode().add(new RowNode()

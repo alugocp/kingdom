@@ -37,12 +37,15 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
-        if (this.popupMenu.touchDown(x, y, pointer, button)) {
+        // Menu logic
+        if (this.popupMenu.touchDown(x, y, pointer, button) || this.view.popups.isDisplayed()) {
             return true;
         }
         if (this.menu.touchDown(x, y, pointer, button)) {
             return true;
         }
+
+        // Handle HUD UI and game interface
         if (this.hudMenu.touchDown(x, y, pointer, button)) {
             return true;
         }
@@ -53,14 +56,18 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
+        // Menu logic
         if (this.popupMenu.touchUp(x, y, pointer, button)) {
             return true;
         } else if (this.view.popups.isDisplayed()) {
             this.view.popups.setDisplay(false);
+            return true;
         }
         if (this.menu.touchUp(x, y, pointer, button)) {
             return true;
         }
+
+        // Handle HUD UI and game interface
         if (this.hudMenu.touchUp(x, y, pointer, button)) {
             return true;
         }
@@ -79,12 +86,15 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
-        if (this.popupMenu.touchDragged(x, y, pointer)) {
+        // Menu logic
+        if (this.popupMenu.touchDragged(x, y, pointer) || this.view.popups.isDisplayed()) {
             return true;
         }
         if (this.menu.touchDragged(x, y, pointer)) {
             return true;
         }
+
+        // Handle HUD UI and game interface
         if (this.hudMenu.touchDragged(x, y, pointer)) {
             return true;
         }
@@ -102,9 +112,18 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean zoom(float amount) {
+        // Menu logic
+        if (this.popupMenu.scrolled(0, amount)) {
+            return true;
+        }
         if (this.menu.scrolled(0, amount)) {
             return true;
         }
+        if (this.view.menu.get().isPresent() || this.view.popups.isDisplayed()) {
+            return true;
+        }
+
+        // Handle game interface
         final float diff = Math.max(GameViewController.MIN_ZOOM,
                 Math.min(GameViewController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
         this.currentZoom += diff;
@@ -114,6 +133,9 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean mouseMoved​(int x, int y) {
+        if (this.view.popups.isDisplayed()) {
+            return true;
+        }
         // Cast out a ray from the mouseover point and find its point along the Y = 0
         // plane. Then find which hexagon that point falls in on the world grid.
         Ray ray = this.camera.getPickRay(x, y);
