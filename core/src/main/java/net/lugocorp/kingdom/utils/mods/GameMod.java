@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine;
+package net.lugocorp.kingdom.utils.mods;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 
 public interface GameMod {

@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.mods;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import com.badlogic.gdx.Gdx;
 import java.io.File;
@@ -87,7 +87,7 @@ public class ModLoader {
     /**
      * Extracts the assets associated with the given mod
      */
-    public void unzipAssets(String key, String filepath, ModAssetManager modAssetsMap) throws Exception {
+    public void unzipAssets(String key, String filepath, ModAssetsMap modAssetsMap) throws Exception {
         ZipEntry entry = null;
         ZipInputStream input = new ZipInputStream(new FileInputStream(filepath));
         while ((entry = input.getNextEntry()) != null) {

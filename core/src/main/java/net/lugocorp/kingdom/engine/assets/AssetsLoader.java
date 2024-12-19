@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine.assets;
-import net.lugocorp.kingdom.utils.ModAssetManager;
-import net.lugocorp.kingdom.utils.ModLoader;
+import net.lugocorp.kingdom.utils.mods.ModAssetsMap;
+import net.lugocorp.kingdom.utils.mods.ModLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
@@ -15,7 +15,7 @@ import java.util.Optional;
  * Wraps the logic for loading 3D model assets into the game
  */
 public class AssetsLoader {
-    private final ModAssetManager modAssetsMap = new ModAssetManager();
+    private final ModAssetsMap modAssetsMap = new ModAssetsMap();
     private final Map<String, AssetsLoader.ModelBounds> bounds = new HashMap<>();
     private final AssetManager external = new AssetManager(new ExternalFileHandleResolver());
     private final AssetManager internal = new AssetManager();
@@ -23,7 +23,7 @@ public class AssetsLoader {
     /**
      * Returns the mod assets map object
      */
-    public ModAssetManager getModAssetsMap() {
+    public ModAssetsMap getModAssetsMap() {
         return this.modAssetsMap;
     }
 

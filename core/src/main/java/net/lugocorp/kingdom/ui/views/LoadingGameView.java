@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
-import net.lugocorp.kingdom.utils.ModLoader;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.mods.ModLoader;
 import com.badlogic.gdx.graphics.Color;
 import java.util.function.Consumer;
 

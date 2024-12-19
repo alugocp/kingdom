@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.mod;
-import net.lugocorp.kingdom.engine.GameMod;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.Damage.DamageType;
 import net.lugocorp.kingdom.game.core.AbilityLogic;
@@ -20,6 +19,7 @@ import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.mods.GameMod;
 import java.util.Optional;
 
 /**

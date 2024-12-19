@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.mods;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -6,7 +6,7 @@ import java.util.Optional;
 /**
  * This class handles mapping resource names to their extracted mod assets
  */
-public class ModAssetManager {
+public class ModAssetsMap {
     private final Map<String, String> resourceMods = new HashMap<>();
 
     /**
