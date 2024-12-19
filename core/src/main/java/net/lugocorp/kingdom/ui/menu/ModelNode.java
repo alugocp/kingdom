@@ -5,8 +5,6 @@ import net.lugocorp.kingdom.engine.assets.AssetsLoader;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.math.Matrix4;
@@ -54,12 +52,10 @@ public class ModelNode implements MenuNode {
         proj.scale(scale, scale, scale);
         proj.setTranslation(((bounds.x + (bounds.w / 2)) - halfw) / halfw,
                 -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, 0f);
-        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         graphics.getPreviewShader().setProjViewMatrix(proj);
         graphics.previews.begin(this.camera);
         this.model.render(graphics.previews, this.environment);
         graphics.previews.end();
-        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
     }
 
     /** {@inheritdoc} */

@@ -115,7 +115,6 @@ public class GameView implements View {
 
         // Draw all 3D models that shouldn't have outlines
         Gdx.gl.glStencilMask(0x00);
-        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         this.graphics.models.begin(this.camera);
         this.graphics.models.render(this.game.world.getModelInstances(true), this.environment);
         this.selector.render(this.environment);
@@ -123,7 +122,6 @@ public class GameView implements View {
 
         // Draw all 3D models that should have outlines
         Gdx.gl.glStencilMask(0xFF);
-        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         this.graphics.models.begin(this.camera);
         this.graphics.models.render(this.game.world.getModelInstances(false), this.environment);
         this.graphics.models.end();
@@ -137,7 +135,6 @@ public class GameView implements View {
         this.graphics.outlines.end();
 
         // If we don't set the stencil mask here then the buffer won't clear
-        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         Gdx.gl.glStencilMask(0xFF);
         Gdx.gl.glClear(GL20.GL_STENCIL_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);

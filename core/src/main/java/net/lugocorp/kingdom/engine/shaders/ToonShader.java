@@ -136,6 +136,7 @@ public class ToonShader implements Shader {
         this.context.setCullFace(cull);
         this.context.setDepthTest(depth, depthNear, depthFar);
         this.context.setDepthMask(depthMask);
+        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         renderable.meshPart.render(this.program);
     }
 

@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.engine.shaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -69,6 +70,7 @@ public class PreviewShader implements Shader {
             this.context.setBlending(true, blend.sourceFunction, blend.destFunction);
             this.program.setUniformf(this.u_opacity, blend.opacity);
         }
+        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         renderable.meshPart.render(this.program);
     }
 
