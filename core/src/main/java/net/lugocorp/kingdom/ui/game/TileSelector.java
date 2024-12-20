@@ -24,7 +24,7 @@ public class TileSelector {
     private Optional<Point> hovered = Optional.empty();
 
     public TileSelector(GameView view) {
-        this.highlight.setModelInstance(view.graphics.loaders.assets, "selector");
+        this.highlight.setModelInstance(view.graphics.loaders.assets, "ui/selector");
         this.view = view;
     }
 

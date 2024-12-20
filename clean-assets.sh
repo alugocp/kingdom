@@ -1,5 +1,6 @@
 #!/bin/bash
 # TODO rewrite this as a Gradle script for portability
+# TODO make this support built-in mod assets
 
 # Enter the /assets folder
 pushd assets

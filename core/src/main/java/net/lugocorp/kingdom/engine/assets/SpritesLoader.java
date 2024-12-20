@@ -21,7 +21,7 @@ public class SpritesLoader {
         this.load("icons");
         this.load("fates");
         this.load("artifacts");
-        this.load("artifact-mask");
+        this.load("ui/artifact-mask");
         this.register("placeholder", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
         this.register("potion", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
         this.register("apple", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
@@ -34,7 +34,7 @@ public class SpritesLoader {
         this.register("emerald", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
         this.register("bone", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
         this.register("golden feather", "artifacts", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
-        this.register("artifact-mask", "artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
+        this.register("artifact-mask", "ui/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
         this.register("raider", "fates", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
         this.register("merchant", "fates", FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
         this.register("veteran", "fates", FateNode.WIDTH, FateNode.HEIGHT, 2, 0);

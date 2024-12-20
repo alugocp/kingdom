@@ -41,6 +41,7 @@ public class ModLoader {
      * Returns a simplified filename for the given mod
      */
     public String getModKey(String filepath) {
+        // TODO don't base this on a filename
         Path path = new File(filepath).toPath();
         return path.getName(path.getNameCount() - 1).toString();
     }
@@ -49,6 +50,9 @@ public class ModLoader {
      * Loads the given mod
      */
     public void loadMod(String key, String filepath, AllEventHandlers events) throws Exception {
+        if (key.equals("shaders") || key.equals("ui")) {
+            throw new RuntimeException(String.format("Illegal mod key '%s'", key));
+        }
         if (this.loaded.contains(key)) {
             throw new RuntimeException(String.format("Mod '%s' has already been loaded", key));
         }

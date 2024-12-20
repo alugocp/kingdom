@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
+import net.lugocorp.kingdom.utils.mods.ModAssetsMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -84,7 +85,7 @@ public class Graphics {
         public final BitmapFont basic;
 
         Fonts() {
-            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("DejaVuSans.ttf"));
+            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/DejaVuSans.ttf"));
             FreeTypeFontParameter param = new FreeTypeFontParameter();
             param.size = 36;
             this.header = generator.generateFont(param);
@@ -102,8 +103,12 @@ public class Graphics {
      */
     public static class Loaders {
         public final SpritesLoader sprites = new SpritesLoader();
-        public final AssetsLoader assets = new AssetsLoader();
+        public final AssetsLoader assets;
 
+        private Loaders() {
+            ModAssetsMap modAssetsMap = new ModAssetsMap();
+            this.assets = new AssetsLoader(modAssetsMap);
+        }
     }
 
     /**
