@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine;
+package net.lugocorp.kingdom.engine.render;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;

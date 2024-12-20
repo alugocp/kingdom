@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine;
+package net.lugocorp.kingdom.engine.render;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Environment;

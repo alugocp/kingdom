@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine;
+package net.lugocorp.kingdom.engine.render;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

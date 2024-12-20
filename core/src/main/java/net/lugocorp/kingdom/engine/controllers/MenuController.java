@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine;
+package net.lugocorp.kingdom.engine.controllers;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;

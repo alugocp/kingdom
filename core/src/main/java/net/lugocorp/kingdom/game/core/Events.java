@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.core;
-import net.lugocorp.kingdom.engine.Modellable;
+import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;

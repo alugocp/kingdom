@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.GameViewController;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.engine.MenuController;
+import net.lugocorp.kingdom.engine.controllers.GameViewController;
+import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.game.Logger;

@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.engine.MenuController;
+import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.model.Fate;

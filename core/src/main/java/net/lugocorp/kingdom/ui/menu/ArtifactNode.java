@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Drawable;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;

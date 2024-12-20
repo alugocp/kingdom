@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.game;
-import net.lugocorp.kingdom.engine.DynamicModellable;
+import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;

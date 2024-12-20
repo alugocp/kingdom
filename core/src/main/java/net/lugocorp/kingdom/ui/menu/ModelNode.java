@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
-import net.lugocorp.kingdom.engine.Modellable;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
+import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;

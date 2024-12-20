@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Drawable;
 import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.core.Events.ItemConsumedEvent;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Inventory;

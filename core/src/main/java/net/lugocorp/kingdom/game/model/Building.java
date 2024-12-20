@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.engine.DynamicModellable;
+import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
