@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.utils.mods;
+import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import com.badlogic.gdx.Gdx;
 import java.io.File;
@@ -49,7 +50,7 @@ public class ModLoader {
     /**
      * Loads the given mod
      */
-    public void loadMod(String key, String filepath, AllEventHandlers events) throws Exception {
+    public void loadMod(String key, String filepath, AllEventHandlers events, SpriteLoader sprites) throws Exception {
         if (key.equals("shaders") || key.equals("ui")) {
             throw new RuntimeException(String.format("Illegal mod key '%s'", key));
         }
@@ -60,8 +61,10 @@ public class ModLoader {
         URLClassLoader child = new URLClassLoader(new URL[]{new File(filepath).toURI().toURL()},
                 this.getClass().getClassLoader());
         Class mod = Class.forName("net.lugocorp.kingdom.mod.KingdomMod", true, child);
-        Method loadMethod = mod.getDeclaredMethod("load", AllEventHandlers.class);
-        loadMethod.invoke(mod.newInstance(), events);
+        Method eventsMethod = mod.getDeclaredMethod("registerEvents", AllEventHandlers.class);
+        eventsMethod.invoke(mod.newInstance(), events);
+        Method spritesMethod = mod.getDeclaredMethod("registerSprites", SpriteLoader.class);
+        spritesMethod.invoke(mod.newInstance(), sprites);
     }
 
     /**

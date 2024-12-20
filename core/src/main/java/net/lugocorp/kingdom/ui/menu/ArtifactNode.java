@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.ui.menu;
+import net.lugocorp.kingdom.engine.Drawable;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * A node that displays some Artifact
@@ -13,8 +13,8 @@ public class ArtifactNode implements MenuNode {
     private static final int MARGIN = 15;
     public static final int HEIGHT = 400;
     public static final int WIDTH = 300;
-    private final TextureRegion image;
-    private final TextureRegion mask;
+    private final Drawable image;
+    private final Drawable mask;
     private final Artifact artifact;
     private final TextNode text;
 
@@ -25,8 +25,8 @@ public class ArtifactNode implements MenuNode {
         }
         this.artifact = artifact;
         this.text = new TextNode(graphics, String.format("%s: %s (costs %s)", artifact.name, artifact.desc, cost));
-        this.image = graphics.loaders.sprites.get(artifact.image.orElse("placeholder"));
-        this.mask = graphics.loaders.sprites.get("artifact-mask");
+        this.image = new Drawable(graphics.loaders.sprites, artifact.image.orElse("placeholder"));
+        this.mask = new Drawable(graphics.loaders.sprites, "artifact-mask");
     }
 
     /** {@inheritdoc} */
@@ -47,8 +47,8 @@ public class ArtifactNode implements MenuNode {
         // Draw background image
         Rect flip = Coords.screen.flip(bounds);
         graphics.sprites.begin();
-        graphics.sprites.draw(this.image, flip.x, flip.y);
-        graphics.sprites.draw(this.mask, flip.x, flip.y);
+        this.image.render(graphics.sprites, flip.x, flip.y);
+        this.mask.render(graphics.sprites, flip.x, flip.y);
         graphics.sprites.end();
 
         // Draw foreground text

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
+import net.lugocorp.kingdom.engine.Drawable;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.core.Events.ItemConsumedEvent;
 import net.lugocorp.kingdom.game.model.Building;
@@ -14,7 +15,6 @@ import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -68,14 +68,14 @@ public class InventoryNode implements MenuNode {
                 if (index >= this.items.getMax()) {
                     break;
                 }
-                TextureRegion icon = this.view.graphics.loaders.sprites.get("placeholder");
+                Drawable icon = new Drawable(graphics.loaders.sprites, "placeholder");
                 if (index < this.items.getSize()) {
                     Item item = this.items.get(index);
                     if (item.icon.isPresent()) {
-                        icon = this.view.graphics.loaders.sprites.get(item.icon.get());
+                        icon.setSprite(item.icon.get());
                     }
                 }
-                graphics.sprites.draw(icon, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
+                icon.render(graphics.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
             }
         }
         graphics.sprites.end();

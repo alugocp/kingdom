@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
-import net.lugocorp.kingdom.engine.assets.SpritesLoader;
+import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
@@ -34,8 +34,7 @@ public class Graphics {
         this.outlines = new ModelBatch(new BasicShaderProvider(new OutlineShader()));
         this.previews = new ModelBatch(new BasicShaderProvider(new PreviewShader()));
 
-        // Initialize constituent objects
-        this.loaders.sprites.loadAndRegister();
+        // Initialize shader programs
         this.getPreviewShader().init();
         this.getOutlineShader().init();
         this.getToonShader().init();
@@ -102,11 +101,12 @@ public class Graphics {
      * This nested class contains all asset loaders
      */
     public static class Loaders {
-        public final SpritesLoader sprites = new SpritesLoader();
+        public final SpriteLoader sprites;
         public final ModelLoader models;
 
         private Loaders() {
             ModAssetsMap modAssetsMap = new ModAssetsMap();
+            this.sprites = new SpriteLoader(modAssetsMap);
             this.models = new ModelLoader(modAssetsMap);
         }
     }

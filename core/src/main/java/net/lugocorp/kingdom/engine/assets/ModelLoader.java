@@ -22,7 +22,7 @@ public class ModelLoader extends AssetsPool<Model> {
      * Creates a new ModelInstance for the Model with the given name
      */
     public Optional<ModelInstance> createModelInstance(String name) {
-        return this.get(name).map((Model model) -> new ModelInstance(model));
+        return this.getAsset(name).map((Model model) -> new ModelInstance(model));
     }
 
     /**

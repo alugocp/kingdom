@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.mod;
+import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.Damage.DamageType;
 import net.lugocorp.kingdom.game.core.AbilityLogic;
@@ -18,6 +19,9 @@ import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.menu.ArtifactNode;
+import net.lugocorp.kingdom.ui.menu.FateNode;
+import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.mods.GameMod;
 import java.util.Optional;
@@ -41,7 +45,32 @@ public class KingdomMod implements GameMod {
 
     /** {@inheritdoc} */
     @Override
-    public void load(AllEventHandlers events) {
+    public void registerSprites(SpriteLoader sprites) {
+        sprites.register("placeholder", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
+        sprites.register("potion", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
+        sprites.register("apple", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
+        sprites.register("pouch", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
+        sprites.register("coin", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
+        sprites.register("sword", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
+        sprites.register("shield", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
+        sprites.register("leaf", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
+        sprites.register("mushroom", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
+        sprites.register("emerald", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
+        sprites.register("bone", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
+        sprites.register("golden feather", "artifacts", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
+        sprites.register("raider", "fates", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
+        sprites.register("merchant", "fates", FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
+        sprites.register("veteran", "fates", FateNode.WIDTH, FateNode.HEIGHT, 2, 0);
+        sprites.register("devout", "fates", FateNode.WIDTH, FateNode.HEIGHT, 3, 0);
+        sprites.register("sentinel", "fates", FateNode.WIDTH, FateNode.HEIGHT, 0, 1);
+        sprites.register("usurper", "fates", FateNode.WIDTH, FateNode.HEIGHT, 1, 1);
+        sprites.register("forager", "fates", FateNode.WIDTH, FateNode.HEIGHT, 2, 1);
+        sprites.register("teacher", "fates", FateNode.WIDTH, FateNode.HEIGHT, 3, 1);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void registerEvents(AllEventHandlers events) {
 
         /**
          * Default handlers

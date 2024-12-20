@@ -53,7 +53,7 @@ public abstract class AssetsPool<T> {
     /**
      * Returns this asset if it has been loaded and nothing otherwise
      */
-    public Optional<T> get(String name) {
+    protected Optional<T> getAsset(String name) {
         AssetManager assets = this.getAssetManager(name);
         assets.update();
         String filename = this.getFilename(name);

@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.mods.ModLoader;
 import com.badlogic.gdx.graphics.Color;
@@ -17,6 +18,10 @@ public class LoadingGameView implements View {
 
     public LoadingGameView(Graphics graphics) {
         this.graphics = graphics;
+
+        // Load built-in sprites
+        graphics.loaders.sprites.register("artifact-mask", "ui/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
+                0, 0);
     }
 
     /** {@inheritdoc} */
@@ -47,7 +52,7 @@ public class LoadingGameView implements View {
 
                 // Load mod code
                 try {
-                    mods.loadMod(key, filepath, this.events);
+                    mods.loadMod(key, filepath, this.events, this.graphics.loaders.sprites);
                 } catch (Exception e) {
                     System.err.println(String.format("Error while loading mod '%s'", key));
                     e.printStackTrace();

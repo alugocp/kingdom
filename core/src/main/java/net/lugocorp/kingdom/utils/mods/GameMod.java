@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.utils.mods;
+import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 
 public interface GameMod {
@@ -14,7 +15,12 @@ public interface GameMod {
     public String getDescription();
 
     /**
-     * This function is called when the mod is successfully loaded
+     * This function is called when the mod must load its spritesheets
      */
-    public void load(AllEventHandlers events);
+    public void registerSprites(SpriteLoader sprites);
+
+    /**
+     * This function is called when the mod must load its event handlers
+     */
+    public void registerEvents(AllEventHandlers events);
 }
