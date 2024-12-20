@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Glyph;
+import net.lugocorp.kingdom.game.model.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -29,7 +30,7 @@ public class WorldGenerator {
                 } else {
                     g.generator.tile("Grassland", x, y).spawn(view);
                 }
-                g.world.getTile(x, y).get().glyph = Optional.of(Glyph.random());
+                g.world.getTile(x, y).get().glyph = Optional.of(GlyphCategory.random());
             }
         }
         Player ai = g.addComputerPlayer("AI");

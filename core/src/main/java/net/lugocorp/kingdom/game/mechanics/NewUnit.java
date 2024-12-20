@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Glyph;
+import net.lugocorp.kingdom.game.model.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -60,17 +61,40 @@ public class NewUnit {
      * Returns the Menu to handle new Unit selection
      */
     private Menu getUnitSelectionMenu(GameView view, Point p) {
-        // Retrieve the selected Tile's Glyph. This should exist (as per the definition
-        // of
+        // Retrieve the selected Tile's GlyphCategory. This should exist (as per the
+        // definition of
         // view.game.getRecruitmentTiles()) so if we hit this error then something is
         // wrong.
-        Optional<Glyph> glyph = view.game.world.getTile(p).flatMap((Tile t) -> t.glyph);
-        if (!glyph.isPresent()) {
+        Optional<GlyphCategory> category = view.game.world.getTile(p).flatMap((Tile t) -> t.glyph);
+        if (!category.isPresent()) {
             throw new RuntimeException("Attempt to recruit onto a tile without a glyph");
         }
 
-        // Create the Menu content for Unit recruitment
-        List<Unit> options = this.getRecruitmentOptions(view, glyph.get(), p);
+        // Create the Menu content for Glyph selection
+        ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
+                .add(new HeaderNode(view.graphics, "Recruit New Unit"))
+                .add(new ButtonNode(view.graphics, "Do not recruit any unit", () -> view.popups.complete()));
+        RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
+        RowNode buttons = new RowNode().setColumns(category.get().glyphs.length);
+        for (int a = 0; a < category.get().glyphs.length; a++) {
+            final Glyph glyph = category.get().glyphs[a];
+            glyphs.add(new HeaderNode(view.graphics, glyph.toString()));
+            buttons.add(new ButtonNode(view.graphics, "Choose", () -> {
+                view.popups.complete();
+                view.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
+            }).disable(view.game.mechanics.pools.remaining(glyph) == 0));
+        }
+        node.add(glyphs);
+        node.add(buttons);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                node);
+    }
+
+    /**
+     * Returns the Unit selection Menu once the user has selected a Glyph
+     */
+    private Menu getGlyphUnitSelectionMenu(GameView view, Glyph glyph, Point p) {
+        List<Unit> options = this.getRecruitmentOptions(view, glyph, p);
         ListNode node = new ListNode().add(new ButtonNode(view.graphics, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.graphics, "Recruit New Unit"))
                 .add(new ButtonNode(view.graphics, "Do not recruit any unit", () -> view.popups.complete()));

@@ -26,7 +26,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
-    public Optional<Glyph> glyph = Optional.of(Glyph.BATTLE);
+    public Optional<GlyphCategory> glyph = Optional.of(GlyphCategory.STRATEGIC);
     public Optional<Unit> unit = Optional.empty();
     public String desc = "";
 
@@ -86,9 +86,9 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         ListNode node = new ListNode();
         node.add(new ButtonNode(view.graphics, "x", () -> view.menu.close()));
         if (this.glyph.isPresent()) {
-            node.add(new TextNode(view.graphics, String.format("%s glyph", this.glyph.get())));
+            node.add(new TextNode(view.graphics, String.format("%s glyphs", this.glyph.get())));
         } else {
-            node.add(new TextNode(view.graphics, "No glyph on this tile"));
+            node.add(new TextNode(view.graphics, "No glyphs on this tile"));
         }
         node.add(new TextNode(view.graphics, this.name)).add(new TextNode(view.graphics, this.desc))
                 .add(this.items.getMenuContent(view, p));

@@ -13,14 +13,6 @@ public enum Glyph {
         this.label = label;
     }
 
-    /**
-     * Returns a random Glyph value
-     */
-    public static Glyph random() {
-        Glyph[] values = Glyph.values();
-        return values[(int) Math.floor(Math.random() * values.length)];
-    }
-
     /** {@inheritdoc} */
     @Override
     public String toString() {

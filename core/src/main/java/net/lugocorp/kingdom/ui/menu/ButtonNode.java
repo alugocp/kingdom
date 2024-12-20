@@ -41,6 +41,16 @@ public class ButtonNode extends TextNode {
     }
 
     /**
+     * Disables this ButtonNode based on some criteria
+     */
+    public ButtonNode disable(boolean criteria) {
+        if (criteria) {
+            this.disable();
+        }
+        return this;
+    }
+
+    /**
      * Sets a dynamic criteria that sets this ButtonNode's enabled/disabled state
      */
     public ButtonNode setEnabledCriteria(Supplier<Boolean> supplier) {
