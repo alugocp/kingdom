@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.assets.SpritesLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
@@ -52,7 +52,7 @@ public class Graphics {
         this.previews.dispose();
         this.fonts.basic.dispose();
         this.loaders.sprites.dispose();
-        this.loaders.assets.dispose();
+        this.loaders.models.dispose();
     }
 
     /**
@@ -103,11 +103,11 @@ public class Graphics {
      */
     public static class Loaders {
         public final SpritesLoader sprites = new SpritesLoader();
-        public final AssetsLoader assets;
+        public final ModelLoader models;
 
         private Loaders() {
             ModAssetsMap modAssetsMap = new ModAssetsMap();
-            this.assets = new AssetsLoader(modAssetsMap);
+            this.models = new ModelLoader(modAssetsMap);
         }
     }
 

@@ -56,7 +56,7 @@ public class LoadingGameView implements View {
 
                 // Extract mod assets
                 try {
-                    mods.unzipAssets(key, filepath, this.graphics.loaders.assets.getModAssetsMap());
+                    mods.unzipAssets(key, filepath, this.graphics.loaders.models.getModAssetsMap());
                 } catch (Exception e) {
                     System.err.println(String.format("Did not load any assets from mod '%s'", key));
                     e.printStackTrace();

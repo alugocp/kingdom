@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.Graphics;
 import net.lugocorp.kingdom.engine.Modellable;
-import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -21,7 +21,7 @@ public class ModelNode implements MenuNode {
     private Environment environment;
     private float scale = 1f;
 
-    public ModelNode(PerspectiveCamera camera, Environment environment, AssetsLoader assets, String name) {
+    public ModelNode(PerspectiveCamera camera, Environment environment, ModelLoader assets, String name) {
         this.model.setModelInstance(assets, name);
         this.modelHeight = assets.getModelHeight(name);
         this.modelWidth = assets.getModelWidth(name);

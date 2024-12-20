@@ -11,10 +11,10 @@ import java.util.Optional;
 /**
  * Wraps the logic for loading 3D model assets into the game
  */
-public class AssetsLoader extends AssetsPool<Model> {
-    private final Map<String, AssetsLoader.ModelBounds> bounds = new HashMap<>();
+public class ModelLoader extends AssetsPool<Model> {
+    private final Map<String, ModelLoader.ModelBounds> bounds = new HashMap<>();
 
-    public AssetsLoader(ModAssetsMap modAssetsMap) {
+    public ModelLoader(ModAssetsMap modAssetsMap) {
         super(modAssetsMap, Model.class, "g3db");
     }
 

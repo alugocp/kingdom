@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.engine.assets.AssetsLoader;
+import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -13,7 +13,7 @@ import java.util.Optional;
  * position
  */
 public class Modellable {
-    private AssetsLoader assets;
+    private ModelLoader models;
     private String modelName = "PLACEHOLDER";
     private float alpha = 1f;
     protected Optional<ModelInstance> model = Optional.empty();
@@ -30,7 +30,7 @@ public class Modellable {
      */
     public Optional<ModelInstance> getModelInstance() {
         if (!this.model.isPresent()) {
-            this.model = this.assets.createModelInstance(this.modelName);
+            this.model = this.models.createModelInstance(this.modelName);
             this.model.ifPresent((ModelInstance model) -> {
                 this.applyAlpha(model);
                 this.resetModelPosition();
@@ -42,10 +42,10 @@ public class Modellable {
     /**
      * Triggers a new Model load request for this object
      */
-    public void setModelInstance(AssetsLoader assets, String name) {
+    public void setModelInstance(ModelLoader assets, String name) {
         this.model = Optional.empty();
         this.modelName = name;
-        this.assets = assets;
+        this.models = assets;
     }
 
     /**
@@ -76,7 +76,7 @@ public class Modellable {
      * Unloads the assets associated with this object if they are no longer needed
      */
     protected void dispose() {
-        this.assets.checkForUnload(this.modelName);
+        this.models.checkForUnload(this.modelName);
     }
 
     /**
