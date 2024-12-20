@@ -21,10 +21,10 @@ public class ModelNode implements MenuNode {
     private Environment environment;
     private float scale = 1f;
 
-    public ModelNode(PerspectiveCamera camera, Environment environment, ModelLoader assets, String name) {
-        this.model.setModelInstance(assets, name);
-        this.modelHeight = assets.getModelHeight(name);
-        this.modelWidth = assets.getModelWidth(name);
+    public ModelNode(PerspectiveCamera camera, Environment environment, ModelLoader models, String name) {
+        this.model.setModelInstance(models, name);
+        this.modelHeight = models.getModelHeight(name);
+        this.modelWidth = models.getModelWidth(name);
         this.environment = environment;
         this.camera = camera;
     }

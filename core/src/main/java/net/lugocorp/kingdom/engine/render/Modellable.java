@@ -42,10 +42,10 @@ public class Modellable {
     /**
      * Triggers a new Model load request for this object
      */
-    public void setModelInstance(ModelLoader assets, String name) {
+    public void setModelInstance(ModelLoader models, String name) {
         this.model = Optional.empty();
         this.modelName = name;
-        this.models = assets;
+        this.models = models;
     }
 
     /**
