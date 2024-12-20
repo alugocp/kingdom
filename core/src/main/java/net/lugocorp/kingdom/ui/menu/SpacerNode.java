@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -25,12 +25,12 @@ public class SpacerNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
+    public void draw(AudioVideo av, Rect bounds) {
         int y = Coords.SIZE.y - bounds.y - SpacerNode.MARGIN - 1;
-        graphics.shapes.begin(ShapeType.Filled);
-        graphics.shapes.setColor(Color.WHITE);
-        graphics.shapes.rect(bounds.x, y, bounds.w, 1);
-        graphics.shapes.end();
+        av.shapes.begin(ShapeType.Filled);
+        av.shapes.setColor(Color.WHITE);
+        av.shapes.rect(bounds.x, y, bounds.w, 1);
+        av.shapes.end();
     }
 
     /** {@inheritdoc} */

@@ -61,7 +61,7 @@ public class Artifact implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        return new ArtifactNode(view.graphics, this);
+        return new ArtifactNode(view.av, this);
     }
 
     /** {@inheritdoc} */

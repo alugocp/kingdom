@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 
 /**
  * Like a TextNode but with larger, bolder text
  */
 public class HeaderNode extends TextNode {
-    public HeaderNode(Graphics graphics, String message) {
-        super(graphics, message);
-        this.font = graphics.fonts.header;
+    public HeaderNode(AudioVideo av, String message) {
+        super(av, message);
+        this.font = av.fonts.header;
     }
 
     /** {@inheritdoc} */

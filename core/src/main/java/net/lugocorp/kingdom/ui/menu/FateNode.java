@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -16,10 +16,10 @@ public class FateNode implements MenuNode {
     private final Drawable image;
     private Fate fate;
 
-    public FateNode(Graphics graphics, Fate fate, Runnable onClick) {
+    public FateNode(AudioVideo av, Fate fate, Runnable onClick) {
         this.onClick = onClick;
-        this.image = new Drawable(graphics.loaders.sprites);
-        this.setFate(graphics, fate);
+        this.image = new Drawable(av.loaders.sprites);
+        this.setFate(av, fate);
     }
 
     /**
@@ -32,7 +32,7 @@ public class FateNode implements MenuNode {
     /**
      * Sets this FateNode's Fate
      */
-    public void setFate(Graphics graphics, Fate fate) {
+    public void setFate(AudioVideo av, Fate fate) {
         this.image.setSprite(fate.image.orElse("placeholder"));
         this.fate = fate;
     }
@@ -50,11 +50,11 @@ public class FateNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
+    public void draw(AudioVideo av, Rect bounds) {
         Rect flip = Coords.screen.flip(bounds);
-        graphics.sprites.begin();
-        this.image.render(graphics.sprites, flip.x, flip.y);
-        graphics.sprites.end();
+        av.sprites.begin();
+        this.image.render(av.sprites, flip.x, flip.y);
+        av.sprites.end();
     }
 
     /** {@inheritdoc} */

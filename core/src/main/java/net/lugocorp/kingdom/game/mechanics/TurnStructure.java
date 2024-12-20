@@ -152,7 +152,7 @@ public class TurnStructure {
      */
     private void startNewTurnGroup(GameView view) {
         view.game.mechanics.dayNight.tick();
-        view.graphics.getToonShader().setNighttime(view.game.mechanics.dayNight.isNight());
+        view.av.getToonShader().setNighttime(view.game.mechanics.dayNight.isNight());
     }
 
     /**
@@ -172,14 +172,14 @@ public class TurnStructure {
             if (view.game.hasHumanPlayerLost()) {
                 view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(view.graphics, "You have lost"))
-                                .add(new ButtonNode(view.graphics, "Okay", () -> view.close()))));
+                        new ListNode().add(new TextNode(view.av, "You have lost"))
+                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
             }
             if (view.game.hasHumanPlayerWon()) {
                 view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(view.graphics, "You win!"))
-                                .add(new ButtonNode(view.graphics, "Okay", () -> view.close()))));
+                        new ListNode().add(new TextNode(view.av, "You win!"))
+                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
             }
 
             // Choose a new Unit at the maximum unit points

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.model.Fate;
 
 /**
@@ -10,22 +10,22 @@ public class FateViewNode extends RowNode {
     private final FateNode fate;
     private int width = 0;
 
-    public FateViewNode(Graphics graphics, Fate initial) {
-        this.fate = new FateNode(graphics, initial, () -> {
+    public FateViewNode(AudioVideo av, Fate initial) {
+        this.fate = new FateNode(av, initial, () -> {
         });
         this.add(this.fate).add(this.desc);
-        this.setFate(graphics, initial);
+        this.setFate(av, initial);
     }
 
     /**
      * Changes the Fate that this FateViewNode is displaying
      */
-    public void setFate(Graphics graphics, Fate fate) {
-        this.fate.setFate(graphics, fate);
+    public void setFate(AudioVideo av, Fate fate) {
+        this.fate.setFate(av, fate);
         this.desc.clear();
-        this.desc.add(new HeaderNode(graphics, fate.name));
+        this.desc.add(new HeaderNode(av, fate.name));
         for (String s : fate.desc) {
-            this.desc.add(new TextNode(graphics, s));
+            this.desc.add(new TextNode(av, s));
         }
         if (this.width > 0) {
             this.pack(this.width);

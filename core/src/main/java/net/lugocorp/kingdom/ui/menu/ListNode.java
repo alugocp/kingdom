@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -60,19 +60,19 @@ public class ListNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
+    public void draw(AudioVideo av, Rect bounds) {
         int y = bounds.y + this.margin;
         for (MenuNode child : this.children) {
             final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
-            child.draw(graphics, r);
+            child.draw(av, r);
             y += r.h;
         }
         if (this.border) {
             Rect flip = Coords.screen.flip(bounds.x, bounds.y, bounds.w, bounds.h - 1);
-            graphics.shapes.begin(ShapeType.Line);
-            graphics.shapes.setColor(Color.WHITE);
-            graphics.shapes.rect(flip.x, flip.y, flip.w, flip.h);
-            graphics.shapes.end();
+            av.shapes.begin(ShapeType.Line);
+            av.shapes.setColor(Color.WHITE);
+            av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
+            av.shapes.end();
         }
     }
 

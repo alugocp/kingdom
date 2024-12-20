@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -18,15 +18,15 @@ public class ArtifactNode implements MenuNode {
     private final Artifact artifact;
     private final TextNode text;
 
-    public ArtifactNode(Graphics graphics, Artifact artifact) {
+    public ArtifactNode(AudioVideo av, Artifact artifact) {
         String cost = String.format("%s chip", artifact.chips);
         if (artifact.chips > 1) {
             cost += "s";
         }
         this.artifact = artifact;
-        this.text = new TextNode(graphics, String.format("%s: %s (costs %s)", artifact.name, artifact.desc, cost));
-        this.image = new Drawable(graphics.loaders.sprites, artifact.image.orElse("placeholder"));
-        this.mask = new Drawable(graphics.loaders.sprites, "artifact-mask");
+        this.text = new TextNode(av, String.format("%s: %s (costs %s)", artifact.name, artifact.desc, cost));
+        this.image = new Drawable(av.loaders.sprites, artifact.image.orElse("placeholder"));
+        this.mask = new Drawable(av.loaders.sprites, "artifact-mask");
     }
 
     /** {@inheritdoc} */
@@ -43,17 +43,17 @@ public class ArtifactNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
+    public void draw(AudioVideo av, Rect bounds) {
         // Draw background image
         Rect flip = Coords.screen.flip(bounds);
-        graphics.sprites.begin();
-        this.image.render(graphics.sprites, flip.x, flip.y);
-        this.mask.render(graphics.sprites, flip.x, flip.y);
-        graphics.sprites.end();
+        av.sprites.begin();
+        this.image.render(av.sprites, flip.x, flip.y);
+        this.mask.render(av.sprites, flip.x, flip.y);
+        av.sprites.end();
 
         // Draw foreground text
         int h = this.text.getHeight();
-        this.text.draw(graphics,
+        this.text.draw(av,
                 new Rect(bounds.x + ArtifactNode.MARGIN, bounds.y + bounds.h - h - ArtifactNode.MARGIN, bounds.w, h));
     }
 

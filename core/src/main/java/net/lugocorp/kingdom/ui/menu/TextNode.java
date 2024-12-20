@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -17,8 +17,8 @@ public class TextNode implements MenuNode {
     private int width;
     private int hash;
 
-    public TextNode(Graphics graphics, String message) {
-        this.font = graphics.fonts.basic;
+    public TextNode(AudioVideo av, String message) {
+        this.font = av.fonts.basic;
         this.hash = message.hashCode();
         this.lines.add(message);
     }
@@ -86,14 +86,14 @@ public class TextNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
-        graphics.sprites.begin();
+    public void draw(AudioVideo av, Rect bounds) {
+        av.sprites.begin();
         int y = Coords.SIZE.y - bounds.y - this.getMargin();
         for (int a = 0; a < this.lines.size(); a++) {
-            this.font.draw(graphics.sprites, this.lines.get(a), bounds.x, y);
+            this.font.draw(av.sprites, this.lines.get(a), bounds.x, y);
             y -= (int) this.font.getLineHeight();
         }
-        graphics.sprites.end();
+        av.sprites.end();
     }
 
     /** {@inheritdoc} */

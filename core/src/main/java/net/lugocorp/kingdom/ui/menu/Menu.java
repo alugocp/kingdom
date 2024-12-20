@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -81,31 +81,31 @@ public class Menu {
     /**
      * Draws every MenuNode in this Menu
      */
-    public void draw(Graphics graphics) {
+    public void draw(AudioVideo av) {
         final int h = this.getHeight();
         Rect bg = Coords.screen.flip(this.x, this.y, this.width, h);
-        graphics.shapes.begin(ShapeType.Filled);
-        graphics.shapes.setColor(Color.BLACK);
-        graphics.shapes.rect(bg.x, bg.y, bg.w, bg.h);
-        graphics.shapes.end();
+        av.shapes.begin(ShapeType.Filled);
+        av.shapes.setColor(Color.BLACK);
+        av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
+        av.shapes.end();
         if (this.outlined) {
-            graphics.shapes.begin(ShapeType.Line);
-            graphics.shapes.setColor(Color.WHITE);
-            graphics.shapes.rect(bg.x, bg.y, bg.w, bg.h);
-            graphics.shapes.end();
+            av.shapes.begin(ShapeType.Line);
+            av.shapes.setColor(Color.WHITE);
+            av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
+            av.shapes.end();
         }
-        this.root.draw(graphics, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
+        this.root.draw(av, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), h - (Menu.MARGIN * 2)));
         if (this.shouldScroll()) {
             final int rh = this.root.getHeight();
             Rect flip = Coords.screen.flip(this.x + this.width - Menu.MARGIN, this.y + (this.offset * h / rh),
                     Menu.MARGIN, (h * h) / rh);
-            graphics.shapes.begin(ShapeType.Filled);
-            graphics.shapes.setColor(Color.TEAL);
-            graphics.shapes.rect(flip.x, flip.y, flip.w, flip.h);
-            graphics.shapes.end();
+            av.shapes.begin(ShapeType.Filled);
+            av.shapes.setColor(Color.TEAL);
+            av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
+            av.shapes.end();
         }
-        this.mini.ifPresent((Menu m) -> m.draw(graphics));
+        this.mini.ifPresent((Menu m) -> m.draw(av));
     }
 
     /**

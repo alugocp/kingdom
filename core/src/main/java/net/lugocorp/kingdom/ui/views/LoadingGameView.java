@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -12,16 +12,15 @@ import java.util.function.Consumer;
  */
 public class LoadingGameView implements View {
     private final AllEventHandlers events = new AllEventHandlers();
-    private final Graphics graphics;
+    private final AudioVideo av;
     private Consumer<View> navigate;
     private boolean loaded = false;
 
-    public LoadingGameView(Graphics graphics) {
-        this.graphics = graphics;
+    public LoadingGameView(AudioVideo av) {
+        this.av = av;
 
         // Load built-in sprites
-        graphics.loaders.sprites.register("artifact-mask", "ui/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
-                0, 0);
+        av.loaders.sprites.register("artifact-mask", "ui/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
     }
 
     /** {@inheritdoc} */
@@ -52,7 +51,7 @@ public class LoadingGameView implements View {
 
                 // Load mod code
                 try {
-                    mods.loadMod(key, filepath, this.events, this.graphics.loaders.sprites);
+                    mods.loadMod(key, filepath, this.events, this.av.loaders.sprites);
                 } catch (Exception e) {
                     System.err.println(String.format("Error while loading mod '%s'", key));
                     e.printStackTrace();
@@ -61,7 +60,7 @@ public class LoadingGameView implements View {
 
                 // Extract mod assets
                 try {
-                    mods.unzipAssets(key, filepath, this.graphics.loaders.models.getModAssetsMap());
+                    mods.unzipAssets(key, filepath, this.av.loaders.models.getModAssetsMap());
                 } catch (Exception e) {
                     System.err.println(String.format("Did not load any assets from mod '%s'", key));
                     e.printStackTrace();
@@ -80,11 +79,11 @@ public class LoadingGameView implements View {
     @Override
     public void render() {
         if (this.loaded) {
-            this.navigate.accept(new StartMenuView(this.graphics, this.events));
+            this.navigate.accept(new StartMenuView(this.av, this.events));
         }
-        this.graphics.sprites.begin();
-        this.graphics.fonts.basic.draw(this.graphics.sprites, "Loading...", Coords.SIZE.y / 3, Coords.SIZE.y / 2);
-        this.graphics.sprites.end();
+        this.av.sprites.begin();
+        this.av.fonts.basic.draw(this.av.sprites, "Loading...", Coords.SIZE.y / 3, Coords.SIZE.y / 2);
+        this.av.sprites.end();
     }
 
     /** {@inheritdoc} */

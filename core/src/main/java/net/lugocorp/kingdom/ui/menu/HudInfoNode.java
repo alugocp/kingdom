@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
@@ -14,12 +14,12 @@ public class HudInfoNode extends RowNode {
     private final TextNode auctionChips;
     private final TextNode artifacts;
 
-    public HudInfoNode(Graphics graphics) {
-        this.gold = new TextNode(graphics, "");
-        this.unitPoints = new TextNode(graphics, "");
-        this.auctionPoints = new TextNode(graphics, "");
-        this.auctionChips = new TextNode(graphics, "");
-        this.artifacts = new TextNode(graphics, "");
+    public HudInfoNode(AudioVideo av) {
+        this.gold = new TextNode(av, "");
+        this.unitPoints = new TextNode(av, "");
+        this.auctionPoints = new TextNode(av, "");
+        this.auctionChips = new TextNode(av, "");
+        this.artifacts = new TextNode(av, "");
         this.add(this.gold).add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips).add(this.artifacts);
     }
 

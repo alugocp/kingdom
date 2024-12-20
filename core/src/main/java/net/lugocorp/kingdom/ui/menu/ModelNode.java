@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -44,7 +44,7 @@ public class ModelNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
+    public void draw(AudioVideo av, Rect bounds) {
         Matrix4 proj = new Matrix4();
         float halfw = Coords.SIZE.x / 2f;
         float halfh = Coords.SIZE.y / 2f;
@@ -52,10 +52,10 @@ public class ModelNode implements MenuNode {
         proj.scale(scale, scale, scale);
         proj.setTranslation(((bounds.x + (bounds.w / 2)) - halfw) / halfw,
                 -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, 0f);
-        graphics.getPreviewShader().setProjViewMatrix(proj);
-        graphics.previews.begin(this.camera);
-        this.model.render(graphics.previews, this.environment);
-        graphics.previews.end();
+        av.getPreviewShader().setProjViewMatrix(proj);
+        av.previews.begin(this.camera);
+        this.model.render(av.previews, this.environment);
+        av.previews.end();
     }
 
     /** {@inheritdoc} */

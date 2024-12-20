@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
@@ -29,7 +29,7 @@ public class GameView implements View {
     private PerspectiveCamera camera;
     private Environment environment;
     public final Popups popups = new Popups();
-    public final Graphics graphics;
+    public final AudioVideo av;
     public final TileSelector selector;
     public final TileMenu menu;
     public final Logger logger;
@@ -38,9 +38,9 @@ public class GameView implements View {
     private Consumer<View> navigate = (View v) -> {
     };
 
-    GameView(Game game, Graphics graphics) {
+    GameView(Game game, AudioVideo av) {
         this.game = game;
-        this.graphics = graphics;
+        this.av = av;
         this.hud = new Hud(this);
         this.logger = new Logger(this);
         this.selector = new TileSelector(this);
@@ -65,7 +65,7 @@ public class GameView implements View {
      * Returns to the StartMenuView
      */
     public void close() {
-        this.navigate.accept(new StartMenuView(this.graphics, this.game.events));
+        this.navigate.accept(new StartMenuView(this.av, this.game.events));
     }
 
     /** {@inheritdoc} */
@@ -115,24 +115,24 @@ public class GameView implements View {
 
         // Draw all 3D models that shouldn't have outlines
         Gdx.gl.glStencilMask(0x00);
-        this.graphics.models.begin(this.camera);
-        this.graphics.models.render(this.game.world.getModelInstances(true), this.environment);
+        this.av.models.begin(this.camera);
+        this.av.models.render(this.game.world.getModelInstances(true), this.environment);
         this.selector.render(this.environment);
-        this.graphics.models.end();
+        this.av.models.end();
 
         // Draw all 3D models that should have outlines
         Gdx.gl.glStencilMask(0xFF);
-        this.graphics.models.begin(this.camera);
-        this.graphics.models.render(this.game.world.getModelInstances(false), this.environment);
-        this.graphics.models.end();
+        this.av.models.begin(this.camera);
+        this.av.models.render(this.game.world.getModelInstances(false), this.environment);
+        this.av.models.end();
 
         // Run the outline shaders
         Gdx.gl.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF);
         Gdx.gl.glStencilMask(0x00);
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-        this.graphics.outlines.begin(this.camera);
-        this.graphics.outlines.render(this.game.world.getModelInstances(false), this.environment);
-        this.graphics.outlines.end();
+        this.av.outlines.begin(this.camera);
+        this.av.outlines.render(this.game.world.getModelInstances(false), this.environment);
+        this.av.outlines.end();
 
         // If we don't set the stencil mask here then the buffer won't clear
         Gdx.gl.glStencilMask(0xFF);
@@ -141,12 +141,12 @@ public class GameView implements View {
         Gdx.gl.glStencilMask(0x00);
 
         // Draw 2D assets
-        this.menu.get().ifPresent((Menu m) -> m.draw(this.graphics));
+        this.menu.get().ifPresent((Menu m) -> m.draw(this.av));
         if (this.popups.isDisplayed()) {
-            this.popups.queue.get(0).draw(this.graphics);
+            this.popups.queue.get(0).draw(this.av);
         }
         this.logger.render();
-        this.hud.draw(this.graphics);
+        this.hud.draw(this.av);
     }
 
     /** {@inheritdoc} */

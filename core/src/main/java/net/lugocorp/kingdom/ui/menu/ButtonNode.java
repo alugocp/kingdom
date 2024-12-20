@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,11 +16,11 @@ public class ButtonNode extends TextNode {
     private Optional<Supplier<Boolean>> criteria = Optional.empty();
     private boolean disabled = false;
 
-    public ButtonNode(Graphics graphics, String message, Runnable action) {
-        super(graphics, message);
-        this.disabledFont = graphics.fonts.disabled;
-        this.enabledFont = graphics.fonts.button;
-        this.font = graphics.fonts.button;
+    public ButtonNode(AudioVideo av, String message, Runnable action) {
+        super(av, message);
+        this.disabledFont = av.fonts.disabled;
+        this.enabledFont = av.fonts.button;
+        this.font = av.fonts.button;
         this.action = action;
     }
 
@@ -60,7 +60,7 @@ public class ButtonNode extends TextNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
+    public void draw(AudioVideo av, Rect bounds) {
         this.criteria.ifPresent((Supplier<Boolean> supplier) -> {
             if (supplier.get()) {
                 this.enable();
@@ -68,7 +68,7 @@ public class ButtonNode extends TextNode {
                 this.disable();
             }
         });
-        super.draw(graphics, bounds);
+        super.draw(av, bounds);
     }
 
     /** {@inheritdoc} */

@@ -84,13 +84,13 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
             throw new RuntimeException("Cannot display unspawned tiles");
         }
         ListNode node = new ListNode();
-        node.add(new ButtonNode(view.graphics, "x", () -> view.menu.close()));
+        node.add(new ButtonNode(view.av, "x", () -> view.menu.close()));
         if (this.glyph.isPresent()) {
-            node.add(new TextNode(view.graphics, String.format("%s glyphs", this.glyph.get())));
+            node.add(new TextNode(view.av, String.format("%s glyphs", this.glyph.get())));
         } else {
-            node.add(new TextNode(view.graphics, "No glyphs on this tile"));
+            node.add(new TextNode(view.av, "No glyphs on this tile"));
         }
-        node.add(new TextNode(view.graphics, this.name)).add(new TextNode(view.graphics, this.desc))
+        node.add(new TextNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
                 .add(this.items.getMenuContent(view, p));
         this.unit.ifPresent((Unit u) -> node.add(new SpacerNode()).add(u.getMenuContent(view, p)));
         this.building.ifPresent((Building b) -> node.add(new SpacerNode()).add(b.getMenuContent(view, p)));

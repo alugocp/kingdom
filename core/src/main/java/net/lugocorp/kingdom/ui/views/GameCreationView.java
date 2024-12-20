@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
@@ -32,10 +32,10 @@ public class GameCreationView implements View {
     private Consumer<View> navigate;
     private Menu menu;
 
-    GameCreationView(Graphics graphics, AllEventHandlers events) {
+    GameCreationView(AudioVideo av, AllEventHandlers events) {
         // Initialize Game and GameView state for world generation logic
         this.game = new Game(events, new World(10, 5));
-        this.view = new GameView(this.game, graphics);
+        this.view = new GameView(this.game, av);
         this.game.generator = new Generator(this.view);
         this.game.mechanics.init(this.game);
 
@@ -61,7 +61,7 @@ public class GameCreationView implements View {
     /** {@inheritdoc} */
     @Override
     public void render() {
-        this.menu.draw(this.view.graphics);
+        this.menu.draw(this.view.av);
     }
 
     /** {@inheritdoc} */
@@ -80,14 +80,14 @@ public class GameCreationView implements View {
     private Menu getFateSelectionMenu(GameView view) {
         view.game.human.fate = view.game.mechanics.fates.getFirstFate();
         ListNode options = new ListNode();
-        FateViewNode display = new FateViewNode(view.graphics, view.game.mechanics.fates.getFirstFate());
+        FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
         ListNode root = new ListNode().add(new RowNode()
-                .add(new ButtonNode(view.graphics, "Back",
-                        () -> this.navigate.accept(new StartMenuView(this.view.graphics, this.game.events))))
-                .add(new ButtonNode(view.graphics, "Choose", () -> {
+                .add(new ButtonNode(view.av, "Back",
+                        () -> this.navigate.accept(new StartMenuView(this.view.av, this.game.events))))
+                .add(new ButtonNode(view.av, "Choose", () -> {
                     new WorldGenerator().generateWorld(this.view);
                     this.navigate.accept(this.view);
-                })).add(new TextNode(view.graphics, "Select a fate"))).add(display).add(options);
+                })).add(new TextNode(view.av, "Select a fate"))).add(display).add(options);
 
         // Set up RowNodes of FateNodes
         int a = 0;
@@ -97,9 +97,9 @@ public class GameCreationView implements View {
             RowNode row = new RowNode().setColumns(columns);
             for (int b = 0; b < columns && a < fates.size();) {
                 final Fate fate = fates.get(a);
-                row.add(new FateNode(view.graphics, fate, () -> {
+                row.add(new FateNode(view.av, fate, () -> {
                     view.game.human.fate = fate;
-                    display.setFate(view.graphics, fate);
+                    display.setFate(view.av, fate);
                 }));
                 a++;
                 b++;

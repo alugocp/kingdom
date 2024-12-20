@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -18,19 +18,18 @@ import java.util.function.Consumer;
  * View to select in-app options
  */
 public class StartMenuView implements View {
-    private final Graphics graphics;
+    private final AudioVideo av;
     private final Menu menu;
     private Consumer<View> navigate;
 
-    StartMenuView(Graphics graphics, AllEventHandlers events) {
-        this.graphics = graphics;
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
-                new ListNode().add(new HeaderNode(graphics, "Main Menu"))
-                        .add(new ButtonNode(graphics, "New game",
-                                () -> this.navigate.accept(new GameCreationView(graphics, events))))
-                        .add(new SpacerNode()).add(new TextNode(graphics, "Load game (not implemented yet)"))
-                        .add(new SpacerNode()).add(new TextNode(graphics, "Settings (not implemented yet)"))
-                        .add(new SpacerNode()).add(new TextNode(graphics, "Credits (not implemented yet)")));
+    StartMenuView(AudioVideo av, AllEventHandlers events) {
+        this.av = av;
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
+                .add(new HeaderNode(av, "Main Menu"))
+                .add(new ButtonNode(av, "New game", () -> this.navigate.accept(new GameCreationView(av, events))))
+                .add(new SpacerNode()).add(new TextNode(av, "Load game (not implemented yet)")).add(new SpacerNode())
+                .add(new TextNode(av, "Settings (not implemented yet)")).add(new SpacerNode())
+                .add(new TextNode(av, "Credits (not implemented yet)")));
     }
 
     /** {@inheritdoc} */
@@ -50,7 +49,7 @@ public class StartMenuView implements View {
     /** {@inheritdoc} */
     @Override
     public void render() {
-        this.menu.draw(this.graphics);
+        this.menu.draw(this.av);
     }
 
     /** {@inheritdoc} */

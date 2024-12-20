@@ -18,9 +18,10 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
- * Contains all the objects used to render things in the application
+ * Contains all the objects used to render things and make sounds in the
+ * application
  */
-public class Graphics {
+public class AudioVideo {
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
     public final Loaders loaders = new Loaders();
@@ -29,7 +30,7 @@ public class Graphics {
     public final ModelBatch outlines;
     public final ModelBatch previews;
 
-    public Graphics() {
+    public AudioVideo() {
         this.models = new ModelBatch(new BasicShaderProvider(new ToonShader()));
         this.outlines = new ModelBatch(new BasicShaderProvider(new OutlineShader()));
         this.previews = new ModelBatch(new BasicShaderProvider(new PreviewShader()));
@@ -58,21 +59,21 @@ public class Graphics {
      * Returns the ToonShader associated with this object
      */
     public ToonShader getToonShader() {
-        return (ToonShader) (((Graphics.BasicShaderProvider) (this.models.getShaderProvider())).shader);
+        return (ToonShader) (((BasicShaderProvider) (this.models.getShaderProvider())).shader);
     }
 
     /**
      * Returns the OutlineShader associated with this object
      */
     public OutlineShader getOutlineShader() {
-        return (OutlineShader) (((Graphics.BasicShaderProvider) (this.outlines.getShaderProvider())).shader);
+        return (OutlineShader) (((BasicShaderProvider) (this.outlines.getShaderProvider())).shader);
     }
 
     /**
      * Returns the PreviewShader associated with this object
      */
     public PreviewShader getPreviewShader() {
-        return (PreviewShader) (((Graphics.BasicShaderProvider) (this.previews.getShaderProvider())).shader);
+        return (PreviewShader) (((BasicShaderProvider) (this.previews.getShaderProvider())).shader);
     }
 
     /**

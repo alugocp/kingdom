@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import java.util.ArrayList;
@@ -59,12 +59,12 @@ public class RowNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void draw(Graphics graphics, Rect bounds) {
+    public void draw(AudioVideo av, Rect bounds) {
         int x = bounds.x;
         int w = bounds.w / this.getColumns();
         for (MenuNode child : this.children) {
             final Rect r = new Rect(x, bounds.y, w, child.getHeight());
-            child.draw(graphics, r);
+            child.draw(av, r);
             x += w;
         }
     }

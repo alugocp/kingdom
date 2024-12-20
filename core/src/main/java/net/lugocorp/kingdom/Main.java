@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
 import com.badlogic.gdx.ApplicationListener;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main implements ApplicationListener {
-    private Graphics graphics;
+    private AudioVideo av;
     private View view;
 
     /**
@@ -26,8 +26,8 @@ public class Main implements ApplicationListener {
         Gdx.graphics.setResizable(true);
         Gdx.gl.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        this.graphics = new Graphics();
-        this.view = new LoadingGameView(this.graphics);
+        this.av = new AudioVideo();
+        this.view = new LoadingGameView(this.av);
         this.view.start(this::navigate);
     }
 
@@ -44,7 +44,7 @@ public class Main implements ApplicationListener {
     @Override
     public void dispose() {
         this.view.dispose();
-        this.graphics.dispose();
+        this.av.dispose();
     }
 
     /** {@inheritdoc} */

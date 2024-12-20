@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
-import net.lugocorp.kingdom.engine.Graphics;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 
@@ -9,6 +9,6 @@ import net.lugocorp.kingdom.utils.math.Rect;
 public interface MenuNode {
     public int getHeight();
     public void pack(int width);
-    public void draw(Graphics graphics, Rect bounds);
+    public void draw(AudioVideo av, Rect bounds);
     public void click(Menu menu, Rect bounds, Point p);
 }
