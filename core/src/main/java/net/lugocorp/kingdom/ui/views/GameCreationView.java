@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.ui.menu.FateViewNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
+import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
@@ -103,6 +104,7 @@ public class GameCreationView implements View {
                 a++;
                 b++;
             }
+            options.add(new SpacerNode());
             options.add(row);
         }
         return new Menu(0, 0, Coords.SIZE.x, true, root);

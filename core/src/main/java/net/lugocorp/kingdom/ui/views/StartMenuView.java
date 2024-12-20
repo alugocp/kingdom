@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.engine.MenuController;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
+import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.TextNode;
@@ -27,8 +28,11 @@ public class StartMenuView implements View {
                 new ListNode().add(new HeaderNode(graphics, "Main Menu"))
                         .add(new ButtonNode(graphics, "New game",
                                 () -> this.navigate.accept(new GameCreationView(graphics, events))))
+                        .add(new SpacerNode())
                         .add(new TextNode(graphics, "Load game (not implemented yet)"))
+                        .add(new SpacerNode())
                         .add(new TextNode(graphics, "Settings (not implemented yet)"))
+                        .add(new SpacerNode())
                         .add(new TextNode(graphics, "Credits (not implemented yet)")));
     }
 
