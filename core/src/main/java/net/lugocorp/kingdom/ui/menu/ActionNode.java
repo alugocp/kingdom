@@ -7,7 +7,6 @@ import net.lugocorp.kingdom.engine.Graphics;
 public class ActionNode extends ListNode {
 
     public ActionNode(Graphics graphics, String name, String desc, boolean active, Runnable action) {
-        this.addBorder().add(active ? new ButtonNode(graphics, name, action) : new TextNode(graphics, name))
-                .add(new TextNode(graphics, desc));
+        this.addBorder().add(new ButtonNode(graphics, name, action).disable(!active)).add(new TextNode(graphics, desc));
     }
 }

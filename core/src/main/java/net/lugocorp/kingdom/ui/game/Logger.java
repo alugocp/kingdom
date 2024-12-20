@@ -31,6 +31,9 @@ public class Logger {
     public void log(String message) {
         layout.setText(this.view.graphics.fonts.basic, message);
         messages.add(0, new LogMessage(message, layout.width, layout.height));
+        if (this.messages.size() > Logger.MAX_ROWS) {
+            messages.remove(messages.size() - 1);
+        }
         this.timer = 0;
     }
 

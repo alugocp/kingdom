@@ -81,6 +81,7 @@ public class Graphics {
     public static class Fonts {
         public final BitmapFont header;
         public final BitmapFont button;
+        public final BitmapFont disabled;
         public final BitmapFont basic;
 
         Fonts() {
@@ -90,8 +91,9 @@ public class Graphics {
             this.header = generator.generateFont(param);
             param.size = 18;
             this.basic = generator.generateFont(param);
-            param.color = new Color(0.6f, 1f, 1f, 1f);
             param.size = 24;
+            this.disabled = generator.generateFont(param);
+            param.color = new Color(0.6f, 1f, 1f, 1f);
             this.button = generator.generateFont(param);
             generator.dispose();
         }

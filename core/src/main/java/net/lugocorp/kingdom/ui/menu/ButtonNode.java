@@ -18,7 +18,7 @@ public class ButtonNode extends TextNode {
 
     public ButtonNode(Graphics graphics, String message, Runnable action) {
         super(graphics, message);
-        this.disabledFont = graphics.fonts.basic;
+        this.disabledFont = graphics.fonts.disabled;
         this.enabledFont = graphics.fonts.button;
         this.font = graphics.fonts.button;
         this.action = action;
