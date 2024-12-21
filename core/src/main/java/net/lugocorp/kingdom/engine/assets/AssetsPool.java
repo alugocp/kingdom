@@ -47,7 +47,7 @@ public abstract class AssetsPool<T> {
         return this.modAssetsMap
                 .get(filepath).map((String key) -> Gdx.files
                         .external(String.format("%s/%s/%s", ModLoader.ASSETS_BASE, key, filepath)).path())
-                .orElse(filepath);
+                .orElse(Gdx.files.internal(filepath).path());
     }
 
     /**
@@ -55,8 +55,8 @@ public abstract class AssetsPool<T> {
      */
     protected Optional<T> getAsset(String name) {
         AssetManager assets = this.getAssetManager(name);
-        assets.update();
         String filename = this.getFilename(name);
+        assets.update();
         T asset = assets.get(filename, false);
         if (asset == null) {
             if (!assets.contains(filename, this.classInstance)) {

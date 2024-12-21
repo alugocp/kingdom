@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,6 +13,7 @@ import java.util.function.Supplier;
 public class ButtonNode extends TextNode {
     private final BitmapFont disabledFont;
     private final BitmapFont enabledFont;
+    private final SoundLoader sounds;
     private final Runnable action;
     private Optional<Supplier<Boolean>> criteria = Optional.empty();
     private boolean disabled = false;
@@ -20,6 +22,7 @@ public class ButtonNode extends TextNode {
         super(av, message);
         this.disabledFont = av.fonts.disabled;
         this.enabledFont = av.fonts.button;
+        this.sounds = av.loaders.sounds;
         this.font = av.fonts.button;
         this.action = action;
     }
@@ -75,6 +78,7 @@ public class ButtonNode extends TextNode {
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
         if (!this.disabled) {
+            this.sounds.play("ui/arrow");
             this.action.run();
         }
     }

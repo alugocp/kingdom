@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.engine;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
+import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
@@ -53,6 +54,7 @@ public class AudioVideo {
         this.fonts.basic.dispose();
         this.loaders.sprites.dispose();
         this.loaders.models.dispose();
+        this.loaders.sounds.dispose();
     }
 
     /**
@@ -106,11 +108,13 @@ public class AudioVideo {
     public static class Loaders {
         public final SpriteLoader sprites;
         public final ModelLoader models;
+        public final SoundLoader sounds;
 
         private Loaders() {
             ModAssetsMap modAssetsMap = new ModAssetsMap();
             this.sprites = new SpriteLoader(modAssetsMap);
             this.models = new ModelLoader(modAssetsMap);
+            this.sounds = new SoundLoader(modAssetsMap);
         }
     }
 
