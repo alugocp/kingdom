@@ -7,6 +7,11 @@ public interface GameMod {
     /**
      * Returns a unique ID for this mod
      */
+    public String getKey();
+
+    /**
+     * Returns a display name for this mod
+     */
     public String getName();
 
     /**

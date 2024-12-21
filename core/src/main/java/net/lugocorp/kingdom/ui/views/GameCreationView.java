@@ -1,8 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.world.World;
@@ -25,17 +23,20 @@ import java.util.function.Consumer;
 /**
  * This View walks the player through Game setup and World generation
  */
-public class GameCreationView implements View {
+class GameCreationView implements View {
     private final Game game;
     private final GameView view;
     private final Menu fateSelection;
+    private final StartMenuView.Params params;
     private Consumer<View> navigate;
     private Menu menu;
 
-    GameCreationView(AudioVideo av, AllEventHandlers events) {
+    GameCreationView(StartMenuView.Params params) {
+        this.params = params;
+
         // Initialize Game and GameView state for world generation logic
-        this.game = new Game(events, new World(10, 5));
-        this.view = new GameView(this.game, av);
+        this.game = new Game(params.events, new World(10, 5));
+        this.view = new GameView(this.game, params);
         this.game.generator = new Generator(this.view);
         this.game.mechanics.init(this.game);
 
@@ -82,8 +83,7 @@ public class GameCreationView implements View {
         ListNode options = new ListNode();
         FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
         ListNode root = new ListNode().add(new RowNode()
-                .add(new ButtonNode(view.av, "Back",
-                        () -> this.navigate.accept(new StartMenuView(this.view.av, this.game.events))))
+                .add(new ButtonNode(view.av, "Back", () -> this.navigate.accept(new StartMenuView(this.params))))
                 .add(new ButtonNode(view.av, "Choose", () -> {
                     new WorldGenerator().generateWorld(this.view);
                     this.navigate.accept(this.view);

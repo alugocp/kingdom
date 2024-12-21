@@ -9,27 +9,31 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.mods.GameMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
  * View to select in-app options
  */
-public class StartMenuView implements View {
-    private final AudioVideo av;
+class StartMenuView implements View {
+    private final Params params;
     private final Menu menu;
     private Consumer<View> navigate;
 
-    StartMenuView(AudioVideo av, AllEventHandlers events) {
-        this.av = av;
+    StartMenuView(Params params) {
+        this.params = params;
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
-                .add(new HeaderNode(av, "Main Menu"))
-                .add(new ButtonNode(av, "New game", () -> this.navigate.accept(new GameCreationView(av, events))))
-                .add(new SpacerNode()).add(new TextNode(av, "Load game (not implemented yet)")).add(new SpacerNode())
-                .add(new TextNode(av, "Settings (not implemented yet)")).add(new SpacerNode())
-                .add(new TextNode(av, "Credits (not implemented yet)")));
+                .add(new HeaderNode(params.av, "Main Menu"))
+                .add(new ButtonNode(params.av, "New game", () -> this.navigate.accept(new GameCreationView(params))))
+                .add(new SpacerNode()).add(new TextNode(params.av, "Load game (not implemented yet)"))
+                .add(new SpacerNode()).add(new TextNode(params.av, "Settings (not implemented yet)"))
+                .add(new SpacerNode()).add(new TextNode(params.av, "Credits (not implemented yet)"))
+                .add(new SpacerNode())
+                .add(new ButtonNode(params.av, "Mods", () -> this.navigate.accept(new ActiveModsView(params)))));
     }
 
     /** {@inheritdoc} */
@@ -49,7 +53,7 @@ public class StartMenuView implements View {
     /** {@inheritdoc} */
     @Override
     public void render() {
-        this.menu.draw(this.av);
+        this.menu.draw(this.params.av);
     }
 
     /** {@inheritdoc} */
@@ -60,5 +64,21 @@ public class StartMenuView implements View {
     /** {@inheritdoc} */
     @Override
     public void dispose() {
+    }
+
+    /**
+     * This nested class stores all the necessary parameters for StartMenuView and
+     * any views that can navigate to it
+     */
+    static class Params {
+        final AllEventHandlers events;
+        final List<GameMod> mods;
+        final AudioVideo av;
+
+        Params(AudioVideo av, AllEventHandlers events, List<GameMod> mods) {
+            this.events = events;
+            this.mods = mods;
+            this.av = av;
+        }
     }
 }

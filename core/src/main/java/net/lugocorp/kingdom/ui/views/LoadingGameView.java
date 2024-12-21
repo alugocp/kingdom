@@ -3,8 +3,11 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.mods.GameMod;
 import net.lugocorp.kingdom.utils.mods.ModLoader;
 import com.badlogic.gdx.graphics.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -12,6 +15,7 @@ import java.util.function.Consumer;
  */
 public class LoadingGameView implements View {
     private final AllEventHandlers events = new AllEventHandlers();
+    private final List<GameMod> mods = new ArrayList<>();
     private final AudioVideo av;
     private Consumer<View> navigate;
     private boolean loaded = false;
@@ -36,34 +40,27 @@ public class LoadingGameView implements View {
 
         // Initiate mod loading in a separate Thread
         new Thread(() -> {
-            ModLoader mods = new ModLoader();
+            ModLoader modLoader = new ModLoader();
             try {
-                mods.resetModAssetsLocation();
+                modLoader.resetModAssetsLocation();
             } catch (Exception e) {
                 System.err.println("Could not load any mod data");
                 e.printStackTrace();
                 this.loaded = true;
                 return;
             }
-            for (String filepath : mods.getMods()) {
-                String key = mods.getModKey(filepath);
-                System.out.println(String.format("Loading mod '%s'...", key));
+            for (String filepath : modLoader.getMods()) {
+                System.out.println(String.format("Loading mod at %s", filepath));
 
                 // Load mod code
                 try {
-                    mods.loadMod(key, filepath, this.events, this.av.loaders.sprites);
+                    GameMod m = modLoader.loadMod(filepath, this.events, this.av.loaders.sprites,
+                            this.av.loaders.models.getModAssetsMap());
+                    this.mods.add(m);
                 } catch (Exception e) {
-                    System.err.println(String.format("Error while loading mod '%s'", key));
+                    System.err.println(String.format("Error while loading mod at %s", filepath));
                     e.printStackTrace();
                     continue;
-                }
-
-                // Extract mod assets
-                try {
-                    mods.unzipAssets(key, filepath, this.av.loaders.models.getModAssetsMap());
-                } catch (Exception e) {
-                    System.err.println(String.format("Did not load any assets from mod '%s'", key));
-                    e.printStackTrace();
                 }
             }
             try {
@@ -79,7 +76,7 @@ public class LoadingGameView implements View {
     @Override
     public void render() {
         if (this.loaded) {
-            this.navigate.accept(new StartMenuView(this.av, this.events));
+            this.navigate.accept(new StartMenuView(new StartMenuView.Params(this.av, this.events, this.mods)));
         }
         this.av.sprites.begin();
         this.av.fonts.basic.draw(this.av.sprites, "Loading...", Coords.SIZE.y / 3, Coords.SIZE.y / 2);

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
@@ -39,32 +38,31 @@ public class ModLoader {
     }
 
     /**
-     * Returns a simplified filename for the given mod
-     */
-    public String getModKey(String filepath) {
-        // TODO don't base this on a filename
-        Path path = new File(filepath).toPath();
-        return path.getName(path.getNameCount() - 1).toString();
-    }
-
-    /**
      * Loads the given mod
      */
-    public void loadMod(String key, String filepath, AllEventHandlers events, SpriteLoader sprites) throws Exception {
+    public GameMod loadMod(String filepath, AllEventHandlers events, SpriteLoader sprites, ModAssetsMap modAssetsMap)
+            throws Exception {
+        // Load mod data
+        URLClassLoader child = new URLClassLoader(new URL[]{new File(filepath).toURI().toURL()},
+                this.getClass().getClassLoader());
+        Class definition = Class.forName("net.lugocorp.kingdom.mod.KingdomMod", true, child);
+        GameMod mod = (GameMod) definition.newInstance();
+        String key = mod.getKey();
+
+        // Check for mod legality
         if (key.equals("shaders") || key.equals("ui")) {
             throw new RuntimeException(String.format("Illegal mod key '%s'", key));
         }
         if (this.loaded.contains(key)) {
             throw new RuntimeException(String.format("Mod '%s' has already been loaded", key));
         }
+
+        // Register mod into the game
+        mod.registerEvents(events);
+        mod.registerSprites(sprites);
+        this.unzipAssets(key, filepath, modAssetsMap);
         this.loaded.add(key);
-        URLClassLoader child = new URLClassLoader(new URL[]{new File(filepath).toURI().toURL()},
-                this.getClass().getClassLoader());
-        Class mod = Class.forName("net.lugocorp.kingdom.mod.KingdomMod", true, child);
-        Method eventsMethod = mod.getDeclaredMethod("registerEvents", AllEventHandlers.class);
-        eventsMethod.invoke(mod.newInstance(), events);
-        Method spritesMethod = mod.getDeclaredMethod("registerSprites", SpriteLoader.class);
-        spritesMethod.invoke(mod.newInstance(), sprites);
+        return mod;
     }
 
     /**
@@ -73,10 +71,21 @@ public class ModLoader {
     public void resetModAssetsLocation() throws Exception {
         File site = Gdx.files.external(ModLoader.ASSETS_BASE).file();
         if (site.exists()) {
-            // TODO actually delete the folder
-            site.delete();
+            this.recursiveFileDelete(site);
         }
         site.mkdirs();
+    }
+
+    /**
+     * Recursively deletes a folder and all its contents from the filesystem
+     */
+    private void recursiveFileDelete(File f) {
+        if (f.isDirectory()) {
+            for (String s : f.list()) {
+                this.recursiveFileDelete(new File(f.getPath(), s));
+            }
+        }
+        f.delete();
     }
 
     /**
@@ -94,7 +103,7 @@ public class ModLoader {
     /**
      * Extracts the assets associated with the given mod
      */
-    public void unzipAssets(String key, String filepath, ModAssetsMap modAssetsMap) throws Exception {
+    private void unzipAssets(String key, String filepath, ModAssetsMap modAssetsMap) throws Exception {
         ZipEntry entry = null;
         ZipInputStream input = new ZipInputStream(new FileInputStream(filepath));
         while ((entry = input.getNextEntry()) != null) {

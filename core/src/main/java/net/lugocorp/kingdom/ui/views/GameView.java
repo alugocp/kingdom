@@ -25,6 +25,7 @@ import java.util.function.Consumer;
  * This class handles all the Game runtime logic
  */
 public class GameView implements View {
+    private final StartMenuView.Params params;
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
@@ -38,9 +39,10 @@ public class GameView implements View {
     private Consumer<View> navigate = (View v) -> {
     };
 
-    GameView(Game game, AudioVideo av) {
+    GameView(Game game, StartMenuView.Params params) {
         this.game = game;
-        this.av = av;
+        this.av = params.av;
+        this.params = params;
         this.hud = new Hud(this);
         this.logger = new Logger(this);
         this.selector = new TileSelector(this);
@@ -65,7 +67,7 @@ public class GameView implements View {
      * Returns to the StartMenuView
      */
     public void close() {
-        this.navigate.accept(new StartMenuView(this.av, this.game.events));
+        this.navigate.accept(new StartMenuView(this.params));
     }
 
     /** {@inheritdoc} */

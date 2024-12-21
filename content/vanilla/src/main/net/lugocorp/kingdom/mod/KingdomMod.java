@@ -33,6 +33,12 @@ public class KingdomMod implements GameMod {
 
     /** {@inheritdoc} */
     @Override
+    public String getKey() {
+        return "vanilla";
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public String getName() {
         return "Vanilla";
     }
