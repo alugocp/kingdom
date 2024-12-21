@@ -31,7 +31,8 @@ class StartMenuView implements View {
                 .add(new ButtonNode(params.av, "New game", () -> this.navigate.accept(new GameCreationView(params))))
                 .add(new SpacerNode()).add(new TextNode(params.av, "Load game (not implemented yet)"))
                 .add(new SpacerNode()).add(new TextNode(params.av, "Settings (not implemented yet)"))
-                .add(new SpacerNode()).add(new TextNode(params.av, "Credits (not implemented yet)"))
+                .add(new SpacerNode())
+                .add(new ButtonNode(params.av, "Credits", () -> this.navigate.accept(new CreditsView(params))))
                 .add(new SpacerNode())
                 .add(new ButtonNode(params.av, "Mods", () -> this.navigate.accept(new ActiveModsView(params)))));
     }
