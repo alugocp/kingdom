@@ -7,6 +7,6 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 public class ActionNode extends ListNode {
 
     public ActionNode(AudioVideo av, String name, String desc, boolean active, Runnable action) {
-        this.addBorder().add(new ButtonNode(av, name, action).disable(!active)).add(new TextNode(av, desc));
+        this.addBorder().add(new ButtonNode(av, name, action).enable(active)).add(new TextNode(av, desc));
     }
 }

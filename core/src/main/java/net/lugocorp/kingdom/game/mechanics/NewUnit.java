@@ -82,7 +82,7 @@ public class NewUnit {
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
                 view.popups.complete();
                 view.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
-            }).disable(view.game.mechanics.pools.remaining(glyph) == 0));
+            }).enable(view.game.mechanics.pools.remaining(glyph) > 0));
         }
         node.add(glyphs);
         node.add(buttons);

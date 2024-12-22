@@ -28,27 +28,15 @@ public class ButtonNode extends TextNode {
     }
 
     /**
-     * Enables this ButtonNode so it can be clicked
-     */
-    public void enable() {
-        this.font = this.enabledFont;
-        this.disabled = false;
-    }
-
-    /**
-     * Disables this ButtonNode so it cannot be clicked
-     */
-    public void disable() {
-        this.font = this.disabledFont;
-        this.disabled = true;
-    }
-
-    /**
      * Disables this ButtonNode based on some criteria
      */
-    public ButtonNode disable(boolean criteria) {
+    public ButtonNode enable(boolean criteria) {
         if (criteria) {
-            this.disable();
+            this.font = this.enabledFont;
+            this.disabled = false;
+        } else {
+            this.font = this.disabledFont;
+            this.disabled = true;
         }
         return this;
     }
@@ -64,13 +52,7 @@ public class ButtonNode extends TextNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
-        this.criteria.ifPresent((Supplier<Boolean> supplier) -> {
-            if (supplier.get()) {
-                this.enable();
-            } else {
-                this.disable();
-            }
-        });
+        this.criteria.ifPresent((Supplier<Boolean> supplier) -> this.enable(supplier.get()));
         super.draw(av, bounds);
     }
 

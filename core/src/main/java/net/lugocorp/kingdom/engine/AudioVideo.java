@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.engine;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
+import net.lugocorp.kingdom.engine.assets.MusicLoader;
 import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
@@ -25,16 +26,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class AudioVideo {
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
-    public final Loaders loaders = new Loaders();
+    public final Settings settings = new Settings();
     public final Fonts fonts = new Fonts();
-    public final ModelBatch models;
     public final ModelBatch outlines;
     public final ModelBatch previews;
+    public final ModelBatch models;
+    public final Loaders loaders;
 
     public AudioVideo() {
         this.models = new ModelBatch(new BasicShaderProvider(new ToonShader()));
         this.outlines = new ModelBatch(new BasicShaderProvider(new OutlineShader()));
         this.previews = new ModelBatch(new BasicShaderProvider(new PreviewShader()));
+        this.loaders = new Loaders(this.settings);
 
         // Initialize shader programs
         this.getPreviewShader().init();
@@ -109,12 +112,14 @@ public class AudioVideo {
         public final SpriteLoader sprites;
         public final ModelLoader models;
         public final SoundLoader sounds;
+        public final MusicLoader music;
 
-        private Loaders() {
+        private Loaders(Settings settings) {
             ModAssetsMap modAssetsMap = new ModAssetsMap();
             this.sprites = new SpriteLoader(modAssetsMap);
             this.models = new ModelLoader(modAssetsMap);
-            this.sounds = new SoundLoader(modAssetsMap);
+            this.sounds = new SoundLoader(modAssetsMap, settings);
+            this.music = new MusicLoader(modAssetsMap, settings);
         }
     }
 

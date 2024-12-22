@@ -5,7 +5,7 @@ import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.SpacerNode;
-import net.lugocorp.kingdom.ui.menu.TextNode;
+import net.lugocorp.kingdom.ui.menu.VolumeNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -13,24 +13,23 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * This View shows players who contributed to the game
+ * This View allows the player to change some basic settings
  */
-class CreditsView implements View {
+class SettingsView implements View {
     private final StartMenuView.Params params;
     private final Menu menu;
     private Consumer<View> navigate;
 
-    CreditsView(StartMenuView.Params params) {
+    SettingsView(StartMenuView.Params params) {
         this.params = params;
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
-                new ListNode()
-                        .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
-                        .add(new HeaderNode(params.av, "Game Design")).add(new TextNode(params.av, "Alex Lugo"))
-                        .add(new SpacerNode()).add(new HeaderNode(params.av, "Programming"))
-                        .add(new TextNode(params.av, "Alex Lugo")).add(new SpacerNode())
-                        .add(new HeaderNode(params.av, "3D Modelling")).add(new TextNode(params.av, "Alex Lugo"))
-                        .add(new SpacerNode()).add(new HeaderNode(params.av, "Character Design"))
-                        .add(new TextNode(params.av, "Alex Lugo")));
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
+                .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
+                .add(new HeaderNode(params.av, "Settings")).add(new SpacerNode())
+                .add(new HeaderNode(params.av, "Sound Effect Volume"))
+                .add(new VolumeNode(params.av, params.av.settings.getSoundVolume(),
+                        (Float v) -> params.av.settings.setSoundVolume(v)))
+                .add(new SpacerNode()).add(new HeaderNode(params.av, "Music Volume")).add(new VolumeNode(params.av,
+                        params.av.settings.getMusicVolume(), (Float v) -> params.av.settings.setMusicVolume(v))));
     }
 
     /** {@inheritdoc} */

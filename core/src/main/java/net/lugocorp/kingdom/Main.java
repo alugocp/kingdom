@@ -34,6 +34,11 @@ public class Main implements ApplicationListener {
     /** {@inheritdoc} */
     @Override
     public void render() {
+        // Play any queued audio
+        av.loaders.sounds.checkQueuedSounds();
+        av.loaders.music.checkQueuedMusic();
+
+        // Render the current View
         ScreenUtils.clear(this.view.getBackgroundColor());
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
