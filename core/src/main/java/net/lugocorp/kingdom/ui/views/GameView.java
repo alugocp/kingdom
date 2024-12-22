@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.ui.game.Logger;
 import net.lugocorp.kingdom.ui.game.TileMenu;
 import net.lugocorp.kingdom.ui.game.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.utils.SaveLoad;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -39,7 +40,7 @@ public class GameView implements View {
     private Consumer<View> navigate = (View v) -> {
     };
 
-    GameView(Game game, StartMenuView.Params params) {
+    GameView(StartMenuView.Params params, Game game) {
         this.game = game;
         this.av = params.av;
         this.params = params;
@@ -61,6 +62,13 @@ public class GameView implements View {
      */
     public Environment getEnvironment() {
         return this.environment;
+    }
+
+    /**
+     * Returns a SaveLoad instance to use through the Hud
+     */
+    public SaveLoad getSerial() {
+        return this.params.serial;
     }
 
     /**

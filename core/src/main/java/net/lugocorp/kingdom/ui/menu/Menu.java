@@ -34,7 +34,7 @@ public class Menu {
     /**
      * Packs this Menu's constituent MenuNodes
      */
-    protected void pack() {
+    public void pack() {
         this.root.pack(width - (Menu.MARGIN * 3));
     }
 

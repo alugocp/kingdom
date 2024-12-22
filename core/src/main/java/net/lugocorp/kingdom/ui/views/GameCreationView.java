@@ -16,6 +16,7 @@ import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import java.time.OffsetTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -35,8 +36,8 @@ class GameCreationView implements View {
         this.params = params;
 
         // Initialize Game and GameView state for world generation logic
-        this.game = new Game(params.events, new World(10, 5));
-        this.view = new GameView(this.game, params);
+        this.game = new Game(params.events, new World(10, 5), OffsetTime.now());
+        this.view = new GameView(params, this.game);
         this.game.generator = new Generator(this.view);
         this.game.mechanics.init(this.game);
 

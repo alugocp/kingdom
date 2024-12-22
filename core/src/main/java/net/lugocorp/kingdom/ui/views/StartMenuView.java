@@ -7,7 +7,7 @@ import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.SpacerNode;
-import net.lugocorp.kingdom.ui.menu.TextNode;
+import net.lugocorp.kingdom.utils.SaveLoad;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.mods.GameMod;
 import com.badlogic.gdx.Gdx;
@@ -29,7 +29,8 @@ class StartMenuView implements View {
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
                 .add(new HeaderNode(params.av, "Main Menu"))
                 .add(new ButtonNode(params.av, "New game", () -> this.navigate.accept(new GameCreationView(params))))
-                .add(new SpacerNode()).add(new TextNode(params.av, "Load game (not implemented yet)"))
+                .add(new SpacerNode())
+                .add(new ButtonNode(params.av, "Load game", () -> this.navigate.accept(new LoadGameView(params))))
                 .add(new SpacerNode())
                 .add(new ButtonNode(params.av, "Settings", () -> this.navigate.accept(new SettingsView(params))))
                 .add(new SpacerNode())
@@ -75,9 +76,11 @@ class StartMenuView implements View {
     static class Params {
         final AllEventHandlers events;
         final List<GameMod> mods;
+        final SaveLoad serial;
         final AudioVideo av;
 
-        Params(AudioVideo av, AllEventHandlers events, List<GameMod> mods) {
+        Params(AudioVideo av, AllEventHandlers events, SaveLoad serial, List<GameMod> mods) {
+            this.serial = serial;
             this.events = events;
             this.mods = mods;
             this.av = av;

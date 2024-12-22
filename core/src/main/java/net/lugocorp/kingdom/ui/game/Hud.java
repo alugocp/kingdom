@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.ui.menu.HudInfoNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
+import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.SettingsView;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -28,18 +29,11 @@ public class Hud extends Menu {
                                 .add(new ButtonNode(view.av, "View Fate",
                                         () -> view.popups
                                                 .addNextUnrequired(view.game.mechanics.fates.getPlayerFateMenu(view))))
-                                .add(new ButtonNode(
-                                        view.av, "View Artifacts",
-                                        () -> view.popups
-                                                .addNextUnrequired(
-                                                        view.game.mechanics.auction.getOwnedArtifactsMenu(view))))
+                                .add(new ButtonNode(view.av, "View Artifacts",
+                                        () -> view.popups.addNextUnrequired(
+                                                view.game.mechanics.auction.getOwnedArtifactsMenu(view))))
                                 .add(new ButtonNode(view.av, "Settings",
-                                        () -> view.popups
-                                                .addNextUnrequired(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
-                                                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                                                        SettingsView.addSettingsMenuNodes(view.av,
-                                                                new ListNode().add(new ButtonNode(view.av, "x",
-                                                                        () -> view.popups.setDisplay(false))))))))
+                                        () -> view.popups.addNextUnrequired(this.getSettingsMenu(view))))
                                 .add(new ButtonNode(view.av, "Complete Turn", () -> {
                                     if (view.popups.get().isPresent()) {
                                         view.popups.setDisplay(true);
@@ -50,6 +44,25 @@ public class Hud extends Menu {
                                     }
                                 }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
         this.pack();
+    }
+
+    /**
+     * Returns a Menu that allows the player to adjust settings
+     */
+    private Menu getSettingsMenu(GameView view) {
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                SettingsView
+                        .addSettingsMenuNodes(view.av,
+                                new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false))))
+                        .add(new SpacerNode()).add(new ButtonNode(view.av, "Save game", () -> {
+                            try {
+                                view.getSerial().saveGame(this.game);
+                                view.logger.log("Game has been saved");
+                            } catch (Exception e) {
+                                view.logger.log("Could not save game");
+                                e.printStackTrace();
+                            }
+                        })));
     }
 
     /** {@inheritdoc} */

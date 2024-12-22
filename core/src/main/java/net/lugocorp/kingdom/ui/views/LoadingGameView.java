@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
+import net.lugocorp.kingdom.utils.SaveLoad;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.mods.GameMod;
 import net.lugocorp.kingdom.utils.mods.ModLoader;
@@ -76,7 +77,8 @@ public class LoadingGameView implements View {
     @Override
     public void render() {
         if (this.loaded) {
-            this.navigate.accept(new StartMenuView(new StartMenuView.Params(this.av, this.events, this.mods)));
+            this.navigate.accept(
+                    new StartMenuView(new StartMenuView.Params(this.av, this.events, new SaveLoad(), this.mods)));
         }
         this.av.sprites.begin();
         this.av.fonts.basic.draw(this.av.sprites, "Loading...", Coords.SIZE.y / 3, Coords.SIZE.y / 2);
