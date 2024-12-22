@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
@@ -15,21 +16,27 @@ import java.util.function.Consumer;
 /**
  * This View allows the player to change some basic settings
  */
-class SettingsView implements View {
+public class SettingsView implements View {
     private final StartMenuView.Params params;
     private final Menu menu;
     private Consumer<View> navigate;
 
     SettingsView(StartMenuView.Params params) {
         this.params = params;
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
-                .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
-                .add(new HeaderNode(params.av, "Settings")).add(new SpacerNode())
-                .add(new HeaderNode(params.av, "Sound Effect Volume"))
-                .add(new VolumeNode(params.av, params.av.settings.getSoundVolume(),
-                        (Float v) -> params.av.settings.setSoundVolume(v)))
-                .add(new SpacerNode()).add(new HeaderNode(params.av, "Music Volume")).add(new VolumeNode(params.av,
-                        params.av.settings.getMusicVolume(), (Float v) -> params.av.settings.setMusicVolume(v))));
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
+                SettingsView.addSettingsMenuNodes(params.av, new ListNode().add(
+                        new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))));
+    }
+
+    /**
+     * Adds the settings view MenuNodes to the given ListNode
+     */
+    public static ListNode addSettingsMenuNodes(AudioVideo av, ListNode node) {
+        return node.add(new HeaderNode(av, "Settings")).add(new SpacerNode())
+                .add(new HeaderNode(av, "Sound Effect Volume"))
+                .add(new VolumeNode(av, av.settings.getSoundVolume(), (Float v) -> av.settings.setSoundVolume(v)))
+                .add(new SpacerNode()).add(new HeaderNode(av, "Music Volume"))
+                .add(new VolumeNode(av, av.settings.getMusicVolume(), (Float v) -> av.settings.setMusicVolume(v)));
     }
 
     /** {@inheritdoc} */

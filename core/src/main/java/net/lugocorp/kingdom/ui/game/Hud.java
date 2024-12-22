@@ -1,12 +1,14 @@
 package net.lugocorp.kingdom.ui.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HudInfoNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.ui.views.SettingsView;
 import net.lugocorp.kingdom.utils.math.Coords;
 
 /**
@@ -26,9 +28,18 @@ public class Hud extends Menu {
                                 .add(new ButtonNode(view.av, "View Fate",
                                         () -> view.popups
                                                 .addNextUnrequired(view.game.mechanics.fates.getPlayerFateMenu(view))))
-                                .add(new ButtonNode(view.av, "View Artifacts",
-                                        () -> view.popups.addNextUnrequired(
-                                                view.game.mechanics.auction.getOwnedArtifactsMenu(view))))
+                                .add(new ButtonNode(
+                                        view.av, "View Artifacts",
+                                        () -> view.popups
+                                                .addNextUnrequired(
+                                                        view.game.mechanics.auction.getOwnedArtifactsMenu(view))))
+                                .add(new ButtonNode(view.av, "Settings",
+                                        () -> view.popups
+                                                .addNextUnrequired(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
+                                                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                                                        SettingsView.addSettingsMenuNodes(view.av,
+                                                                new ListNode().add(new ButtonNode(view.av, "x",
+                                                                        () -> view.popups.setDisplay(false))))))))
                                 .add(new ButtonNode(view.av, "Complete Turn", () -> {
                                     if (view.popups.get().isPresent()) {
                                         view.popups.setDisplay(true);
