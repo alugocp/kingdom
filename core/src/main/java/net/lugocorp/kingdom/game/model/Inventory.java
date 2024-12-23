@@ -23,6 +23,15 @@ public class Inventory implements MenuSubject {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Inventory() {
+        this.items = null;
+        this.type = 0;
+        this.max = 0;
+    }
+
+    /**
      * Return current number of items in this Inventory
      */
     public int getSize() {

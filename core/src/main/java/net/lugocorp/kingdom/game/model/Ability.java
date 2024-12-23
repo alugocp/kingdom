@@ -22,6 +22,14 @@ public class Ability implements EventReceiver, MenuSubject {
         this.name = name;
     }
 
+    /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Ability() {
+        this.wielder = null;
+        this.name = null;
+    }
+
     /** {@inheritdoc} */
     @Override
     public void handleEventWithoutSignalBooster(GameView view, Event e) {

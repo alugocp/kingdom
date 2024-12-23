@@ -34,6 +34,14 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Building() {
+        super(0, 0);
+        this.name = null;
+    }
+
+    /**
      * Secure accessor to this Building's HitPoints
      */
     public HitPoints health() {

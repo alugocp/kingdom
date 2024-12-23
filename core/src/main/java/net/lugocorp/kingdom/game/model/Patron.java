@@ -29,6 +29,13 @@ public class Patron extends Building {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Patron() {
+        super(null, 0, 0);
+    }
+
+    /**
      * Sets this Patron's favor threshold value
      */
     public void setThreshold(int threshold) {

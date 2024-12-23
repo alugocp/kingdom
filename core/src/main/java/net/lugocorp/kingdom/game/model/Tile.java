@@ -36,6 +36,14 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Tile() {
+        super(0, 0);
+        this.name = null;
+    }
+
+    /**
      * Sets whether or not this Tile is an obstacle. Obstacles cannot be walked on
      * by default.
      */

@@ -18,6 +18,14 @@ public class Point {
         }
     }
 
+    /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Point() {
+        this.x = 0;
+        this.y = 0;
+    }
+
     /** {@inheritdoc} */
     @Override
     public String toString() {

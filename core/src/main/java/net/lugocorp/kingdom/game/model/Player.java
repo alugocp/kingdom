@@ -24,6 +24,14 @@ public class Player {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Player() {
+        this.name = null;
+        this.human = false;
+    }
+
+    /**
      * Returns true if this Player represents the human
      */
     public boolean isHumanPlayer() {

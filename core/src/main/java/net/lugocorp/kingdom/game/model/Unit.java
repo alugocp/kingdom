@@ -50,6 +50,15 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Unit() {
+        super(0, 0);
+        this.health = null;
+        this.name = null;
+    }
+
+    /**
      * Sets up to 2 active Abilities for this Unit
      */
     public void setActiveAbilities(Generator g, Optional<String> a1, Optional<String> a2) {

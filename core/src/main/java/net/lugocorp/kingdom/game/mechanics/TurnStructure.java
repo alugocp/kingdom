@@ -33,6 +33,12 @@ public class TurnStructure {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public TurnStructure() {
+    }
+
+    /**
      * Marks a Unit as having acted this turn
      */
     public void unitHasActed(Unit u) {
@@ -238,6 +244,17 @@ public class TurnStructure {
             this.channel = channel;
             this.repeat = repeat;
             this.turn = turn;
+        }
+
+        /**
+         * This should only be used in conjunction with Kryo rehydration
+         */
+        public FutureTick() {
+            this.receiver = null;
+            this.interval = 0;
+            this.channel = null;
+            this.repeat = false;
+            this.turn = 0;
         }
     }
 }

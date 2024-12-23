@@ -19,6 +19,13 @@ public class Item implements EventReceiver {
         this.name = name;
     }
 
+    /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Item() {
+        this.name = null;
+    }
+
     /** {@inheritdoc} */
     @Override
     public void handleEventWithoutSignalBooster(GameView view, Event e) {

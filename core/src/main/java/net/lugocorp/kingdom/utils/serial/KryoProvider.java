@@ -45,7 +45,6 @@ class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.mechanics.TurnStructure.FutureTick.class);
         kryo.register(net.lugocorp.kingdom.game.model.Ability.class);
         kryo.register(net.lugocorp.kingdom.game.model.Building.class);
-        kryo.register(net.lugocorp.kingdom.game.model.Generator.class);
         kryo.register(net.lugocorp.kingdom.game.model.Artifact.class);
         kryo.register(net.lugocorp.kingdom.game.model.Inventory.class);
         kryo.register(net.lugocorp.kingdom.game.model.Inventory.InventoryType.class);

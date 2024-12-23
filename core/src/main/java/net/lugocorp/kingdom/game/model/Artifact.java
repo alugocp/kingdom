@@ -24,6 +24,13 @@ public class Artifact implements EventReceiver, MenuSubject {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Artifact() {
+        this.name = null;
+    }
+
+    /**
      * Marks this Artifact as claimed by the given Player
      */
     public void claim(GameView view, Player player) {

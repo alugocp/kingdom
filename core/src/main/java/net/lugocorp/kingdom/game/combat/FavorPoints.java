@@ -18,6 +18,13 @@ public class FavorPoints extends HitPoints<Building> {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public FavorPoints() {
+        this.patron = null;
+    }
+
+    /**
      * Causes this object's Patron bearer to lose favor from its favorite Player
      */
     private void loseFavoritePlayerFavor(int points) {

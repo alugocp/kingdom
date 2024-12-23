@@ -17,6 +17,13 @@ public class HitPoints<A extends EventReceiver> {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public HitPoints() {
+        this.bearer = null;
+    }
+
+    /**
      * Returns true if the host entity cannot take damage
      */
     public boolean isVulnerable() {

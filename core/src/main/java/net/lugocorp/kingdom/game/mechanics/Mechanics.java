@@ -18,6 +18,13 @@ public class Mechanics {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Mechanics() {
+        this.turns = null;
+    }
+
+    /**
      * Initializes mechanics that require GameView to be initialized
      */
     public void init(Game game) {

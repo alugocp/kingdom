@@ -31,6 +31,14 @@ public class World {
     }
 
     /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public World() {
+        this.w = 0;
+        this.h = 0;
+    }
+
+    /**
      * Sets the Tile at the specified position in the grid
      */
     public void setTile(Tile t, int x, int y) {

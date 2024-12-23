@@ -27,12 +27,13 @@ public class Game {
     private final Set<Patron> patrons = new HashSet<>();
     private final Map<Player, List<Building>> playerBuildings = new HashMap<>();
     public final List<Player> comps = new ArrayList<>();
-    @FieldSerializer.Optional("events")
-    public final AllEventHandlers events;
     public final OffsetTime startTime;
     public final Mechanics mechanics;
     public final Player human;
     public final World world;
+    @FieldSerializer.Optional("events")
+    public AllEventHandlers events;
+    @FieldSerializer.Optional("generator")
     public Generator generator;
     public int auctionPoints = 0;
 
@@ -43,6 +44,25 @@ public class Game {
         this.human = new Player("you", null, true);
         this.mechanics = new Mechanics(this);
         this.playerBuildings.put(this.human, new ArrayList<Building>());
+    }
+
+    /**
+     * This should only be used in conjunction with Kryo rehydration
+     */
+    public Game() {
+        this.startTime = null;
+        this.mechanics = null;
+        this.human = null;
+        this.world = null;
+    }
+
+    /**
+     * Call this function on a Game that has been saved to a file and must now be
+     * reloaded
+     */
+    public void rehydrateFromKryo(AllEventHandlers events, Generator generator) {
+        this.events = events;
+        this.generator = generator;
     }
 
     /**
