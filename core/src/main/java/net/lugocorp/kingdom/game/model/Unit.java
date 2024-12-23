@@ -95,8 +95,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         this.loyalty = Math.max(0, this.loyalty - points);
         if (this.loyalty == 0) {
             g.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
-            g.setLeader(g.world.getTile(this.getPoint()).get(), Optional.empty());
-            this.leader = Optional.empty();
+            g.setLeader(this, Optional.empty());
         }
     }
 

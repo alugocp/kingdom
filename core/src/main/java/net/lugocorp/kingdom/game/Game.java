@@ -15,10 +15,8 @@ import net.lugocorp.kingdom.utils.math.Point;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.time.OffsetTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,7 +25,6 @@ import java.util.Set;
  */
 public class Game {
     private final Set<Patron> patrons = new HashSet<>();
-    private final Map<Player, List<Building>> playerBuildings = new HashMap<>();
     public final List<Player> comps = new ArrayList<>();
     public final OffsetTime startTime;
     public final Mechanics mechanics;
@@ -45,7 +42,6 @@ public class Game {
         this.startTime = startTime;
         this.human = new Player("you", null, true);
         this.mechanics = new Mechanics(this);
-        this.playerBuildings.put(this.human, new ArrayList<Building>());
     }
 
     /**
@@ -92,7 +88,6 @@ public class Game {
     public Player addComputerPlayer(String name) {
         Player player = new Player(name, this.mechanics.fates.chooseRandomFate(), false);
         this.comps.add(player);
-        this.playerBuildings.put(player, new ArrayList<Building>());
         return player;
     }
 
@@ -107,28 +102,17 @@ public class Game {
      * Sets the leader Player for a given Tile
      */
     public void setLeader(Tile t, Optional<Player> op) {
-        if (op.isPresent()) {
-            Player p = op.get();
-            if (!t.leader.isPresent() || t.leader.get() != p) {
-                if (t.building.isPresent()) {
-                    if (t.leader.isPresent()) {
-                        this.playerBuildings.get(t.leader.get()).remove(t.building.get());
-                    }
-                    this.playerBuildings.get(p).add(t.building.get());
-                } else {
-                    p.bareTiles++;
-                }
-                p.tiles++;
-            }
-        } else if (t.leader.isPresent()) {
-            Player p = t.leader.get();
-            if (t.building.isPresent()) {
-                this.playerBuildings.get(p).remove(t.building.get());
-            } else {
-                p.bareTiles--;
-            }
-            p.tiles--;
+        if (op.equals(t.leader)) {
+            return;
         }
+        t.leader.ifPresent((Player p) -> {
+            t.building.ifPresent((Building b) -> p.buildings.remove(b));
+            p.tiles--;
+        });
+        op.ifPresent((Player p) -> {
+            t.building.ifPresent((Building b) -> p.buildings.add(b));
+            p.tiles++;
+        });
         t.leader = op;
     }
 
@@ -138,10 +122,7 @@ public class Game {
      */
     public void buildingSpawned(Building b) {
         Tile t = this.world.getTile(b.getPoint()).get();
-        t.leader.ifPresent((Player p) -> {
-            this.playerBuildings.get(p).add(b);
-            p.bareTiles--;
-        });
+        t.leader.ifPresent((Player p) -> p.buildings.add(b));
     }
 
     /**
@@ -150,33 +131,39 @@ public class Game {
     public void removeBuilding(Building b) {
         Tile t = this.world.getTile(b.getPoint()).get();
         t.building = Optional.empty();
-        t.leader.ifPresent((Player p) -> {
-            this.playerBuildings.get(p).remove(b);
-            p.bareTiles++;
-        });
+        t.leader.ifPresent((Player p) -> p.buildings.remove(b));
+    }
+
+    /**
+     * Calls into the other setLeader()
+     */
+    public void setLeader(Unit u, Player p) {
+        this.setLeader(u, Optional.of(p));
     }
 
     /**
      * Sets the leader Player for a given Unit
      */
-    public void setLeader(Unit u, Player p) {
-        u.leader = Optional.of(p);
-        this.setLeader(this.world.getTile(u.getX(), u.getY()).get(), p);
+    public void setLeader(Unit u, Optional<Player> op) {
+        u.leader.ifPresent((Player p) -> p.units.remove(u));
+        op.ifPresent((Player p1) -> p1.units.add(u));
+        u.leader = op;
+        this.setLeader(this.world.getTile(u.getX(), u.getY()).get(), op);
     }
 
     /**
      * Returns true if the human Player has no buildings left
      */
     public boolean hasHumanPlayerLost() {
-        return this.playerBuildings.get(this.human).size() == 0;
+        return this.human.buildings.size() == 0;
     }
 
     /**
      * Returns true if the human Player is the only one that has buildings left
      */
     public boolean hasHumanPlayerWon() {
-        for (Player p : this.playerBuildings.keySet()) {
-            if (p != this.human && this.playerBuildings.get(p).size() > 0) {
+        for (Player p : this.comps) {
+            if (p.buildings.size() > 0) {
                 return false;
             }
         }
@@ -207,7 +194,7 @@ public class Game {
      */
     public Set<Point> getVaultBuildings(Player player) {
         Set<Point> vaults = new HashSet<>();
-        for (Building b : this.playerBuildings.get(player)) {
+        for (Building b : player.buildings) {
             if (b.items.isPresent()) {
                 vaults.add(b.getPoint());
             }

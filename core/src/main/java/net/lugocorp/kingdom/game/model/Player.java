@@ -1,6 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a human or AI that is playing the game
@@ -8,11 +10,12 @@ import java.util.List;
 public class Player {
     private final boolean human;
     public final List<Artifact> artifacts = new ArrayList<>();
+    public final Set<Building> buildings = new HashSet<>();
+    public final Set<Unit> units = new HashSet<>();
     public final String name;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
     public int unitPoints = 0;
-    public int bareTiles = 0;
     public int tiles = 0;
     public int gold = 0;
     public Fate fate;
@@ -29,6 +32,13 @@ public class Player {
     public Player() {
         this.name = null;
         this.human = false;
+    }
+
+    /**
+     * Returns the number of bare tiles this Player has access to
+     */
+    public int getBareTiles() {
+        return this.tiles - this.buildings.size();
     }
 
     /**

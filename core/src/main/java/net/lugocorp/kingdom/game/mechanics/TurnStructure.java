@@ -169,8 +169,7 @@ public class TurnStructure {
         this.canPlayerAct = false;
         // TODO run this logic in another thread for optimization
         this.unitsThatHaveActed.clear();
-        this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer.bareTiles,
-                this.turnPlayer.tiles);
+        this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             view.logger.log("It is your turn again");
 

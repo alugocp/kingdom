@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.GlyphCategory;
+import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -27,8 +28,8 @@ public class NewUnit {
     /**
      * Returns the number of unit points that a Player should get each turn
      */
-    public int getUnitPointsYield(int bareTiles, int tiles) {
-        return (int) Math.floor(20f * bareTiles / tiles);
+    public int getUnitPointsYield(Player p) {
+        return (int) Math.floor(20f * p.getBareTiles() / p.tiles);
     }
 
     /**
