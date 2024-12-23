@@ -232,6 +232,7 @@ public class TurnStructure {
      * Represents an Event trigger that should happen during some future turn
      */
     public static class FutureTick {
+        // TODO this doesn't rehydrate quite right, units load hungry from save file
         private final EventReceiver receiver;
         private final String channel;
         private final boolean repeat;

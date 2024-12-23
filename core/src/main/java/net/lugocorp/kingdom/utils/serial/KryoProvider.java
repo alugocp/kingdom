@@ -13,12 +13,6 @@ class KryoProvider {
         Kryo kryo = new Kryo();
         kryo.setReferences(true);
 
-        // Register classes so we can serialize closures
-        /*
-         * kryo.register(Object[].class); kryo.register(Class.class);
-         * kryo.register(ClosureSerializer.Closure.class, new ClosureSerializer());
-         */
-
         // Register built-in Java classes
         kryo.register(java.time.OffsetTime.class);
         kryo.register(java.util.ArrayList.class);

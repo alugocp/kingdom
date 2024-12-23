@@ -22,6 +22,13 @@ public class Modellable {
     protected Optional<ModelInstance> model = Optional.empty();
 
     /**
+     * Called when this Modellable is loaded from a saved Game file
+     */
+    public void rehydrateFromKryo(ModelLoader models) {
+        this.models = models;
+    }
+
+    /**
      * Returns the name associated with the current model
      */
     public String getModelName() {

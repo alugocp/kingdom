@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.world;
-import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
@@ -95,12 +94,10 @@ public class World {
     }
 
     /**
-     * Returns a set of all Models to be rendered for this World, filtered by
-     * justTiles. If true then this method will only return the ModelInstances of
-     * Tiles, and if false then it will return all others.
+     * Returns all Modellable instances present in the World
      */
-    public Array<ModelInstance> getModelInstances(boolean justTiles) {
-        Array<ModelInstance> models = new Array<>();
+    public Array<Modellable> getModellables(boolean justTiles) {
+        Array<Modellable> models = new Array<>();
         for (int x = 0; x < this.w; x++) {
             for (int y = 0; y < this.h; y++) {
                 Optional<Tile> tile = this.getTile(x, y);
@@ -108,15 +105,25 @@ public class World {
                     continue;
                 }
                 if (justTiles) {
-                    tile.get().getModelInstance().ifPresent((ModelInstance m) -> models.add(m));
+                    models.add(tile.get());
                 } else {
-                    tile.get().building.flatMap((Building b) -> b.getModelInstance())
-                            .ifPresent((ModelInstance m) -> models.add(m));
-                    tile.get().unit.flatMap((Unit u) -> u.getModelInstance())
-                            .ifPresent((ModelInstance m) -> models.add(m));
+                    tile.get().building.ifPresent((Modellable m) -> models.add(m));
+                    tile.get().unit.ifPresent((Modellable m) -> models.add(m));
                 }
             }
         }
+        return models;
+    }
+
+    /**
+     * Returns a set of all Models to be rendered for this World, filtered by
+     * justTiles. If true then this method will only return the ModelInstances of
+     * Tiles, and if false then it will return all others.
+     */
+    public Array<ModelInstance> getModelInstances(boolean justTiles) {
+        Array<ModelInstance> models = new Array<>();
+        this.getModellables(justTiles)
+                .forEach((Modellable m) -> m.getModelInstance().ifPresent((ModelInstance m1) -> models.add(m1)));
         return models;
     }
 }

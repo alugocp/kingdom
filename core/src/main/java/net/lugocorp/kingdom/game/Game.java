@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.game;
+import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.model.Building;
@@ -60,9 +62,15 @@ public class Game {
      * Call this function on a Game that has been saved to a file and must now be
      * reloaded
      */
-    public void rehydrateFromKryo(AllEventHandlers events, Generator generator) {
+    public void rehydrateFromKryo(AudioVideo av, AllEventHandlers events, Generator generator) {
         this.events = events;
         this.generator = generator;
+        for (Modellable m : this.world.getModellables(true)) {
+            m.rehydrateFromKryo(av.loaders.models);
+        }
+        for (Modellable m : this.world.getModellables(false)) {
+            m.rehydrateFromKryo(av.loaders.models);
+        }
     }
 
     /**
