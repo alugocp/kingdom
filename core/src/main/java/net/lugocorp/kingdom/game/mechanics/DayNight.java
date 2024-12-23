@@ -44,7 +44,7 @@ public class DayNight {
     /**
      * This nested class represents the day/night state dichotomy
      */
-    private static enum State {
+    public static enum State {
         DAY(new Color(0.8f, 1.0f, 1.0f, 1f)), NIGHT(new Color(0.1f, 0.1f, 0.5f, 1f));
 
         private final Color color;

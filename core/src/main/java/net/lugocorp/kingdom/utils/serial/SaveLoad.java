@@ -1,12 +1,13 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.serial;
 import net.lugocorp.kingdom.game.Game;
 import com.badlogic.gdx.Gdx;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +49,12 @@ public class SaveLoad {
     /**
      * Loads a Game from the given Path
      */
-    public Game loadGame(Path path) throws IOException, ClassNotFoundException {
+    public Game loadGame(Path path) throws Exception {
         this.ensureExistence();
+        Kryo kryo = KryoProvider.getKryo();
         File file = path.toFile();
-        ObjectInputStream input = new ObjectInputStream(new FileInputStream(file));
-        Game game = (Game) input.readObject();
+        Input input = new Input(new FileInputStream(file));
+        Game game = kryo.readObject(input, Game.class);
         input.close();
         return game;
     }
@@ -60,20 +62,21 @@ public class SaveLoad {
     /**
      * Saves a Game
      */
-    public void saveGame(Game game) throws IOException {
+    public void saveGame(Game game) throws Exception {
         this.ensureExistence();
+        Kryo kryo = KryoProvider.getKryo();
         String filename = game.startTime.toString();
         File file = Gdx.files.external(String.format("%s/%s", SaveLoad.LOCATION, filename)).file();
         try {
-            ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(file));
-            output.writeObject(game);
-            output.flush();
+            Output output = new Output(new FileOutputStream(file));
+            kryo.writeObject(output, game);
             output.close();
         } catch (Exception e) {
             e.printStackTrace();
             if (file.exists()) {
                 file.delete();
             }
+            throw e;
         }
     }
 }

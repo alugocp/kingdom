@@ -308,7 +308,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * This nested class handles access to a Unit's Glyphs
      */
-    public class UnitGlyphs {
+    public static class UnitGlyphs {
         private Optional<Glyph> g2 = Optional.empty();
         private Glyph g1 = Glyph.BATTLE;
 

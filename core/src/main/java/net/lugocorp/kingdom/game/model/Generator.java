@@ -1,12 +1,14 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 
 /**
  * This class is like a factory class for all game objects. It calls the
  * relevant generator Events to instantiate each new object.
  */
 public class Generator {
+    @FieldSerializer.Optional("view")
     private final GameView view;
 
     public Generator(GameView view) {

@@ -16,6 +16,7 @@ import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ public class ArtifactAuction {
     public static final int AUCTION_STATE_INACTIVE = 0;
     public static final int AUCTION_STATE_ACTIVE = 1;
     public static final int AUCTION_STATE_DONE = 2;
+    @FieldSerializer.Optional("random")
     private final Random random = new Random();
     private Optional<Auction> auction = Optional.empty();
     private List<Artifact> artifacts = new ArrayList<>();

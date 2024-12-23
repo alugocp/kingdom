@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.Optional;
 
 /**
@@ -13,9 +14,11 @@ import java.util.Optional;
  * position
  */
 public class Modellable {
+    @FieldSerializer.Optional("models")
     private ModelLoader models;
     private String modelName = "PLACEHOLDER";
     private float alpha = 1f;
+    @FieldSerializer.Optional("model")
     protected Optional<ModelInstance> model = Optional.empty();
 
     /**

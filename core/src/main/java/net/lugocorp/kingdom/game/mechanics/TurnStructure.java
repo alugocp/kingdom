@@ -225,7 +225,7 @@ public class TurnStructure {
     /**
      * Represents an Event trigger that should happen during some future turn
      */
-    private static class FutureTick {
+    public static class FutureTick {
         private final EventReceiver receiver;
         private final String channel;
         private final boolean repeat;

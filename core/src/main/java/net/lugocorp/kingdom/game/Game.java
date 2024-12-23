@@ -10,7 +10,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.utils.math.Point;
-import java.io.Serializable;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.time.OffsetTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,11 +23,11 @@ import java.util.Set;
 /**
  * Stores all the data for a single ongoing game
  */
-public class Game implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Game {
     private final Set<Patron> patrons = new HashSet<>();
     private final Map<Player, List<Building>> playerBuildings = new HashMap<>();
     public final List<Player> comps = new ArrayList<>();
+    @FieldSerializer.Optional("events")
     public final AllEventHandlers events;
     public final OffsetTime startTime;
     public final Mechanics mechanics;
