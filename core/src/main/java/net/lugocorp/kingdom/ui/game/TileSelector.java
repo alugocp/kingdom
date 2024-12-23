@@ -103,6 +103,10 @@ public class TileSelector {
                     .add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.02f, 0f)));
             this.highlight.render(this.view.av.models, environment);
         }
+        this.view.menu.getCoords().ifPresent((Point p) -> {
+            this.highlight.move(Coords.grid.vector(p.x, p.y).add(Coords.raw.vector(0f, Hexagons.HEIGHT * 1.01f, 0f)));
+            this.highlight.render(this.view.av.models, environment);
+        });
     }
 
     /**

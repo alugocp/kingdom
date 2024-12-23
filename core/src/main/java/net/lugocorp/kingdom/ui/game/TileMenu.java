@@ -19,6 +19,13 @@ public class TileMenu {
     }
 
     /**
+     * Returns the currently open Menu's Tile coordinates
+     */
+    public Optional<Point> getCoords() {
+        return this.menu.map((Menu _m) -> this.menuCoords);
+    }
+
+    /**
      * Returns the currently open Menu (if any)
      */
     public Optional<Menu> get() {
