@@ -51,7 +51,7 @@ public class AbilityLogic {
         // Have the human Player select which target to attack
         view.selector.select(points, "No attack targets are in range", (Point p) -> {
             attacker.health.attack(view, targets.get(p), dmg);
-            view.game.mechanics.turns.unitHasActed(attacker);
+            view.game.mechanics.turns.unitHasActed(view, attacker);
         });
     }
 
@@ -78,7 +78,7 @@ public class AbilityLogic {
         // Have the human Player select which target to heal
         view.selector.select(points, "No heal targets are in range", (Point p) -> {
             targets.get(p).heal(hitPoints);
-            view.game.mechanics.turns.unitHasActed(healer);
+            view.game.mechanics.turns.unitHasActed(view, healer);
         });
     }
 
@@ -105,7 +105,7 @@ public class AbilityLogic {
         // Have the human Player select which target to heal
         view.selector.select(points, "No heal targets are in range", (Point p) -> {
             targets.get(p).heal(hitPoints);
-            view.game.mechanics.turns.unitHasActed(healer);
+            view.game.mechanics.turns.unitHasActed(view, healer);
         });
     }
 
@@ -119,7 +119,7 @@ public class AbilityLogic {
                 view.logger.log("Cannot place another building here");
             } else if (criteria.apply(t)) {
                 view.game.generator.building(building, p.x, p.y).spawn(view);
-                view.game.mechanics.turns.unitHasActed(caster);
+                view.game.mechanics.turns.unitHasActed(view, caster);
             } else {
                 view.logger.log("Invalid tile for this ability");
             }

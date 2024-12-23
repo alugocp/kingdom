@@ -45,7 +45,7 @@ public class Ability implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        return new ActionNode(view.av, this.name, this.desc,
+        return new ActionNode(view.av, this.name, Optional.of(this.desc),
                 this.wielder.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)
                         && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
                         && !view.game.mechanics.turns.hasUnitActed(this.wielder),

@@ -146,7 +146,7 @@ public class Game {
      */
     public void setLeader(Unit u, Optional<Player> op) {
         u.leader.ifPresent((Player p) -> p.units.remove(u));
-        op.ifPresent((Player p1) -> p1.units.add(u));
+        op.ifPresent((Player p) -> p.units.add(u));
         u.leader = op;
         this.setLeader(this.world.getTile(u.getX(), u.getY()).get(), op);
     }

@@ -39,10 +39,27 @@ public class TurnStructure {
     }
 
     /**
+     * Opens a TileMenu on the next Unit who must act this turn
+     */
+    public boolean goToNextUnit(GameView view) {
+        Optional<Unit> next = this.getNextUnitToAct(view.game.human);
+        if (next.isPresent()) {
+            view.selector.hover(next.get().getPoint());
+            view.menu.open();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Marks a Unit as having acted this turn
      */
-    public void unitHasActed(Unit u) {
+    public void unitHasActed(GameView view, Unit u) {
         this.unitsThatHaveActed.add(u);
+        u.wakeUp();
+        if (u.leader.isPresent() && u.leader.get() == view.game.human) {
+            this.goToNextUnit(view);
+        }
     }
 
     /**
@@ -50,6 +67,18 @@ public class TurnStructure {
      */
     public boolean hasUnitActed(Unit u) {
         return this.unitsThatHaveActed.contains(u);
+    }
+
+    /**
+     * Returns the next Unit that must act this turn
+     */
+    public Optional<Unit> getNextUnitToAct(Player player) {
+        for (Unit u : player.units) {
+            if (!this.hasUnitActed(u) && !u.isSleeping()) {
+                return Optional.of(u);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -168,6 +197,9 @@ public class TurnStructure {
         // Run per-turn calculations for the turn Player
         this.canPlayerAct = false;
         // TODO run this logic in another thread for optimization
+        for (Unit u : this.turnPlayer.units) {
+            u.wakeUpCheck();
+        }
         this.unitsThatHaveActed.clear();
         this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {

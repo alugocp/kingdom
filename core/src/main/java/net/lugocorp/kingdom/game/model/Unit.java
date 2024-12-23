@@ -31,6 +31,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     public static final int MAX_LOYALTY = 10;
     private Optional<Ability> active1 = Optional.empty();
     private Optional<Ability> active2 = Optional.empty();
+    private SleepState sleep = SleepState.AWAKE;
     private int loyalty = Unit.MAX_LOYALTY;
     public final Tags tags = new Tags();
     public final String name;
@@ -56,6 +57,29 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         super(0, 0);
         this.health = null;
         this.name = null;
+    }
+
+    /**
+     * Returns true if this Unit is sleeping
+     */
+    public boolean isSleeping() {
+        return this.sleep != SleepState.AWAKE;
+    }
+
+    /**
+     * Checks if we should reset this Unit's SleepState at the start of a turn
+     */
+    public void wakeUpCheck() {
+        if (this.sleep == SleepState.SLEEPING || (this.sleep == SleepState.SLEEPING_INVENTORY && this.haul.isFull())) {
+            this.wakeUp();
+        }
+    }
+
+    /**
+     * Reset this Unit's SleepState
+     */
+    public void wakeUp() {
+        this.sleep = SleepState.AWAKE;
     }
 
     /**
@@ -286,15 +310,26 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
             node.add(new TextNode(view.av, String.format("%d turn(s) until hunger strikes", turnsUntilHungry)));
         }
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-            if ((this.active1.isPresent() || this.active2.isPresent())
-                    && view.game.mechanics.turns.hasUnitActed(this)) {
+            if (view.game.mechanics.turns.hasUnitActed(this)) {
                 node.add(new TextNode(view.av, "This unit has already acted this turn"));
+            } else if (this.isSleeping()) {
+                node.add(new TextNode(view.av, "This unit does not have to act this turn"));
             }
-            node.add(new ActionNode(view.av, "Move", "", !view.game.mechanics.turns.hasUnitActed(this),
+            node.add(new ActionNode(view.av, "Move", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
                         this.move(view.game, p1);
-                        view.game.mechanics.turns.unitHasActed(this);
+                        view.game.mechanics.turns.unitHasActed(view, this);
                     })));
+            node.add(new ActionNode(view.av, "Skip turn", Optional.empty(),
+                    !view.game.mechanics.turns.hasUnitActed(this), () -> {
+                        this.sleep = SleepState.SLEEPING;
+                        view.game.mechanics.turns.goToNextUnit(view);
+                    }));
+            node.add(new ActionNode(view.av, "Skip until inventory is full", Optional.empty(),
+                    !view.game.mechanics.turns.hasUnitActed(this), () -> {
+                        this.sleep = SleepState.SLEEPING_INVENTORY;
+                        view.game.mechanics.turns.goToNextUnit(view);
+                    }));
         }
         this.active1.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));
         this.active2.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));
@@ -311,6 +346,13 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
             node.add(new TextNode(view.av, String.format("Can haul %d items", this.haul.getMax())));
         }
         return node;
+    }
+
+    /**
+     * Enums to control sleeping state (how long to sleep for)
+     */
+    public static enum SleepState {
+        AWAKE, SLEEPING, SLEEPING_INVENTORY
     }
 
     /**
