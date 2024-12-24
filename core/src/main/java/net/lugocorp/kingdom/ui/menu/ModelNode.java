@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -21,10 +20,10 @@ public class ModelNode implements MenuNode {
     private Environment environment;
     private float scale = 1f;
 
-    public ModelNode(PerspectiveCamera camera, Environment environment, ModelLoader models, String name) {
-        this.model.setModelInstance(models, name);
-        this.modelHeight = models.getModelHeight(name);
-        this.modelWidth = models.getModelWidth(name);
+    public ModelNode(AudioVideo av, PerspectiveCamera camera, Environment environment, String name) {
+        this.model.setModelInstance(av, name);
+        this.modelHeight = av.loaders.models.getModelHeight(name);
+        this.modelWidth = av.loaders.models.getModelWidth(name);
         this.environment = environment;
         this.camera = camera;
     }

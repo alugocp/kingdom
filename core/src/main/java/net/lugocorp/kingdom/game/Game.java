@@ -62,10 +62,10 @@ public class Game {
         this.events = events;
         this.generator = generator;
         for (Modellable m : this.world.getModellables(true)) {
-            m.rehydrateFromKryo(av.loaders.models);
+            m.rehydrateFromKryo(av);
         }
         for (Modellable m : this.world.getModellables(false)) {
-            m.rehydrateFromKryo(av.loaders.models);
+            m.rehydrateFromKryo(av);
         }
     }
 

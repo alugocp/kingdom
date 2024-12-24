@@ -103,8 +103,7 @@ public class NewUnit {
         RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         for (Unit u : options) {
-            previews.add(
-                    new ModelNode(view.getCamera(), view.getEnvironment(), view.av.loaders.models, u.getModelName()));
+            previews.add(new ModelNode(view.av, view.getCamera(), view.getEnvironment(), u.getModelName()));
             units.add(u.getMenuContent(view, Optional.empty()));
             buttons.add(new ButtonNode(view.av, "Choose", () -> this.choose(view, u)));
         }

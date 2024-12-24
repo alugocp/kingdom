@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.engine.render;
+import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.MaterialLoader;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -16,16 +18,30 @@ import java.util.Optional;
 public class Modellable {
     @FieldSerializer.Optional("models")
     private ModelLoader models;
+    @FieldSerializer.Optional("materials")
+    private MaterialLoader materials;
     private String modelName = "PLACEHOLDER";
+    private Optional<String> materialName = Optional.empty();
     private float alpha = 1f;
     @FieldSerializer.Optional("model")
     protected Optional<ModelInstance> model = Optional.empty();
+    @FieldSerializer.Optional("materialOverride")
+    protected Optional<Material> materialOverride = Optional.empty();
 
     /**
      * Called when this Modellable is loaded from a saved Game file
      */
-    public void rehydrateFromKryo(ModelLoader models) {
-        this.models = models;
+    public void rehydrateFromKryo(AudioVideo av) {
+        this.materials = av.loaders.materials;
+        this.models = av.loaders.models;
+    }
+
+    /**
+     * Sets the overriding Material associated with this Modellable
+     */
+    public void setMaterial(String name) {
+        this.materialName = Optional.of(name);
+        this.materialOverride = Optional.empty();
     }
 
     /**
@@ -46,16 +62,26 @@ public class Modellable {
                 this.resetModelPosition();
             });
         }
+        if (this.model.isPresent() && this.materialName.isPresent() && !this.materialOverride.isPresent()) {
+            this.materialOverride = this.materials.getMaterial(this.materialName.get());
+            if (this.materialOverride.isPresent()) {
+                this.model.get().materials.clear();
+                this.model.get().materials.add(this.materialOverride.get());
+            } else {
+                return Optional.empty();
+            }
+        }
         return this.model;
     }
 
     /**
      * Triggers a new Model load request for this object
      */
-    public void setModelInstance(ModelLoader models, String name) {
+    public void setModelInstance(AudioVideo av, String name) {
         this.model = Optional.empty();
         this.modelName = name;
-        this.models = models;
+        this.models = av.loaders.models;
+        this.materials = av.loaders.materials;
     }
 
     /**
