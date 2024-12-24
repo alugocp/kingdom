@@ -18,7 +18,7 @@ public class Coords {
          * Converts some number values into a 3D vector that libGDX will understand
          */
         public Vector3 vector(float x, float y, float z) {
-            return new Vector3(z, y, x);
+            return new Vector3(x, y, z);
         }
     }
 
@@ -30,8 +30,8 @@ public class Coords {
          * Converts a 2D grid coordinate to a 3D vector that libGDX will understand
          */
         public Vector3 vector(int x, int z) {
-            return new Vector3(z * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF), 0f,
-                    -(x + ((z % 2 == 0) ? 0f : 0.5f)) * Hexagons.WIDTH);
+            return new Vector3((x + ((z % 2 == 0) ? 0f : 0.5f)) * Hexagons.WIDTH, 0f,
+                    z * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
         }
 
         /**

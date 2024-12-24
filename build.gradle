@@ -100,7 +100,7 @@ class CleanAssetsTask extends DefaultTask {
             def objFile = file.getName()
             def g3dbFile = file.getName()[0..-4] + "g3db"
             def parent = file.getParent()
-            println("Converting $g3dbFile ($parent)...")
+            println("Generating $g3dbFile ($parent)...")
             "fbx-conv -f $parent/$objFile $parent/$g3dbFile".execute()
         }
     }

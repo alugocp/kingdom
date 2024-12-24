@@ -92,7 +92,7 @@ public class GameView implements View {
         // 3D setup
         this.environment = new Environment();
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        this.environment.add(new DirectionalLight().set(0f, 0f, 0f, -0.6f, -0.4f, 0f));
+        this.environment.add(new DirectionalLight().set(0f, 0f, 0f, 0f, -0.4f, -0.6f));
 
         // Menus
         MenuController menuController = new MenuController(() -> this.menu.get());
@@ -101,7 +101,7 @@ public class GameView implements View {
         this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
         this.camController = new GameViewController(this, menuController, this.camera);
         Gdx.input.setInputProcessor(this.camController);
-        this.camera.position.set(5f, 5f, 0f);
+        this.camera.position.set(0f, 5f, 5f);
         this.camera.lookAt(0, 0, 0);
         this.camera.near = 1f;
         this.camera.far = 300f;

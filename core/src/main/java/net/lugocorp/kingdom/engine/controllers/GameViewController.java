@@ -103,7 +103,7 @@ public class GameViewController extends CameraInputController {
             return false;
         }
         Point p = this.prev.get();
-        this.camera.translate(Coords.raw.vector((float) (x - p.x) / 100, 0f, (float) (p.y - y) / 100));
+        this.camera.translate(Coords.raw.vector((float) (p.x - x) / 100, 0f, (float) (p.y - y) / 100));
         this.prev = Optional.of(new Point(x, y));
         this.camera.update();
         this.dragging = true;
@@ -142,11 +142,11 @@ public class GameViewController extends CameraInputController {
         Ray ray = this.camera.getPickRay(x, y);
         float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
         Vector3 endpoint = ray.getEndPoint(new Vector3(), distance);
-        int minZ = (int) Math.floor(endpoint.x / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
+        int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
         float lowestDist2 = Integer.MAX_VALUE;
         Point closestPoint = null;
         for (int a = 0; a < 2; a++) {
-            int minX = (int) Math.floor((-endpoint.z / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
+            int minX = (int) Math.floor((endpoint.x / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
             for (int b = 0; b < 2; b++) {
                 float dist = Coords.grid.vector(minX + b, minZ + a).dst2(endpoint);
                 if (dist < lowestDist2) {

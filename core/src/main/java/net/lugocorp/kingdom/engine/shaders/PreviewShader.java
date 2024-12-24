@@ -2,9 +2,11 @@ package net.lugocorp.kingdom.engine.shaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -70,6 +72,18 @@ public class PreviewShader implements Shader {
             this.context.setBlending(true, blend.sourceFunction, blend.destFunction);
             this.program.setUniformf(this.u_opacity, blend.opacity);
         }
+
+        // Set cull face so we only render the front of the preview model
+        int cull = GL20.GL_BACK;
+        for (Attribute attr : renderable.material) {
+            final long t = attr.type;
+            if ((t & IntAttribute.CullFace) == IntAttribute.CullFace) {
+                cull = ((IntAttribute) attr).value;
+            }
+        }
+        this.context.setCullFace(cull);
+
+        // Render the preview model
         Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         renderable.meshPart.render(this.program);
     }
