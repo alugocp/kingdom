@@ -71,3 +71,39 @@ subprojects {
 }
 
 eclipse.project.name = 'Kingdom' + '-parent'
+
+/**
+ * This task is used to generate g3db 3D model files
+ */
+class CleanAssetsTask extends DefaultTask {
+    @TaskAction
+    void action() {
+        this.iterateAssetsFolder('assets')
+        this.iterateAssetsFolder('content/vanilla/src/main/assets')
+    }
+
+    /**
+     * This recursive function generates g3db files in the given folder
+     */
+    void iterateAssetsFolder(String filepath) {
+        def folder = new File(filepath)
+        for (file in folder.listFiles()) {
+            if (file.isDirectory()) {
+              this.iterateAssetsFolder(file.getPath())
+              continue
+            }
+            def pattern = ~/.obj$/
+            def matcher = file.getName() =~ pattern
+            if (!matcher.find()) {
+              continue
+            }
+            def objFile = file.getName()
+            def g3dbFile = file.getName()[0..-4] + "g3db"
+            def parent = file.getParent()
+            println("Converting $g3dbFile ($parent)...")
+            "fbx-conv -f $parent/$objFile $parent/$g3dbFile".execute()
+        }
+    }
+}
+
+tasks.register("cleanAssets", CleanAssetsTask)
