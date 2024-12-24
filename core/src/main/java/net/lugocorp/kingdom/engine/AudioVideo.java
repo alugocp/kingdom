@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.engine.assets.MaterialLoader;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.assets.MusicLoader;
 import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
+import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
@@ -110,7 +110,7 @@ public class AudioVideo {
      * This nested class contains all asset loaders
      */
     public static class Loaders {
-        public final MaterialLoader materials;
+        public final TextureLoader textures;
         public final SpriteLoader sprites;
         public final ModelLoader models;
         public final SoundLoader sounds;
@@ -120,7 +120,7 @@ public class AudioVideo {
             ModAssetsMap modAssetsMap = new ModAssetsMap();
             this.sprites = new SpriteLoader(modAssetsMap);
             this.models = new ModelLoader(modAssetsMap);
-            this.materials = new MaterialLoader(modAssetsMap);
+            this.textures = new TextureLoader(modAssetsMap);
             this.sounds = new SoundLoader(modAssetsMap, settings);
             this.music = new MusicLoader(modAssetsMap, settings);
         }
