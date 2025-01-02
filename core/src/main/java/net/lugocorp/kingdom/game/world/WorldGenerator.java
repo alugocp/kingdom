@@ -53,7 +53,7 @@ public class WorldGenerator {
         g.generator.building("Forest", 2, 4).spawn(view);
         g.generator.building("Mine", 0, 9).spawn(view);
         g.generator.building("Mountain", 6, 2).spawn(view);
-        g.generator.patron("Test Patron", 4, 2).spawn(view);
+        g.generator.patron("The Pond Troll", 4, 2).spawn(view);
         g.world.getTile(4, 2).get().building.ifPresent((Building b) -> {
             Patron p = (Patron) b;
             p.addToDomain(new Point(3, 1));

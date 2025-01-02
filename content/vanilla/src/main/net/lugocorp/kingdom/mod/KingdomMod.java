@@ -184,7 +184,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.av, "placeholder2");
+                    e.blob.setModelInstance(view.av, "mountain");
                     e.blob.desc = "An immovable object";
                     e.blob.health().invulnerable();
                     e.blob.setObstacle(true);
@@ -193,15 +193,15 @@ public class KingdomMod implements GameMod {
         /**
          * Patrons
          */
-        events.patron.addEventHandler("Test Patron", "GeneratePatronEvent",
+        events.patron.addEventHandler("The Pond Troll", "GeneratePatronEvent",
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "pond-troll");
                     e.blob.desc = "Generates auction points if it has a favorite player";
                 });
-        events.patron.addEventHandler("Test Patron", "SpawnEvent", (GameView view, Patron receiver,
+        events.patron.addEventHandler("The Pond Troll", "SpawnEvent", (GameView view, Patron receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
-        events.patron.addEventHandler("Test Patron", "TickEvent", (GameView view, Patron receiver, Event event) -> {
+        events.patron.addEventHandler("The Pond Troll", "TickEvent", (GameView view, Patron receiver, Event event) -> {
             if (receiver.getFavoritePlayer().isPresent()) {
                 view.game.auctionPoints += 5;
             }
