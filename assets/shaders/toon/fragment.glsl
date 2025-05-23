@@ -16,11 +16,11 @@ uniform vec4 u_diffuseColor;
 uniform vec2 u_resolution;
 uniform float u_timerMax;
 uniform float u_timer;
+uniform float u_nighttime;
+uniform float u_opacity;
 varying MED vec2 v_diffuseUV;
-varying float v_nighttime;
 varying vec3 v_lightDiffuse;
 varying vec3 v_ambientLight;
-varying float v_opacity;
 varying vec3 v_normal;
 
 // Return true if the current texture location is close to an edge (different alpha value)
@@ -43,7 +43,7 @@ void main() {
             gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         } else {
             gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
-            if (v_nighttime > 0.0) {
+            if (u_nighttime > 0.0) {
                 mat4 darker;
                 darker[0] = vec4(0.8, 0.0, 0.0, 0.0);
                 darker[1] = vec4(0.0, 0.8, 0.0, 0.0);
@@ -53,7 +53,7 @@ void main() {
             }
         }
     }
-    gl_FragColor.a *= v_opacity;
+    gl_FragColor.a *= u_opacity;
     if (u_includeGlyphTexture && normal == vec3(0.0, 1.0, 0.0)) {
         float diff = 0.0;
         float beat = 0.07 * 2.0 * abs(u_timer - (u_timerMax / 2.0)) / u_timerMax;
