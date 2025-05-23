@@ -41,6 +41,7 @@ public class AudioVideo {
         this.loaders = new Loaders(this.settings);
 
         // Initialize shader programs
+        this.getToonShader().setTextureLoader(this.loaders.textures);
         this.getPreviewShader().init();
         this.getOutlineShader().init();
         this.getToonShader().init();

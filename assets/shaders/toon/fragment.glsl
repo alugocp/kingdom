@@ -9,11 +9,14 @@ precision mediump float;
 #else
 #define MED
 #endif
+uniform bool u_includeGlyphTexture;
+uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
 uniform vec4 u_diffuseColor;
 uniform vec2 u_resolution;
 varying MED vec2 v_diffuseUV;
 varying float v_nighttime;
+varying float v_deltatime;
 varying vec3 v_lightDiffuse;
 varying vec3 v_ambientLight;
 varying float v_opacity;
@@ -50,4 +53,10 @@ void main() {
         }
     }
     gl_FragColor.a *= v_opacity;
+    if (u_includeGlyphTexture && normal == vec3(0.0, 1.0, 0.0)) {
+        vec4 glyph = texture2D(u_glyphTexture, v_diffuseUV);
+        gl_FragColor.x -= gl_FragColor.x * glyph.x;
+        gl_FragColor.y -= gl_FragColor.y * glyph.y;
+        gl_FragColor.z -= gl_FragColor.z * glyph.z;
+    }
 }

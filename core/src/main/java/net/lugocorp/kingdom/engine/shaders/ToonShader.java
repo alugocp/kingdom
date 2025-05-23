@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.engine.shaders;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.engine.assets.TextureLoader;
+import net.lugocorp.kingdom.engine.render.RenderableUserData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,10 +14,13 @@ import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import java.util.Optional;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * This class interfaces with GLSL shader code to give the game its aesthetic
@@ -23,21 +28,28 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.java
  */
 public class ToonShader implements Shader {
+    private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
     private Camera camera;
     private boolean nighttime = false;
+    private int dt = 0;
+
+    // Shader uniforms
     private int u_directionalLight;
     private int u_ambientLight;
     private int u_projViewTrans;
     private int u_worldTrans;
     private int u_normalMatrix;
+    private int u_includeGlyphTexture;
+    private int u_glyphTexture;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
     private int u_diffuseColor;
     private int u_opacity;
     private int u_resolution;
     private int u_nighttime;
+    private int u_deltatime;
 
     /** {@inheritdoc} */
     @Override
@@ -53,12 +65,15 @@ public class ToonShader implements Shader {
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
         this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
+        this.u_includeGlyphTexture = this.program.getUniformLocation("u_includeGlyphTexture");
+        this.u_glyphTexture = this.program.getUniformLocation("u_glyphTexture");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
         this.u_opacity = this.program.getUniformLocation("u_opacity");
         this.u_resolution = this.program.getUniformLocation("u_resolution");
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
+        this.u_deltatime = this.program.getUniformLocation("u_deltatime");
     }
 
     /** {@inheritdoc} */
@@ -74,6 +89,20 @@ public class ToonShader implements Shader {
         this.nighttime = nighttime;
     }
 
+    /**
+     * Sets how many milliseconds have passed since the last render
+     */
+    public void setDeltaTime(int dt) {
+        this.dt = dt;
+    }
+
+    /**
+     * Sets this Shader's TextureLoader instance
+     */
+    public void setTextureLoader(TextureLoader textures) {
+        this.textures = Optional.of(textures);
+    }
+
     /** {@inheritdoc} */
     @Override
     public void begin(Camera camera, RenderContext context) {
@@ -82,6 +111,7 @@ public class ToonShader implements Shader {
         this.program.begin();
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
         this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
+        this.program.setUniformf(this.u_deltatime, (float) this.dt);
     }
 
     /** {@inheritdoc} */
@@ -111,6 +141,21 @@ public class ToonShader implements Shader {
         if (blend != null) {
             this.context.setBlending(true, blend.sourceFunction, blend.destFunction);
             this.program.setUniformf(this.u_opacity, blend.opacity);
+        }
+
+        // Set overlay uniforms
+        this.program.setUniformi(this.u_includeGlyphTexture, 0);
+        if (this.textures.isPresent() && renderable.userData != null) {
+            RenderableUserData data = (RenderableUserData) renderable.userData;
+
+            // Glyph texture
+            if (data.glyph.isPresent()) {
+                Optional<TextureDescriptor> tdesc = this.textures.get().getTextureDescriptor("ui/glyph");
+                if (tdesc.isPresent()) {
+                    this.program.setUniformi(this.u_includeGlyphTexture, 1);
+                    this.program.setUniformi(this.u_glyphTexture, this.context.textureBinder.bind(tdesc.get()));
+                }
+            }
         }
 
         // Set context and render

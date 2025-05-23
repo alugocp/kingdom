@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
+import net.lugocorp.kingdom.engine.render.RenderableUserData;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -13,6 +14,7 @@ import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
@@ -83,6 +85,21 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     @Override
     public Vector3 getPositionVector() {
         return Coords.grid.vector(this.x, this.y);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Optional<ModelInstance> getModelInstance() {
+        super.getModelInstance();
+        if (this.model.isPresent()) {
+            ModelInstance model = this.model.get();
+            if (model.userData == null) {
+                model.userData = new RenderableUserData();
+            }
+            RenderableUserData data = (RenderableUserData) model.userData;
+            data.glyph = this.glyph;
+        }
+        return this.model;
     }
 
     /** {@inheritdoc} */

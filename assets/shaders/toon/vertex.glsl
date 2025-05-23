@@ -11,6 +11,7 @@ uniform vec4 u_diffuseUVTransform;
 uniform mat3 u_normalMatrix;
 uniform float u_opacity;
 uniform float u_nighttime;
+uniform float u_deltatime;
 uniform vec3 u_directionalLight;
 uniform vec3 u_ambientLight;
 varying vec3 v_ambientLight;
@@ -19,6 +20,7 @@ varying vec2 v_diffuseUV;
 varying float v_opacity;
 varying float v_nighttime;
 varying vec3 v_normal;
+varying float v_deltatime;
 
 void main() {
     v_diffuseUV = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
@@ -26,6 +28,7 @@ void main() {
     v_normal = normalize(u_normalMatrix * a_normal);
     v_ambientLight = u_ambientLight;
     v_nighttime = u_nighttime;
+    v_deltatime = u_deltatime;
     v_opacity = u_opacity;
 
     // Directional light
