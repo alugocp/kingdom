@@ -33,7 +33,6 @@ public class ToonShader implements Shader {
     private RenderContext context;
     private Camera camera;
     private boolean nighttime = false;
-    private int dt = 0;
 
     // Shader uniforms
     private int u_directionalLight;
@@ -49,7 +48,8 @@ public class ToonShader implements Shader {
     private int u_opacity;
     private int u_resolution;
     private int u_nighttime;
-    private int u_deltatime;
+    private int u_timerMax;
+    private int u_timer;
 
     /** {@inheritdoc} */
     @Override
@@ -73,7 +73,8 @@ public class ToonShader implements Shader {
         this.u_opacity = this.program.getUniformLocation("u_opacity");
         this.u_resolution = this.program.getUniformLocation("u_resolution");
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
-        this.u_deltatime = this.program.getUniformLocation("u_deltatime");
+        this.u_timerMax = this.program.getUniformLocation("u_timerMax");
+        this.u_timer = this.program.getUniformLocation("u_timer");
     }
 
     /** {@inheritdoc} */
@@ -87,13 +88,6 @@ public class ToonShader implements Shader {
      */
     public void setNighttime(boolean nighttime) {
         this.nighttime = nighttime;
-    }
-
-    /**
-     * Sets how many milliseconds have passed since the last render
-     */
-    public void setDeltaTime(int dt) {
-        this.dt = dt;
     }
 
     /**
@@ -111,7 +105,8 @@ public class ToonShader implements Shader {
         this.program.begin();
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
         this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
-        this.program.setUniformf(this.u_deltatime, (float) this.dt);
+        this.program.setUniformf(this.u_timer, (float)(System.currentTimeMillis() % 2500));
+        this.program.setUniformf(this.u_timerMax, 2500f);
     }
 
     /** {@inheritdoc} */
@@ -150,7 +145,7 @@ public class ToonShader implements Shader {
 
             // Glyph texture
             if (data.glyph.isPresent()) {
-                Optional<TextureDescriptor> tdesc = this.textures.get().getTextureDescriptor("ui/glyph");
+                Optional<TextureDescriptor> tdesc = this.textures.get().getTextureDescriptor(data.glyph.get().icon);
                 if (tdesc.isPresent()) {
                     this.program.setUniformi(this.u_includeGlyphTexture, 1);
                     this.program.setUniformi(this.u_glyphTexture, this.context.textureBinder.bind(tdesc.get()));
