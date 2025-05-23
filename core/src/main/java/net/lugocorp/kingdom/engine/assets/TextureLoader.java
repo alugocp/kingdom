@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.engine.assets;
 import net.lugocorp.kingdom.utils.mods.ModAssetsMap;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.Texture;
-import java.util.Optional;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Wraps the logic for loading Texture assets into the game

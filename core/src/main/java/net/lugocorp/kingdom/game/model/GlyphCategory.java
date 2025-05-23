@@ -4,8 +4,8 @@ package net.lugocorp.kingdom.game.model;
  * This class represents the different categories of Glyphs in the game
  */
 public enum GlyphCategory {
-    STRATEGIC("ui/glyph-strategy", Glyph.BATTLE, Glyph.DEFENSE, Glyph.HEALING), HARVEST("ui/glyph-harvest", Glyph.NATURE, Glyph.MINING,
-            Glyph.TRAVEL), SPECIAL("ui/glyph-special", Glyph.TRADE, Glyph.WORSHIP);
+    STRATEGIC("ui/glyph-strategy", Glyph.BATTLE, Glyph.DEFENSE, Glyph.HEALING), HARVEST("ui/glyph-harvest",
+            Glyph.NATURE, Glyph.MINING, Glyph.TRAVEL), SPECIAL("ui/glyph-special", Glyph.TRADE, Glyph.WORSHIP);
 
     public final Glyph[] glyphs;
     public final String icon;

@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.engine.shaders;
-import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.render.RenderableUserData;
+import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,13 +14,12 @@ import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.util.Optional;
-import com.badlogic.gdx.graphics.Texture;
 
 /**
  * This class interfaces with GLSL shader code to give the game its aesthetic
@@ -105,7 +104,7 @@ public class ToonShader implements Shader {
         this.program.begin();
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
         this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
-        this.program.setUniformf(this.u_timer, (float)(System.currentTimeMillis() % 2500));
+        this.program.setUniformf(this.u_timer, (float) (System.currentTimeMillis() % 2500));
         this.program.setUniformf(this.u_timerMax, 2500f);
     }
 
