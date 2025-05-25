@@ -23,13 +23,13 @@ import java.util.Optional;
  * properties
  */
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject {
+    private Optional<GlyphCategory> glyph = Optional.of(GlyphCategory.STRATEGIC);
     private boolean obstacle = false;
     private boolean wave = false;
     public final String name;
     public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
-    public Optional<GlyphCategory> glyph = Optional.of(GlyphCategory.STRATEGIC);
     public Optional<Unit> unit = Optional.empty();
     public String desc = "";
 
@@ -44,6 +44,21 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     public Tile() {
         super(0, 0);
         this.name = null;
+    }
+
+    /**
+     * Returns this Tile's GlyphCategory
+     */
+    public Optional<GlyphCategory> getGlyph() {
+        return this.glyph;
+    }
+
+    /**
+     * Sets this Tile's GlyphCategory
+     */
+    public void setGlyph(Optional<GlyphCategory> glyph) {
+        this.userData.glyph = glyph;
+        this.glyph = glyph;
     }
 
     /**
@@ -93,14 +108,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     @Override
     public Vector3 getPositionVector() {
         return Coords.grid.vector(this.x, this.y);
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Optional<ModelInstance> getModelInstance() {
-        super.getModelInstance();
-        this.userData.glyph = this.glyph;
-        return this.model;
     }
 
     /** {@inheritdoc} */

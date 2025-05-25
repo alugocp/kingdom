@@ -30,7 +30,7 @@ public class WorldGenerator {
                 } else {
                     g.generator.tile("Grassland", x, y).spawn(view);
                 }
-                g.world.getTile(x, y).get().glyph = Optional.of(GlyphCategory.random());
+                g.world.getTile(x, y).get().setGlyph(Optional.of(GlyphCategory.random()));
             }
         }
         Player ai = g.addComputerPlayer("AI");

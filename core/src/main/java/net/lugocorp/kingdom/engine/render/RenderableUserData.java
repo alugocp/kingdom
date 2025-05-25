@@ -7,6 +7,7 @@ import java.util.Optional;
  */
 public class RenderableUserData {
     public Optional<GlyphCategory> glyph = Optional.empty();
+    // TODO 3 states, "undiscovered", "unseen", and "seen"
     public boolean visible = true;
     public boolean wave = false;
 }

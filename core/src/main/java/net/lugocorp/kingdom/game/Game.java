@@ -217,7 +217,7 @@ public class Game {
             for (int b = 0; b < this.world.getHeight(); b++) {
                 if (this.world.getTile(a, b)
                         .map((Tile t) -> t.leader.isPresent() && t.leader.get() == player && !t.unit.isPresent()
-                                && t.glyph.isPresent() && this.mechanics.pools.remaining(t.glyph.get()) > 0
+                                && t.getGlyph().isPresent() && this.mechanics.pools.remaining(t.getGlyph().get()) > 0
                                 && !t.getObstacle()
                                 && !t.building.map((Building bldg) -> bldg.getObstacle()).orElse(false))
                         .orElse(false)) {

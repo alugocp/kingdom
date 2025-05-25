@@ -66,7 +66,7 @@ public class NewUnit {
         // definition of
         // view.game.getRecruitmentTiles()) so if we hit this error then something is
         // wrong.
-        Optional<GlyphCategory> category = view.game.world.getTile(p).flatMap((Tile t) -> t.glyph);
+        Optional<GlyphCategory> category = view.game.world.getTile(p).flatMap((Tile t) -> t.getGlyph());
         if (!category.isPresent()) {
             throw new RuntimeException("Attempt to recruit onto a tile without a glyph");
         }
@@ -139,7 +139,7 @@ public class NewUnit {
                 // view.game.getRecruitmentTiles()
                 throw new RuntimeException("Cannot recruit onto an occupied tile");
             }
-            t.glyph = Optional.empty();
+            t.setGlyph(Optional.empty());
             view.game.human.unitPoints -= NewUnit.MAX_UNIT_POINTS;
             view.game.setLeader(u, view.game.human);
             u.spawn(view);
