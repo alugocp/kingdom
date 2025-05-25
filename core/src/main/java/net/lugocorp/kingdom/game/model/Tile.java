@@ -50,7 +50,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Sets whether or not this Tile should apply a wave to its texture
      */
     public void setWave(boolean wave) {
-        this.wave = wave;
+        this.userData.wave = wave;
     }
 
     /**
@@ -99,15 +99,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     @Override
     public Optional<ModelInstance> getModelInstance() {
         super.getModelInstance();
-        if (this.model.isPresent()) {
-            ModelInstance model = this.model.get();
-            if (model.userData == null) {
-                model.userData = new RenderableUserData();
-            }
-            RenderableUserData data = (RenderableUserData) model.userData;
-            data.glyph = this.glyph;
-            data.wave = this.wave;
-        }
+        this.userData.glyph = this.glyph;
         return this.model;
     }
 

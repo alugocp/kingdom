@@ -47,6 +47,7 @@ public class ToonShader implements Shader {
     private int u_opacity;
     private int u_resolution;
     private int u_nighttime;
+    private int u_visible;
     private int u_timerMax;
     private int u_timer;
     private int u_wave;
@@ -73,6 +74,7 @@ public class ToonShader implements Shader {
         this.u_opacity = this.program.getUniformLocation("u_opacity");
         this.u_resolution = this.program.getUniformLocation("u_resolution");
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
+        this.u_visible = this.program.getUniformLocation("u_visible");
         this.u_timerMax = this.program.getUniformLocation("u_timerMax");
         this.u_timer = this.program.getUniformLocation("u_timer");
         this.u_wave = this.program.getUniformLocation("u_wave");
@@ -139,15 +141,18 @@ public class ToonShader implements Shader {
             this.program.setUniformf(this.u_opacity, blend.opacity);
         }
 
-        // Set overlay uniforms
-        this.program.setUniformi(this.u_includeGlyphTexture, 0);
-        if (this.textures.isPresent() && renderable.userData != null) {
+        // Set special shader data
+        if (renderable.userData == null) {
+            this.program.setUniformi(this.u_wave, 0);
+            this.program.setUniformi(this.u_visible, 0);
+            this.program.setUniformi(this.u_includeGlyphTexture, 0);
+        } else {
             RenderableUserData data = (RenderableUserData) renderable.userData;
-
+            this.program.setUniformi(this.u_visible, data.visible ? 1 : 0);
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
 
             // Glyph texture
-            if (data.glyph.isPresent()) {
+            if (this.textures.isPresent() && data.glyph.isPresent()) {
                 Optional<TextureDescriptor> tdesc = this.textures.get().getTextureDescriptor(data.glyph.get().icon);
                 if (tdesc.isPresent()) {
                     this.program.setUniformi(this.u_includeGlyphTexture, 1);

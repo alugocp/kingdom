@@ -19,6 +19,7 @@ uniform float u_timerMax;
 uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
+uniform bool u_visible;
 uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
 varying vec3 v_lightDiffuse;
@@ -40,33 +41,36 @@ void main() {
     float halfTimer = u_timerMax / 2.0;
     bool isTopFace = normal == vec3(0.0, 1.0, 0.0);
 
-    if (outline(2.0)) {
-        // Face black outline color
+    // Face black color for outlines or fog of war
+    if (!u_visible || outline(2.0)) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        return;
+    }
+
+    // Calculate light intensity
+    float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
+
+    // Set texture color and opacity
+    if (intensity == 0.0) {
+        // Make the texture black under low light
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     } else {
-        // Calculate light intensity
-        float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
-        if (intensity == 0.0) {
-            // Make the texture black under low light
-            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-        } else {
-            // Grab texture color at coordinate
-            vec2 texCoords = v_diffuseUV;
-            if (u_wave && isTopFace) {
-                // Wave Tiles should oscillate slightly
-                texCoords.x += u_diffuseUVTransform.z * 0.025 * (2.0 * (abs(u_timer - halfTimer) / halfTimer) - 1.0);
-            }
-            gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
+        // Grab texture color at coordinate
+        vec2 texCoords = v_diffuseUV;
+        if (u_wave && isTopFace) {
+            // Wave Tiles should oscillate slightly
+            texCoords.x += u_diffuseUVTransform.z * 0.025 * (2.0 * (abs(u_timer - halfTimer) / halfTimer) - 1.0);
+        }
+        gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
 
-            // Make the color darker if it's night time
-            if (u_nighttime > 0.0) {
-                mat4 darker;
-                darker[0] = vec4(0.8, 0.0, 0.0, 0.0);
-                darker[1] = vec4(0.0, 0.8, 0.0, 0.0);
-                darker[2] = vec4(0.0, 0.0, 0.8, 0.0);
-                darker[3] = vec4(0.0, 0.0, 0.0, 1.0);
-                gl_FragColor = darker * gl_FragColor;
-            }
+        // Make the color darker if it's night time
+        if (u_nighttime > 0.0) {
+            mat4 darker;
+            darker[0] = vec4(0.8, 0.0, 0.0, 0.0);
+            darker[1] = vec4(0.0, 0.8, 0.0, 0.0);
+            darker[2] = vec4(0.0, 0.0, 0.8, 0.0);
+            darker[3] = vec4(0.0, 0.0, 0.0, 1.0);
+            gl_FragColor = darker * gl_FragColor;
         }
     }
     gl_FragColor.a *= u_opacity;

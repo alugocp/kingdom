@@ -25,6 +25,7 @@ public class Modellable {
     private String modelName = "PLACEHOLDER";
     private Optional<String> textureName = Optional.empty();
     private float alpha = 1f;
+    protected final RenderableUserData userData = new RenderableUserData();
     @FieldSerializer.Optional("model")
     protected Optional<ModelInstance> model = Optional.empty();
     @FieldSerializer.Optional("textureOverride")
@@ -74,6 +75,10 @@ public class Modellable {
             } else {
                 return Optional.empty();
             }
+        }
+        // Set the RenderableUserData for this Modellable
+        if (this.model.isPresent() && this.model.get().userData == null) {
+            this.model.get().userData = this.userData;
         }
         return this.model;
     }
