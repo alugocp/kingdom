@@ -49,6 +49,7 @@ public class ToonShader implements Shader {
     private int u_nighttime;
     private int u_timerMax;
     private int u_timer;
+    private int u_wave;
 
     /** {@inheritdoc} */
     @Override
@@ -74,6 +75,7 @@ public class ToonShader implements Shader {
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_timerMax = this.program.getUniformLocation("u_timerMax");
         this.u_timer = this.program.getUniformLocation("u_timer");
+        this.u_wave = this.program.getUniformLocation("u_wave");
     }
 
     /** {@inheritdoc} */
@@ -141,6 +143,8 @@ public class ToonShader implements Shader {
         this.program.setUniformi(this.u_includeGlyphTexture, 0);
         if (this.textures.isPresent() && renderable.userData != null) {
             RenderableUserData data = (RenderableUserData) renderable.userData;
+
+            this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
 
             // Glyph texture
             if (data.glyph.isPresent()) {

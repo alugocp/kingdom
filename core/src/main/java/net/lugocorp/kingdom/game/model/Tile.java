@@ -24,6 +24,7 @@ import java.util.Optional;
  */
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject {
     private boolean obstacle = false;
+    private boolean wave = false;
     public final String name;
     public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
@@ -43,6 +44,13 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     public Tile() {
         super(0, 0);
         this.name = null;
+    }
+
+    /**
+     * Sets whether or not this Tile should apply a wave to its texture
+     */
+    public void setWave(boolean wave) {
+        this.wave = wave;
     }
 
     /**
@@ -98,6 +106,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
             }
             RenderableUserData data = (RenderableUserData) model.userData;
             data.glyph = this.glyph;
+            data.wave = this.wave;
         }
         return this.model;
     }

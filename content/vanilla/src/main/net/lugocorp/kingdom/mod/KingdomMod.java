@@ -157,6 +157,7 @@ public class KingdomMod implements GameMod {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "water");
             e.blob.setObstacle(true);
+            e.blob.setWave(true);
         });
 
         /**

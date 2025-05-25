@@ -18,6 +18,7 @@ uniform float u_timerMax;
 uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
+uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
 varying vec3 v_lightDiffuse;
 varying vec3 v_ambientLight;
@@ -35,14 +36,28 @@ bool outline(float d) {
 
 void main() {
     vec3 normal = v_normal;
+    float halfTimer = u_timerMax / 2.0;
+    bool isTopFace = normal == vec3(0.0, 1.0, 0.0);
+
     if (outline(2.0)) {
+        // Face black outline color
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     } else {
+        // Calculate light intensity
         float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
         if (intensity == 0.0) {
+            // Make the texture black under low light
             gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         } else {
-            gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
+            // Grab texture color at coordinate
+            vec2 texCoords = v_diffuseUV;
+            if (u_wave && isTopFace) {
+                // Wave Tiles should oscillate slightly
+                texCoords.x = 0.05 * ((abs(u_timer - halfTimer) / halfTimer) - 0.5);
+            }
+            gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
+
+            // Make the color darker if it's night time
             if (u_nighttime > 0.0) {
                 mat4 darker;
                 darker[0] = vec4(0.8, 0.0, 0.0, 0.0);
@@ -54,9 +69,11 @@ void main() {
         }
     }
     gl_FragColor.a *= u_opacity;
-    if (u_includeGlyphTexture && normal == vec3(0.0, 1.0, 0.0)) {
+
+    // Glyph texture logic
+    if (u_includeGlyphTexture && isTopFace) {
         float diff = 0.0;
-        float beat = 0.07 * 2.0 * abs(u_timer - (u_timerMax / 2.0)) / u_timerMax;
+        float beat = 0.07 * abs(u_timer - halfTimer) / halfTimer;
         vec4 glyph = texture2D(u_glyphTexture, v_diffuseUV);
         if (glyph.x > 0.0) {
             diff = 0.1;

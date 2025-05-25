@@ -7,4 +7,5 @@ import java.util.Optional;
  */
 public class RenderableUserData {
     public Optional<GlyphCategory> glyph = Optional.empty();
+    public boolean wave = false;
 }
