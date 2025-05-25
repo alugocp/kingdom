@@ -12,6 +12,7 @@ precision mediump float;
 uniform bool u_includeGlyphTexture;
 uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
+uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
 uniform vec2 u_resolution;
 uniform float u_timerMax;
@@ -53,7 +54,7 @@ void main() {
             vec2 texCoords = v_diffuseUV;
             if (u_wave && isTopFace) {
                 // Wave Tiles should oscillate slightly
-                texCoords.x = 0.05 * ((abs(u_timer - halfTimer) / halfTimer) - 0.5);
+                texCoords.x += u_diffuseUVTransform.z * 0.025 * (2.0 * (abs(u_timer - halfTimer) / halfTimer) - 1.0);
             }
             gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
 
