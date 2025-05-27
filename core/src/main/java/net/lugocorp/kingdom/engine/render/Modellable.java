@@ -25,7 +25,6 @@ public class Modellable {
     private String modelName = "PLACEHOLDER";
     private Optional<String> textureName = Optional.empty();
     private float alpha = 1f;
-    protected final RenderableUserData userData = new RenderableUserData();
     @FieldSerializer.Optional("model")
     protected Optional<ModelInstance> model = Optional.empty();
     @FieldSerializer.Optional("textureOverride")
@@ -55,6 +54,13 @@ public class Modellable {
     }
 
     /**
+     * Perform the final stage for instantiating our ModelInstance
+     */
+    protected void setupModelInstance(ModelInstance model) {
+        // No-op in the base class
+    }
+
+    /**
      * Retrieves this Modellable's ModelInstance if one exists
      */
     public Optional<ModelInstance> getModelInstance() {
@@ -64,6 +70,7 @@ public class Modellable {
             this.model.ifPresent((ModelInstance model) -> {
                 this.applyAlpha(model);
                 this.resetModelPosition();
+                this.setupModelInstance(model);
             });
         }
         // Load an override Texture if we've requested one and it's not present
@@ -75,10 +82,6 @@ public class Modellable {
             } else {
                 return Optional.empty();
             }
-        }
-        // Set the RenderableUserData for this Modellable
-        if (this.model.isPresent() && this.model.get().userData == null) {
-            this.model.get().userData = this.userData;
         }
         return this.model;
     }

@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine.shaders;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
-import net.lugocorp.kingdom.engine.render.RenderableUserData;
+import net.lugocorp.kingdom.engine.render.userdata.TileUserData;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -146,8 +146,8 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_wave, 0);
             this.program.setUniformi(this.u_visible, 0);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
-        } else {
-            RenderableUserData data = (RenderableUserData) renderable.userData;
+        } else if (renderable.userData instanceof TileUserData) {
+            TileUserData data = (TileUserData) renderable.userData;
             this.program.setUniformi(this.u_visible, data.visible ? 1 : 0);
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
 
