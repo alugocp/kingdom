@@ -147,8 +147,14 @@ public class Game {
     public void setLeader(Unit u, Optional<Player> op) {
         u.leader.ifPresent((Player p) -> p.units.remove(u));
         op.ifPresent((Player p) -> p.units.add(u));
+        if (u.belongsToHuman()) {
+            u.visibility.removeVision(this.world);
+        }
         u.leader = op;
-        this.setLeader(this.world.getTile(u.getX(), u.getY()).get(), op);
+        if (u.belongsToHuman()) {
+            u.visibility.setVisibleRadius(this.world, u.getPoint(), 2);
+        }
+        this.setLeader(this.world.getTile(u.getPoint()).get(), op);
     }
 
     /**

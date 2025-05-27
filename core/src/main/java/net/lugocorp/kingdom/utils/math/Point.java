@@ -5,10 +5,21 @@ package net.lugocorp.kingdom.utils.math;
  */
 public class Point {
     private static final int X_VALUE_CAP = 10000;
-    public final int x;
-    public final int y;
+    public int x;
+    public int y;
 
     public Point(int x, int y) {
+        this.set(x, y);
+    }
+
+    public Point() {
+        this(0, 0);
+    }
+
+    /**
+     * Sets the coordinates associated with this Point
+     */
+    public void set(int x, int y) {
         this.x = x;
         this.y = y;
         if (x >= Point.X_VALUE_CAP) {
@@ -16,14 +27,6 @@ public class Point {
                     "We cannot initialize points where x >= %d because it disrupts the hash code contract",
                     Point.X_VALUE_CAP));
         }
-    }
-
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Point() {
-        this.x = 0;
-        this.y = 0;
     }
 
     /** {@inheritdoc} */

@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
+import net.lugocorp.kingdom.game.mechanics.Visibility;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.core.Events;
@@ -33,6 +34,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     private Optional<Ability> active2 = Optional.empty();
     private SleepState sleep = SleepState.AWAKE;
     private int loyalty = Unit.MAX_LOYALTY;
+    public final Visibility visibility = new Visibility();
     public final Tags tags = new Tags();
     public final String name;
     public final HitPoints<Unit> health;
@@ -135,6 +137,13 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public boolean isFreeRadical() {
         return !this.leader.isPresent() && this.loyalty == 0;
+    }
+
+    /**
+     * Returns true if this Unit belongs to the human Player
+     */
+    public boolean belongsToHuman() {
+        return this.leader.map((Player p) -> p.isHumanPlayer()).orElse(false);
     }
 
     /**
@@ -244,6 +253,9 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      * Moves this Unit to another Tile in the grid
      */
     private void move(Game g, Point p) {
+        if (this.belongsToHuman()) {
+            this.visibility.translate(g.world, p.x - this.x, p.y - this.y);
+        }
         this.removeFromPosition(g);
         this.setPosition(g, p.x, p.y);
     }
@@ -290,6 +302,9 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     @Override
     public void deactivate(GameView view) {
         EventReceiver.super.deactivate(view);
+        if (this.belongsToHuman()) {
+            this.visibility.removeVision(view.game.world);
+        }
         this.removeFromPosition(view.game);
         this.dispose();
     }

@@ -6,8 +6,20 @@ import java.util.Optional;
  * Data for Tile's userData field
  */
 public class TileUserData {
+    // Displays a faint glowing Glyph on the top face
     public Optional<GlyphCategory> glyph = Optional.empty();
-    // TODO 3 states, "undiscovered", "unseen", and "seen"
-    public boolean visible = true;
+
+    // Adds a wave effect to the top face texture
     public boolean wave = false;
+
+    // Fog of war system
+    public boolean hasBeenSeen = false;
+    public int visibility = 0;
+
+    /**
+     * Returns an integer for the shader visibility input
+     */
+    public int collapseVisibility() {
+        return this.hasBeenSeen ? (this.visibility == 0 ? 1 : 2) : 0;
+    }
 }

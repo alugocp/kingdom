@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
+import net.lugocorp.kingdom.game.mechanics.Visibility;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
@@ -21,6 +22,8 @@ import java.util.Optional;
  */
 public class Building extends DynamicModellable implements EventReceiver, MenuSubject {
     private boolean obstacle = false;
+    // TODO make sure visibility works for Buildings and Patrons
+    protected final Visibility visibility = new Visibility();
     protected HitPoints<Building> health = null;
     public final Tags tags = new Tags();
     public final String name;
@@ -84,6 +87,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
             view.game.buildingSpawned(this);
         });
         this.handleEvent(view, new Events.SpawnEvent<Building>(this));
+        // this.visibility.setVisibleRadius(view.game.world, this.getPoint(), 1);
     }
 
     /** {@inheritdoc} */
@@ -109,6 +113,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     public void deactivate(GameView view) {
         this.deactivateDefault(view);
         view.game.removeBuilding(this);
+        // this.visibility.removeVision(view.game.world);
         this.dispose();
     }
 

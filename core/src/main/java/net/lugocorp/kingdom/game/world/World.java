@@ -106,7 +106,7 @@ public class World {
                 }
                 if (justTiles) {
                     models.add(tile.get());
-                } else {
+                } else if (tile.get().isVisible()) {
                     tile.get().building.ifPresent((Modellable m) -> models.add(m));
                     tile.get().unit.ifPresent((Modellable m) -> models.add(m));
                 }

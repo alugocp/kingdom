@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
  * move about
  */
 public abstract class DynamicModellable extends Modellable {
+    private Point point = new Point();
     protected int x;
     protected int y;
 
@@ -40,8 +41,8 @@ public abstract class DynamicModellable extends Modellable {
      * Returns a Point representing this object's position in the World
      */
     public Point getPoint() {
-        // TODO optimize by storing a mutable Point instead
-        return new Point(this.x, this.y);
+        this.point.set(this.x, this.y);
+        return this.point;
     }
 
     /** {@inheritdoc} */

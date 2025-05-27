@@ -19,12 +19,14 @@ uniform float u_timerMax;
 uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
-uniform bool u_visible;
+uniform int u_visibility;
 uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
 varying vec3 v_lightDiffuse;
 varying vec3 v_ambientLight;
 varying vec3 v_normal;
+const int HALF_VISIBILITY = 1;
+const int NO_VISIBILITY = 0;
 
 // Return true if the current texture location is close to an edge (different alpha value)
 // This function checks for edges within distance d
@@ -42,7 +44,7 @@ void main() {
     bool isTopFace = normal == vec3(0.0, 1.0, 0.0);
 
     // Face black color for outlines or fog of war
-    if (!u_visible || outline(2.0)) {
+    if (u_visibility == NO_VISIBILITY || outline(2.0)) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         return;
     }
@@ -64,11 +66,15 @@ void main() {
         gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
 
         // Make the color darker if it's night time
-        if (u_nighttime > 0.0) {
+        if (u_nighttime > 0.0 || u_visibility == HALF_VISIBILITY) {
+            float coeff = 0.8;
+            if (u_nighttime > 0.0 && u_visibility == HALF_VISIBILITY) {
+                coeff = 0.4;
+            }
             mat4 darker;
-            darker[0] = vec4(0.8, 0.0, 0.0, 0.0);
-            darker[1] = vec4(0.0, 0.8, 0.0, 0.0);
-            darker[2] = vec4(0.0, 0.0, 0.8, 0.0);
+            darker[0] = vec4(coeff, 0.0, 0.0, 0.0);
+            darker[1] = vec4(0.0, coeff, 0.0, 0.0);
+            darker[2] = vec4(0.0, 0.0, coeff, 0.0);
             darker[3] = vec4(0.0, 0.0, 0.0, 1.0);
             gl_FragColor = darker * gl_FragColor;
         }
