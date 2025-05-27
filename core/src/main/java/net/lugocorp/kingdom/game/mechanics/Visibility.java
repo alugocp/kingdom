@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.game.model.Tile;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +30,7 @@ public class Visibility {
         this.removeVision(world);
         world.getTile(center).ifPresent((Tile t) -> t.incrementVisibility());
         this.vision.add(center);
-        for (Point p: Hexagons.getNeighbors(center, radius)) {
+        for (Point p : Hexagons.getNeighbors(center, radius)) {
             world.getTile(p.x, p.y).ifPresent((Tile t) -> t.incrementVisibility());
             this.vision.add(p);
         }
@@ -40,7 +40,7 @@ public class Visibility {
      * Removes all Points from the vision set
      */
     public void removeVision(World world) {
-        for (Point p: this.vision) {
+        for (Point p : this.vision) {
             world.getTile(p.x, p.y).ifPresent((Tile t) -> t.decrementVisibility());
         }
         this.vision.clear();
