@@ -40,6 +40,8 @@ public class ToonShader implements Shader {
     private int u_worldTrans;
     private int u_normalMatrix;
     private int u_includeGlyphTexture;
+    private int u_borderTexture1;
+    private int u_borderTexture2;
     private int u_glyphTexture;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
@@ -48,6 +50,7 @@ public class ToonShader implements Shader {
     private int u_resolution;
     private int u_nighttime;
     private int u_visibility;
+    private int u_tileBorder;
     private int u_timerMax;
     private int u_timer;
     private int u_wave;
@@ -67,6 +70,8 @@ public class ToonShader implements Shader {
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
         this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
         this.u_includeGlyphTexture = this.program.getUniformLocation("u_includeGlyphTexture");
+        this.u_borderTexture1 = this.program.getUniformLocation("u_borderTexture1");
+        this.u_borderTexture2 = this.program.getUniformLocation("u_borderTexture2");
         this.u_glyphTexture = this.program.getUniformLocation("u_glyphTexture");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
@@ -75,6 +80,7 @@ public class ToonShader implements Shader {
         this.u_resolution = this.program.getUniformLocation("u_resolution");
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_visibility = this.program.getUniformLocation("u_visibility");
+        this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
         this.u_timerMax = this.program.getUniformLocation("u_timerMax");
         this.u_timer = this.program.getUniformLocation("u_timer");
         this.u_wave = this.program.getUniformLocation("u_wave");
@@ -144,12 +150,15 @@ public class ToonShader implements Shader {
         // Set special shader data
         if (renderable.userData == null) {
             this.program.setUniformi(this.u_wave, 0);
+            this.program.setUniformi(this.u_tileBorder, 0);
             this.program.setUniformi(this.u_visibility, 2);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
         } else if (renderable.userData instanceof TileUserData) {
             TileUserData data = (TileUserData) renderable.userData;
             this.program.setUniformi(this.u_visibility, data.collapseVisibility());
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
+            this.program.setUniformi(this.u_includeGlyphTexture, 0);
+            this.program.setUniformi(this.u_tileBorder, 0);
 
             // Glyph texture
             if (this.textures.isPresent() && data.glyph.isPresent()) {
@@ -157,6 +166,17 @@ public class ToonShader implements Shader {
                 if (tdesc.isPresent()) {
                     this.program.setUniformi(this.u_includeGlyphTexture, 1);
                     this.program.setUniformi(this.u_glyphTexture, this.context.textureBinder.bind(tdesc.get()));
+                }
+            }
+
+            // Border textures
+            if (this.textures.isPresent() && data.borders > 0) {
+                Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("ui/border1");
+                Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("ui/border2");
+                if (tdesc1.isPresent() && tdesc2.isPresent()) {
+                    this.program.setUniformi(this.u_borderTexture1, this.context.textureBinder.bind(tdesc1.get()));
+                    this.program.setUniformi(this.u_borderTexture2, this.context.textureBinder.bind(tdesc2.get()));
+                    this.program.setUniformi(this.u_tileBorder, data.borders);
                 }
             }
         }

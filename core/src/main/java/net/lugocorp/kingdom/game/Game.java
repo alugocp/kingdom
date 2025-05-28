@@ -114,6 +114,7 @@ public class Game {
             p.tiles++;
         });
         t.leader = op;
+        t.calculateBorders(this.world, true);
     }
 
     /**

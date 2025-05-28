@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
+import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
@@ -13,10 +14,12 @@ import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Represents a single hexagon in the game world and its corresponding
@@ -105,6 +108,33 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public boolean getObstacle() {
         return this.obstacle;
+    }
+
+    /**
+     * Causes this Tile (and its neighbors) to recalculate its visible borders
+     */
+    public void calculateBorders(World world, boolean iterate) {
+        Set<Point> neighbors = Hexagons.getNeighbors(this.getPoint(), 1);
+        int borders = 0;
+        for (Point p : neighbors) {
+            Optional<Tile> t = world.getTile(p);
+            if (this.leader.isPresent() && this.leader.get() != t.flatMap((Tile t1) -> t1.leader).orElse(null)) {
+                if (this.y == p.y) {
+                    borders += this.x < p.x ? TileUserData.BORDER_RIGHT : TileUserData.BORDER_LEFT;
+                } else {
+                    boolean right = (this.y % 2 == 0 && this.x == p.x) || (this.y % 2 == 1 && this.x == p.x - 1);
+                    if (this.y < p.y) {
+                        borders += right ? TileUserData.BORDER_BOT_RIGHT : TileUserData.BORDER_BOT_LEFT;
+                    } else {
+                        borders += right ? TileUserData.BORDER_TOP_RIGHT : TileUserData.BORDER_TOP_LEFT;
+                    }
+                }
+            }
+            if (iterate) {
+                t.ifPresent((Tile t1) -> t1.calculateBorders(world, false));
+            }
+        }
+        this.userData.borders = borders;
     }
 
     /** {@inheritdoc} */

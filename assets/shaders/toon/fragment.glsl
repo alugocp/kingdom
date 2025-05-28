@@ -12,6 +12,8 @@ precision mediump float;
 uniform bool u_includeGlyphTexture;
 uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
+uniform sampler2D u_borderTexture1;
+uniform sampler2D u_borderTexture2;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
 uniform vec2 u_resolution;
@@ -20,6 +22,7 @@ uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_visibility;
+uniform int u_tileBorder;
 uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
 varying vec3 v_lightDiffuse;
@@ -82,7 +85,7 @@ void main() {
     gl_FragColor.a *= u_opacity;
 
     // Glyph texture logic
-    if (u_includeGlyphTexture && isTopFace) {
+    if (isTopFace && u_includeGlyphTexture) {
         float diff = 0.0;
         float beat = 0.07 * abs(u_timer - halfTimer) / halfTimer;
         vec4 glyph = texture2D(u_glyphTexture, v_diffuseUV);
@@ -92,5 +95,48 @@ void main() {
         gl_FragColor.x -= (gl_FragColor.x * glyph.x * beat) + diff;
         gl_FragColor.y -= (gl_FragColor.y * glyph.y * beat) + diff;
         gl_FragColor.z -= (gl_FragColor.z * glyph.z * beat) + diff;
+    }
+
+    // Player border logic
+    if (isTopFace && u_tileBorder > 0) {
+        float bx = v_diffuseUV.x * 64.0 / 19.0;
+        float by = v_diffuseUV.y * 64.0 / 18.0;
+        int border = u_tileBorder;
+
+        // bot right
+        if (border >= 32) {
+            gl_FragColor += texture2D(u_borderTexture2, vec2(1.0 - bx, by));
+            border -= 32;
+        }
+
+        // bot left
+        if (border >= 16) {
+            gl_FragColor += texture2D(u_borderTexture2, vec2(1.0 - bx, 1.0 - by));
+            border -= 16;
+        }
+
+        // top right
+        if (border >= 8) {
+            gl_FragColor += texture2D(u_borderTexture2, vec2(bx, by));
+            border -= 8;
+        }
+
+        // top left
+        if (border >= 4) {
+            gl_FragColor += texture2D(u_borderTexture2, vec2(bx, 1.0 - by));
+            border -= 4;
+        }
+
+        // right
+        if (border >= 2) {
+            gl_FragColor += texture2D(u_borderTexture1, vec2(bx, by));
+            border -= 2;
+        }
+
+        // left
+        if (border >= 1) {
+            gl_FragColor += texture2D(u_borderTexture1, vec2(bx, 1.0 - by));
+            // border -= 1;
+        }
     }
 }
