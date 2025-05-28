@@ -21,6 +21,7 @@ public class TileUserData {
 
     // This int tracks which sides should display a border
     public int borders = 0;
+    // TODO add unique color for each Player
 
     // Fog of war system
     public boolean hasBeenSeen = false;
