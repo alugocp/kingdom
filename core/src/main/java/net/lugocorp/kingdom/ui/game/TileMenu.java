@@ -43,6 +43,7 @@ public class TileMenu {
             return;
         }
         this.menuCoords = p.get();
+        this.view.game.world.getTile(p.get()).ifPresent((Tile t) -> t.incrementSelection());
         this.refresh(false);
     }
 
@@ -65,6 +66,9 @@ public class TileMenu {
      * Closes the currently open Menu
      */
     public void close() {
+        if (this.menu.isPresent()) {
+            this.view.game.world.getTile(this.menuCoords).get().decrementSelection();
+        }
         this.menu = Optional.empty();
     }
 }

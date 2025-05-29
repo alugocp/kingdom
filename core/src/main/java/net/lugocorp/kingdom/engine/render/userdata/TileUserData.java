@@ -27,6 +27,9 @@ public class TileUserData {
     public boolean hasBeenSeen = false;
     public int visibility = 0;
 
+    // Renders the Tile selector
+    public int selection = 0;
+
     /**
      * Returns an integer for the shader visibility input
      */

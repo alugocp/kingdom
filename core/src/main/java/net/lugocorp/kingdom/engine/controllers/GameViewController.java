@@ -126,7 +126,7 @@ public class GameViewController extends CameraInputController {
         if (!this.dragging) {
             if (this.view.selector.isHoveringSelectedTile()) {
                 this.view.selector.runSelectionAction();
-            } else {
+            } else if (this.view.selector.isHoveringVisibleTile()) {
                 this.view.av.loaders.sounds.play("ui/arrow");
                 this.view.menu.open();
             }

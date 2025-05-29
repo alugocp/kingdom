@@ -80,6 +80,20 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * Adds a level of selection
+     */
+    public void incrementSelection() {
+        this.userData.selection++;
+    }
+
+    /**
+     * Removes a level of selection
+     */
+    public void decrementSelection() {
+        this.userData.selection--;
+    }
+
+    /**
      * Adds a visibility point (fog of war system)
      */
     public void incrementVisibility() {

@@ -22,6 +22,7 @@ uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_visibility;
 uniform int u_tileBorder;
+uniform int u_selection;
 uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
 varying vec3 v_lightDiffuse;
@@ -77,6 +78,14 @@ void main() {
         gl_FragColor.x -= (gl_FragColor.x * glyph.x * beat) + diff;
         gl_FragColor.y -= (gl_FragColor.y * glyph.y * beat) + diff;
         gl_FragColor.z -= (gl_FragColor.z * glyph.z * beat) + diff;
+    }
+
+    // Tile selection logic
+    if (u_selection > 0) {
+        float coeff = 0.2 * float(u_selection);
+        gl_FragColor.x += coeff;
+        gl_FragColor.y += coeff;
+        gl_FragColor.z += coeff;
     }
 
     // Player border logic

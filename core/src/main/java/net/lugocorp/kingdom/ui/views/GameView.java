@@ -136,7 +136,6 @@ public class GameView implements View {
         Gdx.gl.glStencilMask(0x00);
         this.av.models.begin(this.camera);
         this.av.models.render(this.game.world.getModelInstances(true), this.environment);
-        this.selector.render(this.environment);
         this.av.models.end();
 
         // Draw all 3D models that should have outlines
