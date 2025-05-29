@@ -15,7 +15,7 @@ public class WorldGenOptions {
      * Represents the possible size values for World generation
      */
     public static enum WorldSize {
-        SMALL("Small", 50, 50), MEDIUM("Medium", 150, 150), LARGE("Large", 250, 250);
+        TEST("Test", 10, 5), SMALL("Small", 50, 50), MEDIUM("Medium", 150, 150), LARGE("Large", 250, 250);
         public final String label;
         public final int w;
         public final int h;
@@ -30,6 +30,7 @@ public class WorldGenOptions {
          * Returns the nth value from the enum
          */
         public static WorldGenOptions.WorldSize fromIndex(int index) {
+            // TODO this isn't working, TEST still returns a larger map size
             return WorldGenOptions.WorldSize.values()[index];
         }
     }

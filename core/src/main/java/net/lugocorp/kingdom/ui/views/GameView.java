@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.game.Logger;
 import net.lugocorp.kingdom.ui.game.TileMenu;
@@ -109,6 +110,14 @@ public class GameView implements View {
 
         // Kick off the Player's turn
         this.game.mechanics.turns.kickOffTurn(this);
+        this.centerOnUnit(this.game.human.units.iterator().next());
+    }
+
+    /**
+     * Centers the Camera on the given Unit
+     */
+    public void centerOnUnit(Unit unit) {
+        this.camController.centerCameraOn(unit.getPoint());
     }
 
     /** {@inheritdoc} */

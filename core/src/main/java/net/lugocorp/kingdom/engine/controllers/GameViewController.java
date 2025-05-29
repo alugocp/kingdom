@@ -34,6 +34,18 @@ public class GameViewController extends CameraInputController {
         this.view = view;
     }
 
+    /**
+     * Centers the Camera on a given Point in the World
+     */
+    public void centerCameraOn(Point p) {
+        Vector3 vec = Coords.grid.vector(p.x, p.y);
+        Ray ray = this.camera.getPickRay(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
+        Vector3 endpoint = ray.getEndPoint(new Vector3(), distance);
+        this.camera.translate(vec.x - endpoint.x, 0f, vec.z - endpoint.z);
+        this.camera.update();
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
