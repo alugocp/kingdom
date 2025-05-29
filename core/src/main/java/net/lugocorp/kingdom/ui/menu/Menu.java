@@ -128,4 +128,11 @@ public class Menu {
         this.root.unclick();
         return false;
     }
+
+    /**
+     * Propagates a signal when some key is pressed
+     */
+    public void keyPressed(int keycode) {
+        this.root.keyPressed(keycode);
+    }
 }

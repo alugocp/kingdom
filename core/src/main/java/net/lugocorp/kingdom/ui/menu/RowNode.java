@@ -92,4 +92,12 @@ public class RowNode implements MenuNode {
             n.unclick();
         }
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public void keyPressed(int keycode) {
+        for (MenuNode n : this.children) {
+            n.keyPressed(keycode);
+        }
+    }
 }

@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -12,18 +13,21 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  * MenuNode item allowing text entry
  */
 public class TextEntryNode implements MenuNode {
-    private final int MARGIN = 5;
+    private static final int MARGIN = 5;
+    private final BitmapFont font;
+    private final AudioVideo av;
     private final int charWidth;
+    private boolean numbersOnly = false;
     private boolean selected = false;
-    private String message;
+    private StringBuilder builder;
     private int charsWindow = 10;
     private int cursor = 0;
     private int delta = 0;
-    protected BitmapFont font;
 
-    public TextEntryNode(AudioVideo av, String message) {
+    public TextEntryNode(AudioVideo av, String initial) {
+        this.builder = new StringBuilder(initial);
         this.font = av.fonts.basic;
-        this.message = message;
+        this.av = av;
 
         // Find width of a single glyph
         GlyphLayout layout = new GlyphLayout();
@@ -36,17 +40,25 @@ public class TextEntryNode implements MenuNode {
     }
 
     /**
+     * Sets whether or not players can enter non-number characters into this field
+     */
+    public TextEntryNode setNumbersOnly(boolean numbersOnly) {
+        this.numbersOnly = numbersOnly;
+        return this;
+    }
+
+    /**
      * Returns the substring that's visible on the node
      */
     private String getVisibleSubstring() {
-        String s = this.message.substring(this.delta);
+        String s = this.builder.substring(this.delta);
         return s.length() > this.charsWindow ? s.substring(0, this.charsWindow) : s;
     }
 
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
-        return ((int) this.font.getLineHeight()) + (this.MARGIN * 2);
+        return ((int) this.font.getLineHeight()) + (TextEntryNode.MARGIN * 2);
     }
 
     /** {@inheritdoc} */
@@ -60,7 +72,7 @@ public class TextEntryNode implements MenuNode {
     public void draw(AudioVideo av, Rect bounds) {
         // Draw the cursor
         Rect flip2 = Coords.screen.flip(bounds.x + (this.charWidth * (this.cursor - this.delta)),
-                bounds.y + this.MARGIN, this.charWidth, bounds.h - (this.MARGIN * 2));
+                bounds.y + TextEntryNode.MARGIN, this.charWidth, bounds.h - (TextEntryNode.MARGIN * 2));
         av.shapes.begin(ShapeType.Filled);
         av.shapes.setColor(Color.TEAL);
         av.shapes.rect(flip2.x, flip2.y, flip2.w, flip2.h);
@@ -78,7 +90,7 @@ public class TextEntryNode implements MenuNode {
         String visible = this.getVisibleSubstring();
         for (int a = 0; a < visible.length(); a++) {
             this.font.draw(av.sprites, visible.substring(a, a + 1), bounds.x + (int) ((a + 0.25) * this.charWidth),
-                    Coords.SIZE.y - bounds.y - this.MARGIN - 3);
+                    Coords.SIZE.y - bounds.y - TextEntryNode.MARGIN - 3);
         }
         av.sprites.end();
     }
@@ -86,6 +98,7 @@ public class TextEntryNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
+        this.av.loaders.sounds.play("ui/arrow");
         this.cursor = Math.min((p.x - bounds.x) / this.charWidth, this.getVisibleSubstring().length()) + this.delta;
         this.selected = true;
     }
@@ -94,5 +107,43 @@ public class TextEntryNode implements MenuNode {
     @Override
     public void unclick() {
         this.selected = false;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void keyPressed(int keycode) {
+        if (!this.selected) {
+            return;
+        }
+        if (keycode == Keys.DEL && this.builder.length() > 0 && this.cursor > 0) {
+            this.builder.deleteCharAt(this.cursor - 1);
+            this.cursor--;
+            if (this.delta > 0
+                    && (this.cursor == this.delta || this.builder.length() - this.delta < this.charsWindow)) {
+                this.delta--;
+            }
+        }
+        if (keycode == Keys.LEFT && this.cursor > 0) {
+            this.cursor--;
+            if (this.cursor == this.delta && this.delta > 0) {
+                this.delta--;
+            }
+        }
+        if (keycode == Keys.RIGHT && this.cursor < this.builder.length()) {
+            this.cursor++;
+            if (this.cursor == this.charsWindow + this.delta - 1
+                    && this.delta + this.charsWindow < this.builder.length() + 1) {
+                this.delta++;
+            }
+        }
+        if ((!this.numbersOnly && keycode >= Keys.A && keycode <= Keys.Z)
+                || (keycode >= Keys.NUM_0 && keycode <= Keys.NUM_9)
+                || (keycode >= Keys.NUMPAD_0 && keycode <= Keys.NUMPAD_9)) {
+            this.builder.insert(this.cursor, Keys.toString(keycode));
+            this.cursor++;
+            if (this.cursor == this.delta + this.charsWindow) {
+                this.delta++;
+            }
+        }
     }
 }

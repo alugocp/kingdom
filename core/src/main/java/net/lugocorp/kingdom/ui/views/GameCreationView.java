@@ -21,12 +21,14 @@ import com.badlogic.gdx.graphics.Color;
 import java.time.OffsetTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.Consumer;
 
 /**
  * This View walks the player through Game setup and World generation
  */
 class GameCreationView implements View {
+    private static final Random rand = new Random();
     private final Game game;
     private final GameView view;
     private final Menu fateSelection;
@@ -48,6 +50,13 @@ class GameCreationView implements View {
         this.worldSelection = this.getWorldSelectionMenu(this.view);
         this.fateSelection = this.getFateSelectionMenu(this.view);
         this.menu = this.worldSelection;
+    }
+
+    /**
+     * Returns a random world seed to place in the UI
+     */
+    private static String getRandomSeed() {
+        return Integer.toString(GameCreationView.rand.nextInt(1000000));
     }
 
     /**
@@ -100,7 +109,7 @@ class GameCreationView implements View {
      * generation algorithm
      */
     private Menu getWorldSelectionMenu(GameView view) {
-        ListNode root = new ListNode()
+        return new Menu(0, 0, Coords.SIZE.x, true, new ListNode()
                 .add(new RowNode()
                         .add(new ButtonNode(view.av, "Back",
                                 () -> this.navigate.accept(new StartMenuView(this.params))))
@@ -108,11 +117,9 @@ class GameCreationView implements View {
                         .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
                 .add(new SpacerNode())
                 .add(new RowNode().setColumns(2).add(new TextNode(view.av, "World Seed"))
-                        .add(new TextEntryNode(view.av, "546895233")))
+                        .add(new TextEntryNode(view.av, GameCreationView.getRandomSeed()).setNumbersOnly(true)))
                 .add(new SpacerNode(false)).add(new RowNode().setColumns(2).add(new TextNode(view.av, "Map Size"))
-                        .add(new OptionsNode(view.av).add("Small").add("Medium").add("Large")));
-        // TODO map size will be a checkbox element
-        return new Menu(0, 0, Coords.SIZE.x, true, root);
+                        .add(new OptionsNode(view.av).add("Small").add("Medium").add("Large"))));
     }
 
     /**
@@ -137,6 +144,7 @@ class GameCreationView implements View {
             for (int b = 0; b < columns && a < fates.size();) {
                 final Fate fate = fates.get(a);
                 row.add(new FateNode(view.av, fate, () -> {
+                    view.av.loaders.sounds.play("ui/arrow");
                     view.game.human.fate = fate;
                     display.setFate(view.av, fate);
                 }));

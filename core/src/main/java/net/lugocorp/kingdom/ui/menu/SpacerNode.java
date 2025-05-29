@@ -35,6 +35,9 @@ public class SpacerNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
+        if (!this.visibleLine) {
+            return;
+        }
         int y = Coords.SIZE.y - bounds.y - SpacerNode.MARGIN - 1;
         av.shapes.begin(ShapeType.Filled);
         av.shapes.setColor(Color.WHITE);

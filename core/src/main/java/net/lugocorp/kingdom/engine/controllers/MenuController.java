@@ -92,6 +92,11 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean keyUp​(int keycode) {
+        Optional<Menu> m = this.getMenu.get();
+        if (m.isPresent()) {
+            m.get().keyPressed(keycode);
+            return true;
+        }
         return false;
     }
 }
