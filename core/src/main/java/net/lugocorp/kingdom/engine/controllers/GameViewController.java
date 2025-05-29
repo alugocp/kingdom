@@ -39,10 +39,50 @@ public class GameViewController extends CameraInputController {
      */
     public void centerCameraOn(Point p) {
         Vector3 vec = Coords.grid.vector(p.x, p.y);
-        Ray ray = this.camera.getPickRay(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        Vector3 endpoint = this.getScreenPointOnSurface(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        this.moveCamera(vec.x - endpoint.x, vec.z - endpoint.z);
+    }
+
+    /**
+     * Calculates the point on the surface of the World that corresponds to a point
+     * on the viewing area (the plane where the mouse lives)
+     */
+    private Vector3 getScreenPointOnSurface(int x, int y) {
+        Ray ray = this.camera.getPickRay(x, y);
         float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
-        Vector3 endpoint = ray.getEndPoint(new Vector3(), distance);
-        this.camera.translate(vec.x - endpoint.x, 0f, vec.z - endpoint.z);
+        return ray.getEndPoint(new Vector3(), distance);
+    }
+
+    /**
+     * Internal function translates the camera while respecting World boundaries
+     */
+    private void moveCamera(float dx, float dz) {
+        // Check bottom-left Camera bounds
+        Vector3 p1 = this.getScreenPointOnSurface(0, Coords.SIZE.y).add(Coords.raw.vector(dx, 0f, dz));
+        Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight());
+        if (p1.x < botLeft.x) {
+            dx += botLeft.x - p1.x;
+        }
+        if (p1.z > botLeft.z) {
+            dz += botLeft.z - p1.z;
+        }
+
+        // Check bottom-right Camera bounds
+        Vector3 p2 = this.getScreenPointOnSurface(Coords.SIZE.x, Coords.SIZE.y).add(Coords.raw.vector(dx, 0f, dz));
+        Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(), this.view.game.world.getHeight());
+        if (p2.x > botRight.x) {
+            dx += botRight.x - p2.x;
+        }
+
+        // Check top-left Camera bounds
+        Vector3 p3 = this.getScreenPointOnSurface(0, this.view.hud.getHeight()).add(Coords.raw.vector(dx, 0f, dz));
+        Vector3 topLeft = Coords.grid.vector(0, -8);
+        if (p3.z < topLeft.z) {
+            dz += topLeft.z - p3.z;
+        }
+
+        // Translate by correction amount
+        this.camera.translate(dx, 0f, dz);
         this.camera.update();
     }
 
@@ -115,9 +155,8 @@ public class GameViewController extends CameraInputController {
             return false;
         }
         Point p = this.prev.get();
-        this.camera.translate(Coords.raw.vector((float) (p.x - x) / 100, 0f, (float) (p.y - y) / 100));
+        this.moveCamera((float) (p.x - x) / 100, (float) (p.y - y) / 100);
         this.prev = Optional.of(new Point(x, y));
-        this.camera.update();
         this.dragging = true;
         return true;
     }
@@ -151,9 +190,7 @@ public class GameViewController extends CameraInputController {
         }
         // Cast out a ray from the mouseover point and find its point along the Y = 0
         // plane. Then find which hexagon that point falls in on the world grid.
-        Ray ray = this.camera.getPickRay(x, y);
-        float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
-        Vector3 endpoint = ray.getEndPoint(new Vector3(), distance);
+        Vector3 endpoint = this.getScreenPointOnSurface(x, y);
         int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
         float lowestDist2 = Integer.MAX_VALUE;
         Point closestPoint = null;
