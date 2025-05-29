@@ -27,6 +27,7 @@ import java.util.Optional;
  * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.java
  */
 public class ToonShader implements Shader {
+    private static final int TIMER_MAX = 12000;
     private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
@@ -51,7 +52,6 @@ public class ToonShader implements Shader {
     private int u_nighttime;
     private int u_visibility;
     private int u_tileBorder;
-    private int u_timerMax;
     private int u_timer;
     private int u_wave;
 
@@ -81,7 +81,6 @@ public class ToonShader implements Shader {
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_visibility = this.program.getUniformLocation("u_visibility");
         this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
-        this.u_timerMax = this.program.getUniformLocation("u_timerMax");
         this.u_timer = this.program.getUniformLocation("u_timer");
         this.u_wave = this.program.getUniformLocation("u_wave");
     }
@@ -114,8 +113,7 @@ public class ToonShader implements Shader {
         this.program.begin();
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
         this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
-        this.program.setUniformf(this.u_timer, (float) (System.currentTimeMillis() % 2500));
-        this.program.setUniformf(this.u_timerMax, 2500f);
+        this.program.setUniformf(this.u_timer, (float) (System.currentTimeMillis() % ToonShader.TIMER_MAX));
     }
 
     /** {@inheritdoc} */

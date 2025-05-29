@@ -17,7 +17,6 @@ uniform sampler2D u_borderTexture2;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
 uniform vec2 u_resolution;
-uniform float u_timerMax;
 uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
@@ -43,7 +42,6 @@ bool outline(float d) {
 
 void main() {
     vec3 normal = v_normal;
-    float halfTimer = u_timerMax / 2.0;
     bool isTopFace = normal == vec3(0.0, 1.0, 0.0);
 
     // Face black color for outlines or fog of war
@@ -63,7 +61,7 @@ void main() {
     vec2 texCoords = v_diffuseUV;
     if (u_wave && isTopFace) {
         // Wave Tiles should oscillate slightly
-        texCoords.x += u_diffuseUVTransform.z * 0.025 * (2.0 * (abs(u_timer - halfTimer) / halfTimer) - 1.0);
+        texCoords.x += u_diffuseUVTransform.z * 0.025 * ((2.0 * abs(mod(u_timer, 6000.0) - 3000.0) / 3000.0) - 1.0);
     }
     gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
     gl_FragColor.a *= u_opacity;
@@ -71,7 +69,7 @@ void main() {
     // Glyph texture logic
     if (isTopFace && u_includeGlyphTexture) {
         float diff = 0.0;
-        float beat = 0.07 * abs(u_timer - halfTimer) / halfTimer;
+        float beat = 0.07 * abs(mod(u_timer, 3000.0) - 1500.0) / 1500.0;
         vec4 glyph = texture2D(u_glyphTexture, v_diffuseUV);
         if (glyph.x > 0.0) {
             diff = 0.1;
