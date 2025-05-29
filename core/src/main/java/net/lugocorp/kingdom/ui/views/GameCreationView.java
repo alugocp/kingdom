@@ -3,8 +3,7 @@ import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Generator;
-import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.game.world.WorldGenerator;
+import net.lugocorp.kingdom.game.world.WorldGenOptions;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.FateNode;
 import net.lugocorp.kingdom.ui.menu.FateViewNode;
@@ -29,11 +28,12 @@ import java.util.function.Consumer;
  */
 class GameCreationView implements View {
     private static final Random rand = new Random();
-    private final Game game;
-    private final GameView view;
-    private final Menu fateSelection;
-    private final Menu worldSelection;
+    private final WorldGenOptions worldGenOpts = new WorldGenOptions(GameCreationView.getRandomSeed());
     private final StartMenuView.Params params;
+    private final Menu worldSelection;
+    private final Menu fateSelection;
+    private final GameView view;
+    private final Game game;
     private Consumer<View> navigate;
     private Menu menu;
 
@@ -41,7 +41,7 @@ class GameCreationView implements View {
         this.params = params;
 
         // Initialize Game and GameView state for world generation logic
-        this.game = new Game(params.events, new World(10, 5), OffsetTime.now());
+        this.game = new Game(params.events, OffsetTime.now());
         this.view = new GameView(params, this.game);
         this.game.generator = new Generator(this.view);
         this.game.mechanics.init(this.game);
@@ -64,6 +64,20 @@ class GameCreationView implements View {
      */
     private void setMenu(Menu menu) {
         this.menu = menu;
+    }
+
+    /**
+     * Internal syntactic sugar
+     */
+    private void setWorldSeed(String worldSeed) {
+        this.worldGenOpts.seed = worldSeed;
+    }
+
+    /**
+     * Internal syntactic sugar
+     */
+    private void setWorldSize(int worldSize) {
+        this.worldGenOpts.size = WorldGenOptions.WorldSize.fromIndex(worldSize);
     }
 
     /** {@inheritdoc} */
@@ -100,8 +114,7 @@ class GameCreationView implements View {
      * Exits this menu and starts loading the new Game
      */
     private void startGame() {
-        new WorldGenerator().generateWorld(this.view);
-        this.navigate.accept(this.view);
+        this.navigate.accept(new GenerateWorldView(this.view, this.worldGenOpts));
     }
 
     /**
@@ -109,6 +122,10 @@ class GameCreationView implements View {
      * generation algorithm
      */
     private Menu getWorldSelectionMenu(GameView view) {
+        final OptionsNode worldSizeOptions = new OptionsNode(view.av, (Integer i) -> this.setWorldSize(i.intValue()));
+        for (WorldGenOptions.WorldSize size : WorldGenOptions.WorldSize.values()) {
+            worldSizeOptions.add(size.label);
+        }
         return new Menu(0, 0, Coords.SIZE.x, true, new ListNode()
                 .add(new RowNode()
                         .add(new ButtonNode(view.av, "Back",
@@ -117,9 +134,10 @@ class GameCreationView implements View {
                         .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
                 .add(new SpacerNode())
                 .add(new RowNode().setColumns(2).add(new TextNode(view.av, "World Seed"))
-                        .add(new TextEntryNode(view.av, GameCreationView.getRandomSeed()).setNumbersOnly(true)))
-                .add(new SpacerNode(false)).add(new RowNode().setColumns(2).add(new TextNode(view.av, "Map Size"))
-                        .add(new OptionsNode(view.av).add("Small").add("Medium").add("Large"))));
+                        .add(new TextEntryNode(view.av, this.worldGenOpts.seed, (String x) -> this.setWorldSeed(x))
+                                .setNumbersOnly(true)))
+                .add(new SpacerNode(false))
+                .add(new RowNode().setColumns(2).add(new TextNode(view.av, "Map Size")).add(worldSizeOptions)));
     }
 
     /**

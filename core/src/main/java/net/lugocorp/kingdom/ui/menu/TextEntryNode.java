@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import java.util.function.Consumer;
 
 /**
  * MenuNode item allowing text entry
  */
 public class TextEntryNode implements MenuNode {
     private static final int MARGIN = 5;
+    private final Consumer<String> entered;
     private final BitmapFont font;
     private final AudioVideo av;
     private final int charWidth;
@@ -24,9 +26,10 @@ public class TextEntryNode implements MenuNode {
     private int cursor = 0;
     private int delta = 0;
 
-    public TextEntryNode(AudioVideo av, String initial) {
+    public TextEntryNode(AudioVideo av, String initial, Consumer<String> entered) {
         this.builder = new StringBuilder(initial);
         this.font = av.fonts.basic;
+        this.entered = entered;
         this.av = av;
 
         // Find width of a single glyph
@@ -35,8 +38,8 @@ public class TextEntryNode implements MenuNode {
         this.charWidth = (int) layout.width;
     }
 
-    public TextEntryNode(AudioVideo av) {
-        this(av, "");
+    public TextEntryNode(AudioVideo av, Consumer<String> entered) {
+        this(av, "", entered);
     }
 
     /**
@@ -145,5 +148,6 @@ public class TextEntryNode implements MenuNode {
                 this.delta++;
             }
         }
+        this.entered.accept(this.builder.toString());
     }
 }

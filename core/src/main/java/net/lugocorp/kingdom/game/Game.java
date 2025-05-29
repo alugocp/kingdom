@@ -26,18 +26,17 @@ import java.util.Set;
 public class Game {
     private final Set<Patron> patrons = new HashSet<>();
     public final List<Player> comps = new ArrayList<>();
+    public final World world = new World();
     public final OffsetTime startTime;
     public final Mechanics mechanics;
     public final Player human;
-    public final World world;
     @FieldSerializer.Optional("events")
     public AllEventHandlers events;
     @FieldSerializer.Optional("generator")
     public Generator generator;
     public int auctionPoints = 0;
 
-    public Game(AllEventHandlers events, World world, OffsetTime startTime) {
-        this.world = world;
+    public Game(AllEventHandlers events, OffsetTime startTime) {
         this.events = events;
         this.startTime = startTime;
         this.human = new Player("you", null, true);
@@ -51,7 +50,6 @@ public class Game {
         this.startTime = null;
         this.mechanics = null;
         this.human = null;
-        this.world = null;
     }
 
     /**

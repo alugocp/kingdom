@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * This class handles world generation logic
@@ -17,7 +18,7 @@ public class WorldGenerator {
     /**
      * The main function that initiates world generation
      */
-    public void generateWorld(GameView view) {
+    public void generateWorld(GameView view, WorldGenOptions worldGenOpts, Consumer<Integer> progress) {
         Game g = view.game;
         for (int x = 0; x < g.world.getWidth(); x++) {
             for (int y = 0; y < g.world.getHeight(); y++) {

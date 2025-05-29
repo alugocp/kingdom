@@ -13,12 +13,12 @@ import java.util.Optional;
  */
 public class World {
     private final List<List<Tile>> grid = new ArrayList<List<Tile>>();
-    private final int w;
-    private final int h;
+    private int w = 0;
+    private int h = 0;
 
-    public World(int w, int h) {
-        this.w = w;
-        this.h = h;
+    public void init(WorldGenOptions.WorldSize size) {
+        this.w = size.w;
+        this.h = size.h;
 
         for (int x = 0; x < w; x++) {
             List<Tile> column = new ArrayList<Tile>();
@@ -27,14 +27,6 @@ public class World {
             }
             this.grid.add(column);
         }
-    }
-
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public World() {
-        this.w = 0;
-        this.h = 0;
     }
 
     /**

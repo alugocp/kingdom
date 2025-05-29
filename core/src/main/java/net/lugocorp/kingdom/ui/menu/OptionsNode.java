@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * MenuNode item representing a radio box
@@ -16,11 +17,13 @@ public class OptionsNode implements MenuNode {
     private static final int RADIUS = 8;
     private static final int MARGIN = 10;
     private final List<TextNode> options = new ArrayList<>();
+    private final Consumer<Integer> selected;
     private final AudioVideo av;
     private int index = 0;
     protected BitmapFont font;
 
-    public OptionsNode(AudioVideo av) {
+    public OptionsNode(AudioVideo av, Consumer<Integer> selected) {
+        this.selected = selected;
         this.av = av;
     }
 
@@ -74,6 +77,7 @@ public class OptionsNode implements MenuNode {
             final Rect r = new Rect(bounds.x, y, bounds.w, this.options.get(a).getHeight());
             if (r.contains(p)) {
                 this.av.loaders.sounds.play("ui/arrow");
+                this.selected.accept(a);
                 this.index = a;
             }
             y += r.h;
