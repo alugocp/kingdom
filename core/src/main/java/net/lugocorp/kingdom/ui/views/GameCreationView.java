@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.ui.menu.FateNode;
 import net.lugocorp.kingdom.ui.menu.FateViewNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.menu.OptionsNode;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextEntryNode;
@@ -103,10 +104,13 @@ class GameCreationView implements View {
                 .add(new RowNode()
                         .add(new ButtonNode(view.av, "Back",
                                 () -> this.navigate.accept(new StartMenuView(this.params))))
-                        .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection)))
-                        .add(new TextNode(view.av, "World generation")))
-                .add(new SpacerNode()).add(new RowNode().setColumns(2).add(new TextNode(view.av, "World Seed"))
-                        .add(new TextEntryNode(view.av, "546895233")));
+                        .add(new TextNode(view.av, "World Generation"))
+                        .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
+                .add(new SpacerNode())
+                .add(new RowNode().setColumns(2).add(new TextNode(view.av, "World Seed"))
+                        .add(new TextEntryNode(view.av, "546895233")))
+                .add(new SpacerNode(false)).add(new RowNode().setColumns(2).add(new TextNode(view.av, "Map Size"))
+                        .add(new OptionsNode(view.av).add("Small").add("Medium").add("Large")));
         // TODO map size will be a checkbox element
         return new Menu(0, 0, Coords.SIZE.x, true, root);
     }
@@ -120,8 +124,8 @@ class GameCreationView implements View {
         FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
         ListNode root = new ListNode()
                 .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
-                        .add(new ButtonNode(view.av, "Choose", () -> this.startGame()))
-                        .add(new TextNode(view.av, "Select a fate")))
+                        .add(new TextNode(view.av, "Select a Fate"))
+                        .add(new ButtonNode(view.av, "Start Game", () -> this.startGame())))
                 .add(display).add(options);
 
         // Set up RowNodes of FateNodes

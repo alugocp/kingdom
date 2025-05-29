@@ -11,6 +11,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  */
 public class SpacerNode implements MenuNode {
     private static int MARGIN = 25;
+    private final boolean visibleLine;
+
+    public SpacerNode(boolean visibleLine) {
+        this.visibleLine = visibleLine;
+    }
+
+    public SpacerNode() {
+        this(true);
+    }
 
     /** {@inheritdoc} */
     @Override
