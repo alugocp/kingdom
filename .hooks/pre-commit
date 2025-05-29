@@ -1,0 +1,9 @@
+#!/bin/bash
+staged=$(git diff --cached --name-only --diff-filter=d -- "*.java")
+if [ "$staged" = "" ]; then
+    echo "No Java code to reformat"
+    exit 0
+fi
+
+gradle spotlessApply
+git add $staged

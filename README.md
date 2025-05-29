@@ -6,11 +6,12 @@ Manage resources and train units as you grow your empire and change the world ar
 Run the following commands after a fresh install:
 
 ```bash
-gradle cleanAssets run
+gradle installHooks cleanAssets run
 ```
 
 ## Gradle
 This project uses [Gradle](https://gradle.org/) as a build system and dependency manager.
+- `gradle installHooks`: installs git hooks for the project
 - `gradle build`: builds sources and archives of every project.
 - `gradle clean`: removes `build` folders, which store compiled classes and built archives.
 - `gradle lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.

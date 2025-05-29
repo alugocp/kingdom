@@ -73,6 +73,14 @@ subprojects {
 eclipse.project.name = 'Kingdom' + '-parent'
 
 /**
+ * This task sets up Git hooks
+ */
+task installHooks(type: Copy){
+  from new File(rootProject.rootDir, '.hooks/pre-commit')
+  into { new File(rootProject.rootDir, '.git/hooks')}
+}
+
+/**
  * This task is used to generate g3db 3D model files
  */
 class CleanAssetsTask extends DefaultTask {
