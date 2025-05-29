@@ -75,12 +75,21 @@ public class RowNode implements MenuNode {
         int x = bounds.x;
         int w = bounds.w / this.getColumns();
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(x, bounds.y, w, bounds.h);
+            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
             if (r.contains(p)) {
                 child.click(menu, r, p);
-                return;
+            } else {
+                child.unclick();
             }
             x += w;
+        }
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void unclick() {
+        for (MenuNode n : this.children) {
+            n.unclick();
         }
     }
 }

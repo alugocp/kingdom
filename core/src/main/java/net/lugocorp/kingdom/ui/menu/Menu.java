@@ -113,17 +113,19 @@ public class Menu {
      */
     public boolean click(Point p) {
         if (this.mini.isPresent() && this.mini.get().click(p)) {
+            this.root.unclick();
             return true;
         }
         this.mini = Optional.empty();
         final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
-                this.width - (Menu.MARGIN * 3), this.root.getHeight() - (Menu.MARGIN * 2));
+                this.width - (Menu.MARGIN * 3), this.root.getHeight());
         Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
                 p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
         if (bounds.contains(p1)) {
             this.root.click(this, bounds, p1);
             return true;
         }
+        this.root.unclick();
         return false;
     }
 }

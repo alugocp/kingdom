@@ -12,6 +12,7 @@ import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.SpacerNode;
+import net.lugocorp.kingdom.ui.menu.TextEntryNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
@@ -28,6 +29,7 @@ class GameCreationView implements View {
     private final Game game;
     private final GameView view;
     private final Menu fateSelection;
+    private final Menu worldSelection;
     private final StartMenuView.Params params;
     private Consumer<View> navigate;
     private Menu menu;
@@ -42,8 +44,16 @@ class GameCreationView implements View {
         this.game.mechanics.init(this.game);
 
         // Initialize GameCreationView UI components
+        this.worldSelection = this.getWorldSelectionMenu(this.view);
         this.fateSelection = this.getFateSelectionMenu(this.view);
-        this.menu = this.fateSelection;
+        this.menu = this.worldSelection;
+    }
+
+    /**
+     * Internal syntactic sugar
+     */
+    private void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
     /** {@inheritdoc} */
@@ -77,18 +87,42 @@ class GameCreationView implements View {
     }
 
     /**
+     * Exits this menu and starts loading the new Game
+     */
+    private void startGame() {
+        new WorldGenerator().generateWorld(this.view);
+        this.navigate.accept(this.view);
+    }
+
+    /**
+     * Returns a Menu to that allows the player to view and select a World
+     * generation algorithm
+     */
+    private Menu getWorldSelectionMenu(GameView view) {
+        ListNode root = new ListNode()
+                .add(new RowNode()
+                        .add(new ButtonNode(view.av, "Back",
+                                () -> this.navigate.accept(new StartMenuView(this.params))))
+                        .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection)))
+                        .add(new TextNode(view.av, "World generation")))
+                .add(new SpacerNode()).add(new RowNode().setColumns(2).add(new TextNode(view.av, "World Seed"))
+                        .add(new TextEntryNode(view.av, "546895233")));
+        // TODO map size will be a checkbox element
+        return new Menu(0, 0, Coords.SIZE.x, true, root);
+    }
+
+    /**
      * Returns a Menu to that allows the player to view and select a Fate
      */
     private Menu getFateSelectionMenu(GameView view) {
         view.game.human.fate = view.game.mechanics.fates.getFirstFate();
         ListNode options = new ListNode();
         FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
-        ListNode root = new ListNode().add(new RowNode()
-                .add(new ButtonNode(view.av, "Back", () -> this.navigate.accept(new StartMenuView(this.params))))
-                .add(new ButtonNode(view.av, "Choose", () -> {
-                    new WorldGenerator().generateWorld(this.view);
-                    this.navigate.accept(this.view);
-                })).add(new TextNode(view.av, "Select a fate"))).add(display).add(options);
+        ListNode root = new ListNode()
+                .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
+                        .add(new ButtonNode(view.av, "Choose", () -> this.startGame()))
+                        .add(new TextNode(view.av, "Select a fate")))
+                .add(display).add(options);
 
         // Set up RowNodes of FateNodes
         int a = 0;

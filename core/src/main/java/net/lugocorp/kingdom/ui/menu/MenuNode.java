@@ -11,4 +11,7 @@ public interface MenuNode {
     public void pack(int width);
     public void draw(AudioVideo av, Rect bounds);
     public void click(Menu menu, Rect bounds, Point p);
+    public default void unclick() {
+        // No-op
+    };
 }
