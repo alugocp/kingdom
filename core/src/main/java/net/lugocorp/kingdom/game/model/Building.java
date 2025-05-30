@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.Visibility;
+import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
@@ -22,7 +23,6 @@ import java.util.Optional;
  */
 public class Building extends DynamicModellable implements EventReceiver, MenuSubject {
     private boolean obstacle = false;
-    // TODO make sure visibility works for Buildings and Patrons
     protected final Visibility visibility = new Visibility();
     protected HitPoints<Building> health = null;
     public final Tags tags = new Tags();
@@ -57,6 +57,18 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
      */
     protected void setHealth(HitPoints health) {
         this.health = health;
+    }
+
+    /**
+     * This method is fired when the underlying Tile's leader field changes
+     */
+    public void handleLeaderChange(World w, Optional<Player> p1, Optional<Player> p2) {
+        if (p1.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
+            this.visibility.removeVision(w);
+        }
+        if (p2.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
+            this.visibility.setVisibleRadius(w, this.getPoint(), 1);
+        }
     }
 
     /**

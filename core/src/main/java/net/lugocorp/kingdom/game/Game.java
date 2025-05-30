@@ -111,6 +111,7 @@ public class Game {
             t.building.ifPresent((Building b) -> p.buildings.add(b));
             p.tiles++;
         });
+        t.building.ifPresent((Building b) -> b.handleLeaderChange(this.world, t.leader, op));
         t.leader = op;
         t.calculateBorders(this.world, true);
     }
