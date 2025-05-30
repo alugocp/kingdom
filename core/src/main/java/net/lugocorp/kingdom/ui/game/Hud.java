@@ -86,7 +86,7 @@ public class Hud extends Menu {
         this.minimap.setPoint(0, this.getHeight());
         super.draw(av);
         if (this.displayMinimap()) {
-            this.minimap.draw(av, this.view.game.world, this.view.getCenteredPoint());
+            this.minimap.draw(av, this.view.getCenteredPoint());
         }
     }
 

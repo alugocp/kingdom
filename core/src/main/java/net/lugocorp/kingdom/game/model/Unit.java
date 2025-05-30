@@ -334,6 +334,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
                         this.move(view.game, p1);
                         view.game.mechanics.turns.unitHasActed(view, this);
+                        view.hud.minimap.refresh(view.game.world);
                     })));
             node.add(new ActionNode(view.av, "Skip turn", Optional.empty(),
                     !view.game.mechanics.turns.hasUnitActed(this), () -> {

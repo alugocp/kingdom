@@ -16,6 +16,7 @@ public class Minimap {
     private static final int MAX_H = 250;
     private final Point pos = new Point();
     private int tilesPerPixelInOneDimension;
+    private Color[][] thumbprint;
     private int scale;
     private int gridw;
     private int gridh;
@@ -33,8 +34,10 @@ public class Minimap {
         this.scale = (int) Math.floor(Math.max(ratio, 1f));
         this.gridh = (int) (world.getHeight() / this.tilesPerPixelInOneDimension);
         this.gridw = (int) (world.getWidth() / this.tilesPerPixelInOneDimension);
+        this.thumbprint = new Color[this.gridw][this.gridh];
         this.h = (int) (this.gridh * this.scale);
         this.w = (int) (this.gridw * this.scale);
+        this.refresh(world);
     }
 
     /**
@@ -61,41 +64,53 @@ public class Minimap {
     }
 
     /**
+     * Recalculates the Minimap thumbprint
+     */
+    public void refresh(World world) {
+        for (int b = 0; b < this.gridh; b++) {
+            for (int a = 0; a < this.gridw; a++) {
+                Color c = world.getTile(a * this.tilesPerPixelInOneDimension, b * this.tilesPerPixelInOneDimension)
+                        .get().getMinimapColor();
+                this.thumbprint[a][b] = c;
+            }
+        }
+    }
+
+    /**
      * Renders the Minimap at the given coordinates
      */
-    void draw(AudioVideo av, World world, Point crosshair) {
-        // TODO optimize this somehow
-        // Option 1: store a static image that gets updated when tiles change
-        // (tilesPerPixelInOneDimension > 1?)
-        // Option 2: break up recalculation amongst frames or once per turn (old-school
-        // optimization technique)
-
+    void draw(AudioVideo av, Point crosshair) {
         // Draw black background
-        int y = this.pos.y;
         av.shapes.begin(ShapeType.Filled);
         av.shapes.setColor(Color.BLACK);
-        av.shapes.rect(this.pos.x, Coords.SIZE.y - y - this.h, this.w, this.h);
+        av.shapes.rect(this.pos.x, Coords.SIZE.y - this.pos.y - this.h, this.w, this.h);
+
+        // Draw relevant pixels on the grid
+        int y = Coords.SIZE.y - this.pos.y - this.scale;
+        for (int b = 0; b < this.gridh; b++) {
+            int x = this.pos.x;
+            for (int a = 0; a < this.gridw; a++) {
+                Color c = this.thumbprint[a][b];
+                if (c != Color.BLACK) {
+                    av.shapes.setColor(c);
+                    av.shapes.rect(x, y, this.scale, this.scale);
+                }
+                x += this.scale;
+            }
+            y -= this.scale;
+        }
 
         // Calculate crosshairs center point
         int cx = crosshair.x / this.tilesPerPixelInOneDimension;
         int cy = crosshair.y / this.tilesPerPixelInOneDimension;
 
-        // Draw relevant pixels on the grid
-        y = Coords.SIZE.y - y - this.scale;
-        for (int b = 0; b < this.gridh; b++) {
-            for (int a = 0; a < this.gridw; a++) {
-                boolean isCrosshair = Math.abs(a - cx) + Math.abs(b - cy) <= 1;
-                Color c = isCrosshair
-                        ? Color.WHITE
-                        : world.getTile(a * this.tilesPerPixelInOneDimension, b * this.tilesPerPixelInOneDimension)
-                                .get().getMinimapColor();
-                if (c != Color.BLACK) {
-                    av.shapes.setColor(c);
-                    av.shapes.rect(this.pos.x + (a * this.scale), y, this.scale, this.scale);
-                }
-            }
-            y -= this.scale;
-        }
+        // Draw crosshairs
+        final int scale3 = this.scale * 3;
+        av.shapes.setColor(Color.WHITE);
+        av.shapes.rect(this.pos.x + ((cx - 1) * this.scale),
+                Coords.SIZE.y - (this.pos.y + (cy * this.scale)) - this.scale, scale3, this.scale);
+        av.shapes.rect(this.pos.x + (cx * this.scale), Coords.SIZE.y - (this.pos.y + ((cy - 1) * this.scale)) - scale3,
+                this.scale, scale3);
         av.shapes.end();
     }
 }
