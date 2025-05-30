@@ -28,6 +28,8 @@ public class WorldGenerator {
                     } else {
                         g.generator.tile("Rock", x, y).spawn(view);
                     }
+                } else if (y >= 6 && x <= 2) {
+                    g.generator.tile("Sand", x, y).spawn(view);
                 } else {
                     g.generator.tile("Grassland", x, y).spawn(view);
                 }
@@ -52,6 +54,9 @@ public class WorldGenerator {
         g.generator.building("Forest", 0, 4).spawn(view);
         g.generator.building("Forest", 1, 4).spawn(view);
         g.generator.building("Forest", 2, 4).spawn(view);
+        g.generator.building("Meadow", 2, 5).spawn(view);
+        g.generator.building("Meadow", 3, 5).spawn(view);
+        g.generator.building("Meadow", 2, 6).spawn(view);
         g.generator.building("Mine", 0, 9).spawn(view);
         g.generator.building("Mountain", 6, 2).spawn(view);
         g.generator.patron("The Pond Troll", 4, 2).spawn(view);

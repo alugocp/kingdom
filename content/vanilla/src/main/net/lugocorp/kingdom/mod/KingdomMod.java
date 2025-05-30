@@ -155,6 +155,12 @@ public class KingdomMod implements GameMod {
             e.blob.setMinimapColor(0x666666);
             e.blob.setMaterial("rock");
         });
+        events.tile.addEventHandler("Sand", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
+            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
+            e.blob.setModelInstance(view.av, "grass");
+            e.blob.setMinimapColor(0xc7c567);
+            e.blob.setMaterial("sand");
+        });
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "water");
@@ -184,6 +190,12 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "Don't miss the forest for the trees";
+                });
+        events.building.addEventHandler("Meadow", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.av, "meadow");
+                    e.blob.desc = "Stay a while and smell the roses";
                 });
         events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
@@ -280,14 +292,15 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
                     e.blob.glyphs.set(Glyph.MINING);
                 });
-        events.unit.addEventHandler("Satyr", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "He makes terrariums :)";
-            e.blob.setModelInstance(view.av, "placeholder1");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-            e.blob.glyphs.set(Glyph.NATURE, Glyph.TRADE);
-        });
+        events.unit.addEventHandler("Golem of the Grotto", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "Bulky mountain golem with a meadow growing on its shoulder";
+                    e.blob.setModelInstance(view.av, "golem-grotto");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
+                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
+                });
         events.unit.addEventHandler("Frog Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A Frog-man that plants trees!";

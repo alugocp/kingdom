@@ -13,7 +13,11 @@ public class Colors {
         Colors.pool.add(Colors.fromHex(0x00ff00)); // Green
         Colors.pool.add(Colors.fromHex(0xff0000)); // Red
         Colors.pool.add(Colors.fromHex(0x0000ff)); // Blue
-        Colors.pool.add(Colors.fromHex(0xff00ff)); // Purple
+        Colors.pool.add(Colors.fromHex(0x880088)); // Purple
+        Colors.pool.add(Colors.fromHex(0xffff00)); // Yellow
+        Colors.pool.add(Colors.fromHex(0xff7d00)); // Orange
+        Colors.pool.add(Colors.fromHex(0x00ffff)); // Cyan
+        Colors.pool.add(Colors.fromHex(0xff00ff)); // Pink
     }
 
     /**
