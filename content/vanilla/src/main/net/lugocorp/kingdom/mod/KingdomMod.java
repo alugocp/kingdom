@@ -147,15 +147,18 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
+            e.blob.setMinimapColor(0x00ff00);
         });
         events.tile.addEventHandler("Rock", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
+            e.blob.setMinimapColor(0x333333);
             e.blob.setMaterial("rock");
         });
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "water");
+            e.blob.setMinimapColor(0x0000ff);
             e.blob.setObstacle(true);
             e.blob.setWave(true);
         });

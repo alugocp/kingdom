@@ -88,6 +88,7 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void start(Consumer<View> navigate) {
+        this.hud.minimap.init(this.game.world);
         this.navigate = navigate;
 
         // 3D setup

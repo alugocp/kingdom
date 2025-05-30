@@ -13,9 +13,11 @@ import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
@@ -28,6 +30,7 @@ import java.util.Set;
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject {
     private final TileUserData userData = new TileUserData();
     private Optional<GlyphCategory> glyph = Optional.of(GlyphCategory.STRATEGIC);
+    private Color minimapColor = Color.GREEN;
     private boolean obstacle = false;
     private boolean wave = false;
     public final String name;
@@ -66,6 +69,20 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * Returns the Minimap Color for this Tile
+     */
+    public Color getMinimapColor() {
+        return this.userData.hasBeenSeen ? this.minimapColor : Color.BLACK;
+    }
+
+    /**
+     * Sets the Minimap Color for this Tile
+     */
+    public void setMinimapColor(int hexcode) {
+        this.minimapColor = Colors.fromHex(hexcode);
+    }
+
+    /**
      * Sets whether or not this Tile should apply a wave to its texture
      */
     public void setWave(boolean wave) {
@@ -77,20 +94,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public boolean isVisible() {
         return this.userData.visibility > 0;
-    }
-
-    /**
-     * Adds a level of selection
-     */
-    public void incrementSelection() {
-        this.userData.selection++;
-    }
-
-    /**
-     * Removes a level of selection
-     */
-    public void decrementSelection() {
-        this.userData.selection--;
     }
 
     /**
@@ -109,11 +112,17 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
-     * Sets whether or not this Tile is an obstacle. Obstacles cannot be walked on
-     * by default.
+     * Adds a level of selection
      */
-    public void setObstacle(boolean obstacle) {
-        this.obstacle = obstacle;
+    public void incrementSelection() {
+        this.userData.selection++;
+    }
+
+    /**
+     * Removes a level of selection
+     */
+    public void decrementSelection() {
+        this.userData.selection--;
     }
 
     /**
@@ -122,6 +131,14 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public boolean getObstacle() {
         return this.obstacle;
+    }
+
+    /**
+     * Sets whether or not this Tile is an obstacle. Obstacles cannot be walked on
+     * by default.
+     */
+    public void setObstacle(boolean obstacle) {
+        this.obstacle = obstacle;
     }
 
     /**

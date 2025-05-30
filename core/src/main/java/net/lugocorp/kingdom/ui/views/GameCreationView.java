@@ -133,11 +133,11 @@ class GameCreationView implements View {
                         .add(new TextNode(view.av, "World Generation"))
                         .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
                 .add(new SpacerNode())
-                .add(new RowNode().setColumns(2).add(new TextNode(view.av, "World Seed"))
+                .add(new RowNode().add(new TextNode(view.av, "World Seed"))
                         .add(new TextEntryNode(view.av, this.worldGenOpts.seed, (String x) -> this.setWorldSeed(x))
                                 .setNumbersOnly(true)))
                 .add(new SpacerNode(false))
-                .add(new RowNode().setColumns(2).add(new TextNode(view.av, "Map Size")).add(worldSizeOptions)));
+                .add(new RowNode().add(new TextNode(view.av, "Map Size")).add(worldSizeOptions)));
     }
 
     /**
