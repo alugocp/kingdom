@@ -26,11 +26,12 @@ public enum GlyphCategory {
     /** {@inheritdoc} */
     @Override
     public String toString() {
-        // TODO use a StringBuilder
-        String value = this.glyphs[0].toString();
+        final StringBuilder builder = new StringBuilder();
+        builder.append(this.glyphs[0].toString());
         for (int a = 1; a < this.glyphs.length; a++) {
-            value = String.format("%s, %s", value, this.glyphs[a].toString());
+            builder.append(", ");
+            builder.append(this.glyphs[a].toString());
         }
-        return value;
+        return builder.toString();
     }
 }
