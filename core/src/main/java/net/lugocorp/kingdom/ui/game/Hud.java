@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.SettingsView;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Point;
 
 /**
  * This class handles rendering the Player's HUD UI
@@ -17,7 +18,7 @@ import net.lugocorp.kingdom.utils.math.Coords;
 public class Hud extends Menu {
     private final HudInfoNode info;
     private final GameView view;
-    private boolean showMinimap = true;
+    private boolean minimapActive = true;
     public final Minimap minimap = new Minimap();
 
     public Hud(GameView view) {
@@ -48,7 +49,7 @@ public class Hud extends Menu {
      * Internal syntactic sugar
      */
     private void toggleMinimap() {
-        this.showMinimap = !this.showMinimap;
+        this.minimapActive = !this.minimapActive;
     }
 
     /**
@@ -70,14 +71,27 @@ public class Hud extends Menu {
                         })));
     }
 
+    /**
+     * Returns true if we are showing the Minimap
+     */
+    private boolean displayMinimap() {
+        return this.minimapActive && !this.view.menu.get().isPresent() && !this.view.popups.isDisplayed();
+    }
+
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av) {
+        // TODO only call updateInfo() and setPoint() once per turn
         this.info.updateInfo(this.view.game);
+        this.minimap.setPoint(0, this.getHeight());
         super.draw(av);
-        if (this.showMinimap && !this.view.menu.get().isPresent()) {
-            // TODO don't show Minimap when GameView has a popup menu either
-            this.minimap.draw(av, this.view.game.world, 0, this.getHeight());
+        if (this.displayMinimap()) {
+            this.minimap.draw(av, this.view.game.world, this.view.getCenteredPoint());
         }
+    }
+
+    /** {@inheritdoc} */
+    public boolean click(Point p) {
+        return super.click(p) || (this.displayMinimap() && this.minimap.click(this.view, p));
     }
 }

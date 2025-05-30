@@ -48,7 +48,7 @@ public class MenuController implements InputProcessor {
     public boolean touchUp​(int x, int y, int pointer, int button) {
         boolean result = this.isInMenu(new Point(x, y));
         if (!this.dragging) {
-            this.getMenu.get().ifPresent((Menu m) -> m.click(new Point(x, y)));
+            result = this.getMenu.get().map((Menu m) -> m.click(new Point(x, y))).orElse(false) || result;
         }
         this.dragging = false;
         this.prev = Optional.empty();

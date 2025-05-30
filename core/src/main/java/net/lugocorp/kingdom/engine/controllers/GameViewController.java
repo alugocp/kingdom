@@ -54,6 +54,30 @@ public class GameViewController extends CameraInputController {
     }
 
     /**
+     * Returns the Tile coordinate in the World that lives under the given Point on
+     * the screen
+     */
+    public Point getCoordUnderScreenPoint(int x, int y) {
+        // Cast out a ray from the mouseover point and find its point along the Y = 0
+        // plane. Then find which hexagon that point falls in on the world grid.
+        Vector3 endpoint = this.getScreenPointOnSurface(x, y);
+        int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
+        float lowestDist2 = Integer.MAX_VALUE;
+        Point closestPoint = null;
+        for (int a = 0; a < 2; a++) {
+            int minX = (int) Math.floor((endpoint.x / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
+            for (int b = 0; b < 2; b++) {
+                float dist = Coords.grid.vector(minX + b, minZ + a).dst2(endpoint);
+                if (dist < lowestDist2) {
+                    lowestDist2 = dist;
+                    closestPoint = new Point(minX + b, minZ + a);
+                }
+            }
+        }
+        return closestPoint;
+    }
+
+    /**
      * Internal function translates the camera while respecting World boundaries
      */
     private void moveCamera(float dx, float dz) {
@@ -188,22 +212,7 @@ public class GameViewController extends CameraInputController {
         if (this.view.popups.isDisplayed()) {
             return true;
         }
-        // Cast out a ray from the mouseover point and find its point along the Y = 0
-        // plane. Then find which hexagon that point falls in on the world grid.
-        Vector3 endpoint = this.getScreenPointOnSurface(x, y);
-        int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
-        float lowestDist2 = Integer.MAX_VALUE;
-        Point closestPoint = null;
-        for (int a = 0; a < 2; a++) {
-            int minX = (int) Math.floor((endpoint.x / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
-            for (int b = 0; b < 2; b++) {
-                float dist = Coords.grid.vector(minX + b, minZ + a).dst2(endpoint);
-                if (dist < lowestDist2) {
-                    lowestDist2 = dist;
-                    closestPoint = new Point(minX + b, minZ + a);
-                }
-            }
-        }
+        Point closestPoint = this.getCoordUnderScreenPoint(x, y);
         this.view.selector.hover(closestPoint);
         return true;
     }

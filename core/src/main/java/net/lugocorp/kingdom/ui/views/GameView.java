@@ -3,13 +3,13 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.game.Logger;
 import net.lugocorp.kingdom.ui.game.TileMenu;
 import net.lugocorp.kingdom.ui.game.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -111,14 +111,21 @@ public class GameView implements View {
 
         // Kick off the Player's turn
         this.game.mechanics.turns.kickOffTurn(this);
-        this.centerOnUnit(this.game.human.units.iterator().next());
+        this.centerOnPoint(this.game.human.units.iterator().next().getPoint());
     }
 
     /**
-     * Centers the Camera on the given Unit
+     * Returns the Point in the World that the Camera is currently centered on
      */
-    public void centerOnUnit(Unit unit) {
-        this.camController.centerCameraOn(unit.getPoint());
+    public Point getCenteredPoint() {
+        return this.camController.getCoordUnderScreenPoint(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+    }
+
+    /**
+     * Centers the Camera on the given Point in the World
+     */
+    public void centerOnPoint(Point p) {
+        this.camController.centerCameraOn(p);
     }
 
     /** {@inheritdoc} */
