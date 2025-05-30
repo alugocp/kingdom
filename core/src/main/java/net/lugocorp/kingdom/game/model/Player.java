@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.utils.Colors;
+import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +14,7 @@ public class Player {
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
+    public final Color color = Colors.getFromPool();
     public final String name;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;

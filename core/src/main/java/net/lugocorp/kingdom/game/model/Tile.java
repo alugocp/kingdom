@@ -165,6 +165,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
                 t.ifPresent((Tile t1) -> t1.calculateBorders(world, false));
             }
         }
+        this.userData.borderColor = this.leader.map((Player l) -> l.color).orElse(Color.BLACK);
         this.userData.borders = borders;
     }
 

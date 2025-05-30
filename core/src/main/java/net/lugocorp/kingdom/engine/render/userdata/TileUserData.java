@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.engine.render.userdata;
 import net.lugocorp.kingdom.game.model.GlyphCategory;
+import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
 
 /**
@@ -20,8 +21,8 @@ public class TileUserData {
     public boolean wave = false;
 
     // This int tracks which sides should display a border
+    public Color borderColor = Color.BLACK;
     public int borders = 0;
-    // TODO add unique color for each Player
 
     // Fog of war system
     public boolean hasBeenSeen = false;

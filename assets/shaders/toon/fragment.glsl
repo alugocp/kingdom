@@ -16,6 +16,7 @@ uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
+uniform vec4 u_borderColor;
 uniform vec2 u_resolution;
 uniform float u_timer;
 uniform float u_nighttime;
@@ -39,6 +40,18 @@ bool outline(float d) {
     float a = texture2D(u_diffuseTexture, v_diffuseUV).a;
     return texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, -dy)).a != a ||
         texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, dy)).a != a;
+}
+
+// Changes the output color based on Tile borders
+int checkBorderColor(int border, sampler2D tex, int thresh, float x, float y) {
+    if (border >= thresh) {
+        vec4 color = texture2D(tex, vec2(x, y));
+        if (color.x > 0.0) {
+            gl_FragColor = u_borderColor;
+        }
+        return thresh;
+    }
+    return 0;
 }
 
 void main() {
@@ -93,42 +106,12 @@ void main() {
         float bx = v_diffuseUV.x * 64.0 / 19.0;
         float by = v_diffuseUV.y * 64.0 / 18.0;
         int border = u_tileBorder;
-
-        // bot right
-        if (border >= 32) {
-            gl_FragColor += texture2D(u_borderTexture2, vec2(1.0 - bx, by));
-            border -= 32;
-        }
-
-        // bot left
-        if (border >= 16) {
-            gl_FragColor += texture2D(u_borderTexture2, vec2(1.0 - bx, 1.0 - by));
-            border -= 16;
-        }
-
-        // top right
-        if (border >= 8) {
-            gl_FragColor += texture2D(u_borderTexture2, vec2(bx, by));
-            border -= 8;
-        }
-
-        // top left
-        if (border >= 4) {
-            gl_FragColor += texture2D(u_borderTexture2, vec2(bx, 1.0 - by));
-            border -= 4;
-        }
-
-        // right
-        if (border >= 2) {
-            gl_FragColor += texture2D(u_borderTexture1, vec2(bx, by));
-            border -= 2;
-        }
-
-        // left
-        if (border >= 1) {
-            gl_FragColor += texture2D(u_borderTexture1, vec2(bx, 1.0 - by));
-            // border -= 1;
-        }
+        border -= checkBorderColor(border, u_borderTexture2, 32, 1.0 - bx, by); // Bot right
+        border -= checkBorderColor(border, u_borderTexture2, 16, 1.0 - bx, 1.0 - by); // Bot left
+        border -= checkBorderColor(border, u_borderTexture2, 8, bx, by); // Top right
+        border -= checkBorderColor(border, u_borderTexture2, 4, bx, 1.0 - by); // Top left
+        border -= checkBorderColor(border, u_borderTexture1, 2, bx, by); // Right
+        border -= checkBorderColor(border, u_borderTexture1, 1, bx, 1.0 - by); // Left
     }
 
     // Make the color darker if it's night time or half visibility
