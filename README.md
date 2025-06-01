@@ -35,6 +35,7 @@ gradle content:vanilla:build
 ```
 
 This will recompile the content JARs located in `mods`.
+If you change the 3D models then run `gradle cleanAssets` *before* `gradle content:vanilla:build`.
 
 ## Notes
 - [libGDX JavaDocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/index.html)

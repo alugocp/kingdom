@@ -203,6 +203,7 @@ public class GameViewController extends CameraInputController {
         final float diff = Math.max(GameViewController.MIN_ZOOM,
                 Math.min(GameViewController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
         this.currentZoom += diff;
+        this.moveCamera(0f, 0f);
         return diff == 0 ? false : super.zoom(amount);
     }
 
