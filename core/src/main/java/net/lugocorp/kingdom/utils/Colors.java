@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Colors {
     static private final List<Color> pool = new ArrayList<>();
+    // TODO the pool needs to reset for each new Game
 
     static {
         Colors.pool.add(Colors.fromHex(0x00ff00)); // Green

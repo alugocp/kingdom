@@ -38,10 +38,12 @@ public class WorldGenerator {
         // Set default biome
         Biome mainBiome = Biome.GRASS;
         float biomeSelection = r.nextFloat();
-        if (biomeSelection < 0.1) {
+        if (biomeSelection < 0.05) {
             mainBiome = Biome.SAND;
-        } else if (biomeSelection < 0.2) {
+        } else if (biomeSelection < 0.1) {
             mainBiome = Biome.ROCK;
+        } else if (biomeSelection < 0.15) {
+            mainBiome = Biome.SNOW;
         }
 
         // Set Biome seeds
@@ -127,6 +129,14 @@ public class WorldGenerator {
                 if (terrain.equals(Biome.GRASS.terrain)) {
                     building = Optional.of(r.nextBoolean() ? "Forest" : "Meadow");
                     radiusRange = 5;
+                }
+                if (terrain.equals(Biome.SAND.terrain)) {
+                    building = Optional.of("Tunal");
+                    radiusRange = 3;
+                }
+                if (terrain.equals(Biome.SNOW.terrain)) {
+                    building = Optional.of("Taiga");
+                    radiusRange = 3;
                 }
                 if (terrain.equals(Biome.ROCK.terrain)) {
                     building = Optional.of("Mountain");
@@ -244,7 +254,7 @@ public class WorldGenerator {
      * Enum for different terrain types
      */
     private static enum Biome {
-        GRASS("Grassland"), WATER("Water"), SAND("Sand"), ROCK("Rock");
+        GRASS("Grassland"), WATER("Water"), SAND("Sand"), ROCK("Rock"), SNOW("Snow");
         private final String terrain;
 
         private Biome(String terrain) {

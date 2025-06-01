@@ -161,6 +161,12 @@ public class KingdomMod implements GameMod {
             e.blob.setMinimapColor(0xc7c567);
             e.blob.setMaterial("sand");
         });
+        events.tile.addEventHandler("Snow", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
+            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
+            e.blob.setModelInstance(view.av, "grass");
+            e.blob.setMinimapColor(0xffffff);
+            e.blob.setMaterial("snow");
+        });
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "water");
@@ -200,11 +206,26 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Don't miss the forest for the trees";
                     e.blob.setMinimapColor(0x257d53);
                 });
+        events.building.addEventHandler("Taiga", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.av, "forest");
+                    e.blob.desc = "The trees are pretty this time of year";
+                    e.blob.setMinimapColor(0xb4c3c7);
+                    e.blob.setMaterial("taiga");
+                });
         events.building.addEventHandler("Meadow", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "meadow");
                     e.blob.desc = "Stay a while and smell the roses";
+                    e.blob.setMinimapColor(0x4dd349);
+                });
+        events.building.addEventHandler("Tunal", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.av, "tunal");
+                    e.blob.desc = "Meadows in the middle of the desert";
                     e.blob.setMinimapColor(0x4dd349);
                 });
         events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
