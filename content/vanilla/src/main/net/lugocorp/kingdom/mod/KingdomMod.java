@@ -301,6 +301,15 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                 });
+        events.unit.addEventHandler("King Gargantos", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "Warrior-king of the Tortoise Kingdom";
+                    e.blob.setModelInstance(view.av, "gargantos");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
+                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+                    e.blob.glyphs.set(Glyph.DEFENSE);
+                });
         events.unit.addEventHandler("Frog Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A Frog-man that plants trees!";
