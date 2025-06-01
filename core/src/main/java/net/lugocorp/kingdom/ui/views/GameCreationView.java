@@ -55,8 +55,8 @@ class GameCreationView implements View {
     /**
      * Returns a random world seed to place in the UI
      */
-    private static String getRandomSeed() {
-        return Integer.toString(GameCreationView.rand.nextInt(1000000));
+    private static long getRandomSeed() {
+        return GameCreationView.rand.nextInt(1000000);
     }
 
     /**
@@ -70,7 +70,7 @@ class GameCreationView implements View {
      * Internal syntactic sugar
      */
     private void setWorldSeed(String worldSeed) {
-        this.worldGenOpts.seed = worldSeed;
+        this.worldGenOpts.seed = Long.parseLong(worldSeed);
     }
 
     /**
@@ -134,8 +134,8 @@ class GameCreationView implements View {
                         .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
                 .add(new SpacerNode())
                 .add(new RowNode().add(new TextNode(view.av, "World Seed"))
-                        .add(new TextEntryNode(view.av, this.worldGenOpts.seed, (String x) -> this.setWorldSeed(x))
-                                .setNumbersOnly(true)))
+                        .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
+                                (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
                 .add(new SpacerNode(false))
                 .add(new RowNode().add(new TextNode(view.av, "Map Size")).add(worldSizeOptions)));
     }

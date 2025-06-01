@@ -168,6 +168,14 @@ public class KingdomMod implements GameMod {
             e.blob.setObstacle(true);
             e.blob.setWave(true);
         });
+        events.tile.addEventHandler("Lava", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
+            Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
+            e.blob.setModelInstance(view.av, "water");
+            e.blob.setMinimapColor(0xcf3b23);
+            e.blob.setMaterial("lava");
+            e.blob.setObstacle(true);
+            e.blob.setWave(true);
+        });
 
         /**
          * Buildings

@@ -1,76 +1,254 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Glyph;
 import net.lugocorp.kingdom.game.model.GlyphCategory;
-import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.utils.math.Rect;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
  * This class handles world generation logic
  */
 public class WorldGenerator {
+    private static final int BIOME_UNIT_SIZE = 10;
+    private static final int NUM_PLAYERS = 2;
 
     /**
      * The main function that initiates world generation
      */
     public void generateWorld(GameView view, WorldGenOptions worldGenOpts, Consumer<Integer> progress) {
+        Random r = new Random(worldGenOpts.seed);
         Game g = view.game;
-        for (int x = 0; x < g.world.getWidth(); x++) {
-            for (int y = 0; y < g.world.getHeight(); y++) {
-                if (y <= 1 && x >= 4 && x <= 7) {
-                    if (y == 1) {
-                        g.generator.tile("Water", x, y).spawn(view);
-                    } else {
-                        g.generator.tile("Rock", x, y).spawn(view);
-                    }
-                } else if (y >= 6 && x <= 2) {
-                    g.generator.tile("Sand", x, y).spawn(view);
-                } else {
-                    g.generator.tile("Grassland", x, y).spawn(view);
+
+        // Set up coasts (if any)
+        final boolean coastTop = r.nextBoolean();
+        final boolean coastBot = r.nextBoolean();
+        final boolean coastLeft = r.nextBoolean();
+        final boolean coastRight = r.nextBoolean();
+
+        // Set default biome
+        Biome mainBiome = Biome.GRASS;
+        float biomeSelection = r.nextFloat();
+        if (biomeSelection < 0.1) {
+            mainBiome = Biome.SAND;
+        } else if (biomeSelection < 0.2) {
+            mainBiome = Biome.ROCK;
+        }
+
+        // Set Biome seeds
+        final Biome[] otherBiomes = this.getDifferentBiomes(mainBiome);
+        final int biomeSeedsW = worldGenOpts.size.w / WorldGenerator.BIOME_UNIT_SIZE;
+        final int biomeSeedsH = worldGenOpts.size.h / WorldGenerator.BIOME_UNIT_SIZE;
+        final Point[][] biomeSeedOffsets = new Point[biomeSeedsW][biomeSeedsH];
+        final Biome[][] biomeSeeds = new Biome[biomeSeedsW][biomeSeedsH];
+        for (int b = 0; b < biomeSeedsH; b++) {
+            boolean isHorizontalCoast = (coastTop && b == 0) || (coastBot && b == biomeSeedsH - 1);
+            for (int a = 0; a < biomeSeedsW; a++) {
+                biomeSeedOffsets[a][b] = new Point(r.nextInt(WorldGenerator.BIOME_UNIT_SIZE),
+                        r.nextInt(WorldGenerator.BIOME_UNIT_SIZE));
+
+                // Coastal Biome seeds
+                if (isHorizontalCoast || (coastLeft && a == 0) || (coastRight && a == biomeSeedsW - 1)) {
+                    biomeSeeds[a][b] = Biome.WATER;
+                    continue;
                 }
-                g.world.getTile(x, y).get().setGlyph(Optional.of(GlyphCategory.random()));
+
+                // Non-coastal Biome seeds
+                final float biomeDecision = r.nextFloat();
+                if (biomeDecision < 0.15) {
+                    biomeSeeds[a][b] = this.randomValue(r, otherBiomes);
+                } else if (biomeDecision < 0.4) {
+                    final Biome prev = (a == 0) ? mainBiome : biomeSeeds[a - 1][b];
+                    biomeSeeds[a][b] = prev;
+                } else {
+                    biomeSeeds[a][b] = mainBiome;
+                }
             }
         }
-        Player ai = g.addComputerPlayer("AI");
-        g.getInitialUnit(g.human, 1, 1, Glyph.BATTLE).spawn(view);
-        g.generator.building("Vault", 1, 1).spawn(view);
-        g.generator.unit("Crystal", 8, 4).spawn(view);
-        g.generator.unit("Crystal", 6, 3).spawn(view);
-        g.generator.unit("Blob", 8, 1).spawn(view);
-        g.generator.building("Vault", 8, 4).spawn(view);
-        g.generator.building("Mine", 3, 1).spawn(view);
-        g.generator.building("Mine", 3, 3).spawn(view);
-        g.generator.building("Forest", 5, 3).spawn(view);
-        g.generator.building("Forest", 6, 3).spawn(view);
-        g.generator.building("Forest", 5, 4).spawn(view);
-        g.generator.building("Forest", 0, 0).spawn(view);
-        g.generator.building("Forest", 0, 3).spawn(view);
-        g.generator.building("Forest", 1, 3).spawn(view);
-        g.generator.building("Forest", 0, 4).spawn(view);
-        g.generator.building("Forest", 1, 4).spawn(view);
-        g.generator.building("Forest", 2, 4).spawn(view);
-        g.generator.building("Meadow", 2, 5).spawn(view);
-        g.generator.building("Meadow", 3, 5).spawn(view);
-        g.generator.building("Meadow", 2, 6).spawn(view);
-        g.generator.building("Mine", 0, 9).spawn(view);
-        g.generator.building("Mountain", 6, 2).spawn(view);
-        g.generator.patron("The Pond Troll", 4, 2).spawn(view);
-        g.world.getTile(4, 2).get().building.ifPresent((Building b) -> {
-            Patron p = (Patron) b;
-            p.addToDomain(new Point(3, 1));
-            p.addToDomain(new Point(4, 1));
-            p.addToDomain(new Point(3, 2));
-            p.addToDomain(new Point(5, 2));
-            p.addToDomain(new Point(3, 3));
-            p.addToDomain(new Point(4, 3));
-        });
-        g.setLeader(g.world.getTile(8, 4).get().unit.get(), ai);
-        g.setLeader(g.world.getTile(6, 3).get().unit.get(), ai);
-        g.setLeader(g.world.getTile(8, 1).get().unit.get(), ai);
+        progress.accept(10);
+
+        // Fill out Tiles in the World
+        Rect biomeSeedGrid = new Rect(0, 0, biomeSeedsW, biomeSeedsH);
+        List<List<Point>> startingPoints = new ArrayList<List<Point>>();
+        for (int a = 0; a < 4; a++) {
+            startingPoints.add(new ArrayList<Point>());
+        }
+        for (int a = 0; a < worldGenOpts.size.w; a++) {
+            for (int b = 0; b < worldGenOpts.size.h; b++) {
+                Point focalSeed = new Point(a / WorldGenerator.BIOME_UNIT_SIZE, b / WorldGenerator.BIOME_UNIT_SIZE);
+                float closestSeedDistance = 1000f;
+                Biome closestSeed = mainBiome;
+
+                // Find the closest Biome seed
+                for (int dx = -1; dx < 2; dx++) {
+                    for (int dy = -1; dy < 2; dy++) {
+                        Point seed = new Point(focalSeed.x + dx, focalSeed.y + dy);
+                        if (seed.x >= 0 && seed.y >= 0 && seed.x < biomeSeedsW && seed.y < biomeSeedsH) {
+                            Point offset = biomeSeedOffsets[seed.x][seed.y];
+                            float d = this.distance((seed.x * WorldGenerator.BIOME_UNIT_SIZE) + offset.x,
+                                    (seed.y * WorldGenerator.BIOME_UNIT_SIZE) + offset.y, a, b);
+                            if (d < closestSeedDistance) {
+                                closestSeed = biomeSeeds[seed.x][seed.y];
+                                closestSeedDistance = d;
+                            }
+                        }
+                    }
+                }
+
+                // Generate a Tile based on the closest Biome seed's terrain and
+                // add it to the starting point candidates if it's not water
+                g.generator.tile(closestSeed.terrain, a, b).spawn(view);
+                if (closestSeed.terrain != Biome.WATER.terrain) {
+                    startingPoints.get(this.getStartingPointRegion(worldGenOpts, a, b)).add(new Point(a, b));
+                }
+            }
+        }
+        progress.accept(60);
+
+        // Randomly place feature patches around the World
+        String[] oneOffFeatures = {"Vault", "Mine"};
+        for (int a = 0; a < 50; a++) {
+            Point p = new Point(r.nextInt(worldGenOpts.size.w), r.nextInt(worldGenOpts.size.h));
+            String terrain = g.world.getTile(p.x, p.y).get().name;
+            Optional<String> building = Optional.empty();
+            int radiusRange = 0;
+
+            // Determine the appropriate feature
+            if (r.nextFloat() < 0.8) {
+                if (terrain.equals(Biome.GRASS.terrain)) {
+                    building = Optional.of(r.nextBoolean() ? "Forest" : "Meadow");
+                    radiusRange = 5;
+                }
+                if (terrain.equals(Biome.ROCK.terrain)) {
+                    building = Optional.of("Mountain");
+                    radiusRange = 1;
+                }
+            } else {
+                building = terrain.equals(Biome.WATER.terrain)
+                        ? Optional.empty()
+                        : Optional.of(this.randomValue(r, oneOffFeatures));
+            }
+
+            // Place the feature in a given radius
+            if (building.isPresent()) {
+                if (radiusRange > 0) {
+                    Set<Point> area = Hexagons.getNeighbors(p, r.nextInt(radiusRange) + 1);
+                    for (Point p1 : area) {
+                        Optional<Tile> t = g.world.getTile(p1);
+                        if (t.isPresent() && t.get().name.equals(terrain) && !t.get().building.isPresent()) {
+                            startingPoints.get(this.getStartingPointRegion(worldGenOpts, p1.x, p1.y)).remove(p1);
+                            g.generator.building(building.get(), p1.x, p1.y).spawn(view);
+                        }
+                    }
+                }
+                if (!g.world.getTile(p).get().building.isPresent()) {
+                    startingPoints.get(this.getStartingPointRegion(worldGenOpts, p.x, p.y)).remove(p);
+                    g.generator.building(building.get(), p.x, p.y).spawn(view);
+                }
+            }
+        }
+        progress.accept(90);
+
+        // Set Players in the World
+        int startingPointIndex = 0;
+        for (int a = 0; a < WorldGenerator.NUM_PLAYERS; a++) {
+            // Skip over quadrants that have no starting point candidates
+            while (startingPointIndex < startingPoints.size() && startingPoints.get(startingPointIndex).size() == 0) {
+                startingPointIndex++;
+            }
+            if (startingPointIndex == startingPoints.size()) {
+                // throw new Exception("No space for all the players to spawn");
+                System.err.println("No space for all the players to spawn");
+                System.exit(1);
+            }
+
+            // Pick a starting point from the available candidates and spawn a Vault
+            Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
+            g.generator.building("Vault", p.x, p.y).spawn(view);
+            if (a == 0) {
+                g.getInitialUnit(g.human, p.x, p.y, Glyph.BATTLE).spawn(view);
+            } else {
+                Player ai = g.addComputerPlayer("AI");
+                // TODO replace the next two lines with getInitialUnit
+                g.generator.unit("Crystal", p.x, p.y).spawn(view);
+                g.setLeader(g.world.getTile(p.x, p.y).get().unit.get(), ai);
+            }
+            startingPoints.get(startingPointIndex++).remove(p);
+        }
+        progress.accept(95);
+
+        // Set Glyphs in the World
+        for (List<Point> quadrant : startingPoints) {
+            for (Point p : quadrant) {
+                if (r.nextBoolean()) {
+                    g.world.getTile(p).get().setGlyph(Optional.of(GlyphCategory.random()));
+                }
+            }
+        }
+        progress.accept(100);
+    }
+
+    /**
+     * Returns an integer corresponding to which area of the map a Player can spawn
+     * in
+     */
+    private int getStartingPointRegion(WorldGenOptions w, int x, int y) {
+        return (x > w.size.w / 2 ? 1 : 0) + (y > w.size.h / 2 ? 1 : 0);
+    }
+
+    /**
+     * Implementation of the distance function
+     */
+    private float distance(int x1, int y1, int x2, int y2) {
+        return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+
+    /**
+     * Return a random element from the given array
+     */
+    private <T> T randomValue(Random r, T[] array) {
+        return array[r.nextInt(array.length)];
+    }
+
+    /**
+     * Return a random element from the given List
+     */
+    private <T> T randomValue(Random r, List<T> array) {
+        return array.get(r.nextInt(array.size()));
+    }
+
+    /**
+     * Returns all Biomes that aren't the given Biome
+     */
+    private Biome[] getDifferentBiomes(Biome b) {
+        int a = 0;
+        final Biome[] others = new Biome[Biome.values().length - 1];
+        for (Biome o : Biome.values()) {
+            if (o != b) {
+                others[a++] = o;
+            }
+        }
+        return others;
+    }
+
+    /**
+     * Enum for different terrain types
+     */
+    private static enum Biome {
+        GRASS("Grassland"), WATER("Water"), SAND("Sand"), ROCK("Rock");
+        private final String terrain;
+
+        private Biome(String terrain) {
+            this.terrain = terrain;
+        }
     }
 }

@@ -75,7 +75,7 @@ void main() {
     vec2 texCoords = v_diffuseUV;
     if (u_wave && isTopFace) {
         // Wave Tiles should oscillate slightly
-        texCoords.x += u_diffuseUVTransform.z * 0.025 * ((2.0 * abs(mod(u_timer, 6000.0) - 3000.0) / 3000.0) - 1.0);
+        texCoords.x += u_diffuseUVTransform.z * 0.0075 * ((2.0 * abs(mod(u_timer, 6000.0) - 3000.0) / 3000.0) - 1.0);
     }
     gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
     gl_FragColor.a *= u_opacity;

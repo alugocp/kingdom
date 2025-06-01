@@ -5,9 +5,9 @@ package net.lugocorp.kingdom.game.world;
  */
 public class WorldGenOptions {
     public WorldGenOptions.WorldSize size = WorldGenOptions.WorldSize.values()[0];
-    public String seed;
+    public long seed;
 
-    public WorldGenOptions(String seed) {
+    public WorldGenOptions(long seed) {
         this.seed = seed;
     }
 
