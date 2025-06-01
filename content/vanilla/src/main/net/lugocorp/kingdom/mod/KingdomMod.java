@@ -198,18 +198,21 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "Don't miss the forest for the trees";
+                    e.blob.setMinimapColor(0x257d53);
                 });
         events.building.addEventHandler("Meadow", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "meadow");
                     e.blob.desc = "Stay a while and smell the roses";
+                    e.blob.setMinimapColor(0x4dd349);
                 });
         events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "mountain");
                     e.blob.desc = "An immovable object";
+                    e.blob.setMinimapColor(0x875f9a);
                     e.blob.health().invulnerable();
                     e.blob.setObstacle(true);
                 });

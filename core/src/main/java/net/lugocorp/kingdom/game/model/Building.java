@@ -12,9 +12,11 @@ import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
@@ -22,6 +24,7 @@ import java.util.Optional;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends DynamicModellable implements EventReceiver, MenuSubject {
+    private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;
     protected final Visibility visibility = new Visibility();
     protected HitPoints<Building> health = null;
@@ -88,6 +91,20 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     }
 
     /**
+     * Returns the Minimap Color for this Building (if any exists)
+     */
+    public Optional<Color> getMinimapColor() {
+        return this.minimapColor;
+    }
+
+    /**
+     * Sets the Minimap Color for this Building
+     */
+    public void setMinimapColor(int hexcode) {
+        this.minimapColor = Optional.of(Colors.fromHex(hexcode));
+    }
+
+    /**
      * Spawns this loaded object into the World
      */
     public void spawn(GameView view) {
@@ -99,7 +116,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
             view.game.buildingSpawned(this);
         });
         this.handleEvent(view, new Events.SpawnEvent<Building>(this));
-        // this.visibility.setVisibleRadius(view.game.world, this.getPoint(), 1);
+        this.getMinimapColor().ifPresent((Color c) -> view.hud.minimap.refresh(view.game.world));
     }
 
     /** {@inheritdoc} */
@@ -125,7 +142,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     public void deactivate(GameView view) {
         this.deactivateDefault(view);
         view.game.removeBuilding(this);
-        // this.visibility.removeVision(view.game.world);
+        this.getMinimapColor().ifPresent((Color c) -> view.hud.minimap.refresh(view.game.world));
         this.dispose();
     }
 

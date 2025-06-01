@@ -70,7 +70,7 @@ class GameCreationView implements View {
      * Internal syntactic sugar
      */
     private void setWorldSeed(String worldSeed) {
-        this.worldGenOpts.seed = Long.parseLong(worldSeed);
+        this.worldGenOpts.seed = Long.parseLong(worldSeed.length() > 0 ? worldSeed : "0");
     }
 
     /**
