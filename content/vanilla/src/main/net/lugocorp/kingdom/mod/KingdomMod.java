@@ -237,18 +237,10 @@ public class KingdomMod implements GameMod {
         events.unit.addEventHandler("Gloop the Adventurer", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "gloop");
                     e.blob.desc = "This Plasmoid adventurer is eager to prove himself in the dungeons";
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.TRAVEL);
-                });
-        events.unit.addEventHandler("Harpy Courrier", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.setModelInstance(view.av, "placeholder1");
-                    e.blob.desc = "This Harpy is a mail man";
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-                    e.blob.glyphs.set(Glyph.TRAVEL);
                 });
         events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -310,32 +302,14 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
                     e.blob.glyphs.set(Glyph.DEFENSE);
                 });
-        events.unit.addEventHandler("Frog Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+        events.unit.addEventHandler("Pumpkin Boy", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "A Frog-man that plants trees!";
-            e.blob.setModelInstance(view.av, "placeholder2");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.empty());
+            e.blob.desc = "He doesn't say much, he's just a little guy";
+            e.blob.setModelInstance(view.av, "pumpkin-boy");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
         });
-        events.unit.addEventHandler("Crocodile Man", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "He has a green thumb";
-                    e.blob.setModelInstance(view.av, "placeholder2");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-                    e.blob.glyphs.set(Glyph.NATURE);
-                });
-        events.unit.addEventHandler("Crocodile Girl", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "A younger Crocodile-person";
-                    e.blob.setModelInstance(view.av, "placeholder1");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
-                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-                    e.blob.glyphs.set(Glyph.NATURE);
-                });
         events.unit.addEventHandler("Pottery Ogre", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -350,23 +324,6 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "He works with patrons";
                     e.blob.setModelInstance(view.av, "placeholder2");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, "Worship");
-                    e.blob.glyphs.set(Glyph.WORSHIP);
-                });
-        events.unit.addEventHandler("Bat Person", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "He works with patrons";
-            e.blob.setModelInstance(view.av, "placeholder2");
-            e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Worship");
-            e.blob.glyphs.set(Glyph.WORSHIP);
-        });
-        events.unit.addEventHandler("Axolotl Shepherd", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "He works with patrons";
-                    e.blob.setModelInstance(view.av, "axolotl");
                     e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Worship");
                     e.blob.glyphs.set(Glyph.WORSHIP);
