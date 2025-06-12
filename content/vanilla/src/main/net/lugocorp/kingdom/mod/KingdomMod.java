@@ -254,6 +254,12 @@ public class KingdomMod implements GameMod {
                 view.game.auctionPoints += 5;
             }
         });
+        events.patron.addEventHandler("The Shining Eyes", "GeneratePatronEvent",
+                (GameView view, Patron receiver, Event event) -> {
+                    Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
+                    e.blob.setModelInstance(view.av, "shining-eyes");
+                    e.blob.desc = "A floating pyramid thing";
+                });
 
         /**
          * Playable units
@@ -339,6 +345,22 @@ public class KingdomMod implements GameMod {
             e.blob.desc = "He doesn't say much, he's just a little guy";
             e.blob.setModelInstance(view.av, "pumpkin-boy");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+            e.blob.glyphs.set(Glyph.NATURE);
+        });
+        events.unit.addEventHandler("Barometz", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "Nature-based unit";
+            e.blob.setModelInstance(view.av, "barometz");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
+            e.blob.glyphs.set(Glyph.NATURE);
+        });
+        events.unit.addEventHandler("Beetlemoss", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "Nature-based unit";
+            e.blob.setModelInstance(view.av, "beetlemoss");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
         });
