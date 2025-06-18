@@ -17,6 +17,7 @@ import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.game.model.Race;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
@@ -77,6 +78,40 @@ public class KingdomMod implements GameMod {
     /** {@inheritdoc} */
     @Override
     public void registerEvents(AllEventHandlers events) {
+        /**
+         * Races
+         */
+        final Race HUMAN = new Race("Human");
+        final Race ELF = new Race("Elf");
+        final Race DWARF = new Race("Dwarf");
+        final Race GNOME = new Race("Gnome");
+        final Race ORC = new Race("Orc");
+        final Race GOBLIN = new Race("Goblin");
+        final Race GIANT = new Race("Giant");
+        final Race GRUE = new Race("Grue", GIANT);
+        final Race OGRE = new Race("Ogre", GIANT);
+        final Race ETTIN = new Race("Ettin", GIANT);
+        final Race FOMOR = new Race("Fomor", GIANT);
+        final Race TROLL = new Race("Troll", GIANT);
+        final Race CENTAUR = new Race("Centaur");
+        final Race SALAMANDER = new Race("Salamander");
+        final Race TORTUGAN = new Race("Tortugan");
+        final Race KAPPA = new Race("Kappa", TORTUGAN);
+        final Race BROWNIE = new Race("Brownie");
+        final Race KOBOLD = new Race("Kobold");
+        final Race FIRBOLG = new Race("Firbolg", KOBOLD);
+        final Race RAKSHA = new Race("Raksha", KOBOLD);
+        final Race MERFOLK = new Race("Merfolk");
+        final Race GARUDA = new Race("Garuda");
+        final Race DRAGONKIN = new Race("Dragonkin");
+        final Race TOADSTOOL = new Race("Toadstool");
+        final Race SPRITE = new Race("Sprite");
+        final Race DRYAD = new Race("Dryad", SPRITE);
+        final Race DEMON = new Race("Demon");
+        final Race TULPA = new Race("Tulpa");
+        final Race GOLEM = new Race("Golem");
+        final Race PLASMOID = new Race("Plasmoid");
+        final Race UNDEAD = new Race("Undead");
 
         /**
          * Default handlers
@@ -271,6 +306,7 @@ public class KingdomMod implements GameMod {
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Swim");
             e.blob.glyphs.set(Glyph.BATTLE);
+            e.blob.race = SALAMANDER;
         });
         events.unit.addEventHandler("Gloop the Adventurer", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -279,6 +315,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "This Plasmoid adventurer is eager to prove himself in the dungeons";
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.TRAVEL);
+                    e.blob.race = PLASMOID;
                 });
         events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -295,6 +332,7 @@ public class KingdomMod implements GameMod {
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
+            e.blob.race = SPRITE;
         });
         events.unit.addEventHandler("Frog Gnome", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -303,6 +341,7 @@ public class KingdomMod implements GameMod {
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Heal"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
             e.blob.glyphs.set(Glyph.HEALING, Glyph.TRAVEL);
+            e.blob.race = GNOME;
         });
         events.unit.addEventHandler("Pickaxe Goblin", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -312,6 +351,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
                     e.blob.glyphs.set(Glyph.MINING);
+                    e.blob.race = GOBLIN;
                 });
         events.unit.addEventHandler("Stalagmite Golem", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -321,6 +361,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Slap"));
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
                     e.blob.glyphs.set(Glyph.MINING);
+                    e.blob.race = GOLEM;
                 });
         events.unit.addEventHandler("Golem of the Grotto", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -330,6 +371,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
+                    e.blob.race = GOLEM;
                 });
         events.unit.addEventHandler("King Gargantos", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -339,6 +381,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
                     e.blob.glyphs.set(Glyph.DEFENSE);
+                    e.blob.race = TORTUGAN;
                 });
         events.unit.addEventHandler("Pumpkin Boy", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -347,6 +390,7 @@ public class KingdomMod implements GameMod {
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
+            e.blob.race = SPRITE;
         });
         events.unit.addEventHandler("Barometz", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -355,6 +399,7 @@ public class KingdomMod implements GameMod {
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
+            e.blob.race = SPRITE;
         });
         events.unit.addEventHandler("Beetlemoss", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -363,6 +408,7 @@ public class KingdomMod implements GameMod {
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
             e.blob.glyphs.set(Glyph.NATURE);
+            e.blob.race = SPRITE;
         });
         events.unit.addEventHandler("Pottery Ogre", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -372,6 +418,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money");
                     e.blob.glyphs.set(Glyph.TRADE);
+                    e.blob.race = OGRE;
                 });
         events.unit.addEventHandler("Troll Shaman", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -381,6 +428,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Worship");
                     e.blob.glyphs.set(Glyph.WORSHIP);
+                    e.blob.race = TROLL;
                 });
 
         /**
@@ -399,6 +447,7 @@ public class KingdomMod implements GameMod {
             e.blob.desc = "A classic slime enemy";
             e.blob.setModelInstance(view.av, "blob");
             e.blob.playable = false;
+            e.blob.race = PLASMOID;
         });
 
         /**

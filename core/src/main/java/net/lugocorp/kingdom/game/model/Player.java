@@ -68,7 +68,7 @@ public class Player {
     public boolean equals(Object o) {
         if (o != null && o instanceof Player) {
             Player p = (Player) o;
-            return p.name == this.name;
+            return p.name.equals(this.name);
         }
         return false;
     }

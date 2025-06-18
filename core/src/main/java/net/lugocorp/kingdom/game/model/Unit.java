@@ -43,6 +43,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     public List<Ability> passives = new ArrayList<>();
     public Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public Inventory haul = new Inventory(InventoryType.HAUL, 4);
+    public Race race = Race.UNKNOWN;
     public boolean playable = true;
     public String desc = "";
 
@@ -316,6 +317,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.av, String.format("Alignment: %s", this.leader.get().name)));
         }
+        node.add(new TextNode(view.av, this.race.toString()));
         node.add(new TextNode(view.av, String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
         node.add(new TextNode(view.av, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
         int turnsUntilHungry = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
