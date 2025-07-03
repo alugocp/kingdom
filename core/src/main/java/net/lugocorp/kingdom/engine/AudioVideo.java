@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.engine.shaders.OutlineShader;
 import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
 import net.lugocorp.kingdom.utils.mods.ModAssetsMap;
+import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,12 +20,15 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 
 /**
  * Contains all the objects used to render things and make sounds in the
  * application
  */
 public class AudioVideo {
+    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x, Coords.SIZE.y, true);
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
     public final Settings settings = new Settings();
@@ -35,7 +39,7 @@ public class AudioVideo {
     public final Loaders loaders;
 
     public AudioVideo() {
-        this.models = new ModelBatch(new BasicShaderProvider(new ToonShader()));
+        this.models = new ModelBatch(new BasicShaderProvider(new ToonShader(this.frameBuffer)));
         this.outlines = new ModelBatch(new BasicShaderProvider(new OutlineShader()));
         this.previews = new ModelBatch(new BasicShaderProvider(new PreviewShader()));
         this.loaders = new Loaders(this.settings);

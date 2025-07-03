@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.render.userdata.TileUserData;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.util.Optional;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 /**
  * This class interfaces with GLSL shader code to give the game its aesthetic
@@ -28,13 +30,19 @@ import java.util.Optional;
  */
 public class ToonShader implements Shader {
     private static final int TIMER_MAX = 12000;
+    private final FrameBuffer frameBuffer;
     private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
     private Camera camera;
     private boolean nighttime = false;
 
+    public ToonShader(FrameBuffer frameBuffer) {
+        this.frameBuffer = frameBuffer;
+    }
+
     // Shader uniforms
+    private int u_normalsTexture;
     private int u_directionalLight;
     private int u_ambientLight;
     private int u_projViewTrans;
@@ -66,6 +74,7 @@ public class ToonShader implements Shader {
         if (!this.program.isCompiled()) {
             throw new GdxRuntimeException(this.program.getLog());
         }
+        this.u_normalsTexture = this.program.getUniformLocation("u_normalsTexture");
         this.u_directionalLight = this.program.getUniformLocation("u_directionalLight");
         this.u_ambientLight = this.program.getUniformLocation("u_ambientLight");
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
@@ -123,6 +132,10 @@ public class ToonShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void render(Renderable renderable) {
+        // Set normals texture (to render outlines)
+        Texture normals = this.frameBuffer.getColorBufferTexture();
+        this.program.setUniformi(this.u_normalsTexture, this.context.textureBinder.bind(normals));
+
         // Set lighting uniforms (we only set one in GameView)
         DirectionalLightsAttribute lights = (DirectionalLightsAttribute) renderable.environment
                 .get(DirectionalLightsAttribute.Type);

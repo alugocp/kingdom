@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.graphics.g3d.Attribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
+import com.badlogic.gdx.graphics.GL20;
 
 /**
  * This class implements the 3D model outline References:
@@ -16,6 +21,7 @@ public class OutlineShader implements Shader {
     private RenderContext context;
     private Camera camera;
     private int u_projViewTrans;
+    private int u_normalMatrix;
     private int u_worldTrans;
 
     /** {@inheritdoc} */
@@ -28,6 +34,7 @@ public class OutlineShader implements Shader {
             throw new GdxRuntimeException(this.program.getLog());
         }
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
+        this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
     }
 
@@ -49,7 +56,31 @@ public class OutlineShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void render(Renderable renderable) {
+        Matrix3 normal = new Matrix3();
         this.program.setUniformMatrix(this.u_worldTrans, renderable.worldTransform);
+        this.program.setUniformMatrix(this.u_normalMatrix, normal.set(renderable.worldTransform).inv().transpose());
+
+        int cull = GL20.GL_BACK;
+        int depth = GL20.GL_LEQUAL;
+        float depthNear = 0f;
+        float depthFar = 1f;
+        boolean depthMask = true;
+        for (Attribute attr : renderable.material) {
+            final long t = attr.type;
+            if ((t & IntAttribute.CullFace) == IntAttribute.CullFace) {
+                cull = ((IntAttribute) attr).value;
+            } else if ((t & DepthTestAttribute.Type) == DepthTestAttribute.Type) {
+                DepthTestAttribute test = (DepthTestAttribute) attr;
+                depth = test.depthFunc;
+                depthNear = test.depthRangeNear;
+                depthFar = test.depthRangeFar;
+                depthMask = test.depthMask;
+            }
+        }
+        this.context.setCullFace(cull);
+        this.context.setDepthTest(depth, depthNear, depthFar);
+        this.context.setDepthMask(depthMask);
+        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         renderable.meshPart.render(this.program);
     }
 

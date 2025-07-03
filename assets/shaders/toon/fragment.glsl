@@ -14,6 +14,7 @@ uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
+uniform sampler2D u_normalsTexture;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
 uniform vec4 u_borderColor;
@@ -31,15 +32,23 @@ varying vec3 v_ambientLight;
 varying vec3 v_normal;
 const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
+const float OUTLINE_WIDTH = 3.0;
 
-// Return true if the current texture location is close to an edge (different alpha value)
-// This function checks for edges within distance d
-bool outline(float d) {
-    float dx = d / u_resolution.x;
-    float dy = d / u_resolution.y;
-    float a = texture2D(u_diffuseTexture, v_diffuseUV).a;
-    return texture2D(u_diffuseTexture, v_diffuseUV + vec2(-dx, -dy)).a != a ||
-        texture2D(u_diffuseTexture, v_diffuseUV + vec2(dx, dy)).a != a;
+vec4 normalsTexSample(float x, float y) {
+    return texture2D(u_normalsTexture, vec2(x / 1280.0, y / 960.0));
+}
+
+bool outline() {
+    vec4 bg = vec4(1.0, 1.0, 1.0, 1.0);
+    vec4 center = normalsTexSample(gl_FragCoord.x, gl_FragCoord.y);
+    if (center == bg) {
+        return false;
+    }
+    vec4 top = normalsTexSample(gl_FragCoord.x, gl_FragCoord.y + OUTLINE_WIDTH);
+    vec4 bot = normalsTexSample(gl_FragCoord.x, gl_FragCoord.y - OUTLINE_WIDTH);
+    vec4 right = normalsTexSample(gl_FragCoord.x + OUTLINE_WIDTH, gl_FragCoord.y);
+    vec4 left = normalsTexSample(gl_FragCoord.x - OUTLINE_WIDTH, gl_FragCoord.y);
+    return top == bg || bot == bg || right == bg || left == bg;
 }
 
 // Changes the output color based on Tile borders
@@ -55,16 +64,16 @@ int checkBorderColor(int border, sampler2D tex, int thresh, float x, float y) {
 }
 
 void main() {
-    vec3 normal = v_normal;
-    bool isTopFace = normal == vec3(0.0, 1.0, 0.0);
-
-    // Face black color for outlines or fog of war
-    if (u_visibility == NO_VISIBILITY || outline(2.0)) {
+    // Return black color for fog of war
+    if (u_visibility == NO_VISIBILITY || outline()) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         return;
     }
 
-    // Make the texture black under low light
+    vec3 normal = v_normal;
+    bool isTopFace = normal == vec3(0.0, 1.0, 0.0);
+
+    // Make the texture black under low enough light
     float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
     if (intensity == 0.0) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);

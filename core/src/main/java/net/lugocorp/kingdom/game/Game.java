@@ -62,9 +62,6 @@ public class Game {
         for (Modellable m : this.world.getModellables(true)) {
             m.rehydrateFromKryo(av);
         }
-        for (Modellable m : this.world.getModellables(false)) {
-            m.rehydrateFromKryo(av);
-        }
     }
 
     /**

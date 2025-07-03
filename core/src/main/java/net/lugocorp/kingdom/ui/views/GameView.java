@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 /**
  * This class handles all the Game runtime logic
@@ -131,40 +133,23 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void render() {
-        this.camController.update();
-
-        // Set initial OpenGL state
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-        Gdx.gl.glEnable(GL20.GL_STENCIL_TEST);
-        Gdx.gl.glStencilFunc(GL20.GL_ALWAYS, 1, 0xFF);
-        Gdx.gl.glStencilMask(0xFF);
+        this.camController.update();
 
-        // Draw all 3D models that shouldn't have outlines
-        Gdx.gl.glStencilMask(0x00);
-        this.av.models.begin(this.camera);
-        this.av.models.render(this.game.world.getModelInstances(true), this.environment);
-        this.av.models.end();
-
-        // Draw all 3D models that should have outlines
-        Gdx.gl.glStencilMask(0xFF);
-        this.av.models.begin(this.camera);
-        this.av.models.render(this.game.world.getModelInstances(false), this.environment);
-        this.av.models.end();
-
-        // Run the outline shaders
-        Gdx.gl.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF);
-        Gdx.gl.glStencilMask(0x00);
-        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+        // Render normals to a FrameBuffer
+        this.av.frameBuffer.begin();
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         this.av.outlines.begin(this.camera);
         this.av.outlines.render(this.game.world.getModelInstances(false), this.environment);
         this.av.outlines.end();
+        this.av.frameBuffer.end();
 
-        // If we don't set the stencil mask here then the buffer won't clear
-        Gdx.gl.glStencilMask(0xFF);
-        Gdx.gl.glClear(GL20.GL_STENCIL_BUFFER_BIT);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-        Gdx.gl.glStencilMask(0x00);
+        // Draw all 3D models with the ToonShader
+        this.av.models.begin(this.camera);
+        this.av.models.render(this.game.world.getModelInstances(true), this.environment);
+        this.av.models.end();
 
         // Draw 2D assets
         this.menu.get().ifPresent((Menu m) -> m.draw(this.av));

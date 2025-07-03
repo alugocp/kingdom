@@ -88,7 +88,7 @@ public class World {
     /**
      * Returns all Modellable instances present in the World
      */
-    public Array<Modellable> getModellables(boolean justTiles) {
+    public Array<Modellable> getModellables(boolean includeTiles) {
         Array<Modellable> models = new Array<>();
         for (int x = 0; x < this.w; x++) {
             for (int y = 0; y < this.h; y++) {
@@ -96,9 +96,10 @@ public class World {
                 if (!tile.isPresent()) {
                     continue;
                 }
-                if (justTiles) {
+                if (includeTiles) {
                     models.add(tile.get());
-                } else if (tile.get().isVisible()) {
+                }
+                if (tile.get().isVisible()) {
                     tile.get().building.ifPresent((Modellable m) -> models.add(m));
                     tile.get().unit.ifPresent((Modellable m) -> models.add(m));
                 }
@@ -112,9 +113,9 @@ public class World {
      * justTiles. If true then this method will only return the ModelInstances of
      * Tiles, and if false then it will return all others.
      */
-    public Array<ModelInstance> getModelInstances(boolean justTiles) {
+    public Array<ModelInstance> getModelInstances(boolean includeTiles) {
         Array<ModelInstance> models = new Array<>();
-        this.getModellables(justTiles)
+        this.getModellables(includeTiles)
                 .forEach((Modellable m) -> m.getModelInstance().ifPresent((ModelInstance m1) -> models.add(m1)));
         return models;
     }
