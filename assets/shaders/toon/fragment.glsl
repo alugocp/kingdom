@@ -44,11 +44,9 @@ bool outline() {
     if (center == bg) {
         return false;
     }
-    vec4 top = normalsTexSample(gl_FragCoord.x, gl_FragCoord.y + OUTLINE_WIDTH);
-    vec4 bot = normalsTexSample(gl_FragCoord.x, gl_FragCoord.y - OUTLINE_WIDTH);
-    vec4 right = normalsTexSample(gl_FragCoord.x + OUTLINE_WIDTH, gl_FragCoord.y);
-    vec4 left = normalsTexSample(gl_FragCoord.x - OUTLINE_WIDTH, gl_FragCoord.y);
-    return top == bg || bot == bg || right == bg || left == bg;
+    vec4 topRight = normalsTexSample(gl_FragCoord.x + OUTLINE_WIDTH, gl_FragCoord.y + OUTLINE_WIDTH);
+    vec4 botLeft = normalsTexSample(gl_FragCoord.x - OUTLINE_WIDTH, gl_FragCoord.y - OUTLINE_WIDTH);
+    return topRight != center || botLeft != center;
 }
 
 // Changes the output color based on Tile borders

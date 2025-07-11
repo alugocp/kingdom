@@ -3,9 +3,9 @@ import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.render.userdata.TileUserData;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -17,11 +17,11 @@ import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.util.Optional;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 /**
  * This class interfaces with GLSL shader code to give the game its aesthetic
@@ -163,13 +163,7 @@ public class ToonShader implements Shader {
         }
 
         // Set special shader data
-        if (renderable.userData == null) {
-            this.program.setUniformi(this.u_wave, 0);
-            this.program.setUniformi(this.u_selection, 0);
-            this.program.setUniformi(this.u_tileBorder, 0);
-            this.program.setUniformi(this.u_visibility, 2);
-            this.program.setUniformi(this.u_includeGlyphTexture, 0);
-        } else if (renderable.userData instanceof TileUserData) {
+        if (renderable.userData != null && renderable.userData instanceof TileUserData) {
             TileUserData data = (TileUserData) renderable.userData;
             this.program.setUniformi(this.u_visibility, data.collapseVisibility());
             this.program.setUniformi(this.u_selection, Math.min(data.selection, 3));
@@ -197,6 +191,12 @@ public class ToonShader implements Shader {
                     this.program.setUniformi(this.u_tileBorder, data.borders);
                 }
             }
+        } else {
+            this.program.setUniformi(this.u_wave, 0);
+            this.program.setUniformi(this.u_selection, 0);
+            this.program.setUniformi(this.u_tileBorder, 0);
+            this.program.setUniformi(this.u_visibility, 2);
+            this.program.setUniformi(this.u_includeGlyphTexture, 0);
         }
 
         // Set context and render

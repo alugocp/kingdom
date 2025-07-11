@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
+import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.core.Events;
@@ -17,6 +18,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import java.util.Set;
  */
 public class Unit extends DynamicModellable implements EventReceiver, MenuSubject {
     public static final int MAX_LOYALTY = 10;
+    private final CoordUserData userData = new CoordUserData();
     private Optional<Ability> active1 = Optional.empty();
     private Optional<Ability> active2 = Optional.empty();
     private SleepState sleep = SleepState.AWAKE;
@@ -228,6 +231,12 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         return targets;
     }
 
+    /** {@inheritdoc} */
+    @Override
+    protected void setupModelInstance(ModelInstance model) {
+        model.userData = this.userData;
+    }
+
     /**
      * Sets this Unit's position in the World. Useful for spawning or movement.
      */
@@ -239,6 +248,8 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         this.resetModelPosition();
         g.setLeader(destin, this.leader);
         destin.building.ifPresent((Building b) -> b.setAlpha(0.5f));
+        this.userData.point.x = x;
+        this.userData.point.y = y;
     }
 
     /**

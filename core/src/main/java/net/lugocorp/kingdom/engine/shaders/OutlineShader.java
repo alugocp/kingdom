@@ -1,16 +1,16 @@
 package net.lugocorp.kingdom.engine.shaders;
+import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.graphics.g3d.Attribute;
-import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
-import com.badlogic.gdx.graphics.GL20;
 
 /**
  * This class implements the 3D model outline References:
@@ -21,8 +21,8 @@ public class OutlineShader implements Shader {
     private RenderContext context;
     private Camera camera;
     private int u_projViewTrans;
-    private int u_normalMatrix;
     private int u_worldTrans;
+    private int u_coordColor;
 
     /** {@inheritdoc} */
     @Override
@@ -34,8 +34,8 @@ public class OutlineShader implements Shader {
             throw new GdxRuntimeException(this.program.getLog());
         }
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
-        this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
+        this.u_coordColor = this.program.getUniformLocation("u_coordColor");
     }
 
     /** {@inheritdoc} */
@@ -56,10 +56,16 @@ public class OutlineShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void render(Renderable renderable) {
-        Matrix3 normal = new Matrix3();
         this.program.setUniformMatrix(this.u_worldTrans, renderable.worldTransform);
-        this.program.setUniformMatrix(this.u_normalMatrix, normal.set(renderable.worldTransform).inv().transpose());
+        if (renderable.userData != null && renderable.userData instanceof CoordUserData) {
+            CoordUserData data = (CoordUserData) renderable.userData;
+            this.program.setUniformf(this.u_coordColor, ((data.point.x * 15) % 100) / 255f,
+                    ((data.point.y * 15) % 100) / 255f, 1f, 1f);
+        } else {
+            this.program.setUniformf(this.u_coordColor, 1f, 1f, 1f, 1f);
+        }
 
+        // Culling and depth stuff
         int cull = GL20.GL_BACK;
         int depth = GL20.GL_LEQUAL;
         float depthNear = 0f;

@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
+import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
@@ -17,6 +18,7 @@ import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
@@ -24,6 +26,7 @@ import java.util.Optional;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends DynamicModellable implements EventReceiver, MenuSubject {
+    private final CoordUserData userData = new CoordUserData();
     private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;
     protected final Visibility visibility = new Visibility();
@@ -37,6 +40,8 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
         super(x, y);
         this.name = name;
         this.setHealth(new HitPoints<Building>(this));
+        this.userData.point.x = x;
+        this.userData.point.y = y;
     }
 
     /**
@@ -117,6 +122,12 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
         });
         this.handleEvent(view, new Events.SpawnEvent<Building>(this));
         this.getMinimapColor().ifPresent((Color c) -> view.hud.minimap.refresh(view.game.world));
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    protected void setupModelInstance(ModelInstance model) {
+        model.userData = this.userData;
     }
 
     /** {@inheritdoc} */
