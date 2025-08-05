@@ -57,15 +57,15 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Returns this Tile's GlyphCategory
      */
     public Optional<GlyphCategory> getGlyph() {
-        return this.glyph;
+        return this.building.isPresent() ? Optional.empty() : this.glyph;
     }
 
     /**
      * Sets this Tile's GlyphCategory
      */
     public void setGlyph(Optional<GlyphCategory> glyph) {
-        this.userData.glyph = glyph;
         this.glyph = glyph;
+        this.userData.glyph = this.getGlyph();
     }
 
     /**
@@ -212,7 +212,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         }
         ListNode node = new ListNode();
         node.add(new ButtonNode(view.av, "x", () -> view.menu.close()));
-        if (this.glyph.isPresent()) {
+        if (this.getGlyph().isPresent()) {
             node.add(new TextNode(view.av, String.format("%s glyphs", this.glyph.get())));
         } else {
             node.add(new TextNode(view.av, "No glyphs on this tile"));
