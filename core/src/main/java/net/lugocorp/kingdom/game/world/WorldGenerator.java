@@ -129,8 +129,13 @@ public class WorldGenerator {
                     radiusRange = 5;
                 }
                 if (terrain.equals(Biome.SAND.terrain)) {
-                    building = Optional.of("Tunal");
-                    radiusRange = 3;
+                    if (r.nextBoolean()) {
+                        building = Optional.of("Shrubland");
+                        radiusRange = 3;
+                    } else {
+                        building = Optional.of("Oasis");
+                        radiusRange = 1;
+                    }
                 }
                 if (terrain.equals(Biome.SNOW.terrain)) {
                     building = Optional.of("Taiga");
@@ -148,10 +153,15 @@ public class WorldGenerator {
 
             // Place the feature in a given radius
             if (building.isPresent()) {
-                if (radiusRange > 0) {
+
+                // If we're setting Buildings in a ring (and the center of our Oasis doesn't
+                // already have a building)
+                if (radiusRange > 0
+                        && !(building.get().equals("Oasis") && g.world.getTile(p).get().building.isPresent())) {
                     Set<Point> area = Hexagons.getNeighbors(p, r.nextInt(radiusRange) + 1);
                     for (Point p1 : area) {
                         Optional<Tile> t = g.world.getTile(p1);
+                        // If the Tile is of the intended terrain and there is no building
                         if (t.isPresent() && t.get().name.equals(terrain) && !t.get().building.isPresent()) {
                             startingPoints.get(this.getStartingPointRegion(worldGenOpts, p1.x, p1.y)).remove(p1);
                             g.generator.building(building.get(), p1.x, p1.y).spawn(view);
@@ -159,8 +169,13 @@ public class WorldGenerator {
                     }
                 }
                 if (!g.world.getTile(p).get().building.isPresent()) {
-                    startingPoints.get(this.getStartingPointRegion(worldGenOpts, p.x, p.y)).remove(p);
-                    g.generator.building(building.get(), p.x, p.y).spawn(view);
+                    // Make the center Tile Water if we're generating an Oasis
+                    if (building.get().equals("Oasis")) {
+                        g.generator.tile("Water", p.x, p.y).spawn(view);
+                    } else {
+                        startingPoints.get(this.getStartingPointRegion(worldGenOpts, p.x, p.y)).remove(p);
+                        g.generator.building(building.get(), p.x, p.y).spawn(view);
+                    }
                 }
             }
         }

@@ -256,7 +256,14 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Stay a while and smell the roses";
                     e.blob.setMinimapColor(0x4dd349);
                 });
-        events.building.addEventHandler("Tunal", "GenerateBuildingEvent",
+        events.building.addEventHandler("Oasis", "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.av, "forest");
+                    e.blob.desc = "Moments of respite from the overbearing sun";
+                    e.blob.setMinimapColor(0x2c9965);
+                });
+        events.building.addEventHandler("Shrubland", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "tunal");
