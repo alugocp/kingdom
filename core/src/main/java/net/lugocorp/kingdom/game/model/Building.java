@@ -34,6 +34,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     public final Tags tags = new Tags();
     public final String name;
     public Optional<Inventory> items = Optional.empty();
+    private BuildingType type = BuildingType.PASSIVE;
     public String desc = "";
 
     Building(String name, int x, int y) {
@@ -96,6 +97,20 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     }
 
     /**
+     * Returns true if this Building is active
+     */
+    public boolean isActive() {
+        return this.type == BuildingType.ACTIVE;
+    }
+
+    /**
+     * Sets whether or not this is an active Building
+     */
+    public void setActive(boolean active) {
+        this.type = active ? BuildingType.ACTIVE : BuildingType.PASSIVE;
+    }
+
+    /**
      * Returns the Minimap Color for this Building (if any exists)
      */
     public Optional<Color> getMinimapColor() {
@@ -151,6 +166,8 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     /** {@inheritdoc} */
     @Override
     public void deactivate(GameView view) {
+        // TODO active Buildings should change allegiance and heal instead of being
+        // destroyed
         this.deactivateDefault(view);
         view.game.removeBuilding(this);
         this.getMinimapColor().ifPresent((Color c) -> view.hud.minimap.refresh(view.game.world));
@@ -176,5 +193,12 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
             }
         }
         return node;
+    }
+
+    /**
+     * An enum that represents whether a Building is active or passive
+     */
+    private static enum BuildingType {
+        ACTIVE, PASSIVE;
     }
 }

@@ -24,7 +24,7 @@ public class HitPoints<A extends EventReceiver> {
     }
 
     /**
-     * Returns true if the host entity cannot take damage
+     * Returns true if the host entity can take damage
      */
     public boolean isVulnerable() {
         return this.vulnerable;

@@ -131,7 +131,9 @@ public class Events {
             this.unit = unit;
             this.tile = tile;
             this.canWalkOnTile = !tile.getObstacle();
-            this.canWalkOnBuilding = tile.building.map((Building b) -> !b.getObstacle()).orElse(true);
+            this.canWalkOnBuilding = tile.building
+                    .map((Building b) -> !b.getObstacle() && (!b.isActive() || tile.leader.equals(unit.leader)))
+                    .orElse(true);
         }
 
         /**
