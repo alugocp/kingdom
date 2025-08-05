@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 
 /**
  * This class handles all the Game runtime logic
