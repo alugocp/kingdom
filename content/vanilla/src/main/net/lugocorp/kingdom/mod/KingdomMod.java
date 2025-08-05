@@ -314,7 +314,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "gloop");
                     e.blob.desc = "This Plasmoid adventurer is eager to prove himself in the dungeons";
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.TRAVEL);
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.race = PLASMOID;
                 });
         events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
@@ -340,7 +340,7 @@ public class KingdomMod implements GameMod {
             e.blob.setModelInstance(view.av, "frog-gnome");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Heal"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
-            e.blob.glyphs.set(Glyph.HEALING, Glyph.TRAVEL);
+            e.blob.glyphs.set(Glyph.HEALING);
             e.blob.race = GNOME;
         });
         events.unit.addEventHandler("Pickaxe Goblin", "GenerateUnitEvent",
@@ -419,16 +419,6 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, "Make Money");
                     e.blob.glyphs.set(Glyph.TRADE);
                     e.blob.race = OGRE;
-                });
-        events.unit.addEventHandler("Troll Shaman", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "He works with patrons";
-                    e.blob.setModelInstance(view.av, "placeholder2");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, "Worship");
-                    e.blob.glyphs.set(Glyph.WORSHIP);
-                    e.blob.race = TROLL;
                 });
 
         /**

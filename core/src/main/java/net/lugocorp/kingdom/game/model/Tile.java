@@ -29,7 +29,7 @@ import java.util.Set;
  */
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject {
     private final TileUserData userData = new TileUserData();
-    private Optional<GlyphCategory> glyph = Optional.of(GlyphCategory.STRATEGIC);
+    private Optional<GlyphCategory> glyph = Optional.of(GlyphCategory.COMBAT);
     private Color minimapColor = Color.BLACK;
     private boolean obstacle = false;
     private boolean wave = false;
