@@ -37,14 +37,12 @@ public class WorldGenerator {
 
         // Set default biome
         Biome mainBiome = Biome.GRASS;
-        float biomeSelection = r.nextFloat();
-        if (biomeSelection < 0.05) {
-            mainBiome = Biome.SAND;
-        } else if (biomeSelection < 0.1) {
-            mainBiome = Biome.ROCK;
-        } else if (biomeSelection < 0.15) {
-            mainBiome = Biome.SNOW;
-        }
+        // TODO uncomment this when there are more units designed for these Biomes
+        /*
+         * float biomeSelection = r.nextFloat(); if (biomeSelection < 0.05) { mainBiome
+         * = Biome.SAND; } else if (biomeSelection < 0.1) { mainBiome = Biome.ROCK; }
+         * else if (biomeSelection < 0.15) { mainBiome = Biome.SNOW; }
+         */
 
         // Set Biome seeds
         final Biome[] otherBiomes = this.getDifferentBiomes(mainBiome);
