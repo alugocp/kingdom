@@ -57,7 +57,10 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Returns this Tile's GlyphCategory
      */
     public Optional<GlyphCategory> getGlyph() {
-        return this.building.isPresent() ? Optional.empty() : this.glyph;
+        if (this.building.isPresent() && this.glyph.isPresent()) {
+            this.glyph = Optional.empty();
+        }
+        return this.glyph;
     }
 
     /**
