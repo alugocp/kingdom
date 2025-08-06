@@ -168,7 +168,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     public void deactivate(GameView view) {
         // TODO active Buildings should change allegiance and heal instead of being
         // destroyed
-        this.deactivateDefault(view);
+        EventReceiver.super.deactivate(view);
         view.game.removeBuilding(this);
         this.getMinimapColor().ifPresent((Color c) -> view.hud.minimap.refresh(view.game.world));
         this.dispose();
