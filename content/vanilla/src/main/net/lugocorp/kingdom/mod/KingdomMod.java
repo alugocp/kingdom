@@ -276,7 +276,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "mountain");
                     e.blob.desc = "An immovable object";
                     e.blob.setMinimapColor(0x875f9a);
-                    e.blob.health().invulnerable();
+                    e.blob.combat.health.invulnerable();
                     e.blob.setObstacle(true);
                 });
 

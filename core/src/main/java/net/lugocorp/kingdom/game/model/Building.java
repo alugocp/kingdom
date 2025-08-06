@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
-import net.lugocorp.kingdom.game.combat.HitPoints;
+import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -30,7 +30,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;
     protected final Visibility visibility = new Visibility();
-    protected HitPoints<Building> health = null;
+    public final Combat<Building> combat;
     public final Tags tags = new Tags();
     public final String name;
     public Optional<Inventory> items = Optional.empty();
@@ -40,7 +40,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     Building(String name, int x, int y) {
         super(x, y);
         this.name = name;
-        this.setHealth(new HitPoints<Building>(this));
+        this.combat = new Combat<Building>(this);
         this.userData.point.x = x;
         this.userData.point.y = y;
     }
@@ -51,21 +51,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     public Building() {
         super(0, 0);
         this.name = null;
-    }
-
-    /**
-     * Secure accessor to this Building's HitPoints
-     */
-    public HitPoints health() {
-        return this.health;
-    }
-
-    /**
-     * Secure way to set this Building's HitPoints. It should not be used outside
-     * this class and its subclasses (the Patron class).
-     */
-    protected void setHealth(HitPoints health) {
-        this.health = health;
+        this.combat = null;
     }
 
     /**
@@ -183,7 +169,8 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
         if (leader.isPresent()) {
             node.add(new TextNode(view.av, String.format("Alignment: %s", leader.get().name)));
         }
-        node.add(new TextNode(view.av, String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
+        node.add(new TextNode(view.av,
+                String.format("Health: %d/%d", this.combat.health.get(), this.combat.health.getMax())));
         if (this.items.isPresent()) {
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
                 node.add(new TextNode(view.av, String.format("Gold: %d", this.items.get().getTotalGold())));

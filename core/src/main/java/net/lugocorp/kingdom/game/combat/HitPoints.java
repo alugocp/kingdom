@@ -1,27 +1,12 @@
 package net.lugocorp.kingdom.game.combat;
-import net.lugocorp.kingdom.game.core.Events;
-import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * Stores the hit points of a combatant
  */
-public class HitPoints<A extends EventReceiver> {
+public class HitPoints {
     private boolean vulnerable = true;
-    private final A bearer;
     private int value = 1;
     private int max = 1;
-
-    public HitPoints(A bearer) {
-        this.bearer = bearer;
-    }
-
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public HitPoints() {
-        this.bearer = null;
-    }
 
     /**
      * Returns true if the host entity can take damage
@@ -31,7 +16,7 @@ public class HitPoints<A extends EventReceiver> {
     }
 
     /**
-     * Makes this object's bearer invulnerable (cannot take damage)
+     * Makes this object's combatant invulnerable (cannot take damage)
      */
     public void invulnerable() {
         this.vulnerable = false;
@@ -42,26 +27,6 @@ public class HitPoints<A extends EventReceiver> {
      */
     public void heal(int points) {
         this.set(this.get() + points);
-    }
-
-    /**
-     * Runs the logic required for this combatant to take Damage
-     */
-    public void takeDamage(GameView view, Damage dmg) {
-        this.bearer.handleEvent(view, new Events.TakeDamageEvent<A>(this.bearer, dmg));
-        this.set(this.get() - dmg.amount);
-        if (this.isDead()) {
-            this.bearer.deactivate(view);
-        }
-    }
-
-    /**
-     * This combatant attacks another
-     */
-    public <T extends EventReceiver> void attack(GameView view, HitPoints<T> target, Damage dmg) {
-        this.bearer.handleEvent(view, new Events.AttackEvent<A, T>(this.bearer, target.bearer, dmg));
-        target.bearer.handleEvent(view, new Events.AttackedEvent<T, A>(target.bearer, this.bearer, dmg));
-        target.takeDamage(view, dmg);
     }
 
     /**

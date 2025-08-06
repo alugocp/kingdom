@@ -23,7 +23,7 @@ public class ItemLogic {
      */
     public static void potion(Event event, int points) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        e.consumer.health.heal(points);
+        e.consumer.combat.health.heal(points);
     }
 
     /**

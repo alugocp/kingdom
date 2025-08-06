@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.core;
+import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.model.Building;
@@ -25,7 +26,7 @@ public class AbilityLogic {
      * Convenience wrapper for an active Ability that implements an attack
      */
     public static void attack(GameView view, Unit attacker, Damage dmg) {
-        Map<Point, HitPoints> targets = new HashMap<>();
+        Map<Point, Combat> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
         // Grab every possible attack target within range
@@ -38,19 +39,19 @@ public class AbilityLogic {
             }
             Tile t = tile.get();
             if (t.unit.isPresent()) {
-                if (t.unit.get().health.isVulnerable()) {
-                    targets.put(p, t.unit.get().health);
+                if (t.unit.get().combat.health.isVulnerable()) {
+                    targets.put(p, t.unit.get().combat);
                     points.add(p);
                 }
-            } else if (t.building.isPresent() && t.building.get().health().isVulnerable()) {
-                targets.put(p, t.building.get().health());
+            } else if (t.building.isPresent() && t.building.get().combat.health.isVulnerable()) {
+                targets.put(p, t.building.get().combat);
                 points.add(p);
             }
         }
 
         // Have the human Player select which target to attack
         view.selector.select(points, "No attack targets are in range", (Point p) -> {
-            attacker.health.attack(view, targets.get(p), dmg);
+            attacker.combat.attack(view, targets.get(p), dmg);
             view.game.mechanics.turns.unitHasActed(view, attacker);
         });
     }
@@ -70,7 +71,7 @@ public class AbilityLogic {
                 continue;
             }
             if (t.get().unit.isPresent()) {
-                targets.put(p, t.get().unit.get().health);
+                targets.put(p, t.get().unit.get().combat.health);
                 points.add(p);
             }
         }
@@ -97,7 +98,7 @@ public class AbilityLogic {
                 continue;
             }
             if (t.get().building.map(criteria).orElse(false)) {
-                targets.put(p, t.get().building.get().health());
+                targets.put(p, t.get().building.get().combat.health);
                 points.add(p);
             }
         }

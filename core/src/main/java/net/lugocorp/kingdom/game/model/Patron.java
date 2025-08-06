@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.game.combat.FavorPoints;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
@@ -25,7 +24,6 @@ public class Patron extends Building {
 
     Patron(String name, int x, int y) {
         super(name, x, y);
-        this.setHealth(new FavorPoints(this));
     }
 
     /**

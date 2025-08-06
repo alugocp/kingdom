@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.combat.HitPoints;
+import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -40,7 +40,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     public final Visibility visibility = new Visibility();
     public final Tags tags = new Tags();
     public final String name;
-    public final HitPoints<Unit> health;
+    public final Combat<Unit> combat;
     public final UnitGlyphs glyphs = new UnitGlyphs();
     private Optional<Player> leader = Optional.empty();
     public List<Ability> passives = new ArrayList<>();
@@ -53,7 +53,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     Unit(String name, int x, int y) {
         super(x, y);
         this.name = name;
-        this.health = new HitPoints<Unit>(this);
+        this.combat = new Combat<Unit>(this);
     }
 
     /**
@@ -61,7 +61,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public Unit() {
         super(0, 0);
-        this.health = null;
+        this.combat = null;
         this.name = null;
     }
 
@@ -337,7 +337,8 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
             node.add(new TextNode(view.av, String.format("Alignment: %s", this.leader.get().name)));
         }
         node.add(new TextNode(view.av, this.race.toString()));
-        node.add(new TextNode(view.av, String.format("Health: %d/%d", this.health.get(), this.health.getMax())));
+        node.add(new TextNode(view.av,
+                String.format("Health: %d/%d", this.combat.health.get(), this.combat.health.getMax())));
         node.add(new TextNode(view.av, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
         int turnsUntilHungry = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
         if (turnsUntilHungry < 0) {
