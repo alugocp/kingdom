@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.game.Game;
 public class Mechanics {
     public static final int MENU_MARGIN = 150;
     public final ArtifactAuction auction = new ArtifactAuction();
+    public final Patronage patronage = new Patronage();
     public final GlyphPools pools = new GlyphPools();
     public final DayNight dayNight = new DayNight();
     public final NewUnit newUnits = new NewUnit();

@@ -6,7 +6,6 @@ import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Glyph;
-import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -24,7 +23,6 @@ import java.util.Set;
  * Stores all the data for a single ongoing game
  */
 public class Game {
-    private final Set<Patron> patrons = new HashSet<>();
     public final List<Player> comps = new ArrayList<>();
     public final World world = new World();
     public final OffsetTime startTime;
@@ -177,25 +175,6 @@ public class Game {
             }
         }
         return true;
-    }
-
-    /**
-     * Registers the given Patron
-     */
-    public void addPatron(Patron p) {
-        this.patrons.add(p);
-    }
-
-    /**
-     * Returns the Patron whose domain includes the given Point (if there is one)
-     */
-    public Optional<Patron> getPatronByDomain(Point p) {
-        for (Patron patron : this.patrons) {
-            if (patron.isInDomain(p)) {
-                return Optional.of(patron);
-            }
-        }
-        return Optional.empty();
     }
 
     /**

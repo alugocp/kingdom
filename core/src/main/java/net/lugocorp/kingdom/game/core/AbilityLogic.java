@@ -3,8 +3,6 @@ import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.model.Building;
-import net.lugocorp.kingdom.game.model.Patron;
-import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -147,13 +145,5 @@ public class AbilityLogic {
                 caster.haul.add(view.game.generator.item(item));
             }
         });
-    }
-
-    /**
-     * Generates some favor with a Patron if the Unit is in its domain
-     */
-    public static void worship(GameView view, Unit caster, int points) {
-        caster.getLeader().ifPresent((Player player) -> view.game.getPatronByDomain(caster.getPoint())
-                .ifPresent((Patron p) -> p.addFavor(player, points)));
     }
 }

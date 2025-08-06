@@ -24,6 +24,8 @@ public class Patron extends Building {
 
     Patron(String name, int x, int y) {
         super(name, x, y);
+        this.combat.health.invulnerable();
+        super.setMinimapColor(0x000000);
     }
 
     /**
@@ -34,24 +36,12 @@ public class Patron extends Building {
     }
 
     /**
-     * Sets this Patron's favor threshold value
+     * Checks how much favor this Patron has with each Player. Favor is determined
+     * by the Units in a Patron's domain.
      */
-    public void setThreshold(int threshold) {
-        this.threshold = threshold;
-    }
-
-    /**
-     * Changes the given Player's favor associated with this Patron by the amount
-     * specified
-     */
-    public void addFavor(Player player, int points) {
-        // TODO optimize Patron code by checking for favorite player change here, then
-        // trigger an event to add/remove listeners (no signal boosters if no favorite
-        // player)
-        if (!this.favor.containsKey(player)) {
-            this.favor.put(player, 0);
-        }
-        this.favor.put(player, Math.max(0, Math.min(Patron.MAX_FAVOR, this.favor.get(player) + points)));
+    public void recalculateFavor() {
+        this.favor.clear();
+        // TODO implement this
     }
 
     /**
@@ -61,25 +51,11 @@ public class Patron extends Building {
         Optional<Player> favorite = Optional.empty();
         for (Player p : this.favor.keySet()) {
             int favor = this.favor.get(p);
-            if (favor >= this.threshold && (!favorite.isPresent() || favor > this.favor.get(favorite.get()))) {
+            if (!favorite.isPresent() || favor > this.favor.get(favorite.get())) {
                 favorite = Optional.of(p);
             }
         }
         return favorite;
-    }
-
-    /**
-     * Returns true if the given Point is in this Patron's domain
-     */
-    public boolean isInDomain(Point p) {
-        return this.domain.contains(p);
-    }
-
-    /**
-     * Adds the given Point to this Patron's domain
-     */
-    public void addToDomain(Point p) {
-        this.domain.add(p);
     }
 
     /** {@inheritdoc} */
@@ -94,14 +70,20 @@ public class Patron extends Building {
         return true;
     }
 
-    /**
-     * Spawns this loaded object into the World
-     */
+    /** {@inheritdoc} */
+    public void setMinimapColor(int hexcode) {
+        throw new RuntimeException("Cannot change a Patron's minimap color");
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
+            t.setGlyph(Optional.empty());
         });
         this.handleEvent(view, new Events.SpawnEvent<Patron>(this));
+        // TODO set the domain here
     }
 
     /** {@inheritdoc} */
@@ -113,15 +95,14 @@ public class Patron extends Building {
     /** {@inheritdoc} */
     @Override
     public void deactivate(GameView view) {
-        this.deactivateDefault(view);
+        throw new RuntimeException("Should never call decativate() on a Patron");
     }
 
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         Optional<Player> favorite = this.getFavoritePlayer();
-        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
-                .add(new TextNode(view.av, String.format("Threshold: %d favor", this.threshold)));
+        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc));
         if (this.favor.size() > 0) {
             for (Player k : this.favor.keySet()) {
                 String label = String.format("%s: %d", k.name, this.favor.get(k));
@@ -131,7 +112,7 @@ public class Patron extends Building {
                 node.add(new TextNode(view.av, label));
             }
         } else {
-            node.add(new TextNode(view.av, "No players have gained favor with this patron yet"));
+            node.add(new TextNode(view.av, "No players are competing for this patron right now"));
         }
         return node;
     }

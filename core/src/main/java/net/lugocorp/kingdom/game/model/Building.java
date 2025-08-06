@@ -116,6 +116,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
+            t.setGlyph(Optional.empty());
             if (t.unit.isPresent()) {
                 this.setAlpha(0.5f);
             }

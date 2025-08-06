@@ -571,18 +571,6 @@ public class KingdomMod implements GameMod {
                     }
                 });
 
-        // Worship
-        final String ability_worship = "Worship";
-        events.ability.addEventHandler(ability_worship, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Generates 5 favor with the local patron every 4 turns");
-                });
-        events.ability.addEventHandler(ability_worship, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
-        events.ability.addEventHandler(ability_worship, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.worship(view, receiver.wielder, 5));
-
         // Make Money
         final String ability_make_money = "Make Money";
         events.ability.addEventHandler(ability_make_money, "GenerateAbilityEvent",
