@@ -7,7 +7,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
  * This class handles all combat logic for any Unit or Building
  */
 public class Combat<B extends EventReceiver> {
-    private final B bearer;
+    protected final B bearer;
     public final HitPoints health = new HitPoints();
 
     public Combat(B bearer) {
@@ -25,7 +25,7 @@ public class Combat<B extends EventReceiver> {
      * This method gets called when a combatant is killed in battle
      */
     protected <A extends EventReceiver> void onDeath(GameView view, A attacker) {
-        // No-op
+        this.bearer.deactivate(view);
     }
 
     /**
@@ -38,7 +38,6 @@ public class Combat<B extends EventReceiver> {
         this.bearer.handleEvent(view, new Events.TakeDamageEvent<B>(this.bearer, dmg));
         this.health.set(this.health.get() - dmg.amount);
         if (this.health.isDead()) {
-            this.bearer.deactivate(view);
             this.onDeath(view, attacker);
         }
     }

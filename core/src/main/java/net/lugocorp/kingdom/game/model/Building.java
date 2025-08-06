@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
-import net.lugocorp.kingdom.game.combat.Combat;
+import net.lugocorp.kingdom.game.combat.BuildingCombat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -30,7 +30,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;
     protected final Visibility visibility = new Visibility();
-    public final Combat<Building> combat;
+    public final BuildingCombat combat;
     public final Tags tags = new Tags();
     public final String name;
     public Optional<Inventory> items = Optional.empty();
@@ -40,7 +40,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     Building(String name, int x, int y) {
         super(x, y);
         this.name = name;
-        this.combat = new Combat<Building>(this);
+        this.combat = new BuildingCombat(this);
         this.userData.point.x = x;
         this.userData.point.y = y;
     }
