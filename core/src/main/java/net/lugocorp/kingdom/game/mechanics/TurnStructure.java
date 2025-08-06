@@ -58,7 +58,7 @@ public class TurnStructure {
     public void unitHasActed(GameView view, Unit u) {
         this.unitsThatHaveActed.add(u);
         u.wakeUp();
-        if (u.leader.isPresent() && u.leader.get() == view.game.human) {
+        if (u.getLeader().isPresent() && u.getLeader().get() == view.game.human) {
             this.goToNextUnit(view);
         }
     }

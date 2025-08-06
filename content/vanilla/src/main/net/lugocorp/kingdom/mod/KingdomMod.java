@@ -119,7 +119,7 @@ public class KingdomMod implements GameMod {
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
-            if (receiver.leader.isPresent()) {
+            if (receiver.getLeader().isPresent()) {
                 receiver.loseLoyalty(view.game, 1);
             } else {
                 ((Events.RepeatedEvent) event).repeat = false;
@@ -592,7 +592,8 @@ public class KingdomMod implements GameMod {
                 Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
         events.ability.addEventHandler(ability_make_money, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.doOnBuilding(view, receiver.wielder,
-                        (Building b) -> b.name.equals("Mine"), () -> receiver.wielder.leader.ifPresent((Player p) -> {
+                        (Building b) -> b.name.equals("Mine"),
+                        () -> receiver.wielder.getLeader().ifPresent((Player p) -> {
                             p.gold += 5;
                         })));
 
@@ -615,7 +616,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.leader.equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.HEALING)) {
+                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.HEALING)) {
                         e.distance++;
                     }
                 });
@@ -636,7 +637,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.leader.equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.DEFENSE)) {
+                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.DEFENSE)) {
                         e.distance++;
                     }
                 });

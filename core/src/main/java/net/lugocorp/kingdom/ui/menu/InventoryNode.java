@@ -100,7 +100,7 @@ public class InventoryNode implements MenuNode {
 
         // Equip / pick up / drop options (only if the human Player occupies this space)
         boolean actions = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t1) -> t1.unit)
-                .flatMap((Unit u1) -> u1.leader)
+                .flatMap((Unit u1) -> u1.getLeader())
                 .map((Player p1) -> p1.isHumanPlayer() && this.view.game.mechanics.turns.canHumanPlayerAct())
                 .orElse(false);
         if (actions) {
@@ -167,7 +167,7 @@ public class InventoryNode implements MenuNode {
     private boolean canUnitTakeItem(int type, Optional<Unit> unit) {
         Optional<Unit> focal = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
         if (unit.isPresent()) {
-            if (!unit.get().leader.equals(focal.get().leader)) {
+            if (!unit.get().getLeader().equals(focal.get().getLeader())) {
                 return false;
             }
         } else {
@@ -262,7 +262,7 @@ public class InventoryNode implements MenuNode {
      */
     private void giftItemToUnit(Point p, Item item) {
         Player leader = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit)
-                .flatMap((Unit u) -> u.leader).get();
+                .flatMap((Unit u) -> u.getLeader()).get();
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
         if (unit.isFreeRadical()) {

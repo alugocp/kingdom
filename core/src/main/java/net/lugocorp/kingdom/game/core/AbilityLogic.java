@@ -152,7 +152,7 @@ public class AbilityLogic {
      * Generates some favor with a Patron if the Unit is in its domain
      */
     public static void worship(GameView view, Unit caster, int points) {
-        caster.leader.ifPresent((Player player) -> view.game.getPatronByDomain(caster.getPoint())
+        caster.getLeader().ifPresent((Player player) -> view.game.getPatronByDomain(caster.getPoint())
                 .ifPresent((Patron p) -> p.addFavor(player, points)));
     }
 }

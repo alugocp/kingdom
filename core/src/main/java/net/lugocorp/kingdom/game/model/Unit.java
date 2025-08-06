@@ -42,7 +42,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     public final String name;
     public final HitPoints<Unit> health;
     public final UnitGlyphs glyphs = new UnitGlyphs();
-    public Optional<Player> leader = Optional.empty();
+    private Optional<Player> leader = Optional.empty();
     public List<Ability> passives = new ArrayList<>();
     public Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public Inventory haul = new Inventory(InventoryType.HAUL, 4);
@@ -86,6 +86,14 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public void wakeUp() {
         this.sleep = SleepState.AWAKE;
+    }
+
+    public Optional<Player> getLeader() {
+        return this.leader;
+    }
+
+    public void setLeader(Optional<Player> leader) {
+        this.leader = leader;
     }
 
     /**

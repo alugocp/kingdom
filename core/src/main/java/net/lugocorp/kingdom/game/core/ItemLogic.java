@@ -13,7 +13,7 @@ public class ItemLogic {
      */
     public static void valuable(Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        e.consumer.leader.ifPresent((Player p) -> {
+        e.consumer.getLeader().ifPresent((Player p) -> {
             p.gold += e.item.gold;
         });
     }

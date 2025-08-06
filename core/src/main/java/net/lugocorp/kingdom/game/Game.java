@@ -142,12 +142,12 @@ public class Game {
      * Sets the leader Player for a given Unit
      */
     public void setLeader(Unit u, Optional<Player> op) {
-        u.leader.ifPresent((Player p) -> p.units.remove(u));
+        u.getLeader().ifPresent((Player p) -> p.units.remove(u));
         op.ifPresent((Player p) -> p.units.add(u));
         if (u.belongsToHuman()) {
             u.visibility.removeVision(this.world);
         }
-        u.leader = op;
+        u.setLeader(op);
         if (u.belongsToHuman()) {
             u.visibility.setVisibleRadius(this.world, u.getPoint(), 2);
         }
