@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Represents a single hexagon in the game world and its corresponding
@@ -147,28 +146,22 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Causes this Tile (and its neighbors) to recalculate its visible borders
      */
     public void calculateBorders(World world, boolean iterate) {
-        Set<Point> neighbors = Hexagons.getNeighbors(this.getPoint(), 1);
-        int borders = 0;
-        for (Point p : neighbors) {
-            Optional<Tile> t = world.getTile(p);
-            if (this.leader.isPresent() && this.leader.get() != t.flatMap((Tile t1) -> t1.leader).orElse(null)) {
-                if (this.y == p.y) {
-                    borders += this.x < p.x ? TileUserData.BORDER_RIGHT : TileUserData.BORDER_LEFT;
-                } else {
-                    boolean right = (this.y % 2 == 0 && this.x == p.x) || (this.y % 2 == 1 && this.x == p.x - 1);
-                    if (this.y < p.y) {
-                        borders += right ? TileUserData.BORDER_BOT_RIGHT : TileUserData.BORDER_BOT_LEFT;
-                    } else {
-                        borders += right ? TileUserData.BORDER_TOP_RIGHT : TileUserData.BORDER_TOP_LEFT;
-                    }
-                }
-            }
-            if (iterate) {
-                t.ifPresent((Tile t1) -> t1.calculateBorders(world, false));
+        this.userData.borderColor = this.leader.map((Player l) -> l.color).orElse(Color.BLACK);
+        this.userData.borders = Hexagons.getBorderInteger(this.getPoint(),
+                (Point p) -> world.getTile(p).flatMap((Tile t) -> t.leader)
+                        .map((Player l) -> this.leader.map((Player l1) -> !l.equals(l1)).orElse(false)).orElse(false));
+        if (iterate) {
+            for (Point p : Hexagons.getNeighbors(this.getPoint(), 1)) {
+                world.getTile(p).ifPresent((Tile t1) -> t1.calculateBorders(world, false));
             }
         }
-        this.userData.borderColor = this.leader.map((Player l) -> l.color).orElse(Color.BLACK);
-        this.userData.borders = borders;
+    }
+
+    /**
+     * Bitwise ANDs this Tile's border integer for Patron domains
+     */
+    public void addDomainBorder(int border) {
+        this.userData.domainBorders &= border;
     }
 
     /** {@inheritdoc} */

@@ -1,11 +1,13 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,6 +60,18 @@ public class Patron extends Building {
         return favorite;
     }
 
+    /**
+     * Sets up this Patron's domain
+     */
+    private void initializeDomain(World world) {
+        Set<Point> domain = Hexagons.getNeighbors(this.getPoint(), 2);
+        for (Point p : domain) {
+            world.getTile(p).ifPresent((Tile t) -> t.addDomainBorder(
+                    Hexagons.getBorderInteger(p, (Point p1) -> !(domain.contains(p1) || p1.equals(this.getPoint())))));
+        }
+        this.domain = domain;
+    }
+
     /** {@inheritdoc} */
     @Override
     public void setObstacle(boolean obstacle) {
@@ -82,8 +96,8 @@ public class Patron extends Building {
             t.building = Optional.of(this);
             t.setGlyph(Optional.empty());
         });
+        this.initializeDomain(view.game.world);
         this.handleEvent(view, new Events.SpawnEvent<Patron>(this));
-        // TODO set the domain here
     }
 
     /** {@inheritdoc} */

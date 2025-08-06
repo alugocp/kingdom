@@ -60,6 +60,7 @@ public class ToonShader implements Shader {
     private int u_nighttime;
     private int u_selection;
     private int u_visibility;
+    private int u_domainBorder;
     private int u_borderColor;
     private int u_tileBorder;
     private int u_timer;
@@ -92,6 +93,7 @@ public class ToonShader implements Shader {
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_selection = this.program.getUniformLocation("u_selection");
         this.u_visibility = this.program.getUniformLocation("u_visibility");
+        this.u_domainBorder = this.program.getUniformLocation("u_domainBorder");
         this.u_borderColor = this.program.getUniformLocation("u_borderColor");
         this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
         this.u_timer = this.program.getUniformLocation("u_timer");
@@ -170,6 +172,7 @@ public class ToonShader implements Shader {
             this.program.setUniformf(this.u_borderColor, data.borderColor);
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
+            this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
 
             // Glyph texture
@@ -188,6 +191,7 @@ public class ToonShader implements Shader {
                 if (tdesc1.isPresent() && tdesc2.isPresent()) {
                     this.program.setUniformi(this.u_borderTexture1, this.context.textureBinder.bind(tdesc1.get()));
                     this.program.setUniformi(this.u_borderTexture2, this.context.textureBinder.bind(tdesc2.get()));
+                    this.program.setUniformi(this.u_domainBorder, data.domainBorders);
                     this.program.setUniformi(this.u_tileBorder, data.borders);
                 }
             }
@@ -195,6 +199,7 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_wave, 0);
             this.program.setUniformi(this.u_selection, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
+            this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_visibility, 2);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
         }
