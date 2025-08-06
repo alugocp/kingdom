@@ -3,6 +3,9 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
 
+/**
+ * This class handles all combat logic for any Unit or Building
+ */
 public class Combat<B extends EventReceiver> {
     private final B bearer;
     public final HitPoints health = new HitPoints();
@@ -18,6 +21,9 @@ public class Combat<B extends EventReceiver> {
         this.bearer = null;
     }
 
+    /**
+     * This method gets called when a combatant is killed in battle
+     */
     protected <A extends EventReceiver> void onDeath(GameView view, A attacker) {
         // No-op
     }

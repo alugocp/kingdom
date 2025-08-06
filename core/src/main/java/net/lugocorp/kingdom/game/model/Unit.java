@@ -88,10 +88,16 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         this.sleep = SleepState.AWAKE;
     }
 
+    /**
+     * Returns the Player that commands this Unit, if there is one
+     */
     public Optional<Player> getLeader() {
         return this.leader;
     }
 
+    /**
+     * Sets the Player that commands this Unit
+     */
     public void setLeader(Optional<Player> leader) {
         this.leader = leader;
     }
