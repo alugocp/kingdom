@@ -28,13 +28,13 @@ import java.util.Optional;
 public class Building extends DynamicModellable implements EventReceiver, MenuSubject {
     private final CoordUserData userData = new CoordUserData();
     private Optional<Color> minimapColor = Optional.empty();
+    private BuildingType type = BuildingType.PASSIVE;
     private boolean obstacle = false;
     protected final Visibility visibility = new Visibility();
     public final BuildingCombat combat;
     public final Tags tags = new Tags();
     public final String name;
     public Optional<Inventory> items = Optional.empty();
-    private BuildingType type = BuildingType.PASSIVE;
     public String desc = "";
 
     Building(String name, int x, int y) {
@@ -92,8 +92,8 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     /**
      * Sets whether or not this is an active Building
      */
-    public void setActive(boolean active) {
-        this.type = active ? BuildingType.ACTIVE : BuildingType.PASSIVE;
+    public void setActive() {
+        this.type = BuildingType.ACTIVE;
     }
 
     /**

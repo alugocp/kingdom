@@ -226,6 +226,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "mine");
                     e.blob.desc = "Mines provide valuables like gold coins";
+                    e.blob.setActive();
                 });
         events.building.addEventHandler("Vault", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
@@ -233,6 +234,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "vault");
                     e.blob.desc = "Vaults can store excess items and be used in auctions";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
+                    e.blob.setActive();
                 });
         events.building.addEventHandler("Forest", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {

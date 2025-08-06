@@ -158,7 +158,13 @@ public class Game {
      * Returns true if the human Player has no buildings left
      */
     public boolean hasHumanPlayerLost() {
-        return this.human.buildings.size() == 0;
+        // TODO optimize this
+        for (Building b : this.human.buildings) {
+            if (b.isActive()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
