@@ -91,7 +91,6 @@ public class KingdomMod implements GameMod {
         final Race GRUE = new Race("Grue", GIANT);
         final Race OGRE = new Race("Ogre", GIANT);
         final Race ETTIN = new Race("Ettin", GIANT);
-        final Race FOMOR = new Race("Fomor", GIANT);
         final Race TROLL = new Race("Troll", GIANT);
         final Race CENTAUR = new Race("Centaur");
         final Race SALAMANDER = new Race("Salamander");
@@ -100,7 +99,6 @@ public class KingdomMod implements GameMod {
         final Race BROWNIE = new Race("Brownie");
         final Race KOBOLD = new Race("Kobold");
         final Race FIRBOLG = new Race("Firbolg", KOBOLD);
-        final Race RAKSHA = new Race("Raksha", KOBOLD);
         final Race MERFOLK = new Race("Merfolk");
         final Race GARUDA = new Race("Garuda");
         final Race DRAGONKIN = new Race("Dragonkin");
@@ -112,6 +110,8 @@ public class KingdomMod implements GameMod {
         final Race GOLEM = new Race("Golem");
         final Race PLASMOID = new Race("Plasmoid");
         final Race UNDEAD = new Race("Undead");
+        final Race ELEMENTAL = new Race("Elemental");
+        final Race GEMSTONE = new Race("Gemstone", ELEMENTAL);
 
         /**
          * Default handlers
@@ -258,7 +258,6 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Stay a while and smell the roses";
                     e.blob.setMinimapColor(0x4dd349);
                 });
-        // TODO model this
         events.building.addEventHandler("Oasis", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -266,7 +265,6 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Moments of respite from the overbearing sun";
                     e.blob.setMinimapColor(0x2c9965);
                 });
-        // TODO model this
         events.building.addEventHandler("Shrubland", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -310,7 +308,7 @@ public class KingdomMod implements GameMod {
         /**
          * Playable units
          */
-        events.unit.addEventHandler("Tlatec", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+        events.unit.addEventHandler("Sir Tlatec", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.av, "axolotl");
             e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
@@ -328,15 +326,6 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.race = PLASMOID;
                 });
-        // TODO model/redesign this
-        events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "This Raksha speaks to the stones";
-            e.blob.setModelInstance(view.av, "placeholder2");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
-            e.blob.glyphs.set(Glyph.MINING);
-        });
         events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A mysterious druid who rarely speaks";
@@ -346,36 +335,15 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.NATURE);
             e.blob.race = SPRITE;
         });
-        events.unit.addEventHandler("Frog Gnome", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "Just a little gnome and his frog";
-            e.blob.setModelInstance(view.av, "frog-gnome");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Heal"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
-            e.blob.glyphs.set(Glyph.HEALING);
-            e.blob.race = GNOME;
-        });
-        // TODO model/redesign this
-        events.unit.addEventHandler("Pickaxe Goblin", "GenerateUnitEvent",
+        events.unit.addEventHandler("Frogger the Gnome", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "This Goblin loves his pickaxe";
-                    e.blob.setModelInstance(view.av, "placeholder1");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
-                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
-                    e.blob.glyphs.set(Glyph.MINING);
-                    e.blob.race = GOBLIN;
-                });
-        // TODO model this
-        events.unit.addEventHandler("Stalagmite Golem", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "A very pointy golem";
-                    e.blob.setModelInstance(view.av, "placeholder1");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Slap"));
-                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
-                    e.blob.glyphs.set(Glyph.MINING);
-                    e.blob.race = GOLEM;
+                    e.blob.desc = "Just a little gnome and his frog";
+                    e.blob.setModelInstance(view.av, "frog-gnome");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Heal"), Optional.empty());
+                    e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
+                    e.blob.glyphs.set(Glyph.HEALING);
+                    e.blob.race = GNOME;
                 });
         events.unit.addEventHandler("Golem of the Grotto", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
@@ -394,7 +362,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "gargantos");
                     e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-                    e.blob.glyphs.set(Glyph.DEFENSE);
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
                     e.blob.race = TORTUGAN;
                 });
         events.unit.addEventHandler("Pumpkin Boy", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
@@ -421,8 +389,55 @@ public class KingdomMod implements GameMod {
             e.blob.setModelInstance(view.av, "beetlemoss");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-            e.blob.glyphs.set(Glyph.NATURE);
+            e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
             e.blob.race = SPRITE;
+        });
+        events.unit.addEventHandler("Prismar", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.setModelInstance(view.av, "crystal");
+            e.blob.desc = "Mysterious floating sentient crystal being";
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
+            e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
+            e.blob.race = GEMSTONE;
+        });
+        events.unit.addEventHandler("Blorp the Burning", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "A ravenous Plasmoid with an acidic body";
+                    e.blob.setModelInstance(view.av, "blob");
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
+                    e.blob.race = PLASMOID;
+                });
+        // TODO model/redesign this
+        events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "This Raksha speaks to the stones";
+            e.blob.setModelInstance(view.av, "placeholder2");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
+            e.blob.glyphs.set(Glyph.MINING);
+        });
+        // TODO model/redesign this
+        events.unit.addEventHandler("Pickaxe Goblin", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "This Goblin loves his pickaxe";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
+                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
+                    e.blob.glyphs.set(Glyph.MINING);
+                    e.blob.race = GOBLIN;
+                });
+        // TODO model this
+        events.unit.addEventHandler("Stalagmus", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "A very pointy golem";
+            e.blob.setModelInstance(view.av, "placeholder1");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Slap"));
+            e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
+            e.blob.glyphs.set(Glyph.MINING);
+            e.blob.race = GOLEM;
         });
         // TODO model/redesign this
         events.unit.addEventHandler("Pottery Ogre", "GenerateUnitEvent",
@@ -435,27 +450,6 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.TRADE);
                     e.blob.race = OGRE;
                 });
-
-        /**
-         * Non-playable units
-         */
-        // TODO make this playable
-        events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.av, "crystal");
-            e.blob.desc = "Mysterious floating sentient crystal being";
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
-            e.blob.playable = false;
-        });
-        // TODO make this playable
-        events.unit.addEventHandler("Blob", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "A classic slime enemy";
-            e.blob.setModelInstance(view.av, "blob");
-            e.blob.playable = false;
-            e.blob.race = PLASMOID;
-        });
 
         /**
          * Abilities

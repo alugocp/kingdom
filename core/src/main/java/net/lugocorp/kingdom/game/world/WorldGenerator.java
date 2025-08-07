@@ -202,7 +202,7 @@ public class WorldGenerator {
             } else {
                 Player ai = g.addComputerPlayer("AI");
                 // TODO replace the next two lines with getInitialUnit
-                g.generator.unit("Crystal", p.x, p.y).spawn(view);
+                g.generator.unit("Prismar", p.x, p.y).spawn(view);
                 g.setLeader(g.world.getTile(p.x, p.y).get().unit.get(), ai);
             }
             startingPoints.get(startingPointIndex++).remove(p);
