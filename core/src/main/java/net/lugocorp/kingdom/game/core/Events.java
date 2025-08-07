@@ -284,4 +284,18 @@ public class Events {
             this.item = item;
         }
     }
+
+    /**
+     * Triggered when a Unit generates favor for a Patron
+     */
+    public static class GenerateFavorEvent extends Event {
+        public final Patron patron;
+        public int favor;
+
+        public GenerateFavorEvent(Patron patron, int favor) {
+            super("GenerateFavorEvent");
+            this.patron = patron;
+            this.favor = favor;
+        }
+    }
 }

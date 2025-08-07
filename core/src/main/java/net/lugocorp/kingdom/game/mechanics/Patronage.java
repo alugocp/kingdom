@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Patron;
+import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,9 +21,9 @@ public class Patronage {
      * Tells each Patron to recalculate how much favor each Player has earned with
      * it
      */
-    public void recalculateFavor() {
+    public void recalculateFavor(GameView view) {
         for (Patron p : this.patrons) {
-            p.recalculateFavor();
+            p.recalculateFavor(view);
         }
     }
 }

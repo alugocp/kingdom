@@ -189,7 +189,7 @@ public class TurnStructure {
     private void startNewTurnGroup(GameView view) {
         view.game.mechanics.dayNight.tick();
         view.av.getToonShader().setNighttime(view.game.mechanics.dayNight.isNight());
-        view.game.mechanics.patronage.recalculateFavor();
+        view.game.mechanics.patronage.recalculateFavor(view);
     }
 
     /**

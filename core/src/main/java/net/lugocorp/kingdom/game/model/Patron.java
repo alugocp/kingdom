@@ -14,15 +14,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Represents a local spirit that Players can compete for favor with
  */
 public class Patron extends Building {
-    private static final int MAX_FAVOR = 100;
-    private Map<Player, Integer> favor = new HashMap<>();
-    private Set<Point> domain = new HashSet<>();
-    private int threshold = 10;
+    private static final int MIN_FAVOR = 5;
+    private final Map<Player, Integer> favor = new HashMap<>();
+    private final Set<Point> domain = new HashSet<>();
+    public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
 
     Patron(String name, int x, int y) {
         super(name, x, y);
@@ -41,9 +42,31 @@ public class Patron extends Building {
      * Checks how much favor this Patron has with each Player. Favor is determined
      * by the Units in a Patron's domain.
      */
-    public void recalculateFavor() {
+    public void recalculateFavor(GameView view) {
         this.favor.clear();
-        // TODO implement this
+        for (Point p : this.domain) {
+            final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+            if (!unit.flatMap((Unit u) -> u.getLeader()).isPresent()) {
+                continue;
+            }
+
+            // Calculate favor from the given Unit
+            final Unit u = unit.get();
+            final Events.GenerateFavorEvent event = new Events.GenerateFavorEvent(this,
+                    this.isPreferredUnitType.apply(u) ? Patron.MIN_FAVOR * 2 : Patron.MIN_FAVOR);
+            u.handleEvent(view, event);
+            if (event.favor <= 0) {
+                continue;
+            }
+
+            // Add favor to the ledger
+            final Player leader = u.getLeader().get();
+            if (this.favor.containsKey(leader)) {
+                this.favor.put(leader, this.favor.get(leader) + event.favor);
+            } else {
+                this.favor.put(leader, event.favor);
+            }
+        }
     }
 
     /**
@@ -68,8 +91,8 @@ public class Patron extends Building {
         for (Point p : domain) {
             world.getTile(p).ifPresent((Tile t) -> t.addDomainBorder(
                     Hexagons.getBorderInteger(p, (Point p1) -> !(domain.contains(p1) || p1.equals(this.getPoint())))));
+            this.domain.add(p);
         }
-        this.domain = domain;
     }
 
     /** {@inheritdoc} */
