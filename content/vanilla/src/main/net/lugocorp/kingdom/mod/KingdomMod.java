@@ -409,46 +409,45 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.race = PLASMOID;
                 });
-        // TODO model/redesign this
-        events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "This Raksha speaks to the stones";
-            e.blob.setModelInstance(view.av, "placeholder2");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
-            e.blob.glyphs.set(Glyph.MINING);
-        });
-        // TODO model/redesign this
-        events.unit.addEventHandler("Pickaxe Goblin", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "This Goblin loves his pickaxe";
-                    e.blob.setModelInstance(view.av, "placeholder1");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
-                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
-                    e.blob.glyphs.set(Glyph.MINING);
-                    e.blob.race = GOBLIN;
-                });
-        // TODO model this
         events.unit.addEventHandler("Stalagmus", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A very pointy golem";
-            e.blob.setModelInstance(view.av, "placeholder1");
+            e.blob.setModelInstance(view.av, "stalagmus");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Slap"));
             e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
             e.blob.glyphs.set(Glyph.MINING);
             e.blob.race = GOLEM;
         });
-        // TODO model/redesign this
-        events.unit.addEventHandler("Pottery Ogre", "GenerateUnitEvent",
+        // TODO model this
+        events.unit.addEventHandler("Al-Fikra", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
+            e.blob.setModelInstance(view.av, "alfikra");
+            e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Make Money");
+            e.blob.glyphs.set(Glyph.TRADE);
+            e.blob.race = TULPA;
+        });
+        // TODO model this
+        events.unit.addEventHandler("Lady Daumia", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "Elven high missionary to Surgarde";
+            e.blob.setModelInstance(view.av, "placeholder2");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
+            e.blob.glyphs.set(Glyph.HEALING);
+            e.blob.race = ELF;
+        });
+        // TODO model this
+        events.unit.addEventHandler("Condylure of the Star Nose", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "He likes working with clay";
-                    e.blob.setModelInstance(view.av, "placeholder2");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, "Make Money");
-                    e.blob.glyphs.set(Glyph.TRADE);
-                    e.blob.race = OGRE;
+                    e.blob.desc = "This Brownie is blind, but traverses the subterranean world with the aid of his nose";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
+                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
+                    e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
+                    e.blob.race = BROWNIE;
                 });
 
         /**

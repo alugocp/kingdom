@@ -6,7 +6,7 @@ Manage resources and train units as you grow your empire and change the world ar
 Run the following commands after a fresh install:
 
 ```bash
-gradle installHooks cleanAssets run
+gradle installHooks cleanAssets content:vanilla:build run
 ```
 
 ## Gradle
