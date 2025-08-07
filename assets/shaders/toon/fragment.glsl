@@ -14,6 +14,8 @@ uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
+uniform sampler2D u_borderTexture3;
+uniform sampler2D u_borderTexture4;
 uniform sampler2D u_normalsTexture;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
@@ -23,6 +25,7 @@ uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_visibility;
+uniform int u_domainBorder;
 uniform int u_tileBorder;
 uniform int u_selection;
 uniform bool u_wave;
@@ -50,11 +53,11 @@ bool outline() {
 }
 
 // Changes the output color based on Tile borders
-int checkBorderColor(int border, sampler2D tex, int thresh, float x, float y) {
+int checkBorderColor(int border, vec4 color, sampler2D tex, int thresh, float x, float y) {
     if (border >= thresh) {
-        vec4 color = texture2D(tex, vec2(x, y));
-        if (color.x > 0.0) {
-            gl_FragColor = u_borderColor;
+        vec4 value = texture2D(tex, vec2(x, y));
+        if (value.x > 0.0) {
+            gl_FragColor = color;
         }
         return thresh;
     }
@@ -108,17 +111,33 @@ void main() {
         gl_FragColor.z += coeff;
     }
 
-    // Player border logic
-    if (isTopFace && u_tileBorder > 0) {
+    // Border rendering logic
+    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0)) {
         float bx = v_diffuseUV.x * 64.0 / 19.0;
         float by = v_diffuseUV.y * 64.0 / 18.0;
-        int border = u_tileBorder;
-        border -= checkBorderColor(border, u_borderTexture2, 32, 1.0 - bx, by); // Bot right
-        border -= checkBorderColor(border, u_borderTexture2, 16, 1.0 - bx, 1.0 - by); // Bot left
-        border -= checkBorderColor(border, u_borderTexture2, 8, bx, by); // Top right
-        border -= checkBorderColor(border, u_borderTexture2, 4, bx, 1.0 - by); // Top left
-        border -= checkBorderColor(border, u_borderTexture1, 2, bx, by); // Right
-        border -= checkBorderColor(border, u_borderTexture1, 1, bx, 1.0 - by); // Left
+
+        // Player borders
+        if (u_tileBorder > 0) {
+            int border = u_tileBorder;
+            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 32, 1.0 - bx, by); // Bot right
+            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 16, 1.0 - bx, 1.0 - by); // Bot left
+            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 8, bx, by); // Top right
+            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 4, bx, 1.0 - by); // Top left
+            border -= checkBorderColor(border, u_borderColor, u_borderTexture1, 2, bx, by); // Right
+            border -= checkBorderColor(border, u_borderColor, u_borderTexture1, 1, bx, 1.0 - by); // Left
+        }
+
+        // Domain borders
+        if (u_domainBorder > 0) {
+            int border = u_domainBorder;
+            vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+            border -= checkBorderColor(border, white, u_borderTexture4, 32, 1.0 - bx, by); // Bot right
+            border -= checkBorderColor(border, white, u_borderTexture4, 16, 1.0 - bx, 1.0 - by); // Bot left
+            border -= checkBorderColor(border, white, u_borderTexture4, 8, bx, by); // Top right
+            border -= checkBorderColor(border, white, u_borderTexture4, 4, bx, 1.0 - by); // Top left
+            border -= checkBorderColor(border, white, u_borderTexture3, 2, bx, by); // Right
+            border -= checkBorderColor(border, white, u_borderTexture3, 1, bx, 1.0 - by); // Left
+        }
     }
 
     // Make the color darker if it's night time or half visibility

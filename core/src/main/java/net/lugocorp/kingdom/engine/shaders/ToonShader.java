@@ -51,6 +51,8 @@ public class ToonShader implements Shader {
     private int u_includeGlyphTexture;
     private int u_borderTexture1;
     private int u_borderTexture2;
+    private int u_borderTexture3;
+    private int u_borderTexture4;
     private int u_glyphTexture;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
@@ -84,6 +86,8 @@ public class ToonShader implements Shader {
         this.u_includeGlyphTexture = this.program.getUniformLocation("u_includeGlyphTexture");
         this.u_borderTexture1 = this.program.getUniformLocation("u_borderTexture1");
         this.u_borderTexture2 = this.program.getUniformLocation("u_borderTexture2");
+        this.u_borderTexture3 = this.program.getUniformLocation("u_borderTexture3");
+        this.u_borderTexture4 = this.program.getUniformLocation("u_borderTexture4");
         this.u_glyphTexture = this.program.getUniformLocation("u_glyphTexture");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
@@ -185,14 +189,27 @@ public class ToonShader implements Shader {
             }
 
             // Border textures
-            if (this.textures.isPresent() && data.borders > 0) {
-                Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("ui/border1");
-                Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("ui/border2");
-                if (tdesc1.isPresent() && tdesc2.isPresent()) {
-                    this.program.setUniformi(this.u_borderTexture1, this.context.textureBinder.bind(tdesc1.get()));
-                    this.program.setUniformi(this.u_borderTexture2, this.context.textureBinder.bind(tdesc2.get()));
-                    this.program.setUniformi(this.u_domainBorder, data.domainBorders);
-                    this.program.setUniformi(this.u_tileBorder, data.borders);
+            if (this.textures.isPresent()) {
+                // Player borders
+                if (data.borders > 0) {
+                    Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("ui/border1");
+                    Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("ui/border2");
+                    if (tdesc1.isPresent() && tdesc2.isPresent()) {
+                        this.program.setUniformi(this.u_borderTexture1, this.context.textureBinder.bind(tdesc1.get()));
+                        this.program.setUniformi(this.u_borderTexture2, this.context.textureBinder.bind(tdesc2.get()));
+                        this.program.setUniformi(this.u_tileBorder, data.borders);
+                    }
+                }
+
+                // Domain borders
+                if (data.domainBorders > 0) {
+                    Optional<TextureDescriptor> tdesc3 = this.textures.get().getTextureDescriptor("ui/border3");
+                    Optional<TextureDescriptor> tdesc4 = this.textures.get().getTextureDescriptor("ui/border4");
+                    if (tdesc3.isPresent() && tdesc4.isPresent()) {
+                        this.program.setUniformi(this.u_borderTexture3, this.context.textureBinder.bind(tdesc3.get()));
+                        this.program.setUniformi(this.u_borderTexture4, this.context.textureBinder.bind(tdesc4.get()));
+                        this.program.setUniformi(this.u_domainBorder, data.domainBorders);
+                    }
                 }
             }
         } else {

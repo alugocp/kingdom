@@ -147,9 +147,8 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public void calculateBorders(World world, boolean iterate) {
         this.userData.borderColor = this.leader.map((Player l) -> l.color).orElse(Color.BLACK);
-        this.userData.borders = Hexagons.getBorderInteger(this.getPoint(),
-                (Point p) -> world.getTile(p).flatMap((Tile t) -> t.leader)
-                        .map((Player l) -> this.leader.map((Player l1) -> !l.equals(l1)).orElse(false)).orElse(false));
+        this.userData.borders = Hexagons.getBorderInteger(this.getPoint(), (Point p) -> this.leader.isPresent()
+                && !world.getTile(p).flatMap((Tile t) -> t.leader).equals(this.leader));
         if (iterate) {
             for (Point p : Hexagons.getNeighbors(this.getPoint(), 1)) {
                 world.getTile(p).ifPresent((Tile t1) -> t1.calculateBorders(world, false));
@@ -158,10 +157,10 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
-     * Bitwise ANDs this Tile's border integer for Patron domains
+     * Bitwise OR's this Tile's border integer for Patron domains
      */
     public void addDomainBorder(int border) {
-        this.userData.domainBorders &= border;
+        this.userData.domainBorders |= border;
     }
 
     /** {@inheritdoc} */
