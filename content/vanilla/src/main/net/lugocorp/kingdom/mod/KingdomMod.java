@@ -258,17 +258,19 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Stay a while and smell the roses";
                     e.blob.setMinimapColor(0x4dd349);
                 });
+        // TODO model this
         events.building.addEventHandler("Oasis", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.av, "forest");
+                    e.blob.setModelInstance(view.av, "oasis");
                     e.blob.desc = "Moments of respite from the overbearing sun";
                     e.blob.setMinimapColor(0x2c9965);
                 });
+        // TODO model this
         events.building.addEventHandler("Shrubland", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
-                    e.blob.setModelInstance(view.av, "tunal");
+                    e.blob.setModelInstance(view.av, "shrubland");
                     e.blob.desc = "Meadows in the middle of the desert";
                     e.blob.setMinimapColor(0x4dd349);
                 });
@@ -326,6 +328,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.race = PLASMOID;
                 });
+        // TODO model/redesign this
         events.unit.addEventHandler("Geomancer", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "This Raksha speaks to the stones";
@@ -352,6 +355,7 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.HEALING);
             e.blob.race = GNOME;
         });
+        // TODO model/redesign this
         events.unit.addEventHandler("Pickaxe Goblin", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -362,6 +366,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.MINING);
                     e.blob.race = GOBLIN;
                 });
+        // TODO model this
         events.unit.addEventHandler("Stalagmite Golem", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -419,6 +424,7 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.NATURE);
             e.blob.race = SPRITE;
         });
+        // TODO model/redesign this
         events.unit.addEventHandler("Pottery Ogre", "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -433,6 +439,7 @@ public class KingdomMod implements GameMod {
         /**
          * Non-playable units
          */
+        // TODO make this playable
         events.unit.addEventHandler("Crystal", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.setModelInstance(view.av, "crystal");
@@ -441,6 +448,7 @@ public class KingdomMod implements GameMod {
             e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
             e.blob.playable = false;
         });
+        // TODO make this playable
         events.unit.addEventHandler("Blob", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "A classic slime enemy";
