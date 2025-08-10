@@ -418,7 +418,6 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.MINING);
             e.blob.race = GOLEM;
         });
-        // TODO model this
         events.unit.addEventHandler("Al-Fikra", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
@@ -428,6 +427,16 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.TRADE);
             e.blob.race = TULPA;
         });
+        events.unit.addEventHandler("Condylure of the Star Nose", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "This Brownie is blind, but traverses the subterranean world with the aid of his nose";
+                    e.blob.setModelInstance(view.av, "condylure");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
+                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
+                    e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
+                    e.blob.race = BROWNIE;
+                });
         // TODO model this
         events.unit.addEventHandler("Lady Daumia", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -438,17 +447,6 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.HEALING);
             e.blob.race = ELF;
         });
-        // TODO model this
-        events.unit.addEventHandler("Condylure of the Star Nose", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "This Brownie is blind, but traverses the subterranean world with the aid of his nose";
-                    e.blob.setModelInstance(view.av, "placeholder1");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
-                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
-                    e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
-                    e.blob.race = BROWNIE;
-                });
 
         /**
          * Abilities
