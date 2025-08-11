@@ -437,11 +437,10 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
                     e.blob.race = BROWNIE;
                 });
-        // TODO model this
         events.unit.addEventHandler("Lady Daumia", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
             e.blob.desc = "Elven high missionary to Surgarde";
-            e.blob.setModelInstance(view.av, "placeholder2");
+            e.blob.setModelInstance(view.av, "daumia");
             e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
             e.blob.glyphs.set(Glyph.HEALING);
