@@ -16,7 +16,6 @@ import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
-import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Race;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -72,14 +71,13 @@ public class KingdomMod implements GameMod {
         sprites.register("sentinel", "fates", FateNode.WIDTH, FateNode.HEIGHT, 0, 1);
         sprites.register("usurper", "fates", FateNode.WIDTH, FateNode.HEIGHT, 1, 1);
         sprites.register("forager", "fates", FateNode.WIDTH, FateNode.HEIGHT, 2, 1);
-        sprites.register("teacher", "fates", FateNode.WIDTH, FateNode.HEIGHT, 3, 1);
     }
 
     /** {@inheritdoc} */
     @Override
     public void registerEvents(AllEventHandlers events) {
         /**
-         * Races
+         * SECTION 01 Races
          */
         final Race HUMAN = new Race("Human");
         final Race ELF = new Race("Elf");
@@ -114,7 +112,12 @@ public class KingdomMod implements GameMod {
         final Race GEMSTONE = new Race("Gemstone", ELEMENTAL);
 
         /**
-         * Default handlers
+         * SECTION 02 Tags
+         */
+        final String tag_fruit = "fruit";
+
+        /**
+         * SECTION 03 Default handlers
          */
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
@@ -127,57 +130,11 @@ public class KingdomMod implements GameMod {
         });
         events.unit.setDefaultHandler("CanEatEvent", (GameView view, Unit receiver, Event event) -> {
             Events.CanEatEvent e = (Events.CanEatEvent) event;
-            e.edible = e.item.tags.has("fruit");
+            e.edible = e.item.tags.has(tag_fruit);
         });
 
         /**
-         * Fates
-         */
-        events.fate.addEventHandler("The Raider", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
-            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("raider");
-            e.blob.desc.add("Playstyle: High-risk aggro");
-        });
-        events.fate.addEventHandler("The Merchant", "GenerateFateEvent",
-                (GameView view, Fate receiver, Event event) -> {
-                    Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of("merchant");
-                    e.blob.desc.add("Playstyle: Market control");
-                });
-        events.fate.addEventHandler("The Veteran", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
-            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("veteran");
-            e.blob.desc.add("Playstyle: Military production");
-        });
-        events.fate.addEventHandler("The Devout", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
-            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("devout");
-            e.blob.desc.add("Playstyle: Patron collection");
-        });
-        events.fate.addEventHandler("The Sentinel", "GenerateFateEvent",
-                (GameView view, Fate receiver, Event event) -> {
-                    Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of("sentinel");
-                    e.blob.desc.add("Playstyle: Defensive expansion");
-                });
-        events.fate.addEventHandler("The Usurper", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
-            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("usurper");
-            e.blob.desc.add("Playstyle: Early market bonus into unit production");
-        });
-        events.fate.addEventHandler("The Forager", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
-            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("forager");
-            e.blob.desc.add("Playstyle: Resource accumulation");
-        });
-        events.fate.addEventHandler("The Teacher", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
-            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-            e.blob.image = Optional.of("teacher");
-            e.blob.desc.add("Playstyle: Investment into a smaller group of elite units");
-        });
-
-        /**
-         * Tiles
+         * SECTION 04 Tiles
          */
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
@@ -219,7 +176,7 @@ public class KingdomMod implements GameMod {
         });
 
         /**
-         * Buildings
+         * SECTION 05 Buildings
          */
         events.building.addEventHandler("Mine", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
@@ -283,484 +240,41 @@ public class KingdomMod implements GameMod {
                 });
 
         /**
-         * Patrons
+         * SECTION 06 Patrons
          */
-        events.patron.addEventHandler("The Pond Troll", "GeneratePatronEvent",
+
+        // Joyous Reaper
+        // Great Corn Woman
+        // Lord Shui, Guardian of the River
+        // The Pond Troll
+        final String patron_pond_troll = "The Pond Troll";
+        events.patron.addEventHandler(patron_pond_troll, "GeneratePatronEvent",
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "pond-troll");
-                    e.blob.desc = "Generates auction points if it has a favorite player";
+                    e.blob.desc = "The favorite player's units can traverse water tiles and have a chance to harvest items when they do";
+                    // TODO implement me
                 });
-        events.patron.addEventHandler("The Pond Troll", "SpawnEvent", (GameView view, Patron receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
-        events.patron.addEventHandler("The Pond Troll", "TickEvent", (GameView view, Patron receiver, Event event) -> {
-            if (receiver.getFavoritePlayer().isPresent()) {
-                view.game.auctionPoints += 5;
-            }
-        });
-        events.patron.addEventHandler("The Shining Eyes", "GeneratePatronEvent",
+
+        // The Eternal Guardian
+        // Flutterwing
+        // Wise Mountain
+        // Wise Oak
+        // Ahn-Juné
+        // The Shining Eyes
+        final String patron_shining_eyes = "The Shining Eyes";
+        events.patron.addEventHandler(patron_shining_eyes, "GeneratePatronEvent",
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "shining-eyes");
                     e.blob.desc = "A floating pyramid thing";
+                    // TODO implement me
                 });
 
         /**
-         * Playable units
+         * SECTION 07 Items
          */
-        events.unit.addEventHandler("Sir Tlatec", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.av, "axolotl");
-            e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Swim");
-            e.blob.glyphs.set(Glyph.BATTLE);
-            e.blob.race = SALAMANDER;
-        });
-        events.unit.addEventHandler("Gloop the Adventurer", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.setModelInstance(view.av, "gloop");
-                    e.blob.desc = "This Plasmoid adventurer is eager to prove himself in the dungeons";
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.race = PLASMOID;
-                });
-        events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "A mysterious druid who rarely speaks";
-            e.blob.setModelInstance(view.av, "druid");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Plant Forest"), Optional.of("Slap"));
-            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-            e.blob.glyphs.set(Glyph.NATURE);
-            e.blob.race = SPRITE;
-        });
-        events.unit.addEventHandler("Frogger the Gnome", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "Just a little gnome and his frog";
-                    e.blob.setModelInstance(view.av, "frog-gnome");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Heal"), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, "Shrewd");
-                    e.blob.glyphs.set(Glyph.HEALING);
-                    e.blob.race = GNOME;
-                });
-        events.unit.addEventHandler("Golem of the Grotto", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "Bulky mountain golem with a meadow growing on its shoulder";
-                    e.blob.setModelInstance(view.av, "golem-grotto");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
-                    e.blob.race = GOLEM;
-                });
-        events.unit.addEventHandler("King Gargantos", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "Warrior-king of the Tortoise Kingdom";
-                    e.blob.setModelInstance(view.av, "gargantos");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
-                    e.blob.race = TORTUGAN;
-                });
-        events.unit.addEventHandler("Pumpkin Boy", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "He doesn't say much, he's just a little guy";
-            e.blob.setModelInstance(view.av, "pumpkin-boy");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Build Vault"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-            e.blob.glyphs.set(Glyph.NATURE);
-            e.blob.race = SPRITE;
-        });
-        events.unit.addEventHandler("Barometz", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "Nature-based unit";
-            e.blob.setModelInstance(view.av, "barometz");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-            e.blob.glyphs.set(Glyph.NATURE);
-            e.blob.race = SPRITE;
-        });
-        events.unit.addEventHandler("Beetlemoss", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "Nature-based unit";
-            e.blob.setModelInstance(view.av, "beetlemoss");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Pick Apples");
-            e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
-            e.blob.race = SPRITE;
-        });
-        events.unit.addEventHandler("Prismar", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.setModelInstance(view.av, "crystal");
-            e.blob.desc = "Mysterious floating sentient crystal being";
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
-            e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-            e.blob.race = GEMSTONE;
-        });
-        events.unit.addEventHandler("Blorp the Burning", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "A ravenous Plasmoid with an acidic body";
-                    e.blob.setModelInstance(view.av, "blob");
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.race = PLASMOID;
-                });
-        events.unit.addEventHandler("Stalagmus", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "A very pointy golem";
-            e.blob.setModelInstance(view.av, "stalagmus");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Slap"));
-            e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
-            e.blob.glyphs.set(Glyph.MINING);
-            e.blob.race = GOLEM;
-        });
-        events.unit.addEventHandler("Al-Fikra", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
-            e.blob.setModelInstance(view.av, "alfikra");
-            e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Make Money");
-            e.blob.glyphs.set(Glyph.TRADE);
-            e.blob.race = TULPA;
-        });
-        events.unit.addEventHandler("Condylure of the Star Nose", "GenerateUnitEvent",
-                (GameView view, Unit receiver, Event event) -> {
-                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.desc = "This Brownie is blind, but traverses the subterranean world with the aid of his nose";
-                    e.blob.setModelInstance(view.av, "condylure");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of("Dig Mine"), Optional.of("Repair Mine"));
-                    e.blob.setPassiveAbilities(view.game.generator, "Make Money", "Mine Coins");
-                    e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
-                    e.blob.race = BROWNIE;
-                });
-        events.unit.addEventHandler("Lady Daumia", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-            e.blob.desc = "Elven high missionary to Surgarde";
-            e.blob.setModelInstance(view.av, "daumia");
-            e.blob.setActiveAbilities(view.game.generator, Optional.of("Slap"), Optional.empty());
-            e.blob.setPassiveAbilities(view.game.generator, "Mine Coins");
-            e.blob.glyphs.set(Glyph.HEALING);
-            e.blob.race = ELF;
-        });
 
-        /**
-         * Abilities
-         */
-        // Slap
-        final String ability_slap = "Slap";
-        events.ability.addEventHandler(ability_slap, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    Damage dmg = new Damage(DamageType.IMPACT, 1);
-                    e.blob.desc = String.format("Deals %s", dmg);
-                });
-        events.ability.addEventHandler(ability_slap, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1)));
-
-        // Heal
-        final String ability_heal = "Heal";
-        events.ability.addEventHandler(ability_heal, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = "Heals 5 damage";
-                });
-        events.ability.addEventHandler(ability_heal, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
-
-        // Repair Mine
-        final String ability_repair_mine = "Repair Mine";
-        events.ability.addEventHandler(ability_repair_mine, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = "Heals a mine for 5 damage";
-                });
-        events.ability.addEventHandler(ability_repair_mine, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.healBuilding(view, receiver.wielder, 5,
-                        (Building b) -> b.name.equals("Mine")));
-
-        // Plant Forest
-        final String ability_plant_forest = "Plant Forest";
-        events.ability.addEventHandler(ability_plant_forest, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = "Plants a forest";
-                });
-        events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Forest",
-                        (Tile t) -> t.name.equals("Grassland")));
-
-        // Dig Mine
-        final String ability_dig_mine = "Dig Mine";
-        events.ability.addEventHandler(ability_dig_mine, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = "Digs a mine";
-                });
-        events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.build(view, receiver.wielder, "Mine", (Tile t) -> t.name.equals("Rock")));
-
-        // Build Vault
-        final String ability_build_vault = "Build Vault";
-        events.ability.addEventHandler(ability_build_vault, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = "Builds a vault";
-                });
-        events.ability.addEventHandler(ability_build_vault, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.build(view, receiver.wielder, "Vault", (Tile t) -> true));
-
-        // Mine Coins
-        final String ability_mine_coins = "Mine Coins";
-        events.ability.addEventHandler(ability_mine_coins, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Harvests gold coins from mines every 4 turns");
-                });
-        events.ability.addEventHandler(ability_mine_coins, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
-        events.ability.addEventHandler(ability_mine_coins, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
-                        "Gold Coin", (Building b) -> b.name.equals("Mine")));
-
-        // Pick Apples
-        final String ability_pick_apples = "Pick Apples";
-        events.ability.addEventHandler(ability_pick_apples, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Harvests apples from forests every 4 turns");
-                });
-        events.ability.addEventHandler(ability_pick_apples, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
-        events.ability.addEventHandler(ability_pick_apples, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder, "Apple",
-                        (Building b) -> b.name.equals("Forest")));
-
-        // Shrewd
-        final String ability_shrewd = "Shrewd";
-        events.ability.addEventHandler(ability_shrewd, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("+100 auction points from vaults every 4 turns");
-                });
-        events.ability.addEventHandler(ability_shrewd, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
-        events.ability.addEventHandler(ability_shrewd, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.doOnBuilding(view, receiver.wielder,
-                        (Building b) -> b.name.equals("Vault"), () -> {
-                            view.game.auctionPoints += 100;
-                        }));
-
-        // Swim
-        final String ability_swim = "Swim";
-        events.ability.addEventHandler(ability_swim, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("This unit can swim on water tiles");
-                });
-        events.ability.addEventHandler(ability_swim, "CanUnitMoveEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.CanUnitMoveEvent e = (Events.CanUnitMoveEvent) event;
-                    if (!e.canWalkOnTile && e.tile.name.equals("Water")) {
-                        e.canWalkOnTile = true;
-                    }
-                });
-
-        // Make Money
-        final String ability_make_money = "Make Money";
-        events.ability.addEventHandler(ability_make_money, "GenerateAbilityEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("+5 gold from mines every 4 turns");
-                });
-        events.ability.addEventHandler(ability_make_money, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
-        events.ability.addEventHandler(ability_make_money, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.doOnBuilding(view, receiver.wielder,
-                        (Building b) -> b.name.equals("Mine"),
-                        () -> receiver.wielder.getLeader().ifPresent((Player p) -> {
-                            p.gold += 5;
-                        })));
-
-        /**
-         * Artifacts
-         */
-        // Cho's Sigil of Haste
-        final String artifact_chos_sigil_of_haste = "Cho's Sigil of Haste";
-        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your healing glyph units get +1 movement speed";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "ArtifactClaimedEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
-                });
-        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "UnitMoveDistanceEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.HEALING)) {
-                        e.distance++;
-                    }
-                });
-
-        // Urdin's Scroll of Agility
-        final String artifact_urdins_scroll_of_agility = "Urdin's Scroll of Agility";
-        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your defense glyph units get +1 movement speed";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "ArtifactClaimedEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
-                });
-        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "UnitMoveDistanceEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.DEFENSE)) {
-                        e.distance++;
-                    }
-                });
-
-        events.artifact.addEventHandler("Sword of Aesethos", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your units have additional critical hit chance";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Kauna's Amulet", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Critical hits or heals don't remove any extra favor from your patrons";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Staff of Wurmdel", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your healing spells restore more health";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Aerog's Anvil", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Get some unit points when one of your units crafts an item";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Orb of Nerketo", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your units have additional visibility";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Shada's Flute", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your patrons generate unit points";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("Stones of Thudin", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your vaults take less damage";
-                    e.blob.image = Optional.of("golden feather");
-                });
-        events.artifact.addEventHandler("The Chasi Bones", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your nature glyph units have a chance to harvest an additional item";
-                    e.blob.image = Optional.of("golden feather");
-                });
-
-        // Ucha's Bowl of Plenty
-        final String artifact_uchas_bowl_of_plenty = "Ucha's Bowl of Plenty";
-        events.artifact.addEventHandler(artifact_uchas_bowl_of_plenty, "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "+1 option when selecting a new unit";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 2;
-                });
-        events.artifact.addEventHandler(artifact_uchas_bowl_of_plenty, "ArtifactClaimedEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    e.player.numRecruitmentOptions++;
-                });
-
-        events.artifact.addEventHandler("Nerketo's Helm", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Critical hits against your units are less effective (e.g. 1.1x damage rather than 1.5x)";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 2;
-                });
-        events.artifact.addEventHandler("Bounty of Ahn-June", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Trade glyph units on your vaults generate more auction points";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 2;
-                });
-        events.artifact.addEventHandler("Mark of Kung", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your battle glyph units get +1 movement speed";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 2;
-                });
-        events.artifact.addEventHandler("Chalco's Seal of Protection", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your travel glyph units take less damage";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 2;
-                });
-        events.artifact.addEventHandler("Poda's Elixir", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Some chance to not spend the glyph when you recruit a unit";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 2;
-                });
-        events.artifact.addEventHandler("Gaia's Effigy", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Extra unit points each turn";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 3;
-                });
-        events.artifact.addEventHandler("Rod of Adelon", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Chance to immediately recruit an enemy unit when you kill it (fresh copy with reset level/inventory)";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 3;
-                });
-        events.artifact.addEventHandler("Blade of Sanguinor", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your battle glyph units deal extra damage";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 3;
-                });
-        events.artifact.addEventHandler("Cask of Amontior", "GenerateArtifactEvent",
-                (GameView view, Artifact receiver, Event event) -> {
-                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "When your units generate favor it also decreases other players' favor with that patron";
-                    e.blob.image = Optional.of("golden feather");
-                    e.blob.chips = 3;
-                });
-
-        /**
-         * Items
-         */
         // Gold Coin
         final String item_gold_coin = "Gold Coin";
         events.item.addEventHandler(item_gold_coin, "GenerateItemEvent",
@@ -807,5 +321,1122 @@ public class KingdomMod implements GameMod {
                 });
         events.item.addEventHandler(item_health_potion, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> ItemLogic.potion(event, 10));
+
+        // Incense
+        // Sack of Gold
+        // Capital
+        // Shellcap Armor
+        // Stones
+        // Sword
+        // Shield
+        // Staff
+        // Prayer Beads
+        // Rites of the Merchant
+        // Rites of the Vendor
+        // Pocket
+        // Raider's Mail
+        // Sentinel's Helm
+        // Counselor's Ring
+        // Matron's Sash
+        // Wizard's Cap
+        // Youth's Pendant
+        // General's Trousers
+        // Courier's Boots
+        // Rogue's Gloves
+        // Scion's Beltbuckle
+        // Priest's Robes
+        // Acidic Solute
+        // Binding Solute
+        // Life-Giving Solute
+        // Blessed Solute
+        // Feather of Bravery
+        // Iron Beak Brace
+        // Hollow Bone Rattle
+        // Bag of Shiny Pebbles
+        // Thorny Rose Staff
+        // Overgrown Shield
+        // Sap of Unbreaking
+        // Sacred Pollen
+        // Advanced Spear
+        // Sentinel's Shield
+        // Healing Incantation
+        // Devout Incantation
+        // Great Hammer
+        // Battle Armaments
+        // Bandage Kit
+        // Dearly Held Idol
+        // Stoneshell Mace
+        // Shell Salve
+        // Shell-Sealing Goo
+        // Sacred Shell Rattle
+        // Blessed Charm
+        // Bloody Totem
+        // Phoenix Blossom
+        // Sling and Stone
+        // Life-Giving Elixir
+        // Blood-Thirsty Blade
+        // Blood-Soaked Mail
+        // Leather Armor
+        // Net Bag
+        // Iron Mace
+        // Guardian's Axe
+        // Grizzled Polearm
+        // Avenger's Blade
+        // Sorcerous Robes
+        // Shiny Brooch
+        // Rougish Sneaker
+        // Swift Cape
+        // Vagabond's Gloves
+        // Noble Spearhead
+        // Sacrificial Dagger
+        // Heavy Iron Platemail
+        // Keg of Strong Brew
+        // Pendant of Protection
+        // Charm of Connected Life
+        // Guardian's Tome
+        // Fine Mesh Chainmail
+        // Black Market Gauntlet
+        // Alloy Greaves
+        // Advanced Chainmail
+        // Saintly Helm
+        // Idol of Lordly Favor
+        // Sacrificial Club
+        // Spritely Ale
+        // Necklace of the Clear Mind
+        // Life-Giver's Shawl
+        // Ancient Tome of Healing
+        // Decorated Urn
+        // Devious Magic Wand
+        // Plainswalker's Cloak
+        // Gauntlet of Precious Light
+        // Noble Ruby Ring
+        // Priesthood Vestments
+        // Dwarf's Pickaxe
+        // Dragonkin's Helm
+        // Merfolk's Net
+        // Firbolg's Cloak
+        // Sprite's Gloves
+        // Brownie's Boots
+        // Raksha's Pendant
+        // Naga's Scepter
+        // Well-Crafted Bow
+        // Mycelium Ring
+        // Cyclical Rune
+        // Mercenary's Blade
+        // Wizard's Staff
+        // Floral seeds
+        // Arboreal seeds
+        // Arctic seeds
+        // Cactus seeds
+        // Pioneering seeds
+        // Digging Kit
+        // Telescope
+        // Ornate Boots
+        // Satchel
+        // Expertly Crafted Blade
+        // Queensguard Shield
+        // Arcane Wand
+        // Ancient Tome
+        // Vendor's Scales
+        // Merfolk Slippers
+        // Stygian Eye
+        // Ring of Life Eternal
+        // Truffle
+        // Scholarly Robes
+        // Sanguine Blade
+        // Necrotic Tome
+        // Thoughtform Sword
+        // Shield of the Subconscious
+        // Staff of Inner Peace
+        // Rod of Psychic Devotion
+        // Tree Trunk Club
+        // Castle Gate Aegis
+        // Vase of Sacred Waters
+        // Amulet of the Progenitors
+        // Sharpened Quartz
+        // Igneous Armaments
+        // Moss-covered Stone
+        // Glyphic Geode
+        // Self-Sustaining Soulstone
+        // Hero's Call
+
+        /**
+         * SECTION 08 Abilities
+         */
+
+        // Acid Skin
+        final String ability_acid_skin = "Acid Skin";
+        events.ability.addEventHandler(ability_acid_skin, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Adjacent attackers take damage");
+                    // TODO implement me
+                });
+
+        // Bite
+        final String ability_bite = "Bite";
+        events.ability.addEventHandler(ability_bite, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Basic attack");
+                    // TODO implement me
+                });
+
+        // Build Healing Fountain
+        final String ability_build_healing_fountain = "Build Healing Fountain";
+        events.ability.addEventHandler(ability_build_healing_fountain, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Constructs a Healing Fountain");
+                    // TODO implement me
+                });
+
+        // Build Vault
+        final String ability_build_vault = "Build Vault";
+        events.ability.addEventHandler(ability_build_vault, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Builds a vault";
+                });
+        events.ability.addEventHandler(ability_build_vault, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.build(view, receiver.wielder, "Vault", (Tile t) -> true));
+
+        // Collapse Mine
+        final String ability_collapse_mine = "Collapse Mine";
+        events.ability.addEventHandler(ability_collapse_mine, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format(
+                            "Target a mine occupied by an enemy unit. The unit, mine, and any adjacent enemy units all take damage.");
+                    // TODO implement me
+                });
+
+        // Combat Loot
+        final String ability_combat_loot = "Combat Loot";
+        events.ability.addEventHandler(ability_combat_loot, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Attacks do more damage if this unit has a hauled item");
+                    // TODO implement me
+                });
+
+        // Crystal Skin
+        final String ability_crystal_skin = "Crystal Skin";
+        events.ability.addEventHandler(ability_crystal_skin, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Extra defense");
+                    // TODO implement me
+                });
+
+        // Deposit Seeds
+        final String ability_deposit_seeds = "Deposit Seeds";
+        events.ability.addEventHandler(ability_deposit_seeds, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Chance to spawn a meadow when this unit moves");
+                    // TODO implement me
+                });
+
+        // Dig Mine
+        final String ability_dig_mine = "Dig Mine";
+        events.ability.addEventHandler(ability_dig_mine, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Digs a mine";
+                });
+        events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.build(view, receiver.wielder, "Mine", (Tile t) -> t.name.equals("Rock")));
+
+        // Dungeon Delve
+        final String ability_dungeon_delve = "Dungeon Delve";
+        events.ability.addEventHandler(ability_dungeon_delve, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Attack that generates items when used on an active building");
+                    // TODO implement me
+                });
+
+        // Edible
+        final String ability_edible = "Edible";
+        events.ability.addEventHandler(ability_edible, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Generates food");
+                    // TODO implement me
+                });
+
+        // Fire Cannon
+        final String ability_fire_cannon = "Fire Cannon";
+        events.ability.addEventHandler(ability_fire_cannon, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Ranged attack which deals extra damage against buildings");
+                    // TODO implement me
+                });
+
+        // Fire Laser
+        final String ability_fire_laser = "Fire Laser";
+        events.ability.addEventHandler(ability_fire_laser, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Ranged attack which damages several units in a line");
+                    // TODO implement me
+                });
+
+        // Green Fortress
+        final String ability_green_fortress = "Green Fortress";
+        events.ability.addEventHandler(ability_green_fortress, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Extra defense on forests");
+                    // TODO implement me
+                });
+
+        // Heal Wounds
+        final String ability_heal_wounds = "Heal Wounds";
+        events.ability.addEventHandler(ability_heal_wounds, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Heals 5 damage";
+                });
+        events.ability.addEventHandler(ability_heal_wounds, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
+
+        // Hug
+        final String ability_hug = "Hug";
+        events.ability.addEventHandler(ability_hug, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Heals the target adjacent unit for a few hit points");
+                    // TODO implement me
+                });
+
+        // Hungry Frog Magic
+        final String ability_hungry_frog_magic = "Hungry Frog Magic";
+        events.ability.addEventHandler(ability_hungry_frog_magic, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Consumes all hauled items and heals adjacent friendly units");
+                    // TODO implement me
+                });
+
+        // Hunt Fish
+        final String ability_hunt_fish = "Hunt Fish";
+        events.ability.addEventHandler(ability_hunt_fish, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests fish from water tiles");
+                    // TODO implement me
+                });
+
+        // Hurl Rock
+        final String ability_hurl_rock = "Hurl Rock";
+        events.ability.addEventHandler(ability_hurl_rock, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Ranged attack with chance to stun");
+                    // TODO implement me
+                });
+
+        // Life Aura
+        final String ability_life_aura = "Life Aura";
+        events.ability.addEventHandler(ability_life_aura, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Generates unit points");
+                    // TODO implement me
+                });
+
+        // Liquifying Presence
+        final String ability_liquifying_presence = "Liquifying Presence";
+        events.ability.addEventHandler(ability_liquifying_presence, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Deals damage to an occupied passive building");
+                    // TODO implement me
+                });
+
+        // Local Defender
+        final String ability_local_defender = "Local Defender";
+        events.ability.addEventHandler(ability_local_defender, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Adjacent passive buildings are treated as active");
+                    // TODO implement me
+                });
+
+        // Market Boom
+        final String ability_market_boom = "Market Boom";
+        events.ability.addEventHandler(ability_market_boom, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Attacks generate auction points");
+                    // TODO implement me
+                });
+
+        // Market Indicator
+        final String ability_market_indicator = "Market Indicator";
+        events.ability.addEventHandler(ability_market_indicator, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Generates auction points when adjacent to a vault");
+                    // TODO implement me
+                });
+
+        // Mine Gems
+        final String ability_mine_gems = "Mine Gems";
+        events.ability.addEventHandler(ability_mine_gems, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests gems from mines");
+                    // TODO implement me
+                });
+
+        // Mine Gold
+        final String ability_mine_gold = "Mine Gold";
+        events.ability.addEventHandler(ability_mine_gold, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests gold coins from mines every 4 turns");
+                });
+        events.ability.addEventHandler(ability_mine_gold, "SpawnEvent", (GameView view, Ability receiver,
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
+        events.ability.addEventHandler(ability_mine_gold, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
+                        "Gold Coin", (Building b) -> b.name.equals("Mine")));
+
+        // Mountain Strider
+        final String ability_mountain_strider = "Mountain Strider";
+        events.ability.addEventHandler(ability_mountain_strider, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("This unit can traverse mountains");
+                    // TODO implement me
+                });
+
+        // Night Vision
+        final String ability_night_vision = "Night Vision";
+        events.ability.addEventHandler(ability_night_vision, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("This unit can see normally at night");
+                    // TODO implement me
+                });
+
+        // Pick Apples
+        final String ability_pick_apples = "Pick Apples";
+        events.ability.addEventHandler(ability_pick_apples, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests apples from forests every 4 turns");
+                });
+        events.ability.addEventHandler(ability_pick_apples, "SpawnEvent", (GameView view, Ability receiver,
+                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
+        events.ability.addEventHandler(ability_pick_apples, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder, "Apple",
+                        (Building b) -> b.name.equals("Forest")));
+
+        // Pick Flowers
+        final String ability_pick_flowers = "Pick Flowers";
+        events.ability.addEventHandler(ability_pick_flowers, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests flowers from meadows every 4 turns");
+                    // TODO implement me
+                });
+
+        // Plant Forest
+        final String ability_plant_forest = "Plant Forest";
+        events.ability.addEventHandler(ability_plant_forest, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = "Plants a forest";
+                });
+        events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Forest",
+                        (Tile t) -> t.name.equals("Grassland")));
+
+        // Plant Meadow
+        final String ability_plant_meadow = "Plant Meadow";
+        events.ability.addEventHandler(ability_plant_meadow, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Plants a meadow");
+                    // TODO implement me
+                });
+
+        // Plate Mail
+        final String ability_plate_mail = "Plate Mail";
+        events.ability.addEventHandler(ability_plate_mail, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Extra defense");
+                    // TODO implement me
+                });
+
+        // Regeneration
+        final String ability_regeneration = "Regeneration";
+        events.ability.addEventHandler(ability_regeneration, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("This unit heals a little each turn");
+                    // TODO implement me
+                });
+
+        // Revenge of the Forest
+        final String ability_revenge_of_the_forest = "Revenge of the Forest";
+        events.ability.addEventHandler(ability_revenge_of_the_forest, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Attack that deals more damage when on a forest");
+                    // TODO implement me
+                });
+
+        // Running Through Nature
+        final String ability_running_through_nature = "Running Through Nature";
+        events.ability.addEventHandler(ability_running_through_nature, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("This unit is faster on passive buildings");
+                    // TODO implement me
+                });
+
+        // Self Sacrifice
+        final String ability_self_sacrifice = "Self Sacrifice";
+        events.ability.addEventHandler(ability_self_sacrifice, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Transfers all their health but 1 to the target");
+                    // TODO implement me
+                });
+
+        // Sacred Seeds
+        final String ability_sacred_seeds = "Sacred Seeds";
+        events.ability.addEventHandler(ability_sacred_seeds, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Harvests seeds from meadows that can be consumed to generate favor");
+                    // TODO implement me
+                });
+
+        // Shell Defense
+        final String ability_shell_defense = "Shell Defense";
+        events.ability.addEventHandler(ability_shell_defense, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Extra defense");
+                    // TODO implement me
+                });
+
+        // Slime Shot
+        final String ability_slime_shot = "Slime Shot";
+        events.ability.addEventHandler(ability_slime_shot, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Ranged attack");
+                    // TODO implement me
+                });
+
+        // Smash
+        final String ability_smash = "Smash";
+        events.ability.addEventHandler(ability_smash, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Attack with a chance to stun");
+                    // TODO implement me
+                });
+
+        // Stone Defense
+        final String ability_stone_defense = "Stone Defense";
+        events.ability.addEventHandler(ability_stone_defense, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Extra defense");
+                    // TODO implement me
+                });
+
+        // Subterranean Potions
+        final String ability_subterranean_potions = "Subterranean Potions";
+        events.ability.addEventHandler(ability_subterranean_potions, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("Generates Health Potions from Mines");
+                    // TODO implement me
+                });
+
+        // Swim
+        final String ability_swim = "Swim";
+        events.ability.addEventHandler(ability_swim, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("This unit can swim on water tiles");
+                });
+        events.ability.addEventHandler(ability_swim, "CanUnitMoveEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.CanUnitMoveEvent e = (Events.CanUnitMoveEvent) event;
+                    if (!e.canWalkOnTile && e.tile.name.equals("Water")) {
+                        e.canWalkOnTile = true;
+                    }
+                });
+
+        // Sword Slash
+        final String ability_sword_slash = "Sword Slash";
+        events.ability.addEventHandler(ability_sword_slash, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    Damage dmg = new Damage(DamageType.IMPACT, 1);
+                    e.blob.desc = String.format("Deals %s", dmg);
+                });
+        events.ability.addEventHandler(ability_sword_slash, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1)));
+
+        /**
+         * SECTION 09 Units
+         */
+
+        // Knuckleheads
+        // Gorax the Dragon Knight
+        // Equinox
+        // Elder Chumsa
+        // Gemrock
+        // Glittersnout
+        // Sir Tlatec
+        events.unit.addEventHandler("Sir Tlatec", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.setModelInstance(view.av, "axolotl");
+            e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_sword_slash), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, ability_swim, ability_hunt_fish, ability_plate_mail,
+                    ability_regeneration);
+            e.blob.glyphs.set(Glyph.BATTLE);
+            e.blob.race = SALAMANDER;
+        });
+
+        // Cenuok the Battle Grue
+        // Beetlemoss
+        events.unit.addEventHandler("Beetlemoss", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "This nature spirit guards an ancient forest in Eaglehaven";
+            e.blob.setModelInstance(view.av, "beetlemoss");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_fire_cannon),
+                    Optional.of(ability_plant_forest));
+            e.blob.setPassiveAbilities(view.game.generator, ability_pick_apples, ability_mine_gems);
+            e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
+            e.blob.race = SPRITE;
+        });
+
+        // Gloop the Adventurer
+        events.unit.addEventHandler("Gloop the Adventurer", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.setModelInstance(view.av, "gloop");
+                    e.blob.desc = "This Plasmoid adventurer is eager to prove themself in the dungeons";
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_sword_slash),
+                            Optional.of(ability_dungeon_delve));
+                    e.blob.setPassiveAbilities(view.game.generator, ability_combat_loot, ability_night_vision,
+                            ability_regeneration);
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
+                    // TODO large inventory
+                    e.blob.race = PLASMOID;
+                });
+
+        // Dominus the Lich
+        // Graymaw
+        // Roseris Thorn-hoof
+        //
+        //
+        //
+        //
+        // Maekuro the Mighty
+        // Garudee
+        //
+        //
+        // Lost Golem
+        // Samara
+        // Golem of the Grotto
+        events.unit.addEventHandler("Golem of the Grotto", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "This golem wanders the rocky peaks where it was forged long ago";
+                    e.blob.setModelInstance(view.av, "golem-grotto");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_smash),
+                            Optional.of(ability_plant_meadow));
+                    e.blob.setPassiveAbilities(view.game.generator, ability_mountain_strider, ability_local_defender);
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
+                    // TODO large health pool
+                    e.blob.race = GOLEM;
+                });
+
+        // Puffshroom
+        // Lord Tyson
+        // Courrier Grog
+        // Nizhaad Windwalker
+        // Condylure of the Star Nose
+        events.unit.addEventHandler("Condylure of the Star Nose", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "This Brownie is blind, but traverses the subterranean world with the aid of his nose";
+                    e.blob.setModelInstance(view.av, "condylure");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_build_healing_fountain),
+                            Optional.of(ability_dig_mine));
+                    e.blob.setPassiveAbilities(view.game.generator, ability_night_vision, ability_mine_gems);
+                    e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
+                    e.blob.race = BROWNIE;
+                });
+
+        // Huiying the Alchemist
+        // Lady Daumia
+        events.unit.addEventHandler("Lady Daumia", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "Elven high missionary to Surgarde";
+            e.blob.setModelInstance(view.av, "daumia");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_heal_wounds),
+                    Optional.of(ability_self_sacrifice));
+            e.blob.setPassiveAbilities(view.game.generator, ability_night_vision, ability_life_aura);
+            e.blob.glyphs.set(Glyph.HEALING);
+            e.blob.race = ELF;
+        });
+
+        // Zen Hito the Kappa
+        // Gibrax the Everlasting
+        // Passiflor
+        // Frogger the Gnome
+        events.unit.addEventHandler("Frogger the Gnome", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "Just a little Gnome and his frog";
+                    e.blob.setModelInstance(view.av, "frog-gnome");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_heal_wounds),
+                            Optional.of(ability_hungry_frog_magic));
+                    e.blob.setPassiveAbilities(view.game.generator, ability_pick_flowers, ability_swim);
+                    e.blob.glyphs.set(Glyph.HEALING);
+                    // TODO large inventory
+                    e.blob.race = GNOME;
+                });
+
+        // Garax
+        // Stalagmus
+        events.unit.addEventHandler("Stalagmus", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "Enchanted waters accumulate into this Golem's bowl-shaped body";
+            e.blob.setModelInstance(view.av, "stalagmus");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_dig_mine),
+                    Optional.of(ability_hurl_rock));
+            e.blob.setPassiveAbilities(view.game.generator, ability_night_vision, ability_stone_defense,
+                    ability_mine_gems, ability_mine_gold, ability_subterranean_potions);
+            e.blob.glyphs.set(Glyph.MINING);
+            e.blob.race = GOLEM;
+        });
+
+        // Glimmer
+        // Grizzlemane the Mycoweaver
+        // Magicad
+        // The Druid
+        events.unit.addEventHandler("The Druid", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "A mysterious Druid who rarely speaks";
+            e.blob.setModelInstance(view.av, "druid");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_plant_forest),
+                    Optional.of(ability_revenge_of_the_forest));
+            e.blob.setPassiveAbilities(view.game.generator, ability_pick_apples, ability_night_vision,
+                    ability_green_fortress);
+            e.blob.glyphs.set(Glyph.NATURE);
+            // TODO high vision
+            e.blob.race = SPRITE;
+        });
+
+        // Bluefeathers
+        // Broker Quercia
+        // Oystermane
+        // Matilda the Merchant
+        // Thoughtform
+        // Akatash the Trader
+        // Ansuagion the Gilded
+        // Blorp the Burning
+        events.unit.addEventHandler("Blorp the Burning", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "A ravenous Plasmoid with an acidic body";
+                    e.blob.setModelInstance(view.av, "blob");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_slime_shot), Optional.empty());
+                    e.blob.setPassiveAbilities(view.game.generator, ability_acid_skin, ability_liquifying_presence);
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
+                    // TODO slow, large health pool
+                    e.blob.race = PLASMOID;
+                });
+        // Sathra the Flame Caster
+        // Dendra Ivy
+        // Trina the Ettin
+        // Prismar
+        events.unit.addEventHandler("Prismar", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.setModelInstance(view.av, "crystal");
+            e.blob.desc = "This Gemstone can focus light into powerful attacks";
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_fire_laser),
+                    Optional.of(ability_collapse_mine));
+            e.blob.setPassiveAbilities(view.game.generator, ability_crystal_skin, ability_night_vision,
+                    ability_mine_gems);
+            e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
+            e.blob.race = GEMSTONE;
+        });
+
+        //
+        // Ariala the Mage
+        //
+        //
+        //
+        // Halifax
+        // Glub Glub
+        // Galygos the Juggernaut
+        // Defender Cuauhtli
+        // Gilded Cho'chal
+        // Soothing Gills
+        // Pumpkin Boy
+        events.unit.addEventHandler("Pumpkin Boy", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "He doesn't say much, he's just a little guy";
+            e.blob.setModelInstance(view.av, "pumpkin-boy");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_plant_meadow), Optional.of(ability_hug));
+            e.blob.setPassiveAbilities(view.game.generator, ability_night_vision, ability_regeneration,
+                    ability_running_through_nature, ability_sacred_seeds);
+            e.blob.glyphs.set(Glyph.NATURE);
+            // TODO large inventory
+            e.blob.race = SPRITE;
+        });
+
+        // Barometz
+        events.unit.addEventHandler("Barometz", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "This sheep-like Sprite blooms with delicious fruit";
+            e.blob.setModelInstance(view.av, "barometz");
+            e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_bite), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, ability_regeneration, ability_edible,
+                    ability_deposit_seeds);
+            e.blob.glyphs.set(Glyph.NATURE);
+            // TODO large inventory
+            e.blob.race = SPRITE;
+        });
+
+        // Xella the Accursed
+        //
+        // Al-Fikra
+        events.unit.addEventHandler("Al-Fikra", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+            e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
+            e.blob.setModelInstance(view.av, "alfikra");
+            e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
+            e.blob.setPassiveAbilities(view.game.generator, ability_regeneration, ability_market_indicator);
+            e.blob.glyphs.set(Glyph.TRADE);
+            // TODO fast, high vision, large inventory
+            e.blob.race = TULPA;
+        });
+
+        // Goldtooth
+        // The Necromancer
+        // Lurch
+        // Garulax
+        // Patagan
+        // The Pumpkin King
+        // Little Buck
+        // Viraqa Under the Mountain
+        // Castros Waterpaw
+        // Champion Jenid
+        // Badroch the Pack Grue
+        // Guard Captain Sentrina
+        // Barbs
+        // Yalitza
+        // Old Man Mosscloak
+        //
+        //
+        // King Gargantos
+        events.unit.addEventHandler("King Gargantos", "GenerateUnitEvent",
+                (GameView view, Unit receiver, Event event) -> {
+                    Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
+                    e.blob.desc = "Warrior-king of the Tortoise Kingdom";
+                    e.blob.setModelInstance(view.av, "gargantos");
+                    e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_smash),
+                            Optional.of(ability_build_vault));
+                    e.blob.setPassiveAbilities(view.game.generator, ability_shell_defense, ability_market_boom,
+                            ability_swim);
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
+                    // TODO large health pool, hungry
+                    e.blob.race = TORTUGAN;
+                });
+
+        //
+        // Wuraj the Blessed
+        // Karina Brightfeather
+        // Photali
+        //
+        // Razma
+        // Theressa the Rover
+        //
+        //
+        // Disastra
+        // Chicao
+        // Alaistar and Wurmdel
+        // Mi'chalb Lightfoot
+
+        /**
+         * SECTION 10 Artifacts
+         */
+
+        // Cho's Sigil of Haste
+        final String artifact_chos_sigil_of_haste = "Cho's Sigil of Haste";
+        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your healing glyph units get +1 movement speed";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                });
+        events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "UnitMoveDistanceEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.HEALING)) {
+                        e.distance++;
+                    }
+                });
+
+        // Urdin's Scroll of Agility
+        final String artifact_urdins_scroll_of_agility = "Urdin's Scroll of Agility";
+        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your defense glyph units get +1 movement speed";
+                    e.blob.image = Optional.of("golden feather");
+                });
+        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                });
+        events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "UnitMoveDistanceEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.DEFENSE)) {
+                        e.distance++;
+                    }
+                });
+
+        // Sword of Aesethos
+        events.artifact.addEventHandler("Sword of Aesethos", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your units have additional critical hit chance";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // Kauna's Amulet
+        events.artifact.addEventHandler("Kauna's Amulet", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your units within a patron's domain have extra defense";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // Staff of Wurmdel
+        events.artifact.addEventHandler("Staff of Wurmdel", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your healing spells restore more health";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // Tome of Morun
+        events.artifact.addEventHandler("Tome of Morun", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Chance to spawn a glyph under your unit when it kills an enemy";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // Orb of Nerketo
+        events.artifact.addEventHandler("Orb of Nerketo", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your units have additional visibility";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // Shada's Flute
+        events.artifact.addEventHandler("Shada's Flute", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your patrons generate unit points";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // Stones of Thudin
+        events.artifact.addEventHandler("Stones of Thudin", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your vaults take less damage";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // The Chasi Bones
+        events.artifact.addEventHandler("The Chasi Bones", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your nature glyph units have a chance to harvest an additional item";
+                    e.blob.image = Optional.of("golden feather");
+                });
+
+        // Ucha's Bowl of Plenty
+        final String artifact_uchas_bowl_of_plenty = "Ucha's Bowl of Plenty";
+        events.artifact.addEventHandler(artifact_uchas_bowl_of_plenty, "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "+1 option when selecting a new unit";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+        events.artifact.addEventHandler(artifact_uchas_bowl_of_plenty, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    e.player.numRecruitmentOptions++;
+                });
+
+        // Nerketo's Helm
+        events.artifact.addEventHandler("Nerketo's Helm", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Critical hits against your units are less effective (e.g. 1.1x damage rather than 1.5x)";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+
+        // Bounty of Ahn-June
+        events.artifact.addEventHandler("Bounty of Ahn-June", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Trade glyph units on your vaults generate more auction points";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+
+        // Mark of Kung
+        events.artifact.addEventHandler("Mark of Kung", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your battle glyph units get +1 movement speed";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+
+        // Chalco's Seal of Protection
+        events.artifact.addEventHandler("Chalco's Seal of Protection", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your travel glyph units take less damage";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+
+        // Poda's Elixir
+        events.artifact.addEventHandler("Poda's Elixir", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Some chance to not spend the glyph when you recruit a unit";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 2;
+                });
+
+        // Gaia's Effigy
+        events.artifact.addEventHandler("Gaia's Effigy", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Extra unit points each turn";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
+                });
+
+        // Rod of Adelon
+        events.artifact.addEventHandler("Rod of Adelon", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Chance to immediately recruit an enemy unit when you kill it";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
+                });
+
+        // Blade of Sanguinor
+        events.artifact.addEventHandler("Blade of Sanguinor", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Your battle glyph units deal extra damage";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
+                });
+
+        // Cask of Amontior
+        events.artifact.addEventHandler("Cask of Amontior", "GenerateArtifactEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
+                    e.blob.desc = "Unoccupied tiles under your control also provide favor in a patron's domain";
+                    e.blob.image = Optional.of("golden feather");
+                    e.blob.chips = 3;
+                });
+
+        /**
+         * SECTION 11 Fates
+         */
+
+        // The Raider
+        events.fate.addEventHandler("The Raider", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("raider");
+            e.blob.desc.add("Playstyle: High-risk aggro");
+        });
+
+        // The Merchant
+        events.fate.addEventHandler("The Merchant", "GenerateFateEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+                    e.blob.image = Optional.of("merchant");
+                    e.blob.desc.add("Playstyle: Market control");
+                });
+
+        // The Veteran
+        events.fate.addEventHandler("The Veteran", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("veteran");
+            e.blob.desc.add("Playstyle: Military production");
+        });
+
+        // The Devout
+        events.fate.addEventHandler("The Devout", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("devout");
+            e.blob.desc.add("Playstyle: Patron collection");
+        });
+
+        // The Sentinel
+        events.fate.addEventHandler("The Sentinel", "GenerateFateEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+                    e.blob.image = Optional.of("sentinel");
+                    e.blob.desc.add("Playstyle: Defensive expansion");
+                });
+
+        // The Usurper
+        events.fate.addEventHandler("The Usurper", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("usurper");
+            e.blob.desc.add("Playstyle: Early market bonus into unit production");
+        });
+
+        // The Forager
+        events.fate.addEventHandler("The Forager", "GenerateFateEvent", (GameView view, Fate receiver, Event event) -> {
+            Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
+            e.blob.image = Optional.of("forager");
+            e.blob.desc.add("Playstyle: Resource accumulation");
+        });
     }
 }
