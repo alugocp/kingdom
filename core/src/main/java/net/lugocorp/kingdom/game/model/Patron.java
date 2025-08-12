@@ -24,6 +24,7 @@ public class Patron extends Building {
     private final Map<Player, Integer> favor = new HashMap<>();
     private final Set<Point> domain = new HashSet<>();
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
+    public String preference = "";
 
     Patron(String name, int x, int y) {
         super(name, x, y);
@@ -139,7 +140,8 @@ public class Patron extends Building {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         Optional<Player> favorite = this.getFavoritePlayer();
-        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc));
+        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
+                .add(new TextNode(view.av, String.format("Preferred units: %s", this.preference)));
         if (this.favor.size() > 0) {
             for (Player k : this.favor.keySet()) {
                 String label = String.format("%s: %d", k.name, this.favor.get(k));

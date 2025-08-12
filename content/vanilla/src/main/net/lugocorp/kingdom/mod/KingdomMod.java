@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.combat.Damage.DamageType;
 import net.lugocorp.kingdom.game.core.AbilityLogic;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.core.ItemLogic;
+import net.lugocorp.kingdom.game.core.UnitLogic;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
@@ -119,8 +120,12 @@ public class KingdomMod implements GameMod {
         /**
          * SECTION 03 Default handlers
          */
+
+        // GetsHungry
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
+
+        // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
             if (receiver.getLeader().isPresent()) {
                 receiver.loseLoyalty(view.game, 1);
@@ -128,37 +133,55 @@ public class KingdomMod implements GameMod {
                 ((Events.RepeatedEvent) event).repeat = false;
             }
         });
+
+        // CanEatEvent
         events.unit.setDefaultHandler("CanEatEvent", (GameView view, Unit receiver, Event event) -> {
             Events.CanEatEvent e = (Events.CanEatEvent) event;
             e.edible = e.item.tags.has(tag_fruit);
         });
 
+        // UnitMoveDistanceEvent
+        events.unit.setDefaultHandler("UnitMoveDistanceEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+            e.distance = 2;
+        });
+
         /**
          * SECTION 04 Tiles
          */
+
+        // Grassland
         events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0x2c9965);
         });
+
+        // Rock
         events.tile.addEventHandler("Rock", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0x666666);
             e.blob.setMaterial("rock");
         });
+
+        // Sand
         events.tile.addEventHandler("Sand", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0xc7c567);
             e.blob.setMaterial("sand");
         });
+
+        // Snow
         events.tile.addEventHandler("Snow", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0xffffff);
             e.blob.setMaterial("snow");
         });
+
+        // Water
         events.tile.addEventHandler("Water", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "water");
@@ -166,6 +189,8 @@ public class KingdomMod implements GameMod {
             e.blob.setObstacle(true);
             e.blob.setWave(true);
         });
+
+        // Lava
         events.tile.addEventHandler("Lava", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "water");
@@ -178,6 +203,8 @@ public class KingdomMod implements GameMod {
         /**
          * SECTION 05 Buildings
          */
+
+        // Mine
         events.building.addEventHandler("Mine", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -185,6 +212,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Mines provide valuables like gold coins";
                     e.blob.setActive();
                 });
+
+        // Vault
         events.building.addEventHandler("Vault", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -193,6 +222,8 @@ public class KingdomMod implements GameMod {
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.setActive();
                 });
+
+        // Forest
         events.building.addEventHandler("Forest", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -200,6 +231,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Don't miss the forest for the trees";
                     e.blob.setMinimapColor(0x257d53);
                 });
+
+        // Taiga
         events.building.addEventHandler("Taiga", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -208,6 +241,8 @@ public class KingdomMod implements GameMod {
                     e.blob.setMinimapColor(0xb4c3c7);
                     e.blob.setMaterial("taiga");
                 });
+
+        // Meadow
         events.building.addEventHandler("Meadow", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -215,6 +250,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Stay a while and smell the roses";
                     e.blob.setMinimapColor(0x4dd349);
                 });
+
+        // Oasis
         events.building.addEventHandler("Oasis", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -222,6 +259,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Moments of respite from the overbearing sun";
                     e.blob.setMinimapColor(0x2c9965);
                 });
+
+        // Shrubland
         events.building.addEventHandler("Shrubland", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -229,6 +268,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Meadows in the middle of the desert";
                     e.blob.setMinimapColor(0x4dd349);
                 });
+
+        // Mountain
         events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
@@ -253,6 +294,8 @@ public class KingdomMod implements GameMod {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "pond-troll");
                     e.blob.desc = "The favorite player's units can traverse water tiles and have a chance to harvest items when they do";
+                    e.blob.preference = "Units that cannot swim";
+                    e.blob.isPreferredUnitType = (Unit u) -> !u.hasPassiveAbility("Swim");
                     // TODO implement me
                 });
 
@@ -268,6 +311,8 @@ public class KingdomMod implements GameMod {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "shining-eyes");
                     e.blob.desc = "A floating pyramid thing";
+                    e.blob.preference = "Units with the healing glyph";
+                    e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
                     // TODO implement me
                 });
 
@@ -302,10 +347,10 @@ public class KingdomMod implements GameMod {
         final String item_apple = "Apple";
         events.item.addEventHandler(item_apple, "GenerateItemEvent", (GameView view, Item receiver, Event event) -> {
             Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
-            e.blob.tags.add("fruit");
             e.blob.desc = "Consume to stave off hunger";
             e.blob.icon = Optional.of("apple");
             e.blob.gold = 1;
+            e.blob.tags.add(tag_fruit);
         });
         events.item.addEventHandler(item_apple, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> ItemLogic.food(view, event));
@@ -937,7 +982,8 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, ability_combat_loot, ability_night_vision,
                             ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    // TODO large inventory
+                    e.blob.combat.health.setMax(40);
+                    e.blob.haul.setMax(12);
                     e.blob.race = PLASMOID;
                 });
 
@@ -964,7 +1010,7 @@ public class KingdomMod implements GameMod {
                             Optional.of(ability_plant_meadow));
                     e.blob.setPassiveAbilities(view.game.generator, ability_mountain_strider, ability_local_defender);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
-                    // TODO large health pool
+                    e.blob.combat.health.setMax(80);
                     e.blob.race = GOLEM;
                 });
 
@@ -1011,7 +1057,7 @@ public class KingdomMod implements GameMod {
                             Optional.of(ability_hungry_frog_magic));
                     e.blob.setPassiveAbilities(view.game.generator, ability_pick_flowers, ability_swim);
                     e.blob.glyphs.set(Glyph.HEALING);
-                    // TODO large inventory
+                    e.blob.haul.setMax(12);
                     e.blob.race = GNOME;
                 });
 
@@ -1042,7 +1088,7 @@ public class KingdomMod implements GameMod {
             e.blob.setPassiveAbilities(view.game.generator, ability_pick_apples, ability_night_vision,
                     ability_green_fortress);
             e.blob.glyphs.set(Glyph.NATURE);
-            // TODO high vision
+            e.blob.visibleRadius = 4;
             e.blob.race = SPRITE;
         });
 
@@ -1062,7 +1108,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setActiveAbilities(view.game.generator, Optional.of(ability_slime_shot), Optional.empty());
                     e.blob.setPassiveAbilities(view.game.generator, ability_acid_skin, ability_liquifying_presence);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    // TODO slow, large health pool
+                    e.blob.combat.health.setMax(80);
                     e.blob.race = PLASMOID;
                 });
         // Sathra the Flame Caster
@@ -1101,7 +1147,7 @@ public class KingdomMod implements GameMod {
             e.blob.setPassiveAbilities(view.game.generator, ability_night_vision, ability_regeneration,
                     ability_running_through_nature, ability_sacred_seeds);
             e.blob.glyphs.set(Glyph.NATURE);
-            // TODO large inventory
+            e.blob.haul.setMax(12);
             e.blob.race = SPRITE;
         });
 
@@ -1114,7 +1160,7 @@ public class KingdomMod implements GameMod {
             e.blob.setPassiveAbilities(view.game.generator, ability_regeneration, ability_edible,
                     ability_deposit_seeds);
             e.blob.glyphs.set(Glyph.NATURE);
-            // TODO large inventory
+            e.blob.haul.setMax(12);
             e.blob.race = SPRITE;
         });
 
@@ -1128,8 +1174,10 @@ public class KingdomMod implements GameMod {
             e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
             e.blob.setPassiveAbilities(view.game.generator, ability_regeneration, ability_market_indicator);
             e.blob.glyphs.set(Glyph.TRADE);
-            // TODO fast, high vision, large inventory
+            e.blob.haul.setMax(12);
+            e.blob.visibleRadius = 4;
             e.blob.race = TULPA;
+            UnitLogic.speed(events, e.blob, 3);
         });
 
         // Goldtooth
@@ -1160,7 +1208,8 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, ability_shell_defense, ability_market_boom,
                             ability_swim);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
-                    // TODO large health pool, hungry
+                    e.blob.combat.health.setMax(80);
+                    e.blob.setTimeToHunger(view, 10);
                     e.blob.race = TORTUGAN;
                 });
 

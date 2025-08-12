@@ -147,7 +147,7 @@ public class Game {
         }
         u.setLeader(op);
         if (u.belongsToHuman()) {
-            u.visibility.setVisibleRadius(this.world, u.getPoint(), 2);
+            u.visibility.setVisibleRadius(this.world, u.getPoint(), u.visibleRadius);
         }
         this.setLeader(this.world.getTile(u.getPoint()).get(), op);
     }

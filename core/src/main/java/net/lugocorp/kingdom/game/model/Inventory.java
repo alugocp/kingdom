@@ -13,8 +13,8 @@ import java.util.Optional;
  */
 public class Inventory implements MenuSubject {
     private final List<Item> items;
-    private final int max;
     public final int type;
+    private int max;
 
     public Inventory(int type, int max) {
         this.items = new ArrayList<Item>(max);
@@ -43,6 +43,16 @@ public class Inventory implements MenuSubject {
      */
     public int getMax() {
         return this.max;
+    }
+
+    /**
+     * Sets the maximum size for this Inventory (will destroy overflow Items)
+     */
+    public void setMax(int n) {
+        while (this.items.size() > n) {
+            this.remove(this.items.get(this.items.size() - 1));
+        }
+        this.max = n;
     }
 
     /**

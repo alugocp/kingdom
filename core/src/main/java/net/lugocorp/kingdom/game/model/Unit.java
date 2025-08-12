@@ -37,17 +37,19 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     private Optional<Ability> active2 = Optional.empty();
     private SleepState sleep = SleepState.AWAKE;
     private int loyalty = Unit.MAX_LOYALTY;
+    private Optional<Player> leader = Optional.empty();
+    private int timeToHunger = 20;
     public final Visibility visibility = new Visibility();
     public final Tags tags = new Tags();
     public final String name;
     public final Combat<Unit> combat;
     public final UnitGlyphs glyphs = new UnitGlyphs();
-    private Optional<Player> leader = Optional.empty();
+    public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
+    public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
     public List<Ability> passives = new ArrayList<>();
-    public Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
-    public Inventory haul = new Inventory(InventoryType.HAUL, 4);
     public Race race = Race.UNKNOWN;
     public boolean playable = true;
+    public int visibleRadius = 2;
     public String desc = "";
 
     Unit(String name, int x, int y) {
@@ -124,12 +126,36 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * Returns true if this Unit has a passive ability by the given name
+     */
+    public boolean hasPassiveAbility(String name) {
+        for (Ability a : this.passives) {
+            if (a.name.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Changes how long this Unit takes to get hungry
+     */
+    public void setTimeToHunger(GameView view, int n) {
+        final int diff = n - this.timeToHunger;
+        final int remainingTurns = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
+        if (remainingTurns >= 0 && remainingTurns + diff <= 0) {
+            view.game.mechanics.turns.handleFutureTicksEarly(view, this, "GetsHungry");
+        }
+        this.timeToHunger = n;
+    }
+
+    /**
      * Resets this Unit's hunger
      */
     public void eat(Game game) {
         game.mechanics.turns.removeFutureEvents(this, "GetsHungry");
         game.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
-        game.mechanics.turns.addFutureTick("GetsHungry", this, 20, false);
+        game.mechanics.turns.addFutureTick("GetsHungry", this, this.timeToHunger, false);
     }
 
     /**

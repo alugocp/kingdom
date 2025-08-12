@@ -137,6 +137,18 @@ public class TurnStructure {
     }
 
     /**
+     * Removes a FutureTick from the queue and processes it
+     */
+    private void processFutureTick(GameView view, FutureTick ft) {
+        this.futures.remove(ft);
+        RepeatedEvent e = new RepeatedEvent(ft.channel, ft.interval, ft.repeat);
+        ft.receiver.handleEvent(view, e);
+        if (e.repeat) {
+            this.addFutureTick(ft.channel, ft.receiver, e.interval, true);
+        }
+    }
+
+    /**
      * Triggers an Event for every FutureTick that has reached its time
      */
     private void checkFutureTicks(GameView view) {
@@ -144,15 +156,20 @@ public class TurnStructure {
         while (a < this.futures.size()) {
             FutureTick ft = this.futures.get(a);
             if (ft.turn == this.turn) {
-                this.futures.remove(a);
-                RepeatedEvent e = new RepeatedEvent(ft.channel, ft.interval, ft.repeat);
-                ft.receiver.handleEvent(view, e);
-                if (e.repeat) {
-                    this.addFutureTick(ft.channel, ft.receiver, e.interval, true);
-                }
+                this.processFutureTick(view, ft);
             } else {
                 a++;
             }
+        }
+    }
+
+    /**
+     * Pulls out all FutureTicks as described and processes them right now
+     */
+    public void handleFutureTicksEarly(GameView view, EventReceiver receiver, String channel) {
+        List<FutureTick> ticks = this.getFutureTicks(receiver, Optional.of(channel));
+        for (FutureTick ft : ticks) {
+            this.processFutureTick(view, ft);
         }
     }
 
