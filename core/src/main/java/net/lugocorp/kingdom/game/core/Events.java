@@ -24,8 +24,8 @@ public class Events {
     private static abstract class GenerateBlobEventTemplate<T> extends Event {
         public final T blob;
 
-        private GenerateBlobEventTemplate(String channel, T blob) {
-            super(channel, false, true);
+        private GenerateBlobEventTemplate(T blob) {
+            super(false, true);
             this.blob = blob;
         }
     }
@@ -35,7 +35,7 @@ public class Events {
      */
     public static class GenerateTileEvent extends GenerateBlobEventTemplate<Tile> {
         public GenerateTileEvent(Tile blob) {
-            super("GenerateTileEvent", blob);
+            super(blob);
         }
     }
 
@@ -44,7 +44,7 @@ public class Events {
      */
     public static class GenerateUnitEvent extends GenerateBlobEventTemplate<Unit> {
         public GenerateUnitEvent(Unit blob) {
-            super("GenerateUnitEvent", blob);
+            super(blob);
         }
     }
 
@@ -53,7 +53,7 @@ public class Events {
      */
     public static class GenerateBuildingEvent extends GenerateBlobEventTemplate<Building> {
         public GenerateBuildingEvent(Building blob) {
-            super("GenerateBuildingEvent", blob);
+            super(blob);
         }
     }
 
@@ -62,7 +62,7 @@ public class Events {
      */
     public static class GeneratePatronEvent extends GenerateBlobEventTemplate<Patron> {
         public GeneratePatronEvent(Patron blob) {
-            super("GeneratePatronEvent", blob);
+            super(blob);
         }
     }
 
@@ -71,7 +71,7 @@ public class Events {
      */
     public static class GenerateItemEvent extends GenerateBlobEventTemplate<Item> {
         public GenerateItemEvent(Item blob) {
-            super("GenerateItemEvent", blob);
+            super(blob);
         }
     }
 
@@ -80,7 +80,7 @@ public class Events {
      */
     public static class GenerateAbilityEvent extends GenerateBlobEventTemplate<Ability> {
         public GenerateAbilityEvent(Ability blob) {
-            super("GenerateAbilityEvent", blob);
+            super(blob);
         }
     }
 
@@ -89,7 +89,7 @@ public class Events {
      */
     public static class GenerateArtifactEvent extends GenerateBlobEventTemplate<Artifact> {
         public GenerateArtifactEvent(Artifact blob) {
-            super("GenerateArtifactEvent", blob);
+            super(blob);
         }
     }
 
@@ -98,7 +98,7 @@ public class Events {
      */
     public static class GenerateFateEvent extends GenerateBlobEventTemplate<Fate> {
         public GenerateFateEvent(Fate blob) {
-            super("GenerateFateEvent", blob);
+            super(blob);
         }
     }
 
@@ -127,7 +127,7 @@ public class Events {
         public boolean canWalkOnBuilding;
 
         public CanUnitMoveEvent(Unit unit, Tile tile) {
-            super("CanUnitMoveEvent");
+            super();
             this.unit = unit;
             this.tile = tile;
             this.canWalkOnTile = !tile.getObstacle();
@@ -152,7 +152,7 @@ public class Events {
         public int distance = 1;
 
         public UnitMoveDistanceEvent(Unit unit) {
-            super("UnitMoveDistanceEvent");
+            super();
             this.unit = unit;
         }
     }
@@ -165,7 +165,7 @@ public class Events {
         public final Player player;
 
         public ArtifactClaimedEvent(Artifact artifact, Player player) {
-            super("ArtifactClaimedEvent");
+            super();
             this.artifact = artifact;
             this.player = player;
         }
@@ -180,7 +180,7 @@ public class Events {
         public boolean consumed = true;
 
         public ItemConsumedEvent(Item item, Unit consumer) {
-            super("ItemConsumedEvent");
+            super();
             this.consumer = consumer;
             this.item = item;
         }
@@ -193,7 +193,7 @@ public class Events {
         public final Ability ability;
 
         public AbilityActivatedEvent(Ability ability) {
-            super("AbilityActivatedEvent");
+            super();
             this.ability = ability;
         }
     }
@@ -206,7 +206,7 @@ public class Events {
         public final T target;
 
         public TakeDamageEvent(T target, Damage dmg) {
-            super("TakeDamageEvent");
+            super();
             this.target = target;
             this.dmg = dmg;
         }
@@ -221,7 +221,7 @@ public class Events {
         public final T target;
 
         public AttackEvent(A attacker, T target, Damage dmg) {
-            super("AttackEvent");
+            super();
             this.attacker = attacker;
             this.target = target;
             this.dmg = dmg;
@@ -237,7 +237,7 @@ public class Events {
         public final T target;
 
         public AttackedEvent(T target, A attacker, Damage dmg) {
-            super("AttackedEvent");
+            super();
             this.attacker = attacker;
             this.target = target;
             this.dmg = dmg;
@@ -252,7 +252,7 @@ public class Events {
         public int range = 1;
 
         public UnitAttackRangeEvent(Unit unit) {
-            super("UnitAttackRangeEvent");
+            super();
             this.unit = unit;
         }
     }
@@ -264,7 +264,7 @@ public class Events {
         public final T spawned;
 
         public SpawnEvent(T spawned) {
-            super("SpawnEvent");
+            super();
             this.spawned = spawned;
         }
     }
@@ -279,7 +279,7 @@ public class Events {
         public boolean edible = false;
 
         public CanEatEvent(Unit unit, Item item) {
-            super("CanEatEvent");
+            super();
             this.unit = unit;
             this.item = item;
         }
@@ -293,7 +293,7 @@ public class Events {
         public int favor;
 
         public GenerateFavorEvent(Patron patron, int favor) {
-            super("GenerateFavorEvent");
+            super();
             this.patron = patron;
             this.favor = favor;
         }

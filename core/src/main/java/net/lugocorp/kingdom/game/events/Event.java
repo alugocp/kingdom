@@ -15,12 +15,20 @@ public abstract class Event {
     public final String channel;
 
     public Event(String channel, boolean propagate, boolean panic) {
+        if (channel == null) {
+            this.channel = this.getClass().getSimpleName();
+        } else {
+            this.channel = channel;
+        }
         this.propagate = propagate;
-        this.channel = channel;
         this.panic = panic;
     }
 
-    public Event(String channel) {
-        this(channel, true, false);
+    public Event(boolean propagate, boolean panic) {
+        this(null, propagate, panic);
+    }
+
+    public Event() {
+        this(true, false);
     }
 }
