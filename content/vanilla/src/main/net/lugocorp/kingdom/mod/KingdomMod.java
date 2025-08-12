@@ -205,7 +205,8 @@ public class KingdomMod implements GameMod {
          */
 
         // Mine
-        events.building.addEventHandler("Mine", "GenerateBuildingEvent",
+        final String building_mine = "Mine";
+        events.building.addEventHandler(building_mine, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "mine");
@@ -214,7 +215,8 @@ public class KingdomMod implements GameMod {
                 });
 
         // Vault
-        events.building.addEventHandler("Vault", "GenerateBuildingEvent",
+        final String building_vault = "Vault";
+        events.building.addEventHandler(building_vault, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "vault");
@@ -224,7 +226,8 @@ public class KingdomMod implements GameMod {
                 });
 
         // Forest
-        events.building.addEventHandler("Forest", "GenerateBuildingEvent",
+        final String building_forest = "Forest";
+        events.building.addEventHandler(building_forest, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "forest");
@@ -233,7 +236,8 @@ public class KingdomMod implements GameMod {
                 });
 
         // Taiga
-        events.building.addEventHandler("Taiga", "GenerateBuildingEvent",
+        final String building_taiga = "Taiga";
+        events.building.addEventHandler(building_taiga, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "forest");
@@ -243,7 +247,8 @@ public class KingdomMod implements GameMod {
                 });
 
         // Meadow
-        events.building.addEventHandler("Meadow", "GenerateBuildingEvent",
+        final String building_meadow = "Meadow";
+        events.building.addEventHandler(building_meadow, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "meadow");
@@ -252,7 +257,8 @@ public class KingdomMod implements GameMod {
                 });
 
         // Oasis
-        events.building.addEventHandler("Oasis", "GenerateBuildingEvent",
+        final String building_oasis = "Oasis";
+        events.building.addEventHandler(building_oasis, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "oasis");
@@ -261,7 +267,8 @@ public class KingdomMod implements GameMod {
                 });
 
         // Shrubland
-        events.building.addEventHandler("Shrubland", "GenerateBuildingEvent",
+        final String building_shrubland = "Shrubland";
+        events.building.addEventHandler(building_shrubland, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "shrubland");
@@ -270,7 +277,8 @@ public class KingdomMod implements GameMod {
                 });
 
         // Mountain
-        events.building.addEventHandler("Mountain", "GenerateBuildingEvent",
+        final String building_mountain = "Mountain";
+        events.building.addEventHandler(building_mountain, "GenerateBuildingEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "mountain");
@@ -278,6 +286,17 @@ public class KingdomMod implements GameMod {
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.combat.health.invulnerable();
                     e.blob.setObstacle(true);
+                });
+
+        // Healing Fountain
+        final String building_healing_fountain = "Healing Fountain";
+        events.building.addEventHandler(building_healing_fountain, "GenerateBuildingEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
+                    e.blob.setModelInstance(view.av, "fountain");
+                    e.blob.desc = "Heals an occupying unit";
+                    e.blob.setMinimapColor(0x875f9a);
+                    e.blob.setActive();
                 });
 
         /**
@@ -523,7 +542,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_bite, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Basic attack");
+                    e.blob.desc = "Basic attack";
                     // TODO implement me
                 });
 
@@ -532,9 +551,11 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_build_healing_fountain, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Constructs a Healing Fountain");
-                    // TODO implement me
+                    e.blob.desc = "Constructs a healing fountain";
                 });
+        events.ability.addEventHandler(ability_build_healing_fountain, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
+                        building_healing_fountain, (Tile t) -> true));
 
         // Build Vault
         final String ability_build_vault = "Build Vault";
@@ -544,7 +565,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Builds a vault";
                 });
         events.ability.addEventHandler(ability_build_vault, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.build(view, receiver.wielder, "Vault", (Tile t) -> true));
+                Event event) -> AbilityLogic.build(view, receiver.wielder, building_vault, (Tile t) -> true));
 
         // Collapse Mine
         final String ability_collapse_mine = "Collapse Mine";
@@ -590,8 +611,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Digs a mine";
                 });
-        events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.build(view, receiver.wielder, "Mine", (Tile t) -> t.name.equals("Rock")));
+        events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
+                        building_mine, (Tile t) -> t.name.equals("Rock")));
 
         // Dungeon Delve
         final String ability_dungeon_delve = "Dungeon Delve";
@@ -743,7 +765,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_mine_gold, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Harvests gold coins from mines every 4 turns");
+                    e.blob.desc = "Harvests gold coins from mines every 4 turns";
                 });
         events.ability.addEventHandler(ability_mine_gold, "SpawnEvent", (GameView view, Ability receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
@@ -774,7 +796,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_pick_apples, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Harvests apples from forests every 4 turns");
+                    e.blob.desc = "Harvests apples from forests every 4 turns";
                 });
         events.ability.addEventHandler(ability_pick_apples, "SpawnEvent", (GameView view, Ability receiver,
                 Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
@@ -799,17 +821,19 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Plants a forest";
                 });
         events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder, "Forest",
-                        (Tile t) -> t.name.equals("Grassland")));
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
+                        building_forest, (Tile t) -> t.name.equals("Grassland")));
 
         // Plant Meadow
         final String ability_plant_meadow = "Plant Meadow";
         events.ability.addEventHandler(ability_plant_meadow, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Plants a meadow");
-                    // TODO implement me
+                    e.blob.desc = "Plants a meadow";
                 });
+        events.ability.addEventHandler(ability_plant_meadow, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
+                        building_meadow, (Tile t) -> t.name.equals("Grassland")));
 
         // Plate Mail
         final String ability_plate_mail = "Plate Mail";
@@ -915,7 +939,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_swim, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("This unit can swim on water tiles");
+                    e.blob.desc = "This unit can swim on water tiles";
                 });
         events.ability.addEventHandler(ability_swim, "CanUnitMoveEvent",
                 (GameView view, Ability receiver, Event event) -> {
