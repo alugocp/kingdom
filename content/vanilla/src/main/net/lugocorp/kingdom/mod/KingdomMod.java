@@ -150,8 +150,9 @@ public class KingdomMod implements GameMod {
          * SECTION 04 Tiles
          */
 
-        // Grassland
-        events.tile.addEventHandler("Grassland", "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
+        // Grass
+        final String tile_grass = "Grass";
+        events.tile.addEventHandler(tile_grass, "GenerateTileEvent", (GameView view, Tile receiver, Event event) -> {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0x2c9965);
@@ -822,7 +823,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
-                        building_forest, (Tile t) -> t.name.equals("Grassland")));
+                        building_forest, (Tile t) -> t.name.equals(tile_grass)));
 
         // Plant Meadow
         final String ability_plant_meadow = "Plant Meadow";
@@ -833,7 +834,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(ability_plant_meadow, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
-                        building_meadow, (Tile t) -> t.name.equals("Grassland")));
+                        building_meadow, (Tile t) -> t.name.equals(tile_grass)));
 
         // Plate Mail
         final String ability_plate_mail = "Plate Mail";

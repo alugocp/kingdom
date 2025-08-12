@@ -267,7 +267,7 @@ public class WorldGenerator {
      * Enum for different terrain types
      */
     private static enum Biome {
-        GRASS("Grassland"), WATER("Water"), SAND("Sand"), ROCK("Rock"), SNOW("Snow");
+        GRASS("Grass"), WATER("Water"), SAND("Sand"), ROCK("Rock"), SNOW("Snow");
         private final String terrain;
 
         private Biome(String terrain) {
