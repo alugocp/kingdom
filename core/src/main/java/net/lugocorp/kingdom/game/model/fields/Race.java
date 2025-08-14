@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.model;
+package net.lugocorp.kingdom.game.model.fields;
 import java.util.Optional;
 
 /**

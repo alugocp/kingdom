@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.Visibility;
+import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;

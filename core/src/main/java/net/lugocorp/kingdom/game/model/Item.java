@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 

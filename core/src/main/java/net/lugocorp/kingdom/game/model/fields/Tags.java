@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.model;
+package net.lugocorp.kingdom.game.model.fields;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
