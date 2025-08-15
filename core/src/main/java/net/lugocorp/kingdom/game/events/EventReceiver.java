@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
  * This interface serves as a wrapper so game objects can call their own
@@ -10,15 +11,15 @@ public interface EventReceiver {
     /**
      * API sugar to handle an Event
      */
-    public default void handleEvent(GameView view, Event e) {
-        this.handleEventWithoutSignalBooster(view, e);
-        view.game.events.signals.propagate(view, this, e);
+    public default SideEffect handleEvent(GameView view, Event e) {
+        return SideEffect.all(this.handleEventWithoutSignalBooster(view, e),
+                view.game.events.signals.propagate(view, this, e));
     }
 
     /**
      * Handles Events without calling the SignalBooster
      */
-    public void handleEventWithoutSignalBooster(GameView view, Event e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e);
 
     /**
      * Returns a key that helps determine which EventHandler to use in an

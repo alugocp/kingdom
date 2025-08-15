@@ -18,6 +18,7 @@ import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -332,19 +333,21 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
 
     /** {@inheritdoc} */
     @Override
-    public void handleEventWithoutSignalBooster(GameView view, Event e) {
-        view.game.events.unit.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+        List<SideEffect> effects = new ArrayList<>();
+        effects.add(view.game.events.unit.handle(view, this, e));
         if (e.propagate) {
             this.active1.ifPresent((Ability a) -> a.handleEventWithoutSignalBooster(view, e));
             this.active2.ifPresent((Ability a) -> a.handleEventWithoutSignalBooster(view, e));
             for (Ability a : this.passives) {
-                a.handleEventWithoutSignalBooster(view, e);
+                effects.add(a.handleEventWithoutSignalBooster(view, e));
             }
             for (int a = 0; a < this.equipped.getSize(); a++) {
                 Item i = this.equipped.get(a);
-                i.handleEventWithoutSignalBooster(view, e);
+                effects.add(i.handleEventWithoutSignalBooster(view, e));
             }
         }
+        return SideEffect.all(effects);
     }
 
     /** {@inheritdoc} */

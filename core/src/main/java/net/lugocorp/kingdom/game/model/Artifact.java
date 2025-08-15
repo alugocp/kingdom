@@ -1,11 +1,12 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.game.core.Events.ArtifactClaimedEvent;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class Artifact implements EventReceiver, MenuSubject {
     public void claim(GameView view, Player player) {
         this.owner = Optional.of(player);
         player.artifacts.add(this);
-        this.handleEvent(view, new ArtifactClaimedEvent(this, player));
+        this.handleEvent(view, new Events.ArtifactClaimedEvent(this, player));
     }
 
     /**
@@ -55,8 +56,8 @@ public class Artifact implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEventWithoutSignalBooster(GameView view, Event e) {
-        view.game.events.artifact.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+        return view.game.events.artifact.handle(view, this, e);
     }
 
     /** {@inheritdoc} */

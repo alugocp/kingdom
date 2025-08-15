@@ -1,11 +1,12 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.game.core.Events.AbilityActivatedEvent;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.menu.ActionNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
@@ -32,8 +33,8 @@ public class Ability implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEventWithoutSignalBooster(GameView view, Event e) {
-        view.game.events.ability.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+        return view.game.events.ability.handle(view, this, e);
     }
 
     /** {@inheritdoc} */
@@ -50,7 +51,7 @@ public class Ability implements EventReceiver, MenuSubject {
                         && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
                         && !view.game.mechanics.turns.hasUnitActed(this.wielder),
                 () -> {
-                    this.handleEvent(view, new AbilityActivatedEvent(this));
+                    this.handleEvent(view, new Events.AbilityActivatedEvent(this));
                     view.menu.refresh(true);
                 });
     }

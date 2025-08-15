@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.combat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
  * This class handles all combat logic for any Unit or Building
@@ -31,23 +32,25 @@ public class Combat<B extends EventReceiver> {
     /**
      * Runs the logic required for this bearer to take Damage
      */
-    public <A extends EventReceiver> void takeDamage(GameView view, Damage dmg, A attacker) {
+    public <A extends EventReceiver> SideEffect takeDamage(GameView view, Damage dmg, A attacker) {
         if (!this.health.isVulnerable()) {
-            return;
+            return SideEffect.none;
         }
-        this.bearer.handleEvent(view, new Events.TakeDamageEvent<B>(this.bearer, dmg));
-        this.health.set(this.health.get() - dmg.amount);
-        if (this.health.isDead()) {
-            this.onDeath(view, attacker);
-        }
+        return SideEffect.all(this.bearer.handleEvent(view, new Events.TakeDamageEvent<B>(this.bearer, dmg)), () -> {
+            this.health.set(this.health.get() - dmg.amount);
+            if (this.health.isDead()) {
+                this.onDeath(view, attacker);
+            }
+        });
     }
 
     /**
      * This bearer attacks another
      */
-    public <T extends EventReceiver> void attack(GameView view, Combat<T> target, Damage dmg) {
-        this.bearer.handleEvent(view, new Events.AttackEvent<B, T>(this.bearer, target.bearer, dmg));
-        target.bearer.handleEvent(view, new Events.AttackedEvent<T, B>(target.bearer, this.bearer, dmg));
-        target.takeDamage(view, dmg, this.bearer);
+    public <T extends EventReceiver> SideEffect attack(GameView view, Combat<T> target, Damage dmg) {
+        return SideEffect.all(
+                this.bearer.handleEvent(view, new Events.AttackEvent<B, T>(this.bearer, target.bearer, dmg)),
+                target.bearer.handleEvent(view, new Events.AttackedEvent<T, B>(target.bearer, this.bearer, dmg)),
+                target.takeDamage(view, dmg, this.bearer));
     }
 }

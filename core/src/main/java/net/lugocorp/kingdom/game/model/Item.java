@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.Optional;
 
 /**
@@ -29,8 +30,8 @@ public class Item implements EventReceiver {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEventWithoutSignalBooster(GameView view, Event e) {
-        view.game.events.item.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+        return view.game.events.item.handle(view, this, e);
     }
 
     /** {@inheritdoc} */

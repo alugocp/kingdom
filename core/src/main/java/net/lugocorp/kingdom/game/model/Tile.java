@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Colors;
+import net.lugocorp.kingdom.utils.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -166,8 +167,8 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
 
     /** {@inheritdoc} */
     @Override
-    public void handleEventWithoutSignalBooster(GameView view, Event e) {
-        view.game.events.tile.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+        return view.game.events.tile.handle(view, this, e);
     }
 
     /** {@inheritdoc} */

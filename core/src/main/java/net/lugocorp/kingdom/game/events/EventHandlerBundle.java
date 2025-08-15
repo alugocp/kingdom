@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,7 +70,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
     /**
      * Runs the relevant EventHandler logic for a given name and Event
      */
-    public void handle(GameView view, T receiver, Event e) {
+    public SideEffect handle(GameView view, T receiver, Event e) {
         String key = this.getKey(receiver.getStratifier(), e.channel);
         boolean hasHandler = this.handlers.containsKey(key);
         boolean hasDefault = this.defaults.containsKey(e.channel);
@@ -77,11 +79,12 @@ public class EventHandlerBundle<T extends EventReceiver> {
                     String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
         if (hasHandler) {
-            for (EventHandler<T> handler : this.handlers.get(key)) {
-                handler.handle(view, receiver, e);
-            }
-        } else if (hasDefault) {
-            this.defaults.get(e.channel).handle(view, receiver, e);
+            return SideEffect.all(
+                    Lambda.map((EventHandler<T> handler) -> handler.handle(view, receiver, e), this.handlers.get(key)));
         }
+        if (hasDefault) {
+            return this.defaults.get(e.channel).handle(view, receiver, e);
+        }
+        return SideEffect.none;
     }
 }

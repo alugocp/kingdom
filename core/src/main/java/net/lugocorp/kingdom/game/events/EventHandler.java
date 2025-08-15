@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.io.Serializable;
 
 /**
@@ -7,7 +8,7 @@ import java.io.Serializable;
  * handling system
  */
 public interface EventHandler<T extends EventReceiver> extends Serializable {
-    public void handle(GameView view, T receiver, Event event);
+    public SideEffect handle(GameView view, T receiver, Event event);
 
     /**
      * This function allows us to serialize this lambda

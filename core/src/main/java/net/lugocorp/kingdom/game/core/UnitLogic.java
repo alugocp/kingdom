@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
  * This class contains logic to help generate Units in a mod
@@ -16,6 +17,7 @@ public class UnitLogic {
         events.unit.addEventHandler(u.name, "UnitMoveDistanceEvent", (GameView view, Unit receiver, Event event) -> {
             Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
             e.distance = distance;
+            return SideEffect.none;
         });
     }
 }

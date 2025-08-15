@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.core.Events.RepeatedEvent;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.model.Player;
@@ -141,7 +141,7 @@ public class TurnStructure {
      */
     private void processFutureTick(GameView view, FutureTick ft) {
         this.futures.remove(ft);
-        RepeatedEvent e = new RepeatedEvent(ft.channel, ft.interval, ft.repeat);
+        Events.RepeatedEvent e = new Events.RepeatedEvent(ft.channel, ft.interval, ft.repeat);
         ft.receiver.handleEvent(view, e);
         if (e.repeat) {
             this.addFutureTick(ft.channel, ft.receiver, e.interval, true);

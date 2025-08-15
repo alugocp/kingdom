@@ -15,6 +15,7 @@ import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Colors;
+import net.lugocorp.kingdom.utils.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -141,8 +142,8 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
 
     /** {@inheritdoc} */
     @Override
-    public void handleEventWithoutSignalBooster(GameView view, Event e) {
-        view.game.events.building.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+        return view.game.events.building.handle(view, this, e);
     }
 
     /** {@inheritdoc} */

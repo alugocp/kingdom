@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,16 +16,19 @@ public class SignalBooster {
     /**
      * Broadcasts an Event with all listening EventReceivers
      */
-    public void propagate(GameView view, EventReceiver original, Event e) {
+    public SideEffect propagate(GameView view, EventReceiver original, Event e) {
         if (this.receivers.containsKey(e.channel)) {
+            List<SideEffect> effects = new ArrayList<>();
             for (EventReceiver r : receivers.get(e.channel)) {
                 if (r == original) {
                     // Prevent infinite loops
                     continue;
                 }
-                r.handleEventWithoutSignalBooster(view, e);
+                effects.add(r.handleEventWithoutSignalBooster(view, e));
             }
+            return SideEffect.all(effects);
         }
+        return SideEffect.none;
     }
 
     /**

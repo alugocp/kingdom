@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +29,8 @@ public class Fate implements EventReceiver {
 
     /** {@inheritdoc} */
     @Override
-    public void handleEventWithoutSignalBooster(GameView view, Event e) {
-        view.game.events.fate.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+        return view.game.events.fate.handle(view, this, e);
     }
 
     /** {@inheritdoc} */

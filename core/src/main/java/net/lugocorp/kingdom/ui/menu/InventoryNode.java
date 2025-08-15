@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
-import net.lugocorp.kingdom.game.core.Events.ItemConsumedEvent;
+import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Inventory;
 import net.lugocorp.kingdom.game.model.Inventory.InventoryType;
@@ -232,7 +232,7 @@ public class InventoryNode implements MenuNode {
      */
     private void unitConsumesItem(Item item) {
         Unit unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit).get();
-        ItemConsumedEvent event = new ItemConsumedEvent(item, unit);
+        Events.ItemConsumedEvent event = new Events.ItemConsumedEvent(item, unit);
         item.handleEvent(this.view, event);
         if (event.consumed) {
             this.items.remove(item);
