@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.core;
+import net.lugocorp.kingdom.ai.PlayerInterface;
 import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
@@ -25,7 +26,7 @@ public class AbilityLogic {
     /**
      * Convenience wrapper for an active Ability that implements an attack
      */
-    public static void attack(GameView view, Unit attacker, Damage dmg) {
+    public static SideEffect attack(GameView view, Unit attacker, Damage dmg) {
         Map<Point, Combat> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
@@ -54,59 +55,61 @@ public class AbilityLogic {
             attacker.combat.attack(view, targets.get(p), dmg);
             view.game.mechanics.turns.unitHasActed(view, attacker);
         });
+        return PlayerInterface.select(view, attacker.getLeader(), points, "No attack targets are in range",
+                (Point p) -> SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
+                        () -> view.game.mechanics.turns.unitHasActed(view, attacker)));
+    }
+
+    /**
+     * Private helper method for common heal abilities
+     */
+    private static SideEffect heal(GameView view, Unit healer, int hitPoints,
+            Function<Tile, Optional<HitPoints>> getHitPoints) {
+        Map<Point, HitPoints> targets = new HashMap<>();
+        Set<Point> points = new HashSet<>();
+
+        // Grab every possible heal target within range
+        Set<Point> unfiltered = Hexagons.getNeighbors(healer.getPoint(), 1);
+        for (Point p : unfiltered) {
+            Optional<Tile> t = view.game.world.getTile(p);
+            if (!t.isPresent()) {
+                continue;
+            }
+            Optional<HitPoints> hp = getHitPoints.apply(t.get());
+            if (hp.isPresent()) {
+                targets.put(p, hp.get());
+                points.add(p);
+            }
+        }
+
+        // Have the Player select which target to heal
+        return PlayerInterface.select(view, healer.getLeader(), points, "No heal targets are in range",
+                (Point p) -> () -> {
+                    targets.get(p).heal(hitPoints);
+                    view.game.mechanics.turns.unitHasActed(view, healer);
+                });
     }
 
     /**
      * Ability that heals a Unit
      */
-    public static void healUnit(GameView view, Unit healer, int hitPoints) {
-        Map<Point, HitPoints> targets = new HashMap<>();
-        Set<Point> points = new HashSet<>();
-
-        // Grab every possible heal target within range
-        Set<Point> unfiltered = Hexagons.getNeighbors(healer.getPoint(), 1);
-        for (Point p : unfiltered) {
-            Optional<Tile> t = view.game.world.getTile(p);
-            if (!t.isPresent()) {
-                continue;
-            }
-            if (t.get().unit.isPresent()) {
-                targets.put(p, t.get().unit.get().combat.health);
-                points.add(p);
-            }
-        }
-
-        // Have the human Player select which target to heal
-        view.selector.select(points, "No heal targets are in range", (Point p) -> {
-            targets.get(p).heal(hitPoints);
-            view.game.mechanics.turns.unitHasActed(view, healer);
-        });
+    public static SideEffect healUnit(GameView view, Unit healer, int hitPoints) {
+        return AbilityLogic.heal(view, healer, hitPoints, (Tile t) -> t.unit.map((Unit u) -> u.combat.health));
     }
 
     /**
-     * Ability that heals a Building
+     * Ability that heals a Building which fits the given criteria
      */
-    public static void healBuilding(GameView view, Unit healer, int hitPoints, Function<Building, Boolean> criteria) {
-        Map<Point, HitPoints> targets = new HashMap<>();
-        Set<Point> points = new HashSet<>();
-
-        // Grab every possible heal target within range
-        Set<Point> unfiltered = Hexagons.getNeighbors(healer.getPoint(), 1);
-        for (Point p : unfiltered) {
-            Optional<Tile> t = view.game.world.getTile(p);
-            if (!t.isPresent()) {
-                continue;
+    public static SideEffect healBuilding(GameView view, Unit healer, int hitPoints,
+            Function<Building, Boolean> criteria) {
+        return AbilityLogic.heal(view, healer, hitPoints, (Tile t) -> {
+            if (t.building.isPresent()) {
+                Building b = t.building.get();
+                if (criteria.apply(b)) {
+                    return Optional.of(b.combat.health);
+                }
             }
-            if (t.get().building.map(criteria).orElse(false)) {
-                targets.put(p, t.get().building.get().combat.health);
-                points.add(p);
-            }
-        }
-
-        // Have the human Player select which target to heal
-        view.selector.select(points, "No heal targets are in range", (Point p) -> {
-            targets.get(p).heal(hitPoints);
-            view.game.mechanics.turns.unitHasActed(view, healer);
+            return Optional.empty();
         });
     }
 

@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.utils;
-import java.util.List;
 
 /**
  * SideEffects are callables that are designed for the AI system. The game's AI
@@ -27,9 +26,9 @@ public interface SideEffect {
     }
 
     /**
-     * Combines a List<SideEffects> into one
+     * Combines multiple SideEffects into one
      */
-    public static SideEffect all(List<SideEffect> effects) {
+    public static SideEffect all(Iterable<SideEffect> effects) {
         return () -> {
             for (SideEffect effect : effects) {
                 effect.execute();

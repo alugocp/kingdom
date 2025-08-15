@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.utils;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -13,5 +14,12 @@ public class Lambda {
      */
     public static <A, B> List<B> map(Function<A, B> lambda, List<A> input) {
         return input.stream().map((A x) -> lambda.apply(x)).collect(Collectors.toList());
+    }
+
+    /**
+     * This function maps a Set of one type into a Set of another type
+     */
+    public static <A, B> Set<B> map(Function<A, B> lambda, Set<A> input) {
+        return input.stream().map((A x) -> lambda.apply(x)).collect(Collectors.toSet());
     }
 }
