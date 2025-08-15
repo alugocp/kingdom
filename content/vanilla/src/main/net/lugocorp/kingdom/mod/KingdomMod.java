@@ -1095,13 +1095,13 @@ public class KingdomMod implements GameMod {
         // Graymaw
         // Roseris Thorn-hoof
         //
-        //
-        //
-        //
+        // Nebaneba
+        // Kamiena
+        // Faustus
         // Maekuro the Mighty
         // Garudee
-        //
-        //
+        // Pebbles
+        // Magdalena
         // Lost Golem
         // Samara
         // Golem of the Grotto
