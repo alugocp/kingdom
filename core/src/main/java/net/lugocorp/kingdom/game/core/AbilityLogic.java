@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * This class contains utility functions for writing new Ability effects
@@ -111,39 +113,41 @@ public class AbilityLogic {
     /**
      * Ability that spawns a building at the caster's location
      */
-    public static void build(GameView view, Unit caster, String building, Function<Tile, Boolean> criteria) {
+    public static SideEffect build(GameView view, Unit caster, String building, Function<Tile, Boolean> criteria) {
         Point p = caster.getPoint();
-        view.game.world.getTile(p).ifPresent((Tile t) -> {
+        if (view.game.world.getTile(p).isPresent()) {
+            Tile t = view.game.world.getTile(p).get();
+
             if (t.building.isPresent()) {
-                view.logger.log("Cannot place another building here");
-            } else if (criteria.apply(t)) {
-                view.game.generator.building(building, p.x, p.y).spawn(view);
-                view.game.mechanics.turns.unitHasActed(view, caster);
-            } else {
-                view.logger.log("Invalid tile for this ability");
+                return () -> view.logger.log("Cannot place another building here");
             }
-        });
+            if (criteria.apply(t)) {
+                Building b = view.game.generator.building(building, p.x, p.y);
+                return () -> {
+                    b.spawn(view);
+                    view.game.mechanics.turns.unitHasActed(view, caster);
+                };
+            }
+            return () -> view.logger.log("Invalid tile for this ability");
+        }
+        return SideEffect.none;
     }
 
     /**
      * Ability that does something while on a particular Building
      */
-    public static void doOnBuilding(GameView view, Unit caster, Function<Building, Boolean> criteria, Runnable thing) {
+    public static SideEffect doOnBuilding(GameView view, Unit caster, Function<Building, Boolean> criteria,
+            Supplier<SideEffect> effect) {
         boolean isOnBuilding = view.game.world.getTile(caster.getPoint()).flatMap((Tile t) -> t.building).map(criteria)
                 .orElse(false);
-        if (isOnBuilding) {
-            thing.run();
-        }
+        return isOnBuilding ? effect.get() : SideEffect.none;
     }
 
     /**
      * Ability that harvests an Item from some Tile
      */
-    public static void harvest(GameView view, Unit caster, String item, Function<Building, Boolean> criteria) {
-        AbilityLogic.doOnBuilding(view, caster, criteria, () -> {
-            if (!caster.haul.isFull()) {
-                caster.haul.add(view.game.generator.item(item));
-            }
-        });
+    public static SideEffect harvest(GameView view, Unit caster, String item, Function<Building, Boolean> criteria) {
+        return AbilityLogic.doOnBuilding(view, caster, criteria,
+                () -> caster.haul.isFull() ? SideEffect.none : () -> caster.haul.add(view.game.generator.item(item)));
     }
 }

@@ -24,6 +24,7 @@ import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.FateNode;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.SideEffect;
 import net.lugocorp.kingdom.utils.mods.GameMod;
 import java.util.Optional;
 
@@ -123,27 +124,29 @@ public class KingdomMod implements GameMod {
 
         // GetsHungry
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
+                Event event) -> () -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
 
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
             if (receiver.getLeader().isPresent()) {
-                receiver.loseLoyalty(view.game, 1);
-            } else {
-                ((Events.RepeatedEvent) event).repeat = false;
+                return () -> receiver.loseLoyalty(view.game, 1);
             }
+            ((Events.RepeatedEvent) event).repeat = false;
+            return SideEffect.none;
         });
 
         // CanEatEvent
         events.unit.setDefaultHandler("CanEatEvent", (GameView view, Unit receiver, Event event) -> {
             Events.CanEatEvent e = (Events.CanEatEvent) event;
             e.edible = e.item.tags.has(tag_fruit);
+            return SideEffect.none;
         });
 
         // UnitMoveDistanceEvent
         events.unit.setDefaultHandler("UnitMoveDistanceEvent", (GameView view, Unit receiver, Event event) -> {
             Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
             e.distance = 2;
+            return SideEffect.none;
         });
 
         /**
@@ -156,6 +159,7 @@ public class KingdomMod implements GameMod {
             Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0x2c9965);
+            return SideEffect.none;
         });
 
         // Rock
@@ -164,6 +168,7 @@ public class KingdomMod implements GameMod {
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0x666666);
             e.blob.setMaterial("rock");
+            return SideEffect.none;
         });
 
         // Sand
@@ -172,6 +177,7 @@ public class KingdomMod implements GameMod {
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0xc7c567);
             e.blob.setMaterial("sand");
+            return SideEffect.none;
         });
 
         // Snow
@@ -180,6 +186,7 @@ public class KingdomMod implements GameMod {
             e.blob.setModelInstance(view.av, "grass");
             e.blob.setMinimapColor(0xffffff);
             e.blob.setMaterial("snow");
+            return SideEffect.none;
         });
 
         // Water
@@ -189,6 +196,7 @@ public class KingdomMod implements GameMod {
             e.blob.setMinimapColor(0x20c7f7);
             e.blob.setObstacle(true);
             e.blob.setWave(true);
+            return SideEffect.none;
         });
 
         // Lava
@@ -199,6 +207,7 @@ public class KingdomMod implements GameMod {
             e.blob.setMaterial("lava");
             e.blob.setObstacle(true);
             e.blob.setWave(true);
+            return SideEffect.none;
         });
 
         /**
@@ -213,6 +222,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "mine");
                     e.blob.desc = "Mines provide valuables like gold coins";
                     e.blob.setActive();
+                    return SideEffect.none;
                 });
 
         // Vault
@@ -224,6 +234,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Vaults can store excess items and be used in auctions";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.setActive();
+                    return SideEffect.none;
                 });
 
         // Forest
@@ -234,6 +245,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "Don't miss the forest for the trees";
                     e.blob.setMinimapColor(0x257d53);
+                    return SideEffect.none;
                 });
 
         // Taiga
@@ -245,6 +257,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "The trees are pretty this time of year";
                     e.blob.setMinimapColor(0xb4c3c7);
                     e.blob.setMaterial("taiga");
+                    return SideEffect.none;
                 });
 
         // Meadow
@@ -255,6 +268,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "meadow");
                     e.blob.desc = "Stay a while and smell the roses";
                     e.blob.setMinimapColor(0x4dd349);
+                    return SideEffect.none;
                 });
 
         // Oasis
@@ -265,6 +279,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "oasis");
                     e.blob.desc = "Moments of respite from the overbearing sun";
                     e.blob.setMinimapColor(0x2c9965);
+                    return SideEffect.none;
                 });
 
         // Shrubland
@@ -275,6 +290,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "shrubland");
                     e.blob.desc = "Meadows in the middle of the desert";
                     e.blob.setMinimapColor(0x4dd349);
+                    return SideEffect.none;
                 });
 
         // Mountain
@@ -287,6 +303,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.combat.health.invulnerable();
                     e.blob.setObstacle(true);
+                    return SideEffect.none;
                 });
 
         // Healing Fountain
@@ -298,6 +315,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Heals an occupying unit";
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setActive();
+                    return SideEffect.none;
                 });
 
         /**
@@ -317,6 +335,7 @@ public class KingdomMod implements GameMod {
                     e.blob.preference = "Units that cannot swim";
                     e.blob.isPreferredUnitType = (Unit u) -> !u.hasPassiveAbility("Swim");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // The Eternal Guardian
@@ -334,6 +353,7 @@ public class KingdomMod implements GameMod {
                     e.blob.preference = "Units with the healing glyph";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         /**
@@ -348,6 +368,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of("coin");
                     e.blob.gold = 1;
+                    return SideEffect.none;
                 });
         events.item.addEventHandler(item_gold_coin, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> ItemLogic.valuable(event));
@@ -359,6 +380,7 @@ public class KingdomMod implements GameMod {
             e.blob.desc = "Consume to increase your gold";
             e.blob.icon = Optional.of("emerald");
             e.blob.gold = 10;
+            return SideEffect.none;
         });
         events.item.addEventHandler(item_emerald, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> ItemLogic.valuable(event));
@@ -371,6 +393,7 @@ public class KingdomMod implements GameMod {
             e.blob.icon = Optional.of("apple");
             e.blob.gold = 1;
             e.blob.tags.add(tag_fruit);
+            return SideEffect.none;
         });
         events.item.addEventHandler(item_apple, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> ItemLogic.food(view, event));
@@ -383,6 +406,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to heal by 10 hit points";
                     e.blob.icon = Optional.of("potion");
                     e.blob.gold = 1;
+                    return SideEffect.none;
                 });
         events.item.addEventHandler(item_health_potion, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> ItemLogic.potion(event, 10));
@@ -536,6 +560,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Adjacent attackers take damage");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Bite
@@ -545,6 +570,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Basic attack";
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Build Healing Fountain
@@ -553,6 +579,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Constructs a healing fountain";
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_build_healing_fountain, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
@@ -564,6 +591,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Builds a vault";
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_build_vault, "AbilityActivatedEvent", (GameView view, Ability receiver,
                 Event event) -> AbilityLogic.build(view, receiver.wielder, building_vault, (Tile t) -> true));
@@ -576,6 +604,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = String.format(
                             "Target a mine occupied by an enemy unit. The unit, mine, and any adjacent enemy units all take damage.");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Combat Loot
@@ -585,6 +614,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attacks do more damage if this unit has a hauled item");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Crystal Skin
@@ -594,6 +624,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Deposit Seeds
@@ -603,6 +634,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Chance to spawn a meadow when this unit moves");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Dig Mine
@@ -611,6 +643,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Digs a mine";
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_dig_mine, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
@@ -623,6 +656,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attack that generates items when used on an active building");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Edible
@@ -632,6 +666,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Generates food");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Fire Cannon
@@ -641,6 +676,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Ranged attack which deals extra damage against buildings");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Fire Laser
@@ -650,6 +686,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Ranged attack which damages several units in a line");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Green Fortress
@@ -659,6 +696,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense on forests");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Heal Wounds
@@ -667,6 +705,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Heals 5 damage";
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_heal_wounds, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
@@ -678,6 +717,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Heals the target adjacent unit for a few hit points");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Hungry Frog Magic
@@ -687,6 +727,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Consumes all hauled items and heals adjacent friendly units");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Hunt Fish
@@ -696,6 +737,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests fish from water tiles");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Hurl Rock
@@ -705,6 +747,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Ranged attack with chance to stun");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Life Aura
@@ -714,6 +757,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Generates unit points");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Liquifying Presence
@@ -723,6 +767,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Deals damage to an occupied passive building");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Local Defender
@@ -732,6 +777,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Adjacent passive buildings are treated as active");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Market Boom
@@ -741,6 +787,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attacks generate auction points");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Market Indicator
@@ -750,6 +797,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Generates auction points when adjacent to a vault");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Mine Gems
@@ -759,6 +807,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests gems from mines");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Mine Gold
@@ -767,9 +816,13 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Harvests gold coins from mines every 4 turns";
+                    return SideEffect.none;
                 });
-        events.ability.addEventHandler(ability_mine_gold, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
+        events.ability.addEventHandler(ability_mine_gold, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    return SideEffect.none;
+                });
         events.ability.addEventHandler(ability_mine_gold, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
                         "Gold Coin", (Building b) -> b.name.equals("Mine")));
@@ -781,6 +834,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit can traverse mountains");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Night Vision
@@ -790,6 +844,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit can see normally at night");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Pick Apples
@@ -798,9 +853,13 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Harvests apples from forests every 4 turns";
+                    return SideEffect.none;
                 });
-        events.ability.addEventHandler(ability_pick_apples, "SpawnEvent", (GameView view, Ability receiver,
-                Event event) -> view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true));
+        events.ability.addEventHandler(ability_pick_apples, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    return SideEffect.none;
+                });
         events.ability.addEventHandler(ability_pick_apples, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder, "Apple",
                         (Building b) -> b.name.equals("Forest")));
@@ -812,6 +871,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests flowers from meadows every 4 turns");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Plant Forest
@@ -820,6 +880,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Plants a forest";
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_plant_forest, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
@@ -831,6 +892,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Plants a meadow";
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_plant_meadow, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
@@ -843,6 +905,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Regeneration
@@ -852,6 +915,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit heals a little each turn");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Revenge of the Forest
@@ -861,6 +925,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attack that deals more damage when on a forest");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Running Through Nature
@@ -870,6 +935,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit is faster on passive buildings");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Self Sacrifice
@@ -879,6 +945,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Transfers all their health but 1 to the target");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Sacred Seeds
@@ -888,6 +955,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests seeds from meadows that can be consumed to generate favor");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Shell Defense
@@ -897,6 +965,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Slime Shot
@@ -906,6 +975,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Ranged attack");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Smash
@@ -915,6 +985,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attack with a chance to stun");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Stone Defense
@@ -924,6 +995,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Subterranean Potions
@@ -933,6 +1005,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Generates Health Potions from Mines");
                     // TODO implement me
+                    return SideEffect.none;
                 });
 
         // Swim
@@ -941,6 +1014,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "This unit can swim on water tiles";
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_swim, "CanUnitMoveEvent",
                 (GameView view, Ability receiver, Event event) -> {
@@ -948,6 +1022,7 @@ public class KingdomMod implements GameMod {
                     if (!e.canWalkOnTile && e.tile.name.equals("Water")) {
                         e.canWalkOnTile = true;
                     }
+                    return SideEffect.none;
                 });
 
         // Sword Slash
@@ -957,6 +1032,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     Damage dmg = new Damage(DamageType.IMPACT, 1);
                     e.blob.desc = String.format("Deals %s", dmg);
+                    return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_sword_slash, "AbilityActivatedEvent", (GameView view, Ability receiver,
                 Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1)));
@@ -981,6 +1057,7 @@ public class KingdomMod implements GameMod {
                     ability_regeneration);
             e.blob.glyphs.set(Glyph.BATTLE);
             e.blob.race = SALAMANDER;
+            return SideEffect.none;
         });
 
         // Cenuok the Battle Grue
@@ -994,6 +1071,7 @@ public class KingdomMod implements GameMod {
             e.blob.setPassiveAbilities(view.game.generator, ability_pick_apples, ability_mine_gems);
             e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
             e.blob.race = SPRITE;
+            return SideEffect.none;
         });
 
         // Gloop the Adventurer
@@ -1010,6 +1088,7 @@ public class KingdomMod implements GameMod {
                     e.blob.combat.health.setMax(40);
                     e.blob.haul.setMax(12);
                     e.blob.race = PLASMOID;
+                    return SideEffect.none;
                 });
 
         // Dominus the Lich
@@ -1037,6 +1116,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.combat.health.setMax(80);
                     e.blob.race = GOLEM;
+                    return SideEffect.none;
                 });
 
         // Puffshroom
@@ -1054,6 +1134,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, ability_night_vision, ability_mine_gems);
                     e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
                     e.blob.race = BROWNIE;
+                    return SideEffect.none;
                 });
 
         // Huiying the Alchemist
@@ -1067,6 +1148,7 @@ public class KingdomMod implements GameMod {
             e.blob.setPassiveAbilities(view.game.generator, ability_night_vision, ability_life_aura);
             e.blob.glyphs.set(Glyph.HEALING);
             e.blob.race = ELF;
+            return SideEffect.none;
         });
 
         // Zen Hito the Kappa
@@ -1084,6 +1166,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.HEALING);
                     e.blob.haul.setMax(12);
                     e.blob.race = GNOME;
+                    return SideEffect.none;
                 });
 
         // Garax
@@ -1098,6 +1181,7 @@ public class KingdomMod implements GameMod {
                     ability_mine_gems, ability_mine_gold, ability_subterranean_potions);
             e.blob.glyphs.set(Glyph.MINING);
             e.blob.race = GOLEM;
+            return SideEffect.none;
         });
 
         // Glimmer
@@ -1115,6 +1199,7 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.NATURE);
             e.blob.visibleRadius = 4;
             e.blob.race = SPRITE;
+            return SideEffect.none;
         });
 
         // Bluefeathers
@@ -1135,6 +1220,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.combat.health.setMax(80);
                     e.blob.race = PLASMOID;
+                    return SideEffect.none;
                 });
         // Sathra the Flame Caster
         // Dendra Ivy
@@ -1150,6 +1236,7 @@ public class KingdomMod implements GameMod {
                     ability_mine_gems);
             e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
             e.blob.race = GEMSTONE;
+            return SideEffect.none;
         });
 
         //
@@ -1174,6 +1261,7 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.NATURE);
             e.blob.haul.setMax(12);
             e.blob.race = SPRITE;
+            return SideEffect.none;
         });
 
         // Barometz
@@ -1187,6 +1275,7 @@ public class KingdomMod implements GameMod {
             e.blob.glyphs.set(Glyph.NATURE);
             e.blob.haul.setMax(12);
             e.blob.race = SPRITE;
+            return SideEffect.none;
         });
 
         // Xella the Accursed
@@ -1203,6 +1292,7 @@ public class KingdomMod implements GameMod {
             e.blob.visibleRadius = 4;
             e.blob.race = TULPA;
             UnitLogic.speed(events, e.blob, 3);
+            return SideEffect.none;
         });
 
         // Goldtooth
@@ -1236,6 +1326,7 @@ public class KingdomMod implements GameMod {
                     e.blob.combat.health.setMax(80);
                     e.blob.setTimeToHunger(view, 10);
                     e.blob.race = TORTUGAN;
+                    return SideEffect.none;
                 });
 
         //
@@ -1263,11 +1354,13 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your healing glyph units get +1 movement speed";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
         events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                    return SideEffect.none;
                 });
         events.artifact.addEventHandler(artifact_chos_sigil_of_haste, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
@@ -1275,6 +1368,7 @@ public class KingdomMod implements GameMod {
                     if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.HEALING)) {
                         e.distance++;
                     }
+                    return SideEffect.none;
                 });
 
         // Urdin's Scroll of Agility
@@ -1284,11 +1378,13 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your defense glyph units get +1 movement speed";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
         events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                    return SideEffect.none;
                 });
         events.artifact.addEventHandler(artifact_urdins_scroll_of_agility, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
@@ -1296,6 +1392,7 @@ public class KingdomMod implements GameMod {
                     if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.DEFENSE)) {
                         e.distance++;
                     }
+                    return SideEffect.none;
                 });
 
         // Sword of Aesethos
@@ -1304,6 +1401,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units have additional critical hit chance";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // Kauna's Amulet
@@ -1312,6 +1410,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units within a patron's domain have extra defense";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // Staff of Wurmdel
@@ -1320,6 +1419,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your healing spells restore more health";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // Tome of Morun
@@ -1328,6 +1428,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Chance to spawn a glyph under your unit when it kills an enemy";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // Orb of Nerketo
@@ -1336,6 +1437,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units have additional visibility";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // Shada's Flute
@@ -1344,6 +1446,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your patrons generate unit points";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // Stones of Thudin
@@ -1352,6 +1455,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your vaults take less damage";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // The Chasi Bones
@@ -1360,6 +1464,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your nature glyph units have a chance to harvest an additional item";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
                 });
 
         // Ucha's Bowl of Plenty
@@ -1370,11 +1475,13 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "+1 option when selecting a new unit";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
+                    return SideEffect.none;
                 });
         events.artifact.addEventHandler(artifact_uchas_bowl_of_plenty, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     e.player.numRecruitmentOptions++;
+                    return SideEffect.none;
                 });
 
         // Nerketo's Helm
@@ -1384,6 +1491,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Critical hits against your units are less effective (e.g. 1.1x damage rather than 1.5x)";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
+                    return SideEffect.none;
                 });
 
         // Bounty of Ahn-June
@@ -1393,6 +1501,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Trade glyph units on your vaults generate more auction points";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
+                    return SideEffect.none;
                 });
 
         // Mark of Kung
@@ -1402,6 +1511,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your battle glyph units get +1 movement speed";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
+                    return SideEffect.none;
                 });
 
         // Chalco's Seal of Protection
@@ -1411,6 +1521,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your travel glyph units take less damage";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
+                    return SideEffect.none;
                 });
 
         // Poda's Elixir
@@ -1420,6 +1531,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Some chance to not spend the glyph when you recruit a unit";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
+                    return SideEffect.none;
                 });
 
         // Gaia's Effigy
@@ -1429,6 +1541,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Extra unit points each turn";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
+                    return SideEffect.none;
                 });
 
         // Rod of Adelon
@@ -1438,6 +1551,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Chance to immediately recruit an enemy unit when you kill it";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
+                    return SideEffect.none;
                 });
 
         // Blade of Sanguinor
@@ -1447,6 +1561,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your battle glyph units deal extra damage";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
+                    return SideEffect.none;
                 });
 
         // Cask of Amontior
@@ -1456,6 +1571,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Unoccupied tiles under your control also provide favor in a patron's domain";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
+                    return SideEffect.none;
                 });
 
         /**
@@ -1467,6 +1583,7 @@ public class KingdomMod implements GameMod {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
             e.blob.image = Optional.of("raider");
             e.blob.desc.add("Playstyle: High-risk aggro");
+            return SideEffect.none;
         });
 
         // The Merchant
@@ -1475,6 +1592,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of("merchant");
                     e.blob.desc.add("Playstyle: Market control");
+                    return SideEffect.none;
                 });
 
         // The Veteran
@@ -1482,6 +1600,7 @@ public class KingdomMod implements GameMod {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
             e.blob.image = Optional.of("veteran");
             e.blob.desc.add("Playstyle: Military production");
+            return SideEffect.none;
         });
 
         // The Devout
@@ -1489,6 +1608,7 @@ public class KingdomMod implements GameMod {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
             e.blob.image = Optional.of("devout");
             e.blob.desc.add("Playstyle: Patron collection");
+            return SideEffect.none;
         });
 
         // The Sentinel
@@ -1497,6 +1617,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of("sentinel");
                     e.blob.desc.add("Playstyle: Defensive expansion");
+                    return SideEffect.none;
                 });
 
         // The Usurper
@@ -1504,6 +1625,7 @@ public class KingdomMod implements GameMod {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
             e.blob.image = Optional.of("usurper");
             e.blob.desc.add("Playstyle: Early market bonus into unit production");
+            return SideEffect.none;
         });
 
         // The Forager
@@ -1511,6 +1633,7 @@ public class KingdomMod implements GameMod {
             Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
             e.blob.image = Optional.of("forager");
             e.blob.desc.add("Playstyle: Resource accumulation");
+            return SideEffect.none;
         });
     }
 }
