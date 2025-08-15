@@ -51,7 +51,7 @@ public class Ability implements EventReceiver, MenuSubject {
                         && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
                         && !view.game.mechanics.turns.hasUnitActed(this.wielder),
                 () -> {
-                    this.handleEvent(view, new Events.AbilityActivatedEvent(this));
+                    this.handleEvent(view, new Events.AbilityActivatedEvent(this)).execute();
                     view.menu.refresh(true);
                 });
     }
