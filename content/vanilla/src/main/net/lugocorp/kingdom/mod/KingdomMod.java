@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.mod;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.combat.Damage;
-import net.lugocorp.kingdom.game.combat.Damage.DamageType;
 import net.lugocorp.kingdom.game.core.AbilityLogic;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.core.ItemLogic;
@@ -1030,12 +1029,12 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_sword_slash, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    Damage dmg = new Damage(DamageType.IMPACT, 1);
+                    Damage dmg = new Damage(1);
                     e.blob.desc = String.format("Deals %s", dmg);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_sword_slash, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(DamageType.IMPACT, 1)));
+                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(1)));
 
         /**
          * SECTION 09 Units

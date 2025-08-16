@@ -25,6 +25,10 @@ allprojects {
       testOutputDir file('build/classes/java/test')
     }
   }
+
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation"
+  }
 }
 
 configure(subprojects) {

@@ -6,6 +6,10 @@ import net.lugocorp.kingdom.ai.plans.MoveNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.utils.math.Point;
 
+// TODO add a MemoryMap class to handle Actor visibility and provide destinations for this Goal.
+// Also, make sure the AI can predict the effects of spells and differentiate by the target.
+// Then, add some Goals for harvest goal, harvest food, increase unit points, claim glyphs, etc.
+
 /**
  * This class tells the Actor to explore the map
  */
