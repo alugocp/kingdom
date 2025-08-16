@@ -1,19 +1,33 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ai.plans.LazyNode;
 import net.lugocorp.kingdom.game.model.Unit;
-import java.util.List;
 
 /**
  * This interface forms part of the Actor's overall strategy
  */
-public interface Goal {
+public abstract class Goal {
 
     /**
-     * This method will generate suggested plans for a Unit
+     * This method may generate a suggested PlanNode for the given Unit
      */
-    public List<PlanNode> suggestPlanNodes(Unit u);
+    public abstract Plan suggestPlan(Unit u);
 
     /**
-     * Scores a PlanNode leaf
+     * Returns a score value for the given PlanNode
      */
-    public float scoreNode(PlanNode leaf);
+    protected abstract float getScore(PlanNode root);
+
+    /**
+     * Wraps a PlanNode in the expected output type for suggestPlan()
+     */
+    protected final Plan wrapPlanNode(PlanNode n) {
+        return new Plan(n, this.getScore(n));
+    }
+
+    /**
+     * Returns a Plan where the Unit in question does nothing
+     */
+    protected final Plan emptyPlan(Unit u) {
+        return new Plan(new LazyNode(u), 0f);
+    }
 }

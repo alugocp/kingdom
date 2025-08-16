@@ -1,27 +1,27 @@
 package net.lugocorp.kingdom.ai.goals;
 import net.lugocorp.kingdom.ai.Goal;
+import net.lugocorp.kingdom.ai.Plan;
 import net.lugocorp.kingdom.ai.PlanNode;
-import net.lugocorp.kingdom.ai.plans.ScoutNode;
+import net.lugocorp.kingdom.ai.plans.MoveNode;
 import net.lugocorp.kingdom.game.model.Unit;
-import java.util.ArrayList;
-import java.util.List;
+import net.lugocorp.kingdom.utils.math.Point;
 
 /**
  * This class tells the Actor to explore the map
  */
-public class ExploreMap implements Goal {
+public class ExploreMap extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    public List<PlanNode> suggestPlanNodes(Unit u) {
-        List<PlanNode> list = new ArrayList();
-        list.add(new ScoutNode(u, this::scoreNode));
-        return list;
+    public Plan suggestPlan(Unit u) {
+        Point p = new Point(u.getX() - 1, u.getY());
+        PlanNode root = new MoveNode(u, p);
+        return this.wrapPlanNode(root);
     }
 
     /** {@inheritdoc} */
     @Override
-    public float scoreNode(PlanNode leaf) {
+    protected float getScore(PlanNode root) {
         // TODO implement me
         return 1f;
     }

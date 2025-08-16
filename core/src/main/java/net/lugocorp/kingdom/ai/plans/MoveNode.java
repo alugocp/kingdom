@@ -4,10 +4,7 @@ import net.lugocorp.kingdom.ai.PlanNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 /**
  * This PlanNode tells the Actor's Unit to move somewhere
@@ -15,8 +12,8 @@ import java.util.function.Function;
 public class MoveNode extends PlanNode {
     private final Point p;
 
-    public MoveNode(Point p, Unit unit, Function<PlanNode, Float> calculateScore) {
-        super(unit, calculateScore);
+    public MoveNode(Unit unit, Point p) {
+        super(unit);
         this.p = p;
     }
 
@@ -29,11 +26,5 @@ public class MoveNode extends PlanNode {
             return ActionResult.POP;
         }
         return ActionResult.POP_ALL;
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public List<PlanNode> generateTrees() {
-        return new ArrayList<>();
     }
 }
