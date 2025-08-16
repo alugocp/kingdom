@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.utils.Colors;
 import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
@@ -10,11 +11,13 @@ import java.util.Set;
  * Represents a human or AI that is playing the game
  */
 public class Player {
+    // TODO create ComputerPlayer subclass for AI's
     private final boolean human;
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
     public final Color color = Colors.getFromPool();
+    public final Actor actor = new Actor();
     public final String name;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;

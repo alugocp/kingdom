@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ai.high.ExploreMapNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -15,6 +16,10 @@ import java.util.Set;
 public class Actor {
     private final Map<Unit, LowNode> unitPlans = new HashMap<>();
     private final Set<HighNode> overall = new HashSet<>();
+
+    public Actor() {
+        overall.add(new ExploreMapNode());
+    }
 
     /**
      * Iterates through our LowNodes to animate Units under the AI's control

@@ -273,8 +273,11 @@ public class TurnStructure {
         // Allow the turn Player to act
         this.canPlayerAct = true;
         if (!this.turnPlayer.isHumanPlayer()) {
-            // TODO implement AI here on another thread
-            // Call menu.refresh() afterwards and iterateTurnPlayer()
+            // TODO optimize this by limiting the number of operations the AI players
+            // execute per frame
+            this.turnPlayer.actor.assignUnitPlans(this.turnPlayer.units);
+            this.turnPlayer.actor.executeUnitPlans(view);
+            view.menu.refresh(true);
             this.iterateTurnPlayer(view);
         }
     }
