@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.utils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -21,5 +22,16 @@ public class Lambda {
      */
     public static <A, B> Set<B> map(Function<A, B> lambda, Set<A> input) {
         return input.stream().map((A x) -> lambda.apply(x)).collect(Collectors.toSet());
+    }
+
+    /**
+     * Combines multiple Iterables into one
+     */
+    public static <A> List<A> flatMap(Iterable<List<A>> sources) {
+        List<A> total = new ArrayList<>();
+        for (List<A> src : sources) {
+            total.addAll(src);
+        }
+        return total;
     }
 }

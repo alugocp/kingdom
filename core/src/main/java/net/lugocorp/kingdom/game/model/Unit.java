@@ -227,7 +227,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Returns the list of Points that this Unit can move to
      */
-    private Set<Point> getMoveTargets(GameView view) {
+    public Set<Point> getMoveTargets(GameView view) {
         int max = this.getMaxMoveDistance(view);
         if (max == 0) {
             return new HashSet<Point>();
@@ -308,7 +308,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Moves this Unit to another Tile in the grid
      */
-    private void move(Game g, Point p) {
+    public void move(Game g, Point p) {
         if (this.belongsToHuman()) {
             this.visibility.translate(g.world, p.x - this.x, p.y - this.y);
         }
