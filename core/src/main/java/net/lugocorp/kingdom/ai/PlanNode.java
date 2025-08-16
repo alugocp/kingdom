@@ -9,29 +9,29 @@ import java.util.function.Supplier;
 /**
  * This class forms part of the Actor's strategic details
  */
-public abstract class LowNode {
+public abstract class PlanNode {
     private final Supplier<Float> calculateScore;
     private Optional<Float> score = Optional.empty();
-    private Optional<LowNode> child = Optional.empty();
+    private Optional<PlanNode> child = Optional.empty();
     protected final Unit unit;
 
-    public LowNode(Unit unit, Function<LowNode, Float> calculateScore) {
+    public PlanNode(Unit unit, Function<PlanNode, Float> calculateScore) {
         this.calculateScore = () -> calculateScore.apply(this);
         this.unit = unit;
     }
 
     /**
-     * Expands this LowNode into several possible paths
+     * Expands this PlanNode into several possible paths
      */
-    public abstract List<LowNode> generateTrees();
+    public abstract List<PlanNode> generateTrees();
 
     /**
-     * Runs the LowNode's logic to command a Unit
+     * Runs the PlanNode's logic to command a Unit
      */
     public abstract ActionResult act(GameView view);
 
     /**
-     * Returns the score calculated for this LowNode
+     * Returns the score calculated for this PlanNode
      */
     public float getScore() {
         if (!this.score.isPresent()) {
@@ -41,9 +41,9 @@ public abstract class LowNode {
     }
 
     /**
-     * Returns this LowNode's child (if there is one)
+     * Returns this PlanNode's child (if there is one)
      */
-    public Optional<LowNode> getChild() {
+    public Optional<PlanNode> getChild() {
         return this.child;
     }
 }

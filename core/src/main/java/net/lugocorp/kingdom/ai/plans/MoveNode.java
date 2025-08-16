@@ -1,6 +1,6 @@
-package net.lugocorp.kingdom.ai.low;
+package net.lugocorp.kingdom.ai.plans;
 import net.lugocorp.kingdom.ai.ActionResult;
-import net.lugocorp.kingdom.ai.LowNode;
+import net.lugocorp.kingdom.ai.PlanNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * This LowNode tells the Actor's Unit to move somewhere
+ * This PlanNode tells the Actor's Unit to move somewhere
  */
-public class MoveNode extends LowNode {
+public class MoveNode extends PlanNode {
     private final Point p;
 
-    public MoveNode(Point p, Unit unit, Function<LowNode, Float> calculateScore) {
+    public MoveNode(Point p, Unit unit, Function<PlanNode, Float> calculateScore) {
         super(unit, calculateScore);
         this.p = p;
     }
@@ -33,7 +33,7 @@ public class MoveNode extends LowNode {
 
     /** {@inheritdoc} */
     @Override
-    public List<LowNode> generateTrees() {
+    public List<PlanNode> generateTrees() {
         return new ArrayList<>();
     }
 }

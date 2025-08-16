@@ -5,15 +5,15 @@ import java.util.List;
 /**
  * This interface forms part of the Actor's overall strategy
  */
-public interface HighNode {
+public interface Goal {
 
     /**
      * This method will generate suggested plans for a Unit
      */
-    public List<LowNode> suggestLowNodes(Unit u);
+    public List<PlanNode> suggestPlanNodes(Unit u);
 
     /**
-     * Scores a LowNode leaf
+     * Scores a PlanNode leaf
      */
-    public float scoreNode(LowNode leaf);
+    public float scoreNode(PlanNode leaf);
 }
