@@ -1,10 +1,18 @@
 package net.lugocorp.kingdom.ai.goals;
+import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.Plan;
 import net.lugocorp.kingdom.ai.PlanNode;
+import net.lugocorp.kingdom.ai.memory.MemoryCell;
+import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.plans.MoveNode;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
+import java.util.Set;
 
 // TODO add some Goals for harvest gold, harvest food, increase unit points, claim glyphs, claim passive buildings
 
@@ -15,16 +23,32 @@ public class ExploreMap extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    public Plan suggestPlan(Unit u) {
-        Point p = new Point(u.getX() - 1, u.getY());
-        PlanNode root = new MoveNode(u, p);
-        return this.wrapPlanNode(root);
+    public Plan suggestPlan(GameView view, Unit u) {
+        Set<Point> targets = u.getMoveTargets(view);
+        return Actor.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(new MoveNode(u, p)), targets));
     }
 
     /** {@inheritdoc} */
     @Override
     protected float getScore(PlanNode root) {
-        // TODO implement me
-        return 1f;
+        MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
+        Point dest = ((MoveNode) root).dest;
+        Set<Point> adj = Hexagons.getNeighbors(dest, 1);
+        float score = this.subscore(memory, dest);
+        for (Point p : Hexagons.getNeighbors(dest, 1)) {
+            score += this.subscore(memory, p);
+        }
+        return score / 7f;
+    }
+
+    /**
+     * Returns a component of the final score for a given Point
+     */
+    private float subscore(MemoryMap memory, Point p) {
+        MemoryCell cell = memory.getCell(p);
+        if (!cell.isVisible()) {
+            return cell.wasEverVisible() ? 0.5f : 1f;
+        }
+        return 0f;
     }
 }

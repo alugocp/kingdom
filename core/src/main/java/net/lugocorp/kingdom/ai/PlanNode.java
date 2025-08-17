@@ -8,7 +8,7 @@ import java.util.Optional;
  */
 public abstract class PlanNode {
     private Optional<PlanNode> child = Optional.empty();
-    protected final Unit unit;
+    public final Unit unit;
 
     public PlanNode(Unit unit) {
         this.unit = unit;

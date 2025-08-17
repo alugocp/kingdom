@@ -23,7 +23,7 @@ public class Actor {
     /**
      * Returns the Plan with the highest score in the given List
      */
-    static Plan getBestPlan(Iterable<Plan> plans) {
+    public static Plan getBestPlan(Iterable<Plan> plans) {
         float score = -1f;
         Plan result = null;
         for (Plan p : plans) {
@@ -62,10 +62,10 @@ public class Actor {
     /**
      * Ensures that all Units in the Set have an assigned plan
      */
-    public void assignUnitPlans(Set<Unit> units) {
+    public void assignUnitPlans(GameView view, Set<Unit> units) {
         for (Unit u : units) {
             if (!this.plans.containsKey(u)) {
-                Optional<PlanNode> plan = this.determinePlanNode(u);
+                Optional<PlanNode> plan = this.determinePlanNode(view, u);
                 plan.ifPresent((PlanNode n) -> this.plans.put(u, n));
             }
         }
@@ -74,8 +74,8 @@ public class Actor {
     /**
      * This function generates a PlanNode for the given Unit
      */
-    private Optional<PlanNode> determinePlanNode(Unit u) {
-        Set<Plan> options = Lambda.map((Goal n) -> n.suggestPlan(u), this.goals);
+    private Optional<PlanNode> determinePlanNode(GameView view, Unit u) {
+        Set<Plan> options = Lambda.map((Goal n) -> n.suggestPlan(view, u), this.goals);
         return options.size() > 0 ? Optional.of(Actor.getBestPlan(options).root) : Optional.empty();
     }
 }

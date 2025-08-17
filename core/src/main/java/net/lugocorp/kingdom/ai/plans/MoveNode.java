@@ -10,19 +10,19 @@ import java.util.Set;
  * This PlanNode tells the Actor's Unit to move somewhere
  */
 public class MoveNode extends PlanNode {
-    private final Point p;
+    public final Point dest;
 
-    public MoveNode(Unit unit, Point p) {
+    public MoveNode(Unit unit, Point dest) {
         super(unit);
-        this.p = p;
+        this.dest = dest;
     }
 
     /** {@inheritdoc} */
     @Override
     public ActionResult act(GameView view) {
         Set<Point> options = this.unit.getMoveTargets(view);
-        if (options.contains(this.p)) {
-            this.unit.move(view.game, this.p);
+        if (options.contains(this.dest)) {
+            this.unit.move(view.game, this.dest);
             return ActionResult.POP;
         }
         return ActionResult.POP_ALL;
