@@ -129,7 +129,7 @@ public class ToonShader implements Shader {
     public void begin(Camera camera, RenderContext context) {
         this.camera = camera;
         this.context = context;
-        this.program.begin();
+        this.program.bind();
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
         this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
         this.program.setUniformf(this.u_timer, (float) (System.currentTimeMillis() % ToonShader.TIMER_MAX));
@@ -249,7 +249,6 @@ public class ToonShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void end() {
-        this.program.end();
     }
 
     /** {@inheritdoc} */

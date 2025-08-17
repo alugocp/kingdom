@@ -56,7 +56,7 @@ public class PreviewShader implements Shader {
     public void begin(Camera camera, RenderContext context) {
         this.camera = camera;
         this.context = context;
-        this.program.begin();
+        this.program.bind();
         this.program.setUniformMatrix(this.u_projViewTrans, this.matrix);
     }
 
@@ -91,7 +91,6 @@ public class PreviewShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void end() {
-        this.program.end();
     }
 
     /** {@inheritdoc} */

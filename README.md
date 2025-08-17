@@ -1,4 +1,8 @@
 # Kingdom
+
+![Static Badge](https://img.shields.io/badge/Java-11-a?color=%23ED8B00)
+![Static Badge](https://img.shields.io/badge/libGDX-1.12.1-a?color=%23E74A45)
+
 A turn-based strategy game written in Java with [libGDX](https://libgdx.com/).
 Manage resources and train units as you grow your empire and change the world around you.
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
@@ -46,7 +47,8 @@ public class ModLoader {
         URLClassLoader child = new URLClassLoader(new URL[]{new File(filepath).toURI().toURL()},
                 this.getClass().getClassLoader());
         Class definition = Class.forName("net.lugocorp.kingdom.mod.KingdomMod", true, child);
-        GameMod mod = (GameMod) definition.newInstance();
+        Constructor<GameMod> construct = definition.getConstructor();
+        GameMod mod = construct.newInstance();
         String key = mod.getKey();
 
         // Check for mod legality
