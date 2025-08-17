@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game.core;
-import net.lugocorp.kingdom.ai.PlayerInterface;
 import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
@@ -55,7 +54,7 @@ public class AbilityLogic {
             attacker.combat.attack(view, targets.get(p), dmg);
             view.game.mechanics.turns.unitHasActed(view, attacker);
         });
-        return PlayerInterface.select(view, attacker.getLeader(), points, "No attack targets are in range",
+        return attacker.getLeader().get().select(view, points, "No attack targets are in range",
                 (Point p) -> SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
                         () -> view.game.mechanics.turns.unitHasActed(view, attacker)));
     }
@@ -83,11 +82,10 @@ public class AbilityLogic {
         }
 
         // Have the Player select which target to heal
-        return PlayerInterface.select(view, healer.getLeader(), points, "No heal targets are in range",
-                (Point p) -> () -> {
-                    targets.get(p).heal(hitPoints);
-                    view.game.mechanics.turns.unitHasActed(view, healer);
-                });
+        return healer.getLeader().get().select(view, points, "No heal targets are in range", (Point p) -> () -> {
+            targets.get(p).heal(hitPoints);
+            view.game.mechanics.turns.unitHasActed(view, healer);
+        });
     }
 
     /**

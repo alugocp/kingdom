@@ -4,12 +4,16 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Colors;
+import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Represents a human or AI that is playing the game
@@ -46,6 +50,12 @@ public abstract class Player {
      * Removes visibility from the Tile to this Player
      */
     public abstract void decrementVisibility(Tile t);
+
+    /**
+     * Dictates what happens when this Player activates an Ability
+     */
+    public abstract SideEffect select(GameView view, Set<Point> points, String error,
+            Function<Point, SideEffect> action);
 
     /**
      * Returns the number of bare tiles this Player has access to
