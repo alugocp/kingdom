@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
-import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -200,7 +200,7 @@ public class WorldGenerator {
             if (a == 0) {
                 g.getInitialUnit(g.human, p.x, p.y).spawn(view);
             } else {
-                Player ai = g.addComputerPlayer("AI");
+                CompPlayer ai = g.addComputerPlayer(a);
                 g.getInitialUnit(ai, p.x, p.y).spawn(view);
             }
             startingPoints.get(startingPointIndex++).remove(p);

@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -273,10 +274,8 @@ public class TurnStructure {
         // Allow the turn Player to act
         this.canPlayerAct = true;
         if (!this.turnPlayer.isHumanPlayer()) {
-            // TODO optimize this by limiting the number of operations the AI players
-            // execute per frame
-            this.turnPlayer.actor.assignUnitPlans(this.turnPlayer.units);
-            this.turnPlayer.actor.executeUnitPlans(view);
+            CompPlayer player = (CompPlayer) this.turnPlayer;
+            player.makeDecisions(view);
             view.menu.refresh(true);
             this.iterateTurnPlayer(view);
         }

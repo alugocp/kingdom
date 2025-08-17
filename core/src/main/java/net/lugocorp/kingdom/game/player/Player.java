@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game.player;
-import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Fate;
@@ -14,35 +13,28 @@ import java.util.Set;
 /**
  * Represents a human or AI that is playing the game
  */
-public class Player {
-    // TODO create ComputerPlayer subclass for AI's
-    private final boolean human;
+public abstract class Player {
+    private Fate fate;
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
     public final Color color = Colors.getFromPool();
-    public final Actor actor = new Actor();
     public final String name;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
     public int unitPoints = 0;
     public int tiles = 0;
     public int gold = 0;
-    public Fate fate;
 
-    public Player(String name, Fate fate, boolean human) {
-        this.human = human;
+    Player(String name, Fate fate) {
         this.name = name;
         this.fate = fate;
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
+     * Returns true if this Player represents the human
      */
-    public Player() {
-        this.name = null;
-        this.human = false;
-    }
+    public abstract boolean isHumanPlayer();
 
     /**
      * Returns the number of bare tiles this Player has access to
@@ -52,10 +44,17 @@ public class Player {
     }
 
     /**
-     * Returns true if this Player represents the human
+     * Gets this Player's Fate
      */
-    public boolean isHumanPlayer() {
-        return this.human;
+    public Fate getFate() {
+        return this.fate;
+    }
+
+    /**
+     * Sets this Player's Fate
+     */
+    public void setFate(Fate fate) {
+        this.fate = fate;
     }
 
     /** {@inheritdoc} */

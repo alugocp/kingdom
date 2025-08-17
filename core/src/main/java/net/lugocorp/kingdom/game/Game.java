@@ -8,6 +8,8 @@ import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.glyph.Glyph;
+import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.game.player.HumanPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -24,11 +26,11 @@ import java.util.Set;
  * Stores all the data for a single ongoing game
  */
 public class Game {
-    public final List<Player> comps = new ArrayList<>();
+    public final List<CompPlayer> comps = new ArrayList<>();
     public final World world = new World();
     public final OffsetTime startTime;
     public final Mechanics mechanics;
-    public final Player human;
+    public final HumanPlayer human;
     @FieldSerializer.Optional("events")
     public AllEventHandlers events;
     @FieldSerializer.Optional("generator")
@@ -38,7 +40,7 @@ public class Game {
     public Game(AllEventHandlers events, OffsetTime startTime) {
         this.events = events;
         this.startTime = startTime;
-        this.human = new Player("you", null, true);
+        this.human = new HumanPlayer();
         this.mechanics = new Mechanics(this);
     }
 
@@ -80,8 +82,8 @@ public class Game {
     /**
      * Registers a new AI Player
      */
-    public Player addComputerPlayer(String name) {
-        final Player player = new Player(name, this.mechanics.fates.chooseRandomFate(), false);
+    public CompPlayer addComputerPlayer(int index) {
+        final CompPlayer player = new CompPlayer(index, this.mechanics.fates.chooseRandomFate());
         this.comps.add(player);
         return player;
     }

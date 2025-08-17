@@ -55,6 +55,6 @@ public class Fates {
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
         return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false,
                 new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.complete()))
-                        .add(new FateViewNode(view.av, view.game.human.fate)));
+                        .add(new FateViewNode(view.av, view.game.human.getFate())));
     }
 }

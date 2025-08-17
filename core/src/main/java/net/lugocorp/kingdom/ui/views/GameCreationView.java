@@ -144,7 +144,7 @@ class GameCreationView implements View {
      * Returns a Menu to that allows the player to view and select a Fate
      */
     private Menu getFateSelectionMenu(GameView view) {
-        view.game.human.fate = view.game.mechanics.fates.getFirstFate();
+        view.game.human.setFate(view.game.mechanics.fates.getFirstFate());
         ListNode options = new ListNode();
         FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
         ListNode root = new ListNode()
@@ -163,7 +163,7 @@ class GameCreationView implements View {
                 final Fate fate = fates.get(a);
                 row.add(new FateNode(view.av, fate, () -> {
                     view.av.loaders.sounds.play("ui/arrow");
-                    view.game.human.fate = fate;
+                    view.game.human.setFate(fate);
                     display.setFate(view.av, fate);
                 }));
                 a++;
