@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ActionNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
@@ -32,6 +31,20 @@ public class Ability implements EventReceiver, MenuSubject {
         this.name = null;
     }
 
+    /**
+     * Activates this Ability (only does something if it's active)
+     */
+    public SideEffect activate(GameView view) {
+        return this.handleEvent(view, new Events.AbilityActivatedEvent(this));
+    }
+
+    /**
+     * Returns true fi this Ability can be activated
+     */
+    public boolean isActive(GameView view) {
+        return view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent");
+    }
+
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
@@ -47,12 +60,9 @@ public class Ability implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        return new ActionNode(view.av, this.name, Optional.of(this.desc),
-                this.wielder.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)
-                        && view.game.events.ability.hasEventHandler(this.getStratifier(), "AbilityActivatedEvent")
-                        && !view.game.mechanics.turns.hasUnitActed(this.wielder),
-                () -> {
-                    this.handleEvent(view, new Events.AbilityActivatedEvent(this)).execute();
+        return new ActionNode(view.av, this.name, Optional.of(this.desc), this.wielder.belongsToHuman()
+                && this.isActive(view) && !view.game.mechanics.turns.hasUnitActed(this.wielder), () -> {
+                    this.activate(view).execute();
                     view.menu.refresh(true);
                 });
     }
