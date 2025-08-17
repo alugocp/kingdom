@@ -8,9 +8,9 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
-import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.Player;
 
 /**
  * Contains a collection of Events that are integral to the game's core

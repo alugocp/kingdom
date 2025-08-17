@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.game.combat;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Building;
-import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 

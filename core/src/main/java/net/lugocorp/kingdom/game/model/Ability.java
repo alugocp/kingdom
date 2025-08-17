@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ActionNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;

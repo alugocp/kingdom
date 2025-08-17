@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ai;
-import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;

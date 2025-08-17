@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.game.model.Glyph;
-import net.lugocorp.kingdom.game.model.GlyphCategory;
-import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.model.glyph.Glyph;
+import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;

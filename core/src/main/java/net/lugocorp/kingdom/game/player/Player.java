@@ -1,5 +1,9 @@
-package net.lugocorp.kingdom.game.model;
+package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.ai.Actor;
+import net.lugocorp.kingdom.game.model.Artifact;
+import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Fate;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.utils.Colors;
 import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;

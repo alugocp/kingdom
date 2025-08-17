@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.game.model.fields.Rarity;
 import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -39,22 +40,4 @@ public class Item implements EventReceiver {
     public String getStratifier() {
         return this.name;
     }
-
-    /**
-     * This nested class tracks relative chance to spawn Items
-     */
-    public static enum Rarity {
-        COMMON("common"), UNCOMMON("uncommon"), RARE("rare");
-
-        public final String label;
-
-        private Rarity(String label) {
-            this.label = label;
-        }
-
-        @Override
-        public String toString() {
-            return this.label;
-        }
-    };
 }

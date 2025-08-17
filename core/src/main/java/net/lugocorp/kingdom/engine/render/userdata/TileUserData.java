@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine.render.userdata;
-import net.lugocorp.kingdom.game.model.GlyphCategory;
+import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
 import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
 

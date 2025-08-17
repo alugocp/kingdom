@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.model.Glyph;
-import net.lugocorp.kingdom.game.model.GlyphCategory;
-import net.lugocorp.kingdom.game.model.Player;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.glyph.Glyph;
+import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;

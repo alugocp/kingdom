@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.model;
+package net.lugocorp.kingdom.game.model.glyph;
 
 /**
  * This class represents the different categories of Glyphs in the game

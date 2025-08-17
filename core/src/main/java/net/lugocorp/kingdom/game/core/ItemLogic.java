@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.core;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.model.Player;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 
