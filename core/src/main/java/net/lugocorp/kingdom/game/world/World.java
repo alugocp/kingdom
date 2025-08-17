@@ -86,6 +86,13 @@ public class World {
     }
 
     /**
+     * Returns World size
+     */
+    public Point getSize() {
+        return new Point(this.w, this.h);
+    }
+
+    /**
      * Returns all Modellable instances present in the World
      */
     public Array<Modellable> getModellables(boolean includeTiles) {

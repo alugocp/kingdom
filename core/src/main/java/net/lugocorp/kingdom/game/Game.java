@@ -83,7 +83,7 @@ public class Game {
      * Registers a new AI Player
      */
     public CompPlayer addComputerPlayer(int index) {
-        final CompPlayer player = new CompPlayer(index, this.mechanics.fates.chooseRandomFate());
+        final CompPlayer player = new CompPlayer(index, this.world.getSize(), this.mechanics.fates.chooseRandomFate());
         this.comps.add(player);
         return player;
     }
@@ -146,13 +146,10 @@ public class Game {
     public void setLeader(Unit u, Optional<Player> op) {
         u.getLeader().ifPresent((Player p) -> p.units.remove(u));
         op.ifPresent((Player p) -> p.units.add(u));
-        if (u.belongsToHuman()) {
-            u.visibility.removeVision(this.world);
-        }
+        u.getLeader().ifPresent((Player l) -> u.visibility.removeVision(l, this.world));
         u.setLeader(op);
-        if (u.belongsToHuman()) {
-            u.visibility.setVisibleRadius(this.world, u.getPoint(), u.visibleRadius);
-        }
+        u.getLeader()
+                .ifPresent((Player l) -> u.visibility.setVisibleRadius(l, this.world, u.getPoint(), u.visibleRadius));
         this.setLeader(this.world.getTile(u.getPoint()).get(), op);
     }
 

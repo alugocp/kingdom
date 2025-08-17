@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -15,23 +16,23 @@ public class Visibility {
     /**
      * Changes the focal point of the associated Unit/Building
      */
-    public void translate(World world, int dx, int dy) {
+    public void translate(Player player, World world, int dx, int dy) {
         for (Point p : this.vision) {
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> t.decrementVisibility());
+            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVisibility(t));
             p.set(p.x + dx, p.y + dy);
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> t.incrementVisibility());
+            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVisibility(t));
         }
     }
 
     /**
      * Changes how far the associated Unit/Building can see
      */
-    public void setVisibleRadius(World world, Point center, int radius) {
-        this.removeVision(world);
-        world.getTile(center).ifPresent((Tile t) -> t.incrementVisibility());
+    public void setVisibleRadius(Player player, World world, Point center, int radius) {
+        this.removeVision(player, world);
+        world.getTile(center).ifPresent((Tile t) -> player.incrementVisibility(t));
         this.vision.add(center);
         for (Point p : Hexagons.getNeighbors(center, radius)) {
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> t.incrementVisibility());
+            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVisibility(t));
             this.vision.add(p);
         }
     }
@@ -39,9 +40,9 @@ public class Visibility {
     /**
      * Removes all Points from the vision set
      */
-    public void removeVision(World world) {
+    public void removeVision(Player player, World world) {
         for (Point p : this.vision) {
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> t.decrementVisibility());
+            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVisibility(t));
         }
         this.vision.clear();
     }

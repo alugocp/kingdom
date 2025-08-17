@@ -62,12 +62,8 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
      * This method is fired when the underlying Tile's leader field changes
      */
     public void handleLeaderChange(World w, Optional<Player> p1, Optional<Player> p2) {
-        if (p1.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
-            this.visibility.removeVision(w);
-        }
-        if (p2.map((Player p) -> p.isHumanPlayer()).orElse(false)) {
-            this.visibility.setVisibleRadius(w, this.getPoint(), 1);
-        }
+        p1.ifPresent((Player l) -> this.visibility.removeVision(l, w));
+        p2.ifPresent((Player l) -> this.visibility.setVisibleRadius(l, w, this.getPoint(), 1));
     }
 
     /**

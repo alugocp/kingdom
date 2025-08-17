@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Fate;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.utils.Colors;
 import com.badlogic.gdx.graphics.Color;
@@ -35,6 +36,16 @@ public abstract class Player {
      * Returns true if this Player represents the human
      */
     public abstract boolean isHumanPlayer();
+
+    /**
+     * Adds visibility on the Tile to this Player
+     */
+    public abstract void incrementVisibility(Tile t);
+
+    /**
+     * Removes visibility from the Tile to this Player
+     */
+    public abstract void decrementVisibility(Tile t);
 
     /**
      * Returns the number of bare tiles this Player has access to

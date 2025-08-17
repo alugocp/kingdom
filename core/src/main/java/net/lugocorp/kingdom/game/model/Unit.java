@@ -104,7 +104,8 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
-     * Sets the Player that commands this Unit
+     * Sets the Player that commands this Unit (this should only ever be used in the
+     * Game class)
      */
     public void setLeader(Optional<Player> leader) {
         this.leader = leader;
@@ -311,9 +312,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      * Moves this Unit to another Tile in the grid
      */
     public void move(Game g, Point p) {
-        if (this.belongsToHuman()) {
-            this.visibility.translate(g.world, p.x - this.x, p.y - this.y);
-        }
+        this.leader.ifPresent((Player l) -> this.visibility.translate(l, g.world, p.x - this.x, p.y - this.y));
         this.removeFromPosition(g);
         this.setPosition(g, p.x, p.y);
     }
@@ -362,9 +361,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     @Override
     public void deactivate(GameView view) {
         EventReceiver.super.deactivate(view);
-        if (this.belongsToHuman()) {
-            this.visibility.removeVision(view.game.world);
-        }
+        this.leader.ifPresent((Player l) -> this.visibility.removeVision(l, view.game.world));
         this.removeFromPosition(view.game);
         this.dispose();
     }
