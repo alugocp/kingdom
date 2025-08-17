@@ -12,6 +12,11 @@ public class MemoryMap {
 
     public MemoryMap(Point p) {
         this.grid = new MemoryCell[p.x][p.y];
+        for (int a = 0; a < p.x; a++) {
+            for (int b = 0; b < p.y; b++) {
+                this.grid[a][b] = new MemoryCell();
+            }
+        }
     }
 
     /**

@@ -20,7 +20,7 @@ public class CompPlayer extends Player {
     public final MemoryMap memory;
 
     public CompPlayer(int index, Point world, Fate fate) {
-        super(String.format("Computer %i", index), fate);
+        super(String.format("Computer %d", index), fate);
         this.memory = new MemoryMap(world);
     }
 
