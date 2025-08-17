@@ -16,13 +16,13 @@ public abstract class Goal {
     /**
      * Returns a score value for the given PlanNode
      */
-    protected abstract float getScore(PlanNode root);
+    protected abstract float getScore(GameView view, PlanNode root);
 
     /**
      * Wraps a PlanNode in the expected output type for suggestPlan()
      */
-    protected final Plan wrapPlanNode(PlanNode n) {
-        return new Plan(n, this.getScore(n));
+    protected final Plan wrapPlanNode(GameView view, PlanNode n) {
+        return new Plan(n, this.getScore(view, n));
     }
 
     /**

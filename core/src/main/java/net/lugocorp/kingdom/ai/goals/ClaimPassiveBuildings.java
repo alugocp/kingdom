@@ -6,20 +6,18 @@ import net.lugocorp.kingdom.ai.PlanNode;
 import net.lugocorp.kingdom.ai.memory.MemoryCell;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.plans.MoveNode;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
-import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Set;
 
-// TODO add some Goals for harvest gold, harvest food
-
 /**
- * This class tells the Actor to explore the map
+ * This class tells the Actor to claim Tiles with Glyphs
  */
-public class ExploreMap extends Goal {
+public class ClaimPassiveBuildings extends Goal {
 
     /** {@inheritdoc} */
     @Override
@@ -33,22 +31,11 @@ public class ExploreMap extends Goal {
     protected float getScore(GameView view, PlanNode root) {
         MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
         Point dest = ((MoveNode) root).dest;
-        Set<Point> adj = Hexagons.getNeighbors(dest, 1);
-        float score = this.subscore(memory, dest);
-        for (Point p : Hexagons.getNeighbors(dest, 1)) {
-            score += this.subscore(memory, p);
+        MemoryCell cell = memory.getCell(dest);
+        if (!cell.getBuilding().isPresent() || cell.getOwner().equals(root.unit.getLeader())) {
+            return 0f;
         }
-        return score / 7f;
-    }
-
-    /**
-     * Returns a component of the final score for a given Point
-     */
-    private float subscore(MemoryMap memory, Point p) {
-        MemoryCell cell = memory.getCell(p);
-        if (!cell.isVisible()) {
-            return cell.wasEverVisible() ? 0.5f : 1f;
-        }
-        return 0f;
+        Building b = view.game.generator.building(cell.getBuilding().get(), 0, 0);
+        return b.isActive() ? 0f : 1f;
     }
 }

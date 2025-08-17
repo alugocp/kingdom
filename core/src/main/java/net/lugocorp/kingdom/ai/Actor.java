@@ -1,5 +1,8 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ai.goals.ClaimGlyphs;
+import net.lugocorp.kingdom.ai.goals.ClaimPassiveBuildings;
 import net.lugocorp.kingdom.ai.goals.ExploreMap;
+import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -18,6 +21,9 @@ public class Actor {
 
     public Actor() {
         this.goals.add(new ExploreMap());
+        this.goals.add(new ClaimGlyphs());
+        this.goals.add(new ClaimPassiveBuildings());
+        this.goals.add(new IncreaseUnitPoints());
     }
 
     /**
