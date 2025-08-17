@@ -43,13 +43,13 @@ public class CompPlayer extends Player {
     /** {@inheritdoc} */
     @Override
     public void incrementVisibility(Tile t) {
-        this.map.incrementVisibility(t.getPoint());
+        this.map.incrementVisibility(t);
     }
 
     /** {@inheritdoc} */
     @Override
     public void decrementVisibility(Tile t) {
-        this.map.decrementVisibility(t.getPoint());
+        this.map.decrementVisibility(t);
     }
 
     /** {@inheritdoc} */
