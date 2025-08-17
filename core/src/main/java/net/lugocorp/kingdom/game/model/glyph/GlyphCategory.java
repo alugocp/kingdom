@@ -15,14 +15,6 @@ public enum GlyphCategory {
         this.icon = icon;
     }
 
-    /**
-     * Returns a random Glyph value
-     */
-    public static GlyphCategory random() {
-        GlyphCategory[] values = GlyphCategory.values();
-        return values[(int) Math.floor(Math.random() * values.length)];
-    }
-
     /** {@inheritdoc} */
     @Override
     public String toString() {

@@ -22,4 +22,12 @@ public class Lambda {
     public static <A, B> Set<B> map(Function<A, B> lambda, Set<A> input) {
         return input.stream().map((A x) -> lambda.apply(x)).collect(Collectors.toSet());
     }
+
+    /**
+     * Returns a random value from the given Enum
+     */
+    public static <T extends Enum<T>> T random(Class<T> e) {
+        T[] values = e.getEnumConstants();
+        return values[(int) Math.floor(Math.random() * values.length)];
+    }
 }

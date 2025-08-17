@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.game.model.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -198,12 +198,10 @@ public class WorldGenerator {
             Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
             g.generator.building("Vault", p.x, p.y).spawn(view);
             if (a == 0) {
-                g.getInitialUnit(g.human, p.x, p.y, Glyph.BATTLE).spawn(view);
+                g.getInitialUnit(g.human, p.x, p.y).spawn(view);
             } else {
                 Player ai = g.addComputerPlayer("AI");
-                // TODO replace the next two lines with getInitialUnit
-                g.generator.unit("Prismar", p.x, p.y).spawn(view);
-                g.setLeader(g.world.getTile(p.x, p.y).get().unit.get(), ai);
+                g.getInitialUnit(ai, p.x, p.y).spawn(view);
             }
             startingPoints.get(startingPointIndex++).remove(p);
         }
@@ -213,7 +211,7 @@ public class WorldGenerator {
         for (List<Point> quadrant : startingPoints) {
             for (Point p : quadrant) {
                 if (r.nextBoolean()) {
-                    g.world.getTile(p).get().setGlyph(Optional.of(GlyphCategory.random()));
+                    g.world.getTile(p).get().setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
                 }
             }
         }

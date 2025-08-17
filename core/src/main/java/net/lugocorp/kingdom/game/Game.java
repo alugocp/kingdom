@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.glyph.Glyph;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.time.OffsetTime;
@@ -67,9 +68,10 @@ public class Game {
      * does not spawn the Unit, but it does remove them from all relevant
      * GlyphPools.
      */
-    public Unit getInitialUnit(Player p, int x, int y, Glyph g) {
-        String name = this.mechanics.pools.random(g, 1)[0];
-        Unit u = this.generator.unit(name, x, y);
+    public Unit getInitialUnit(Player p, int x, int y) {
+        final Glyph g = Lambda.random(Glyph.class);
+        final String name = this.mechanics.pools.random(g, 1)[0];
+        final Unit u = this.generator.unit(name, x, y);
         this.mechanics.pools.remove(u);
         this.setLeader(u, p);
         return u;
@@ -79,7 +81,7 @@ public class Game {
      * Registers a new AI Player
      */
     public Player addComputerPlayer(String name) {
-        Player player = new Player(name, this.mechanics.fates.chooseRandomFate(), false);
+        final Player player = new Player(name, this.mechanics.fates.chooseRandomFate(), false);
         this.comps.add(player);
         return player;
     }
