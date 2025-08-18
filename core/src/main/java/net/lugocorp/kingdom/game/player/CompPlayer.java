@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
+import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -55,10 +56,13 @@ public class CompPlayer extends Player {
     /** {@inheritdoc} */
     @Override
     public SideEffect select(GameView view, Set<Point> points, String error, Function<Point, SideEffect> action) {
-        // TODO add a mechanism for the CompPlayer to choose a single Path to follow
-        // here
-        final List<SideEffect> effects = new ArrayList<>();
-        CapturedEvents.instance.split(points, (Point p) -> effects.add(action.apply(p)));
-        return SideEffect.all(effects);
+        if (SelectedTargets.instance.isPrediction()) {
+            final List<SideEffect> effects = new ArrayList<>();
+            CapturedEvents.instance.split(points, (Point p) -> effects.add(action.apply(p)));
+            return SideEffect.all(effects);
+        }
+
+        // We've selected our targets, so we're ready to execute now
+        return action.apply(SelectedTargets.instance.popPath());
     }
 }

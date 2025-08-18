@@ -25,6 +25,13 @@ public class Path {
     }
 
     /**
+     * Removes and returns the first Point in this Path
+     */
+    public Point popFromFront() {
+        return this.points.remove(0);
+    }
+
+    /**
      * Concatenates another Path onto this one
      */
     public Path concat(Path path) {
