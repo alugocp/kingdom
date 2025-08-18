@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.code;
 
 /**
  * SideEffects are callables that are designed for the AI system. The game's AI

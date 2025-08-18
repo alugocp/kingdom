@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.io.Serializable;
 
 /**

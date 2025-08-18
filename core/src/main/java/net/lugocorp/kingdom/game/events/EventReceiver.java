@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.events;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.code.SideEffect;
 
 /**
  * This interface serves as a wrapper so game objects can call their own

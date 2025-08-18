@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.code;
 
 /**
  * A simple container object for two data types

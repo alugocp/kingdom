@@ -6,7 +6,7 @@ import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
 import java.util.List;

@@ -8,7 +8,7 @@ import net.lugocorp.kingdom.ai.plans.MoveNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 import java.util.Set;

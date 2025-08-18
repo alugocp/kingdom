@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.combat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.code.SideEffect;
 
 /**
  * This class handles all combat logic for any Unit or Building

@@ -7,7 +7,7 @@ import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.Tuple;
+import net.lugocorp.kingdom.utils.code.Tuple;
 import net.lugocorp.kingdom.utils.math.Path;
 import java.util.Optional;
 import java.util.function.Function;

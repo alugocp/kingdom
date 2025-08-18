@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Set;
 import java.util.function.Function;

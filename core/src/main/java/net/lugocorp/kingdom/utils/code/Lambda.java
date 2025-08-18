@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.code;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

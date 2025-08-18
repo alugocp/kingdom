@@ -7,7 +7,7 @@ import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
 import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.code.Lambda;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

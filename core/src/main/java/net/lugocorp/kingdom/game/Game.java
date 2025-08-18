@@ -12,7 +12,7 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.HumanPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.time.OffsetTime;
