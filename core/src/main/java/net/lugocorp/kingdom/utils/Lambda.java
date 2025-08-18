@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.utils;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -21,6 +22,19 @@ public class Lambda {
      */
     public static <A, B> Set<B> map(Function<A, B> lambda, Set<A> input) {
         return input.stream().map((A x) -> lambda.apply(x)).collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a subset of the input Set where each element passes the criteria
+     */
+    public static <A> Set<A> filter(Function<A, Boolean> criteria, Set<A> input) {
+        Set<A> output = new HashSet<>();
+        for (A a : input) {
+            if (criteria.apply(a)) {
+                output.add(a);
+            }
+        }
+        return output;
     }
 
     /**

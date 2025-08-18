@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.ai.goals;
-import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.Plan;
 import net.lugocorp.kingdom.ai.PlanNode;
@@ -11,6 +10,7 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.math.Point;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -20,9 +20,9 @@ public class ClaimGlyphs extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    public Plan suggestPlan(GameView view, Unit u) {
+    public Optional<Plan> suggestPlan(GameView view, Unit u) {
         Set<Point> targets = u.getMoveTargets(view);
-        return Actor.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
+        return this.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
     }
 
     /** {@inheritdoc} */
