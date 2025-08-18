@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Stores all possible resulting logs from some starting point
@@ -22,6 +23,20 @@ public class EventLog {
         for (List<Event> list : this.events.values()) {
             list.add(e);
         }
+    }
+
+    /**
+     * Returns a Set of the Paths that cause our alternate Event logs
+     */
+    public Set<Path> getTargetPaths() {
+        return this.events.keySet();
+    }
+
+    /**
+     * Returns the Event log associated with the given target Path
+     */
+    public List<Event> getEvents(Path p) {
+        return this.events.get(p);
     }
 
     /**

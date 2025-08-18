@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.core;
+import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
@@ -139,8 +140,10 @@ public class AbilityLogic {
      */
     public static SideEffect doOnBuilding(GameView view, Unit caster, Function<Building, Boolean> criteria,
             Supplier<SideEffect> effect) {
-        boolean isOnBuilding = view.game.world.getTile(caster.getPoint()).flatMap((Tile t) -> t.building).map(criteria)
-                .orElse(false);
+        Point p = CapturedEvents.instance.isActive()
+                ? CapturedEvents.instance.getFakePoint().map((Point p1) -> p1).orElse(caster.getPoint())
+                : caster.getPoint();
+        boolean isOnBuilding = view.game.world.getTile(p).flatMap((Tile t) -> t.building).map(criteria).orElse(false);
         return isOnBuilding ? effect.get() : SideEffect.none;
     }
 

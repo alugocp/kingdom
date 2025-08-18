@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ai.prediction;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.utils.math.Point;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -8,6 +9,7 @@ import java.util.function.Consumer;
  * the possible consequences of its actions.
  */
 public class CapturedEvents {
+    private Optional<Point> fakePoint = Optional.empty();
     private EventLog log = null;
     public static final CapturedEvents instance = new CapturedEvents();
 
@@ -32,6 +34,7 @@ public class CapturedEvents {
      * Turns on capturing
      */
     public void on() {
+        this.fakePoint = Optional.empty();
         this.log = new EventLog();
     }
 
@@ -51,6 +54,11 @@ public class CapturedEvents {
         return results;
     }
 
+    /**
+     * Takes the current captured Events here and splits them off for each possible
+     * Point that could be chosen. Events that result from these choices are
+     * assigned to the correct Path.
+     */
     public void split(Iterable<Point> options, Consumer<Point> lambda) {
         EventLog parent = this.off();
         for (Point p : options) {
@@ -62,5 +70,26 @@ public class CapturedEvents {
         }
         parent.foldUnincorporatedBranches();
         this.on(parent);
+    }
+
+    /**
+     * Gets the current fake Point
+     */
+    public Optional<Point> getFakePoint() {
+        return this.fakePoint;
+    }
+
+    /**
+     * Sets the current fake Point
+     */
+    public void setFakePoint(Point p) {
+        this.fakePoint = Optional.of(p);
+    }
+
+    /**
+     * Removes the current fake Point
+     */
+    public void clearFakePoint() {
+        this.fakePoint = Optional.empty();
     }
 }

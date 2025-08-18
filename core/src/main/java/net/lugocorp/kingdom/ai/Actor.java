@@ -2,7 +2,9 @@ package net.lugocorp.kingdom.ai;
 import net.lugocorp.kingdom.ai.goals.ClaimGlyphs;
 import net.lugocorp.kingdom.ai.goals.ClaimPassiveBuildings;
 import net.lugocorp.kingdom.ai.goals.ExploreMap;
+import net.lugocorp.kingdom.ai.goals.HarvestFood;
 import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
+import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -24,6 +26,8 @@ public class Actor {
         this.goals.add(new ClaimGlyphs());
         this.goals.add(new ClaimPassiveBuildings());
         this.goals.add(new IncreaseUnitPoints());
+        this.goals.add(new HarvestFood());
+        this.goals.add(new MineGold());
     }
 
     /**
@@ -81,6 +85,7 @@ public class Actor {
      * This function generates a PlanNode for the given Unit
      */
     private Optional<PlanNode> determinePlanNode(GameView view, Unit u) {
+        // TODO allow suggestPlan to return nothing, and be ignored
         Set<Plan> options = Lambda.map((Goal n) -> n.suggestPlan(view, u), this.goals);
         return options.size() > 0 ? Optional.of(Actor.getBestPlan(options).root) : Optional.empty();
     }

@@ -14,8 +14,6 @@ import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Set;
 
-// TODO add some Goals for harvest gold, harvest food
-
 /**
  * This class tells the Actor to explore the map
  */
