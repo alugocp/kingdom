@@ -216,11 +216,14 @@ public class TurnStructure {
     public void kickOffTurn(GameView view) {
         // Run per-turn calculations for the turn Player
         this.canPlayerAct = false;
+        // TODO make this entire function more readable
         // TODO run this logic in another thread for optimization
         for (Unit u : this.turnPlayer.units) {
             u.wakeUpCheck();
         }
         this.unitsThatHaveActed.clear();
+        // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
+        // confused
         this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             view.hud.minimap.refresh(view.game.world);
@@ -273,7 +276,10 @@ public class TurnStructure {
                 comp.wishlist.decideOnAuctionEntry(view, comp);
             }
 
-            // TODO the CompPlayer decides which Unit to recruit (if it has the unit points)
+            // Handle CompPlayer Unit recruitment logic
+            for (int a = 0; a < Math.floor(this.turnPlayer.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
+                // TODO the CompPlayer decides which Unit to recruit (if it has the unit points)
+            }
         }
 
         // Allow the turn Player to act

@@ -5,6 +5,19 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 
 /**
+ * TODO write goals for the following:
+ * GenerateGold (needs new Event)
+ * GenerateUnitPoints (needs new Event)
+ * GenerateAuctionPoints (needs new Event)
+ * ClaimActiveBuildings
+ * ClaimPatron
+ * DepositToVaults
+ * FeedUnits
+ *
+ * and then write some helper methods for PlanNode scoring logic (attacking certain targets, checking passive abilities, etc)
+ */
+
+/**
  * This interface forms part of the Actor's overall strategy
  */
 public abstract class Goal {

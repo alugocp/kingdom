@@ -20,6 +20,7 @@ import java.util.Optional;
  * This class tells the Actor to attack Units and Buildings under enemy control
  */
 public class AttackEnemy extends Goal {
+    // TODO modify this Goal to encourage attacking enemy Buildings as well
 
     /**
      * Returns true if the Event describes the death of the given Unit

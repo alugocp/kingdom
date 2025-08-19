@@ -27,6 +27,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+// TODO for the love of god please make this less convoluted
+
 /**
  * This class manages the logic for artifact auctions
  */

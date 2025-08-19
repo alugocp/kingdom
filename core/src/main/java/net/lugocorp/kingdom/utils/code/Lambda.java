@@ -9,6 +9,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+// TODO you can probably one day replace this with Collections or something
+
 /**
  * A collection of functional programming convenience methods
  */
