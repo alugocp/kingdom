@@ -9,6 +9,13 @@ public class Path {
     private final List<Point> points = new ArrayList<>();
 
     /**
+     * Returns true if there are no Points in this Path yet
+     */
+    public boolean isEmpty() {
+        return this.points.size() == 0;
+    }
+
+    /**
      * Adds a Point to this Path
      */
     public Path add(Point p) {

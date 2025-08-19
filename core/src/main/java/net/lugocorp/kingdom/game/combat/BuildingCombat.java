@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.Optional;
 
 /**
@@ -25,16 +26,18 @@ public class BuildingCombat extends Combat<Building> {
 
     /** {@inheritdoc} */
     @Override
-    protected <A extends EventReceiver> void onDeath(GameView view, A attacker) {
+    protected <A extends EventReceiver> SideEffect onDeath(GameView view, A attacker) {
         // Restore the Building's health and place under the attacking Player's control
         // if it was destroyed by another player
         Optional<Player> destroyer = this.getCombatantLeader(view, attacker);
         if (this.bearer.isActive() && !this.getBuildingLeader(view, this.bearer).equals(destroyer)) {
-            this.health.set(this.health.getMax());
-            view.game.world.getTile(this.bearer.getPoint()).ifPresent((Tile t) -> view.game.setLeader(t, destroyer));
-        } else {
-            super.onDeath(view, attacker);
+            return () -> {
+                this.health.set(this.health.getMax());
+                view.game.world.getTile(this.bearer.getPoint())
+                        .ifPresent((Tile t) -> view.game.setLeader(t, destroyer));
+            };
         }
+        return super.onDeath(view, attacker);
     }
 
     /**

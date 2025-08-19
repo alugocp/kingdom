@@ -1,8 +1,12 @@
 package net.lugocorp.kingdom.game.combat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class handles all combat logic for any Unit or Building
@@ -25,8 +29,22 @@ public class Combat<B extends EventReceiver> {
     /**
      * This method gets called when a combatant is killed in battle
      */
-    protected <A extends EventReceiver> void onDeath(GameView view, A attacker) {
-        this.bearer.deactivate(view);
+    protected <A extends EventReceiver> SideEffect onDeath(GameView view, A attacker) {
+        List<SideEffect> effects = new ArrayList<>();
+        // TODO handle Buildings attackers here
+        if (attacker instanceof Unit) {
+            if (this.bearer instanceof Unit) {
+                effects.add(
+                        this.bearer.handleEvent(view, new Events.UnitDiedEvent((Unit) this.bearer, (Unit) attacker)));
+                effects.add(
+                        attacker.handleEvent(view, new Events.KilledUnitEvent((Unit) attacker, (Unit) this.bearer)));
+            }
+            if (this.bearer instanceof Building) {
+                // TODO implement this
+            }
+        }
+        effects.add(() -> this.bearer.deactivate(view));
+        return SideEffect.all(effects);
     }
 
     /**
@@ -36,12 +54,14 @@ public class Combat<B extends EventReceiver> {
         if (!this.health.isVulnerable()) {
             return SideEffect.none;
         }
-        return SideEffect.all(this.bearer.handleEvent(view, new Events.TakeDamageEvent<B>(this.bearer, dmg)), () -> {
-            this.health.set(this.health.get() - dmg.amount);
-            if (this.health.isDead()) {
-                this.onDeath(view, attacker);
-            }
-        });
+        List<SideEffect> effects = new ArrayList<>();
+        Events.TakeDamageEvent<B> damageEvent = new Events.TakeDamageEvent<B>(this.bearer, dmg);
+        effects.add(this.bearer.handleEvent(view, damageEvent));
+        effects.add(() -> this.health.set(this.health.get() - damageEvent.dmg.amount));
+        if (this.health.get() <= damageEvent.dmg.amount) {
+            effects.add(this.onDeath(view, attacker));
+        }
+        return SideEffect.all(effects);
     }
 
     /**

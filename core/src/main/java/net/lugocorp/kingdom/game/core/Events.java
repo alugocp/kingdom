@@ -258,6 +258,34 @@ public class Events {
     }
 
     /**
+     * Triggered when a Unit dies
+     */
+    public static class UnitDiedEvent extends Event {
+        public final Unit unit;
+        public final Unit killer;
+
+        public UnitDiedEvent(Unit unit, Unit killer) {
+            super();
+            this.killer = killer;
+            this.unit = unit;
+        }
+    }
+
+    /**
+     * Triggered when a Unit kills another Unit
+     */
+    public static class KilledUnitEvent extends Event {
+        public final Unit unit;
+        public final Unit victim;
+
+        public KilledUnitEvent(Unit unit, Unit victim) {
+            super();
+            this.victim = victim;
+            this.unit = unit;
+        }
+    }
+
+    /**
      * Triggered whenever a Modellable is spawned into the World
      */
     public static class SpawnEvent<T extends Modellable> extends Event {

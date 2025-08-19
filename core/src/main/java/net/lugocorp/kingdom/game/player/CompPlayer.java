@@ -56,6 +56,12 @@ public class CompPlayer extends Player {
     /** {@inheritdoc} */
     @Override
     public SideEffect select(GameView view, Set<Point> points, String error, Function<Point, SideEffect> action) {
+        if (points.size() == 0) {
+            return SideEffect.none;
+        }
+
+        // If we're making a prediction then we should split off
+        // our prediction for each possible target from points.
         if (SelectedTargets.instance.isPrediction()) {
             final List<SideEffect> effects = new ArrayList<>();
             CapturedEvents.instance.split(points, (Point p) -> effects.add(action.apply(p)));

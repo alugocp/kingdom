@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ai.goals.AttackEnemy;
 import net.lugocorp.kingdom.ai.goals.ClaimGlyphs;
 import net.lugocorp.kingdom.ai.goals.ClaimPassiveBuildings;
 import net.lugocorp.kingdom.ai.goals.ExploreMap;
@@ -28,6 +29,7 @@ public class Actor {
         this.goals.add(new IncreaseUnitPoints());
         this.goals.add(new HarvestFood());
         this.goals.add(new MineGold());
+        this.goals.add(new AttackEnemy());
     }
 
     /**

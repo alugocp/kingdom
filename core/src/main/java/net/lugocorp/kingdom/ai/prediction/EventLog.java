@@ -19,6 +19,16 @@ public class EventLog {
         this.events.put(new Path(), new ArrayList<Event>());
     }
 
+    /**
+     * Returns true if there are multiple keys present in this log
+     */
+    public boolean hasBranches() {
+        return this.events.keySet().size() > 1;
+    }
+
+    /**
+     * Adds a new Event to each path in this log
+     */
     public void addEvent(Event e) {
         for (List<Event> list : this.events.values()) {
             list.add(e);
@@ -53,6 +63,9 @@ public class EventLog {
      * Adopts unincorporated EventLogs into this one as branching Paths
      */
     public void foldUnincorporatedBranches() {
+        if (this.unincorporated.size() == 0) {
+            return;
+        }
         final Map<Path, List<Event>> log = new HashMap<>();
         log.putAll(this.events);
         this.events.clear();

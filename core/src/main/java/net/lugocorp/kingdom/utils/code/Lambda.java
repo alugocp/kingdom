@@ -1,7 +1,10 @@
 package net.lugocorp.kingdom.utils.code;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,54 @@ public class Lambda {
             }
         }
         return output;
+    }
+
+    /**
+     * Returns a subset of the input List where each element passes the criteria
+     */
+    public static <A> List<A> filter(Function<A, Boolean> criteria, List<A> input) {
+        List<A> output = new ArrayList<>();
+        for (A a : input) {
+            if (criteria.apply(a)) {
+                output.add(a);
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Returns true if some element in the Iterable meets the criteria
+     */
+    public static <A> boolean some(Function<A, Boolean> criteria, Iterable<A> input) {
+        for (A a : input) {
+            if (criteria.apply(a)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if some element in the Iterable meets the criteria
+     */
+    public static <A> Optional<A> find(Function<A, Boolean> criteria, Iterable<A> input) {
+        for (A a : input) {
+            if (criteria.apply(a)) {
+                return Optional.of(a);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Folds the values from input using the given modifier function
+     */
+    public static <A, B> B fold(BiFunction<B, A, B> modifier, B initial, Iterable<A> input) {
+        B value = initial;
+        for (A a : input) {
+            value = modifier.apply(value, a);
+        }
+        return value;
     }
 
     /**

@@ -112,6 +112,16 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * Returns all the active Abilities this Unit has access to
+     */
+    public List<Ability> getActiveAbilities() {
+        final List<Ability> list = new ArrayList<>();
+        this.active1.ifPresent((Ability a) -> list.add(a));
+        this.active2.ifPresent((Ability a) -> list.add(a));
+        return list;
+    }
+
+    /**
      * Sets up to 2 active Abilities for this Unit
      */
     public void setActiveAbilities(Generator g, Optional<String> a1, Optional<String> a2) {
