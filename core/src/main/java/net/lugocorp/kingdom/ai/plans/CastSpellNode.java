@@ -33,15 +33,10 @@ public class CastSpellNode extends PlanNode {
      * can calculate a score value from it
      */
     public float scoreByPrediction(Function<EventLog, Tuple<Path, Float>> selectPathAndScore) {
-        // TODO this if statement needs to be better. We can have a successful spell
-        // cast without branches,
-        // so find another way to detect "no valid targets"
-        if (this.prediction.hasBranches()) {
-            Tuple<Path, Float> result = selectPathAndScore.apply(this.prediction);
-            if (result.b > 0f) {
-                this.selectedPath = Optional.of(result.a);
-                return result.b;
-            }
+        Tuple<Path, Float> result = selectPathAndScore.apply(this.prediction);
+        if (result.b > 0f) {
+            this.selectedPath = Optional.of(result.a);
+            return result.b;
         }
         return 0f;
     }

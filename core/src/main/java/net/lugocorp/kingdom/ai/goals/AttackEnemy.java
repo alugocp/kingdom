@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.Tuple;
@@ -31,13 +32,14 @@ public class AttackEnemy extends Goal {
     }
 
     /**
-     * Returns true if the Event describes the death of a Unit with either: • a
-     * different leader as the Unit, if sameLeader is false • the same leader as the
-     * Unit, if sameLeader is true
+     * Returns true if the Event describes the death of a Unit with either: 1) a
+     * different leader as the Unit, if sameLeader is false; 2) the same leader as
+     * the Unit, if sameLeader is true
      */
     private boolean alignedUnitDied(Event e, Unit u, boolean sameLeader) {
         if (e instanceof Events.UnitDiedEvent) {
-            return ((Events.UnitDiedEvent) e).unit.getLeader().equals(u.getLeader()) == sameLeader;
+            return ((Events.UnitDiedEvent) e).unit.getLeader()
+                    .map((Player l) -> l.equals(u.getLeader().get()) == sameLeader).orElse(false);
         }
         return false;
     }

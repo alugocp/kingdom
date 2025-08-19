@@ -20,13 +20,6 @@ public class EventLog {
     }
 
     /**
-     * Returns true if there are multiple keys present in this log
-     */
-    public boolean hasBranches() {
-        return this.events.keySet().size() > 1;
-    }
-
-    /**
      * Adds a new Event to each path in this log
      */
     public void addEvent(Event e) {
