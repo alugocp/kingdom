@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.utils.code;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +87,15 @@ public class Lambda {
             value = modifier.apply(value, a);
         }
         return value;
+    }
+
+    /**
+     * Sorts the given List by some scoring criteria, from largest to smallest
+     */
+    public static <A> List<A> sort(Function<A, Integer> score, List<A> input) {
+        List<Tuple<A, Integer>> tuples = Lambda.map((A a) -> new Tuple(a, score.apply(a)), input);
+        Collections.sort(tuples, (Tuple<A, Integer> a, Tuple<A, Integer> b) -> b.b - a.b);
+        return Lambda.map((Tuple<A, Integer> t) -> t.a, tuples);
     }
 
     /**

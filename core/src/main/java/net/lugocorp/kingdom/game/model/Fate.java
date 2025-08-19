@@ -27,6 +27,15 @@ public class Fate implements EventReceiver {
         this.name = null;
     }
 
+    /**
+     * Reads the EventHandlers on an Artifact and returns a score based on how many
+     * align with this Fate's playstyle
+     */
+    public int evaluateArtifact(Artifact a) {
+        // TODO implement me, I'm just random right now
+        return (int) Math.floor(Math.random() * 10.0);
+    }
+
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {

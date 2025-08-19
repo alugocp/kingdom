@@ -262,13 +262,18 @@ public class TurnStructure {
                 }
             }
         } else {
+            CompPlayer comp = (CompPlayer) this.turnPlayer;
+
             // Handle AI player ArtifactAuction logic
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
                     .orElse(false)) {
                 view.game.mechanics.auction.getAuction().get().hasSeenResults();
             } else if (view.game.mechanics.auction.getAuction().isPresent()) {
-                view.game.mechanics.auction.getAuction().get().doNotAddBidder();
+                // The CompPlayer decides whether or not it will enter the Auction
+                comp.wishlist.decideOnAuctionEntry(view, comp);
             }
+
+            // TODO the CompPlayer decides which Unit to recruit (if it has the unit points)
         }
 
         // Allow the turn Player to act

@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.fields.Inventory;
+import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
@@ -47,6 +48,20 @@ public class ArtifactAuction {
         for (String name : stratifiers) {
             this.artifacts.add(g.generator.artifact(name));
         }
+    }
+
+    /**
+     * Returns all available Artifacts
+     */
+    public List<Artifact> getArtifacts() {
+        return this.artifacts;
+    }
+
+    /**
+     * Removes an Artifact from the List
+     */
+    public void removeArtifact(Artifact artifact) {
+        this.artifacts.remove(artifact);
     }
 
     /**
@@ -122,13 +137,14 @@ public class ArtifactAuction {
      * Instantiates the Menu that will appear after an Auction has concluded
      */
     public Menu getFollowUpMenu(GameView view, boolean firstIteration) {
-        // Inform the human Player if they did not win the Auction
-        Optional<Player> winner = Optional.of(view.game.human);
+        // Determine who won the Auction if this is the first iteration of the window
         if (firstIteration) {
-            view.game.human.auctionChips++;
-        } else {
-            winner = this.auction.get().getWinner(view.game.world, this.random);
-            if (winner.map((Player p) -> !p.isHumanPlayer()).orElse(true)) {
+            Optional<Player> winner = this.auction.get().getWinner(view.game.world, this.random);
+            boolean humanPlayerWon = winner.map((Player p) -> p.isHumanPlayer()).orElse(false);
+            if (humanPlayerWon) {
+                view.game.human.auctionChips++;
+            } else {
+                winner.ifPresent((Player p) -> ((CompPlayer) p).wishlist.doAfterAuction(view, (CompPlayer) p));
                 return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                         new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
@@ -141,6 +157,7 @@ public class ArtifactAuction {
         }
 
         // Populate the Menu with ArtifactNodes if the human Player did win the Auction
+        // (or if they have leftover auction chips)
         int a = 0;
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
