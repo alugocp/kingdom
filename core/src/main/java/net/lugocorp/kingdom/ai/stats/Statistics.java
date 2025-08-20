@@ -7,4 +7,7 @@ import net.lugocorp.kingdom.game.player.Player;
  */
 public class Statistics {
     public final DiffStat income = new DiffStat(Player.INITIAL_GOLD);
+    // TODO AI track enemies killed per turn
+    // TODO AI track units lost per turn
+    // TODO AI track unit points gained per turn
 }

@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.model.glyph.Glyph;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
@@ -12,6 +13,7 @@ import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -266,6 +268,7 @@ public class TurnStructure {
             }
         } else {
             CompPlayer comp = (CompPlayer) this.turnPlayer;
+            // TODO track income separate from gold spent per turn
             comp.stats.income.record(comp.gold);
 
             // Handle AI player ArtifactAuction logic
@@ -278,8 +281,14 @@ public class TurnStructure {
             }
 
             // Handle CompPlayer Unit recruitment logic
-            for (int a = 0; a < Math.floor(this.turnPlayer.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
-                // TODO the CompPlayer decides which Unit to recruit (if it has the unit points)
+            for (int a = 0; a < Math.floor(comp.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
+                Optional<Glyph> glyph = comp.recruiter.glyphToSelect(comp);
+                if (glyph.isPresent()) {
+                    Optional<Point> spawnPoint = comp.recruiter.getSpawnPoint(view, comp, glyph.get());
+                    if (spawnPoint.isPresent()) {
+                        // TODO AI spawn a random Unit from the Pool here (use getRecruitmentOptions())
+                    }
+                }
             }
         }
 

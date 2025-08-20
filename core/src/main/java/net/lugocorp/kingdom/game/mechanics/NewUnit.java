@@ -117,7 +117,8 @@ public class NewUnit {
     /**
      * Returns the Unit options for recruitment
      */
-    private List<Unit> getRecruitmentOptions(GameView view, Glyph g, Point p) {
+    public List<Unit> getRecruitmentOptions(GameView view, Glyph g, Point p) {
+        // TODO AI make this generic for non-human Players
         List<Unit> options = new ArrayList<>();
         GlyphPools pools = view.game.mechanics.pools;
         String[] names = pools.random(g, Math.min(pools.remaining(g), view.game.human.numRecruitmentOptions));

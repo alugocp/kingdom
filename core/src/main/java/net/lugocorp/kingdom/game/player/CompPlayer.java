@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.ArtifactWishlist;
+import net.lugocorp.kingdom.ai.UnitRecruiter;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 public class CompPlayer extends Player {
     private final Actor actor = new Actor();
     public final ArtifactWishlist wishlist = new ArtifactWishlist();
+    public final UnitRecruiter recruiter = new UnitRecruiter();
     public final Statistics stats = new Statistics();
     public final MemoryMap memory;
 
