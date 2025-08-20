@@ -266,6 +266,7 @@ public class TurnStructure {
             }
         } else {
             CompPlayer comp = (CompPlayer) this.turnPlayer;
+            comp.stats.trackGold(comp.gold);
 
             // Handle AI player ArtifactAuction logic
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))

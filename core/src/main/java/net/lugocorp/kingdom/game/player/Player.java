@@ -20,16 +20,17 @@ import java.util.function.Function;
  */
 public abstract class Player {
     private Fate fate;
+    public static final int INITIAL_GOLD = 50;
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
     public final Color color = Colors.getFromPool();
     public final String name;
+    public int gold = Player.INITIAL_GOLD;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
     public int unitPoints = 0;
     public int tiles = 0;
-    public int gold = 0;
 
     Player(String name, Fate fate) {
         this.name = name;
