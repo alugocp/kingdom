@@ -1,4 +1,8 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ai.action.ActionResult;
+import net.lugocorp.kingdom.ai.action.Goal;
+import net.lugocorp.kingdom.ai.action.Plan;
+import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.ai.goals.AttackEnemy;
 import net.lugocorp.kingdom.ai.goals.ClaimGlyphs;
 import net.lugocorp.kingdom.ai.goals.ClaimPassiveBuildings;

@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ai;
+package net.lugocorp.kingdom.ai.action;
 
 /**
  * Tells an Actor what to do after processing a PlanNode

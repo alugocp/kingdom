@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ai;
+package net.lugocorp.kingdom.ai.action;
 
 /**
  * Encompasses a PlanNode and its score

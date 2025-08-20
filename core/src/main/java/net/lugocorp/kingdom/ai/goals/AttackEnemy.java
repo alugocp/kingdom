@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ai.goals;
-import net.lugocorp.kingdom.ai.Goal;
-import net.lugocorp.kingdom.ai.Plan;
-import net.lugocorp.kingdom.ai.PlanNode;
+import net.lugocorp.kingdom.ai.action.Goal;
+import net.lugocorp.kingdom.ai.action.Plan;
+import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.ai.plans.CastSpellNode;
 import net.lugocorp.kingdom.ai.prediction.EventLog;
 import net.lugocorp.kingdom.game.core.Events;

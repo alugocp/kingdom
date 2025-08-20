@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ai.goals;
-import net.lugocorp.kingdom.ai.Goal;
-import net.lugocorp.kingdom.ai.Plan;
-import net.lugocorp.kingdom.ai.PlanNode;
+import net.lugocorp.kingdom.ai.action.Goal;
+import net.lugocorp.kingdom.ai.action.Plan;
+import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.ai.memory.MemoryCell;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.plans.MoveNode;

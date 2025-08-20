@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ai.plans;
-import net.lugocorp.kingdom.ai.ActionResult;
-import net.lugocorp.kingdom.ai.PlanNode;
+import net.lugocorp.kingdom.ai.action.ActionResult;
+import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 

@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ai;
+package net.lugocorp.kingdom.ai.action;
 import net.lugocorp.kingdom.ai.plans.LazyNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
