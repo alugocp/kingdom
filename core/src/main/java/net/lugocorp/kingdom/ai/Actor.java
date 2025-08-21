@@ -3,14 +3,13 @@ import net.lugocorp.kingdom.ai.action.ActionResult;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
-import net.lugocorp.kingdom.ai.goals.AttackEnemy;
 import net.lugocorp.kingdom.ai.goals.ClaimGlyphs;
 import net.lugocorp.kingdom.ai.goals.ClaimPassiveBuildings;
 import net.lugocorp.kingdom.ai.goals.ExploreMap;
 import net.lugocorp.kingdom.ai.goals.HarvestFood;
 import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
-import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import java.util.HashMap;
@@ -27,13 +26,21 @@ public class Actor {
     private final Set<Goal> goals = new HashSet<>();
 
     public Actor() {
+        // These Goals should never be removed
         this.goals.add(new ExploreMap());
         this.goals.add(new ClaimGlyphs());
         this.goals.add(new ClaimPassiveBuildings());
         this.goals.add(new IncreaseUnitPoints());
         this.goals.add(new HarvestFood());
-        this.goals.add(new MineGold());
-        this.goals.add(new AttackEnemy());
+    }
+
+    /**
+     * Determines which Goals the CompPlayer should focus on right now
+     */
+    public void assessGoals(CompPlayer comp) {
+        // TODO AI put some logic here
+        // this.goals.add(new MineGold());
+        // this.goals.add(new AttackEnemy());
     }
 
     /**

@@ -37,6 +37,7 @@ public class CompPlayer extends Player {
     public void makeDecisions(GameView view) {
         // TODO optimize this by limiting the number of operations the AI players
         // execute per frame
+        this.actor.assessGoals(this);
         this.actor.assignUnitPlans(view, this.units);
         this.actor.executeUnitPlans(view);
     }

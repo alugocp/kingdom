@@ -61,4 +61,23 @@ public abstract class Goal {
         }
         return score == 0f ? Optional.empty() : Optional.of(result);
     }
+
+    @Override
+    public String toString() {
+        return String.format("(Goal %s)", this.getClass().getSimpleName());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o != null && o instanceof Goal) {
+            Goal g = (Goal) o;
+            return this.toString().equals(g.toString());
+        }
+        return false;
+    }
 }

@@ -7,7 +7,7 @@ import java.util.List;
  * Records a single rolling stat to be used in CompPlayer decision making
  */
 public class Stat {
-    private static final int WINDOW_SIZE = 50;
+    private static final int WINDOW_SIZE = 10;
     private final List<Integer> data = new ArrayList<>();
     protected int current = 0;
 
