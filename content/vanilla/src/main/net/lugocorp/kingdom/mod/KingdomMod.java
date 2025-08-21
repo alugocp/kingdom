@@ -1093,7 +1093,7 @@ public class KingdomMod implements GameMod {
         // Dominus the Lich
         // Graymaw
         // Roseris Thorn-hoof
-        //
+        // Nitu Sodfoot
         // Nebaneba
         // Kamiena
         // Faustus
@@ -1168,7 +1168,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
-        // Garax
+        // Teragalor
         // Stalagmus
         events.unit.addEventHandler("Stalagmus", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -1278,7 +1278,7 @@ public class KingdomMod implements GameMod {
         });
 
         // Xella the Accursed
-        //
+        // Svelta Luktegress
         // Al-Fikra
         events.unit.addEventHandler("Al-Fikra", "GenerateUnitEvent", (GameView view, Unit receiver, Event event) -> {
             Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
@@ -1328,7 +1328,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
-        //
+        // Sir Rootbeard
         // Wuraj the Blessed
         // Karina Brightfeather
         // Photali
@@ -1336,7 +1336,7 @@ public class KingdomMod implements GameMod {
         // Razma
         // Theressa the Rover
         //
-        //
+        // Illapa
         // Disastra
         // Chicao
         // Alaistar and Wurmdel
