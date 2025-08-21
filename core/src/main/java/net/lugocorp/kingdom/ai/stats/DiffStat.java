@@ -12,12 +12,13 @@ public class DiffStat extends Stat {
     }
 
     /**
-     * Adds a new difference value to the data
+     * Commits a new difference value to the data
      */
     @Override
-    public void record(int value) {
-        final int diff = value - this.previous;
-        this.previous = value;
-        super.record(diff);
+    public void commit() {
+        final int diff = this.current - this.previous;
+        this.previous = this.current;
+        this.current = diff;
+        super.commit();
     }
 }

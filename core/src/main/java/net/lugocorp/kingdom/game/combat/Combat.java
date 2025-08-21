@@ -3,6 +3,8 @@ import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class Combat<B extends EventReceiver> {
      * This method gets called when a combatant is killed in battle
      */
     protected <A extends EventReceiver> SideEffect onDeath(GameView view, A attacker) {
-        List<SideEffect> effects = new ArrayList<>();
+        List<SideEffect> effects = SideEffect.list();
         // TODO handle Buildings attackers here
         if (attacker instanceof Unit) {
             if (this.bearer instanceof Unit) {
@@ -38,6 +40,16 @@ public class Combat<B extends EventReceiver> {
                         this.bearer.handleEvent(view, new Events.UnitDiedEvent((Unit) this.bearer, (Unit) attacker)));
                 effects.add(
                         attacker.handleEvent(view, new Events.KilledUnitEvent((Unit) attacker, (Unit) this.bearer)));
+                effects.add(() -> {
+                    if (((Unit) this.bearer).getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
+                        CompPlayer comp = (CompPlayer) ((Unit) this.bearer).getLeader().get();
+                        comp.stats.unitsLost.add(1);
+                    }
+                    if (((Unit) attacker).getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
+                        CompPlayer comp = (CompPlayer) ((Unit) attacker).getLeader().get();
+                        comp.stats.enemiesKilled.add(1);
+                    }
+                });
             }
             if (this.bearer instanceof Building) {
                 // TODO implement this

@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.core;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
@@ -15,6 +16,9 @@ public class ItemLogic {
     public static SideEffect valuable(Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
         return () -> e.consumer.getLeader().ifPresent((Player p) -> {
+            if (p instanceof CompPlayer) {
+                ((CompPlayer) p).stats.income.add(e.item.gold);
+            }
             p.gold += e.item.gold;
         });
     }

@@ -21,10 +21,11 @@ public class Tags {
     /**
      * Adds the given label as a tag
      */
-    public void add(String label) {
+    public Tags add(String label) {
         if (!this.has(label)) {
             this.set(label, Tags.DEFAULT);
         }
+        return this;
     }
 
     /**

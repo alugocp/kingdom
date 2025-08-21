@@ -268,8 +268,7 @@ public class TurnStructure {
             }
         } else {
             CompPlayer comp = (CompPlayer) this.turnPlayer;
-            // TODO track income separate from gold spent per turn
-            comp.stats.income.record(comp.gold);
+            comp.stats.unitPoints.add(comp.unitPoints);
 
             // Handle AI player ArtifactAuction logic
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
@@ -286,7 +285,9 @@ public class TurnStructure {
                 if (glyph.isPresent()) {
                     Optional<Point> spawnPoint = comp.recruiter.getSpawnPoint(view, comp, glyph.get());
                     if (spawnPoint.isPresent()) {
-                        // TODO AI spawn a random Unit from the Pool here (use getRecruitmentOptions())
+                        final Unit u = view.game.mechanics.newUnits
+                                .getRecruitmentOptions(view, glyph.get(), spawnPoint.get(), 1).get(0);
+                        view.game.mechanics.newUnits.choose(view, comp, u);
                     }
                 }
             }
@@ -299,6 +300,7 @@ public class TurnStructure {
             player.makeDecisions(view);
             view.menu.refresh(true);
             this.iterateTurnPlayer(view);
+            player.stats.commit();
         }
     }
 

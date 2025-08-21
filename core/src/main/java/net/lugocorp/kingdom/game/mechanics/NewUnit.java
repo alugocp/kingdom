@@ -95,7 +95,7 @@ public class NewUnit {
      * Returns the Unit selection Menu once the user has selected a Glyph
      */
     private Menu getGlyphUnitSelectionMenu(GameView view, Glyph glyph, Point p) {
-        List<Unit> options = this.getRecruitmentOptions(view, glyph, p);
+        List<Unit> options = this.getRecruitmentOptions(view, glyph, p, view.game.human.numRecruitmentOptions);
         ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit"))
                 .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()));
@@ -105,7 +105,10 @@ public class NewUnit {
         for (Unit u : options) {
             previews.add(new ModelNode(view.av, view.getCamera(), view.getEnvironment(), u.getModelName()));
             units.add(u.getMenuContent(view, Optional.empty()));
-            buttons.add(new ButtonNode(view.av, "Choose", () -> this.choose(view, u)));
+            buttons.add(new ButtonNode(view.av, "Choose", () -> {
+                view.popups.complete();
+                this.choose(view, view.game.human, u);
+            }));
         }
         node.add(previews);
         node.add(units);
@@ -115,13 +118,12 @@ public class NewUnit {
     }
 
     /**
-     * Returns the Unit options for recruitment
+     * Returns n Unit options for recruitment
      */
-    public List<Unit> getRecruitmentOptions(GameView view, Glyph g, Point p) {
-        // TODO AI make this generic for non-human Players
+    public List<Unit> getRecruitmentOptions(GameView view, Glyph g, Point p, int n) {
         List<Unit> options = new ArrayList<>();
         GlyphPools pools = view.game.mechanics.pools;
-        String[] names = pools.random(g, Math.min(pools.remaining(g), view.game.human.numRecruitmentOptions));
+        String[] names = pools.random(g, Math.min(pools.remaining(g), n));
         for (String name : names) {
             options.add(view.game.generator.unit(name, p.x, p.y));
         }
@@ -131,8 +133,7 @@ public class NewUnit {
     /**
      * Completes the associated popup Menu and spawns a new Unit in the World
      */
-    private void choose(GameView view, Unit u) {
-        view.popups.complete();
+    public void choose(GameView view, Player p, Unit u) {
         view.game.mechanics.pools.remove(u);
         view.game.world.getTile(u.getX(), u.getY()).ifPresent((Tile t) -> {
             if (t.unit.isPresent()) {
@@ -141,8 +142,8 @@ public class NewUnit {
                 throw new RuntimeException("Cannot recruit onto an occupied tile");
             }
             t.setGlyph(Optional.empty());
-            view.game.human.unitPoints -= NewUnit.MAX_UNIT_POINTS;
-            view.game.setLeader(u, view.game.human);
+            p.unitPoints -= NewUnit.MAX_UNIT_POINTS;
+            view.game.setLeader(u, p);
             u.spawn(view);
         });
     }

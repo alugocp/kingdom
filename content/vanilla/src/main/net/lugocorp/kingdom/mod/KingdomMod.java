@@ -115,6 +115,7 @@ public class KingdomMod implements GameMod {
         /**
          * SECTION 02 Tags
          */
+        final String tag_natural = "natural";
         final String tag_fruit = "fruit";
 
         /**
@@ -391,7 +392,7 @@ public class KingdomMod implements GameMod {
             e.blob.desc = "Consume to stave off hunger";
             e.blob.icon = Optional.of("apple");
             e.blob.gold = 1;
-            e.blob.tags.add(tag_fruit);
+            e.blob.tags.add(tag_natural).add(tag_fruit);
             return SideEffect.none;
         });
         events.item.addEventHandler(item_apple, "ItemConsumedEvent",

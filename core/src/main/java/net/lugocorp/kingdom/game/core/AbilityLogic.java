@@ -4,8 +4,11 @@ import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -151,7 +154,17 @@ public class AbilityLogic {
      * Ability that harvests an Item from some Tile
      */
     public static SideEffect harvest(GameView view, Unit caster, String item, Function<Building, Boolean> criteria) {
-        return AbilityLogic.doOnBuilding(view, caster, criteria,
-                () -> caster.haul.isFull() ? SideEffect.none : () -> caster.haul.add(view.game.generator.item(item)));
+        return AbilityLogic.doOnBuilding(view, caster, criteria, () -> caster.haul.isFull() ? SideEffect.none : () -> {
+            Item i = view.game.generator.item(item);
+            caster.haul.add(i);
+            if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
+                CompPlayer comp = (CompPlayer) caster.getLeader().get();
+                if (i.tags.has("natural")) {
+                    comp.stats.naturalHarvest.add(1);
+                } else {
+                    comp.stats.otherHarvest.add(1);
+                }
+            }
+        });
     }
 }
