@@ -3,11 +3,13 @@ import net.lugocorp.kingdom.ai.action.ActionResult;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
+import net.lugocorp.kingdom.ai.goals.AttackEnemy;
 import net.lugocorp.kingdom.ai.goals.ClaimGlyphs;
 import net.lugocorp.kingdom.ai.goals.ClaimPassiveBuildings;
 import net.lugocorp.kingdom.ai.goals.ExploreMap;
 import net.lugocorp.kingdom.ai.goals.HarvestFood;
 import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
+import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -38,9 +40,21 @@ public class Actor {
      * Determines which Goals the CompPlayer should focus on right now
      */
     public void assessGoals(CompPlayer comp) {
-        // TODO AI put some logic here
-        // this.goals.add(new MineGold());
-        // this.goals.add(new AttackEnemy());
+        // Mine gold
+        if (comp.stats.income.getMean() < 4.0) {
+            this.goals.add(new MineGold());
+        }
+        if (comp.stats.income.getMean() > 8.0) {
+            this.goals.removeIf((Goal g) -> g instanceof MineGold);
+        }
+
+        // Attack enemies
+        if (comp.stats.enemiesKilled.getMean() < 0.1) {
+            this.goals.add(new AttackEnemy());
+        }
+        if (comp.stats.enemiesKilled.getMean() >= 0.3 && comp.stats.unitsLost.getMean() >= 0.5) {
+            this.goals.removeIf((Goal g) -> g instanceof AttackEnemy);
+        }
     }
 
     /**
