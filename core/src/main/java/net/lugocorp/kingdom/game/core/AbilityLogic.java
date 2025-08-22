@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
+import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -29,12 +30,11 @@ public class AbilityLogic {
     /**
      * Convenience wrapper for an active Ability that implements an attack
      */
-    public static SideEffect attack(GameView view, Unit attacker, Damage dmg) {
+    public static SideEffect attack(GameView view, Unit attacker, Damage dmg, int range) {
         Map<Point, Combat> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
         // Grab every possible attack target within range
-        int range = attacker.getAttackRange(view);
         Set<Point> unfiltered = Hexagons.getNeighbors(attacker.getPoint(), range);
         for (Point p : unfiltered) {
             Optional<Tile> tile = view.game.world.getTile(p);
@@ -113,6 +113,15 @@ public class AbilityLogic {
             }
             return Optional.empty();
         });
+    }
+
+    /**
+     * Effect that decreases the damage taken by a TakeDamageEvent
+     */
+    public static SideEffect defense(Event event, int points) {
+        Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
+        e.dmg.amount -= points;
+        return SideEffect.none;
     }
 
     /**

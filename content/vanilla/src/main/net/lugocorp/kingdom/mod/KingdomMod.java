@@ -569,9 +569,10 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = "Basic attack";
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_bite, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(4), 1));
 
         // Build Healing Fountain
         final String ability_build_healing_fountain = "Build Healing Fountain";
@@ -626,6 +627,8 @@ public class KingdomMod implements GameMod {
                     // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_crystal_skin, "TakeDamageEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.defense(event, 2));
 
         // Deposit Seeds
         final String ability_deposit_seeds = "Deposit Seeds";
@@ -668,6 +671,12 @@ public class KingdomMod implements GameMod {
                     // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_edible, "SpawnEvent", (GameView view, Ability receiver, Event event) -> {
+            view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+            return SideEffect.none;
+        });
+        events.ability.addEventHandler(ability_edible, "TickEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.harvest(view, receiver.wielder, item_apple, (Building b) -> true));
 
         // Fire Cannon
         final String ability_fire_cannon = "Fire Cannon";
@@ -695,8 +704,13 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense on forests");
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(ability_green_fortress, "TakeDamageEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    boolean isForest = view.game.world.getTile(receiver.wielder.getPoint()).map((Tile t) -> t.building)
+                            .map((Building b) -> b.name.equals(building_forest)).orElse(false);
+                    return isForest ? AbilityLogic.defense(event, 2) : SideEffect.none;
                 });
 
         // Heal Wounds
@@ -716,9 +730,10 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Heals the target adjacent unit for a few hit points");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_hug, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.healUnit(view, receiver.wielder, 2));
 
         // Hungry Frog Magic
         final String ability_hungry_frog_magic = "Hungry Frog Magic";
@@ -825,7 +840,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(ability_mine_gold, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
-                        "Gold Coin", (Building b) -> b.name.equals("Mine")));
+                        item_gold_coin, (Building b) -> b.name.equals("Mine")));
 
         // Mountain Strider
         final String ability_mountain_strider = "Mountain Strider";
@@ -904,9 +919,10 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_plate_mail, "TakeDamageEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.defense(event, 2));
 
         // Regeneration
         final String ability_regeneration = "Regeneration";
@@ -917,6 +933,13 @@ public class KingdomMod implements GameMod {
                     // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_regeneration, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(ability_regeneration, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> () -> receiver.caster.combat.health.heal(1));
 
         // Revenge of the Forest
         final String ability_revenge_of_the_forest = "Revenge of the Forest";
@@ -934,8 +957,16 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit is faster on passive buildings");
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(ability_running_through_nature, "UnitMoveDistanceEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    UnitMoveDistanceEvent e = (UnitMoveDistanceEvent) event;
+                    Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
+                            .map((Tile t) -> t.building);
+                    if (b.map((Building b) -> !b.isActive()).orElse(false)) {
+                        e.distance++;
+                    }
                 });
 
         // Self Sacrifice
@@ -943,9 +974,14 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_self_sacrifice, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Transfers all their health but 1 to the target");
-                    // TODO implement me
+                    e.blob.desc = String.format("Transfers all their health but 1 to the target unit");
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(ability_self_sacrifice, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    final int hitPoints = receiver.wielder.combat.hitPoints.get() - 1;
+                    return SideEffect.all(AbilityLogic.healUnit(view, receiver.wielder, hitpoints),
+                            () -> receiver.combat.health.set(1));
                 });
 
         // Sacred Seeds
@@ -964,9 +1000,10 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_shell_defense, "TakeDamageEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.defense(event, 2));
 
         // Slime Shot
         final String ability_slime_shot = "Slime Shot";
@@ -974,9 +1011,10 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Ranged attack");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_slime_shot, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(4), 3));
 
         // Smash
         final String ability_smash = "Smash";
@@ -984,9 +1022,11 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attack with a chance to stun");
-                    // TODO implement me
+                    // TODO add chance to stun
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_smash, "AbilityActivatedEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(5), 1));
 
         // Stone Defense
         final String ability_stone_defense = "Stone Defense";
@@ -994,9 +1034,10 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_stone_defense, "TakeDamageEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.defense(event, 2));
 
         // Subterranean Potions
         final String ability_subterranean_potions = "Subterranean Potions";
@@ -1004,9 +1045,16 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Generates Health Potions from Mines");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(ability_subterranean_potions, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(ability_subterranean_potions, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
+                        item_health_potion, (Building b) -> b.name.equals("Mine")));
 
         // Swim
         final String ability_swim = "Swim";
@@ -1030,12 +1078,12 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(ability_sword_slash, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    Damage dmg = new Damage(1);
+                    Damage dmg = new Damage(5);
                     e.blob.desc = String.format("Deals %s", dmg);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(ability_sword_slash, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(1)));
+                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(5), 1));
 
         /**
          * SECTION 09 Units

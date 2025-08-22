@@ -245,19 +245,6 @@ public class Events {
     }
 
     /**
-     * Calculates how far a Unit can attack
-     */
-    public static class UnitAttackRangeEvent extends Event {
-        public final Unit unit;
-        public int range = 1;
-
-        public UnitAttackRangeEvent(Unit unit) {
-            super();
-            this.unit = unit;
-        }
-    }
-
-    /**
      * Triggered when a Unit dies
      */
     public static class UnitDiedEvent extends Event {

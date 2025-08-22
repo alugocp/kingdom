@@ -229,15 +229,6 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
-     * Returns the maximum range that this Unit can attack from
-     */
-    public int getAttackRange(GameView view) {
-        Events.UnitAttackRangeEvent event = new Events.UnitAttackRangeEvent(this);
-        this.handleEvent(view, event);
-        return event.range;
-    }
-
-    /**
      * Returns the list of Points that this Unit can move to
      */
     public Set<Point> getMoveTargets(GameView view) {
