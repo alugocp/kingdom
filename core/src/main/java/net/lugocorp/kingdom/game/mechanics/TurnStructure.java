@@ -221,7 +221,7 @@ public class TurnStructure {
         // TODO make this entire function more readable
         // TODO run this logic in another thread for optimization
         for (Unit u : this.turnPlayer.units) {
-            u.wakeUpCheck();
+            u.wakeUpCheck(view);
         }
         this.unitsThatHaveActed.clear();
         // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get

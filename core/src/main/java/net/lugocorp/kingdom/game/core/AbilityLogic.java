@@ -30,7 +30,8 @@ public class AbilityLogic {
     /**
      * Convenience wrapper for an active Ability that implements an attack
      */
-    public static SideEffect attack(GameView view, Unit attacker, Damage dmg, int range) {
+    public static SideEffect attackAndEffect(GameView view, Unit attacker, Damage dmg, int range,
+            Optional<Function<Point, SideEffect>> effect) {
         Map<Point, Combat> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
@@ -60,7 +61,15 @@ public class AbilityLogic {
         });
         return attacker.getLeader().get().select(view, points, "No attack targets are in range",
                 (Point p) -> SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
+                        () -> effect.ifPresent((Function<Point, SideEffect> f) -> f.apply(p)),
                         () -> view.game.mechanics.turns.unitHasActed(view, attacker)));
+    }
+
+    /**
+     * Simpler version of attackAndEffect()
+     */
+    public static SideEffect attack(GameView view, Unit attacker, Damage dmg, int range) {
+        return AbilityLogic.attackAndEffect(view, attacker, dmg, range, Optional.empty());
     }
 
     /**

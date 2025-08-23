@@ -301,6 +301,34 @@ public class Events {
     }
 
     /**
+     * Triggered when we need to check if the Unit is stunned (they cannot act in
+     * such a case)
+     */
+    public static class IsStunnedEvent extends Event {
+        public final Unit unit;
+        public boolean isStunned = false;
+
+        public IsStunnedEvent(Unit unit) {
+            super();
+            this.unit = unit;
+        }
+    }
+
+    /**
+     * Triggered when a status effect (Ability) is added to a Unit
+     */
+    public static class StatusEffectAddedEvent extends Event {
+        public final Ability status;
+        public final Unit unit;
+
+        public StatusEffectAddedEvent(Ability status, Unit unit) {
+            super();
+            this.status = status;
+            this.unit = unit;
+        }
+    }
+
+    /**
      * Triggered when a Unit generates favor for a Patron
      */
     public static class GenerateFavorEvent extends Event {

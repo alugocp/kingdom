@@ -83,8 +83,13 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Checks if we should reset this Unit's SleepState at the start of a turn
      */
-    public void wakeUpCheck() {
-        if (this.sleep == SleepState.SLEEPING || (this.sleep == SleepState.SLEEPING_INVENTORY && this.haul.isFull())) {
+    public void wakeUpCheck(GameView view) {
+        Events.IsStunnedEvent event = new Events.IsStunnedEvent(this);
+        this.handleEvent(view, event).execute();
+        if (event.isStunned) {
+            this.sleep = SleepState.SLEEPING;
+        } else if (this.sleep == SleepState.SLEEPING
+                || (this.sleep == SleepState.SLEEPING_INVENTORY && this.haul.isFull())) {
             this.wakeUp();
         }
     }
@@ -152,6 +157,16 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
             }
         }
         return false;
+    }
+
+    /**
+     * Adds a status effect (Ability under the hood) to this Unit. Also triggers a
+     * special Event on the Ability so it can kick off tick events
+     */
+    public SideEffect addStatusEffect(GameView view, Generator g, String name) {
+        Ability status = g.ability(this, name);
+        return SideEffect.all(() -> this.passives.add(status),
+                status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this)));
     }
 
     /**
@@ -336,16 +351,15 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        List<SideEffect> effects = new ArrayList<>();
+        List<SideEffect> effects = SideEffect.list();
         effects.add(view.game.events.unit.handle(view, this, e));
         if (e.propagate) {
-            this.active1.ifPresent((Ability a) -> a.handleEventWithoutSignalBooster(view, e));
-            this.active2.ifPresent((Ability a) -> a.handleEventWithoutSignalBooster(view, e));
+            this.active1.ifPresent((Ability a) -> effects.add(a.handleEventWithoutSignalBooster(view, e)));
+            this.active2.ifPresent((Ability a) -> effects.add(a.handleEventWithoutSignalBooster(view, e)));
             for (Ability a : this.passives) {
                 effects.add(a.handleEventWithoutSignalBooster(view, e));
             }
-            for (int a = 0; a < this.equipped.getSize(); a++) {
-                Item i = this.equipped.get(a);
+            for (Item i : this.equipped) {
                 effects.add(i.handleEventWithoutSignalBooster(view, e));
             }
         }

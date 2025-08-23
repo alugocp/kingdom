@@ -1022,11 +1022,16 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attack with a chance to stun");
-                    // TODO add chance to stun
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(ability_smash, "AbilityActivatedEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.attack(view, receiver.wielder, new Damage(5), 1));
+        events.ability.addEventHandler(ability_smash, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.attackAndEffect(view, receiver.wielder,
+                        new Damage(5), 1, Optional.of((Point p) -> {
+                            Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                            if (u.isPresent()) {
+                                return u.get().addStatusEffect(view, status_effect_stun);
+                            }
+                        })));
 
         // Stone Defense
         final String ability_stone_defense = "Stone Defense";

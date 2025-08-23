@@ -6,13 +6,14 @@ import net.lugocorp.kingdom.ui.menu.MenuSubject;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Represents a list of items with a max size
  */
-public class Inventory implements MenuSubject {
+public class Inventory implements MenuSubject, Iterable<Item> {
     private final List<Item> items;
     public final int type;
     private int max;
@@ -30,6 +31,14 @@ public class Inventory implements MenuSubject {
         this.items = null;
         this.type = 0;
         this.max = 0;
+    }
+
+    /**
+     * Returns an Iterator for the Items in this Inventory
+     */
+    @Override
+    public Iterator<Item> iterator() {
+        return this.items.iterator();
     }
 
     /**
