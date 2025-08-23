@@ -163,10 +163,17 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      * Adds a status effect (Ability under the hood) to this Unit. Also triggers a
      * special Event on the Ability so it can kick off tick events
      */
-    public SideEffect addStatusEffect(GameView view, Generator g, String name) {
-        Ability status = g.ability(this, name);
+    public SideEffect addStatusEffect(GameView view, String name) {
+        Ability status = view.game.generator.ability(this, name);
         return SideEffect.all(() -> this.passives.add(status),
                 status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this)));
+    }
+
+    /**
+     * Removes a status effect (Ability under the hood) from this Unit
+     */
+    public void removeStatusEffect(Ability status) {
+        this.passives.remove(status);
     }
 
     /**

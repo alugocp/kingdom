@@ -8,23 +8,11 @@ sourceSets {
         java {
             srcDirs = ['src']
         }
-        resources {
-            srcDirs = ['src/main']
-        }
     }
 }
 
 dependencies {
     implementation project(":core")
-    implementation project(":content:common")
-}
-
-jar {
-    destinationDirectory = file("../../mods")
-    archiveBaseName = "vanilla"
-    manifest {
-        attributes 'Main-Class': 'net.lugocorp.kingdom.mod.KingdomMod'
-    }
 }
 
 spotless {
