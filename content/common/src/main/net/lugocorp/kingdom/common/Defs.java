@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.common;
-import net.lugocorp.kingdom.game.model.fields.Race;
+import net.lugocorp.kingdom.game.model.fields.Species;
 
 /**
  * Contains definitions for names and labels across all official content mods
@@ -8,37 +8,37 @@ public class Defs {
     /**
      * SECTION Races
      */
-    public static final Race species_human = new Race("Human");
-    public static final Race species_elf = new Race("Elf");
-    public static final Race species_dwarf = new Race("Dwarf");
-    public static final Race species_gnome = new Race("Gnome");
-    public static final Race species_orc = new Race("Orc");
-    public static final Race species_goblin = new Race("Goblin");
-    public static final Race species_giant = new Race("Giant");
-    public static final Race species_grue = new Race("Grue", species_giant);
-    public static final Race species_ogre = new Race("Ogre", species_giant);
-    public static final Race species_ettin = new Race("Ettin", species_giant);
-    public static final Race species_troll = new Race("Troll", species_giant);
-    public static final Race species_centaur = new Race("Centaur");
-    public static final Race species_salamander = new Race("Salamander");
-    public static final Race species_tortugan = new Race("Tortugan");
-    public static final Race species_kappa = new Race("Kappa", species_tortugan);
-    public static final Race species_brownie = new Race("Brownie");
-    public static final Race species_kobold = new Race("Kobold");
-    public static final Race species_firbolg = new Race("Firbolg", species_kobold);
-    public static final Race species_merfolk = new Race("Merfolk");
-    public static final Race species_garuda = new Race("Garuda");
-    public static final Race species_dragonkin = new Race("Dragonkin");
-    public static final Race species_toadstool = new Race("Toadstool");
-    public static final Race species_sprite = new Race("Sprite");
-    public static final Race species_dryad = new Race("Dryad", species_sprite);
-    public static final Race species_demon = new Race("Demon");
-    public static final Race species_tulpa = new Race("Tulpa");
-    public static final Race species_golem = new Race("Golem");
-    public static final Race species_plasmoid = new Race("Plasmoid");
-    public static final Race species_undead = new Race("Undead");
-    public static final Race species_elemental = new Race("Elemental");
-    public static final Race species_gemstone = new Race("Gemstone", species_elemental);
+    public static final Species species_human = new Species("Human");
+    public static final Species species_elf = new Species("Elf");
+    public static final Species species_dwarf = new Species("Dwarf");
+    public static final Species species_gnome = new Species("Gnome");
+    public static final Species species_orc = new Species("Orc");
+    public static final Species species_goblin = new Species("Goblin");
+    public static final Species species_giant = new Species("Giant");
+    public static final Species species_grue = new Species("Grue", species_giant);
+    public static final Species species_ogre = new Species("Ogre", species_giant);
+    public static final Species species_ettin = new Species("Ettin", species_giant);
+    public static final Species species_troll = new Species("Troll", species_giant);
+    public static final Species species_centaur = new Species("Centaur");
+    public static final Species species_salamander = new Species("Salamander");
+    public static final Species species_tortugan = new Species("Tortugan");
+    public static final Species species_kappa = new Species("Kappa", species_tortugan);
+    public static final Species species_brownie = new Species("Brownie");
+    public static final Species species_kobold = new Species("Kobold");
+    public static final Species species_firbolg = new Species("Firbolg", species_kobold);
+    public static final Species species_merfolk = new Species("Merfolk");
+    public static final Species species_garuda = new Species("Garuda");
+    public static final Species species_dragonkin = new Species("Dragonkin");
+    public static final Species species_toadstool = new Species("Toadstool");
+    public static final Species species_sprite = new Species("Sprite");
+    public static final Species species_dryad = new Species("Dryad", species_sprite);
+    public static final Species species_demon = new Species("Demon");
+    public static final Species species_tulpa = new Species("Tulpa");
+    public static final Species species_golem = new Species("Golem");
+    public static final Species species_plasmoid = new Species("Plasmoid");
+    public static final Species species_undead = new Species("Undead");
+    public static final Species species_elemental = new Species("Elemental");
+    public static final Species species_gemstone = new Species("Gemstone", species_elemental);
 
     /**
      * SECTION Tags

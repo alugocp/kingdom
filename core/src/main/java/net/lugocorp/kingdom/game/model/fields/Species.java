@@ -4,17 +4,17 @@ import java.util.Optional;
 /**
  * Represents the species of a given Unit
  */
-public class Race {
-    public static final Race UNKNOWN = new Race("???");
-    private final Optional<Race> root;
+public class Species {
+    public static final Species UNKNOWN = new Species("???");
+    private final Optional<Species> root;
     private final String label;
 
-    public Race(String label, Race root) {
+    public Species(String label, Species root) {
         this.root = Optional.of(root);
         this.label = label;
     }
 
-    public Race(String label) {
+    public Species(String label) {
         this.root = Optional.empty();
         this.label = label;
     }
@@ -27,9 +27,9 @@ public class Race {
     /** {@inheritdoc} */
     @Override
     public boolean equals(Object o) {
-        if (o != null && o instanceof Race) {
-            Race r = (Race) o;
-            return r.toString().equals(this.toString());
+        if (o != null && o instanceof Species) {
+            Species s = (Species) o;
+            return s.toString().equals(this.toString());
         }
         return false;
     }

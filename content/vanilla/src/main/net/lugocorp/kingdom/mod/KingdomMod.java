@@ -627,7 +627,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Defs.ability_swim, Defs.ability_hunt_fish,
                             Defs.ability_plate_mail, Defs.ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE);
-                    e.blob.race = Defs.species_salamander;
+                    e.blob.species = Defs.species_salamander;
                     return SideEffect.none;
                 });
 
@@ -642,7 +642,7 @@ public class KingdomMod implements GameMod {
                             Optional.of(Defs.ability_plant_forest));
                     e.blob.setPassiveAbilities(view.game.generator, Defs.ability_pick_apples, Defs.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
-                    e.blob.race = Defs.species_sprite;
+                    e.blob.species = Defs.species_sprite;
                     return SideEffect.none;
                 });
 
@@ -659,7 +659,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMax(40);
                     e.blob.haul.setMax(12);
-                    e.blob.race = Defs.species_plasmoid;
+                    e.blob.species = Defs.species_plasmoid;
                     return SideEffect.none;
                 });
 
@@ -688,7 +688,7 @@ public class KingdomMod implements GameMod {
                             Defs.ability_local_defender);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.combat.health.setMax(80);
-                    e.blob.race = Defs.species_golem;
+                    e.blob.species = Defs.species_golem;
                     return SideEffect.none;
                 });
 
@@ -706,7 +706,7 @@ public class KingdomMod implements GameMod {
                             Optional.of(Defs.ability_dig_mine));
                     e.blob.setPassiveAbilities(view.game.generator, Defs.ability_night_vision, Defs.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
-                    e.blob.race = Defs.species_brownie;
+                    e.blob.species = Defs.species_brownie;
                     return SideEffect.none;
                 });
 
@@ -721,7 +721,7 @@ public class KingdomMod implements GameMod {
                             Optional.of(Defs.ability_self_sacrifice));
                     e.blob.setPassiveAbilities(view.game.generator, Defs.ability_night_vision, Defs.ability_life_aura);
                     e.blob.glyphs.set(Glyph.HEALING);
-                    e.blob.race = Defs.species_elf;
+                    e.blob.species = Defs.species_elf;
                     return SideEffect.none;
                 });
 
@@ -739,7 +739,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Defs.ability_pick_flowers, Defs.ability_swim);
                     e.blob.glyphs.set(Glyph.HEALING);
                     e.blob.haul.setMax(12);
-                    e.blob.race = Defs.species_gnome;
+                    e.blob.species = Defs.species_gnome;
                     return SideEffect.none;
                 });
 
@@ -756,7 +756,7 @@ public class KingdomMod implements GameMod {
                             Defs.ability_stone_defense, Defs.ability_mine_gems, Defs.ability_mine_gold,
                             Defs.ability_subterranean_potions);
                     e.blob.glyphs.set(Glyph.MINING);
-                    e.blob.race = Defs.species_golem;
+                    e.blob.species = Defs.species_golem;
                     return SideEffect.none;
                 });
 
@@ -775,7 +775,7 @@ public class KingdomMod implements GameMod {
                             Defs.ability_green_fortress);
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.visibleRadius = 4;
-                    e.blob.race = Defs.species_sprite;
+                    e.blob.species = Defs.species_sprite;
                     return SideEffect.none;
                 });
 
@@ -798,7 +798,7 @@ public class KingdomMod implements GameMod {
                             Defs.ability_liquifying_presence);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.combat.health.setMax(80);
-                    e.blob.race = Defs.species_plasmoid;
+                    e.blob.species = Defs.species_plasmoid;
                     return SideEffect.none;
                 });
         // Sathra the Flame Caster
@@ -815,7 +815,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Defs.ability_crystal_skin,
                             Defs.ability_night_vision, Defs.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.race = Defs.species_gemstone;
+                    e.blob.species = Defs.species_gemstone;
                     return SideEffect.none;
                 });
 
@@ -842,7 +842,7 @@ public class KingdomMod implements GameMod {
                             Defs.ability_regeneration, Defs.ability_running_through_nature, Defs.ability_sacred_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.haul.setMax(12);
-                    e.blob.race = Defs.species_sprite;
+                    e.blob.species = Defs.species_sprite;
                     return SideEffect.none;
                 });
 
@@ -857,7 +857,7 @@ public class KingdomMod implements GameMod {
                             Defs.ability_deposit_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.haul.setMax(12);
-                    e.blob.race = Defs.species_sprite;
+                    e.blob.species = Defs.species_sprite;
                     return SideEffect.none;
                 });
 
@@ -875,7 +875,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.TRADE);
                     e.blob.haul.setMax(12);
                     e.blob.visibleRadius = 4;
-                    e.blob.race = Defs.species_tulpa;
+                    e.blob.species = Defs.species_tulpa;
                     UnitLogic.speed(events, e.blob, 3);
                     return SideEffect.none;
                 });
@@ -910,7 +910,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
                     e.blob.combat.health.setMax(80);
                     e.blob.setTimeToHunger(view, 10);
-                    e.blob.race = Defs.species_tortugan;
+                    e.blob.species = Defs.species_tortugan;
                     return SideEffect.none;
                 });
 

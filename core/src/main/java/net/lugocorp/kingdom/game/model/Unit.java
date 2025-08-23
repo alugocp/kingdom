@@ -9,7 +9,7 @@ import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.Visibility;
 import net.lugocorp.kingdom.game.model.fields.Inventory;
 import net.lugocorp.kingdom.game.model.fields.Inventory.InventoryType;
-import net.lugocorp.kingdom.game.model.fields.Race;
+import net.lugocorp.kingdom.game.model.fields.Species;
 import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.game.model.fields.UnitGlyphs;
 import net.lugocorp.kingdom.game.player.Player;
@@ -53,7 +53,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
     public List<Ability> passives = new ArrayList<>();
-    public Race race = Race.UNKNOWN;
+    public Species species = Species.UNKNOWN;
     public boolean playable = true;
     public int visibleRadius = 2;
     public String desc = "";
@@ -395,7 +395,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.av, String.format("Alignment: %s", this.leader.get().name)));
         }
-        node.add(new TextNode(view.av, this.race.toString()));
+        node.add(new TextNode(view.av, this.species.toString()));
         node.add(new TextNode(view.av,
                 String.format("Health: %d/%d", this.combat.health.get(), this.combat.health.getMax())));
         node.add(new TextNode(view.av, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
