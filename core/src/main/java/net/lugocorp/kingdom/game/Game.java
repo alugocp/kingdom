@@ -90,6 +90,16 @@ public class Game {
     }
 
     /**
+     * Returns all Players in this Game
+     */
+    public Set<Player> getAllPlayers() {
+        final Set<Player> players = new HashSet<>();
+        players.addAll(this.comps);
+        players.add(this.human);
+        return players;
+    }
+
+    /**
      * Calls into the other setLeader()
      */
     public void setLeader(GameView view, Tile t, Player p) {

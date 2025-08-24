@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.glyph.Glyph;
 import net.lugocorp.kingdom.game.player.CompPlayer;
@@ -207,9 +208,28 @@ public class TurnStructure {
      * This function handles logic whenever every player has had a turn
      */
     private void startNewTurnGroup(GameView view) {
-        view.game.mechanics.dayNight.tick();
-        view.av.getToonShader().setNighttime(view.game.mechanics.dayNight.isNight());
+        // Iterate day/night logic
+        DayNight dayNight = view.game.mechanics.dayNight;
+        boolean isDayBeforeTick = dayNight.isDay();
+        dayNight.tick();
+        boolean isDayAfterTick = dayNight.isDay();
+        view.av.getToonShader().setNighttime(dayNight.isNight());
+
+        // Recalculate favorite Players for Patrons
         view.game.mechanics.patronage.recalculateFavor(view);
+
+        // Update Unit vision at dawn and dusk
+        if (isDayBeforeTick != isDayAfterTick) {
+            for (Player p : view.game.getAllPlayers()) {
+                // TODO can we optimize this?
+                for (Unit u : p.units) {
+                    u.visibility.set(view, p, u, u.getPoint());
+                }
+                for (Building b : p.buildings) {
+                    b.visibility.set(view, p, b, b.getPoint());
+                }
+            }
+        }
     }
 
     /**

@@ -1318,7 +1318,12 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit can see normally at night");
-                    // TODO implement me
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_night_vision, "GetVisibilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+                    e.canSeeAtNight = true;
                     return SideEffect.none;
                 });
 

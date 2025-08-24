@@ -33,7 +33,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     private Optional<Color> minimapColor = Optional.empty();
     private BuildingType type = BuildingType.PASSIVE;
     private boolean obstacle = false;
-    protected final Visibility visibility = new Visibility();
+    public final Visibility visibility = new Visibility();
     public final BuildingCombat combat;
     public final Tags tags = new Tags();
     public final String name;
