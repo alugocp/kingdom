@@ -283,10 +283,20 @@ public class KingdomMod implements GameMod {
                 (GameView view, Building receiver, Event event) -> {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "fountain");
-                    e.blob.desc = "Heals an occupying unit";
+                    e.blob.desc = "Heals an occupying unit each turn";
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setActive();
                     return SideEffect.none;
+                });
+        events.building.addEventHandler(Defs.ability_edible, "SpawnEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.building.addEventHandler(Defs.ability_edible, "TickEvent",
+                (GameView view, Building receiver, Event event) -> {
+                    Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
+                    return u.isPresent() ? () -> u.get().combat.health.heal(5) : SideEffect.none;
                 });
 
         /**
@@ -382,6 +392,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your units have additional critical hit chance";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Kauna's Amulet
@@ -391,6 +402,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your units within a patron's domain have extra defense";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Staff of Wurmdel
@@ -400,6 +412,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your healing spells restore more health";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Tome of Morun
@@ -409,14 +422,27 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Chance to spawn a glyph under your unit when it kills an enemy";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Orb of Nerketo
         events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your units have additional visibility";
+                    e.blob.desc = "Your units have +1 vision";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("GetVisibilityEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "GetVisibilityEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+                    e.radius++;
                     return SideEffect.none;
                 });
 
@@ -427,14 +453,29 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your patrons generate unit points";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Stones of Thudin
         events.artifact.addEventHandler(Defs.artifact_stones_of_thudin, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your vaults take less damage";
+                    e.blob.desc = "Your vaults have +3 defense";
                     e.blob.image = Optional.of("golden feather");
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_stones_of_thudin, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("TakeDamageEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_stones_of_thudin, "TakeDamageEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
+                    if (e.target instanceof Building && ((Building) e.target).name.equals(Defs.building_vault)) {
+                        e.dmg.amount -= 3;
+                    }
                     return SideEffect.none;
                 });
 
@@ -445,6 +486,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your nature glyph units have a chance to harvest an additional item";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Ucha's Bowl of Plenty
@@ -471,6 +513,7 @@ public class KingdomMod implements GameMod {
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Bounty of Ahn-June
@@ -481,6 +524,7 @@ public class KingdomMod implements GameMod {
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Mark of Kung
@@ -492,14 +536,42 @@ public class KingdomMod implements GameMod {
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
+        events.artifact.addEventHandler(Defs.artifact_mark_of_kung, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_mark_of_kung, "UnitMoveDistanceEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.BATTLE)) {
+                        e.distance++;
+                    }
+                    return SideEffect.none;
+                });
 
         // Chalco's Seal of Protection
         events.artifact.addEventHandler(Defs.artifact_chalcos_seal_of_protection, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your travel glyph units take less damage";
+                    e.blob.desc = "Your travel glyph units have +2 defense";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_chalcos_seal_of_protection, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("TakeDamageEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_chalcos_seal_of_protection, "TakeDamageEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
+                    if (e.target instanceof Unit && ((Unit) e.target).glyphs.has(Glyph.TRADE)) {
+                        e.dmg.amount -= 2;
+                    }
                     return SideEffect.none;
                 });
 
@@ -511,6 +583,7 @@ public class KingdomMod implements GameMod {
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Gaia's Effigy
@@ -521,6 +594,7 @@ public class KingdomMod implements GameMod {
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Rod of Adelon
@@ -531,6 +605,7 @@ public class KingdomMod implements GameMod {
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Blade of Sanguinor
@@ -541,6 +616,7 @@ public class KingdomMod implements GameMod {
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         // Cask of Amontior
@@ -551,6 +627,7 @@ public class KingdomMod implements GameMod {
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
+                    // TODO implement me
                 });
 
         /**
@@ -1059,7 +1136,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Defs.ability_dig_mine, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.build(view, receiver.wielder,
-                        Defs.building_mine, (Tile t) -> t.name.equals("Rock")));
+                        Defs.building_mine, (Tile t) -> t.name.equals(Defs.tile_rock)));
 
         // Dungeon Delve
         events.ability.addEventHandler(Defs.ability_dungeon_delve, "GenerateAbilityEvent",
