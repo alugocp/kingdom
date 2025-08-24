@@ -65,6 +65,9 @@ public class KingdomMod implements GameMod {
         sprites.register("mushroom", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
         sprites.register("emerald", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
         sprites.register("bone", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
+        sprites.register("fish", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
+        sprites.register("flower", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
+        sprites.register("seeds", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
         sprites.register("golden feather", "artifacts", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
         sprites.register("raider", "fates", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
         sprites.register("merchant", "fates", FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
@@ -1455,6 +1458,45 @@ public class KingdomMod implements GameMod {
         /**
          * SECTION Items
          */
+
+        // Seeds
+        events.item.addEventHandler(Defs.item_sacred_seed, "GenerateItemEvent",
+                (GameView view, Item receiver, Event event) -> {
+                    Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+                    e.blob.desc = "Consume to generate extra favor";
+                    e.blob.icon = Optional.of("seeds");
+                    e.blob.gold = 1;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Defs.item_sacred_seed, "ItemConsumedEvent",
+                (GameView view, Item receiver, Event event) -> {
+                    // TODO implement me
+                    return SideEffect.none;
+                });
+
+        // Flower
+        events.item.addEventHandler(Defs.item_flower, "GenerateItemEvent",
+                (GameView view, Item receiver, Event event) -> {
+                    Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+                    e.blob.desc = "Consume to smell a sweet flower";
+                    e.blob.icon = Optional.of("flower");
+                    e.blob.gold = 1;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Defs.item_flower, "ItemConsumedEvent",
+                (GameView view, Item receiver, Event event) -> SideEffect.none);
+
+        // Fish
+        events.item.addEventHandler(Defs.item_fish, "GenerateItemEvent",
+                (GameView view, Item receiver, Event event) -> {
+                    Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
+                    e.blob.desc = "Consume to stave off hunger";
+                    e.blob.icon = Optional.of("fish");
+                    e.blob.gold = 1;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Defs.item_fish, "ItemConsumedEvent",
+                (GameView view, Item receiver, Event event) -> ItemLogic.food(view, event));
 
         // Gold Coin
         events.item.addEventHandler(Defs.item_gold_coin, "GenerateItemEvent",

@@ -186,6 +186,9 @@ public class Defs {
     /**
      * SECTION Items
      */
+    public static final String item_sacred_seed = "Sacred Seed";
+    public static final String item_flower = "Flower";
+    public static final String item_fish = "Fish";
     public static final String item_gold_coin = "Gold Coin";
     public static final String item_emerald = "Emerald";
     public static final String item_apple = "Apple";
