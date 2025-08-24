@@ -1,7 +1,10 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.game.core.Events;
+import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashSet;
@@ -27,12 +30,15 @@ public class Visibility {
     /**
      * Changes how far the associated Unit/Building can see
      */
-    public void setVisibleRadius(Player player, World world, Point center, int radius) {
-        this.removeVision(player, world);
-        world.getTile(center).ifPresent((Tile t) -> player.incrementVisibility(t));
+    public void set(GameView view, Player player, EventReceiver receiver, Point center) {
+        Events.GetVisibilityEvent event = new Events.GetVisibilityEvent();
+        receiver.handleEvent(view, event);
+        this.remove(player, view.game.world);
+        view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVisibility(t));
         this.vision.add(center);
-        for (Point p : Hexagons.getNeighbors(center, radius)) {
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVisibility(t));
+        boolean isNight = view.game.mechanics.dayNight.isNight();
+        for (Point p : Hexagons.getNeighbors(center, event.cumulative(isNight))) {
+            view.game.world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVisibility(t));
             this.vision.add(p);
         }
     }
@@ -40,7 +46,7 @@ public class Visibility {
     /**
      * Removes all Points from the vision set
      */
-    public void removeVision(Player player, World world) {
+    public void remove(Player player, World world) {
         for (Point p : this.vision) {
             world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVisibility(t));
         }

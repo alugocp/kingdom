@@ -90,6 +90,13 @@ public class KingdomMod implements GameMod {
          * SECTION Default handlers
          */
 
+        // GetVisibilityEvent
+        events.unit.setDefaultHandler("GetVisibilityEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+            e.radius = 2;
+            return SideEffect.none;
+        });
+
         // GetsHungry
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
                 Event event) -> () -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
@@ -97,7 +104,7 @@ public class KingdomMod implements GameMod {
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
             if (receiver.getLeader().isPresent()) {
-                return () -> receiver.loseLoyalty(view.game, 1);
+                return () -> receiver.loseLoyalty(view, 1);
             }
             ((Events.RepeatedEvent) event).repeat = false;
             return SideEffect.none;

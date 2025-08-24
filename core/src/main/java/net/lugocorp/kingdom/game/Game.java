@@ -12,6 +12,7 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.HumanPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
@@ -70,12 +71,12 @@ public class Game {
      * does not spawn the Unit, but it does remove them from all relevant
      * GlyphPools.
      */
-    public Unit getInitialUnit(Player p, int x, int y) {
+    public Unit getInitialUnit(GameView view, Player p, int x, int y) {
         final Glyph g = Lambda.random(Glyph.class);
         final String name = this.mechanics.pools.random(g, 1)[0];
         final Unit u = this.generator.unit(name, x, y);
         this.mechanics.pools.remove(u);
-        this.setLeader(u, p);
+        this.setLeader(view, u, p);
         return u;
     }
 
@@ -91,14 +92,14 @@ public class Game {
     /**
      * Calls into the other setLeader()
      */
-    public void setLeader(Tile t, Player p) {
-        this.setLeader(t, Optional.of(p));
+    public void setLeader(GameView view, Tile t, Player p) {
+        this.setLeader(view, t, Optional.of(p));
     }
 
     /**
      * Sets the leader Player for a given Tile
      */
-    public void setLeader(Tile t, Optional<Player> op) {
+    public void setLeader(GameView view, Tile t, Optional<Player> op) {
         if (op.equals(t.leader)) {
             return;
         }
@@ -110,7 +111,7 @@ public class Game {
             t.building.ifPresent((Building b) -> p.buildings.add(b));
             p.tiles++;
         });
-        t.building.ifPresent((Building b) -> b.handleLeaderChange(this.world, t.leader, op));
+        t.building.ifPresent((Building b) -> b.handleLeaderChange(view, t.leader, op));
         t.leader = op;
         t.calculateBorders(this.world, true);
     }
@@ -136,21 +137,20 @@ public class Game {
     /**
      * Calls into the other setLeader()
      */
-    public void setLeader(Unit u, Player p) {
-        this.setLeader(u, Optional.of(p));
+    public void setLeader(GameView view, Unit u, Player p) {
+        this.setLeader(view, u, Optional.of(p));
     }
 
     /**
      * Sets the leader Player for a given Unit
      */
-    public void setLeader(Unit u, Optional<Player> op) {
+    public void setLeader(GameView view, Unit u, Optional<Player> op) {
         u.getLeader().ifPresent((Player p) -> p.units.remove(u));
         op.ifPresent((Player p) -> p.units.add(u));
-        u.getLeader().ifPresent((Player l) -> u.visibility.removeVision(l, this.world));
+        u.getLeader().ifPresent((Player l) -> u.visibility.remove(l, this.world));
         u.setLeader(op);
-        u.getLeader()
-                .ifPresent((Player l) -> u.visibility.setVisibleRadius(l, this.world, u.getPoint(), u.visibleRadius));
-        this.setLeader(this.world.getTile(u.getPoint()).get(), op);
+        u.getLeader().ifPresent((Player l) -> u.visibility.set(view, l, u, u.getPoint()));
+        this.setLeader(view, this.world.getTile(u.getPoint()).get(), op);
     }
 
     /**

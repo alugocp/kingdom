@@ -200,11 +200,11 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * This Unit loses loyalty and may abandon the cause
      */
-    public void loseLoyalty(Game g, int points) {
+    public void loseLoyalty(GameView view, int points) {
         this.loyalty = Math.max(0, this.loyalty - points);
         if (this.loyalty == 0) {
-            g.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
-            g.setLeader(this, Optional.empty());
+            view.game.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
+            view.game.setLeader(view, this, Optional.empty());
         }
     }
 
@@ -240,12 +240,12 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Recruits this Unit into to a new Player
      */
-    public void getRecruited(Game game, Player player) {
+    public void getRecruited(GameView view, Player player) {
         if (!this.isFreeRadical()) {
             throw new RuntimeException("Cannot recruit another player's unit");
         }
-        game.mechanics.turns.addFutureTick("HungerStrikes", this, 1, true);
-        game.setLeader(this, player);
+        view.game.mechanics.turns.addFutureTick("HungerStrikes", this, 1, true);
+        view.game.setLeader(view, this, player);
         this.resetLoyalty();
     }
 
@@ -318,13 +318,13 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Sets this Unit's position in the World. Useful for spawning or movement.
      */
-    public void setPosition(Game g, int x, int y) {
-        Tile destin = g.world.getTile(x, y).get();
+    public void setPosition(GameView view, int x, int y) {
+        Tile destin = view.game.world.getTile(x, y).get();
         destin.unit = Optional.of(this);
         this.x = x;
         this.y = y;
         this.resetModelPosition();
-        g.setLeader(destin, this.leader);
+        view.game.setLeader(view, destin, this.leader);
         destin.building.ifPresent((Building b) -> b.setAlpha(0.5f));
         this.userData.point.x = x;
         this.userData.point.y = y;
@@ -347,7 +347,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         int y = this.y;
         this.leader.ifPresent((Player l) -> this.visibility.translate(l, view.game.world, p.x - x, p.y - y));
         this.removeFromPosition(view.game);
-        this.setPosition(view.game, p.x, p.y);
+        this.setPosition(view, p.x, p.y);
         return this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y));
     }
 
@@ -355,7 +355,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
      * Spawns this loaded object into the World
      */
     public void spawn(GameView view) {
-        this.setPosition(view.game, this.x, this.y);
+        this.setPosition(view, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
         this.eat(view.game);
     }
@@ -394,7 +394,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     @Override
     public void deactivate(GameView view) {
         EventReceiver.super.deactivate(view);
-        this.leader.ifPresent((Player l) -> this.visibility.removeVision(l, view.game.world));
+        this.leader.ifPresent((Player l) -> this.visibility.remove(l, view.game.world));
         this.removeFromPosition(view.game);
         this.dispose();
     }

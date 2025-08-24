@@ -9,7 +9,6 @@ import net.lugocorp.kingdom.game.mechanics.Visibility;
 import net.lugocorp.kingdom.game.model.fields.Inventory;
 import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
@@ -61,9 +60,9 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     /**
      * This method is fired when the underlying Tile's leader field changes
      */
-    public void handleLeaderChange(World w, Optional<Player> p1, Optional<Player> p2) {
-        p1.ifPresent((Player l) -> this.visibility.removeVision(l, w));
-        p2.ifPresent((Player l) -> this.visibility.setVisibleRadius(l, w, this.getPoint(), 1));
+    public void handleLeaderChange(GameView view, Optional<Player> p1, Optional<Player> p2) {
+        p1.ifPresent((Player l) -> this.visibility.remove(l, view.game.world));
+        p2.ifPresent((Player l) -> this.visibility.set(view, l, this, this.getPoint()));
     }
 
     /**

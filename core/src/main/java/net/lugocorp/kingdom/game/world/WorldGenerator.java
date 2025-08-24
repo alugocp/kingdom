@@ -198,10 +198,10 @@ public class WorldGenerator {
             Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
             g.generator.building("Vault", p.x, p.y).spawn(view);
             if (a == 0) {
-                g.getInitialUnit(g.human, p.x, p.y).spawn(view);
+                g.getInitialUnit(view, g.human, p.x, p.y).spawn(view);
             } else {
                 CompPlayer ai = g.addComputerPlayer(a);
-                g.getInitialUnit(ai, p.x, p.y).spawn(view);
+                g.getInitialUnit(view, ai, p.x, p.y).spawn(view);
             }
             startingPoints.get(startingPointIndex++).remove(p);
         }

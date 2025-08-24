@@ -34,7 +34,7 @@ public class BuildingCombat extends Combat<Building> {
             return () -> {
                 this.health.set(this.health.getMax());
                 view.game.world.getTile(this.bearer.getPoint())
-                        .ifPresent((Tile t) -> view.game.setLeader(t, destroyer));
+                        .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));
             };
         }
         return super.onDeath(view, attacker);

@@ -266,7 +266,7 @@ public class InventoryNode implements MenuNode {
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
         if (unit.isFreeRadical()) {
-            unit.getRecruited(this.view.game, leader);
+            unit.getRecruited(this.view, leader);
         }
         this.view.menu.refresh(false);
     }

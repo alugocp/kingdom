@@ -118,6 +118,25 @@ public class Events {
     }
 
     /**
+     * Collects how far a Unit or Building can see
+     */
+    public static class GetVisibilityEvent extends Event {
+        public boolean canSeeAtNight = false;
+        public int radius = 1;
+
+        public GetVisibilityEvent() {
+            super();
+        }
+
+        /**
+         * Accounts for low visibility at night
+         */
+        public int cumulative(boolean isNight) {
+            return Math.max(0, this.radius - (isNight && !canSeeAtNight ? 1 : 0));
+        }
+    }
+
+    /**
      * This event is fired whenever a Unit calculates whether it can move onto some
      * Tile
      */

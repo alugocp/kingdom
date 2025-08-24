@@ -143,7 +143,7 @@ public class NewUnit {
             }
             t.setGlyph(Optional.empty());
             p.unitPoints -= NewUnit.MAX_UNIT_POINTS;
-            view.game.setLeader(u, p);
+            view.game.setLeader(view, u, p);
             u.spawn(view);
         });
     }
