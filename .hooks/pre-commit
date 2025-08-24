@@ -5,5 +5,10 @@ if [ "$staged" = "" ]; then
     exit 0
 fi
 
+# Format the code and re-add changes if it was successful
 gradle spotlessApply
-git add $staged
+if [ "$?" = "0" ]; then
+    git add $staged
+else
+    exit 1
+fi
