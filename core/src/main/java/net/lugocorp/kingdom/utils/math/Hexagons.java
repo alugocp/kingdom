@@ -42,6 +42,15 @@ public class Hexagons {
     }
 
     /**
+     * Returns true if the two given Points are adjacent
+     */
+    public static boolean areNeighbors(Point p1, Point p2) {
+        // TODO please optimize this...please
+        final Set<Point> adj = Hexagons.getNeighbors(p1, 1);
+        return adj.contains(p2);
+    }
+
+    /**
      * Returns an integer representing borders based on some criteria for the given
      * Point
      */

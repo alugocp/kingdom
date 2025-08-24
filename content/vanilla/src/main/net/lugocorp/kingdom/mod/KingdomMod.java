@@ -308,7 +308,7 @@ public class KingdomMod implements GameMod {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "shining-eyes");
                     e.blob.desc = "A floating pyramid thing";
-                    e.blob.preference = "Units with the healing glyph";
+                    e.blob.preference = "Heals random units of its favorite player each turn";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
                     // TODO implement me
                     return SideEffect.none;
@@ -940,8 +940,12 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Adjacent attackers take damage");
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_acid_skin, "AttackedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.AttackedEvent e = (Events.AttackedEvent) event;
+                    return Hexagons.areNeighbors(e.attacker.getPoint(), e.target.getPoint()) ? () -> e.attacker.combat.takeDamage(view, new Damage(2), e.target) : SideEffect.none;
                 });
 
         // Bite
@@ -990,9 +994,15 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Defs.ability_combat_loot, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Attacks do more damage if this unit has a hauled item");
-                    // TODO implement me
+                    e.blob.desc = String.format("+2 damage if this unit has a hauled item");
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_combat_loot, "AttackEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.AttackEvent e = (Events.AttackEvent) event;
+                    if (receiver.wielder.haul.hasItems()) {
+                        e.dmg.amount += 2;
+                    }
                 });
 
         // Crystal Skin
@@ -1000,7 +1010,6 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Extra defense");
-                    // TODO implement me
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_crystal_skin, "TakeDamageEvent",
@@ -1011,8 +1020,12 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Chance to spawn a meadow when this unit moves");
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_deposit_seeds, "UnitMovedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                Point p = receiver.wielder.getPoint();
+                return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false) && Math.random() < 0.1 ? () -> view.game.generator.building(Defs.building_meadow, p.x, p.y).spawn(view) : SideEffect.none;
                 });
 
         // Dig Mine
@@ -1040,7 +1053,6 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Generates food");
-                    // TODO implement me
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_edible, "SpawnEvent",
@@ -1049,7 +1061,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_edible, "TickEvent", (GameView view, Ability receiver,
-                Event event) -> AbilityLogic.harvest(view, receiver.wielder, Defs.item_apple, (Building b) -> true));
+                Event event) -> AbilityLogic.harvestFromTile(view, receiver.wielder, Defs.item_apple, (Tile t) -> true));
 
         // Fire Cannon
         events.ability.addEventHandler(Defs.ability_fire_cannon, "GenerateAbilityEvent",
@@ -1109,8 +1121,21 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Consumes all hauled items and heals adjacent friendly units");
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_hungry_frog_magic, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    List<SideEffect> effects = SideEffect.list(
+                        () -> receiver.wielder.haul.empty();
+                    );
+                    Set<Points> targets = Hexagons.getNeighbors(receiver.wielder.getPoint(), 1);
+                    for (Point p : targets) {
+                        Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                        if (u.map((Unit u) -> u.isFriendly()).orElse(false)) {
+                                effects.add(() -> u.get().combat.health.heal(10));
+                        }
+                    }
+                    return effects;
                 });
 
         // Hunt Fish
@@ -1118,35 +1143,64 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests fish from water tiles");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_hunt_fish, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_hunt_fish, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvestFromTile(view, receiver.wielder,
+                        Defs.item_fish, (Tile t) -> t.name.equals(Defs.tile_water)));
 
         // Hurl Rock
         events.ability.addEventHandler(Defs.ability_hurl_rock, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Ranged attack with chance to stun");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_hurl_rock, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.attackAndEffect(view, receiver.wielder,
+                        new Damage(4), 2, Optional.of((Point p) -> {
+                            Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                            return u.isPresent()
+                                    ? u.get().addStatusEffect(view, Defs.status_effect_stunned)
+                                    : SideEffect.none;
+                        })));
 
         // Life Aura
         events.ability.addEventHandler(Defs.ability_life_aura, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Generates unit points");
-                    // TODO implement me
+                    e.blob.desc = String.format("Generates 4 unit points per turn");
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_life_aura, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_life_aura, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> () -> receiver.wielder.getLeader().ifPresent((Player p) -> p.unitPoints += 4));
 
         // Liquifying Presence
         events.ability.addEventHandler(Defs.ability_liquifying_presence, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Deals damage to an occupied passive building");
-                    // TODO implement me
+                    e.blob.desc = String.format("Deals 3 damage each turn to an occupied passive building");
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_liquifying_presence, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_liquifying_presence, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                        Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building);
+                        return b.map((Building b1) -> !b1.isActive()).orElse(false) ? () -> b.get().combat.takeDamage(view, new Damage(3), receiver.wielder) : SideEffect.none;
                 });
 
         // Local Defender
@@ -1162,18 +1216,29 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Defs.ability_market_boom, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Attacks generate auction points");
-                    // TODO implement me
+                    e.blob.desc = String.format("Attacks generate 5 auction points");
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_market_boom, "AttackEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    return () -> view.game.auctionPoints += 5;
                 });
 
         // Market Indicator
         events.ability.addEventHandler(Defs.ability_market_indicator, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Generates auction points when adjacent to a vault");
-                    // TODO implement me
+                    e.blob.desc = String.format("Generates 1 auction point when adjacent to a vault");
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_market_indicator, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_market_indicator, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                        AbilityLogic.doWhenAdjacent(view, receiver.wielder, (Tile t) -> t.building.map((Building b) -> b.name.equals(Defs.building_vault)).orElse(false), () -> () -> view.game.auctionPoints++);
                 });
 
         // Mine Gems
@@ -1181,9 +1246,16 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests gems from mines");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_mine_gems, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_mine_gems, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvestFromBuilding(view, receiver.wielder,
+                        Defs.item_emerald, (Building b) -> b.name.equals(Defs.building_mine)));
 
         // Mine Gold
         events.ability.addEventHandler(Defs.ability_mine_gold, "GenerateAbilityEvent",
@@ -1198,7 +1270,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_mine_gold, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvestFromBuilding(view, receiver.wielder,
                         Defs.item_gold_coin, (Building b) -> b.name.equals(Defs.building_mine)));
 
         // Mountain Strider
@@ -1206,7 +1278,14 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit can traverse mountains");
-                    // TODO implement me
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_mountain_strider, "CanUnitMoveEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.CanUnitMoveEvent e = (Events.CanUnitMoveEvent) event;
+                    if (tile.building.map((Building b) -> b.name.equals(Defs.building_mountain)).orElse(false)) {
+                        e.canWalkOnBuilding = true;
+                    }
                     return SideEffect.none;
                 });
 
@@ -1232,7 +1311,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_pick_apples, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvestFromBuilding(view, receiver.wielder,
                         Defs.item_apple, (Building b) -> b.name.equals(Defs.building_forest)));
 
         // Pick Flowers
@@ -1240,9 +1319,16 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests flowers from meadows every 4 turns");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_pick_flowers, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_pick_flowers, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvestFromBuilding(view, receiver.wielder,
+                        Defs.item_flower, (Building b) -> b.name.equals(Defs.building_meadow)));
 
         // Plant Forest
         events.ability.addEventHandler(Defs.ability_plant_forest, "GenerateAbilityEvent",
@@ -1281,7 +1367,6 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("This unit heals a little each turn");
-                    // TODO implement me
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_regeneration, "SpawnEvent",
@@ -1297,8 +1382,15 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Attack that deals more damage when on a forest");
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_revenge_of_the_forest, "AttackEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.AttackEvent e = (Events.AttackEvent) event;
+                    return AbilityLogic.doOnTile(view, receiver.wielder, (Tile t) -> t.building.map((Building b) -> b.name.equals(Defs.building_forest)).orElse(false), () -> {
+                        e.dmg.amount += 5;
+                        return SideEffect.none;
+                    });
                 });
 
         // Running Through Nature
@@ -1338,9 +1430,16 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Harvests seeds from meadows that can be consumed to generate favor");
-                    // TODO implement me
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_sacred_seeds, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_sacred_seeds, "TickEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvestFromBuilding(view, receiver.wielder,
+                        Defs.item_sacred_seed, (Building b) -> b.name.equals(Defs.building_meadow)));
 
         // Shell Defense
         events.ability.addEventHandler(Defs.ability_shell_defense, "GenerateAbilityEvent",
@@ -1401,7 +1500,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_subterranean_potions, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvest(view, receiver.wielder,
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.harvestFromBuilding(view, receiver.wielder,
                         Defs.item_health_potion, (Building b) -> b.name.equals(Defs.building_mine)));
 
         // Swim
@@ -1455,6 +1554,19 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
+        // More Favor
+        events.ability.addEventHandler(Defs.status_effect_more_favor, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("+5 favor next time the unit generates it");
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.status_effect_more_favor, "GenerateFavorEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    ((Events.GenerateFavorEvent) event).favor += 5;
+                    return SideEffect.none;
+                });
+
         /**
          * SECTION Items
          */
@@ -1470,8 +1582,8 @@ public class KingdomMod implements GameMod {
                 });
         events.item.addEventHandler(Defs.item_sacred_seed, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> {
-                    // TODO implement me
-                    return SideEffect.none;
+                    Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
+                    return () -> e.consumer.addStatusEffect(view, Defs.status_effect_more_favor);
                 });
 
         // Flower

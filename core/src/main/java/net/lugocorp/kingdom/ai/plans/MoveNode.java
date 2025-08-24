@@ -22,7 +22,7 @@ public class MoveNode extends PlanNode {
     public ActionResult act(GameView view) {
         Set<Point> options = this.unit.getMoveTargets(view);
         if (options.contains(this.dest)) {
-            this.unit.move(view.game, this.dest);
+            this.unit.move(view, this.dest).execute();
             return ActionResult.POP;
         }
         return ActionResult.POP_ALL;

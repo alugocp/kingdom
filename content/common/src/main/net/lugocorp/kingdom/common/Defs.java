@@ -182,6 +182,7 @@ public class Defs {
      * SECTION Status Effects
      */
     public static final String status_effect_stunned = "Stunned";
+    public static final String status_effect_more_favor = "More Favor";
 
     /**
      * SECTION Items

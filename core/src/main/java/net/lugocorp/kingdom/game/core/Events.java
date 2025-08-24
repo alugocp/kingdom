@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.utils.math.Point;
 
 /**
  * Contains a collection of Events that are integral to the game's core
@@ -153,6 +154,22 @@ public class Events {
 
         public UnitMoveDistanceEvent(Unit unit) {
             super();
+            this.unit = unit;
+        }
+    }
+
+    /**
+     * Triggered whenever a Unit moves
+     */
+    public static class UnitMovedEvent extends Event {
+        public final Point previous;
+        public final Point current;
+        public final Unit unit;
+
+        public UnitMovedEvent(Unit unit, int px, int py, int cx, int cy) {
+            super();
+            this.previous = new Point(px, py);
+            this.current = new Point(cx, cy);
             this.unit = unit;
         }
     }

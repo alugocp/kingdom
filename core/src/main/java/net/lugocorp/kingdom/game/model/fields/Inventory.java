@@ -49,6 +49,13 @@ public class Inventory implements MenuSubject, Iterable<Item> {
     }
 
     /**
+     * Returns true if this Inventory has any Items in it
+     */
+    public boolean hasItems() {
+        return this.getSize() > 0;
+    }
+
+    /**
      * Return max number of items in this Inventory
      */
     public int getMax() {
@@ -84,6 +91,13 @@ public class Inventory implements MenuSubject, Iterable<Item> {
      */
     public void remove(Item item) {
         this.items.remove(item);
+    }
+
+    /**
+     * Removes all Items from this Inventory
+     */
+    public void empty() {
+        this.items.clear();
     }
 
     /**

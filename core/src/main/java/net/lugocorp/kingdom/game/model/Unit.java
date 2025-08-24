@@ -230,6 +230,14 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * Returns true if the given Unit is friendly to this Unit (they belong to the
+     * same Player)
+     */
+    public boolean isFriendly(Unit u) {
+        return this.leader.equals(u.leader);
+    }
+
+    /**
      * Recruits this Unit into to a new Player
      */
     public void getRecruited(Game game, Player player) {
@@ -334,10 +342,13 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Moves this Unit to another Tile in the grid
      */
-    public void move(Game g, Point p) {
-        this.leader.ifPresent((Player l) -> this.visibility.translate(l, g.world, p.x - this.x, p.y - this.y));
-        this.removeFromPosition(g);
-        this.setPosition(g, p.x, p.y);
+    public SideEffect move(GameView view, Point p) {
+        int x = this.x;
+        int y = this.y;
+        this.leader.ifPresent((Player l) -> this.visibility.translate(l, view.game.world, p.x - x, p.y - y));
+        this.removeFromPosition(view.game);
+        this.setPosition(view.game, p.x, p.y);
+        return this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y));
     }
 
     /**
@@ -413,7 +424,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
             }
             node.add(new ActionNode(view.av, "Move", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
-                        this.move(view.game, p1);
+                        this.move(view, p1).execute();
                         view.game.mechanics.turns.unitHasActed(view, this);
                         view.hud.minimap.refresh(view.game.world);
                     })));

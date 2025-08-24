@@ -157,22 +157,46 @@ public class AbilityLogic {
     }
 
     /**
-     * Ability that does something while on a particular Building
+     * Ability that does something while on a particular Tile
      */
-    public static SideEffect doOnBuilding(GameView view, Unit caster, Function<Building, Boolean> criteria,
+    public static SideEffect doOnTile(GameView view, Unit caster, Function<Tile, Boolean> criteria,
             Supplier<SideEffect> effect) {
         Point p = CapturedEvents.instance.isActive()
                 ? CapturedEvents.instance.getFakePoint().map((Point p1) -> p1).orElse(caster.getPoint())
                 : caster.getPoint();
-        boolean isOnBuilding = view.game.world.getTile(p).flatMap((Tile t) -> t.building).map(criteria).orElse(false);
-        return isOnBuilding ? effect.get() : SideEffect.none;
+        boolean isOnTile = view.game.world.getTile(p).map(criteria).orElse(false);
+        return isOnTile ? effect.get() : SideEffect.none;
+    }
+
+    /**
+     * Ability that does something while on a particular Building
+     */
+    public static SideEffect doOnBuilding(GameView view, Unit caster, Function<Building, Boolean> criteria,
+            Supplier<SideEffect> effect) {
+        return AbilityLogic.doOnTile(view, caster,
+                (Tile t) -> t.building.map((Building b) -> criteria.apply(b)).orElse(false), effect);
+    }
+
+    /**
+     * Does something when the Unit is adjacent to some criteria
+     */
+    public static SideEffect doWhenAdjacent(GameView view, Unit wielder, Function<Tile, Boolean> criteria,
+            Supplier<SideEffect> effect) {
+        final Set<Point> coords = Hexagons.getNeighbors(wielder.getPoint(), 1);
+        for (Point p : coords) {
+            if (criteria.apply(view.game.world.getTile(p).get())) {
+                return effect.get();
+            }
+        }
+        return SideEffect.none;
     }
 
     /**
      * Ability that harvests an Item from some Tile
      */
-    public static SideEffect harvest(GameView view, Unit caster, String item, Function<Building, Boolean> criteria) {
-        return AbilityLogic.doOnBuilding(view, caster, criteria, () -> caster.haul.isFull() ? SideEffect.none : () -> {
+    public static SideEffect harvestFromTile(GameView view, Unit caster, String item,
+            Function<Tile, Boolean> criteria) {
+        return AbilityLogic.doOnTile(view, caster, criteria, () -> caster.haul.isFull() ? SideEffect.none : () -> {
             Item i = view.game.generator.item(item);
             caster.haul.add(i);
             if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
@@ -184,5 +208,14 @@ public class AbilityLogic {
                 }
             }
         });
+    }
+
+    /**
+     * Ability that harvests an Item from some Building
+     */
+    public static SideEffect harvestFromBuilding(GameView view, Unit caster, String item,
+            Function<Building, Boolean> criteria) {
+        return AbilityLogic.harvestFromTile(view, caster, item,
+                (Tile t) -> t.building.map((Building b) -> criteria.apply(b)).orElse(false));
     }
 }
