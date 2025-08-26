@@ -31,7 +31,7 @@ public class Visibility {
      * Changes how far the associated Unit/Building can see
      */
     public void set(GameView view, Player player, EventReceiver receiver, Point center) {
-        Events.GetVisibilityEvent event = new Events.GetVisibilityEvent();
+        Events.GetVisibilityEvent event = new Events.GetVisibilityEvent(player);
         receiver.handleEvent(view, event);
         this.remove(player, view.game.world);
         view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVisibility(t));

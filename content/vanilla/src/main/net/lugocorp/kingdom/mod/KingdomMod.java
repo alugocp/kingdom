@@ -19,11 +19,13 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.fields.Inventory;
 import net.lugocorp.kingdom.game.model.fields.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.glyph.Glyph;
+import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.FateNode;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -356,7 +358,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_chos_sigil_of_haste, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.HEALING)) {
+                    if (receiver.isClaimedByUnitLeader(e.unit) && e.unit.glyphs.has(Glyph.HEALING)) {
                         e.distance++;
                     }
                     return SideEffect.none;
@@ -379,7 +381,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_urdins_scroll_of_agility, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.DEFENSE)) {
+                    if (receiver.isClaimedByUnitLeader(e.unit) && e.unit.glyphs.has(Glyph.DEFENSE)) {
                         e.distance++;
                     }
                     return SideEffect.none;
@@ -389,10 +391,23 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your units have additional critical hit chance";
+                    e.blob.desc = "Your units have +10% critical hit chance";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("GetCriticalHitChanceEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "GetCriticalHitChanceEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GetCriticalHitChanceEvent e = (Events.GetCriticalHitChanceEvent) event;
+                    if (receiver.isClaimedByUnitLeader(e.unit)) {
+                        e.chance += 10;
+                    }
+                    return SideEffect.none;
                 });
 
         // Kauna's Amulet
@@ -419,10 +434,26 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Chance to spawn a glyph under your unit when it kills an enemy";
+                    e.blob.desc = "20% chance to spawn a glyph when your units kill an enemy";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("UnitDiedEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "UnitDiedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.UnitDiedEvent e = (Events.UnitDiedEvent) event;
+                    if (receiver.isClaimedByUnitLeader(e.killer) && !receiver.isClaimedByUnitLeader(e.unit)) {
+                        Tile t = view.game.world.getTile(e.killer.getPoint()).get();
+                        if (!t.getGlyph().isPresent() && Math.random() < 0.2) {
+                            t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
+                        }
+                    }
+                    return SideEffect.none;
                 });
 
         // Orb of Nerketo
@@ -442,7 +473,9 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "GetVisibilityEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
-                    e.radius++;
+                    if (receiver.isClaimedByPlayer(e.player)) {
+                        e.radius++;
+                    }
                     return SideEffect.none;
                 });
 
@@ -450,10 +483,23 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_shadas_flute, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your patrons generate unit points";
+                    e.blob.desc = "Your patrons generate 5 unit points per turn";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_shadas_flute, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_shadas_flute, "TickEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    /*
+                     * for (Patron patron : view.game.mechanics.patronage) { if
+                     * (receiver.getOwner().equals(patron.getFavoritePlayer())) {
+                     * receiver.getOwner().get().unitPoints += 5; } }
+                     */
+                    return SideEffect.none;
                 });
 
         // Stones of Thudin
@@ -473,8 +519,11 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_stones_of_thudin, "TakeDamageEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
-                    if (e.target instanceof Building && ((Building) e.target).name.equals(Defs.building_vault)) {
-                        e.dmg.amount -= 3;
+                    if (e.target instanceof Building) {
+                        Building b = (Building) e.target;
+                        if (receiver.isClaimedByBuildingLeader(view, b) && b.name.equals(Defs.building_vault)) {
+                            e.dmg.amount -= 3;
+                        }
                     }
                     return SideEffect.none;
                 });
@@ -545,7 +594,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_mark_of_kung, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (e.unit.getLeader().equals(receiver.getOwner()) && e.unit.glyphs.has(Glyph.BATTLE)) {
+                    if (receiver.isClaimedByUnitLeader(e.unit) && e.unit.glyphs.has(Glyph.BATTLE)) {
                         e.distance++;
                     }
                     return SideEffect.none;
@@ -555,7 +604,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_chalcos_seal_of_protection, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your travel glyph units have +2 defense";
+                    e.blob.desc = "Your trade glyph units have +2 defense";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                     return SideEffect.none;
@@ -569,8 +618,11 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_chalcos_seal_of_protection, "TakeDamageEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
-                    if (e.target instanceof Unit && ((Unit) e.target).glyphs.has(Glyph.TRADE)) {
-                        e.dmg.amount -= 2;
+                    if (e.target instanceof Unit) {
+                        Unit u = (Unit) e.target;
+                        if (receiver.isClaimedByUnitLeader(u) && u.glyphs.has(Glyph.TRADE)) {
+                            e.dmg.amount -= 2;
+                        }
                     }
                     return SideEffect.none;
                 });
@@ -590,11 +642,20 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_gaias_effigy, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Extra unit points each turn";
+                    e.blob.desc = "+10 unit points each turn";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_gaias_effigy, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_gaias_effigy, "TickEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    receiver.getOwner().get().unitPoints += 10;
+                    return SideEffect.none;
                 });
 
         // Rod of Adelon
@@ -619,7 +680,7 @@ public class KingdomMod implements GameMod {
                     // TODO implement me
                 });
 
-        // Cask of Amontior
+        // Cask of Amonitor
         events.artifact.addEventHandler(Defs.artifact_cask_of_amonitor, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;

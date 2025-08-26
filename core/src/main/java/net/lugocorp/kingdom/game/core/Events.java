@@ -121,11 +121,13 @@ public class Events {
      * Collects how far a Unit or Building can see
      */
     public static class GetVisibilityEvent extends Event {
+        public final Player player;
         public boolean canSeeAtNight = false;
         public int radius = 1;
 
-        public GetVisibilityEvent() {
+        public GetVisibilityEvent(Player player) {
             super();
+            this.player = player;
         }
 
         /**
@@ -255,6 +257,7 @@ public class Events {
         public final Damage dmg;
         public final A attacker;
         public final T target;
+        public boolean isCriticalHit = false;
 
         public AttackEvent(A attacker, T target, Damage dmg) {
             super();
@@ -271,12 +274,26 @@ public class Events {
         public final Damage dmg;
         public final A attacker;
         public final T target;
+        public boolean isCriticalHit = false;
 
         public AttackedEvent(T target, A attacker, Damage dmg) {
             super();
             this.attacker = attacker;
             this.target = target;
             this.dmg = dmg;
+        }
+    }
+
+    /**
+     * Triggered when we need to calculate a Unit's critical hit chance
+     */
+    public static class GetCriticalHitChanceEvent extends Event {
+        public final Unit unit;
+        public int chance = 5;
+
+        public GetCriticalHitChanceEvent(Unit unit) {
+            super();
+            this.unit = unit;
         }
     }
 

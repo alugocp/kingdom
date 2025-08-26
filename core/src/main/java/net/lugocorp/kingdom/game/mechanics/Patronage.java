@@ -2,13 +2,22 @@ package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
  * This class handles the high-level logistics of Patrons
  */
-public class Patronage {
+public class Patronage implements Iterable {
     private final Set<Patron> patrons = new HashSet<>();
+
+    /**
+     * Returns an Iterator for the Patrons in this Patronage
+     */
+    @Override
+    public Iterator<Patron> iterator() {
+        return this.patrons.iterator();
+    }
 
     /**
      * Registers the given Patron

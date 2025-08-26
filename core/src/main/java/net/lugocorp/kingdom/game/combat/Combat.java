@@ -80,6 +80,7 @@ public class Combat<B extends EventReceiver> {
      * This bearer attacks another
      */
     public <T extends EventReceiver> SideEffect attack(GameView view, Combat<T> target, Damage dmg) {
+        // TODO trigger a GetCriticalHitChanceEvent here to set isCriticalHit fields
         return SideEffect.all(
                 this.bearer.handleEvent(view, new Events.AttackEvent<B, T>(this.bearer, target.bearer, dmg)),
                 target.bearer.handleEvent(view, new Events.AttackedEvent<T, B>(target.bearer, this.bearer, dmg)),

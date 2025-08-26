@@ -49,6 +49,28 @@ public class Artifact implements EventReceiver, MenuSubject {
     }
 
     /**
+     * Returns true if this Artifact has been claimed by the given Unit's leader
+     */
+    public boolean isClaimedByUnitLeader(Unit u) {
+        return this.owner.equals(u.getLeader());
+    }
+
+    /**
+     * Returns true if this Artifact has been claimed by the given Unit's leader
+     */
+    public boolean isClaimedByBuildingLeader(GameView view, Building b) {
+        Optional<Player> op = view.game.world.getTile(b.getPoint()).flatMap((Tile t) -> t.leader);
+        return this.owner.equals(op);
+    }
+
+    /**
+     * Returns true if this Artifact has been claimed by the given Player
+     */
+    public boolean isClaimedByPlayer(Player p) {
+        return this.owner.map((Player p1) -> p.equals(p1)).orElse(false);
+    }
+
+    /**
      * Returns true if this Artifact should be included in the Auction popup Menu
      */
     public boolean shouldDisplay() {
