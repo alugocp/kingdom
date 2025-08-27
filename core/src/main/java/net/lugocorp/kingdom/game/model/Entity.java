@@ -34,6 +34,13 @@ public abstract class Entity extends DynamicModellable implements EventReceiver 
     }
 
     /**
+     * Returns true if this Entity has the given EntityType
+     */
+    public boolean isEntityType(EntityType type) {
+        return this.getEntityType() == type;
+    }
+
+    /**
      * Returns this Entity'e EntityType
      */
     public abstract EntityType getEntityType();

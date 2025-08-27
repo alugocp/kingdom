@@ -34,7 +34,7 @@ public class Combat {
      */
     private SideEffect onDeath(GameView view, Entity attacker) {
         List<SideEffect> effects = SideEffect.list();
-        if (this.bearer.getEntityType() == EntityType.BUILDING) {
+        if (this.bearer.isEntityType(EntityType.BUILDING)) {
             // Restore the Building's health and place under the attacking Player's control
             // if it was destroyed by another player
             Building b = (Building) this.bearer;
@@ -51,7 +51,7 @@ public class Combat {
             effects.add(attacker.handleEvent(view, new Events.KilledEntityEvent(attacker, this.bearer)));
 
             // Track CompPlayer stats whenever Units are slain
-            if (this.bearer.getEntityType() == EntityType.UNIT) {
+            if (this.bearer.isEntityType(EntityType.UNIT)) {
                 effects.add(() -> {
                     if (this.bearer.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
                         CompPlayer comp = (CompPlayer) this.bearer.getLeader().get();

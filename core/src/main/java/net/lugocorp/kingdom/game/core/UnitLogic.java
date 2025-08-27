@@ -20,4 +20,15 @@ public class UnitLogic {
             return SideEffect.none;
         });
     }
+
+    /**
+     * Changes this Unit's visibility
+     */
+    public static void visibility(AllEventHandlers events, Unit u, int radius) {
+        events.unit.addEventHandler(u.name, "GetVisibilityEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+            e.radius = radius;
+            return SideEffect.none;
+        });
+    }
 }

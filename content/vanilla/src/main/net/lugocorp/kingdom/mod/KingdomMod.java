@@ -16,6 +16,7 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.model.fields.EntityType;
 import net.lugocorp.kingdom.game.model.fields.Inventory;
 import net.lugocorp.kingdom.game.model.fields.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.glyph.Glyph;
@@ -358,7 +359,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_chos_sigil_of_haste, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (receiver.isClaimedByUnitLeader(e.unit) && e.unit.glyphs.has(Glyph.HEALING)) {
+                    if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.HEALING)) {
                         e.distance++;
                     }
                     return SideEffect.none;
@@ -381,7 +382,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_urdins_scroll_of_agility, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (receiver.isClaimedByUnitLeader(e.unit) && e.unit.glyphs.has(Glyph.DEFENSE)) {
+                    if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.DEFENSE)) {
                         e.distance++;
                     }
                     return SideEffect.none;
@@ -404,7 +405,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "GetCriticalHitChanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GetCriticalHitChanceEvent e = (Events.GetCriticalHitChanceEvent) event;
-                    if (receiver.isClaimedByUnitLeader(e.unit)) {
+                    if (receiver.isClaimedByLeader(e.unit)) {
                         e.chance += 10;
                     }
                     return SideEffect.none;
@@ -447,7 +448,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "EntityDiedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.EntityDiedEvent e = (Events.EntityDiedEvent) event;
-                    if (receiver.isClaimedByUnitLeader(e.killer) && !receiver.isClaimedByUnitLeader(e.target)) {
+                    if (receiver.isClaimedByLeader(e.killer) && !receiver.isClaimedByLeader(e.target)) {
                         Tile t = view.game.world.getTile(e.killer.getPoint()).get();
                         if (!t.getGlyph().isPresent() && Math.random() < 0.2) {
                             t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
@@ -519,9 +520,8 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_stones_of_thudin, "TakeDamageEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
-                    if (e.target instanceof Building) {
-                        Building b = (Building) e.target;
-                        if (receiver.isClaimedByBuildingLeader(view, b) && b.name.equals(Defs.building_vault)) {
+                    if (e.target.isEntityType(EntityType.BUILDING)) {
+                        if (receiver.isClaimedByLeader(e.target) && e.target.name.equals(Defs.building_vault)) {
                             e.dmg.amount -= 3;
                         }
                     }
@@ -594,7 +594,7 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_mark_of_kung, "UnitMoveDistanceEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
-                    if (receiver.isClaimedByUnitLeader(e.unit) && e.unit.glyphs.has(Glyph.BATTLE)) {
+                    if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.BATTLE)) {
                         e.distance++;
                     }
                     return SideEffect.none;
@@ -618,9 +618,9 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_chalcos_seal_of_protection, "TakeDamageEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
-                    if (e.target instanceof Unit) {
+                    if (e.target.isEntityType(EntityType.UNIT)) {
                         Unit u = (Unit) e.target;
-                        if (receiver.isClaimedByUnitLeader(u) && u.glyphs.has(Glyph.TRADE)) {
+                        if (receiver.isClaimedByLeader(u) && u.glyphs.has(Glyph.TRADE)) {
                             e.dmg.amount -= 2;
                         }
                     }
@@ -926,8 +926,8 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Defs.ability_pick_apples, Defs.ability_night_vision,
                             Defs.ability_green_fortress);
                     e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.visibleRadius = 4;
                     e.blob.species = Defs.species_sprite;
+                    UnitLogic.visibility(events, e.blob, 4);
                     return SideEffect.none;
                 });
 
@@ -1026,9 +1026,9 @@ public class KingdomMod implements GameMod {
                             Defs.ability_market_indicator);
                     e.blob.glyphs.set(Glyph.TRADE);
                     e.blob.haul.setMax(12);
-                    e.blob.visibleRadius = 4;
                     e.blob.species = Defs.species_tulpa;
                     UnitLogic.speed(events, e.blob, 3);
+                    UnitLogic.visibility(events, e.blob, 4);
                     return SideEffect.none;
                 });
 

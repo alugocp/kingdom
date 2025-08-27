@@ -135,7 +135,7 @@ public class Events {
          * Accounts for low visibility at night
          */
         public int cumulative(boolean isNight) {
-            return Math.max(0, this.radius - (isNight && !canSeeAtNight ? 1 : 0));
+            return Math.max(0, this.radius - (isNight && canSeeAtNight ? 0 : 1));
         }
     }
 
