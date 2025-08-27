@@ -90,10 +90,10 @@ public class Combat {
      */
     public SideEffect attack(GameView view, Entity target, Damage dmg) {
         // Determine if this attack was a critical hit or not
-        Events.GetCriticalHitChanceEvent crit = new Events.GetCriticalHitChanceEvent(this.bearer);
+        Events.CheckCriticalHitEvent crit = new Events.CheckCriticalHitEvent(this.bearer);
         this.bearer.handleEvent(view, crit);
         if (Math.floor(Math.random() * 100) < crit.chance) {
-            dmg.setCritical(true);
+            dmg.setMultiplier(crit.multiplier);
         }
 
         // Trigger conjugate Events for an Entity attacking and another Entity being

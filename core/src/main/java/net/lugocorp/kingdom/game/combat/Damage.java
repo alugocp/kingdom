@@ -4,7 +4,7 @@ package net.lugocorp.kingdom.game.combat;
  * Tracks how many HitPoints to reduce from a combatant
  */
 public class Damage {
-    private boolean critical = false;
+    private float multiplier = 1f;
     public int base;
 
     public Damage(int base) {
@@ -15,14 +15,14 @@ public class Damage {
      * Returns the final value of Damage dealt, accounting for critical hits
      */
     public int total() {
-        return this.critical ? (int) Math.floor(this.base * 1.25) : this.base;
+        return (int) Math.floor(this.base * this.multiplier);
     }
 
     /**
-     * Sets whether or not this Damage is from a critical hit
+     * Sets a multiplier on top of the base value (used for critical hits)
      */
-    public void setCritical(boolean critical) {
-        this.critical = critical;
+    public void setMultiplier(float multiplier) {
+        this.multiplier = multiplier;
     }
 
     @Override

@@ -286,11 +286,12 @@ public class Events {
     /**
      * Triggered when we need to calculate a Unit's critical hit chance
      */
-    public static class GetCriticalHitChanceEvent extends Event {
+    public static class CheckCriticalHitEvent extends Event {
         public final Entity entity;
+        public float multiplier = 1.25f;
         public int chance = 5;
 
-        public GetCriticalHitChanceEvent(Entity entity) {
+        public CheckCriticalHitEvent(Entity entity) {
             super();
             this.entity = entity;
         }

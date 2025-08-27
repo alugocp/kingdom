@@ -331,8 +331,8 @@ public class KingdomMod implements GameMod {
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "shining-eyes");
-                    e.blob.desc = "A floating pyramid thing";
-                    e.blob.preference = "Heals random units of its favorite player each turn";
+                    e.blob.desc = "Heals random units of its favorite player each turn";
+                    e.blob.preference = "Healing glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
                     // TODO implement me
                     return SideEffect.none;
@@ -399,13 +399,13 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    view.game.events.signals.addListener("GetCriticalHitChanceEvent", e.artifact);
+                    view.game.events.signals.addListener("CheckCriticalHitEvent", e.artifact);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "GetCriticalHitChanceEvent",
+        events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "CheckCriticalHitEvent",
                 (GameView view, Artifact receiver, Event event) -> {
-                    Events.GetCriticalHitChanceEvent e = (Events.GetCriticalHitChanceEvent) event;
-                    if (receiver.isClaimedByLeader(e.unit)) {
+                    Events.CheckCriticalHitEvent e = (Events.CheckCriticalHitEvent) event;
+                    if (receiver.isClaimedByLeader(e.entity)) {
                         e.chance += 10;
                     }
                     return SideEffect.none;
@@ -495,11 +495,11 @@ public class KingdomMod implements GameMod {
                 });
         events.artifact.addEventHandler(Defs.artifact_shadas_flute, "TickEvent",
                 (GameView view, Artifact receiver, Event event) -> {
-                    /*
-                     * for (Patron patron : view.game.mechanics.patronage) { if
-                     * (receiver.getOwner().equals(patron.getFavoritePlayer())) {
-                     * receiver.getOwner().get().unitPoints += 5; } }
-                     */
+                    for (Patron patron : view.game.mechanics.patronage) {
+                        if (receiver.getOwner().equals(patron.getFavoritePlayer())) {
+                            receiver.getOwner().get().unitPoints += 5;
+                        }
+                    }
                     return SideEffect.none;
                 });
 
@@ -558,11 +558,24 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_nerketos_helm, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Critical hits against your units are less effective (e.g. 1.1x damage rather than 1.5x)";
+                    e.blob.desc = "Critical hits against your units are less effective";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_nerketos_helm, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("CheckCriticalHitEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_nerketos_helm, "CheckCriticalHitEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.CheckCriticalHitEvent e = (Events.CheckCriticalHitEvent) event;
+                    if (e.entity.isEntityType(EntityType.UNIT) && receiver.isClaimedByLeader(e.entity)) {
+                        e.multiplier = 1.1f;
+                    }
+                    return SideEffect.none;
                 });
 
         // Bounty of Ahn-June
@@ -673,11 +686,25 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_blade_of_sanguinor, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your battle glyph units deal extra damage";
+                    e.blob.desc = "Your battle glyph units deal +2 damage";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_blade_of_sanguinor, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("AttackEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_blade_of_sanguinor, "AttackEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.AttackEvent e = (Events.AttackEvent) event;
+                    if (e.target.isEntityType(EntityType.UNIT) && receiver.isClaimedByLeader(e.target)
+                            && ((Unit) e.target).glyphs.has(Glyph.BATTLE)) {
+                        e.dmg.base += 2;
+                    }
+                    return SideEffect.none;
                 });
 
         // Cask of Amonitor

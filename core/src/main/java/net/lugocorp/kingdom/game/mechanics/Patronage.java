@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * This class handles the high-level logistics of Patrons
  */
-public class Patronage implements Iterable {
+public class Patronage implements Iterable<Patron> {
     private final Set<Patron> patrons = new HashSet<>();
 
     /**
