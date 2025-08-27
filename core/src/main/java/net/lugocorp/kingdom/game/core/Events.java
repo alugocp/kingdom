@@ -121,18 +121,18 @@ public class Events {
     /**
      * Collects how far a Unit or Building can see
      */
-    public static class GetVisibilityEvent extends Event {
+    public static class GetVisionEvent extends Event {
         public final Player player;
         public boolean canSeeAtNight = false;
         public int radius = 1;
 
-        public GetVisibilityEvent(Player player) {
+        public GetVisionEvent(Player player) {
             super();
             this.player = player;
         }
 
         /**
-         * Accounts for low visibility at night
+         * Accounts for low vision at night
          */
         public int cumulative(boolean isNight) {
             return Math.max(0, this.radius - (isNight && canSeeAtNight ? 0 : 1));

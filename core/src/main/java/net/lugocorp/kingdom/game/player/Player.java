@@ -43,14 +43,14 @@ public abstract class Player {
     public abstract boolean isHumanPlayer();
 
     /**
-     * Adds visibility on the Tile to this Player
+     * Adds vision on the Tile to this Player
      */
-    public abstract void incrementVisibility(Tile t);
+    public abstract void incrementVision(Tile t);
 
     /**
-     * Removes visibility from the Tile to this Player
+     * Removes vision from the Tile to this Player
      */
-    public abstract void decrementVisibility(Tile t);
+    public abstract void decrementVision(Tile t);
 
     /**
      * Dictates what happens when this Player activates an Ability

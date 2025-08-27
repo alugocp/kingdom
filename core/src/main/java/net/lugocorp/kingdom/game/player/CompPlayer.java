@@ -50,14 +50,14 @@ public class CompPlayer extends Player {
 
     /** {@inheritdoc} */
     @Override
-    public void incrementVisibility(Tile t) {
-        this.memory.incrementVisibility(t);
+    public void incrementVision(Tile t) {
+        this.memory.incrementVision(t);
     }
 
     /** {@inheritdoc} */
     @Override
-    public void decrementVisibility(Tile t) {
-        this.memory.decrementVisibility(t);
+    public void decrementVision(Tile t) {
+        this.memory.decrementVision(t);
     }
 
     /** {@inheritdoc} */

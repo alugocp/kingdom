@@ -24,7 +24,7 @@ uniform vec2 u_resolution;
 uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
-uniform int u_visibility;
+uniform int u_vision;
 uniform int u_domainBorder;
 uniform int u_tileBorder;
 uniform int u_selection;
@@ -66,7 +66,7 @@ int checkBorderColor(int border, vec4 color, sampler2D tex, int thresh, float x,
 
 void main() {
     // Return black color for fog of war
-    if (u_visibility == NO_VISIBILITY || outline()) {
+    if (u_vision == NO_VISIBILITY || outline()) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         return;
     }
@@ -140,10 +140,10 @@ void main() {
         }
     }
 
-    // Make the color darker if it's night time or half visibility
-    if (u_nighttime > 0.0 || u_visibility == HALF_VISIBILITY) {
+    // Make the color darker if it's night time or half vision
+    if (u_nighttime > 0.0 || u_vision == HALF_VISIBILITY) {
         float coeff = 0.8;
-        if (u_nighttime > 0.0 && u_visibility == HALF_VISIBILITY) {
+        if (u_nighttime > 0.0 && u_vision == HALF_VISIBILITY) {
             coeff = 0.4;
         }
         mat4 darker;

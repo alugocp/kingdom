@@ -64,8 +64,8 @@ public class Building extends Entity implements MenuSubject {
      * This method is fired when the underlying Tile's leader field changes
      */
     public void handleLeaderChange(GameView view, Optional<Player> p1, Optional<Player> p2) {
-        p1.ifPresent((Player l) -> this.visibility.remove(l, view.game.world));
-        p2.ifPresent((Player l) -> this.visibility.set(view, l, this, this.getPoint()));
+        p1.ifPresent((Player l) -> this.vision.remove(l, view.game.world));
+        p2.ifPresent((Player l) -> this.vision.set(view, l, this, this.getPoint()));
     }
 
     /**

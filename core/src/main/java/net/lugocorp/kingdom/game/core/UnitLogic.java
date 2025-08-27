@@ -22,11 +22,11 @@ public class UnitLogic {
     }
 
     /**
-     * Changes this Unit's visibility
+     * Changes this Unit's vision
      */
-    public static void visibility(AllEventHandlers events, Unit u, int radius) {
-        events.unit.addEventHandler(u.name, "GetVisibilityEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+    public static void vision(AllEventHandlers events, Unit u, int radius) {
+        events.unit.addEventHandler(u.name, "GetVisionEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GetVisionEvent e = (Events.GetVisionEvent) event;
             e.radius = radius;
             return SideEffect.none;
         });

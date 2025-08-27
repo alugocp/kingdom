@@ -12,13 +12,13 @@ public class MemoryCell {
     Optional<Player> owner = Optional.empty();
     Optional<String> unit = Optional.empty();
     boolean hasBeenSeen = false;
-    int visibility = 0;
+    int vision = 0;
 
     /**
      * Returns true if this MemoryCell is currently visible in the World
      */
     public boolean isVisible() {
-        return this.visibility > 0;
+        return this.vision > 0;
     }
 
     /**

@@ -61,7 +61,7 @@ public class ToonShader implements Shader {
     private int u_resolution;
     private int u_nighttime;
     private int u_selection;
-    private int u_visibility;
+    private int u_vision;
     private int u_domainBorder;
     private int u_borderColor;
     private int u_tileBorder;
@@ -96,7 +96,7 @@ public class ToonShader implements Shader {
         this.u_resolution = this.program.getUniformLocation("u_resolution");
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_selection = this.program.getUniformLocation("u_selection");
-        this.u_visibility = this.program.getUniformLocation("u_visibility");
+        this.u_vision = this.program.getUniformLocation("u_vision");
         this.u_domainBorder = this.program.getUniformLocation("u_domainBorder");
         this.u_borderColor = this.program.getUniformLocation("u_borderColor");
         this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
@@ -171,7 +171,7 @@ public class ToonShader implements Shader {
         // Set special shader data
         if (renderable.userData != null && renderable.userData instanceof TileUserData) {
             TileUserData data = (TileUserData) renderable.userData;
-            this.program.setUniformi(this.u_visibility, data.collapseVisibility());
+            this.program.setUniformi(this.u_vision, data.collapseVision());
             this.program.setUniformi(this.u_selection, Math.min(data.selection, 3));
             this.program.setUniformf(this.u_borderColor, data.borderColor);
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
@@ -217,7 +217,7 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_selection, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
-            this.program.setUniformi(this.u_visibility, 2);
+            this.program.setUniformi(this.u_vision, 2);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
         }
 

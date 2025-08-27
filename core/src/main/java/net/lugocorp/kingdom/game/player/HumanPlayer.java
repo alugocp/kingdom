@@ -23,14 +23,14 @@ public class HumanPlayer extends Player {
 
     /** {@inheritdoc} */
     @Override
-    public void incrementVisibility(Tile t) {
-        t.incrementVisibility();
+    public void incrementVision(Tile t) {
+        t.incrementVision();
     }
 
     /** {@inheritdoc} */
     @Override
-    public void decrementVisibility(Tile t) {
-        t.decrementVisibility();
+    public void decrementVision(Tile t) {
+        t.decrementVision();
     }
 
     /** {@inheritdoc} */

@@ -23,15 +23,15 @@ public class TileUserData {
 
     // Fog of war system
     public boolean hasBeenSeen = false;
-    public int visibility = 0;
+    public int vision = 0;
 
     // Renders the Tile selector
     public int selection = 0;
 
     /**
-     * Returns an integer for the shader visibility input
+     * Returns an integer for the shader vision input
      */
-    public int collapseVisibility() {
-        return this.hasBeenSeen ? (this.visibility == 0 ? 1 : 2) : 0;
+    public int collapseVision() {
+        return this.hasBeenSeen ? (this.vision == 0 ? 1 : 2) : 0;
     }
 }

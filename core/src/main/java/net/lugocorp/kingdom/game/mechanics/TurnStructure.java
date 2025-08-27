@@ -223,10 +223,10 @@ public class TurnStructure {
             for (Player p : view.game.getAllPlayers()) {
                 // TODO can we optimize this?
                 for (Unit u : p.units) {
-                    u.visibility.set(view, p, u, u.getPoint());
+                    u.vision.set(view, p, u, u.getPoint());
                 }
                 for (Building b : p.buildings) {
-                    b.visibility.set(view, p, b, b.getPoint());
+                    b.vision.set(view, p, b, b.getPoint());
                 }
             }
         }

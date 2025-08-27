@@ -5,7 +5,7 @@ import java.util.Optional;
 
 /**
  * This map represents the Actor's "vision" of the World. It tracks what the
- * Actor "saw" at each Tile the last time it had visibility there.
+ * Actor "saw" at each Tile the last time it had vision there.
  */
 public class MemoryMap {
     private final MemoryCell[][] grid;
@@ -27,12 +27,12 @@ public class MemoryMap {
     }
 
     /**
-     * Adds visibility to this MemoryMap on the given MemoryCell
+     * Adds vision to this MemoryMap on the given MemoryCell
      */
-    public void incrementVisibility(Tile t) {
+    public void incrementVision(Tile t) {
         MemoryCell cell = this.getCell(t.getPoint());
         cell.hasBeenSeen = true;
-        cell.visibility++;
+        cell.vision++;
         cell.building = t.building.isPresent() ? Optional.of(t.building.get().getStratifier()) : Optional.empty();
         cell.unit = t.unit.isPresent() ? Optional.of(t.unit.get().getStratifier()) : Optional.empty();
         cell.glyph = t.getGlyph();
@@ -40,12 +40,12 @@ public class MemoryMap {
     }
 
     /**
-     * Removes visibility from this MemoryMap on the given MemoryCell
+     * Removes vision from this MemoryMap on the given MemoryCell
      */
-    public void decrementVisibility(Tile t) {
+    public void decrementVision(Tile t) {
         MemoryCell cell = this.getCell(t.getPoint());
-        cell.visibility--;
-        if (cell.visibility == 0) {
+        cell.vision--;
+        if (cell.vision == 0) {
             cell.unit = Optional.empty();
         }
     }

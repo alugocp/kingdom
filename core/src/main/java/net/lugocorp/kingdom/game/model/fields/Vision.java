@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.mechanics;
+package net.lugocorp.kingdom.game.model.fields;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class tracks a Unit/Building's visibility area
+ * This class tracks a Unit/Building's vision area
  */
-public class Visibility {
+public class Vision {
     private final Set<Point> vision = new HashSet<>();
 
     /**
@@ -21,9 +21,9 @@ public class Visibility {
      */
     public void translate(Player player, World world, int dx, int dy) {
         for (Point p : this.vision) {
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVisibility(t));
+            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVision(t));
             p.set(p.x + dx, p.y + dy);
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVisibility(t));
+            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
         }
     }
 
@@ -31,14 +31,14 @@ public class Visibility {
      * Changes how far the associated Unit/Building can see
      */
     public void set(GameView view, Player player, EventReceiver receiver, Point center) {
-        Events.GetVisibilityEvent event = new Events.GetVisibilityEvent(player);
+        Events.GetVisionEvent event = new Events.GetVisionEvent(player);
         receiver.handleEvent(view, event);
         this.remove(player, view.game.world);
-        view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVisibility(t));
+        view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVision(t));
         this.vision.add(center);
         boolean isNight = view.game.mechanics.dayNight.isNight();
         for (Point p : Hexagons.getNeighbors(center, event.cumulative(isNight))) {
-            view.game.world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVisibility(t));
+            view.game.world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
             this.vision.add(p);
         }
     }
@@ -48,7 +48,7 @@ public class Visibility {
      */
     public void remove(Player player, World world) {
         for (Point p : this.vision) {
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVisibility(t));
+            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVision(t));
         }
         this.vision.clear();
     }

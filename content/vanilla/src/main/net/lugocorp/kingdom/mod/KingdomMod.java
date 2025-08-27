@@ -93,9 +93,9 @@ public class KingdomMod implements GameMod {
          * SECTION Default handlers
          */
 
-        // GetVisibilityEvent
-        events.unit.setDefaultHandler("GetVisibilityEvent", (GameView view, Unit receiver, Event event) -> {
-            Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+        // GetVisionEvent
+        events.unit.setDefaultHandler("GetVisionEvent", (GameView view, Unit receiver, Event event) -> {
+            Events.GetVisionEvent e = (Events.GetVisionEvent) event;
             e.radius = 2;
             return SideEffect.none;
         });
@@ -468,12 +468,12 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    view.game.events.signals.addListener("GetVisibilityEvent", e.artifact);
+                    view.game.events.signals.addListener("GetVisionEvent", e.artifact);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "GetVisibilityEvent",
+        events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "GetVisionEvent",
                 (GameView view, Artifact receiver, Event event) -> {
-                    Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+                    Events.GetVisionEvent e = (Events.GetVisionEvent) event;
                     if (receiver.isClaimedByPlayer(e.player)) {
                         e.radius++;
                     }
@@ -927,7 +927,7 @@ public class KingdomMod implements GameMod {
                             Defs.ability_green_fortress);
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.species = Defs.species_sprite;
-                    UnitLogic.visibility(events, e.blob, 4);
+                    UnitLogic.vision(events, e.blob, 4);
                     return SideEffect.none;
                 });
 
@@ -1028,7 +1028,7 @@ public class KingdomMod implements GameMod {
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_tulpa;
                     UnitLogic.speed(events, e.blob, 3);
-                    UnitLogic.visibility(events, e.blob, 4);
+                    UnitLogic.vision(events, e.blob, 4);
                     return SideEffect.none;
                 });
 
@@ -1458,9 +1458,9 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = String.format("This unit can see normally at night");
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Defs.ability_night_vision, "GetVisibilityEvent",
+        events.ability.addEventHandler(Defs.ability_night_vision, "GetVisionEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    Events.GetVisibilityEvent e = (Events.GetVisibilityEvent) event;
+                    Events.GetVisionEvent e = (Events.GetVisionEvent) event;
                     e.canSeeAtNight = true;
                     return SideEffect.none;
                 });

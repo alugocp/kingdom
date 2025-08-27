@@ -336,7 +336,7 @@ public class Unit extends Entity implements MenuSubject {
     public SideEffect move(GameView view, Point p) {
         int x = this.x;
         int y = this.y;
-        this.leader.ifPresent((Player l) -> this.visibility.translate(l, view.game.world, p.x - x, p.y - y));
+        this.leader.ifPresent((Player l) -> this.vision.translate(l, view.game.world, p.x - x, p.y - y));
         this.removeFromPosition(view.game);
         this.setPosition(view, p.x, p.y);
         return this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y));
@@ -385,7 +385,7 @@ public class Unit extends Entity implements MenuSubject {
     @Override
     public void deactivate(GameView view) {
         super.deactivate(view);
-        this.leader.ifPresent((Player l) -> this.visibility.remove(l, view.game.world));
+        this.leader.ifPresent((Player l) -> this.vision.remove(l, view.game.world));
         this.removeFromPosition(view.game);
         this.dispose();
     }

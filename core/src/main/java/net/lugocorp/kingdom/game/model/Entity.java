@@ -2,9 +2,9 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.mechanics.Visibility;
 import net.lugocorp.kingdom.game.model.fields.EntityType;
 import net.lugocorp.kingdom.game.model.fields.Tags;
+import net.lugocorp.kingdom.game.model.fields.Vision;
 import net.lugocorp.kingdom.game.player.Player;
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
  * This class represents any physical object represented on the in-game map
  */
 public abstract class Entity extends DynamicModellable implements EventReceiver {
-    public final Visibility visibility = new Visibility();
+    public final Vision vision = new Vision();
     public final Tags tags = new Tags();
     public final Combat combat;
     public final String name;

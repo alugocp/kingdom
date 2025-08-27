@@ -99,22 +99,22 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Returns true if this Tile is currently visible
      */
     public boolean isVisible() {
-        return this.userData.visibility > 0;
+        return this.userData.vision > 0;
     }
 
     /**
-     * Adds a visibility point (fog of war system)
+     * Adds a vision point (fog of war system)
      */
-    public void incrementVisibility() {
+    public void incrementVision() {
         this.userData.hasBeenSeen = true;
-        this.userData.visibility++;
+        this.userData.vision++;
     }
 
     /**
-     * Removes a visibility point (fog of war system)
+     * Removes a vision point (fog of war system)
      */
-    public void decrementVisibility() {
-        this.userData.visibility--;
+    public void decrementVision() {
+        this.userData.vision--;
     }
 
     /**
