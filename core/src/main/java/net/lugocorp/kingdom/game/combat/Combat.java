@@ -78,8 +78,8 @@ public class Combat {
         List<SideEffect> effects = SideEffect.list();
         Events.TakeDamageEvent damageEvent = new Events.TakeDamageEvent(this.bearer, dmg);
         effects.add(this.bearer.handleEvent(view, damageEvent));
-        effects.add(() -> this.health.set(this.health.get() - damageEvent.dmg.amount));
-        if (this.health.get() <= damageEvent.dmg.amount) {
+        effects.add(() -> this.health.set(this.health.get() - damageEvent.dmg.total()));
+        if (this.health.get() <= damageEvent.dmg.total()) {
             effects.add(this.onDeath(view, attacker));
         }
         return SideEffect.all(effects);
@@ -89,7 +89,16 @@ public class Combat {
      * This bearer attacks another
      */
     public SideEffect attack(GameView view, Entity target, Damage dmg) {
-        // TODO trigger a GetCriticalHitChanceEvent here to set isCriticalHit fields
+        // Determine if this attack was a critical hit or not
+        Events.GetCriticalHitChanceEvent crit = new Events.GetCriticalHitChanceEvent(this.bearer);
+        this.bearer.handleEvent(view, crit);
+        if (Math.floor(Math.random() * 100) < crit.chance) {
+            dmg.setCritical(true);
+        }
+
+        // Trigger conjugate Events for an Entity attacking and another Entity being
+        // attacked,
+        // then calculate the outcomes of the battle (damage taken, death triggers, etc)
         return SideEffect.all(this.bearer.handleEvent(view, new Events.AttackEvent(this.bearer, target, dmg)),
                 target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)),
                 target.combat.takeDamage(view, dmg, this.bearer));

@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.Tuple;
@@ -51,8 +52,8 @@ public class AttackEnemy extends Goal {
     private int damageDealtToEnemies(Event e, Unit u) {
         if (e instanceof Events.TakeDamageEvent) {
             Events.TakeDamageEvent evt = (Events.TakeDamageEvent) e;
-            if (evt.target instanceof Unit) {
-                return ((Unit) evt.target).getLeader().equals(u.getLeader()) ? 0 : evt.dmg.amount;
+            if (evt.target.isEntityType(EntityType.UNIT)) {
+                return evt.target.getLeader().equals(u.getLeader()) ? 0 : evt.dmg.total();
             }
         }
         return 0;

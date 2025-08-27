@@ -125,7 +125,7 @@ public class AbilityLogic {
      */
     public static SideEffect defense(Event event, int points) {
         Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
-        e.dmg.amount -= points;
+        e.dmg.base -= points;
         return SideEffect.none;
     }
 

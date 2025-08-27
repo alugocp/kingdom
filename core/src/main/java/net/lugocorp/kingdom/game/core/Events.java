@@ -258,7 +258,6 @@ public class Events {
         public final Entity attacker;
         public final Entity target;
         public final Damage dmg;
-        public boolean isCriticalHit = false;
 
         public AttackEvent(Entity attacker, Entity target, Damage dmg) {
             super();
@@ -275,7 +274,6 @@ public class Events {
         public final Entity attacker;
         public final Entity target;
         public final Damage dmg;
-        public boolean isCriticalHit = false;
 
         public AttackedEvent(Entity target, Entity attacker, Damage dmg) {
             super();
@@ -289,12 +287,12 @@ public class Events {
      * Triggered when we need to calculate a Unit's critical hit chance
      */
     public static class GetCriticalHitChanceEvent extends Event {
-        public final Unit unit;
+        public final Entity entity;
         public int chance = 5;
 
-        public GetCriticalHitChanceEvent(Unit unit) {
+        public GetCriticalHitChanceEvent(Entity entity) {
             super();
-            this.unit = unit;
+            this.entity = entity;
         }
     }
 

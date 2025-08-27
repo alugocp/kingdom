@@ -522,7 +522,7 @@ public class KingdomMod implements GameMod {
                     Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
                     if (e.target.isEntityType(EntityType.BUILDING)) {
                         if (receiver.isClaimedByLeader(e.target) && e.target.name.equals(Defs.building_vault)) {
-                            e.dmg.amount -= 3;
+                            e.dmg.base -= 3;
                         }
                     }
                     return SideEffect.none;
@@ -621,7 +621,7 @@ public class KingdomMod implements GameMod {
                     if (e.target.isEntityType(EntityType.UNIT)) {
                         Unit u = (Unit) e.target;
                         if (receiver.isClaimedByLeader(u) && u.glyphs.has(Glyph.TRADE)) {
-                            e.dmg.amount -= 2;
+                            e.dmg.base -= 2;
                         }
                     }
                     return SideEffect.none;
@@ -1157,7 +1157,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.AttackEvent e = (Events.AttackEvent) event;
                     if (receiver.wielder.haul.hasItems()) {
-                        e.dmg.amount += 2;
+                        e.dmg.base += 2;
                     }
                     return SideEffect.none;
                 });
@@ -1559,7 +1559,7 @@ public class KingdomMod implements GameMod {
                                     view, receiver.wielder, (Tile t) -> t.building
                                             .map((Building b) -> b.name.equals(Defs.building_forest)).orElse(false),
                                     () -> {
-                                        e.dmg.amount += 5;
+                                        e.dmg.base += 5;
                                         return SideEffect.none;
                                     });
                 });
