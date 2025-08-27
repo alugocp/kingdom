@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.model.fields;
+package net.lugocorp.kingdom.game.properties;
 
 /**
  * This class tracks relative chance to spawn Items

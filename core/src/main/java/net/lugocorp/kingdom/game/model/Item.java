@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.model.fields.Rarity;
-import net.lugocorp.kingdom.game.model.fields.Tags;
+import net.lugocorp.kingdom.game.properties.Rarity;
+import net.lugocorp.kingdom.game.properties.Tags;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.Optional;

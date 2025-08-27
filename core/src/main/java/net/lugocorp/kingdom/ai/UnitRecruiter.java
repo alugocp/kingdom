@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.game.model.fields.Inventory;
-import net.lugocorp.kingdom.game.model.glyph.Glyph;
 import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashMap;

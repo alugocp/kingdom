@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ai.memory;
-import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.Player;
 import java.util.Optional;
 

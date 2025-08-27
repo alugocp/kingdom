@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.glyph.Glyph;
+import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.DummyUnit;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.game.model.glyph.Glyph;
-import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

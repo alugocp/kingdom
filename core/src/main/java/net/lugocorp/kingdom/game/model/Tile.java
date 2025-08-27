@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
-import net.lugocorp.kingdom.engine.render.userdata.TileUserData;
+import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.model.fields.Inventory;
-import net.lugocorp.kingdom.game.model.fields.Inventory.InventoryType;
-import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.Inventory;
+import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;

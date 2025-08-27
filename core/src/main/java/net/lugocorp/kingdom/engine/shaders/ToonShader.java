@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine.shaders;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
-import net.lugocorp.kingdom.engine.render.userdata.TileUserData;
+import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;

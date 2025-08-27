@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.model.glyph;
+package net.lugocorp.kingdom.game.glyph;
 
 /**
  * This class represents the different categories of Units in the game

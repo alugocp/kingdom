@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine.shaders;
-import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
+import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;

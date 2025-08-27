@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.common;
-import net.lugocorp.kingdom.game.model.fields.Species;
+import net.lugocorp.kingdom.game.properties.Species;
 
 /**
  * Contains definitions for names and labels across all official content mods

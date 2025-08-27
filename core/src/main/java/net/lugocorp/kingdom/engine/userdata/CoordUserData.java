@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine.render.userdata;
+package net.lugocorp.kingdom.engine.userdata;
 import net.lugocorp.kingdom.utils.math.Point;
 
 /**

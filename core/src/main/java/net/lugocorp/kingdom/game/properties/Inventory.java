@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.model.fields;
+package net.lugocorp.kingdom.game.properties;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;

@@ -2,10 +2,10 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.model.fields.EntityType;
-import net.lugocorp.kingdom.game.model.fields.Tags;
-import net.lugocorp.kingdom.game.model.fields.Vision;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.game.properties.Tags;
+import net.lugocorp.kingdom.game.properties.Vision;
 import java.util.Optional;
 
 /**

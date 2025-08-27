@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.game.model.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;

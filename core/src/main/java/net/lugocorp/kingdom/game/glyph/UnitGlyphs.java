@@ -1,5 +1,4 @@
-package net.lugocorp.kingdom.game.model.fields;
-import net.lugocorp.kingdom.game.model.glyph.Glyph;
+package net.lugocorp.kingdom.game.glyph;
 import java.util.Optional;
 
 /**
