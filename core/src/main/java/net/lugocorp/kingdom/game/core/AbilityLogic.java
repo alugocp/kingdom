@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.game.core;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
-import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Entity;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -32,7 +32,7 @@ public class AbilityLogic {
      */
     public static SideEffect attackAndEffect(GameView view, Unit attacker, Damage dmg, int range,
             Optional<Function<Point, SideEffect>> effect) {
-        Map<Point, Combat> targets = new HashMap<>();
+        Map<Point, Entity> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
         // Grab every possible attack target within range
@@ -45,23 +45,19 @@ public class AbilityLogic {
             Tile t = tile.get();
             if (t.unit.isPresent()) {
                 if (t.unit.get().combat.health.isVulnerable()) {
-                    targets.put(p, t.unit.get().combat);
+                    targets.put(p, t.unit.get());
                     points.add(p);
                 }
             } else if (t.building.isPresent() && t.building.get().combat.health.isVulnerable()) {
-                targets.put(p, t.building.get().combat);
+                targets.put(p, t.building.get());
                 points.add(p);
             }
         }
 
-        // Have the human Player select which target to attack
-        view.selector.select(points, "No attack targets are in range", (Point p) -> {
-            attacker.combat.attack(view, targets.get(p), dmg);
-            view.game.mechanics.turns.unitHasActed(view, attacker);
-        });
+        // Use overridden method from Player to determine how targets are selected
         return attacker.getLeader().get().select(view, points, "No attack targets are in range",
                 (Point p) -> SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
-                        () -> effect.ifPresent((Function<Point, SideEffect> f) -> f.apply(p)),
+                        () -> effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(SideEffect.none),
                         () -> view.game.mechanics.turns.unitHasActed(view, attacker)));
     }
 

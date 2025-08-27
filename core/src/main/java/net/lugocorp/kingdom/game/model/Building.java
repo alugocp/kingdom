@@ -1,13 +1,9 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
-import net.lugocorp.kingdom.game.combat.BuildingCombat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.mechanics.Visibility;
+import net.lugocorp.kingdom.game.model.fields.EntityType;
 import net.lugocorp.kingdom.game.model.fields.Inventory;
-import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -24,26 +20,22 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Some structure that can be built on top of a Tile to modify its properties
  */
-public class Building extends DynamicModellable implements EventReceiver, MenuSubject {
+public class Building extends Entity implements MenuSubject {
     private final CoordUserData userData = new CoordUserData();
+    private final Supplier<Tile> getTile;
     private Optional<Color> minimapColor = Optional.empty();
     private BuildingType type = BuildingType.PASSIVE;
     private boolean obstacle = false;
-    public final Visibility visibility = new Visibility();
-    public final BuildingCombat combat;
-    public final Tags tags = new Tags();
-    public final String name;
     public Optional<Inventory> items = Optional.empty();
-    public String desc = "";
 
-    Building(String name, int x, int y) {
-        super(x, y);
-        this.name = name;
-        this.combat = new BuildingCombat(this);
+    Building(String name, int x, int y, Supplier<Tile> getTile) {
+        super(name, x, y);
+        this.getTile = getTile;
         this.userData.point.x = x;
         this.userData.point.y = y;
     }
@@ -52,9 +44,20 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
      * This should only be used in conjunction with Kryo rehydration
      */
     public Building() {
-        super(0, 0);
-        this.name = null;
-        this.combat = null;
+        super(null, 0, 0);
+        this.getTile = null;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public EntityType getEntityType() {
+        return EntityType.BUILDING;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Optional<Player> getLeader() {
+        return this.getTile.get().leader;
     }
 
     /**
@@ -152,7 +155,7 @@ public class Building extends DynamicModellable implements EventReceiver, MenuSu
     /** {@inheritdoc} */
     @Override
     public void deactivate(GameView view) {
-        EventReceiver.super.deactivate(view);
+        super.deactivate(view);
         view.game.removeBuilding(this);
         this.getMinimapColor().ifPresent((Color c) -> view.hud.minimap.refresh(view.game.world));
         this.dispose();

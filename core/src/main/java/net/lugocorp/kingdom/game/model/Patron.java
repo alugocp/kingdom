@@ -29,7 +29,7 @@ public class Patron extends Building {
     public String preference = "";
 
     Patron(String name, int x, int y) {
-        super(name, x, y);
+        super(name, x, y, null);
         this.combat.health.invulnerable();
         super.setMinimapColor(0x000000);
     }
@@ -38,7 +38,7 @@ public class Patron extends Building {
      * This should only be used in conjunction with Kryo rehydration
      */
     public Patron() {
-        super(null, 0, 0);
+        super(null, 0, 0, null);
     }
 
     /**

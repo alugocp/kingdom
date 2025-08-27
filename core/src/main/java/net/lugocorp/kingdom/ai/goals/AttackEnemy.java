@@ -26,8 +26,8 @@ public class AttackEnemy extends Goal {
      * Returns true if the Event describes the death of the given Unit
      */
     private boolean hasUnitDied(Event e, Unit u) {
-        if (e instanceof Events.UnitDiedEvent) {
-            return ((Events.UnitDiedEvent) e).unit == u;
+        if (e instanceof Events.EntityDiedEvent) {
+            return ((Events.EntityDiedEvent) e).target == u;
         }
         return false;
     }
@@ -38,8 +38,8 @@ public class AttackEnemy extends Goal {
      * the Unit, if sameLeader is true
      */
     private boolean alignedUnitDied(Event e, Unit u, boolean sameLeader) {
-        if (e instanceof Events.UnitDiedEvent) {
-            return ((Events.UnitDiedEvent) e).unit.getLeader()
+        if (e instanceof Events.EntityDiedEvent) {
+            return ((Events.EntityDiedEvent) e).target.getLeader()
                     .map((Player l) -> l.equals(u.getLeader().get()) == sameLeader).orElse(false);
         }
         return false;

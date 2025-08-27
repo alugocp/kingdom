@@ -1,16 +1,12 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.render.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.mechanics.Visibility;
+import net.lugocorp.kingdom.game.model.fields.EntityType;
 import net.lugocorp.kingdom.game.model.fields.Inventory;
 import net.lugocorp.kingdom.game.model.fields.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.model.fields.Species;
-import net.lugocorp.kingdom.game.model.fields.Tags;
 import net.lugocorp.kingdom.game.model.fields.UnitGlyphs;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ActionNode;
@@ -36,7 +32,7 @@ import java.util.Set;
  * A single controllable entity (or NPC) that the player can interact with
  * in-game
  */
-public class Unit extends DynamicModellable implements EventReceiver, MenuSubject {
+public class Unit extends Entity implements MenuSubject {
     public static final int MAX_LOYALTY = 10;
     private final CoordUserData userData = new CoordUserData();
     private Optional<Ability> active1 = Optional.empty();
@@ -45,32 +41,28 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     private int loyalty = Unit.MAX_LOYALTY;
     private Optional<Player> leader = Optional.empty();
     private int timeToHunger = 20;
-    public final Visibility visibility = new Visibility();
-    public final Tags tags = new Tags();
-    public final String name;
-    public final Combat<Unit> combat;
     public final UnitGlyphs glyphs = new UnitGlyphs();
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
     public List<Ability> passives = new ArrayList<>();
     public Species species = Species.UNKNOWN;
     public boolean playable = true;
-    public int visibleRadius = 2;
-    public String desc = "";
 
     Unit(String name, int x, int y) {
-        super(x, y);
-        this.name = name;
-        this.combat = new Combat<Unit>(this);
+        super(name, x, y);
     }
 
     /**
      * This should only be used in conjunction with Kryo rehydration
      */
     public Unit() {
-        super(0, 0);
-        this.combat = null;
-        this.name = null;
+        super(null, 0, 0);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public EntityType getEntityType() {
+        return EntityType.UNIT;
     }
 
     /**
@@ -101,9 +93,8 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
         this.sleep = SleepState.AWAKE;
     }
 
-    /**
-     * Returns the Player that commands this Unit, if there is one
-     */
+    /** {@inheritdoc} */
+    @Override
     public Optional<Player> getLeader() {
         return this.leader;
     }
@@ -393,7 +384,7 @@ public class Unit extends DynamicModellable implements EventReceiver, MenuSubjec
     /** {@inheritdoc} */
     @Override
     public void deactivate(GameView view) {
-        EventReceiver.super.deactivate(view);
+        super.deactivate(view);
         this.leader.ifPresent((Player l) -> this.visibility.remove(l, view.game.world));
         this.removeFromPosition(view.game);
         this.dispose();

@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.function.Supplier;
 
 /**
  * This class is like a factory class for all game objects. It calls the
@@ -45,7 +46,8 @@ public class Generator {
      * Generates a new Building
      */
     public Building building(String name, int x, int y) {
-        Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(new Building(name, x, y));
+        final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
+        Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(new Building(name, x, y, getTile));
         this.view.game.events.building.handle(this.view, e.blob, e);
         return e.blob;
     }

@@ -441,13 +441,13 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
-                    view.game.events.signals.addListener("UnitDiedEvent", e.artifact);
+                    view.game.events.signals.addListener("EntityDiedEvent", e.artifact);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "UnitDiedEvent",
+        events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "EntityDiedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
-                    Events.UnitDiedEvent e = (Events.UnitDiedEvent) event;
-                    if (receiver.isClaimedByUnitLeader(e.killer) && !receiver.isClaimedByUnitLeader(e.unit)) {
+                    Events.EntityDiedEvent e = (Events.EntityDiedEvent) event;
+                    if (receiver.isClaimedByUnitLeader(e.killer) && !receiver.isClaimedByUnitLeader(e.target)) {
                         Tile t = view.game.world.getTile(e.killer.getPoint()).get();
                         if (!t.getGlyph().isPresent() && Math.random() < 0.2) {
                             t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));

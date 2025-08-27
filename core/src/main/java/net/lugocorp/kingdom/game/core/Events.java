@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Entity;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
@@ -239,11 +240,11 @@ public class Events {
     /**
      * Triggered when some target takes Damage
      */
-    public static class TakeDamageEvent<T> extends Event {
+    public static class TakeDamageEvent extends Event {
+        public final Entity target;
         public final Damage dmg;
-        public final T target;
 
-        public TakeDamageEvent(T target, Damage dmg) {
+        public TakeDamageEvent(Entity target, Damage dmg) {
             super();
             this.target = target;
             this.dmg = dmg;
@@ -253,13 +254,13 @@ public class Events {
     /**
      * Triggered when some object attacks another
      */
-    public static class AttackEvent<A, T> extends Event {
+    public static class AttackEvent extends Event {
+        public final Entity attacker;
+        public final Entity target;
         public final Damage dmg;
-        public final A attacker;
-        public final T target;
         public boolean isCriticalHit = false;
 
-        public AttackEvent(A attacker, T target, Damage dmg) {
+        public AttackEvent(Entity attacker, Entity target, Damage dmg) {
             super();
             this.attacker = attacker;
             this.target = target;
@@ -270,13 +271,13 @@ public class Events {
     /**
      * Triggered when some object attacks another
      */
-    public static class AttackedEvent<T, A> extends Event {
+    public static class AttackedEvent extends Event {
+        public final Entity attacker;
+        public final Entity target;
         public final Damage dmg;
-        public final A attacker;
-        public final T target;
         public boolean isCriticalHit = false;
 
-        public AttackedEvent(T target, A attacker, Damage dmg) {
+        public AttackedEvent(Entity target, Entity attacker, Damage dmg) {
             super();
             this.attacker = attacker;
             this.target = target;
@@ -298,30 +299,30 @@ public class Events {
     }
 
     /**
-     * Triggered when a Unit dies
+     * Triggered when an Entity dies
      */
-    public static class UnitDiedEvent extends Event {
-        public final Unit unit;
-        public final Unit killer;
+    public static class EntityDiedEvent extends Event {
+        public final Entity target;
+        public final Entity killer;
 
-        public UnitDiedEvent(Unit unit, Unit killer) {
+        public EntityDiedEvent(Entity target, Entity killer) {
             super();
             this.killer = killer;
-            this.unit = unit;
+            this.target = target;
         }
     }
 
     /**
-     * Triggered when a Unit kills another Unit
+     * Triggered when an Entity kills another Entity
      */
-    public static class KilledUnitEvent extends Event {
-        public final Unit unit;
-        public final Unit victim;
+    public static class KilledEntityEvent extends Event {
+        public final Entity killer;
+        public final Entity target;
 
-        public KilledUnitEvent(Unit unit, Unit victim) {
+        public KilledEntityEvent(Entity killer, Entity target) {
             super();
-            this.victim = victim;
-            this.unit = unit;
+            this.target = target;
+            this.killer = killer;
         }
     }
 
