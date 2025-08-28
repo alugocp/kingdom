@@ -23,13 +23,6 @@ public class HitPoints {
     }
 
     /**
-     * Heals some damage from these HitPoints
-     */
-    public void heal(int points) {
-        this.set(this.get() + points);
-    }
-
-    /**
      * Returns this object's remaining health
      */
     public int get() {

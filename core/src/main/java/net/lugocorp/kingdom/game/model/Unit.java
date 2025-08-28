@@ -221,14 +221,6 @@ public class Unit extends Entity implements MenuSubject {
     }
 
     /**
-     * Returns true if the given Unit is friendly to this Unit (they belong to the
-     * same Player)
-     */
-    public boolean isFriendly(Unit u) {
-        return this.leader.equals(u.leader);
-    }
-
-    /**
      * Recruits this Unit into to a new Player
      */
     public void getRecruited(GameView view, Player player) {
@@ -373,12 +365,6 @@ public class Unit extends Entity implements MenuSubject {
             }
         }
         return SideEffect.all(effects);
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public String getStratifier() {
-        return this.name;
     }
 
     /** {@inheritdoc} */

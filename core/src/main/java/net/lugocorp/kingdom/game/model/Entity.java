@@ -41,6 +41,14 @@ public abstract class Entity extends DynamicModellable implements EventReceiver 
     }
 
     /**
+     * Returns true if the given Entity is friendly to this Entity (they belong to
+     * the same Player)
+     */
+    public boolean isFriendly(Entity e) {
+        return this.getLeader().equals(e.getLeader());
+    }
+
+    /**
      * Returns this Entity'e EntityType
      */
     public abstract EntityType getEntityType();
@@ -49,4 +57,10 @@ public abstract class Entity extends DynamicModellable implements EventReceiver 
      * Returns the Player that commands this Entity, if there is one
      */
     public abstract Optional<Player> getLeader();
+
+    /** {@inheritdoc} */
+    @Override
+    public String getStratifier() {
+        return this.name;
+    }
 }

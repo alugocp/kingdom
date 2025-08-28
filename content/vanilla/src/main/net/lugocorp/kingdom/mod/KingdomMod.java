@@ -299,7 +299,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Defs.ability_edible, "TickEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
-                    return u.isPresent() ? () -> u.get().combat.health.heal(5) : SideEffect.none;
+                    return u.isPresent() ? () -> receiver.combat.heal(view, u.get(), 5) : SideEffect.none;
                 });
 
         /**
@@ -331,11 +331,26 @@ public class KingdomMod implements GameMod {
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "shining-eyes");
-                    e.blob.desc = "Heals random units of its favorite player each turn";
+                    e.blob.desc = "Heals 4 random units of its favorite player each turn";
                     e.blob.preference = "Healing glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.patron.addEventHandler(Defs.patron_shining_eyes, "SpawnEvent",
+                (GameView view, Patron receiver, Event event) -> {
+                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    return SideEffect.none;
+                });
+        events.patron.addEventHandler(Defs.patron_shining_eyes, "TickEvent",
+                (GameView view, Patron receiver, Event event) -> {
+                    final List<SideEffect> effects = SideEffect.list();
+                    final Optional<Player> favorite = receiver.getFavoritePlayer();
+                    favorite.ifPresent((Player p) -> {
+                        for (Unit u : Lambda.subset(4, p.units)) {
+                            effects.add(() -> u.combat.heal(3));
+                        }
+                    });
+                    return effects;
                 });
 
         /**
@@ -418,17 +433,48 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Your units within a patron's domain have extra defense";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_kaunas_amulet, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("TakeDamageEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_kaunas_amulet, "TakeDamageEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
+                    if (receiver.isClaimedByLeader(e.entity) && e.entity.isEntityType(EntityType.UNIT)) {
+                        for (Patron p : view.game.mechanics.patronage) {
+                            if (p.domainContains(e.getPoint())) {
+                                e.dmg.base -= 2;
+                                break;
+                            }
+                        }
+                    }
+                    return SideEffect.none;
                 });
 
         // Staff of Wurmdel
         events.artifact.addEventHandler(Defs.artifact_staff_of_wurmdel, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your healing spells restore more health";
+                    e.blob.desc = "Your healing spells restore +4 more health";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_staff_of_wurmdel, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("HealEntityEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_staff_of_wurmdel, "HealEntityEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.HealEntityEvent e = (Events.HealEntityEvent) event;
+                    if (receiver.isClaimedByLeader(e.healer)) {
+                        e.amount += 4;
+                    }
+                    return SideEffect.none;
                 });
 
         // Tome of Morun
@@ -450,7 +496,7 @@ public class KingdomMod implements GameMod {
                     Events.EntityDiedEvent e = (Events.EntityDiedEvent) event;
                     if (receiver.isClaimedByLeader(e.killer) && !receiver.isClaimedByLeader(e.target)) {
                         Tile t = view.game.world.getTile(e.killer.getPoint()).get();
-                        if (!t.getGlyph().isPresent() && Math.random() < 0.2) {
+                        if (!t.getGlyph().isPresent() && Lambda.chance(20)) {
                             t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
                         }
                     }
@@ -644,11 +690,28 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_podas_elixir, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Some chance to not spend the glyph when you recruit a unit";
+                    e.blob.desc = "15% chance refresh a glyph when you recruit a unit";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_podas_elixir, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("SpawnEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_podas_elixir, "SpawnEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.SpawnEvent e = (Events.SpawnEvent) event;
+                    if (e.spawned instanceof Unit) {
+                        Unit u = (Unit) e.spawned;
+                        Tile t = view.game.world.getTile(u.getPoint()).get();
+                        if (receiver.isClaimedByLeader(u) && !t.glyph.isPresent() && Lambda.chance(15)) {
+                            t.glyph = Optional.of(Lambda.random(GlyphCategory.class));
+                        }
+                    }
+                    return SideEffect.none;
                 });
 
         // Gaia's Effigy
@@ -675,11 +738,25 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_rod_of_adelon, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Chance to immediately recruit an enemy unit when you kill it";
+                    e.blob.desc = "5% chance to recruit an enemy unit when you kill it";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_rod_of_adelon, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("KilledEntityEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_rod_of_adelon, "KilledEntityEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.KilledEntityEvent e = (Events.KilledEntityEvent) event;
+                    if (e.target.isEntityType(EntityType.UNIT) && receiver.isClaimedByLeader(e.killer)
+                            && !e.killer.isFriendly(e.target) && Lambda.chance(5)) {
+                        view.game.generator.unit(e.target.name, e.target.getX(), e.target.getY()).spawn(view);
+                    }
+                    return SideEffect.none;
                 });
 
         // Blade of Sanguinor
@@ -1169,8 +1246,33 @@ public class KingdomMod implements GameMod {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format(
                             "Target a mine occupied by an enemy unit. The unit, mine, and any adjacent enemy units all take damage.");
-                    // TODO implement me
                     return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_collapse_mine, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Set<Point> mines = Lambda.filter(
+                            (Point p) -> view.game.world.getTile(p)
+                                    .map((Tile t) -> !t.leader.equals(receiver.wielder.getLeader())
+                                            && t.building.map((Building b) -> b.name.equals(Defs.building_mine))
+                                            && t.unit.isPresent())
+                                    .orElse(false),
+                            Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
+                    receiver.wielder.getLeader().get().select(view, mines, "No mines in range", (Point p) -> {
+                        Set<Entity> targets = new HashSet<>();
+                        targets.add(view.game.world.getTile(p).get().unit.get());
+                        targets.add(view.game.world.getTile(p).get().building.get());
+                        for (Point p1 : Hexagons.getNeighbors(p, 1)) {
+                            Optional<Unit> u = view.game.world.getTile(p1).flatMap((Tile t) -> t.unit);
+                            if (u.map((Unit u1) -> !u1.isFriendly(receiver.wielder)).orElse(false)) {
+                                targets.add(u.get());
+                            }
+                        }
+                        return () -> {
+                            for (Entity e : targets) {
+                                receiver.wielder.combat.attack(view, e, new Damage(5));
+                            }
+                        };
+                    });
                 });
 
         // Combat Loot
@@ -1210,7 +1312,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Point p = receiver.wielder.getPoint();
                     return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
-                            && Math.random() < 0.1
+                            && Lambda.chance(10)
                                     ? () -> view.game.generator.building(Defs.building_meadow, p.x, p.y).spawn(view)
                                     : SideEffect.none;
                 });
@@ -1230,10 +1332,18 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Defs.ability_dungeon_delve, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Attack that generates items when used on an active building");
-                    // TODO implement me
+                    e.blob.desc = String
+                            .format("Deals 5 damage and generates loot if targeting a tile with an active building");
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_dungeon_delve, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.attackAndEffect(view, receiver.wielder,
+                        new Damage(5), 1, Optional.of((Point p) -> {
+                            return !receiver.wielder.haul.isFull() && view.game.world.getTile(p)
+                                    .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false)
+                                            ? () -> receiver.wielder.haul.add(view.game.mechanics.loot.drop(view.game))
+                                            : SideEffect.none;
+                        })));
 
         // Edible
         events.ability.addEventHandler(Defs.ability_edible, "GenerateAbilityEvent",
@@ -1255,10 +1365,14 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Defs.ability_fire_cannon, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Ranged attack which deals extra damage against buildings");
-                    // TODO implement me
+                    e.blob.desc = String
+                            .format("Deals 8 damage to a building (or 4 damage to a unit) up to 2 tiles away");
                     return SideEffect.none;
                 });
+        events.ability.addEventHandler(Defs.ability_fire_cannon, "AbilityActivatedEvent",
+                (GameView view, Ability receiver, Event event) -> AbilityLogic.dynamicDamageAttack(view,
+                        receiver.wielder, 2,
+                        (Tile t) -> t.building.isPresent() && !t.unit.isPresent() ? new Damage(8) : new Damage(4)));
 
         // Fire Laser
         events.ability.addEventHandler(Defs.ability_fire_laser, "GenerateAbilityEvent",
@@ -1318,7 +1432,7 @@ public class KingdomMod implements GameMod {
                     for (Point p : targets) {
                         Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                         if (u.map((Unit u1) -> u1.isFriendly(receiver.wielder)).orElse(false)) {
-                            effects.add(() -> u.get().combat.health.heal(10));
+                            effects.add(() -> receiver.combat.heal(view, u.get(), 10));
                         }
                     }
                     return SideEffect.all(effects);
@@ -1569,7 +1683,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_regeneration, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> () -> receiver.wielder.combat.health.heal(1));
+                (GameView view, Ability receiver, Event event) -> () -> receiver.wielder.combat.heal(view, 1));
 
         // Revenge of the Forest
         events.ability.addEventHandler(Defs.ability_revenge_of_the_forest, "GenerateAbilityEvent",
@@ -1855,7 +1969,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.item.addEventHandler(Defs.item_health_potion, "ItemConsumedEvent",
-                (GameView view, Item receiver, Event event) -> ItemLogic.potion(event, 10));
+                (GameView view, Item receiver, Event event) -> ItemLogic.potion(view, event, 10));
 
         // Incense
         // Sack of Gold

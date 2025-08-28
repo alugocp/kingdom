@@ -101,10 +101,38 @@ public class Lambda {
     }
 
     /**
+     * Returns true if a coin flip lands with the given chance of success
+     */
+    public static boolean chance(int percentage) {
+        return (int) Math.floor(Math.random() * 100) < percentage;
+    }
+
+    /**
      * Returns a random value from the given Enum
      */
     public static <T extends Enum<T>> T random(Class<T> e) {
         T[] values = e.getEnumConstants();
         return values[(int) Math.floor(Math.random() * values.length)];
+    }
+
+    /**
+     * Returns a random element from the given List
+     */
+    public static <T> T random(List<T> ls) {
+        return ls.get((int) Math.floor(Math.random() * ls.size()));
+    }
+
+    /**
+     * Returns a random subset of the given Set
+     */
+    public static <T> Set<T> subset(int n, Set<T> population) {
+        final List<T> copy = new ArrayList<>();
+        final Set<T> subset = new HashSet<>();
+        copy.addAll(population);
+        for (int a = 0; a < Math.min(n, population.size()); a++) {
+            int i = (int) Math.floor(Math.random() * copy.size());
+            subset.add(copy.remove(i));
+        }
+        return subset;
     }
 }

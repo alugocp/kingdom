@@ -103,4 +103,20 @@ public class Combat {
                 target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)),
                 target.combat.takeDamage(view, dmg, this.bearer));
     }
+
+    /**
+     * This bearer heals another
+     */
+    public SideEffect heal(GameView view, Entity target, int amount) {
+        Events.HealEntityEvent heal = new Events.HealEntityEvent(this.bearer, target, amount);
+        this.bearer.handleEvent(view, heal);
+        return () -> target.combat.health.set(target.combat.health.get() + heal.amount);
+    }
+
+    /**
+     * This bearer heals itself
+     */
+    public SideEffect heal(GameView view, int amount) {
+        return this.heal(view, this.bearer, amount);
+    }
 }

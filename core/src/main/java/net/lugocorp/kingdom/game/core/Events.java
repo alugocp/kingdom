@@ -326,6 +326,22 @@ public class Events {
     }
 
     /**
+     * Triggered when an Entity heals another Enttiy
+     */
+    public static class HealEntityEvent extends Event {
+        public final Entity healer;
+        public final Entity target;
+        public int amount;
+
+        public HealEntityEvent(Entity healer, Entity target, int amount) {
+            super();
+            this.healer = healer;
+            this.target = target;
+            this.amount = amount;
+        }
+    }
+
+    /**
      * Triggered whenever a Modellable is spawned into the World
      */
     public static class SpawnEvent<T extends Modellable> extends Event {

@@ -11,6 +11,7 @@ public class Mechanics {
     public final GlyphPools pools = new GlyphPools();
     public final DayNight dayNight = new DayNight();
     public final NewUnit newUnits = new NewUnit();
+    public final LootTable loot = new LootTable();
     public final Fates fates = new Fates();
     public final TurnStructure turns;
 
@@ -32,5 +33,6 @@ public class Mechanics {
         this.auction.init(game);
         this.fates.init(game);
         this.pools.init(game);
+        this.loot.init(game);
     }
 }

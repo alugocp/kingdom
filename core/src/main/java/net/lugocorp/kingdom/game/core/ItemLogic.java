@@ -26,9 +26,9 @@ public class ItemLogic {
     /**
      * Item that can be consumed to heal the consumer
      */
-    public static SideEffect potion(Event event, int points) {
+    public static SideEffect potion(GameView view, Event event, int points) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        return () -> e.consumer.combat.health.heal(points);
+        return () -> e.consumer.combat.heal(view, points);
     }
 
     /**

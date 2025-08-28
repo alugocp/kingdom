@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.core;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.game.combat.Damage;
-import net.lugocorp.kingdom.game.combat.HitPoints;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Entity;
@@ -28,7 +27,43 @@ import java.util.function.Supplier;
 public class AbilityLogic {
 
     /**
-     * Convenience wrapper for an active Ability that implements an attack
+     * Attack ability with variable Damage based on the target
+     */
+    public static SideEffect dynamicDamageAttack(GameView view, Unit attacker, int range,
+            Function<Tile, Damage> getDamage) {
+        Map<Point, Entity> targets = new HashMap<>();
+        Set<Point> points = new HashSet<>();
+
+        // Grab every possible attack target within range
+        Set<Point> unfiltered = Hexagons.getNeighbors(attacker.getPoint(), range);
+        for (Point p : unfiltered) {
+            Optional<Tile> tile = view.game.world.getTile(p);
+            if (!tile.isPresent()) {
+                continue;
+            }
+            Tile t = tile.get();
+            if (t.unit.isPresent()) {
+                if (t.unit.get().combat.health.isVulnerable()) {
+                    targets.put(p, t.unit.get());
+                    points.add(p);
+                }
+            } else if (t.building.isPresent() && t.building.get().combat.health.isVulnerable()) {
+                targets.put(p, t.building.get());
+                points.add(p);
+            }
+        }
+
+        // Use overridden method from Player to determine how targets are selected
+        return attacker.getLeader().get().select(view, points, "No attack targets are in range", (Point p) -> {
+            final Damage dmg = getDamage.apply(view.game.world.getTile(p).get());
+            return SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
+                    () -> view.game.mechanics.turns.unitHasActed(view, attacker));
+        });
+    }
+
+    /**
+     * Convenience wrapper for an active Ability that implements an attack and maybe
+     * an additional effect
      */
     public static SideEffect attackAndEffect(GameView view, Unit attacker, Damage dmg, int range,
             Optional<Function<Point, SideEffect>> effect) {
@@ -71,9 +106,8 @@ public class AbilityLogic {
     /**
      * Private helper method for common heal abilities
      */
-    private static SideEffect heal(GameView view, Unit healer, int hitPoints,
-            Function<Tile, Optional<HitPoints>> getHitPoints) {
-        Map<Point, HitPoints> targets = new HashMap<>();
+    private static SideEffect heal(GameView view, Unit healer, int hitPoints, Function<Tile, Entity> getEntity) {
+        Map<Point, Entity> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
         // Grab every possible heal target within range
@@ -83,25 +117,24 @@ public class AbilityLogic {
             if (!t.isPresent()) {
                 continue;
             }
-            Optional<HitPoints> hp = getHitPoints.apply(t.get());
-            if (hp.isPresent()) {
-                targets.put(p, hp.get());
+            Entity entity = getEntity.apply(t.get());
+            if (entity != null) {
+                targets.put(p, entity);
                 points.add(p);
             }
         }
 
         // Have the Player select which target to heal
-        return healer.getLeader().get().select(view, points, "No heal targets are in range", (Point p) -> () -> {
-            targets.get(p).heal(hitPoints);
-            view.game.mechanics.turns.unitHasActed(view, healer);
-        });
+        return healer.getLeader().get().select(view, points, "No heal targets are in range",
+                (Point p) -> SideEffect.all(healer.combat.heal(view, targets.get(p), hitPoints),
+                        () -> view.game.mechanics.turns.unitHasActed(view, healer)));
     }
 
     /**
      * Ability that heals a Unit
      */
     public static SideEffect healUnit(GameView view, Unit healer, int hitPoints) {
-        return AbilityLogic.heal(view, healer, hitPoints, (Tile t) -> t.unit.map((Unit u) -> u.combat.health));
+        return AbilityLogic.heal(view, healer, hitPoints, (Tile t) -> t.unit.orElse(null));
     }
 
     /**
@@ -113,10 +146,10 @@ public class AbilityLogic {
             if (t.building.isPresent()) {
                 Building b = t.building.get();
                 if (criteria.apply(b)) {
-                    return Optional.of(b.combat.health);
+                    return b;
                 }
             }
-            return Optional.empty();
+            return null;
         });
     }
 

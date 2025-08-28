@@ -148,12 +148,6 @@ public class Building extends Entity implements MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public String getStratifier() {
-        return this.name;
-    }
-
-    /** {@inheritdoc} */
-    @Override
     public void deactivate(GameView view) {
         super.deactivate(view);
         view.game.removeBuilding(this);

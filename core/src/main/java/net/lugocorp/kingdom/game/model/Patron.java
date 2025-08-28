@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -39,6 +40,12 @@ public class Patron extends Building {
      */
     public Patron() {
         super(null, 0, 0, null);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public EntityType getEntityType() {
+        return EntityType.PATRON;
     }
 
     /**
@@ -96,6 +103,13 @@ public class Patron extends Building {
                     Hexagons.getBorderInteger(p, (Point p1) -> !(domain.contains(p1) || p1.equals(this.getPoint())))));
             this.domain.add(p);
         }
+    }
+
+    /**
+     * Returns true if this Patron's domain includes the given Point
+     */
+    public boolean domainContains(Point p) {
+        return this.domain.contains(p);
     }
 
     /** {@inheritdoc} */
