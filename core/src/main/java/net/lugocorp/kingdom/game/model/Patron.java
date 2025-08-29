@@ -27,6 +27,7 @@ public class Patron extends Building {
     private final Map<Player, Integer> favor = new HashMap<>();
     private final Set<Point> domain = new HashSet<>();
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
+    private Optional<Player> favorite = Optional.empty();
     public String preference = "";
 
     Patron(String name, int x, int y) {
@@ -53,7 +54,11 @@ public class Patron extends Building {
      * by the Units in a Patron's domain.
      */
     public void recalculateFavor(GameView view) {
+        // Reset the values
         this.favor.clear();
+        this.favorite = Optional.empty();
+
+        // Count up favor from Units in this Patron's domain
         for (Point p : this.domain) {
             final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
             if (!unit.flatMap((Unit u) -> u.getLeader()).isPresent()) {
@@ -77,20 +82,28 @@ public class Patron extends Building {
                 this.favor.put(leader, event.favor);
             }
         }
+
+        // Allow for Player-level favor modifiers
+        for (Player p : view.game.getAllPlayers()) {
+            Events.CalculateFavorEvent event = new Events.CalculateFavorEvent(this, p, this.favor.getOrDefault(p, 0));
+            this.handleEvent(view, event);
+            this.favor.put(p, event.favor);
+        }
+
+        // The Unit with the most favor is the favorite
+        for (Player p : this.favor.keySet()) {
+            int favor = this.favor.get(p);
+            if (!this.favorite.isPresent() || favor > this.favor.get(this.favorite.get())) {
+                this.favorite = Optional.of(p);
+            }
+        }
     }
 
     /**
      * Returns this Patron's current favorite Player (if any)
      */
     public Optional<Player> getFavoritePlayer() {
-        Optional<Player> favorite = Optional.empty();
-        for (Player p : this.favor.keySet()) {
-            int favor = this.favor.get(p);
-            if (!favorite.isPresent() || favor > this.favor.get(favorite.get())) {
-                favorite = Optional.of(p);
-            }
-        }
-        return favorite;
+        return this.favorite;
     }
 
     /**
@@ -110,6 +123,13 @@ public class Patron extends Building {
      */
     public boolean domainContains(Point p) {
         return this.domain.contains(p);
+    }
+
+    /**
+     * Returns this Patron's domain
+     */
+    public Set<Point> getDomain() {
+        return this.domain;
     }
 
     /** {@inheritdoc} */
@@ -155,13 +175,12 @@ public class Patron extends Building {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        Optional<Player> favorite = this.getFavoritePlayer();
         ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
                 .add(new TextNode(view.av, String.format("Preferred units: %s", this.preference)));
         if (this.favor.size() > 0) {
             for (Player k : this.favor.keySet()) {
                 String label = String.format("%s: %d", k.name, this.favor.get(k));
-                if (favorite.map((Player f) -> k == f).orElse(false)) {
+                if (this.favorite.map((Player f) -> k == f).orElse(false)) {
                     label += " (FAVORITE)";
                 }
                 node.add(new TextNode(view.av, label));

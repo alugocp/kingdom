@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Entity;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
@@ -31,6 +32,7 @@ import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.mods.GameMod;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -314,10 +316,34 @@ public class KingdomMod implements GameMod {
                 (GameView view, Patron receiver, Event event) -> {
                     Events.GeneratePatronEvent e = (Events.GeneratePatronEvent) event;
                     e.blob.setModelInstance(view.av, "pond-troll");
-                    e.blob.desc = "The favorite player's units can traverse water tiles and have a chance to harvest items when they do";
+                    e.blob.desc = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
                     e.blob.preference = "Units that cannot swim";
                     e.blob.isPreferredUnitType = (Unit u) -> !u.hasPassiveAbility(Defs.ability_swim);
-                    // TODO implement me
+                    return SideEffect.none;
+                });
+        events.patron.addEventHandler(Defs.patron_pond_troll, "SpawnEvent",
+                (GameView view, Patron receiver, Event event) -> {
+                    view.game.events.signals.addListener("CanUnitMoveEvent", receiver);
+                    view.game.events.signals.addListener("UnitMovedEvent", receiver);
+                    return SideEffect.none;
+                });
+        events.patron.addEventHandler(Defs.patron_pond_troll, "CanUnitMoveEvent",
+                (GameView view, Patron receiver, Event event) -> {
+                    Events.CanUnitMoveEvent e = (Events.CanUnitMoveEvent) event;
+                    if (e.unit.getLeader().equals(receiver.getFavoritePlayer())
+                            && e.tile.name.equals(Defs.tile_water)) {
+                        e.canWalkOnTile = true;
+                    }
+                    return SideEffect.none;
+                });
+        events.patron.addEventHandler(Defs.patron_pond_troll, "UnitMovedEvent",
+                (GameView view, Patron receiver, Event event) -> {
+                    Events.UnitMovedEvent e = (Events.UnitMovedEvent) event;
+                    if (e.unit.getLeader().equals(receiver.getFavoritePlayer())
+                            && view.game.world.getTile(e.current).get().name.equals(Defs.tile_water)
+                            && !e.unit.haul.isFull() && Lambda.chance(20)) {
+                        return () -> e.unit.haul.add(view.game.generator.item(Defs.item_fish));
+                    }
                     return SideEffect.none;
                 });
 
@@ -347,10 +373,10 @@ public class KingdomMod implements GameMod {
                     final Optional<Player> favorite = receiver.getFavoritePlayer();
                     favorite.ifPresent((Player p) -> {
                         for (Unit u : Lambda.subset(4, p.units)) {
-                            effects.add(() -> u.combat.heal(3));
+                            effects.add(() -> u.combat.heal(view, 3));
                         }
                     });
-                    return effects;
+                    return SideEffect.all(effects);
                 });
 
         /**
@@ -443,9 +469,9 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_kaunas_amulet, "TakeDamageEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
-                    if (receiver.isClaimedByLeader(e.entity) && e.entity.isEntityType(EntityType.UNIT)) {
+                    if (receiver.isClaimedByLeader(e.target) && e.target.isEntityType(EntityType.UNIT)) {
                         for (Patron p : view.game.mechanics.patronage) {
-                            if (p.domainContains(e.getPoint())) {
+                            if (p.domainContains(e.target.getPoint())) {
                                 e.dmg.base -= 2;
                                 break;
                             }
@@ -628,11 +654,26 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_bounty_of_ahn_june, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Trade glyph units on your vaults generate more auction points";
+                    e.blob.desc = "Trade glyph units on your vaults generate +2 more auction points";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 2;
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_bounty_of_ahn_june, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("GenerateAuctionPointsEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_bounty_of_ahn_june, "GenerateAuctionPointsEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.GenerateAuctionPointsEvent e = (Events.GenerateAuctionPointsEvent) event;
+                    if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.TRADE)
+                            && view.game.world.getTile(e.unit.getPoint()).flatMap((Tile t) -> t.building)
+                                    .map((Building b) -> b.name.equals(Defs.building_vault)).orElse(false)) {
+                        e.points += 2;
+                    }
+                    return SideEffect.none;
                 });
 
         // Mark of Kung
@@ -707,8 +748,8 @@ public class KingdomMod implements GameMod {
                     if (e.spawned instanceof Unit) {
                         Unit u = (Unit) e.spawned;
                         Tile t = view.game.world.getTile(u.getPoint()).get();
-                        if (receiver.isClaimedByLeader(u) && !t.glyph.isPresent() && Lambda.chance(15)) {
-                            t.glyph = Optional.of(Lambda.random(GlyphCategory.class));
+                        if (receiver.isClaimedByLeader(u) && !t.getGlyph().isPresent() && Lambda.chance(15)) {
+                            t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
                         }
                     }
                     return SideEffect.none;
@@ -788,11 +829,29 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_cask_of_amonitor, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Unoccupied tiles under your control also provide favor in a patron's domain";
+                    e.blob.desc = "Your unoccupied tiles in a patron's domain provide +1 favor";
                     e.blob.image = Optional.of("golden feather");
                     e.blob.chips = 3;
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_cask_of_amonitor, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("CalculateFavorEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_cask_of_amonitor, "CalculateFavorEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.CalculateFavorEvent e = (Events.CalculateFavorEvent) event;
+                    if (receiver.isClaimedByPlayer(e.player)) {
+                        for (Point p : e.patron.getDomain()) {
+                            Tile t = view.game.world.getTile(p).get();
+                            if (t.leader.map((Player p1) -> p1.equals(e.player)).orElse(false) && !t.unit.isPresent()) {
+                                e.favor++;
+                            }
+                        }
+                    }
+                    return SideEffect.none;
                 });
 
         /**
@@ -1252,12 +1311,12 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Set<Point> mines = Lambda.filter(
                             (Point p) -> view.game.world.getTile(p)
-                                    .map((Tile t) -> !t.leader.equals(receiver.wielder.getLeader())
-                                            && t.building.map((Building b) -> b.name.equals(Defs.building_mine))
+                                    .map((Tile t) -> !t.leader.equals(receiver.wielder.getLeader()) && t.building
+                                            .map((Building b) -> b.name.equals(Defs.building_mine)).orElse(false)
                                             && t.unit.isPresent())
                                     .orElse(false),
                             Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
-                    receiver.wielder.getLeader().get().select(view, mines, "No mines in range", (Point p) -> {
+                    return receiver.wielder.getLeader().get().select(view, mines, "No mines in range", (Point p) -> {
                         Set<Entity> targets = new HashSet<>();
                         targets.add(view.game.world.getTile(p).get().unit.get());
                         targets.add(view.game.world.getTile(p).get().building.get());
@@ -1432,7 +1491,7 @@ public class KingdomMod implements GameMod {
                     for (Point p : targets) {
                         Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                         if (u.map((Unit u1) -> u1.isFriendly(receiver.wielder)).orElse(false)) {
-                            effects.add(() -> receiver.combat.heal(view, u.get(), 10));
+                            effects.add(() -> receiver.wielder.combat.heal(view, u.get(), 10));
                         }
                     }
                     return SideEffect.all(effects);
@@ -1522,10 +1581,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = String.format("Attacks generate 5 auction points");
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Defs.ability_market_boom, "AttackEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    return () -> view.game.auctionPoints += 5;
-                });
+        events.ability.addEventHandler(Defs.ability_market_boom, "AttackEvent", (GameView view, Ability receiver,
+                Event event) -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 5));
 
         // Market Indicator
         events.ability.addEventHandler(Defs.ability_market_indicator, "GenerateAbilityEvent",
@@ -1542,7 +1599,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Defs.ability_market_indicator, "TickEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.doWhenAdjacent(view, receiver.wielder,
                         (Tile t) -> t.building.map((Building b) -> b.name.equals(Defs.building_vault)).orElse(false),
-                        () -> () -> view.game.auctionPoints++));
+                        () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 1)));
 
         // Mine Gems
         events.ability.addEventHandler(Defs.ability_mine_gems, "GenerateAbilityEvent",

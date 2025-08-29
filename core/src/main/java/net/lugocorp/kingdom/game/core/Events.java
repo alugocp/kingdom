@@ -398,6 +398,22 @@ public class Events {
     }
 
     /**
+     * Triggered after a Patron calculates their favor for a given Player
+     */
+    public static class CalculateFavorEvent extends Event {
+        public final Patron patron;
+        public final Player player;
+        public int favor;
+
+        public CalculateFavorEvent(Patron patron, Player player, int favor) {
+            super();
+            this.patron = patron;
+            this.player = player;
+            this.favor = favor;
+        }
+    }
+
+    /**
      * Triggered when a Unit generates favor for a Patron
      */
     public static class GenerateFavorEvent extends Event {
@@ -408,6 +424,20 @@ public class Events {
             super();
             this.patron = patron;
             this.favor = favor;
+        }
+    }
+
+    /**
+     * Triggered when a Unit generates auction points
+     */
+    public static class GenerateAuctionPointsEvent extends Event {
+        public final Unit unit;
+        public int points;
+
+        public GenerateAuctionPointsEvent(Unit unit, int points) {
+            super();
+            this.points = points;
+            this.unit = unit;
         }
     }
 }

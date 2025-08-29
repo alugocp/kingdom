@@ -38,7 +38,7 @@ public class Artifact implements EventReceiver, MenuSubject {
     public void claim(GameView view, Player player) {
         this.owner = Optional.of(player);
         player.artifacts.add(this);
-        this.handleEvent(view, new Events.ArtifactClaimedEvent(this, player));
+        this.handleEvent(view, new Events.ArtifactClaimedEvent(this, player)).execute();
     }
 
     /**

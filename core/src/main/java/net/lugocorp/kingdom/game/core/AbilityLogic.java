@@ -247,4 +247,13 @@ public class AbilityLogic {
         return AbilityLogic.harvestFromTile(view, caster, item,
                 (Tile t) -> t.building.map((Building b) -> criteria.apply(b)).orElse(false));
     }
+
+    /**
+     * Ability that generates auction points
+     */
+    public static SideEffect generateAuctionPoints(GameView view, Unit caster, int points) {
+        Events.GenerateAuctionPointsEvent event = new Events.GenerateAuctionPointsEvent(caster, points);
+        caster.handleEvent(view, event);
+        return () -> view.game.auctionPoints += event.points;
+    }
 }
