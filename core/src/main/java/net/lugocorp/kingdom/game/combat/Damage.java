@@ -15,7 +15,7 @@ public class Damage {
      * Returns the final value of Damage dealt, accounting for critical hits
      */
     public int total() {
-        return (int) Math.floor(this.base * this.multiplier);
+        return (int) Math.floor(Math.max(this.base, 0) * this.multiplier);
     }
 
     /**

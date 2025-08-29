@@ -454,19 +454,4 @@ public class Events {
             this.item = item;
         }
     }
-
-    /**
-     * Activated when we want to know if a Building is active (true) or passive
-     * (false)
-     */
-    public static class IsBuildingActiveEvent extends Event {
-        public final Building building;
-        public boolean active;
-
-        public IsBuildingActiveEvent(Building building, boolean active) {
-            super();
-            this.building = building;
-            this.active = active;
-        }
-    }
 }

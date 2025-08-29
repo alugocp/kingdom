@@ -1583,20 +1583,21 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Defs.ability_local_defender, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Adjacent passive buildings are treated as active");
+                    e.blob.desc = String.format("Adjacent buildings have +3 armor");
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Defs.ability_local_defender, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.events.signals.addListener("IsBuildingActiveEvent", receiver);
+                    view.game.events.signals.addListener("AttackedEvent", receiver);
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Defs.ability_local_defender, "IsBuildingActiveEvent",
+        events.ability.addEventHandler(Defs.ability_local_defender, "AttackedEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    Events.IsBuildingActiveEvent e = (Events.IsBuildingActiveEvent) event;
-                    if (receiver.wielder.getLeader().equals(e.building.getLeader())
-                            && Hexagons.areNeighbors(receiver.wielder.getPoint(), e.building.getPoint())) {
-                        e.active = true;
+                    Events.AttackedEvent e = (Events.AttackedEvent) event;
+                    if (e.target.isEntityType(EntityType.BUILDING)
+                            && receiver.wielder.getLeader().equals(e.target.getLeader())
+                            && Hexagons.areNeighbors(receiver.wielder.getPoint(), e.target.getPoint())) {
+                        e.dmg.base -= 3;
                     }
                     return SideEffect.none;
                 });

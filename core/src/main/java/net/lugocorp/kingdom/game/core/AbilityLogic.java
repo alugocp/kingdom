@@ -15,6 +15,7 @@ import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -225,10 +226,11 @@ public class AbilityLogic {
      */
     public static SideEffect harvestFromTile(GameView view, Unit caster, String item,
             Function<Tile, Boolean> criteria) {
-        SideEffect effects = SideEffect.none;
+        final List<SideEffect> effects = SideEffect.list();
         if (!caster.haul.isFull()) {
             Item i = view.game.generator.item(item);
-            effects = SideEffect.all(caster.handleEvent(view, new Events.HarvestEvent(caster, i)), () -> {
+            effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
+            effects.add(() -> {
                 caster.haul.add(i);
                 if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
                     CompPlayer comp = (CompPlayer) caster.getLeader().get();
@@ -240,7 +242,7 @@ public class AbilityLogic {
                 }
             });
         }
-        return AbilityLogic.doOnTile(view, caster, criteria, () -> effects);
+        return AbilityLogic.doOnTile(view, caster, criteria, () -> SideEffect.all(effects));
     }
 
     /**

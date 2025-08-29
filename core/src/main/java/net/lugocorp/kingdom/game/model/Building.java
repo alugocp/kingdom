@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.BuildingType;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
@@ -87,13 +88,8 @@ public class Building extends Entity implements MenuSubject {
     /**
      * Returns true if this Building is active
      */
-    public boolean isActive(GameView view) {
-        Events.IsBuildingActiveEvent event = new Events.IsBuildingActiveEvent(this, this.type == BuildingType.ACTIVE);
-        // NOTE the following handleEvent()'s return value is ignored,
-        // do not return SideEffects from this event handler because
-        // they won't be executed.
-        this.handleEvent(view, event);
-        return event.active;
+    public boolean isActive() {
+        return this.type == BuildingType.ACTIVE;
     }
 
     /**
@@ -180,12 +176,5 @@ public class Building extends Entity implements MenuSubject {
             }
         }
         return node;
-    }
-
-    /**
-     * An enum that represents whether a Building is active or passive
-     */
-    private static enum BuildingType {
-        ACTIVE, PASSIVE;
     }
 }
