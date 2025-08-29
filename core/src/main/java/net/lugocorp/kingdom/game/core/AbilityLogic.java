@@ -225,18 +225,22 @@ public class AbilityLogic {
      */
     public static SideEffect harvestFromTile(GameView view, Unit caster, String item,
             Function<Tile, Boolean> criteria) {
-        return AbilityLogic.doOnTile(view, caster, criteria, () -> caster.haul.isFull() ? SideEffect.none : () -> {
+        SideEffect effects = SideEffect.none;
+        if (!caster.haul.isFull()) {
             Item i = view.game.generator.item(item);
-            caster.haul.add(i);
-            if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
-                CompPlayer comp = (CompPlayer) caster.getLeader().get();
-                if (i.tags.has("natural")) {
-                    comp.stats.naturalHarvest.add(1);
-                } else {
-                    comp.stats.otherHarvest.add(1);
+            effects = SideEffect.all(caster.handleEvent(view, new Events.HarvestEvent(caster, i)), () -> {
+                caster.haul.add(i);
+                if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
+                    CompPlayer comp = (CompPlayer) caster.getLeader().get();
+                    if (i.tags.has("natural")) {
+                        comp.stats.naturalHarvest.add(1);
+                    } else {
+                        comp.stats.otherHarvest.add(1);
+                    }
                 }
-            }
-        });
+            });
+        }
+        return AbilityLogic.doOnTile(view, caster, criteria, () -> effects);
     }
 
     /**

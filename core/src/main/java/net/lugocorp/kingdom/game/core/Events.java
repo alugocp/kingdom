@@ -440,4 +440,33 @@ public class Events {
             this.unit = unit;
         }
     }
+
+    /**
+     * Triggers whenever a Unit harvests an Item
+     */
+    public static class HarvestEvent extends Event {
+        public final Unit unit;
+        public final Item item;
+
+        public HarvestEvent(Unit unit, Item item) {
+            super();
+            this.unit = unit;
+            this.item = item;
+        }
+    }
+
+    /**
+     * Activated when we want to know if a Building is active (true) or passive
+     * (false)
+     */
+    public static class IsBuildingActiveEvent extends Event {
+        public final Building building;
+        public boolean active;
+
+        public IsBuildingActiveEvent(Building building, boolean active) {
+            super();
+            this.building = building;
+            this.active = active;
+        }
+    }
 }

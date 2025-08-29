@@ -87,8 +87,13 @@ public class Building extends Entity implements MenuSubject {
     /**
      * Returns true if this Building is active
      */
-    public boolean isActive() {
-        return this.type == BuildingType.ACTIVE;
+    public boolean isActive(GameView view) {
+        Events.IsBuildingActiveEvent event = new Events.IsBuildingActiveEvent(this, this.type == BuildingType.ACTIVE);
+        // NOTE the following handleEvent()'s return value is ignored,
+        // do not return SideEffects from this event handler because
+        // they won't be executed.
+        this.handleEvent(view, event);
+        return event.active;
     }
 
     /**

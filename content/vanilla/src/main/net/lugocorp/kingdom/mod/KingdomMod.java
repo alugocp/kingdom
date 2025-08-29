@@ -604,10 +604,24 @@ public class KingdomMod implements GameMod {
         events.artifact.addEventHandler(Defs.artifact_the_chasi_bones, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
-                    e.blob.desc = "Your nature glyph units have a chance to harvest an additional item";
+                    e.blob.desc = "Your nature glyph units have a 20% chance to harvest an additional item";
                     e.blob.image = Optional.of("golden feather");
                     return SideEffect.none;
-                    // TODO implement me
+                });
+        events.artifact.addEventHandler(Defs.artifact_the_chasi_bones, "ArtifactClaimedEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
+                    view.game.events.signals.addListener("HarvestEvent", e.artifact);
+                    return SideEffect.none;
+                });
+        events.artifact.addEventHandler(Defs.artifact_the_chasi_bones, "HarvestEvent",
+                (GameView view, Artifact receiver, Event event) -> {
+                    Events.HarvestEvent e = (Events.HarvestEvent) event;
+                    if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.NATURE) && !e.unit.haul.isFull()
+                            && Lambda.chance(20)) {
+                        e.unit.haul.add(view.game.generator.item(e.item.getStratifier()));
+                    }
+                    return SideEffect.none;
                 });
 
         // Ucha's Bowl of Plenty
@@ -1570,7 +1584,20 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
                     e.blob.desc = String.format("Adjacent passive buildings are treated as active");
-                    // TODO implement me
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_local_defender, "SpawnEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.events.signals.addListener("IsBuildingActiveEvent", receiver);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Defs.ability_local_defender, "IsBuildingActiveEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.IsBuildingActiveEvent e = (Events.IsBuildingActiveEvent) event;
+                    if (receiver.wielder.getLeader().equals(e.building.getLeader())
+                            && Hexagons.areNeighbors(receiver.wielder.getPoint(), e.building.getPoint())) {
+                        e.active = true;
+                    }
                     return SideEffect.none;
                 });
 
