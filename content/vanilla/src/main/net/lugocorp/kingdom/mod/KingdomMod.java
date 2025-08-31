@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.mod;
-import net.lugocorp.kingdom.common.Defs;
+import net.lugocorp.kingdom.mod.common.Defs;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.core.AbilityLogic;

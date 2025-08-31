@@ -6,7 +6,7 @@ plugins {
 sourceSets {
     main {
         java {
-            srcDirs = ['src']
+            srcDirs = ['src', '../common/src']
         }
         resources {
             srcDirs = ['src/main']
@@ -16,7 +16,6 @@ sourceSets {
 
 dependencies {
     implementation project(":core")
-    implementation project(":content:common")
 }
 
 jar {
@@ -25,16 +24,4 @@ jar {
     manifest {
         attributes 'Main-Class': 'net.lugocorp.kingdom.mod.KingdomMod'
     }
-}
-
-spotless {
-  java {
-    eclipse()
-    trimTrailingWhitespace()
-    indentWithSpaces(4)
-    endWithNewline()
-    importOrder('net.lugocorp', 'com.badlogic', 'java')
-    removeUnusedImports()
-    replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
-  }
 }

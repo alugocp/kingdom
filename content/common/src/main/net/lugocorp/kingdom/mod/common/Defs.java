@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.common;
+package net.lugocorp.kingdom.mod.common;
 import net.lugocorp.kingdom.game.properties.Species;
 
 /**

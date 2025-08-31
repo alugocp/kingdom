@@ -1,3 +1,4 @@
+
 buildscript {
   repositories {
     mavenCentral()
@@ -8,13 +9,14 @@ buildscript {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
   }
-  dependencies {
+}
 
-
-  }
+plugins {
+  id "com.diffplug.spotless" version "6.7.1"
 }
 
 allprojects {
+  apply plugin: 'java'
   apply plugin: 'eclipse'
   apply plugin: 'idea'
 
@@ -119,3 +121,15 @@ class CleanAssetsTask extends DefaultTask {
 }
 
 tasks.register("cleanAssets", CleanAssetsTask)
+
+spotless {
+  java {
+    eclipse()
+    trimTrailingWhitespace()
+    indentWithSpaces(4)
+    endWithNewline()
+    importOrder('net.lugocorp', 'com.badlogic', 'java')
+    removeUnusedImports()
+    replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
+  }
+}

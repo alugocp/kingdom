@@ -1,6 +1,3 @@
-plugins {
-   id "com.diffplug.spotless" version "6.7.1"
-}
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 eclipse.project.name = appName + '-core'
@@ -17,17 +14,5 @@ dependencies {
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
-  }
-}
-
-spotless {
-  java {
-    eclipse()
-    trimTrailingWhitespace()
-    indentWithSpaces(4)
-    endWithNewline()
-    importOrder('net.lugocorp', 'com.badlogic', 'java')
-    removeUnusedImports()
-    replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
   }
 }
