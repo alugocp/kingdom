@@ -12,13 +12,18 @@ buildscript {
 }
 
 plugins {
-  id "com.diffplug.spotless" version "6.7.1"
+  id "com.diffplug.spotless" version "7.2.1"
+}
+
+repositories {
+  mavenCentral()
 }
 
 allprojects {
-  apply plugin: 'java'
+  apply plugin: 'java-library'
   apply plugin: 'eclipse'
   apply plugin: 'idea'
+  sourceCompatibility = 11
 
   // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
   idea {
@@ -34,9 +39,6 @@ allprojects {
 }
 
 configure(subprojects) {
-  apply plugin: 'java-library'
-  sourceCompatibility = 11
-
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
   tasks.register('generateAssetList') {
@@ -124,11 +126,15 @@ tasks.register("cleanAssets", CleanAssetsTask)
 
 spotless {
   java {
+    target fileTree('.') {
+      include '**/*.java'
+      exclude '**/build/**'
+    }
     eclipse()
     trimTrailingWhitespace()
     indentWithSpaces(4)
     endWithNewline()
-    importOrder('net.lugocorp', 'com.badlogic', 'java')
+    importOrder('net.lugocorp', 'com.badlogic', 'com.esotericsoftware', 'java')
     removeUnusedImports()
     replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
   }

@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.mod;
-import net.lugocorp.kingdom.mod.common.Defs;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.core.AbilityLogic;
@@ -23,6 +22,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
+import net.lugocorp.kingdom.mod.common.Defs;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.FateNode;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;
