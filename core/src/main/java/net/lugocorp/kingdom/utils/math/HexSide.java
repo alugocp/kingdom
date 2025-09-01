@@ -8,7 +8,7 @@ public enum HexSide {
 
     public final int value;
 
-    public HexSide(int value) {
+    HexSide(int value) {
         this.value = value;
     }
 }

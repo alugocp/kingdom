@@ -29,11 +29,14 @@ import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
+import net.lugocorp.kingdom.utils.math.HexSide;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.mods.GameMod;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -1456,23 +1459,25 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Defs.ability_fire_laser, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    List<SideEffect> effects = SideEffect.list();
-                    Set<Point> targets = new HashSet<>();
-                    Map<Point, HexSide> sideToPoint = new HashMap<>();
+                    final Set<Point> targets = new HashSet<>();
+                    final Map<Point, HexSide> sideToPoint = new HashMap<>();
                     for (HexSide side : HexSide.values()) {
                         Point dest = Hexagons.followLine(receiver.wielder.getPoint(), side, 3);
                         targets.add(dest);
                         sideToPoint.put(dest, side);
                     }
-                    receiver.wielder.getLeader().get().select(view, targets, "No targets available", (Point p) -> {
-                        HexSide side = sideToPoint.get(p);
-                        for (int a = 0; a < 3; a++) {
-                            Point p1 = Hexagons.followLine(receiver.wielder.getPoint(), side, a + 1);
-                            view.game.world.getTile(p1).unit.ifPresent(
-                                    (Unit u) -> effects.add(receiver.wielder.combat.attck(view, u, new Damage(4))));
-                        }
-                    });
-                    return effects;
+                    return receiver.wielder.getLeader().get().select(view, targets, "No targets available",
+                            (Point p) -> {
+                                final List<SideEffect> effects = SideEffect.list();
+                                final HexSide side = sideToPoint.get(p);
+                                for (int a = 0; a < 3; a++) {
+                                    Point p1 = Hexagons.followLine(receiver.wielder.getPoint(), side, a + 1);
+                                    view.game.world.getTile(p1).flatMap((Tile t) -> t.unit)
+                                            .ifPresent((Unit u) -> effects
+                                                    .add(receiver.wielder.combat.attack(view, u, new Damage(4))));
+                                }
+                                return SideEffect.all(effects);
+                            });
                 });
 
         // Green Fortress

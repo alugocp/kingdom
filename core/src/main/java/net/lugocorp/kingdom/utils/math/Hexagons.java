@@ -72,20 +72,21 @@ public class Hexagons {
      * Returns the coordinate translation needed to move in the given direction, as
      * a Point
      */
-    public Point getDirectionTranslation(Point start, HexSide direction) {
+    public static Point getDirectionTranslation(Point start, HexSide direction) {
         final boolean even = start.y % 2 == 0;
         switch (direction) {
-            case (HexSide.TOP_RIGHT) :
+            case TOP_RIGHT :
                 return even ? new Point(0, -1) : new Point(1, -1);
-            case (HexSide.BOT_RIGHT) :
+            case BOT_RIGHT :
                 return even ? new Point(0, 1) : new Point(1, 1);
-            case (HexSide.TOP_LEFT) :
+            case TOP_LEFT :
                 return even ? new Point(-1, -1) : new Point(0, -1);
-            case (HexSide.BOT_LEFT) :
+            case BOT_LEFT :
                 return even ? new Point(-1, 1) : new Point(0, 1);
-            case (HexSide.RIGHT) :
+            case RIGHT :
                 return even ? new Point(1, 0) : new Point(1, 0);
-            case (HexSide.LEFT) :
+            case LEFT :
+            default :
                 return even ? new Point(-1, 0) : new Point(-1, 0);
         }
     }
@@ -94,8 +95,8 @@ public class Hexagons {
      * Calculates which Point you'll end up at from some starting Point, direction
      * and distance
      */
-    public Point followLine(Point origin, HexSide direction, int distance) {
-        Point p = new Point(origin.x, origin.y);
+    public static Point followLine(Point origin, HexSide direction, int distance) {
+        final Point p = new Point(origin.x, origin.y);
         for (int a = 0; a < distance; a++) {
             p.add(Hexagons.getDirectionTranslation(p, direction));
         }

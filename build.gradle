@@ -132,7 +132,7 @@ spotless {
     }
     eclipse()
     trimTrailingWhitespace()
-    indentWithSpaces(4)
+    leadingTabsToSpaces(4)
     endWithNewline()
     importOrder('net.lugocorp', 'com.badlogic', 'com.esotericsoftware', 'java')
     removeUnusedImports()

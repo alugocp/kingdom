@@ -146,7 +146,7 @@ public class TurnStructure {
     private void processFutureTick(GameView view, FutureTick ft) {
         this.futures.remove(ft);
         Events.RepeatedEvent e = new Events.RepeatedEvent(ft.channel, ft.interval, ft.repeat);
-        ft.receiver.handleEvent(view, e);
+        ft.receiver.handleEvent(view, e).execute();
         if (e.repeat) {
             this.addFutureTick(ft.channel, ft.receiver, e.interval, true);
         }
