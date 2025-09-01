@@ -6,7 +6,19 @@ import net.lugocorp.kingdom.game.properties.Species;
  */
 public class Defs {
     /**
-     * SECTION Races
+     * SECTION Assets
+     */
+    public static final String assets_icons = "icons";
+    public static final String assets_artifacts = "artifacts";
+    public static final String assets_fates = "fates";
+    public static final String assets_grass = "grass";
+    public static final String assets_water = "water";
+    public static final String assets_rock = "rock";
+    public static final String assets_sand = "sand";
+    public static final String assets_lava = "lava";
+
+    /**
+     * SECTION Species
      */
     public static final Species species_human = new Species("Human");
     public static final Species species_elf = new Species("Elf");

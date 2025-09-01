@@ -66,28 +66,28 @@ public class KingdomMod implements GameMod {
     /** {@inheritdoc} */
     @Override
     public void registerSprites(SpriteLoader sprites) {
-        sprites.register("placeholder", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
-        sprites.register("potion", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
-        sprites.register("apple", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
-        sprites.register("pouch", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
-        sprites.register("coin", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
-        sprites.register("sword", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
-        sprites.register("shield", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
-        sprites.register("leaf", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
-        sprites.register("mushroom", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
-        sprites.register("emerald", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
-        sprites.register("bone", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
-        sprites.register("fish", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
-        sprites.register("flower", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
-        sprites.register("seeds", "icons", InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
-        sprites.register("golden feather", "artifacts", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
-        sprites.register("raider", "fates", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
-        sprites.register("merchant", "fates", FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
-        sprites.register("veteran", "fates", FateNode.WIDTH, FateNode.HEIGHT, 2, 0);
-        sprites.register("devout", "fates", FateNode.WIDTH, FateNode.HEIGHT, 3, 0);
-        sprites.register("sentinel", "fates", FateNode.WIDTH, FateNode.HEIGHT, 0, 1);
-        sprites.register("usurper", "fates", FateNode.WIDTH, FateNode.HEIGHT, 1, 1);
-        sprites.register("forager", "fates", FateNode.WIDTH, FateNode.HEIGHT, 2, 1);
+        sprites.register("placeholder", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
+        sprites.register("potion", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
+        sprites.register("apple", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
+        sprites.register("pouch", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
+        sprites.register("coin", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
+        sprites.register("sword", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
+        sprites.register("shield", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
+        sprites.register("candle", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
+        sprites.register("mushroom", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
+        sprites.register("crystal", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
+        sprites.register("bone", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
+        sprites.register("fish", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
+        sprites.register("flower", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
+        sprites.register("seeds", Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
+        sprites.register("golden feather", Defs.assets_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
+        sprites.register("raider", Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
+        sprites.register("merchant", Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
+        sprites.register("veteran", Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 0);
+        sprites.register("devout", Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 3, 0);
+        sprites.register("sentinel", Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 1);
+        sprites.register("usurper", Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 1);
+        sprites.register("forager", Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 1);
     }
 
     /** {@inheritdoc} */
@@ -140,7 +140,7 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_grass, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, "grass");
+                    e.blob.setModelInstance(view.av, Defs.assets_grass);
                     e.blob.setMinimapColor(0x2c9965);
                     return SideEffect.none;
                 });
@@ -149,9 +149,9 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_rock, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, "grass");
+                    e.blob.setModelInstance(view.av, Defs.assets_grass);
                     e.blob.setMinimapColor(0x666666);
-                    e.blob.setMaterial("rock");
+                    e.blob.setMaterial(Defs.assets_rock);
                     return SideEffect.none;
                 });
 
@@ -159,9 +159,9 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_sand, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, "grass");
+                    e.blob.setModelInstance(view.av, Defs.assets_grass);
                     e.blob.setMinimapColor(0xc7c567);
-                    e.blob.setMaterial("sand");
+                    e.blob.setMaterial(Defs.assets_sand);
                     return SideEffect.none;
                 });
 
@@ -169,7 +169,7 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_snow, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, "grass");
+                    e.blob.setModelInstance(view.av, Defs.assets_grass);
                     e.blob.setMinimapColor(0xffffff);
                     e.blob.setMaterial("snow");
                     return SideEffect.none;
@@ -179,7 +179,7 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_water, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, "water");
+                    e.blob.setModelInstance(view.av, Defs.assets_water);
                     e.blob.setMinimapColor(0x20c7f7);
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
@@ -190,9 +190,9 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_lava, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, "water");
+                    e.blob.setModelInstance(view.av, Defs.assets_water);
                     e.blob.setMinimapColor(0xcf3b23);
-                    e.blob.setMaterial("lava");
+                    e.blob.setMaterial(Defs.assets_lava);
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
                     return SideEffect.none;
@@ -2048,7 +2048,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to increase your gold";
-                    e.blob.icon = Optional.of("emerald");
+                    e.blob.icon = Optional.of("crystal");
                     e.blob.gold = 10;
                     return SideEffect.none;
                 });
