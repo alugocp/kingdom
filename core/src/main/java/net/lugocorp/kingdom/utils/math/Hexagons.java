@@ -7,12 +7,6 @@ import java.util.function.Function;
  * Handles all math related to the game's hexagonal grid space
  */
 public class Hexagons {
-    public static final int BORDER_LEFT = 1;
-    public static final int BORDER_RIGHT = 2;
-    public static final int BORDER_TOP_LEFT = 4;
-    public static final int BORDER_TOP_RIGHT = 8;
-    public static final int BORDER_BOT_LEFT = 16;
-    public static final int BORDER_BOT_RIGHT = 32;
     public static final float SIDE = 0.5773505f;
     public static final float DEPTH = 1.154701f;
     public static final float WIDTH = 1f;
@@ -45,9 +39,9 @@ public class Hexagons {
      * Returns true if the two given Points are adjacent
      */
     public static boolean areNeighbors(Point p1, Point p2) {
-        // TODO please optimize this...please
-        final Set<Point> adj = Hexagons.getNeighbors(p1, 1);
-        return adj.contains(p2);
+        return (p1.y == p2.y && Math.abs(p1.x - p2.x) == 1)
+                || (Math.abs(p1.y - p2.y) == 1 && ((p1.y % 2 == 0 && (p2.x == p1.x || p2.x == p1.x - 1))
+                        || (p1.y % 2 == 1 && (p2.x == p1.x || p2.x == p1.x + 1))));
     }
 
     /**
@@ -60,17 +54,51 @@ public class Hexagons {
         for (Point p1 : neighbors) {
             if (criteria.apply(p1)) {
                 if (p.y == p1.y) {
-                    borders += p.x < p1.x ? Hexagons.BORDER_RIGHT : Hexagons.BORDER_LEFT;
+                    borders += p.x < p1.x ? HexSide.RIGHT.value : HexSide.LEFT.value;
                 } else {
                     boolean right = (p.y % 2 == 0 && p.x == p1.x) || (p.y % 2 == 1 && p.x == p1.x - 1);
                     if (p.y < p1.y) {
-                        borders += right ? Hexagons.BORDER_BOT_RIGHT : Hexagons.BORDER_BOT_LEFT;
+                        borders += right ? HexSide.BOT_RIGHT.value : HexSide.BOT_LEFT.value;
                     } else {
-                        borders += right ? Hexagons.BORDER_TOP_RIGHT : Hexagons.BORDER_TOP_LEFT;
+                        borders += right ? HexSide.TOP_RIGHT.value : HexSide.TOP_LEFT.value;
                     }
                 }
             }
         }
         return borders;
+    }
+
+    /**
+     * Returns the coordinate translation needed to move in the given direction, as
+     * a Point
+     */
+    public Point getDirectionTranslation(Point start, HexSide direction) {
+        final boolean even = start.y % 2 == 0;
+        switch (direction) {
+            case (HexSide.TOP_RIGHT) :
+                return even ? new Point(0, -1) : new Point(1, -1);
+            case (HexSide.BOT_RIGHT) :
+                return even ? new Point(0, 1) : new Point(1, 1);
+            case (HexSide.TOP_LEFT) :
+                return even ? new Point(-1, -1) : new Point(0, -1);
+            case (HexSide.BOT_LEFT) :
+                return even ? new Point(-1, 1) : new Point(0, 1);
+            case (HexSide.RIGHT) :
+                return even ? new Point(1, 0) : new Point(1, 0);
+            case (HexSide.LEFT) :
+                return even ? new Point(-1, 0) : new Point(-1, 0);
+        }
+    }
+
+    /**
+     * Calculates which Point you'll end up at from some starting Point, direction
+     * and distance
+     */
+    public Point followLine(Point origin, HexSide direction, int distance) {
+        Point p = new Point(origin.x, origin.y);
+        for (int a = 0; a < distance; a++) {
+            p.add(Hexagons.getDirectionTranslation(p, direction));
+        }
+        return p;
     }
 }

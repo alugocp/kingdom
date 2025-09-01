@@ -29,6 +29,14 @@ public class Point {
         }
     }
 
+    /**
+     * Adds another Point to this Point
+     */
+    public void add(Point p) {
+        this.x += p.x;
+        this.y += p.y;
+    }
+
     /** {@inheritdoc} */
     @Override
     public String toString() {
