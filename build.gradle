@@ -1,81 +1,81 @@
 
 buildscript {
-  repositories {
-    mavenCentral()
-    maven { url 'https://s01.oss.sonatype.org' }
-    gradlePluginPortal()
-    mavenLocal()
-    google()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-  }
+    repositories {
+        mavenCentral()
+        maven { url 'https://s01.oss.sonatype.org' }
+        gradlePluginPortal()
+        mavenLocal()
+        google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    }
 }
 
 plugins {
-  id "com.diffplug.spotless" version "7.2.1"
+    id "com.diffplug.spotless" version "7.2.1"
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 allprojects {
-  apply plugin: 'java-library'
-  apply plugin: 'eclipse'
-  apply plugin: 'idea'
-  sourceCompatibility = 11
+    apply plugin: 'java-library'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    sourceCompatibility = 11
 
-  // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
-  idea {
-    module {
-      outputDir file('build/classes/java/main')
-      testOutputDir file('build/classes/java/test')
+    // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
+    idea {
+        module {
+            outputDir file('build/classes/java/main')
+            testOutputDir file('build/classes/java/test')
+        }
     }
-  }
 
-  tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:deprecation"
-  }
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation"
+    }
 }
 
 configure(subprojects) {
-  // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
-  // The article can be helpful when using assets.txt in your project.
-  tasks.register('generateAssetList') {
-    inputs.dir("${project.rootDir}/assets/")
-    // projectFolder/assets
-    File assetsFolder = new File("${project.rootDir}/assets/")
-    // projectFolder/assets/assets.txt
-    File assetsFile = new File(assetsFolder, "assets.txt")
-    // delete that file in case we've already created it
-    assetsFile.delete()
+    // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
+    // The article can be helpful when using assets.txt in your project.
+    tasks.register('generateAssetList') {
+        inputs.dir("${project.rootDir}/assets/")
+        // projectFolder/assets
+        File assetsFolder = new File("${project.rootDir}/assets/")
+        // projectFolder/assets/assets.txt
+        File assetsFile = new File(assetsFolder, "assets.txt")
+        // delete that file in case we've already created it
+        assetsFile.delete()
 
-    // iterate through all files inside that folder
-    // convert it to a relative path
-    // and append it to the file assets.txt
-    fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.each {
-      assetsFile.append(it + "\n")
+        // iterate through all files inside that folder
+        // convert it to a relative path
+        // and append it to the file assets.txt
+        fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.each {
+            assetsFile.append(it + "\n")
+        }
     }
-  }
-  processResources.dependsOn 'generateAssetList'
+    processResources.dependsOn 'generateAssetList'
 
-  compileJava {
-    options.incremental = true
-  }
+    compileJava {
+        options.incremental = true
+    }
 }
 
 subprojects {
-  version = "${projectVersion}"
-  ext.appName = 'Kingdom'
-  repositories {
-    mavenCentral()
-    maven { url 'https://s01.oss.sonatype.org' }
-    // You may want to remove the following line if you have errors downloading dependencies.
-    mavenLocal()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://jitpack.io' }
-  }
+    version = "${projectVersion}"
+    ext.appName = 'Kingdom'
+    repositories {
+        mavenCentral()
+        maven { url 'https://s01.oss.sonatype.org' }
+        // You may want to remove the following line if you have errors downloading dependencies.
+        mavenLocal()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 eclipse.project.name = 'Kingdom' + '-parent'
@@ -84,8 +84,8 @@ eclipse.project.name = 'Kingdom' + '-parent'
  * This task sets up Git hooks
  */
 task installHooks(type: Copy){
-  from new File(rootProject.rootDir, '.hooks/pre-commit')
-  into { new File(rootProject.rootDir, '.git/hooks')}
+    from new File(rootProject.rootDir, '.hooks/pre-commit')
+    into { new File(rootProject.rootDir, '.git/hooks')}
 }
 
 /**
@@ -105,13 +105,13 @@ class CleanAssetsTask extends DefaultTask {
         def folder = new File(filepath)
         for (file in folder.listFiles()) {
             if (file.isDirectory()) {
-              this.iterateAssetsFolder(file.getPath())
-              continue
+                this.iterateAssetsFolder(file.getPath())
+                continue
             }
             def pattern = ~/.obj$/
             def matcher = file.getName() =~ pattern
             if (!matcher.find()) {
-              continue
+                continue
             }
             def objFile = file.getName()
             def g3dbFile = file.getName()[0..-4] + "g3db"
@@ -124,18 +124,26 @@ class CleanAssetsTask extends DefaultTask {
 
 tasks.register("cleanAssets", CleanAssetsTask)
 
+// Formatting
 spotless {
-  java {
-    target fileTree('.') {
-      include '**/*.java'
-      exclude '**/build/**'
+    groovyGradle {
+        target '**/*.gradle'
+        greclipse()
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        endWithNewline()
     }
-    eclipse()
-    trimTrailingWhitespace()
-    leadingTabsToSpaces(4)
-    endWithNewline()
-    importOrder('net.lugocorp', 'com.badlogic', 'com.esotericsoftware', 'java')
-    removeUnusedImports()
-    replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
-  }
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**'
+        }
+        eclipse()
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        endWithNewline()
+        importOrder('net.lugocorp', 'com.badlogic', 'com.esotericsoftware', 'java')
+        removeUnusedImports()
+        replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
+    }
 }
