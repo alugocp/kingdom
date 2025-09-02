@@ -5,40 +5,42 @@ import net.lugocorp.kingdom.game.properties.Species;
  * Contains definitions for names and labels across all official content mods
  */
 public class Defs {
+
     /**
      * SECTION Assets
      */
-    public static final String assets_icons = "icons";
-    public static final String assets_artifacts = "artifacts";
-    public static final String assets_fates = "fates";
-    public static final String assets_grass = "grass";
-    public static final String assets_water = "water";
-    public static final String assets_rock = "rock";
-    public static final String assets_sand = "sand";
-    public static final String assets_lava = "lava";
-    public static final String assets_taiga = "taiga";
-    public static final String assets_placeholder = "placeholder";
-    public static final String assets_potion = "potion";
-    public static final String assets_apple = "apple";
-    public static final String assets_pouch = "pouch";
-    public static final String assets_coin = "coin";
-    public static final String assets_sword = "sword";
-    public static final String assets_shield = "shield";
-    public static final String assets_candle = "candle";
-    public static final String assets_mushroom = "mushroom";
-    public static final String assets_crystal = "crystal";
-    public static final String assets_bone = "bone";
-    public static final String assets_fish = "fish";
-    public static final String assets_flower = "flower";
-    public static final String assets_seeds = "seeds";
-    public static final String assets_golden_feather = "golden feather";
-    public static final String assets_raider = "raider";
-    public static final String assets_merchant = "merchant";
-    public static final String assets_veteran = "veteran";
-    public static final String assets_devout = "devout";
-    public static final String assets_sentinel = "sentinel";
-    public static final String assets_usurper = "usurper";
-    public static final String assets_forager = "forager";
+    public static final String asset_icons = "icons";
+    public static final String asset_artifacts = "artifacts";
+    public static final String asset_fates = "fates";
+    public static final String asset_grass = "grass";
+    public static final String asset_water = "water";
+    public static final String asset_rock = "rock";
+    public static final String asset_sand = "sand";
+    public static final String asset_lava = "lava";
+    public static final String asset_snow = "snow";
+    public static final String asset_taiga = "taiga";
+    public static final String asset_placeholder = "placeholder";
+    public static final String asset_potion = "potion";
+    public static final String asset_apple = "apple";
+    public static final String asset_pouch = "pouch";
+    public static final String asset_coin = "coin";
+    public static final String asset_sword = "sword";
+    public static final String asset_shield = "shield";
+    public static final String asset_candle = "candle";
+    public static final String asset_mushroom = "mushroom";
+    public static final String asset_crystal = "crystal";
+    public static final String asset_bone = "bone";
+    public static final String asset_fish = "fish";
+    public static final String asset_flower = "flower";
+    public static final String asset_seeds = "seeds";
+    public static final String asset_golden_feather = "golden feather";
+    public static final String asset_raider = "raider";
+    public static final String asset_merchant = "merchant";
+    public static final String asset_veteran = "veteran";
+    public static final String asset_devout = "devout";
+    public static final String asset_sentinel = "sentinel";
+    public static final String asset_usurper = "usurper";
+    public static final String asset_forager = "forager";
 
     /**
      * SECTION Species
@@ -122,7 +124,7 @@ public class Defs {
     public static final String artifact_orb_of_nerketo = "Orb of Nerketo";
     public static final String artifact_shadas_flute = "Shada's Flute";
     public static final String artifact_stones_of_thudin = "Stones of Thudin";
-    public static final String artifact_the_chasi_bones = "The Chasi Bones";
+    public static final String artifact_chasi_bones = "The Chasi Bones";
     public static final String artifact_uchas_bowl_of_plenty = "Ucha's Bowl of Plenty";
     public static final String artifact_nerketos_helm = "Nerketo's Helm";
     public static final String artifact_bounty_of_ahn_june = "Bounty of Ahn-Juné";
@@ -132,7 +134,7 @@ public class Defs {
     public static final String artifact_gaias_effigy = "Gaia's Effigy";
     public static final String artifact_rod_of_adelon = "Rod of Adelon";
     public static final String artifact_blade_of_sanguinor = "Blade of Sanguinor";
-    public static final String artifact_cask_of_amonitor = "Cask of Amontior";
+    public static final String artifact_cask_of_amontior = "Cask of Amontior";
 
     /**
      * SECTION Fates
@@ -156,7 +158,7 @@ public class Defs {
     public static final String unit_lady_daumia = "Lady Daumia";
     public static final String unit_frogger_the_gnome = "Frogger the Gnome";
     public static final String unit_stalagmus = "Stalagmus";
-    public static final String unit_the_druid = "The Druid";
+    public static final String unit_druid = "The Druid";
     public static final String unit_blorp_the_burning = "Blorp the Burning";
     public static final String unit_prismar = "Prismar";
     public static final String unit_pumpkin_boy = "Pumpkin Boy";

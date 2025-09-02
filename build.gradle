@@ -126,6 +126,14 @@ tasks.register("cleanAssets", CleanAssetsTask)
 
 // Formatting
 spotless {
+    json {
+        target '**/*.json'
+        simple().indentWithSpaces(4)
+    }
+    //python {
+    //    target '**/*.py'
+    //    black()
+    //}
     groovyGradle {
         target '**/*.gradle'
         greclipse()

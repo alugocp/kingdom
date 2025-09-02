@@ -2,6 +2,8 @@
 
 ![Static Badge](https://img.shields.io/badge/Java-11-a?color=%23ED8B00)
 ![Static Badge](https://img.shields.io/badge/libGDX-1.12.1-a?color=%23E74A45)
+![Static Badge](https://img.shields.io/badge/Gradle-8-a?color=%23209BC4)
+![Static Badge](https://img.shields.io/badge/Python-3.11-a?color=%23FFD43B)
 
 A turn-based strategy game written in Java with [libGDX](https://libgdx.com/).
 Manage resources and train units as you grow your empire and change the world around you.
@@ -40,6 +42,14 @@ gradle content:vanilla:build
 
 This will recompile the content JARs located in `mods`.
 If you change the 3D models then run `gradle cleanAssets` *before* `gradle content:vanilla:build`.
+
+If you want to add new content to an official mod, modify the `content/common/defs.json` file and then run the following:
+
+```bash
+python3 content/common/create_defs.py
+```
+
+This will re-generate the `Defs` class that all official mods use.
 
 ## Notes
 - [libGDX JavaDocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/index.html)

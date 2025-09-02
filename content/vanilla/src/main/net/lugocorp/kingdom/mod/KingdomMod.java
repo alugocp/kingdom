@@ -66,29 +66,29 @@ public class KingdomMod implements GameMod {
     /** {@inheritdoc} */
     @Override
     public void registerSprites(SpriteLoader sprites) {
-        sprites.register(Defs.assets_placeholder, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
-        sprites.register(Defs.assets_potion, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
-        sprites.register(Defs.assets_apple, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
-        sprites.register(Defs.assets_pouch, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
-        sprites.register(Defs.assets_coin, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
-        sprites.register(Defs.assets_sword, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
-        sprites.register(Defs.assets_shield, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
-        sprites.register(Defs.assets_candle, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
-        sprites.register(Defs.assets_mushroom, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
-        sprites.register(Defs.assets_crystal, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
-        sprites.register(Defs.assets_bone, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
-        sprites.register(Defs.assets_fish, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
-        sprites.register(Defs.assets_flower, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
-        sprites.register(Defs.assets_seeds, Defs.assets_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
-        sprites.register(Defs.assets_golden_feather, Defs.assets_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
+        sprites.register(Defs.asset_placeholder, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
+        sprites.register(Defs.asset_potion, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
+        sprites.register(Defs.asset_apple, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
+        sprites.register(Defs.asset_pouch, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
+        sprites.register(Defs.asset_coin, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
+        sprites.register(Defs.asset_sword, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
+        sprites.register(Defs.asset_shield, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
+        sprites.register(Defs.asset_candle, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
+        sprites.register(Defs.asset_mushroom, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
+        sprites.register(Defs.asset_crystal, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
+        sprites.register(Defs.asset_bone, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
+        sprites.register(Defs.asset_fish, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
+        sprites.register(Defs.asset_flower, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
+        sprites.register(Defs.asset_seeds, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
+        sprites.register(Defs.asset_golden_feather, Defs.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
                 0);
-        sprites.register(Defs.assets_raider, Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
-        sprites.register(Defs.assets_merchant, Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
-        sprites.register(Defs.assets_veteran, Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 0);
-        sprites.register(Defs.assets_devout, Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 3, 0);
-        sprites.register(Defs.assets_sentinel, Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 1);
-        sprites.register(Defs.assets_usurper, Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 1);
-        sprites.register(Defs.assets_forager, Defs.assets_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 1);
+        sprites.register(Defs.asset_raider, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
+        sprites.register(Defs.asset_merchant, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
+        sprites.register(Defs.asset_veteran, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 0);
+        sprites.register(Defs.asset_devout, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 3, 0);
+        sprites.register(Defs.asset_sentinel, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 1);
+        sprites.register(Defs.asset_usurper, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 1);
+        sprites.register(Defs.asset_forager, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 1);
     }
 
     /** {@inheritdoc} */
@@ -141,7 +141,7 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_grass, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, Defs.assets_grass);
+                    e.blob.setModelInstance(view.av, Defs.asset_grass);
                     e.blob.setMinimapColor(0x2c9965);
                     return SideEffect.none;
                 });
@@ -150,9 +150,9 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_rock, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, Defs.assets_grass);
+                    e.blob.setModelInstance(view.av, Defs.asset_grass);
                     e.blob.setMinimapColor(0x666666);
-                    e.blob.setMaterial(Defs.assets_rock);
+                    e.blob.setMaterial(Defs.asset_rock);
                     return SideEffect.none;
                 });
 
@@ -160,9 +160,9 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_sand, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, Defs.assets_grass);
+                    e.blob.setModelInstance(view.av, Defs.asset_grass);
                     e.blob.setMinimapColor(0xc7c567);
-                    e.blob.setMaterial(Defs.assets_sand);
+                    e.blob.setMaterial(Defs.asset_sand);
                     return SideEffect.none;
                 });
 
@@ -170,9 +170,9 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_snow, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, Defs.assets_grass);
+                    e.blob.setModelInstance(view.av, Defs.asset_grass);
                     e.blob.setMinimapColor(0xffffff);
-                    e.blob.setMaterial(Defs.assets_snow);
+                    e.blob.setMaterial(Defs.asset_snow);
                     return SideEffect.none;
                 });
 
@@ -180,7 +180,7 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_water, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, Defs.assets_water);
+                    e.blob.setModelInstance(view.av, Defs.asset_water);
                     e.blob.setMinimapColor(0x20c7f7);
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
@@ -191,9 +191,9 @@ public class KingdomMod implements GameMod {
         events.tile.addEventHandler(Defs.tile_lava, "GenerateTileEvent",
                 (GameView view, Tile receiver, Event event) -> {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
-                    e.blob.setModelInstance(view.av, Defs.assets_water);
+                    e.blob.setModelInstance(view.av, Defs.asset_water);
                     e.blob.setMinimapColor(0xcf3b23);
-                    e.blob.setMaterial(Defs.assets_lava);
+                    e.blob.setMaterial(Defs.asset_lava);
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
                     return SideEffect.none;
@@ -241,7 +241,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "The trees are pretty this time of year";
                     e.blob.setMinimapColor(0xb4c3c7);
-                    e.blob.setMaterial(Defs.assets_taiga);
+                    e.blob.setMaterial(Defs.asset_taiga);
                     return SideEffect.none;
                 });
 
@@ -392,7 +392,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your healing glyph units get +1 movement speed";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_chos_sigil_of_haste, "ArtifactClaimedEvent",
@@ -415,7 +415,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your defense glyph units get +1 movement speed";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_urdins_scroll_of_agility, "ArtifactClaimedEvent",
@@ -438,7 +438,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units have +10% critical hit chance";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_sword_of_aesethos, "ArtifactClaimedEvent",
@@ -461,7 +461,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units within a patron's domain have extra defense";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_kaunas_amulet, "ArtifactClaimedEvent",
@@ -489,7 +489,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your healing spells restore +4 more health";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_staff_of_wurmdel, "ArtifactClaimedEvent",
@@ -512,7 +512,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "20% chance to spawn a glyph when your units kill an enemy";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_tome_of_morun, "ArtifactClaimedEvent",
@@ -538,7 +538,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units have +1 vision";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_orb_of_nerketo, "ArtifactClaimedEvent",
@@ -561,7 +561,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your patrons generate 5 unit points per turn";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_shadas_flute, "ArtifactClaimedEvent",
@@ -584,7 +584,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your vaults have +3 defense";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Defs.artifact_stones_of_thudin, "ArtifactClaimedEvent",
@@ -605,20 +605,20 @@ public class KingdomMod implements GameMod {
                 });
 
         // The Chasi Bones
-        events.artifact.addEventHandler(Defs.artifact_the_chasi_bones, "GenerateArtifactEvent",
+        events.artifact.addEventHandler(Defs.artifact_chasi_bones, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your nature glyph units have a 20% chance to harvest an additional item";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Defs.artifact_the_chasi_bones, "ArtifactClaimedEvent",
+        events.artifact.addEventHandler(Defs.artifact_chasi_bones, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     view.game.events.signals.addListener("HarvestEvent", e.artifact);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Defs.artifact_the_chasi_bones, "HarvestEvent",
+        events.artifact.addEventHandler(Defs.artifact_chasi_bones, "HarvestEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.HarvestEvent e = (Events.HarvestEvent) event;
                     if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.NATURE) && !e.unit.haul.isFull()
@@ -633,7 +633,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "+1 option when selecting a new unit";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -649,7 +649,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Critical hits against your units are less effective";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -673,7 +673,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Trade glyph units on your vaults generate +2 more auction points";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -699,7 +699,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your battle glyph units get +1 movement speed";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -723,7 +723,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your trade glyph units have +2 defense";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -750,7 +750,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "15% chance refresh a glyph when you recruit a unit";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -778,7 +778,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "+10 unit points each turn";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });
@@ -798,7 +798,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "5% chance to recruit an enemy unit when you kill it";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });
@@ -823,7 +823,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your battle glyph units deal +2 damage";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });
@@ -844,21 +844,21 @@ public class KingdomMod implements GameMod {
                 });
 
         // Cask of Amonitor
-        events.artifact.addEventHandler(Defs.artifact_cask_of_amonitor, "GenerateArtifactEvent",
+        events.artifact.addEventHandler(Defs.artifact_cask_of_amontior, "GenerateArtifactEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your unoccupied tiles in a patron's domain provide +1 favor";
-                    e.blob.image = Optional.of(Defs.assets_golden_feather);
+                    e.blob.image = Optional.of(Defs.asset_golden_feather);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Defs.artifact_cask_of_amonitor, "ArtifactClaimedEvent",
+        events.artifact.addEventHandler(Defs.artifact_cask_of_amontior, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     view.game.events.signals.addListener("CalculateFavorEvent", e.artifact);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Defs.artifact_cask_of_amonitor, "CalculateFavorEvent",
+        events.artifact.addEventHandler(Defs.artifact_cask_of_amontior, "CalculateFavorEvent",
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.CalculateFavorEvent e = (Events.CalculateFavorEvent) event;
                     if (receiver.isClaimedByPlayer(e.player)) {
@@ -880,7 +880,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Defs.fate_raider, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of(Defs.assets_raider);
+                    e.blob.image = Optional.of(Defs.asset_raider);
                     e.blob.desc.add("Playstyle: High-risk aggro");
                     return SideEffect.none;
                 });
@@ -889,7 +889,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Defs.fate_merchant, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of(Defs.assets_merchant);
+                    e.blob.image = Optional.of(Defs.asset_merchant);
                     e.blob.desc.add("Playstyle: Market control");
                     return SideEffect.none;
                 });
@@ -898,7 +898,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Defs.fate_veteran, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of(Defs.assets_veteran);
+                    e.blob.image = Optional.of(Defs.asset_veteran);
                     e.blob.desc.add("Playstyle: Military production");
                     return SideEffect.none;
                 });
@@ -907,7 +907,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Defs.fate_devout, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of(Defs.assets_devout);
+                    e.blob.image = Optional.of(Defs.asset_devout);
                     e.blob.desc.add("Playstyle: Patron collection");
                     return SideEffect.none;
                 });
@@ -916,7 +916,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Defs.fate_sentinel, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of(Defs.assets_sentinel);
+                    e.blob.image = Optional.of(Defs.asset_sentinel);
                     e.blob.desc.add("Playstyle: Defensive expansion");
                     return SideEffect.none;
                 });
@@ -925,7 +925,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Defs.fate_usurper, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of(Defs.assets_usurper);
+                    e.blob.image = Optional.of(Defs.asset_usurper);
                     e.blob.desc.add("Playstyle: Early market bonus into unit production");
                     return SideEffect.none;
                 });
@@ -934,7 +934,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Defs.fate_forager, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
-                    e.blob.image = Optional.of(Defs.assets_forager);
+                    e.blob.image = Optional.of(Defs.asset_forager);
                     e.blob.desc.add("Playstyle: Resource accumulation");
                     return SideEffect.none;
                 });
@@ -1097,7 +1097,7 @@ public class KingdomMod implements GameMod {
         // Grizzlemane the Mycoweaver
         // Magicad
         // The Druid
-        events.unit.addEventHandler(Defs.unit_the_druid, "GenerateUnitEvent",
+        events.unit.addEventHandler(Defs.unit_druid, "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "A mysterious Druid who rarely speaks";
@@ -1141,7 +1141,7 @@ public class KingdomMod implements GameMod {
         events.unit.addEventHandler(Defs.unit_prismar, "GenerateUnitEvent",
                 (GameView view, Unit receiver, Event event) -> {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
-                    e.blob.setModelInstance(view.av, Defs.assets_crystal);
+                    e.blob.setModelInstance(view.av, Defs.asset_crystal);
                     e.blob.desc = "This Gemstone can focus light into powerful attacks";
                     e.blob.setActiveAbilities(view.game.generator, Optional.of(Defs.ability_fire_laser),
                             Optional.of(Defs.ability_collapse_mine));
@@ -1998,7 +1998,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to generate extra favor";
-                    e.blob.icon = Optional.of(Defs.assets_seeds);
+                    e.blob.icon = Optional.of(Defs.asset_seeds);
                     e.blob.gold = 1;
                     return SideEffect.none;
                 });
@@ -2013,7 +2013,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to smell a sweet flower";
-                    e.blob.icon = Optional.of(Defs.assets_flower);
+                    e.blob.icon = Optional.of(Defs.asset_flower);
                     e.blob.gold = 1;
                     return SideEffect.none;
                 });
@@ -2025,7 +2025,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to stave off hunger";
-                    e.blob.icon = Optional.of(Defs.assets_fish);
+                    e.blob.icon = Optional.of(Defs.asset_fish);
                     e.blob.gold = 1;
                     return SideEffect.none;
                 });
@@ -2037,7 +2037,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to increase your gold";
-                    e.blob.icon = Optional.of(Defs.assets_coin);
+                    e.blob.icon = Optional.of(Defs.asset_coin);
                     e.blob.gold = 1;
                     return SideEffect.none;
                 });
@@ -2049,7 +2049,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to increase your gold";
-                    e.blob.icon = Optional.of(Defs.assets_crystal);
+                    e.blob.icon = Optional.of(Defs.asset_crystal);
                     e.blob.gold = 10;
                     return SideEffect.none;
                 });
@@ -2061,7 +2061,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to stave off hunger";
-                    e.blob.icon = Optional.of(Defs.assets_apple);
+                    e.blob.icon = Optional.of(Defs.asset_apple);
                     e.blob.gold = 1;
                     e.blob.tags.add(Defs.tag_natural).add(Defs.tag_fruit);
                     return SideEffect.none;
@@ -2074,7 +2074,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Item receiver, Event event) -> {
                     Events.GenerateItemEvent e = (Events.GenerateItemEvent) event;
                     e.blob.desc = "Consume to heal by 10 hit points";
-                    e.blob.icon = Optional.of(Defs.assets_potion);
+                    e.blob.icon = Optional.of(Defs.asset_potion);
                     e.blob.gold = 1;
                     return SideEffect.none;
                 });

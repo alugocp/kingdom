@@ -1,0 +1,279 @@
+{
+    "imports": ["net.lugocorp.kingdom.game.properties.Species"],
+    "sections": [
+        {
+            "prefix": "asset",
+            "name": "Assets",
+            "labels": [
+                "icons",
+                "artifacts",
+                "fates",
+                "grass",
+                "water",
+                "rock",
+                "sand",
+                "lava",
+                "snow",
+                "taiga",
+                "placeholder",
+                "potion",
+                "apple",
+                "pouch",
+                "coin",
+                "sword",
+                "shield",
+                "candle",
+                "mushroom",
+                "crystal",
+                "bone",
+                "fish",
+                "flower",
+                "seeds",
+                "golden feather",
+                "raider",
+                "merchant",
+                "veteran",
+                "devout",
+                "sentinel",
+                "usurper",
+                "forager"
+            ]
+        },
+        {
+            "prefix": "species",
+            "name": "Species",
+            "labels": [
+                "Human",
+                "Elf",
+                "Dwarf",
+                "Gnome",
+                "Orc",
+                "Goblin",
+                "Giant",
+                [
+                    "Grue",
+                    "Giant"
+                ],
+                [
+                    "Ogre",
+                    "Giant"
+                ],
+                [
+                    "Ettin",
+                    "Giant"
+                ],
+                [
+                    "Troll",
+                    "Giant"
+                ],
+                "Centaur",
+                "Salamander",
+                "Tortugan",
+                [
+                    "Kappa",
+                    "Tortugan"
+                ],
+                "Brownie",
+                "Kobold",
+                [
+                    "Firbolg",
+                    "Kobold"
+                ],
+                "Merfolk",
+                "Garuda",
+                "Dragonkin",
+                "Toadstool",
+                "Sprite",
+                [
+                    "Dryad",
+                    "Sprite"
+                ],
+                "Demon",
+                "Tulpa",
+                "Golem",
+                "Plasmoid",
+                "Undead",
+                "Elemental",
+                [
+                    "Gemstone",
+                    "Elemental"
+                ]
+            ]
+        },
+        {
+            "prefix": "tag",
+            "name": "Tags",
+            "labels": [
+                "natural",
+                "fruit"
+            ]
+        },
+        {
+            "prefix": "tile",
+            "name": "Tiles",
+            "labels": [
+                "Grass",
+                "Rock",
+                "Sand",
+                "Snow",
+                "Water",
+                "Lava"
+            ]
+        },
+        {
+            "prefix": "building",
+            "name": "Buildings",
+            "labels": [
+                "Mine",
+                "Vault",
+                "Forest",
+                "Taiga",
+                "Meadow",
+                "Oasis",
+                "Shrubland",
+                "Mountain",
+                "Healing Fountain"
+            ]
+        },
+        {
+            "prefix": "patron",
+            "name": "Patrons",
+            "labels": [
+                "The Pond Troll",
+                "The Shining Eyes"
+            ]
+        },
+        {
+            "prefix": "artifact",
+            "name": "Artifacts",
+            "labels": [
+                "Cho's Sigil of Haste",
+                "Urdin's Scroll of Agility",
+                "Sword of Aesethos",
+                "Kauna's Amulet",
+                "Staff of Wurmdel",
+                "Tome of Morun",
+                "Orb of Nerketo",
+                "Shada's Flute",
+                "Stones of Thudin",
+                "The Chasi Bones",
+                "Ucha's Bowl of Plenty",
+                "Nerketo's Helm",
+                "Bounty of Ahn-Juné",
+                "Mark of Kung",
+                "Chalco's Seal of Protection",
+                "Poda's Elixir",
+                "Gaia's Effigy",
+                "Rod of Adelon",
+                "Blade of Sanguinor",
+                "Cask of Amontior"
+            ]
+        },
+        {
+            "prefix": "fate",
+            "name": "Fates",
+            "labels": [
+                "The Raider",
+                "The Merchant",
+                "The Veteran",
+                "The Devout",
+                "The Sentinel",
+                "The Usurper",
+                "The Forager"
+            ]
+        },
+        {
+            "prefix": "unit",
+            "name": "Units",
+            "labels": [
+                "Sir Tlatec",
+                "Beetlemoss",
+                "Gloop the Adventurer",
+                "Golem of the Grotto",
+                "Condylure of the Star Nose",
+                "Lady Daumia",
+                "Frogger the Gnome",
+                "Stalagmus",
+                "The Druid",
+                "Blorp the Burning",
+                "Prismar",
+                "Pumpkin Boy",
+                "Barometz",
+                "Al-Fikra",
+                "King Gargantos"
+            ]
+        },
+        {
+            "prefix": "ability",
+            "name": "Abilities",
+            "labels": [
+                "Acid Skin",
+                "Bite",
+                "Build Healing Fountain",
+                "Build Vault",
+                "Collapse Mine",
+                "Combat Loot",
+                "Crystal Skin",
+                "Deposit Seeds",
+                "Dig Mine",
+                "Dungeon Delve",
+                "Edible",
+                "Fire Cannon",
+                "Fire Laser",
+                "Green Fortress",
+                "Heal Wounds",
+                "Hug",
+                "Hungry Frog Magic",
+                "Hunt Fish",
+                "Hurl Rock",
+                "Life Aura",
+                "Liquifying Presence",
+                "Local Defender",
+                "Market Boom",
+                "Market Indicator",
+                "Mine Gems",
+                "Mine Gold",
+                "Mountain Strider",
+                "Night Vision",
+                "Pick Apples",
+                "Pick Flowers",
+                "Plant Forest",
+                "Plant Meadow",
+                "Plate Mail",
+                "Regeneration",
+                "Revenge of the Forest",
+                "Running Through Nature",
+                "Self Sacrifice",
+                "Sacred Seeds",
+                "Shell Defense",
+                "Slime Shot",
+                "Smash",
+                "Stone Defense",
+                "Subterranean Potions",
+                "Swim",
+                "Sword Slash"
+            ]
+        },
+        {
+            "prefix": "status_effect",
+            "name": "Status Effects",
+            "labels": [
+                "Stunned",
+                "More Favor"
+            ]
+        },
+        {
+            "prefix": "item",
+            "name": "Items",
+            "labels": [
+                "Sacred Seed",
+                "Flower",
+                "Fish",
+                "Gold Coin",
+                "Emerald",
+                "Apple",
+                "Health Potion"
+            ]
+        }
+    ]
+}
