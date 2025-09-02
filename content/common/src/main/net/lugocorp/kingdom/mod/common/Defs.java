@@ -16,6 +16,29 @@ public class Defs {
     public static final String assets_rock = "rock";
     public static final String assets_sand = "sand";
     public static final String assets_lava = "lava";
+    public static final String assets_taiga = "taiga";
+    public static final String assets_placeholder = "placeholder";
+    public static final String assets_potion = "potion";
+    public static final String assets_apple = "apple";
+    public static final String assets_pouch = "pouch";
+    public static final String assets_coin = "coin";
+    public static final String assets_sword = "sword";
+    public static final String assets_shield = "shield";
+    public static final String assets_candle = "candle";
+    public static final String assets_mushroom = "mushroom";
+    public static final String assets_crystal = "crystal";
+    public static final String assets_bone = "bone";
+    public static final String assets_fish = "fish";
+    public static final String assets_flower = "flower";
+    public static final String assets_seeds = "seeds";
+    public static final String assets_golden_feather = "golden feather";
+    public static final String assets_raider = "raider";
+    public static final String assets_merchant = "merchant";
+    public static final String assets_veteran = "veteran";
+    public static final String assets_devout = "devout";
+    public static final String assets_sentinel = "sentinel";
+    public static final String assets_usurper = "usurper";
+    public static final String assets_forager = "forager";
 
     /**
      * SECTION Species
