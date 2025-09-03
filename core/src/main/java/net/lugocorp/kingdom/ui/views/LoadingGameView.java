@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.mods.GameMod;
+import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
-import net.lugocorp.kingdom.utils.mods.GameMod;
-import net.lugocorp.kingdom.utils.mods.ModLoader;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,23 +1,16 @@
-package net.lugocorp.kingdom.utils.mods;
+package net.lugocorp.kingdom.mods;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 
+/**
+ * Interface that allows the game to load mods
+ */
 public interface GameMod {
 
     /**
-     * Returns a unique ID for this mod
+     * Returns all information surrounding this mod
      */
-    public String getKey();
-
-    /**
-     * Returns a display name for this mod
-     */
-    public String getName();
-
-    /**
-     * Returns a description for this mod
-     */
-    public String getDescription();
+    public ModProfile getProfile();
 
     /**
      * This function is called when the mod must load its spritesheets

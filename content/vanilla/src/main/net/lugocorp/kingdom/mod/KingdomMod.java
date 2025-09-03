@@ -23,16 +23,18 @@ import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.mod.common.Defs;
+import net.lugocorp.kingdom.mods.GameMod;
+import net.lugocorp.kingdom.mods.ModProfile;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.FateNode;
 import net.lugocorp.kingdom.ui.menu.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
+import net.lugocorp.kingdom.utils.code.Semver;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.HexSide;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.mods.GameMod;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,20 +49,9 @@ public class KingdomMod implements GameMod {
 
     /** {@inheritdoc} */
     @Override
-    public String getKey() {
-        return "vanilla";
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public String getName() {
-        return "Vanilla";
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public String getDescription() {
-        return "Contains all of the base content for this game.";
+    public ModProfile getProfile() {
+        return new ModProfile("vanilla", "Vanilla", "Contains all of the base content for this game.",
+                new Semver(1, 0, 0), new String[]{"Alex Lugo"});
     }
 
     /** {@inheritdoc} */

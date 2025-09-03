@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
+import net.lugocorp.kingdom.utils.code.Semver;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.time.OffsetTime;
@@ -27,6 +28,7 @@ import java.util.Set;
  * Stores all the data for a single ongoing game
  */
 public class Game {
+    public static final Semver VERSION = new Semver(1, 0, 0);
     public final List<CompPlayer> comps = new ArrayList<>();
     public final World world = new World();
     public final OffsetTime startTime;

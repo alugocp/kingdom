@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine.assets;
-import net.lugocorp.kingdom.utils.mods.ModAssetsMap;
+import net.lugocorp.kingdom.mods.ModAssetsMap;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;

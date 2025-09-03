@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.mods;
+package net.lugocorp.kingdom.mods;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

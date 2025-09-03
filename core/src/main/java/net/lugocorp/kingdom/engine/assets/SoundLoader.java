@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine.assets;
 import net.lugocorp.kingdom.engine.Settings;
-import net.lugocorp.kingdom.utils.mods.ModAssetsMap;
+import net.lugocorp.kingdom.mods.ModAssetsMap;
 import com.badlogic.gdx.audio.Sound;
 import java.util.HashSet;
 import java.util.Optional;

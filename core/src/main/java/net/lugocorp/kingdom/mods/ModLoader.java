@@ -1,5 +1,6 @@
-package net.lugocorp.kingdom.utils.mods;
+package net.lugocorp.kingdom.mods;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import com.badlogic.gdx.Gdx;
 import java.io.File;
@@ -49,21 +50,25 @@ public class ModLoader {
         Class definition = Class.forName("net.lugocorp.kingdom.mod.KingdomMod", true, child);
         Constructor<GameMod> construct = definition.getConstructor();
         GameMod mod = construct.newInstance();
-        String key = mod.getKey();
+        ModProfile profile = mod.getProfile();
 
         // Check for mod legality
-        if (key.equals("shaders") || key.equals("ui")) {
-            throw new RuntimeException(String.format("Illegal mod key '%s'", key));
+        if (profile.key.equals("shaders") || profile.key.equals("ui")) {
+            throw new RuntimeException(String.format("Illegal mod key '%s'", profile.key));
         }
-        if (this.loaded.contains(key)) {
-            throw new RuntimeException(String.format("Mod '%s' has already been loaded", key));
+        if (profile.minimumGameVersion.isNewerThan(Game.VERSION)) {
+            throw new RuntimeException(String.format("Mod '%s' requires version %s, but you are running %s",
+                    profile.key, profile.minimumGameVersion, Game.VERSION));
+        }
+        if (this.loaded.contains(profile.key)) {
+            throw new RuntimeException(String.format("Mod '%s' has already been loaded", profile.key));
         }
 
         // Register mod into the game
         mod.registerEvents(events);
         mod.registerSprites(sprites);
-        this.unzipAssets(key, filepath, modAssetsMap);
-        this.loaded.add(key);
+        this.unzipAssets(profile.key, filepath, modAssetsMap);
+        this.loaded.add(profile.key);
         return mod;
     }
 
