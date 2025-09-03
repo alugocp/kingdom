@@ -28,13 +28,31 @@ public class Logger {
     /**
      * Adds a new log message to the queue
      */
-    public void log(String message) {
+    public void log(String message, boolean dispel) {
+        // If we dispel then remove this message from the log
+        if (dispel) {
+            for (int a = this.messages.size() - 1; a >= 0; a--) {
+                if (this.messages.get(a).message.equals(message)) {
+                    this.messages.remove(a);
+                    break;
+                }
+            }
+        }
+
+        // Add this message to the log
         layout.setText(this.view.av.fonts.basic, message);
         messages.add(0, new LogMessage(message, layout.width, layout.height));
         if (this.messages.size() > Logger.MAX_ROWS) {
             messages.remove(messages.size() - 1);
         }
         this.timer = 0;
+    }
+
+    /**
+     * Calls into log() with dispel = false
+     */
+    public void log(String message) {
+        this.log(message, false);
     }
 
     /**
@@ -45,7 +63,7 @@ public class Logger {
             return;
         }
         this.timer = Math.min(Logger.MAX_TIMER, this.timer + 50);
-        int rows = Math.min(this.messages.size(), Logger.MAX_ROWS);
+        int rows = this.messages.size();
         float y = this.view.hud.getHeight();
         float[] alphas = new float[rows];
         Rect[] rects = new Rect[rows];

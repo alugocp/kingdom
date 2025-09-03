@@ -249,7 +249,7 @@ public class TurnStructure {
         this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             view.hud.minimap.refresh(view.game.world);
-            view.logger.log("It is your turn again");
+            view.logger.log("It is your turn again", true);
 
             // Check human Player win/lose state
             if (view.game.hasHumanPlayerLost()) {
