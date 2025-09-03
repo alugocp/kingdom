@@ -168,20 +168,17 @@ public class Game {
      */
     public boolean hasHumanPlayerLost() {
         // TODO optimize this
-        for (Building b : this.human.buildings) {
-            if (b.isActive()) {
-                return false;
-            }
-        }
-        return true;
+        return Lambda.filter((Building b) -> b.isActive(), this.human.buildings).size() == 0;
     }
 
     /**
      * Returns true if the human Player is the only one that has buildings left
      */
     public boolean hasHumanPlayerWon() {
+        // TODO optimize this too
         for (Player p : this.comps) {
-            if (p.buildings.size() > 0) {
+            boolean remaining = Lambda.filter((Building b) -> b.isActive(), p.buildings).size() > 0;
+            if (remaining) {
                 return false;
             }
         }

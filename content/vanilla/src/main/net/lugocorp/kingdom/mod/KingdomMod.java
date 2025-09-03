@@ -1802,7 +1802,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = String.format("Attack that deals more damage when on a forest");
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Defs.ability_revenge_of_the_forest, "AttackEvent",
+        events.ability.addEventHandler(Defs.ability_revenge_of_the_forest, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.AttackEvent e = (Events.AttackEvent) event;
                     return AbilityLogic

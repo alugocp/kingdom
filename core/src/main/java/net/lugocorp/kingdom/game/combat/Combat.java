@@ -45,6 +45,7 @@ public class Combat {
                     view.game.world.getTile(b.getPoint())
                             .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));
                 });
+                return SideEffect.all(effects);
             }
         } else {
             effects.add(this.bearer.handleEvent(view, new Events.EntityDiedEvent(this.bearer, attacker)));

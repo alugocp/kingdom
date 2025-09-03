@@ -371,7 +371,10 @@ public class Unit extends Entity implements MenuSubject {
     @Override
     public void deactivate(GameView view) {
         super.deactivate(view);
-        this.leader.ifPresent((Player l) -> this.vision.remove(l, view.game.world));
+        this.leader.ifPresent((Player l) -> {
+            this.vision.remove(l, view.game.world);
+            l.units.remove(this);
+        });
         this.removeFromPosition(view.game);
         this.dispose();
     }

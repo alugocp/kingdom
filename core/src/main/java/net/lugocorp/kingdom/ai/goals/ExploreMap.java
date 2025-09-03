@@ -32,9 +32,9 @@ public class ExploreMap extends Goal {
         MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
         Point dest = ((MoveNode) root).dest;
         Set<Point> adj = Hexagons.getNeighbors(dest, 1);
-        float score = this.subscore(memory, dest);
+        float score = this.subscore(view, memory, dest);
         for (Point p : Hexagons.getNeighbors(dest, 1)) {
-            score += this.subscore(memory, p);
+            score += this.subscore(view, memory, p);
         }
         return score / 7f;
     }
@@ -42,7 +42,10 @@ public class ExploreMap extends Goal {
     /**
      * Returns a component of the final score for a given Point
      */
-    private float subscore(MemoryMap memory, Point p) {
+    private float subscore(GameView view, MemoryMap memory, Point p) {
+        if (!view.game.world.isInBounds(p)) {
+            return 0f;
+        }
         MemoryCell cell = memory.getCell(p);
         if (!cell.isVisible()) {
             return cell.wasEverVisible() ? 0.5f : 1f;

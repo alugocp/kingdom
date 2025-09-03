@@ -68,6 +68,14 @@ void main() {
     // Return black color for fog of war
     if (u_vision == NO_VISIBILITY || outline()) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+        // Allow for tile selection to be visible beneath fog of war
+        if (u_vision == NO_VISIBILITY && u_selection > 0) {
+            float coeff = 0.2 * float(u_selection);
+            gl_FragColor.x += coeff;
+            gl_FragColor.y += coeff;
+            gl_FragColor.z += coeff * 0.5;
+        }
         return;
     }
 
@@ -108,7 +116,7 @@ void main() {
         float coeff = 0.2 * float(u_selection);
         gl_FragColor.x += coeff;
         gl_FragColor.y += coeff;
-        gl_FragColor.z += coeff;
+        gl_FragColor.z += coeff * 0.5;
     }
 
     // Border rendering logic
