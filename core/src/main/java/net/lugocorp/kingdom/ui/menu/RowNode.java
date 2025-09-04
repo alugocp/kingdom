@@ -95,6 +95,20 @@ public class RowNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
+    public void mouseMoved(Rect bounds, Point prev, Point curr) {
+        if (bounds.contains(prev) || bounds.contains(curr)) {
+            int x = bounds.x;
+            int w = bounds.w / this.getColumns();
+            for (MenuNode child : this.children) {
+                final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+                child.mouseMoved(r, prev, curr);
+                x += w;
+            }
+        }
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public void keyPressed(int keycode) {
         for (MenuNode n : this.children) {
             n.keyPressed(keycode);

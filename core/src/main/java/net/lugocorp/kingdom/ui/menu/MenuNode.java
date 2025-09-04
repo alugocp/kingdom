@@ -13,31 +13,42 @@ public interface MenuNode {
     public int getHeight();
 
     /**
-     * Called when we know how much width can be allotted to this MenuNode
-     */
-    public void pack(int width);
-
-    /**
      * Renders this MenuNode
      */
     public void draw(AudioVideo av, Rect bounds);
 
     /**
+     * Called when we know how much width can be allotted to this MenuNode
+     */
+    public default void pack(int width) {
+        // No-op
+    }
+
+    /**
      * Handles a click on this MenuNode
      */
-    public void click(Menu menu, Rect bounds, Point p);
+    public default void click(Menu menu, Rect bounds, Point p) {
+        // No-op
+    }
 
     /**
      * Handles a click on any MenuNode that is not this MenuNode (default no-op)
      */
     public default void unclick() {
         // No-op
-    };
+    }
+
+    /**
+     * Handles logic whenever the user moves their mouse
+     */
+    public default void mouseMoved(Rect bounds, Point prev, Point curr) {
+        // No-op
+    }
 
     /**
      * Handles a key press (default no-op)
      */
     public default void keyPressed(int keycode) {
         // No-op
-    };
+    }
 }

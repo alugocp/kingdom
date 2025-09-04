@@ -14,11 +14,14 @@ public class FateNode implements MenuNode {
     public static final int WIDTH = 300;
     private final Runnable onClick;
     private final Drawable image;
+    private final Drawable mask;
+    private boolean hovered = false;
     private Fate fate;
 
     public FateNode(AudioVideo av, Fate fate, Runnable onClick) {
         this.onClick = onClick;
         this.image = new Drawable(av.loaders.sprites);
+        this.mask = new Drawable(av.loaders.sprites, "fate-mask");
         this.setFate(av, fate);
     }
 
@@ -45,15 +48,13 @@ public class FateNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
-    }
-
-    /** {@inheritdoc} */
-    @Override
     public void draw(AudioVideo av, Rect bounds) {
         Rect flip = Coords.screen.flip(bounds);
         av.sprites.begin();
         this.image.render(av.sprites, flip.x, flip.y);
+        if (this.hovered) {
+            this.mask.render(av.sprites, flip.x, flip.y);
+        }
         av.sprites.end();
     }
 
@@ -61,5 +62,19 @@ public class FateNode implements MenuNode {
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
         this.onClick.run();
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void mouseMoved(Rect bounds, Point prev, Point curr) {
+        Rect r = new Rect(bounds.x, bounds.y, FateNode.WIDTH, bounds.h);
+        final boolean prevIn = r.contains(prev);
+        final boolean currIn = r.contains(curr);
+        if (!prevIn && currIn) {
+            this.hovered = true;
+        }
+        if (prevIn && !currIn) {
+            this.hovered = false;
+        }
     }
 }

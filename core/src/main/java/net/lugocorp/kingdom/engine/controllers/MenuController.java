@@ -74,6 +74,11 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean mouseMoved​(int x, int y) {
+        final Optional<Menu> menu = this.getMenu.get();
+        if (menu.isPresent()) {
+            menu.get().mouseMoved(new Point(x, y));
+            return true;
+        }
         return false;
     }
 

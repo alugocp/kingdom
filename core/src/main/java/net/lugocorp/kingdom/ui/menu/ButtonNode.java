@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,33 +10,30 @@ import java.util.function.Supplier;
  * Like a TextNode but it stands out and does something when you click it
  */
 public class ButtonNode extends TextNode {
-    private final BitmapFont disabledFont;
-    private final BitmapFont enabledFont;
-    private final SoundLoader sounds;
     private final Runnable action;
     private Optional<Supplier<Boolean>> criteria = Optional.empty();
     private boolean disabled = false;
+    private boolean hovered = false;
 
     public ButtonNode(AudioVideo av, String message, Runnable action) {
         super(av, message);
-        this.disabledFont = av.fonts.disabled;
-        this.enabledFont = av.fonts.button;
-        this.sounds = av.loaders.sounds;
-        this.font = av.fonts.button;
         this.action = action;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    protected BitmapFont getFont() {
+        if (this.disabled) {
+            return this.av.fonts.disabled;
+        }
+        return this.hovered ? this.av.fonts.hovered : this.av.fonts.button;
     }
 
     /**
      * Disables this ButtonNode based on some criteria
      */
     public ButtonNode enable(boolean criteria) {
-        if (criteria) {
-            this.font = this.enabledFont;
-            this.disabled = false;
-        } else {
-            this.font = this.disabledFont;
-            this.disabled = true;
-        }
+        this.disabled = !criteria;
         return this;
     }
 
@@ -60,8 +56,21 @@ public class ButtonNode extends TextNode {
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
         if (!this.disabled) {
-            this.sounds.play("ui/arrow");
+            this.av.loaders.sounds.play("ui/arrow");
             this.action.run();
+        }
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void mouseMoved(Rect bounds, Point prev, Point curr) {
+        final boolean prevIn = bounds.contains(prev);
+        final boolean currIn = bounds.contains(curr);
+        if (!prevIn && currIn) {
+            this.hovered = true;
+        }
+        if (prevIn && !currIn) {
+            this.hovered = false;
         }
     }
 }

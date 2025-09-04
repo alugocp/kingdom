@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 
 /**
@@ -55,10 +54,5 @@ public class ArtifactNode implements MenuNode {
         int h = this.text.getHeight();
         this.text.draw(av,
                 new Rect(bounds.x + ArtifactNode.MARGIN, bounds.y + bounds.h - h - ArtifactNode.MARGIN, bounds.w, h));
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public void click(Menu menu, Rect bounds, Point p) {
     }
 }

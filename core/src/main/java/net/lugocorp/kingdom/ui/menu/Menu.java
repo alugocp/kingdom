@@ -17,6 +17,8 @@ public class Menu {
     private final int width;
     private final int x;
     private final int y;
+    private Optional<Point> prev = Optional.empty();
+    private Optional<Point> curr = Optional.empty();
     private Optional<Menu> mini = Optional.empty();
     private boolean outlined = false;
     private int offset = 0;
@@ -127,6 +129,21 @@ public class Menu {
         }
         this.root.unclick();
         return false;
+    }
+
+    /**
+     * Propagates a signal to activate some mouse moved logic
+     */
+    public void mouseMoved(Point p) {
+        final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
+                this.width - (Menu.MARGIN * 3), this.root.getHeight());
+        Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
+                p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
+        this.prev = curr;
+        this.curr = Optional.of(p1);
+        if (this.prev.isPresent()) {
+            this.root.mouseMoved(bounds, this.prev.get(), this.curr.get());
+        }
     }
 
     /**

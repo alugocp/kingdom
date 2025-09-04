@@ -93,6 +93,7 @@ public class AudioVideo {
     public static class Fonts {
         public final BitmapFont header;
         public final BitmapFont button;
+        public final BitmapFont hovered;
         public final BitmapFont disabled;
         public final BitmapFont basic;
 
@@ -105,8 +106,10 @@ public class AudioVideo {
             this.basic = generator.generateFont(param);
             param.size = 24;
             this.disabled = generator.generateFont(param);
-            param.color = new Color(0.6f, 1f, 1f, 1f);
+            param.color = new Color(0.45f, 1f, 1f, 1f);
             this.button = generator.generateFont(param);
+            param.color = new Color(0.75f, 1f, 1f, 1f);
+            this.hovered = generator.generateFont(param);
             generator.dispose();
         }
     }

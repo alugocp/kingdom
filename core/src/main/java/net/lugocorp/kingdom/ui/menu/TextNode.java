@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -13,14 +12,14 @@ import java.util.List;
  */
 public class TextNode implements MenuNode {
     private final List<String> lines = new ArrayList<>();
-    protected BitmapFont font;
     private int width;
     private int hash;
+    protected final AudioVideo av;
 
     public TextNode(AudioVideo av, String message) {
-        this.font = av.fonts.basic;
         this.hash = message.hashCode();
         this.lines.add(message);
+        this.av = av;
     }
 
     /**
@@ -28,6 +27,13 @@ public class TextNode implements MenuNode {
      */
     protected int getMargin() {
         return 5;
+    }
+
+    /**
+     * Returns the font to be used for this TextNode
+     */
+    protected BitmapFont getFont() {
+        return this.av.fonts.basic;
     }
 
     /**
@@ -46,13 +52,15 @@ public class TextNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
-        return (int) (this.lines.size() * this.font.getLineHeight()) + (this.getMargin() * 2);
+        BitmapFont font = this.getFont();
+        return (int) (this.lines.size() * font.getLineHeight()) + (this.getMargin() * 2);
     }
 
     /** {@inheritdoc} */
     @Override
     public void pack(int width) {
         this.width = width;
+        BitmapFont font = this.getFont();
         GlyphLayout layout = new GlyphLayout();
         String[] message = this.lines.get(0).split(" ");
         String buffer = "";
@@ -63,7 +71,7 @@ public class TextNode implements MenuNode {
             String substr = (length == 1)
                     ? message[start]
                     : String.format("%s %s", buffer, message[start + length - 1]);
-            layout.setText(this.font, substr);
+            layout.setText(font, substr);
             if (layout.width >= width) {
                 if (length == 1) {
                     this.lines.add(substr);
@@ -87,18 +95,13 @@ public class TextNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
-        av.sprites.begin();
+        BitmapFont font = this.getFont();
         int y = Coords.SIZE.y - bounds.y - this.getMargin();
+        av.sprites.begin();
         for (int a = 0; a < this.lines.size(); a++) {
-            this.font.draw(av.sprites, this.lines.get(a), bounds.x, y);
-            y -= (int) this.font.getLineHeight();
+            font.draw(av.sprites, this.lines.get(a), bounds.x, y);
+            y -= (int) font.getLineHeight();
         }
         av.sprites.end();
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public void click(Menu menu, Rect bounds, Point p) {
-        // No-op
     }
 }

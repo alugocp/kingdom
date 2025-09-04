@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
+import net.lugocorp.kingdom.ui.menu.FateNode;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class LoadingGameView extends ThreadedTaskView {
 
         // Load built-in sprites
         av.loaders.sprites.register("artifact-mask", "ui/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
+        av.loaders.sprites.register("fate-mask", "ui/fate-mask", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
     }
 
     /** {@inheritdoc} */

@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.ui.menu;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -55,10 +54,5 @@ public class ModelNode implements MenuNode {
         av.previews.begin(this.camera);
         this.model.render(av.previews, this.environment);
         av.previews.end();
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public void click(Menu menu, Rect bounds, Point p) {
     }
 }
