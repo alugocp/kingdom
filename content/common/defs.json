@@ -8,7 +8,6 @@
                 "icons",
                 "artifacts",
                 "fates",
-
                 "grass",
                 "water",
                 "rock",
@@ -16,9 +15,7 @@
                 "lava",
                 "snow",
                 "taiga",
-
                 "placeholder",
-
                 "potion",
                 "apple",
                 "pouch",
@@ -48,9 +45,7 @@
                 "helmet",
                 "slime",
                 "feather",
-
                 "golden feather",
-
                 "raider",
                 "merchant",
                 "veteran",
