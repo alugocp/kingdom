@@ -8,6 +8,7 @@
                 "icons",
                 "artifacts",
                 "fates",
+
                 "grass",
                 "water",
                 "rock",
@@ -15,21 +16,41 @@
                 "lava",
                 "snow",
                 "taiga",
+
                 "placeholder",
+
                 "potion",
                 "apple",
                 "pouch",
+                "stone",
+                "staff",
+                "beads",
+                "chestplate",
                 "coin",
                 "sword",
                 "shield",
                 "candle",
+                "ring",
+                "robe",
+                "wizard_hat",
+                "pendant",
                 "mushroom",
                 "crystal",
                 "bone",
                 "fish",
+                "pants",
+                "boots",
+                "glove",
+                "belt",
                 "flower",
                 "seeds",
+                "paper",
+                "helmet",
+                "slime",
+                "feather",
+
                 "golden feather",
+
                 "raider",
                 "merchant",
                 "veteran",
@@ -51,33 +72,33 @@
                 "Goblin",
                 "Giant",
                 [
-                    "Grue",
-                    "Giant"
+                    "Giant",
+                    "Grue"
                 ],
                 [
-                    "Ogre",
-                    "Giant"
+                    "Giant",
+                    "Ogre"
                 ],
                 [
-                    "Ettin",
-                    "Giant"
+                    "Giant",
+                    "Ettin"
                 ],
                 [
-                    "Troll",
-                    "Giant"
+                    "Giant",
+                    "Troll"
                 ],
                 "Centaur",
                 "Salamander",
                 "Tortugan",
                 [
-                    "Kappa",
-                    "Tortugan"
+                    "Tortugan",
+                    "Kappa"
                 ],
                 "Brownie",
                 "Kobold",
                 [
-                    "Firbolg",
-                    "Kobold"
+                    "Kobold",
+                    "Firbolg"
                 ],
                 "Merfolk",
                 "Garuda",
@@ -85,8 +106,8 @@
                 "Toadstool",
                 "Sprite",
                 [
-                    "Dryad",
-                    "Sprite"
+                    "Sprite",
+                    "Dryad"
                 ],
                 "Demon",
                 "Tulpa",
@@ -95,8 +116,8 @@
                 "Undead",
                 "Elemental",
                 [
-                    "Gemstone",
-                    "Elemental"
+                    "Elemental",
+                    "Gemstone"
                 ]
             ]
         },
