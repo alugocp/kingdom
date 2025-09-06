@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.mods;
+import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import com.badlogic.gdx.Gdx;
 import java.io.File;
@@ -56,9 +56,9 @@ public class ModLoader {
         if (profile.key.equals("shaders") || profile.key.equals("ui")) {
             throw new RuntimeException(String.format("Illegal mod key '%s'", profile.key));
         }
-        if (profile.minimumGameVersion.isNewerThan(Game.VERSION)) {
+        if (profile.minimumGameVersion.isNewerThan(Main.VERSION)) {
             throw new RuntimeException(String.format("Mod '%s' requires version %s, but you are running %s",
-                    profile.key, profile.minimumGameVersion, Game.VERSION));
+                    profile.key, profile.minimumGameVersion, Main.VERSION));
         }
         if (this.loaded.contains(profile.key)) {
             throw new RuntimeException(String.format("Mod '%s' has already been loaded", profile.key));

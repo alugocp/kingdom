@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main implements ApplicationListener {
+    public static final Semver VERSION = new Semver(1, 0, 0);
     private AudioVideo av;
     private View view;
 
