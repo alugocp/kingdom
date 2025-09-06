@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
+import net.lugocorp.kingdom.ui.menu.GlyphBadgeNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.Menu;
@@ -76,16 +77,19 @@ public class NewUnit {
                 .add(new HeaderNode(view.av, "Recruit New Unit"))
                 .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()));
         RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
+        RowNode badges = new RowNode().setColumns(category.get().glyphs.length);
         RowNode buttons = new RowNode().setColumns(category.get().glyphs.length);
         for (int a = 0; a < category.get().glyphs.length; a++) {
             final Glyph glyph = category.get().glyphs[a];
             glyphs.add(new HeaderNode(view.av, glyph.toString()));
+            badges.add(new GlyphBadgeNode(view.av, glyph));
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
                 view.popups.complete();
                 view.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
             }).enable(view.game.mechanics.pools.remaining(glyph) > 0));
         }
         node.add(glyphs);
+        node.add(badges);
         node.add(buttons);
         return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                 node);

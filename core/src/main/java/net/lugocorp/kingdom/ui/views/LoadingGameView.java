@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.ui.menu.ArtifactNode;
 import net.lugocorp.kingdom.ui.menu.FateNode;
+import net.lugocorp.kingdom.ui.menu.GlyphBadgeNode;
 import net.lugocorp.kingdom.ui.menu.GlyphIconNode;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import java.util.ArrayList;
@@ -34,6 +35,18 @@ public class LoadingGameView extends ThreadedTaskView {
         av.loaders.sprites.register("glyph-icon-mining", "ui/glyph-icons", GlyphIconNode.SIDE, GlyphIconNode.SIDE, 1,
                 1);
         av.loaders.sprites.register("glyph-icon-trade", "ui/glyph-icons", GlyphIconNode.SIDE, GlyphIconNode.SIDE, 2, 1);
+        av.loaders.sprites.register("glyph-badge-battle", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                0, 0);
+        av.loaders.sprites.register("glyph-badge-defense", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                1, 0);
+        av.loaders.sprites.register("glyph-badge-healing", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                2, 0);
+        av.loaders.sprites.register("glyph-badge-nature", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                0, 1);
+        av.loaders.sprites.register("glyph-badge-mining", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                1, 1);
+        av.loaders.sprites.register("glyph-badge-trade", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE, 2,
+                1);
     }
 
     /** {@inheritdoc} */
