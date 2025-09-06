@@ -210,7 +210,13 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean mouseMoved​(int x, int y) {
-        if (this.view.popups.isDisplayed()) {
+        if (this.popupMenu.mouseMoved(x, y)) {
+            return true;
+        }
+        if (this.hudMenu.mouseMoved(x, y)) {
+            return true;
+        }
+        if (this.menu.mouseMoved(x, y)) {
             return true;
         }
         Point closestPoint = this.getCoordUnderScreenPoint(x, y);

@@ -21,7 +21,7 @@ public class FateNode implements MenuNode {
     public FateNode(AudioVideo av, Fate fate, Runnable onClick) {
         this.onClick = onClick;
         this.image = new Drawable(av.loaders.sprites);
-        this.mask = new Drawable(av.loaders.sprites, "fate-mask");
+        this.mask = new Drawable(av.loaders.sprites, "fate-highlight");
         this.setFate(av, fate);
     }
 

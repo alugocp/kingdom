@@ -134,7 +134,7 @@ public class Menu {
     /**
      * Propagates a signal to activate some mouse moved logic
      */
-    public void mouseMoved(Point p) {
+    public boolean mouseMoved(Point p) {
         final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), this.root.getHeight());
         Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
@@ -143,7 +143,11 @@ public class Menu {
         this.curr = Optional.of(p1);
         if (this.prev.isPresent()) {
             this.root.mouseMoved(bounds, this.prev.get(), this.curr.get());
+            if (bounds.contains(this.prev.get()) || bounds.contains(this.curr.get())) {
+                return true;
+            }
         }
+        return false;
     }
 
     /**

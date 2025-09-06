@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.UnitGlyphs;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
@@ -10,10 +11,12 @@ import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.properties.Species;
 import net.lugocorp.kingdom.ui.menu.ActionNode;
+import net.lugocorp.kingdom.ui.menu.GlyphIconNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
@@ -29,7 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * A single controllable entity (or NPC) that the player can interact with
+ * A single controllable character (or NPC) that the player can interact with
  * in-game
  */
 public class Unit extends Entity implements MenuSubject {
@@ -382,7 +385,12 @@ public class Unit extends Entity implements MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc));
+        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name));
+        RowNode glyphsRow = new RowNode().add(new TextNode(view.av, "Glyphs:"));
+        for (Glyph g : this.glyphs.get()) {
+            glyphsRow.add(new GlyphIconNode(view.av, g));
+        }
+        node.add(glyphsRow).add(new TextNode(view.av, this.desc));
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.av, String.format("Alignment: %s", this.leader.get().name)));
         }

@@ -2,6 +2,7 @@ package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.ui.views.View;
+import net.lugocorp.kingdom.utils.code.Semver;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
