@@ -57,22 +57,67 @@ public class KingdomMod implements GameMod {
     /** {@inheritdoc} */
     @Override
     public void registerSprites(SpriteLoader sprites) {
+        // Item sprites
         sprites.register(Defs.asset_placeholder, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
         sprites.register(Defs.asset_potion, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
         sprites.register(Defs.asset_apple, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
         sprites.register(Defs.asset_pouch, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
+        sprites.register(Defs.asset_stone, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 0);
+        sprites.register(Defs.asset_staff, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 0);
+        sprites.register(Defs.asset_beads, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 0);
+        sprites.register(Defs.asset_chestplate, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 0);
         sprites.register(Defs.asset_coin, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
         sprites.register(Defs.asset_sword, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
         sprites.register(Defs.asset_shield, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
         sprites.register(Defs.asset_candle, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
+        sprites.register(Defs.asset_ring, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 1);
+        sprites.register(Defs.asset_robe, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 1);
+        sprites.register(Defs.asset_wizard_hat, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 1);
+        sprites.register(Defs.asset_pendant, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 1);
         sprites.register(Defs.asset_mushroom, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
         sprites.register(Defs.asset_crystal, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
         sprites.register(Defs.asset_bone, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
         sprites.register(Defs.asset_fish, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
+        sprites.register(Defs.asset_pants, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 2);
+        sprites.register(Defs.asset_boots, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 2);
+        sprites.register(Defs.asset_glove, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 2);
+        sprites.register(Defs.asset_belt, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 2);
         sprites.register(Defs.asset_flower, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
         sprites.register(Defs.asset_seeds, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
+        sprites.register(Defs.asset_paper, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 3);
+        sprites.register(Defs.asset_helmet, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 3);
+        sprites.register(Defs.asset_slime, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 3);
+        sprites.register(Defs.asset_feather, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 3);
+        sprites.register(Defs.asset_rattle, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 3);
+        sprites.register(Defs.asset_powder, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 3);
+        sprites.register(Defs.asset_spear, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 4);
+        sprites.register(Defs.asset_hammer, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 4);
+        sprites.register(Defs.asset_doll, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 4);
+        sprites.register(Defs.asset_mace, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 4);
+        sprites.register(Defs.asset_carving, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 4);
+        sprites.register(Defs.asset_slingshot, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 4);
+        sprites.register(Defs.asset_net, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 4);
+        sprites.register(Defs.asset_axe, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 4);
+        sprites.register(Defs.asset_brooch, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 5);
+        sprites.register(Defs.asset_dagger, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 5);
+        sprites.register(Defs.asset_tankard, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 5);
+        sprites.register(Defs.asset_book, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 5);
+        sprites.register(Defs.asset_club, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 5);
+        sprites.register(Defs.asset_vase, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 5);
+        sprites.register(Defs.asset_wand, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 5);
+        sprites.register(Defs.asset_pickaxe, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 5);
+        sprites.register(Defs.asset_bow, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 6);
+        sprites.register(Defs.asset_rune, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 6);
+        sprites.register(Defs.asset_shovel, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 6);
+        sprites.register(Defs.asset_telescope, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 6);
+        sprites.register(Defs.asset_scales, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 6);
+        sprites.register(Defs.asset_eye, Defs.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 6);
+
+        // Artifact sprites
         sprites.register(Defs.asset_golden_feather, Defs.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
                 0);
+
+        // Fate sprites
         sprites.register(Defs.asset_raider, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
         sprites.register(Defs.asset_merchant, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
         sprites.register(Defs.asset_veteran, Defs.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 0);
