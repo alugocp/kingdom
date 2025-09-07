@@ -4,18 +4,16 @@ import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
-import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
-import net.lugocorp.kingdom.ui.menu.GlyphIconNode;
+import net.lugocorp.kingdom.ui.menu.GlyphIconsNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
-import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.SpacerNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -212,11 +210,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         ListNode node = new ListNode();
         node.add(new ButtonNode(view.av, "x", () -> view.menu.close()));
         if (this.glyph.isPresent()) {
-            RowNode row = new RowNode().add(new TextNode(view.av, "Glyphs:"));
-            for (Glyph g : this.glyph.get().glyphs) {
-                row.add(new GlyphIconNode(view.av, g));
-            }
-            node.add(row);
+            node.add(new GlyphIconsNode(view.av, this.glyph.get()));
         }
         node.add(new TextNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
                 .add(this.items.getMenuContent(view, p));
