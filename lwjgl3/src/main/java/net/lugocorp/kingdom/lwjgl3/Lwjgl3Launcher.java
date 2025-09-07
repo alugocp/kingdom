@@ -18,7 +18,7 @@ public class Lwjgl3Launcher {
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("Legends of Tawn");
+        configuration.setTitle("Legends of T'ahn");
         //// This function call sets all the defaults (8 bits of r, g, b, a; 16 bits for the depth buffer;
         //// 0 bits for MSAA samples) except that it gives 1 bit for the stencil buffer.
         configuration.setBackBufferConfig(8, 8, 8, 8, 16, 1, 0);
