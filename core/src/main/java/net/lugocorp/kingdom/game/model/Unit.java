@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.properties.Species;
 import net.lugocorp.kingdom.ui.menu.ActionNode;
+import net.lugocorp.kingdom.ui.menu.BadgeNode;
 import net.lugocorp.kingdom.ui.menu.GlyphIconsNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
@@ -388,7 +389,7 @@ public class Unit extends Entity implements MenuSubject {
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.av, String.format("Alignment: %s", this.leader.get().name)));
         }
-        node.add(new TextNode(view.av, this.species.toString()));
+        node.add(new BadgeNode(view.av, 0xff0000, 0xffffff, this.species.toString()));
         node.add(new TextNode(view.av,
                 String.format("Health: %d/%d", this.combat.health.get(), this.combat.health.getMax())));
         node.add(new TextNode(view.av, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));

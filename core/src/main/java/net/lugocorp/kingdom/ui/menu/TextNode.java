@@ -11,11 +11,11 @@ import java.util.List;
  * MenuNode item containing text
  */
 public class TextNode implements MenuNode {
-    private final List<Line> lines = new ArrayList<>();
     private boolean centered = false;
     private String loaded;
     private int width;
     private int hash;
+    protected final List<Line> lines = new ArrayList<>();
     protected final AudioVideo av;
 
     public TextNode(AudioVideo av, String message) {
@@ -121,11 +121,11 @@ public class TextNode implements MenuNode {
     /**
      * Combines a line of text and its width
      */
-    private static class Line {
-        private final String text;
-        private final int width;
+    protected static class Line {
+        protected final String text;
+        protected final int width;
 
-        private Line(String text, int width) {
+        protected Line(String text, int width) {
             this.width = width;
             this.text = text;
         }
