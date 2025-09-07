@@ -11,14 +11,16 @@ import java.util.List;
  * MenuNode item containing text
  */
 public class TextNode implements MenuNode {
-    private final List<String> lines = new ArrayList<>();
+    private final List<Line> lines = new ArrayList<>();
+    private boolean centered = false;
+    private String loaded;
     private int width;
     private int hash;
     protected final AudioVideo av;
 
     public TextNode(AudioVideo av, String message) {
         this.hash = message.hashCode();
-        this.lines.add(message);
+        this.loaded = message;
         this.av = av;
     }
 
@@ -44,9 +46,16 @@ public class TextNode implements MenuNode {
             return;
         }
         this.hash = message.hashCode();
-        this.lines.clear();
-        this.lines.add(message);
+        this.loaded = message;
         this.pack(this.width);
+    }
+
+    /**
+     * Moves the text in this TextNode towards the center
+     */
+    public TextNode center() {
+        this.centered = true;
+        return this;
     }
 
     /** {@inheritdoc} */
@@ -62,8 +71,9 @@ public class TextNode implements MenuNode {
         this.width = width;
         BitmapFont font = this.getFont();
         GlyphLayout layout = new GlyphLayout();
-        String[] message = this.lines.get(0).split(" ");
+        String[] message = this.loaded.split(" ");
         String buffer = "";
+        int bufferWidth = 0;
         int start = 0;
         int length = 1;
         this.lines.clear();
@@ -74,21 +84,23 @@ public class TextNode implements MenuNode {
             layout.setText(font, substr);
             if (layout.width >= width) {
                 if (length == 1) {
-                    this.lines.add(substr);
+                    this.lines.add(new Line(substr, (int) layout.width));
                     start++;
                 } else {
-                    this.lines.add(buffer);
+                    this.lines.add(new Line(buffer, bufferWidth));
                     start += length - 1;
+                    bufferWidth = 0;
                     buffer = "";
                     length = 1;
                 }
             } else {
+                bufferWidth = (int) layout.width;
                 buffer = substr;
                 length++;
             }
         }
         if (buffer.length() > 0) {
-            this.lines.add(buffer);
+            this.lines.add(new Line(buffer, bufferWidth));
         }
     }
 
@@ -99,9 +111,23 @@ public class TextNode implements MenuNode {
         int y = Coords.SIZE.y - bounds.y - this.getMargin();
         av.sprites.begin();
         for (int a = 0; a < this.lines.size(); a++) {
-            font.draw(av.sprites, this.lines.get(a), bounds.x, y);
+            int x = bounds.x + (this.centered ? (bounds.w - this.lines.get(a).width) / 2 : 0);
+            font.draw(av.sprites, this.lines.get(a).text, x, y);
             y -= (int) font.getLineHeight();
         }
         av.sprites.end();
+    }
+
+    /**
+     * Combines a line of text and its width
+     */
+    private static class Line {
+        private final String text;
+        private final int width;
+
+        private Line(String text, int width) {
+            this.width = width;
+            this.text = text;
+        }
     }
 }

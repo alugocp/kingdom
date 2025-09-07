@@ -26,8 +26,9 @@ public class GlyphBadgeNode implements MenuNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         Rect flip = Coords.screen.flip(bounds);
+        int x = bounds.x + ((bounds.w - GlyphBadgeNode.SIDE) / 2);
         av.sprites.begin();
-        this.sprite.render(av.sprites, flip.x, flip.y);
+        this.sprite.render(av.sprites, x, flip.y);
         av.sprites.end();
     }
 }

@@ -126,18 +126,19 @@ class GameCreationView implements View {
         for (WorldGenOptions.WorldSize size : WorldGenOptions.WorldSize.values()) {
             worldSizeOptions.add(size.label);
         }
-        return new Menu(0, 0, Coords.SIZE.x, true, new ListNode()
-                .add(new RowNode()
-                        .add(new ButtonNode(view.av, "Back",
-                                () -> this.navigate.accept(new StartMenuView(this.params))))
-                        .add(new TextNode(view.av, "World Generation"))
-                        .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
-                .add(new SpacerNode())
-                .add(new RowNode().add(new TextNode(view.av, "World Seed"))
-                        .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
-                                (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
-                .add(new SpacerNode(false))
-                .add(new RowNode().add(new TextNode(view.av, "Map Size")).add(worldSizeOptions)));
+        return new Menu(0, 0, Coords.SIZE.x, true,
+                new ListNode()
+                        .add(new RowNode()
+                                .add(new ButtonNode(view.av, "Back",
+                                        () -> this.navigate.accept(new StartMenuView(this.params))).center())
+                                .add(new TextNode(view.av, "World Generation").center())
+                                .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection)).center()))
+                        .add(new SpacerNode())
+                        .add(new RowNode().add(new TextNode(view.av, "World Seed"))
+                                .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
+                                        (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
+                        .add(new SpacerNode(false))
+                        .add(new RowNode().add(new TextNode(view.av, "Map Size")).add(worldSizeOptions)));
     }
 
     /**
@@ -148,9 +149,10 @@ class GameCreationView implements View {
         ListNode options = new ListNode();
         FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
         ListNode root = new ListNode()
-                .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
-                        .add(new TextNode(view.av, "Select a Fate"))
-                        .add(new ButtonNode(view.av, "Start Game", () -> this.startGame())))
+                .add(new RowNode()
+                        .add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)).center())
+                        .add(new TextNode(view.av, "Select a Fate").center())
+                        .add(new ButtonNode(view.av, "Start Game", () -> this.startGame()).center()))
                 .add(display).add(options);
 
         // Set up RowNodes of FateNodes
