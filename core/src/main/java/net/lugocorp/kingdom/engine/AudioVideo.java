@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine;
+import net.lugocorp.kingdom.engine.assets.FontService;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.assets.MusicLoader;
 import net.lugocorp.kingdom.engine.assets.SoundLoader;
@@ -9,13 +10,8 @@ import net.lugocorp.kingdom.engine.shaders.PreviewShader;
 import net.lugocorp.kingdom.engine.shaders.ToonShader;
 import net.lugocorp.kingdom.mods.ModAssetsMap;
 import net.lugocorp.kingdom.utils.math.Coords;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -31,8 +27,8 @@ public class AudioVideo {
     public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x, Coords.SIZE.y, true);
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
+    public final FontService fonts = new FontService();
     public final Settings settings = new Settings();
-    public final Fonts fonts = new Fonts();
     public final ModelBatch outlines;
     public final ModelBatch previews;
     public final ModelBatch models;
@@ -60,10 +56,10 @@ public class AudioVideo {
         this.models.dispose();
         this.outlines.dispose();
         this.previews.dispose();
-        this.fonts.basic.dispose();
         this.loaders.sprites.dispose();
         this.loaders.models.dispose();
         this.loaders.sounds.dispose();
+        this.fonts.dispose();
     }
 
     /**
@@ -85,33 +81,6 @@ public class AudioVideo {
      */
     public PreviewShader getPreviewShader() {
         return (PreviewShader) (((BasicShaderProvider) (this.previews.getShaderProvider())).shader);
-    }
-
-    /**
-     * This nested class contains all the application fonts
-     */
-    public static class Fonts {
-        public final BitmapFont header;
-        public final BitmapFont button;
-        public final BitmapFont hovered;
-        public final BitmapFont disabled;
-        public final BitmapFont basic;
-
-        Fonts() {
-            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/DejaVuSans.ttf"));
-            FreeTypeFontParameter param = new FreeTypeFontParameter();
-            param.size = 36;
-            this.header = generator.generateFont(param);
-            param.size = 18;
-            this.basic = generator.generateFont(param);
-            param.size = 24;
-            this.disabled = generator.generateFont(param);
-            param.color = new Color(0.45f, 1f, 1f, 1f);
-            this.button = generator.generateFont(param);
-            param.color = new Color(0.75f, 1f, 1f, 1f);
-            this.hovered = generator.generateFont(param);
-            generator.dispose();
-        }
     }
 
     /**

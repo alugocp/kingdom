@@ -2,18 +2,21 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.function.Consumer;
 
 /**
  * View for when we're loading a new game
  */
 public abstract class ThreadedTaskView implements View {
+    private final BitmapFont font;
     private boolean loaded = false;
     protected final AudioVideo av;
     protected Consumer<View> navigate;
 
     ThreadedTaskView(AudioVideo av) {
         this.av = av;
+        this.font = av.fonts.getFont(0xffffff);
     }
 
     /**
@@ -63,7 +66,7 @@ public abstract class ThreadedTaskView implements View {
             this.navigate.accept(this.getNextView());
         }
         this.av.sprites.begin();
-        this.av.fonts.basic.draw(this.av.sprites, this.getLoadingText(), Coords.SIZE.y / 3, Coords.SIZE.y / 2);
+        this.font.draw(this.av.sprites, this.getLoadingText(), Coords.SIZE.y / 3, Coords.SIZE.y / 2);
         this.av.sprites.end();
     }
 

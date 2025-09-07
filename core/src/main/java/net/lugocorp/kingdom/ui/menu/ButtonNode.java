@@ -24,9 +24,9 @@ public class ButtonNode extends TextNode {
     @Override
     protected BitmapFont getFont() {
         if (this.disabled) {
-            return this.av.fonts.disabled;
+            return this.av.fonts.getFont(24, 0xffffff);
         }
-        return this.hovered ? this.av.fonts.hovered : this.av.fonts.button;
+        return this.hovered ? this.av.fonts.getFont(24, 0xbfffff) : this.av.fonts.getFont(24, 0x72ffff);
     }
 
     /**

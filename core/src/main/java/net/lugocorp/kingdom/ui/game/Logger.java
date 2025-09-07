@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class Logger {
         }
 
         // Add this message to the log
-        layout.setText(this.view.av.fonts.basic, message);
+        layout.setText(this.view.av.fonts.getFont(0xffffff), message);
         messages.add(0, new LogMessage(message, layout.width, layout.height));
         if (this.messages.size() > Logger.MAX_ROWS) {
             messages.remove(messages.size() - 1);
@@ -86,13 +87,13 @@ public class Logger {
 
         // Draw the text
         this.view.av.sprites.begin();
+        BitmapFont font = this.view.av.fonts.getFont(18, 0xff0000);
         for (int a = 0; a < rows; a++) {
             LogMessage lm = this.messages.get(a);
-            this.view.av.fonts.basic.setColor(Color.RED.r, Color.RED.g, Color.RED.b, alphas[a]);
-            this.view.av.fonts.basic.draw(this.view.av.sprites, lm.message, rects[a].x,
-                    rects[a].y + lm.h + Logger.MARGIN);
+            font.setColor(Color.RED.r, Color.RED.g, Color.RED.b, alphas[a]);
+            font.draw(this.view.av.sprites, lm.message, rects[a].x, rects[a].y + lm.h + Logger.MARGIN);
         }
-        this.view.av.fonts.basic.setColor(Color.WHITE);
+        font.setColor(Color.RED);
         this.view.av.sprites.end();
 
         // Remove a message when the timer runs out
