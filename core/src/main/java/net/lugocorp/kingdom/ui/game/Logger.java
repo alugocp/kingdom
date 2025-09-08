@@ -13,7 +13,7 @@ import java.util.List;
  * Handles UI for log messages
  */
 public class Logger {
-    private static final int MAX_TIMER = 8000;
+    private static final int MAX_TIMER = 6000;
     private static final int FADE_OUT = 1000;
     private static final int MAX_ROWS = 8;
     private static final int MARGIN = 10;
@@ -65,7 +65,7 @@ public class Logger {
         }
         this.timer = Math.min(Logger.MAX_TIMER, this.timer + 50);
         int rows = this.messages.size();
-        float y = this.view.hud.getHeight();
+        float y = this.view.hud.getHeight() + 1;
         float[] alphas = new float[rows];
         Rect[] rects = new Rect[rows];
 

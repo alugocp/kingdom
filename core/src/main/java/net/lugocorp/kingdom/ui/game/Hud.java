@@ -11,6 +11,8 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.SettingsView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * This class handles rendering the Player's HUD UI
@@ -85,6 +87,14 @@ public class Hud extends Menu {
         this.info.updateInfo(this.view.game);
         this.minimap.setPoint(0, this.getHeight());
         super.draw(av);
+
+        // Draw a white bar at the bottom of the HUD
+        av.shapes.begin(ShapeType.Line);
+        av.shapes.setColor(Color.WHITE);
+        av.shapes.rect(0, Coords.SIZE.y - this.getHeight(), Coords.SIZE.x, 1);
+        av.shapes.end();
+
+        // Draw the minimap (if applicable)
         if (this.displayMinimap()) {
             this.minimap.draw(av, this.view.getCenteredPoint());
         }

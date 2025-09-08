@@ -13,6 +13,7 @@ public class ActionNode extends ButtonNode {
 
     public ActionNode(GameView view, String name, Optional<String> desc, boolean active, Runnable action) {
         super(view.av, name, action);
+        this.enable(active);
         this.desc = desc.map((String s) -> new TextNode(view.av, s));
         this.view = view;
     }
