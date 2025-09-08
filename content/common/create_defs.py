@@ -42,22 +42,8 @@ with open("content/common/src/main/net/lugocorp/kingdom/mod/common/Defs.java", "
 
         # Write a variable for each label
         for label in section["labels"]:
-
-            # Species are handled differently
-            if name == "Species":
-                if type(label) == str:
-                    cleaned = clean(label)
-                    print(f"    public static final Species {prefix}_{cleaned} = new Species(\"{label}\");", file=file)
-                else:
-                    species = label[1]
-                    cleaned1 = clean(label[0])
-                    cleaned2 = clean(label[1])
-                    print(f"    public static final Species {prefix}_{cleaned2} = new Species(\"{species}\", {prefix}_{cleaned1});", file=file)
-
-            # Standard variable output
-            else:
-                cleaned = clean(label)
-                print(f"    public static final String {prefix}_{cleaned} = \"{label}\";", file=file)
+            cleaned = clean(label)
+            print(f"    public static final String {prefix}_{cleaned} = \"{label}\";", file=file)
 
     # Write the closing bracket
     print("}", file=file)

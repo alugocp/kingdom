@@ -80,67 +80,6 @@
             ]
         },
         {
-            "prefix": "species",
-            "name": "Species",
-            "labels": [
-                "Human",
-                "Elf",
-                "Dwarf",
-                "Gnome",
-                "Orc",
-                "Goblin",
-                "Giant",
-                [
-                    "Giant",
-                    "Grue"
-                ],
-                [
-                    "Giant",
-                    "Ogre"
-                ],
-                [
-                    "Giant",
-                    "Ettin"
-                ],
-                [
-                    "Giant",
-                    "Troll"
-                ],
-                "Centaur",
-                "Salamander",
-                "Tortugan",
-                [
-                    "Tortugan",
-                    "Kappa"
-                ],
-                "Brownie",
-                "Kobold",
-                [
-                    "Kobold",
-                    "Firbolg"
-                ],
-                "Merfolk",
-                "Garuda",
-                "Dragonkin",
-                "Toadstool",
-                "Sprite",
-                [
-                    "Sprite",
-                    "Dryad"
-                ],
-                "Demon",
-                "Tulpa",
-                "Golem",
-                "Plasmoid",
-                "Undead",
-                "Elemental",
-                [
-                    "Elemental",
-                    "Gemstone"
-                ]
-            ]
-        },
-        {
             "prefix": "tag",
             "name": "Tags",
             "labels": [

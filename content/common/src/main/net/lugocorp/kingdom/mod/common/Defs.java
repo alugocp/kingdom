@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.mod.common;
-import net.lugocorp.kingdom.game.properties.Species;
 
 /**
  * Contains definitions for names and labels across all official content mods
@@ -81,41 +80,6 @@ public class Defs {
     public static final String asset_sentinel = "sentinel";
     public static final String asset_usurper = "usurper";
     public static final String asset_forager = "forager";
-
-    /**
-     * SECTION Species
-     */
-    public static final Species species_human = new Species("Human");
-    public static final Species species_elf = new Species("Elf");
-    public static final Species species_dwarf = new Species("Dwarf");
-    public static final Species species_gnome = new Species("Gnome");
-    public static final Species species_orc = new Species("Orc");
-    public static final Species species_goblin = new Species("Goblin");
-    public static final Species species_giant = new Species("Giant");
-    public static final Species species_grue = new Species("Grue", species_giant);
-    public static final Species species_ogre = new Species("Ogre", species_giant);
-    public static final Species species_ettin = new Species("Ettin", species_giant);
-    public static final Species species_troll = new Species("Troll", species_giant);
-    public static final Species species_centaur = new Species("Centaur");
-    public static final Species species_salamander = new Species("Salamander");
-    public static final Species species_tortugan = new Species("Tortugan");
-    public static final Species species_kappa = new Species("Kappa", species_tortugan);
-    public static final Species species_brownie = new Species("Brownie");
-    public static final Species species_kobold = new Species("Kobold");
-    public static final Species species_firbolg = new Species("Firbolg", species_kobold);
-    public static final Species species_merfolk = new Species("Merfolk");
-    public static final Species species_garuda = new Species("Garuda");
-    public static final Species species_dragonkin = new Species("Dragonkin");
-    public static final Species species_toadstool = new Species("Toadstool");
-    public static final Species species_sprite = new Species("Sprite");
-    public static final Species species_dryad = new Species("Dryad", species_sprite);
-    public static final Species species_demon = new Species("Demon");
-    public static final Species species_tulpa = new Species("Tulpa");
-    public static final Species species_golem = new Species("Golem");
-    public static final Species species_plasmoid = new Species("Plasmoid");
-    public static final Species species_undead = new Species("Undead");
-    public static final Species species_elemental = new Species("Elemental");
-    public static final Species species_gemstone = new Species("Gemstone", species_elemental);
 
     /**
      * SECTION Tags

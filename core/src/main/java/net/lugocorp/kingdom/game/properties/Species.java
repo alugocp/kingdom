@@ -5,18 +5,21 @@ import java.util.Optional;
  * Represents the species of a given Unit
  */
 public class Species {
-    public static final Species UNKNOWN = new Species("???");
+    public static final Species UNKNOWN = new Species("???", 0x616161);
     private final Optional<Species> root;
     private final String label;
+    public final int color;
 
-    public Species(String label, Species root) {
+    public Species(String label, int color, Species root) {
         this.root = Optional.of(root);
         this.label = label;
+        this.color = color;
     }
 
-    public Species(String label) {
+    public Species(String label, int color) {
         this.root = Optional.empty();
         this.label = label;
+        this.color = color;
     }
 
     @Override

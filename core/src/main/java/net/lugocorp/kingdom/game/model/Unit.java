@@ -389,7 +389,7 @@ public class Unit extends Entity implements MenuSubject {
         if (this.leader.isPresent()) {
             node.add(new TextNode(view.av, String.format("Alignment: %s", this.leader.get().name)));
         }
-        node.add(new BadgeNode(view.av, 0xff0000, 0xffffff, this.species.toString()));
+        node.add(new BadgeNode(view.av, this.species.color, 0xffffff, this.species.toString()));
         node.add(new TextNode(view.av,
                 String.format("Health: %d/%d", this.combat.health.get(), this.combat.health.getMax())));
         node.add(new TextNode(view.av, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
