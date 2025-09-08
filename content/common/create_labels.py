@@ -9,27 +9,21 @@ def clean(label: str) -> str:
     return cleaned.lower().replace("'", "").replace("-", "_").replace("é", "e")
 
 
-# Load the definitions JSON file (defs.json)
-with open("content/common/defs.json", "r") as file:
+# Load the definitions JSON file (labels.json)
+with open("content/common/labels.json", "r") as file:
     data = json.loads(file.read())
 
 
 # Open the output file and start writing to it
-with open("content/common/src/main/net/lugocorp/kingdom/mod/common/Defs.java", "w") as file:
+with open("content/common/src/main/net/lugocorp/kingdom/mod/common/Labels.java", "w") as file:
 
-    # Write the package declaration
+    # Write the class and package declarations
     print("package net.lugocorp.kingdom.mod.common;", file=file)
-
-    # Write the required import statements
-    for i in data["imports"]:
-        print(f"import {i};", file=file)
-
-    # Write the class definition
     print("", file=file)
     print("/**", file=file)
     print(" * Contains definitions for names and labels across all official content mods", file=file)
     print(" */", file=file)
-    print("public class Defs {", file=file)
+    print("public class Labels {", file=file)
 
     # Write each section header
     for section in data["sections"]:

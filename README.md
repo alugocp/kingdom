@@ -43,13 +43,13 @@ gradle content:vanilla:build
 This will recompile the content JARs located in `mods`.
 If you change the 3D models then run `gradle cleanAssets` *before* `gradle content:vanilla:build`.
 
-If you want to add new content to an official mod, modify the `content/common/defs.json` file and then run the following:
+If you want to add new content to an official mod, modify the `content/common/labels.json` file and then run the following:
 
 ```bash
-python3 content/common/create_defs.py
+python3 content/common/create_labels.py
 ```
 
-This will re-generate the `Defs` class that all official mods use.
+This will re-generate the `Labels` class that all official mods use.
 
 ## Notes
 - [libGDX JavaDocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/index.html)
