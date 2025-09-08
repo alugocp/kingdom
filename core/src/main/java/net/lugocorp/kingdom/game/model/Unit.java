@@ -412,18 +412,18 @@ public class Unit extends Entity implements MenuSubject {
             } else if (this.isSleeping()) {
                 node.add(new TextNode(view.av, "This unit does not have to act this turn"));
             }
-            node.add(new ActionNode(view.av, "Move", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
+            node.add(new ActionNode(view, "Move", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
                         this.move(view, p1).execute();
                         view.game.mechanics.turns.unitHasActed(view, this);
                         view.hud.minimap.refresh(view.game.world);
                     })));
-            node.add(new ActionNode(view.av, "Skip turn", Optional.empty(),
-                    !view.game.mechanics.turns.hasUnitActed(this), () -> {
+            node.add(new ActionNode(view, "Skip turn", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
+                    () -> {
                         this.sleep = SleepState.SLEEPING;
                         view.game.mechanics.turns.goToNextUnit(view);
                     }));
-            node.add(new ActionNode(view.av, "Skip until inventory is full", Optional.empty(),
+            node.add(new ActionNode(view, "Skip until inventory is full", Optional.empty(),
                     !view.game.mechanics.turns.hasUnitActed(this), () -> {
                         this.sleep = SleepState.SLEEPING_INVENTORY;
                         view.game.mechanics.turns.goToNextUnit(view);

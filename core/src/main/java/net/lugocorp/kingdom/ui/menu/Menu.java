@@ -12,16 +12,17 @@ import java.util.Optional;
  * Contains the logic to display some vertical menu content
  */
 public class Menu {
+    private static final int MINI_MENU_WIDTH = 250;
     private static final int MARGIN = 10;
     private final boolean tall;
     private final int width;
-    private final int x;
-    private final int y;
     private Optional<Point> prev = Optional.empty();
     private Optional<Point> curr = Optional.empty();
     private Optional<Menu> mini = Optional.empty();
     private boolean outlined = false;
     private int offset = 0;
+    private int x;
+    private int y;
     protected final MenuNode root;
 
     public Menu(int x, int y, int width, boolean tall, MenuNode root) {
@@ -64,12 +65,26 @@ public class Menu {
     }
 
     /**
+     * Removes the mini menu from this Menu
+     */
+    void closeMiniMenu() {
+        this.mini = Optional.empty();
+    }
+
+    /**
      * Sets a mini menu on this Menu
      */
     void setMiniMenu(MenuNode root, int x, int y) {
-        Menu menu = new Menu(x, Math.min(y, Coords.SIZE.y - root.getHeight()), 150, false, root);
-        menu.outlined = true;
-        this.mini = Optional.of(menu);
+        final int xBounded = Math.min(Coords.SIZE.x - Menu.MINI_MENU_WIDTH, x);
+        final int yBounded = Math.max(root.getHeight(), y);
+        if (this.mini.isPresent() && this.mini.get().root == root) {
+            this.mini.get().x = xBounded;
+            this.mini.get().y = yBounded;
+        } else {
+            final Menu menu = new Menu(xBounded, yBounded, Menu.MINI_MENU_WIDTH, false, root);
+            menu.outlined = true;
+            this.mini = Optional.of(menu);
+        }
     }
 
     /**
@@ -118,7 +133,7 @@ public class Menu {
             this.root.unclick();
             return true;
         }
-        this.mini = Optional.empty();
+        this.closeMiniMenu();
         final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), this.root.getHeight());
         Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
