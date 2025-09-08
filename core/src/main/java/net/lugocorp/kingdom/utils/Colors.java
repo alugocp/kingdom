@@ -32,6 +32,13 @@ public class Colors {
     }
 
     /**
+     * Converts some Color value into its integer equivalent
+     */
+    public static int asInt(Color c) {
+        return (((int) (c.r * 255f)) << 16) + (((int) (c.g * 255f)) << 8) + (int) (c.b * 255);
+    }
+
+    /**
      * Retrieves a Color from the pool
      */
     public static Color getFromPool() {

@@ -16,8 +16,11 @@ import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.menu.ResourceBarsNode;
+import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Colors;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -385,20 +388,24 @@ public class Unit extends Entity implements MenuSubject {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         ListNode node = new ListNode().add(new HeaderNode(view.av, this.name));
-        node.add(new GlyphIconsNode(view.av, this.glyphs.get())).add(new TextNode(view.av, this.desc));
-        if (this.leader.isPresent()) {
-            node.add(new TextNode(view.av, String.format("Alignment: %s", this.leader.get().name)));
-        }
+
+        // Unit stats section
+        MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
+        int turnsUntilHungry = Math.max(0, view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry"));
         node.add(new BadgeNode(view.av, this.species.color, 0xffffff, this.species.toString()));
-        node.add(new TextNode(view.av,
-                String.format("Health: %d/%d", this.combat.health.get(), this.combat.health.getMax())));
-        node.add(new TextNode(view.av, String.format("%d / %d loyalty", this.loyalty, Unit.MAX_LOYALTY)));
-        int turnsUntilHungry = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
-        if (turnsUntilHungry < 0) {
-            node.add(new TextNode(view.av, "This unit is hungry and will lose loyalty until it is fed"));
-        } else {
-            node.add(new TextNode(view.av, String.format("%d turn(s) until hunger strikes", turnsUntilHungry)));
-        }
+        node.add(
+                this.leader.isPresent()
+                        ? new RowNode().add(glyphsNode)
+                                .add(new BadgeNode(view.av, Colors.asInt(this.leader.get().color), 0xffffff,
+                                        this.leader.get().name))
+                        : glyphsNode);
+        node.add(new TextNode(view.av, this.desc));
+        node.add(new ResourceBarsNode(view.av,
+                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
+                new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty, Unit.MAX_LOYALTY),
+                new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.timeToHunger)));
+
+        // Abilities section
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             if (view.game.mechanics.turns.hasUnitActed(this)) {
                 node.add(new TextNode(view.av, "This unit has already acted this turn"));
@@ -427,6 +434,8 @@ public class Unit extends Entity implements MenuSubject {
         for (Ability a : this.passives) {
             node.add(a.getMenuContent(view, p));
         }
+
+        // Items section
         if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             node.add(new TextNode(view.av, "Equipped Items"));
             node.add(this.equipped.getMenuContent(view, p));
