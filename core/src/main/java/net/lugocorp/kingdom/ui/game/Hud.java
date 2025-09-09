@@ -43,7 +43,7 @@ public class Hud extends Menu {
                         view.game.mechanics.turns.iterateTurnPlayer(view);
                         view.menu.refresh(true);
                     }
-                }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
+                }).setNoise("sfx/end-turn").setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
         this.pack();
     }
 
@@ -73,6 +73,13 @@ public class Hud extends Menu {
                         })));
     }
 
+    /**
+     * Returns true if we are showing the Minimap
+     */
+    private boolean displayMinimap() {
+        return this.minimapActive && !this.view.popups.isDisplayed();
+    }
+
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av) {
@@ -88,13 +95,13 @@ public class Hud extends Menu {
         av.shapes.end();
 
         // Draw the minimap (if applicable)
-        if (this.minimapActive) {
+        if (this.displayMinimap()) {
             this.minimap.draw(av, this.view.getCenteredPoint());
         }
     }
 
     /** {@inheritdoc} */
     public boolean click(Point p) {
-        return super.click(p) || (this.minimapActive && this.minimap.click(this.view, p));
+        return super.click(p) || (this.displayMinimap() && this.minimap.click(this.view, p));
     }
 }

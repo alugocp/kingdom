@@ -102,7 +102,11 @@ public class Combat {
         // then calculate the outcomes of the battle (damage taken, death triggers, etc)
         return SideEffect.all(this.bearer.handleEvent(view, new Events.AttackEvent(this.bearer, target, dmg)),
                 target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)),
-                target.combat.takeDamage(view, dmg, this.bearer));
+                target.combat.takeDamage(view, dmg, this.bearer), () -> {
+                    if (this.bearer.getLeader().map((Player l) -> l.isHumanPlayer()).orElse(false)) {
+                        view.av.loaders.sounds.play("sfx/attack-enemy");
+                    }
+                });
     }
 
     /**

@@ -14,6 +14,7 @@ public class ButtonNode extends TextNode {
     private Optional<Supplier<Boolean>> criteria = Optional.empty();
     private boolean disabled = false;
     private boolean hovered = false;
+    private String ping = "sfx/arrow";
 
     public ButtonNode(AudioVideo av, String message, Runnable action) {
         super(av, message);
@@ -59,6 +60,14 @@ public class ButtonNode extends TextNode {
         return this;
     }
 
+    /**
+     * Sets the noise that plays when you click this ButtonNode
+     */
+    public ButtonNode setNoise(String ping) {
+        this.ping = ping;
+        return this;
+    }
+
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
@@ -70,7 +79,7 @@ public class ButtonNode extends TextNode {
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
         if (!this.disabled) {
-            this.av.loaders.sounds.play("ui/arrow");
+            this.av.loaders.sounds.play(this.ping);
             this.action.run();
         }
     }

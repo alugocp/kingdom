@@ -110,30 +110,32 @@ public class InventoryNode implements MenuNode {
                 if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
                         && !this.itemIsConsumed(this.view, item)) {
                     root.add(new ButtonNode(this.view.av, "Equip onto unit",
-                            () -> this.unitTakesItem(InventoryType.EQUIP, item)));
+                            () -> this.unitTakesItem(InventoryType.EQUIP, item)).setNoise("sfx/item-exchange"));
                 }
                 if (this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
                     root.add(new ButtonNode(this.view.av, "Give to unit",
-                            () -> this.unitTakesItem(InventoryType.HAUL, item)));
+                            () -> this.unitTakesItem(InventoryType.HAUL, item)).setNoise("sfx/item-exchange"));
                 }
             } else {
                 // Unit actions for this Item
                 if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
                         && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
                         && !this.itemIsConsumed(this.view, item)) {
-                    root.add(
-                            new ButtonNode(this.view.av, "Equip", () -> this.unitTakesItem(InventoryType.EQUIP, item)));
+                    root.add(new ButtonNode(this.view.av, "Equip", () -> this.unitTakesItem(InventoryType.EQUIP, item))
+                            .setNoise("sfx/item-check"));
                 }
                 if (this.items.type == InventoryType.FREE
                         && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
-                    root.add(new ButtonNode(this.view.av, "Pick up",
-                            () -> this.unitTakesItem(InventoryType.HAUL, item)));
+                    root.add(new ButtonNode(this.view.av, "Pick up", () -> this.unitTakesItem(InventoryType.HAUL, item))
+                            .setNoise("sfx/item-check"));
                 }
                 if (this.canUnitConsumeItem(item)) {
-                    root.add(new ButtonNode(this.view.av, "Consume", () -> this.unitConsumesItem(item)));
+                    root.add(new ButtonNode(this.view.av, "Consume", () -> this.unitConsumesItem(item))
+                            .setNoise("sfx/item-check"));
                 }
                 if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
-                    root.add(new ButtonNode(this.view.av, "Drop", () -> this.unitDropsItem(item)));
+                    root.add(new ButtonNode(this.view.av, "Drop", () -> this.unitDropsItem(item))
+                            .setNoise("sfx/item-check"));
                 }
                 if ((this.items.type == InventoryType.FREE
                         && this.canUnitTakeItem(InventoryType.HAUL, Optional.empty()))
@@ -141,11 +143,13 @@ public class InventoryNode implements MenuNode {
                     root.add(new ButtonNode(this.view.av, "Give",
                             () -> this.view.selector.select(this.getGiftRecipients(),
                                     "No nearby units can receive this gift",
-                                    (Point p1) -> this.giftItemToUnit(p1, item))));
+                                    (Point p1) -> this.giftItemToUnit(p1, item)))
+                            .setNoise("sfx/item-exchange"));
                 }
                 if ((this.items.type == InventoryType.FREE || this.items.type == InventoryType.HAUL)
                         && this.canBuildingTakeItem()) {
-                    root.add(new ButtonNode(this.view.av, "Put in vault", () -> this.buildingTakesItem(item)));
+                    root.add(new ButtonNode(this.view.av, "Put in vault", () -> this.buildingTakesItem(item))
+                            .setNoise("sfx/item-check"));
                 }
             }
         }

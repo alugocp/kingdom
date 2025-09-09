@@ -164,7 +164,7 @@ class GameCreationView implements View {
             for (int b = 0; b < columns && a < fates.size();) {
                 final Fate fate = fates.get(a);
                 row.add(new FateNode(view.av, fate, () -> {
-                    view.av.loaders.sounds.play("ui/arrow");
+                    view.av.loaders.sounds.play("sfx/card-flick");
                     view.game.human.setFate(fate);
                     display.setFate(view.av, fate);
                 }));

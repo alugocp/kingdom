@@ -91,7 +91,7 @@ public class TileSelector {
      * Confirms the user's selected Tile and kicks off the associated action
      */
     public void runSelectionAction() {
-        this.view.av.loaders.sounds.play("ui/arrow");
+        this.view.av.loaders.sounds.play("sfx/arrow");
         this.selection.get().action.accept(this.hovered.get());
         this.deselect();
     }

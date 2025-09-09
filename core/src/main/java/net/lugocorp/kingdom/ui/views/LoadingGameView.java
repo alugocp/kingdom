@@ -22,32 +22,33 @@ public class LoadingGameView extends ThreadedTaskView {
         super(av);
 
         // Load built-in sprites
-        av.loaders.sprites.register("artifact-mask", "ui/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0, 0);
-        av.loaders.sprites.register("fate-highlight", "ui/fate-highlight", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
-        av.loaders.sprites.register("glyph-icon-battle", "ui/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE, 0,
+        av.loaders.sprites.register("artifact-mask", "game/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
                 0);
-        av.loaders.sprites.register("glyph-icon-defense", "ui/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE, 1,
-                0);
-        av.loaders.sprites.register("glyph-icon-healing", "ui/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE, 2,
-                0);
-        av.loaders.sprites.register("glyph-icon-nature", "ui/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE, 0,
-                1);
-        av.loaders.sprites.register("glyph-icon-mining", "ui/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE, 1,
-                1);
-        av.loaders.sprites.register("glyph-icon-trade", "ui/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE, 2,
-                1);
-        av.loaders.sprites.register("glyph-badge-battle", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+        av.loaders.sprites.register("fate-highlight", "game/fate-highlight", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
+        av.loaders.sprites.register("glyph-icon-battle", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 0, 0);
-        av.loaders.sprites.register("glyph-badge-defense", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+        av.loaders.sprites.register("glyph-icon-defense", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 1, 0);
-        av.loaders.sprites.register("glyph-badge-healing", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+        av.loaders.sprites.register("glyph-icon-healing", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 2, 0);
-        av.loaders.sprites.register("glyph-badge-nature", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+        av.loaders.sprites.register("glyph-icon-nature", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 0, 1);
-        av.loaders.sprites.register("glyph-badge-mining", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+        av.loaders.sprites.register("glyph-icon-mining", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 1, 1);
-        av.loaders.sprites.register("glyph-badge-trade", "ui/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE, 2,
+        av.loaders.sprites.register("glyph-icon-trade", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE, 2,
                 1);
+        av.loaders.sprites.register("glyph-badge-battle", "game/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                0, 0);
+        av.loaders.sprites.register("glyph-badge-defense", "game/glyph-badges", GlyphBadgeNode.SIDE,
+                GlyphBadgeNode.SIDE, 1, 0);
+        av.loaders.sprites.register("glyph-badge-healing", "game/glyph-badges", GlyphBadgeNode.SIDE,
+                GlyphBadgeNode.SIDE, 2, 0);
+        av.loaders.sprites.register("glyph-badge-nature", "game/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                0, 1);
+        av.loaders.sprites.register("glyph-badge-mining", "game/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                1, 1);
+        av.loaders.sprites.register("glyph-badge-trade", "game/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
+                2, 1);
     }
 
     /** {@inheritdoc} */

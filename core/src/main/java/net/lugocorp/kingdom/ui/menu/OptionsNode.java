@@ -76,7 +76,7 @@ public class OptionsNode implements MenuNode {
         for (int a = 0; a < this.options.size(); a++) {
             final Rect r = new Rect(bounds.x, y, bounds.w, this.options.get(a).getHeight());
             if (r.contains(p)) {
-                this.av.loaders.sounds.play("ui/arrow");
+                this.av.loaders.sounds.play("sfx/arrow");
                 this.selected.accept(a);
                 this.index = a;
             }

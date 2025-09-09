@@ -12,7 +12,8 @@ import java.util.Map;
  */
 public class FontService {
     private static final int DEFAULT_SIZE = 18;
-    private final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/DejaVuSans.ttf"));
+    private final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+            Gdx.files.internal("fonts/DejaVuSans.ttf"));
     private final FreeTypeFontParameter params = new FreeTypeFontParameter();
     private final Map<String, BitmapFont> generated = new HashMap<>();
 

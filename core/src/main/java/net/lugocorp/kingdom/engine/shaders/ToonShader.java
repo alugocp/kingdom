@@ -192,8 +192,8 @@ public class ToonShader implements Shader {
             if (this.textures.isPresent()) {
                 // Player borders
                 if (data.borders > 0) {
-                    Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("ui/border1");
-                    Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("ui/border2");
+                    Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("game/border1");
+                    Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("game/border2");
                     if (tdesc1.isPresent() && tdesc2.isPresent()) {
                         this.program.setUniformi(this.u_borderTexture1, this.context.textureBinder.bind(tdesc1.get()));
                         this.program.setUniformi(this.u_borderTexture2, this.context.textureBinder.bind(tdesc2.get()));
@@ -203,8 +203,8 @@ public class ToonShader implements Shader {
 
                 // Domain borders
                 if (data.domainBorders > 0) {
-                    Optional<TextureDescriptor> tdesc3 = this.textures.get().getTextureDescriptor("ui/border3");
-                    Optional<TextureDescriptor> tdesc4 = this.textures.get().getTextureDescriptor("ui/border4");
+                    Optional<TextureDescriptor> tdesc3 = this.textures.get().getTextureDescriptor("game/border3");
+                    Optional<TextureDescriptor> tdesc4 = this.textures.get().getTextureDescriptor("game/border4");
                     if (tdesc3.isPresent() && tdesc4.isPresent()) {
                         this.program.setUniformi(this.u_borderTexture3, this.context.textureBinder.bind(tdesc3.get()));
                         this.program.setUniformi(this.u_borderTexture4, this.context.textureBinder.bind(tdesc4.get()));

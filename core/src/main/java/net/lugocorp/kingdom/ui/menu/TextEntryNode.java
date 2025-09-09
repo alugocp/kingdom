@@ -101,7 +101,7 @@ public class TextEntryNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void click(Menu menu, Rect bounds, Point p) {
-        this.av.loaders.sounds.play("ui/arrow");
+        this.av.loaders.sounds.play("sfx/arrow");
         this.cursor = Math.min((p.x - bounds.x) / this.charWidth, this.getVisibleSubstring().length()) + this.delta;
         this.selected = true;
     }

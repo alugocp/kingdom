@@ -13,13 +13,14 @@ import java.util.List;
  * Handles UI for log messages
  */
 public class Logger {
-    private static final int MAX_TIMER = 4000;
-    private static final int FADE_OUT = 1000;
+    private static final int MAX_TIMER = 4500;
+    private static final int FADE_OUT = 500;
     private static final int MAX_ROWS = 8;
     private static final int MARGIN = 10;
     private final List<LogMessage> messages = new ArrayList<>();
     private final GlyphLayout layout = new GlyphLayout();
     private final GameView view;
+    private long prevTime = System.currentTimeMillis();
     private int timer = 0;
 
     public Logger(GameView view) {
@@ -63,11 +64,15 @@ public class Logger {
         if (this.messages.size() == 0) {
             return;
         }
-        this.timer = Math.min(Logger.MAX_TIMER, this.timer + 50);
-        int rows = this.messages.size();
+        final int rows = this.messages.size();
+        final float[] alphas = new float[rows];
+        final Rect[] rects = new Rect[rows];
         float y = this.view.hud.getHeight() + 1;
-        float[] alphas = new float[rows];
-        Rect[] rects = new Rect[rows];
+
+        // Update the timer
+        long time = System.currentTimeMillis();
+        this.timer = (int) Math.min(Logger.MAX_TIMER, this.timer + (time - this.prevTime));
+        this.prevTime = time;
 
         // Draw the background boxes
         this.view.av.shapes.begin(ShapeType.Filled);
