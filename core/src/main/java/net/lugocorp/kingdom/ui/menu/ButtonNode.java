@@ -30,6 +30,20 @@ public class ButtonNode extends TextNode {
     }
 
     /**
+     * Returns whether or not the mouse is hovering over this ButtonNode
+     */
+    protected boolean isHovered() {
+        return this.hovered;
+    }
+
+    /**
+     * Returns whether or not this ButtonNode is enabled
+     */
+    protected boolean isEnabled() {
+        return !this.disabled;
+    }
+
+    /**
      * Disables this ButtonNode based on some criteria
      */
     public ButtonNode enable(boolean criteria) {

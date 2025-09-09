@@ -6,10 +6,12 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.BuildingType;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
+import net.lugocorp.kingdom.ui.menu.BadgeNode;
 import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.menu.ResourceBarsNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Colors;
@@ -161,15 +163,18 @@ public class Building extends Entity implements MenuSubject {
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
                 .flatMap((Tile t) -> t.leader);
-        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc));
+        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name));
         if (leader.isPresent()) {
-            node.add(new TextNode(view.av, String.format("Alignment: %s", leader.get().name)));
+            node.add(new BadgeNode(view.av, Colors.asInt(leader.get().color), 0xffffff, leader.get().name));
         }
-        node.add(new TextNode(view.av,
-                String.format("Health: %d/%d", this.combat.health.get(), this.combat.health.getMax())));
+        node.add(new TextNode(view.av, this.desc));
+        node.add(new ResourceBarsNode(view.av,
+                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax())));
         if (this.items.isPresent()) {
+            node.add(new TextNode(view.av, "Items"));
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-                node.add(new TextNode(view.av, String.format("Gold: %d", this.items.get().getTotalGold())));
+                node.add(new BadgeNode(view.av, 0xb5b31f, 0xffffff,
+                        String.format("%d gold", this.items.get().getTotalGold())));
                 node.add(this.items.get().getMenuContent(view, p));
             } else {
                 node.add(new TextNode(view.av, String.format("Can store %d items", this.items.get().getMax())));

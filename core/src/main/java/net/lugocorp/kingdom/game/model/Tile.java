@@ -11,10 +11,11 @@ import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.GlyphIconsNode;
+import net.lugocorp.kingdom.ui.menu.HeaderNode;
 import net.lugocorp.kingdom.ui.menu.ListNode;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
 import net.lugocorp.kingdom.ui.menu.MenuSubject;
-import net.lugocorp.kingdom.ui.menu.SpacerNode;
+import net.lugocorp.kingdom.ui.menu.TabsNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Colors;
@@ -25,6 +26,8 @@ import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -207,15 +210,37 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         if (!p.isPresent()) {
             throw new RuntimeException("Cannot display unspawned tiles");
         }
-        ListNode node = new ListNode();
+        final ListNode node = new ListNode();
         node.add(new ButtonNode(view.av, "x", () -> view.menu.close()));
+
+        // Instantiate the Tile MenuNodes
+        final List<MenuNode> tileNodes = new ArrayList<>();
+        tileNodes.add(new HeaderNode(view.av, this.name));
         if (this.glyph.isPresent()) {
-            node.add(new GlyphIconsNode(view.av, this.glyph.get()));
+            tileNodes.add(new GlyphIconsNode(view.av, this.glyph.get()));
         }
-        node.add(new TextNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
-                .add(this.items.getMenuContent(view, p));
-        this.unit.ifPresent((Unit u) -> node.add(new SpacerNode()).add(u.getMenuContent(view, p)));
-        this.building.ifPresent((Building b) -> node.add(new SpacerNode()).add(b.getMenuContent(view, p)));
+        tileNodes.add(new TextNode(view.av, this.desc));
+        tileNodes.add(this.items.getMenuContent(view, p));
+
+        // Determine whether we add the MenuNodes to the ListNode directly or to a
+        // TabsNode
+        if (this.unit.isPresent() || this.building.isPresent()) {
+            final TabsNode tabs = new TabsNode(view.av);
+            this.unit.ifPresent((Unit u) -> tabs.add("Unit", u.getMenuContent(view, p)));
+            this.building.ifPresent((Building b) -> tabs.add("Building", b.getMenuContent(view, p)));
+
+            // Tile tab
+            final ListNode tileTab = new ListNode();
+            for (MenuNode n : tileNodes) {
+                tileTab.add(n);
+            }
+            tabs.add("Tile", tileTab);
+            node.add(tabs);
+        } else {
+            for (MenuNode n : tileNodes) {
+                node.add(n);
+            }
+        }
         return node;
     }
 }
