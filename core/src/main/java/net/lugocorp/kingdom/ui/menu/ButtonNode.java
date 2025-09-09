@@ -77,7 +77,7 @@ public class ButtonNode extends TextNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         if (!this.disabled) {
             this.av.loaders.sounds.play(this.ping);
             this.action.run();

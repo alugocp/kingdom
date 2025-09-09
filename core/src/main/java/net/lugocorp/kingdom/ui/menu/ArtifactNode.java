@@ -36,8 +36,8 @@ public class ArtifactNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
-        this.text.pack(ArtifactNode.WIDTH - (ArtifactNode.MARGIN * 2));
+    public void pack(Menu menu, int width) {
+        this.text.pack(menu, ArtifactNode.WIDTH - (ArtifactNode.MARGIN * 2));
     }
 
     /** {@inheritdoc} */

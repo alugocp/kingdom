@@ -29,6 +29,7 @@ public class InventoryNode implements MenuNode {
     private final GameView view;
     private final int x;
     private final int y;
+    private Menu menu = null;
     private int cols;
     private int rows;
 
@@ -47,9 +48,10 @@ public class InventoryNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
         this.cols = (int) (width / (InventoryNode.SIDE + InventoryNode.MARGIN));
         this.rows = this.items.getMax() == 0 ? 0 : (int) Math.ceil(this.items.getMax() / (float) this.cols);
+        this.menu = menu;
     }
 
     /** {@inheritdoc} */
@@ -83,7 +85,7 @@ public class InventoryNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         int x = (p.x - bounds.x) / InventoryNode.SIDE;
         int y = (p.y - bounds.y) / InventoryNode.SIDE;
         int i = (cols * y) + x;
@@ -153,7 +155,7 @@ public class InventoryNode implements MenuNode {
                 }
             }
         }
-        menu.setMiniMenu(root, p.x, p.y);
+        this.menu.setMiniMenu(root, p.x, p.y);
     }
 
     /**

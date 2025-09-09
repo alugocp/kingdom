@@ -66,7 +66,7 @@ public class TextEntryNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
         this.charsWindow = width / this.charWidth;
     }
 
@@ -100,7 +100,7 @@ public class TextEntryNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         this.av.loaders.sounds.play("sfx/arrow");
         this.cursor = Math.min((p.x - bounds.x) / this.charWidth, this.getVisibleSubstring().length()) + this.delta;
         this.selected = true;

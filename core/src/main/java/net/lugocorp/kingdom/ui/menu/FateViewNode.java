@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.model.Fate;
 public class FateViewNode extends RowNode {
     private final ListNode desc = new ListNode();
     private final FateNode fate;
+    private Menu menu = null;
     private int width = 0;
 
     public FateViewNode(AudioVideo av, Fate initial) {
@@ -28,14 +29,15 @@ public class FateViewNode extends RowNode {
             this.desc.add(new TextNode(av, s));
         }
         if (this.width > 0) {
-            this.pack(this.width);
+            this.pack(this.menu, this.width);
         }
     }
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
+        super.pack(menu, width);
         this.width = width;
-        super.pack(width);
+        this.menu = menu;
     }
 }

@@ -44,10 +44,10 @@ public class OptionsNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
         final int w = width - OptionsNode.MARGIN - (OptionsNode.RADIUS * 2);
         for (TextNode n : this.options) {
-            n.pack(w);
+            n.pack(menu, w);
         }
     }
 
@@ -71,7 +71,7 @@ public class OptionsNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         int y = bounds.y;
         for (int a = 0; a < this.options.size(); a++) {
             final Rect r = new Rect(bounds.x, y, bounds.w, this.options.get(a).getHeight());

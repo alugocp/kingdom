@@ -35,7 +35,7 @@ public class ModelNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
         int maxWidth = width - (ModelNode.MARGIN * 2);
         this.scale = (float) maxWidth / this.modelWidth;
     }

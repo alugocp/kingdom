@@ -17,6 +17,7 @@ public class TextNode implements MenuNode {
     private int hash;
     protected final List<Line> lines = new ArrayList<>();
     protected final AudioVideo av;
+    protected Menu menu = null;
 
     public TextNode(AudioVideo av, String message) {
         this.hash = message.hashCode();
@@ -47,7 +48,7 @@ public class TextNode implements MenuNode {
         }
         this.hash = message.hashCode();
         this.loaded = message;
-        this.pack(this.width);
+        this.pack(this.menu, this.width);
     }
 
     /**
@@ -67,7 +68,8 @@ public class TextNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
+        this.menu = menu;
         this.width = width;
         BitmapFont font = this.getFont();
         GlyphLayout layout = new GlyphLayout();

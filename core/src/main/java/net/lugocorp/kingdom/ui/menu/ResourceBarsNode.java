@@ -32,7 +32,7 @@ public class ResourceBarsNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
         GlyphLayout layout = new GlyphLayout();
         for (ResourceBarsNode.Bar bar : this.bars) {
             layout.setText(this.font, bar.label);

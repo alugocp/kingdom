@@ -20,14 +20,14 @@ public interface MenuNode {
     /**
      * Called when we know how much width can be allotted to this MenuNode
      */
-    public default void pack(int width) {
+    public default void pack(Menu menu, int width) {
         // No-op
     }
 
     /**
      * Handles a click on this MenuNode
      */
-    public default void click(Menu menu, Rect bounds, Point p) {
+    public default void click(Rect bounds, Point p) {
         // No-op
     }
 

@@ -33,8 +33,8 @@ public class BadgeNode extends TextNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
-        super.pack(width);
+    public void pack(Menu menu, int width) {
+        super.pack(menu, width);
 
         // Figure out where to place slashes
         final GlyphLayout layout = new GlyphLayout();

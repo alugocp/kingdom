@@ -46,7 +46,7 @@ public class Menu {
      * Packs this Menu's constituent MenuNodes
      */
     public void pack() {
-        this.root.pack(width - (Menu.MARGIN * 3));
+        this.root.pack(this, width - (Menu.MARGIN * 3));
     }
 
     /**
@@ -160,7 +160,7 @@ public class Menu {
         Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
                 p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
         if (bounds.contains(p1)) {
-            this.root.click(this, bounds, p1);
+            this.root.click(bounds, p1);
             return true;
         }
         this.root.unclick();

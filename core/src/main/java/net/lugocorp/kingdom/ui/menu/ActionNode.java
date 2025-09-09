@@ -39,12 +39,10 @@ public class ActionNode extends ButtonNode {
         // Perform logic for the description popup
         final boolean prevIn = bounds.contains(prev);
         final boolean currIn = bounds.contains(curr);
-        // TODO make this work for any menu, not just the game tile menu
-        Menu menu = this.view.menu.get().get();
         if (currIn) {
-            menu.setMiniMenu(this.desc.get(), curr.x + 25, curr.y + 15);
+            this.menu.setMiniMenu(this.desc.get(), curr.x + 25, curr.y + 15);
         } else if (prevIn) {
-            menu.closeMiniMenu();
+            this.menu.closeMiniMenu();
         }
     }
 }

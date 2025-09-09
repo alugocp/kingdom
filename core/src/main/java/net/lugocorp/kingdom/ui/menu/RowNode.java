@@ -48,12 +48,12 @@ public class RowNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
         if (this.getColumns() < this.children.size()) {
             throw new RuntimeException("Not enough columns set for this RowNode");
         }
         for (MenuNode child : this.children) {
-            child.pack(width / this.getColumns());
+            child.pack(menu, width / this.getColumns());
         }
     }
 
@@ -71,13 +71,13 @@ public class RowNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         int x = bounds.x;
         int w = bounds.w / this.getColumns();
         for (MenuNode child : this.children) {
             final Rect r = new Rect(x, bounds.y, w, child.getHeight());
             if (r.contains(p)) {
-                child.click(menu, r, p);
+                child.click(r, p);
             } else {
                 child.unclick();
             }

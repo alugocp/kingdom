@@ -69,27 +69,27 @@ public class TabsNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
-        this.tabs.pack(width);
+    public void pack(Menu menu, int width) {
+        this.tabs.pack(menu, width);
         for (Tuple<String, MenuNode> tab : this.data) {
-            tab.b.pack(width);
+            tab.b.pack(menu, width);
         }
     }
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         final int h = this.tabs.getHeight();
         final Rect r1 = new Rect(bounds.x, bounds.y, bounds.w, h);
         if (r1.contains(p)) {
-            this.tabs.click(menu, r1, p);
+            this.tabs.click(r1, p);
         } else {
             this.tabs.unclick();
         }
 
         final Rect r2 = new Rect(bounds.x, bounds.y + h, bounds.w, this.getHeight() - h);
         if (r2.contains(p)) {
-            this.content().click(menu, r2, p);
+            this.content().click(r2, p);
         } else {
             this.content().unclick();
         }

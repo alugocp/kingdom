@@ -52,9 +52,9 @@ public class ListNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void pack(int width) {
+    public void pack(Menu menu, int width) {
         for (MenuNode child : this.children) {
-            child.pack(width - (this.margin * 2));
+            child.pack(menu, width - (this.margin * 2));
         }
     }
 
@@ -78,12 +78,12 @@ public class ListNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         int y = bounds.y + this.margin;
         for (MenuNode child : this.children) {
             final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
             if (r.contains(p)) {
-                child.click(menu, r, p);
+                child.click(r, p);
             } else {
                 child.unclick();
             }

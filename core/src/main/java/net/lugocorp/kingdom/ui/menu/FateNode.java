@@ -60,7 +60,7 @@ public class FateNode implements MenuNode {
 
     /** {@inheritdoc} */
     @Override
-    public void click(Menu menu, Rect bounds, Point p) {
+    public void click(Rect bounds, Point p) {
         this.onClick.run();
     }
 
