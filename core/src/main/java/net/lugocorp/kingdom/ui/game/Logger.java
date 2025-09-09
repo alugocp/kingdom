@@ -13,7 +13,7 @@ import java.util.List;
  * Handles UI for log messages
  */
 public class Logger {
-    private static final int MAX_TIMER = 6000;
+    private static final int MAX_TIMER = 4000;
     private static final int FADE_OUT = 1000;
     private static final int MAX_ROWS = 8;
     private static final int MARGIN = 10;

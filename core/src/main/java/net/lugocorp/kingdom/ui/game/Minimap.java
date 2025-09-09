@@ -41,6 +41,13 @@ public class Minimap {
     }
 
     /**
+     * Returns how many pixels this object takes up on the screen vertically
+     */
+    public int getHeight() {
+        return this.gridh * this.scale;
+    }
+
+    /**
      * Sets this Minimap's location
      */
     void setPoint(int x, int y) {

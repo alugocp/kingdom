@@ -193,6 +193,7 @@ public class GameView implements View {
             this.required.add(0, true);
             this.queue.add(menu);
             this.display = true;
+            menu.outline();
         }
 
         /**
@@ -202,6 +203,7 @@ public class GameView implements View {
             this.required.add(0, true);
             this.queue.add(0, menu);
             this.display = true;
+            menu.outline();
         }
 
         /**
@@ -211,6 +213,7 @@ public class GameView implements View {
             this.required.add(0, false);
             this.queue.add(0, menu);
             this.display = true;
+            menu.outline();
         }
 
         /**

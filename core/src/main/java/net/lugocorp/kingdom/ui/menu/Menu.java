@@ -35,6 +35,13 @@ public class Menu {
     }
 
     /**
+     * Adds an outline to this Menu
+     */
+    public void outline() {
+        this.outlined = true;
+    }
+
+    /**
      * Packs this Menu's constituent MenuNodes
      */
     public void pack() {
