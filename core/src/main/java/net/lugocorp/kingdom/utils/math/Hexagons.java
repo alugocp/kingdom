@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.utils.math;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -18,19 +20,51 @@ public class Hexagons {
      * the grid
      */
     public static Set<Point> getNeighbors(Point p, int r) {
-        double thresh = Math.pow(Hexagons.WIDTH * r, 2) * 1.01; // 1.01 accounts for rounding errors
-        float[] p1 = Coords.grid.coordinates(p.x, p.y);
-        Set<Point> coords = new HashSet<>();
-        for (int dx = -r; dx <= r; dx++) {
-            for (int dy = -r; dy <= r; dy++) {
-                if (dx == 0 && dy == 0) {
-                    continue;
-                }
-                float[] p2 = Coords.grid.coordinates(p.x + dx, p.y + dy);
-                if (Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2) <= thresh) {
-                    coords.add(new Point(p.x + dx, p.y + dy));
+        // Calculate the expected number of neighbors
+        int expected = 0;
+        for (int a = 1; a <= r; a++) {
+            expected += a * 6;
+        }
+
+        // Collect the neighboring Points
+        final List<Point> visited = new ArrayList<>();
+        visited.add(p);
+        int curr = 0;
+        while (curr < visited.size() && visited.size() < expected) {
+            Set<Point> adjs = Hexagons.getAdjacents(visited.get(curr));
+            for (Point p1 : adjs) {
+                if (!visited.contains(p1)) {
+                    visited.add(p1);
                 }
             }
+            curr++;
+        }
+
+        // Collect the Points into a set and return
+        Set<Point> coords = new HashSet<>();
+        coords.addAll(visited);
+        return coords;
+    }
+
+    /**
+     * Returns a set of Points that are adjacent to the given Point in the grid
+     */
+    public static Set<Point> getAdjacents(Point p) {
+        final Set<Point> coords = new HashSet<>();
+        if (p.y % 2 == 0) {
+            coords.add(new Point(p.x - 1, p.y - 1));
+            coords.add(new Point(p.x, p.y - 1));
+            coords.add(new Point(p.x - 1, p.y));
+            coords.add(new Point(p.x + 1, p.y));
+            coords.add(new Point(p.x - 1, p.y + 1));
+            coords.add(new Point(p.x, p.y + 1));
+        } else {
+            coords.add(new Point(p.x, p.y - 1));
+            coords.add(new Point(p.x + 1, p.y - 1));
+            coords.add(new Point(p.x - 1, p.y));
+            coords.add(new Point(p.x + 1, p.y));
+            coords.add(new Point(p.x, p.y + 1));
+            coords.add(new Point(p.x + 1, p.y + 1));
         }
         return coords;
     }
