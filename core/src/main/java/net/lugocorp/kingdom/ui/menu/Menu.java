@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
 
@@ -107,19 +108,22 @@ public class Menu {
      */
     public void draw(AudioVideo av) {
         final int h = this.getHeight();
-        Rect bg = Coords.screen.flip(this.x, this.y, this.width, h);
+        final Rect bg = Coords.screen.flip(this.x, this.y, this.width, h);
+
+        // Draw black background
         av.shapes.begin(ShapeType.Filled);
         av.shapes.setColor(Color.BLACK);
         av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
         av.shapes.end();
-        if (this.outlined) {
-            av.shapes.begin(ShapeType.Line);
-            av.shapes.setColor(Color.WHITE);
-            av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
-            av.shapes.end();
-        }
+
+        // Draw Menu content
+        Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+        Gdx.gl.glScissor(bg.x, bg.y, bg.w, bg.h);
         this.root.draw(av, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), h - (Menu.MARGIN * 2)));
+        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+
+        // Draw scrollbar
         if (this.shouldScroll()) {
             final int rh = this.root.getHeight();
             Rect flip = Coords.screen.flip(this.x + this.width - Menu.MARGIN, this.y + (this.offset * h / rh),
@@ -129,6 +133,16 @@ public class Menu {
             av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
             av.shapes.end();
         }
+
+        // Draw Menu outline
+        if (this.outlined) {
+            av.shapes.begin(ShapeType.Line);
+            av.shapes.setColor(Color.WHITE);
+            av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
+            av.shapes.end();
+        }
+
+        // Draw mini-Menu
         this.mini.ifPresent((Menu m) -> m.draw(av));
     }
 

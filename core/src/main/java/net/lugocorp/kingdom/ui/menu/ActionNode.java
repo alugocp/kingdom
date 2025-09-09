@@ -23,7 +23,7 @@ public class ActionNode extends ButtonNode {
     @Override
     protected BitmapFont getFont() {
         if (!this.isEnabled() && this.isHovered()) {
-            return this.av.fonts.getFont(24, 0xaaaaaa);
+            return this.av.fonts.getFont(24, 0xdddddd);
         }
         return super.getFont();
     }
