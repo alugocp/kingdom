@@ -49,6 +49,12 @@ public class Patron extends Building {
         return EntityType.PATRON;
     }
 
+    /** {@inheritdoc} */
+    @Override
+    public String getMenuTabLabel() {
+        return "Patron";
+    }
+
     /**
      * Checks how much favor this Patron has with each Player. Favor is determined
      * by the Units in a Patron's domain.

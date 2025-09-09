@@ -64,6 +64,13 @@ public class Building extends Entity implements MenuSubject {
     }
 
     /**
+     * Returns a tab label for this Building in the Tile Menu
+     */
+    public String getMenuTabLabel() {
+        return "Building";
+    }
+
+    /**
      * This method is fired when the underlying Tile's leader field changes
      */
     public void handleLeaderChange(GameView view, Optional<Player> p1, Optional<Player> p2) {

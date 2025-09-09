@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  * This MenuNode displays one or more resource bars
  */
 public class ResourceBarsNode implements MenuNode {
-    private static final int PADDING = 3;
+    private static final int PADDING = 5;
     private final ResourceBarsNode.Bar[] bars;
     private final BitmapFont font;
     private final AudioVideo av;
@@ -46,6 +46,8 @@ public class ResourceBarsNode implements MenuNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         final int yInitial = Coords.SIZE.y - bounds.y - (int) this.font.getLineHeight();
+        final int barWidth = bounds.w - this.textWidth - (ResourceBarsNode.PADDING * 2);
+        final int barX = bounds.x + this.textWidth + ResourceBarsNode.PADDING;
 
         // Draw the resource bars
         av.shapes.begin(ShapeType.Filled);
@@ -53,8 +55,7 @@ public class ResourceBarsNode implements MenuNode {
             ResourceBarsNode.Bar bar = this.bars[a];
             final int y = yInitial - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
             av.shapes.setColor(Colors.fromHex(bar.color));
-            av.shapes.rect(bounds.x + this.textWidth, y,
-                    (bounds.w - this.textWidth) * Math.min(1f, bar.value / (float) bar.max), this.font.getLineHeight());
+            av.shapes.rect(barX, y, barWidth * Math.min(1f, bar.value / (float) bar.max), this.font.getLineHeight());
         }
         av.shapes.end();
 
@@ -63,7 +64,7 @@ public class ResourceBarsNode implements MenuNode {
         av.shapes.setColor(Color.WHITE);
         for (int a = 0; a < this.bars.length; a++) {
             final int y = yInitial - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
-            av.shapes.rect(bounds.x + this.textWidth, y, bounds.w - this.textWidth, this.font.getLineHeight());
+            av.shapes.rect(barX, y, barWidth, this.font.getLineHeight());
         }
         av.shapes.end();
 

@@ -36,7 +36,7 @@ import java.util.Optional;
  */
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject {
     private final TileUserData userData = new TileUserData();
-    private Optional<GlyphCategory> glyph = Optional.of(GlyphCategory.COMBAT);
+    private Optional<GlyphCategory> glyph = Optional.empty();
     private Color minimapColor = Color.BLACK;
     private boolean obstacle = false;
     private boolean wave = false;
@@ -227,7 +227,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         if (this.unit.isPresent() || this.building.isPresent()) {
             final TabsNode tabs = new TabsNode(view.av);
             this.unit.ifPresent((Unit u) -> tabs.add("Unit", u.getMenuContent(view, p)));
-            this.building.ifPresent((Building b) -> tabs.add("Building", b.getMenuContent(view, p)));
+            this.building.ifPresent((Building b) -> tabs.add(b.getMenuTabLabel(), b.getMenuContent(view, p)));
 
             // Tile tab
             final ListNode tileTab = new ListNode();
