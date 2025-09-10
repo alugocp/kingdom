@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.engine.animation.AnimationQueue;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.Event;
@@ -48,6 +49,7 @@ public class Unit extends Entity implements MenuSubject {
     private int loyalty = Unit.MAX_LOYALTY;
     private Optional<Player> leader = Optional.empty();
     private int timeToHunger = 20;
+    public final AnimationQueue queue = new AnimationQueue();
     public final UnitGlyphs glyphs = new UnitGlyphs();
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
