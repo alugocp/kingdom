@@ -1,6 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.engine.animation.Animation;
 import net.lugocorp.kingdom.engine.animation.AnimationQueue;
+import net.lugocorp.kingdom.engine.animation.Tweening;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.Event;
@@ -284,9 +286,26 @@ public class Unit extends Entity implements MenuSubject {
                 // unless if they've already been processed
                 final Set<Point> adjs = Hexagons.getAdjacents(p);
                 for (Point p1 : adjs) {
+                    // Skip this adjacent Point if we've already processed it
                     if (distance.containsKey(p1)) {
                         continue;
                     }
+
+                    // Check if we can move to this adjacent Point
+                    if (!view.game.world.isInBounds(p1)) {
+                        continue;
+                    }
+                    Tile t = view.game.world.getTile(p1).get();
+                    if (t.unit.isPresent()) {
+                        continue;
+                    }
+                    Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this, t);
+                    this.handleEvent(view, event);
+                    if (!event.possible()) {
+                        continue;
+                    }
+
+                    // If we can move to this adjacent Point then record it in the graph
                     distance.put(p1, a + 1);
                     graph.put(p1, p);
                 }
@@ -347,12 +366,25 @@ public class Unit extends Entity implements MenuSubject {
      */
     public SideEffect move(GameView view, Point p) {
         return SideEffect.all(() -> {
-            for (Point p1 : this.getMovePath(view, p)) {
-                int x = this.x;
-                int y = this.y;
-                this.leader.ifPresent((Player l) -> this.vision.translate(l, view.game.world, p1.x - x, p1.y - y));
-                this.removeFromPosition(view.game);
-                this.setPosition(view, p1.x, p1.y);
+            final List<Point> path = this.getMovePath(view, p);
+            final int duration = 1000 / path.size();
+            for (Point p1 : path) {
+                this.animation.add(new Animation(new Tweening().duration(duration)) {
+                    @Override
+                    public void animate(Unit u, float value) {
+                        // TODO the offset here is incorrect, you have to calculate the difference
+                        // in tile coords as raw coords (will also depend on the direction)
+                        u.setModelPositionOffset((p1.x - u.x) * value, (p1.y - u.y) * value);
+                    }
+
+                    @Override
+                    public void onFinish(Unit u) {
+                        u.leader.ifPresent(
+                                (Player l) -> u.vision.translate(l, view.game.world, p1.x - u.x, p1.y - u.y));
+                        u.removeFromPosition(view.game);
+                        u.setPosition(view, p1.x, p1.y);
+                    }
+                });
             }
         }, this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y)));
     }
@@ -434,6 +466,7 @@ public class Unit extends Entity implements MenuSubject {
             }
             node.add(new ActionNode(view, "Move", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
                     () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
+                        view.av.loaders.sounds.play("sfx/footstep");
                         this.move(view, p1).execute();
                         view.game.mechanics.turns.unitHasActed(view, this);
                         view.hud.minimap.refresh(view.game.world);

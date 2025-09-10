@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine.render;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
@@ -43,6 +44,15 @@ public abstract class DynamicModellable extends Modellable {
     public Point getPoint() {
         this.point.set(this.x, this.y);
         return this.point;
+    }
+
+    /**
+     * Moves this Modellable to its position plus some arbitrary offset (possibly in
+     * between Hexagons)
+     */
+    public void setModelPositionOffset(float dx, float dy) {
+        Vector3 pos = this.getPositionVector().add(Coords.raw.vector(dx, 0f, dy));
+        this.model.ifPresent((ModelInstance model) -> model.transform.setTranslation(pos));
     }
 
     /** {@inheritdoc} */

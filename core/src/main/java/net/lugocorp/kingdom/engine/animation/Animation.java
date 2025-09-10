@@ -19,7 +19,7 @@ public abstract class Animation {
     /**
      * The Animation calls this when it's complete
      */
-    protected void onFinish() {
+    protected void onFinish(Unit u) {
         // No-op by default
     }
 
@@ -31,7 +31,7 @@ public abstract class Animation {
         final float value = this.tweening.update(dt);
         this.animate(u, value);
         if (this.tweening.isComplete()) {
-            this.onFinish();
+            this.onFinish(u);
             return true;
         }
         return false;
