@@ -21,6 +21,7 @@ import net.lugocorp.kingdom.ui.menu.RowNode;
 import net.lugocorp.kingdom.ui.menu.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Colors;
+import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -28,8 +29,9 @@ import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -250,51 +252,62 @@ public class Unit extends Entity implements MenuSubject {
      * Returns the list of Points that this Unit can move to
      */
     public Set<Point> getMoveTargets(GameView view) {
-        int max = this.getMaxMoveDistance(view);
+        return this.getPotentialMoveGraph(view).keySet();
+    }
+
+    /**
+     * Returns a map where each key is a potential move target and each value is the
+     * Point we arrive there from
+     */
+    public Map<Point, Point> getPotentialMoveGraph(GameView view) {
+        // Returns nothing if this Unit cannot move
+        final int max = this.getMaxMoveDistance(view);
         if (max == 0) {
-            return new HashSet<Point>();
+            return new HashMap<Point, Point>();
         }
-        Point origin = new Point(this.x, this.y);
-        Set<Point> next = new HashSet<>();
-        Set<Point> targets = new HashSet<>();
-        Set<Point> visited = new HashSet<>();
-        Set<Point> adj = Hexagons.getNeighbors(origin, 1);
-        visited.add(origin);
+
+        // Set up the algorithm's variables
+        final Point origin = new Point(this.x, this.y);
+        final Map<Point, Integer> distance = new HashMap<>();
+        final Map<Point, Point> graph = new HashMap<>();
+        distance.put(origin, 0);
+
+        // Iterate for each distance up to the max
         for (int a = 0; a < max; a++) {
-            for (Point p : adj) {
-                // Optimization: skip already visited Points
-                if (visited.contains(p)) {
-                    continue;
-                }
-                visited.add(p);
-
-                // Units cannot walk on Tiles that don't exist or already have a Unit
-                Optional<Tile> t = view.game.world.getTile(p);
-                if (!t.isPresent()) {
-                    continue;
-                }
-                Tile tile = t.get();
-                if (tile.unit.isPresent()) {
-                    continue;
-                }
-
-                // Use event handler to check if this Unit can move here
-                Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this, tile);
-                this.handleEvent(view, event);
-                if (!event.possible()) {
-                    continue;
-                }
-                targets.add(p);
-                if (a < max - 1) {
-                    next.addAll(Hexagons.getNeighbors(p, 1));
+            // Do this for each Point with the current distance value
+            final int steps = a;
+            final Set<Point> outside = Lambda.filter((Point p) -> distance.get(p) == steps, distance.keySet());
+            for (Point p : outside) {
+                // Do this for each of the current Point's adjacents,
+                // unless if they've already been processed
+                final Set<Point> adjs = Hexagons.getAdjacents(p);
+                for (Point p1 : adjs) {
+                    if (distance.containsKey(p1)) {
+                        continue;
+                    }
+                    distance.put(p1, a + 1);
+                    graph.put(p1, p);
                 }
             }
-            visited.addAll(adj);
-            adj.clear();
-            adj.addAll(next);
-            next.clear();
         }
-        return targets;
+        return graph;
+    }
+
+    /**
+     * Returns a list of Points to take you from one to another
+     */
+    private List<Point> getMovePath(GameView view, Point dest) {
+        final Map<Point, Point> graph = this.getPotentialMoveGraph(view);
+        if (!graph.containsKey(dest)) {
+            throw new RuntimeException(String.format("Invalid destination %s", dest.toString()));
+        }
+
+        List<Point> path = new ArrayList<>();
+        path.add(dest);
+        while (!path.get(0).equals(this.getPoint())) {
+            path.add(0, graph.get(path.get(0)));
+        }
+        return path;
     }
 
     /** {@inheritdoc} */
@@ -331,12 +344,15 @@ public class Unit extends Entity implements MenuSubject {
      * Moves this Unit to another Tile in the grid
      */
     public SideEffect move(GameView view, Point p) {
-        int x = this.x;
-        int y = this.y;
-        this.leader.ifPresent((Player l) -> this.vision.translate(l, view.game.world, p.x - x, p.y - y));
-        this.removeFromPosition(view.game);
-        this.setPosition(view, p.x, p.y);
-        return this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y));
+        return SideEffect.all(() -> {
+            for (Point p1 : this.getMovePath(view, p)) {
+                int x = this.x;
+                int y = this.y;
+                this.leader.ifPresent((Player l) -> this.vision.translate(l, view.game.world, p1.x - x, p1.y - y));
+                this.removeFromPosition(view.game);
+                this.setPosition(view, p1.x, p1.y);
+            }
+        }, this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y)));
     }
 
     /**
