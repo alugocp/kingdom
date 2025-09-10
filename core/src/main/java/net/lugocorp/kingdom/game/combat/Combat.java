@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.combat;
-import net.lugocorp.kingdom.game.core.Events;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Entity;
 import net.lugocorp.kingdom.game.model.Tile;

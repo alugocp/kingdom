@@ -4,7 +4,7 @@ import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.ai.plans.CastSpellNode;
 import net.lugocorp.kingdom.ai.prediction.EventLog;
-import net.lugocorp.kingdom.game.core.Events;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;

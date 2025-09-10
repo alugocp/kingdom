@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.menu;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
-import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;

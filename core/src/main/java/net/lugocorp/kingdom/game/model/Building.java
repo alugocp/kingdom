@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
-import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.BuildingType;

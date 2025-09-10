@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.core;
+package net.lugocorp.kingdom.builtin;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;

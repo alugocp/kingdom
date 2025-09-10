@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.game.core.Events;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.function.Supplier;
 

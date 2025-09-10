@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.userdata.TileUserData;
-import net.lugocorp.kingdom.game.core.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;

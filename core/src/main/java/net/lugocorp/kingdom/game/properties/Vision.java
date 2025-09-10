@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.properties;
-import net.lugocorp.kingdom.game.core.Events;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;

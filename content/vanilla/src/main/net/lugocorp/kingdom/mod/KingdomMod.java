@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.mod;
+import net.lugocorp.kingdom.builtin.AbilityLogic;
+import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.builtin.ItemLogic;
+import net.lugocorp.kingdom.builtin.UnitLogic;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.combat.Damage;
-import net.lugocorp.kingdom.game.core.AbilityLogic;
-import net.lugocorp.kingdom.game.core.Events;
-import net.lugocorp.kingdom.game.core.ItemLogic;
-import net.lugocorp.kingdom.game.core.UnitLogic;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.glyph.Glyph;

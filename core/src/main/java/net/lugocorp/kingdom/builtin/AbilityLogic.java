@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.core;
+package net.lugocorp.kingdom.builtin;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
