@@ -61,7 +61,7 @@ public abstract class ThreadedTaskView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void render() {
+    public void render(int dt) {
         if (this.loaded) {
             this.navigate.accept(this.getNextView());
         }

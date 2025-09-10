@@ -96,7 +96,7 @@ class GameCreationView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void render() {
+    public void render(int dt) {
         this.menu.draw(this.view.av);
     }
 

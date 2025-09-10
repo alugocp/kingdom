@@ -20,7 +20,6 @@ public class Logger {
     private final List<LogMessage> messages = new ArrayList<>();
     private final GlyphLayout layout = new GlyphLayout();
     private final GameView view;
-    private long prevTime = System.currentTimeMillis();
     private int timer = 0;
 
     public Logger(GameView view) {
@@ -60,7 +59,7 @@ public class Logger {
     /**
      * Draws all the log messages the player can see
      */
-    public void render() {
+    public void render(int dt) {
         if (this.messages.size() == 0) {
             return;
         }
@@ -70,9 +69,7 @@ public class Logger {
         float y = this.view.hud.getHeight() + 1;
 
         // Update the timer
-        long time = System.currentTimeMillis();
-        this.timer = (int) Math.min(Logger.MAX_TIMER, this.timer + (time - this.prevTime));
-        this.prevTime = time;
+        this.timer = (int) Math.min(Logger.MAX_TIMER, this.timer + dt);
 
         // Draw the background boxes
         this.view.av.shapes.begin(ShapeType.Filled);

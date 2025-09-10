@@ -28,6 +28,7 @@ import java.util.Set;
  */
 public class Game {
     public final List<CompPlayer> comps = new ArrayList<>();
+    public final Set<Unit> units = new HashSet<>();
     public final World world = new World();
     public final OffsetTime startTime;
     public final Mechanics mechanics;

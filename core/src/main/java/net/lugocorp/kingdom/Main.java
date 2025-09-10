@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main implements ApplicationListener {
     public static final Semver VERSION = new Semver(1, 0, 0);
+    private long prevTime = System.currentTimeMillis();
     private AudioVideo av;
     private View view;
 
@@ -41,10 +42,12 @@ public class Main implements ApplicationListener {
         av.loaders.music.checkQueuedMusic();
 
         // Render the current View
+        final long time = System.currentTimeMillis();
         ScreenUtils.clear(this.view.getBackgroundColor());
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        this.view.render();
+        this.view.render((int) (time - this.prevTime));
+        this.prevTime = time;
     }
 
     /** {@inheritdoc} */

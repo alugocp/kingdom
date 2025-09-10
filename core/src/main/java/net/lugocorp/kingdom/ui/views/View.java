@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 public interface View {
     public Color getBackgroundColor();
     public void start(Consumer<View> navigate);
-    public void render();
+    public void render(int dt);
     public void resize(int w, int h);
     public void dispose();
 }

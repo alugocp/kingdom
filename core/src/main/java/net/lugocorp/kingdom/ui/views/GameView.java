@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.game.Logger;
 import net.lugocorp.kingdom.ui.game.TileMenu;
@@ -130,10 +131,17 @@ public class GameView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void render() {
+    public void render(int dt) {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         this.camController.update();
+
+        // Update Unit Animations
+        for (Unit u : this.game.units) {
+            // TODO optimize this by only updating a certain number of animations per frame
+            // here
+            u.animation.update(u, dt);
+        }
 
         // Render normals to a FrameBuffer
         this.av.frameBuffer.begin();
@@ -154,7 +162,7 @@ public class GameView implements View {
         if (this.popups.isDisplayed()) {
             this.popups.queue.get(0).draw(this.av);
         }
-        this.logger.render();
+        this.logger.render(dt);
         this.hud.draw(this.av);
     }
 

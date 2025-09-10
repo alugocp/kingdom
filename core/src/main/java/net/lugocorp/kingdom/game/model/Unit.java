@@ -49,7 +49,7 @@ public class Unit extends Entity implements MenuSubject {
     private int loyalty = Unit.MAX_LOYALTY;
     private Optional<Player> leader = Optional.empty();
     private int timeToHunger = 20;
-    public final AnimationQueue queue = new AnimationQueue();
+    public final AnimationQueue animation = new AnimationQueue();
     public final UnitGlyphs glyphs = new UnitGlyphs();
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
@@ -364,6 +364,7 @@ public class Unit extends Entity implements MenuSubject {
         this.setPosition(view, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
         this.eat(view.game);
+        view.game.units.add(this);
     }
 
     /** {@inheritdoc} */
@@ -398,6 +399,7 @@ public class Unit extends Entity implements MenuSubject {
             this.vision.remove(l, view.game.world);
             l.units.remove(this);
         });
+        view.game.units.remove(this);
         this.removeFromPosition(view.game);
         this.dispose();
     }

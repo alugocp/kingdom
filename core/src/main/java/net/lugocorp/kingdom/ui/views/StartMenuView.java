@@ -54,7 +54,7 @@ class StartMenuView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void render() {
+    public void render(int dt) {
         this.menu.draw(this.params.av);
     }
 
