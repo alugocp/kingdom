@@ -246,6 +246,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "mine");
                     e.blob.desc = "Mines provide valuables like gold coins";
+                    e.blob.combat.health.setMaxAndValue(20);
+                    e.blob.setMinimapColor(0x555555);
                     e.blob.setActive();
                     return SideEffect.none;
                 });
@@ -257,6 +259,8 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "vault");
                     e.blob.desc = "Vaults can store excess items and be used in auctions";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
+                    e.blob.combat.health.setMaxAndValue(40);
+                    e.blob.setMinimapColor(0x000000);
                     e.blob.setActive();
                     return SideEffect.none;
                 });
@@ -267,6 +271,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "Don't miss the forest for the trees";
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x257d53);
                     return SideEffect.none;
                 });
@@ -277,6 +282,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "The trees are pretty this time of year";
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0xb4c3c7);
                     e.blob.setMaterial(Labels.asset_taiga);
                     return SideEffect.none;
@@ -288,6 +294,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "meadow");
                     e.blob.desc = "Stay a while and smell the roses";
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x4dd349);
                     return SideEffect.none;
                 });
@@ -298,6 +305,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "oasis");
                     e.blob.desc = "Moments of respite from the overbearing sun";
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x2c9965);
                     return SideEffect.none;
                 });
@@ -308,6 +316,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "shrubland");
                     e.blob.desc = "Meadows in the middle of the desert";
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x4dd349);
                     return SideEffect.none;
                 });
@@ -318,8 +327,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "mountain");
                     e.blob.desc = "An immovable object";
-                    e.blob.setMinimapColor(0x875f9a);
                     e.blob.combat.health.invulnerable();
+                    e.blob.setMinimapColor(0x875f9a);
                     e.blob.setObstacle(true);
                     return SideEffect.none;
                 });
@@ -330,6 +339,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateBuildingEvent e = (Events.GenerateBuildingEvent) event;
                     e.blob.setModelInstance(view.av, "fountain");
                     e.blob.desc = "Heals an occupying unit each turn";
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setActive();
                     return SideEffect.none;
@@ -997,6 +1007,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
                             Labels.ability_plate_mail, Labels.ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.species = Defs.species_salamander;
                     return SideEffect.none;
                 });
@@ -1013,6 +1024,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.species = Defs.species_sprite;
                     return SideEffect.none;
                 });
@@ -1028,7 +1040,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_combat_loot,
                             Labels.ability_night_vision, Labels.ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMax(40);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_plasmoid;
                     return SideEffect.none;
@@ -1058,7 +1070,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_mountain_strider,
                             Labels.ability_local_defender);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
-                    e.blob.combat.health.setMax(80);
+                    e.blob.combat.health.setMaxAndValue(80);
                     e.blob.species = Defs.species_golem;
                     return SideEffect.none;
                 });
@@ -1078,6 +1090,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.species = Defs.species_brownie;
                     return SideEffect.none;
                 });
@@ -1094,6 +1107,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_life_aura);
                     e.blob.glyphs.set(Glyph.HEALING);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.species = Defs.species_elf;
                     return SideEffect.none;
                 });
@@ -1111,6 +1125,7 @@ public class KingdomMod implements GameMod {
                             Optional.of(Labels.ability_hungry_frog_magic));
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_pick_flowers, Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.HEALING);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_gnome;
                     return SideEffect.none;
@@ -1129,6 +1144,7 @@ public class KingdomMod implements GameMod {
                             Labels.ability_stone_defense, Labels.ability_mine_gems, Labels.ability_mine_gold,
                             Labels.ability_subterranean_potions);
                     e.blob.glyphs.set(Glyph.MINING);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.species = Defs.species_golem;
                     return SideEffect.none;
                 });
@@ -1147,6 +1163,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_night_vision, Labels.ability_green_fortress);
                     e.blob.glyphs.set(Glyph.NATURE);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.species = Defs.species_sprite;
                     UnitLogic.vision(events, e.blob, 4);
                     return SideEffect.none;
@@ -1170,7 +1187,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_acid_skin,
                             Labels.ability_liquifying_presence);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.combat.health.setMax(80);
+                    e.blob.combat.health.setMaxAndValue(80);
                     e.blob.species = Defs.species_plasmoid;
                     return SideEffect.none;
                 });
@@ -1188,6 +1205,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_crystal_skin,
                             Labels.ability_night_vision, Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.species = Defs.species_gemstone;
                     return SideEffect.none;
                 });
@@ -1215,6 +1233,7 @@ public class KingdomMod implements GameMod {
                             Labels.ability_regeneration, Labels.ability_running_through_nature,
                             Labels.ability_sacred_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_sprite;
                     return SideEffect.none;
@@ -1230,6 +1249,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_regeneration, Labels.ability_edible,
                             Labels.ability_deposit_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_sprite;
                     return SideEffect.none;
@@ -1247,6 +1267,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_regeneration,
                             Labels.ability_market_indicator);
                     e.blob.glyphs.set(Glyph.TRADE);
+                    e.blob.combat.health.setMaxAndValue(40);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_tulpa;
                     UnitLogic.speed(events, e.blob, 3);
@@ -1282,7 +1303,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setPassiveAbilities(view.game.generator, Labels.ability_shell_defense,
                             Labels.ability_market_boom, Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
-                    e.blob.combat.health.setMax(80);
+                    e.blob.combat.health.setMaxAndValue(80);
                     e.blob.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_tortugan;
                     return SideEffect.none;
@@ -1843,18 +1864,10 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = String.format("Attack that deals more damage when on a forest");
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Labels.ability_revenge_of_the_forest, "AbilityActivatedEvent",
-                (GameView view, Ability receiver, Event event) -> {
-                    Events.AttackEvent e = (Events.AttackEvent) event;
-                    return AbilityLogic
-                            .doOnTile(
-                                    view, receiver.wielder, (Tile t) -> t.building
-                                            .map((Building b) -> b.name.equals(Labels.building_forest)).orElse(false),
-                                    () -> {
-                                        e.dmg.base += 5;
-                                        return SideEffect.none;
-                                    });
-                });
+        events.ability.addEventHandler(Labels.ability_revenge_of_the_forest, "AbilityActivatedEvent", (GameView view,
+                Ability receiver,
+                Event event) -> AbilityLogic.dynamicDamageAttack(view, receiver.wielder, 1, (Tile t) -> new Damage(
+                        t.building.map((Building b) -> b.name.equals(Labels.building_forest)).orElse(false) ? 8 : 4)));
 
         // Running Through Nature
         events.ability.addEventHandler(Labels.ability_running_through_nature, "GenerateAbilityEvent",

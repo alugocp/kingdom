@@ -54,6 +54,14 @@ public class HitPoints {
     }
 
     /**
+     * Sets this object's maximum health and current health
+     */
+    public void setMaxAndValue(int max) {
+        this.value = max;
+        this.max = max;
+    }
+
+    /**
      * Returns true if this combatant has lost all its health
      */
     public boolean isDead() {
