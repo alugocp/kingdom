@@ -37,6 +37,7 @@ public class Vision {
         view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVision(t));
         this.vision.add(center);
         boolean isNight = view.game.mechanics.dayNight.isNight();
+        // TODO the movement is broken...could it be Hexagons.getNeighbors() fault?
         for (Point p : Hexagons.getNeighbors(center, event.cumulative(isNight))) {
             view.game.world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
             this.vision.add(p);
