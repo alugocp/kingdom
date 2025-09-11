@@ -41,6 +41,22 @@ public class Coords {
             return new float[]{(x + ((y % 2 == 0) ? 0f : 0.5f)) * Hexagons.WIDTH,
                     y * (Hexagons.DEPTH - Hexagons.DEPTH_DIFF)};
         }
+
+        // Returns the difference (in actual 2D coordinates) between the two given grid
+        // Points
+        public float[] difference(Point p1, Point p2) {
+            final Vector3 v1 = Coords.grid.vector(p1.x, p1.y);
+            final Vector3 v2 = Coords.grid.vector(p2.x, p2.y);
+            return new float[]{v2.x - v1.x, v2.z - v1.z};
+        }
+
+        /**
+         * Returns the angle pointing from the first grid Point to the second grid Point
+         */
+        public float angle(Point p1, Point p2) {
+            float[] diff = this.difference(p1, p2);
+            return (float) Math.atan2(diff[1], diff[0]);
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 public abstract class DynamicModellable extends Modellable {
     private Point point = new Point();
+    private float rotation = 0f;
     protected int x;
     protected int y;
 
@@ -44,6 +45,21 @@ public abstract class DynamicModellable extends Modellable {
     public Point getPoint() {
         this.point.set(this.x, this.y);
         return this.point;
+    }
+
+    /**
+     * Rotates the Model by the given amount of radians
+     */
+    public void setRotation(float radians) {
+        if (radians == this.rotation) {
+            return;
+        }
+        this.model.ifPresent((ModelInstance model) -> {
+            // We use this.rotation - radians here because we want to think
+            // clockwise, but LibGDX rotates counter-clockwise
+            model.transform.rotateRad(0f, 1f, 0f, this.rotation - radians);
+            this.rotation = radians;
+        });
     }
 
     /**

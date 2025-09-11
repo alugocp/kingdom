@@ -325,7 +325,7 @@ public class Unit extends Entity implements MenuSubject {
 
         List<Point> path = new ArrayList<>();
         path.add(dest);
-        while (!path.get(0).equals(this.getPoint())) {
+        while (!Hexagons.areNeighbors(path.get(0), this.getPoint())) {
             path.add(0, graph.get(path.get(0)));
         }
         return path;
@@ -370,15 +370,17 @@ public class Unit extends Entity implements MenuSubject {
             final int duration = 1000 / path.size();
             Point prev = this.getPoint();
             for (Point p1 : path) {
-                final Vector3 v1 = Coords.grid.vector(prev.x, prev.y);
-                final Vector3 v2 = Coords.grid.vector(p1.x, p1.y);
+                final boolean last = p1.equals(path.get(path.size() - 1));
+                final float[] diff = Coords.grid.difference(prev, p1);
+                final float angle = Coords.grid.angle(prev, p1) - ((float) Math.PI / 2f);
                 prev = p1;
                 this.animation.add(new Animation(new Tweening().duration(duration)) {
                     @Override
                     public void animate(Unit u, float value) {
                         // TODO the offset here is incorrect, you have to calculate the difference
                         // in tile coords as raw coords (will also depend on the direction)
-                        u.setModelPositionOffset((v2.x - v1.x) * value, (v2.z - v1.z) * value);
+                        u.setModelPositionOffset(diff[0] * value, diff[1] * value);
+                        u.setRotation(angle);
                     }
 
                     @Override
@@ -387,6 +389,9 @@ public class Unit extends Entity implements MenuSubject {
                                 (Player l) -> u.vision.translate(l, view.game.world, p1.x - u.x, p1.y - u.y));
                         u.removeFromPosition(view.game);
                         u.setPosition(view, p1.x, p1.y);
+                        if (last) {
+                            u.setRotation(0f);
+                        }
                     }
                 });
             }
