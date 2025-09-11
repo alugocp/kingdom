@@ -368,13 +368,17 @@ public class Unit extends Entity implements MenuSubject {
         return SideEffect.all(() -> {
             final List<Point> path = this.getMovePath(view, p);
             final int duration = 1000 / path.size();
+            Point prev = this.getPoint();
             for (Point p1 : path) {
+                final Vector3 v1 = Coords.grid.vector(prev.x, prev.y);
+                final Vector3 v2 = Coords.grid.vector(p1.x, p1.y);
+                prev = p1;
                 this.animation.add(new Animation(new Tweening().duration(duration)) {
                     @Override
                     public void animate(Unit u, float value) {
                         // TODO the offset here is incorrect, you have to calculate the difference
                         // in tile coords as raw coords (will also depend on the direction)
-                        u.setModelPositionOffset((p1.x - u.x) * value, (p1.y - u.y) * value);
+                        u.setModelPositionOffset((v2.x - v1.x) * value, (v2.z - v1.z) * value);
                     }
 
                     @Override
