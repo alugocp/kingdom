@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.HexSide;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashSet;
@@ -19,10 +20,11 @@ public class Vision {
     /**
      * Changes the focal point of the associated Unit/Building
      */
-    public void translate(Player player, World world, int dx, int dy) {
+    public void translate(Player player, World world, HexSide direction) {
         for (Point p : this.vision) {
+            final Point d = Hexagons.getDirectionTranslation(p, direction);
             world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVision(t));
-            p.set(p.x + dx, p.y + dy);
+            p.set(p.x + d.x, p.y + d.y);
             world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
         }
     }
@@ -37,7 +39,6 @@ public class Vision {
         view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVision(t));
         this.vision.add(center);
         boolean isNight = view.game.mechanics.dayNight.isNight();
-        // TODO the movement is broken...could it be Hexagons.getNeighbors() fault?
         for (Point p : Hexagons.getNeighbors(center, event.cumulative(isNight))) {
             view.game.world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
             this.vision.add(p);

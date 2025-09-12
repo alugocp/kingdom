@@ -27,6 +27,7 @@ import net.lugocorp.kingdom.utils.Colors;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.HexSide;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -385,8 +386,11 @@ public class Unit extends Entity implements MenuSubject {
 
                     @Override
                     public void onFinish(Unit u) {
-                        u.leader.ifPresent(
-                                (Player l) -> u.vision.translate(l, view.game.world, p1.x - u.x, p1.y - u.y));
+                        final Optional<HexSide> direction = Hexagons.getDirection(u.getPoint(), p1);
+                        if (!direction.isPresent()) {
+                            throw new RuntimeException("Should not be here - cannot find vision offset direction");
+                        }
+                        u.leader.ifPresent((Player l) -> u.vision.translate(l, view.game.world, direction.get()));
                         u.removeFromPosition(view.game);
                         u.setPosition(view, p1.x, p1.y);
                         if (last) {

@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.utils.math;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -20,8 +21,8 @@ public class Hexagons {
      * the grid
      */
     public static Set<Point> getNeighbors(Point p, int r) {
-        // Calculate the expected number of neighbors
-        int expected = 0;
+        // Calculate the expected number of neighbors (+1 for the focal Point)
+        int expected = 1;
         for (int a = 1; a <= r; a++) {
             expected += a * 6;
         }
@@ -39,6 +40,7 @@ public class Hexagons {
             }
             curr++;
         }
+        visited.remove(p);
 
         // Collect the Points into a set and return
         Set<Point> coords = new HashSet<>();
@@ -100,6 +102,52 @@ public class Hexagons {
             }
         }
         return borders;
+    }
+
+    /**
+     * Returns the side of p1 that touches p2 (if p1 and p2 are adjacent)
+     */
+    public static Optional<HexSide> getDirection(Point p1, Point p2) {
+        if (p1.y % 2 == 0) {
+            if (p2.x == p1.x && p2.y == p1.y - 1) {
+                return Optional.of(HexSide.TOP_RIGHT);
+            }
+            if (p2.x == p1.x + 1 && p2.y == p1.y) {
+                return Optional.of(HexSide.RIGHT);
+            }
+            if (p2.x == p1.x && p2.y == p1.y + 1) {
+                return Optional.of(HexSide.BOT_RIGHT);
+            }
+            if (p2.x == p1.x - 1 && p2.y == p1.y - 1) {
+                return Optional.of(HexSide.TOP_LEFT);
+            }
+            if (p2.x == p1.x - 1 && p2.y == p1.y) {
+                return Optional.of(HexSide.LEFT);
+            }
+            if (p2.x == p1.x - 1 && p2.y == p1.y + 1) {
+                return Optional.of(HexSide.BOT_LEFT);
+            }
+        } else {
+            if (p2.x == p1.x + 1 && p2.y == p1.y - 1) {
+                return Optional.of(HexSide.TOP_RIGHT);
+            }
+            if (p2.x == p1.x + 1 && p2.y == p1.y) {
+                return Optional.of(HexSide.RIGHT);
+            }
+            if (p2.x == p1.x + 1 && p2.y == p1.y + 1) {
+                return Optional.of(HexSide.BOT_RIGHT);
+            }
+            if (p2.x == p1.x && p2.y == p1.y - 1) {
+                return Optional.of(HexSide.TOP_LEFT);
+            }
+            if (p2.x == p1.x - 1 && p2.y == p1.y) {
+                return Optional.of(HexSide.LEFT);
+            }
+            if (p2.x == p1.x && p2.y == p1.y + 1) {
+                return Optional.of(HexSide.BOT_LEFT);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
