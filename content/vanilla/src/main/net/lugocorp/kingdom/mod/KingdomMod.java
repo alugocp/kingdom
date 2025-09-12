@@ -180,6 +180,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateTileEvent e = (Events.GenerateTileEvent) event;
                     e.blob.setModelInstance(view.av, Labels.asset_grass);
                     e.blob.setMinimapColor(0x2c9965);
+                    e.blob.desc = "The seeds to spring new life lay dormant beneath this place";
                     return SideEffect.none;
                 });
 
@@ -190,6 +191,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, Labels.asset_grass);
                     e.blob.setMinimapColor(0x666666);
                     e.blob.setMaterial(Labels.asset_rock);
+                    e.blob.desc = "The rocky mountainscape is home to many creatures";
                     return SideEffect.none;
                 });
 
@@ -200,6 +202,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, Labels.asset_grass);
                     e.blob.setMinimapColor(0xc7c567);
                     e.blob.setMaterial(Labels.asset_sand);
+                    e.blob.desc = "The hot sands seem to stretch on forever";
                     return SideEffect.none;
                 });
 
@@ -210,6 +213,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, Labels.asset_grass);
                     e.blob.setMinimapColor(0xffffff);
                     e.blob.setMaterial(Labels.asset_snow);
+                    e.blob.desc = "Dense and cold";
                     return SideEffect.none;
                 });
 
@@ -221,6 +225,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setMinimapColor(0x20c7f7);
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
+                    e.blob.desc = "Only certain units can swim";
                     return SideEffect.none;
                 });
 
@@ -233,6 +238,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setMaterial(Labels.asset_lava);
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
+                    e.blob.desc = "Watch your step!";
                     return SideEffect.none;
                 });
 

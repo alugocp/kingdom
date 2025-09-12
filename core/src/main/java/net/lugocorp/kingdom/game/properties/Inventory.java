@@ -143,6 +143,5 @@ public class Inventory implements MenuSubject, Iterable<Item> {
         public static final int BUILDING = 3;
         public static final int EQUIP = 2;
         public static final int HAUL = 1;
-        public static final int FREE = 0;
     }
 }

@@ -6,8 +6,6 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.game.properties.Inventory;
-import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.menu.ButtonNode;
 import net.lugocorp.kingdom.ui.menu.GlyphIconsNode;
@@ -41,7 +39,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     private boolean obstacle = false;
     private boolean wave = false;
     public final String name;
-    public final Inventory items = new Inventory(InventoryType.FREE, 4);
     public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
     public Optional<Unit> unit = Optional.empty();
@@ -220,7 +217,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
             tileNodes.add(new GlyphIconsNode(view.av, this.glyph.get()));
         }
         tileNodes.add(new TextNode(view.av, this.desc));
-        tileNodes.add(this.items.getMenuContent(view, p));
 
         // Determine whether we add the MenuNodes to the ListNode directly or to a
         // TabsNode
