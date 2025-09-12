@@ -67,7 +67,7 @@ public class Hud extends Menu {
                                 view.getSerial().saveGame(view.game);
                                 view.logger.log("Game has been saved");
                             } catch (Exception e) {
-                                view.logger.log("Could not save game");
+                                view.logger.error("Could not save game");
                                 e.printStackTrace();
                             }
                         })));

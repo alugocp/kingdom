@@ -154,7 +154,7 @@ public class GameViewController extends CameraInputController {
                 this.view.av.loaders.sounds.play("sfx/select-unit");
                 this.view.menu.open();
             } else {
-                this.view.logger.log("Cannot view tile under fog of war", true);
+                this.view.logger.error("Cannot view tile under fog of war", true);
             }
         }
         this.prev = Optional.empty();

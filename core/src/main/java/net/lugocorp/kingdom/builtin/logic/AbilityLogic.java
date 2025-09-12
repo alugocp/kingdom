@@ -1,5 +1,6 @@
-package net.lugocorp.kingdom.builtin;
+package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Building;
@@ -172,7 +173,7 @@ public class AbilityLogic {
             Tile t = view.game.world.getTile(p).get();
 
             if (t.building.isPresent()) {
-                return () -> view.logger.log("Cannot place another building here");
+                return () -> view.logger.error("Cannot place another building here");
             }
             if (criteria.apply(t)) {
                 Building b = view.game.generator.building(building, p.x, p.y);
@@ -181,7 +182,7 @@ public class AbilityLogic {
                     view.game.mechanics.turns.unitHasActed(view, caster);
                 };
             }
-            return () -> view.logger.log("Invalid tile for this ability");
+            return () -> view.logger.error("Invalid tile for this ability");
         }
         return SideEffect.none;
     }

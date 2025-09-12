@@ -110,7 +110,7 @@ public class ArtifactAuction {
                         Set<Point> vaults = view.game.getVaultBuildings(view.game.human);
                         if (vaults.size() == 0) {
                             this.auction.get().doNotAddBidder();
-                            view.logger.log(error);
+                            view.logger.error(error);
                             view.popups.complete();
                             return;
                         }
@@ -184,7 +184,7 @@ public class ArtifactAuction {
                             view.popups.add(this.getFollowUpMenu(view, false));
                         }
                     } else {
-                        view.logger.log("You need more auction chips");
+                        view.logger.error("You need more auction chips");
                     }
                 }));
                 a++;

@@ -1,4 +1,5 @@
-package net.lugocorp.kingdom.builtin;
+package net.lugocorp.kingdom.builtin.logic;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.model.Unit;

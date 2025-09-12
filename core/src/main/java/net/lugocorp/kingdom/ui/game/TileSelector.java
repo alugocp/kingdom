@@ -44,11 +44,11 @@ public class TileSelector {
      */
     public void select(Set<Point> points, String error, Consumer<Point> action) {
         if (!this.view.game.mechanics.turns.canHumanPlayerAct()) {
-            this.view.logger.log("You cannot act outside your turn");
+            this.view.logger.error("You cannot act outside your turn");
             return;
         }
         if (points.size() == 0) {
-            this.view.logger.log(error);
+            this.view.logger.error(error);
             return;
         }
         this.selection = Optional.of(new TileSelection(points, action));

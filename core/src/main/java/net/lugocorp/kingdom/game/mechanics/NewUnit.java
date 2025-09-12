@@ -44,7 +44,7 @@ public class NewUnit {
                     String error = "You have no space to recruit a new unit";
                     Set<Point> tiles = view.game.getRecruitmentTiles(view.game.human);
                     if (tiles.size() == 0) {
-                        view.logger.log(error);
+                        view.logger.error(error);
                         view.popups.complete();
                         return;
                     }

@@ -1,4 +1,5 @@
-package net.lugocorp.kingdom.builtin;
+package net.lugocorp.kingdom.builtin.logic;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
@@ -42,6 +43,6 @@ public class ItemLogic {
             return () -> e.consumer.eat(view.game);
         }
         e.consumed = false;
-        return () -> view.logger.log("Item is not edible for this unit");
+        return () -> view.logger.error("Item is not edible for this unit");
     }
 }

@@ -57,6 +57,21 @@ public class Logger {
     }
 
     /**
+     * Calls into log() with the error sound effect
+     */
+    public void error(String message, boolean dispel) {
+        this.view.av.loaders.sounds.play("sfx/error");
+        this.log(message, dispel);
+    }
+
+    /**
+     * Calls into log() with the error sound effect and dispel = false
+     */
+    public void error(String message) {
+        this.error(message, false);
+    }
+
+    /**
      * Draws all the log messages the player can see
      */
     public void render(int dt) {

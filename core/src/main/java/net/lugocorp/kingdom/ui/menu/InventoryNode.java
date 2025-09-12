@@ -129,10 +129,6 @@ public class InventoryNode implements MenuNode {
                     root.add(new ButtonNode(this.view.av, "Consume", () -> this.unitConsumesItem(item))
                             .setNoise("sfx/item-check"));
                 }
-                if (this.items.type == InventoryType.HAUL && this.canUnitDropItem()) {
-                    root.add(new ButtonNode(this.view.av, "Drop", () -> this.unitDropsItem(item))
-                            .setNoise("sfx/item-check"));
-                }
                 if (this.items.type == InventoryType.HAUL) {
                     root.add(new ButtonNode(this.view.av, "Give",
                             () -> this.view.selector.select(this.getGiftRecipients(),
@@ -196,23 +192,6 @@ public class InventoryNode implements MenuNode {
         if (type == InventoryType.HAUL) {
             this.items.transfer(unit.haul, item);
         }
-        this.view.menu.refresh(false);
-    }
-
-    /**
-     * Returns true if the Unit on the currently open Tile can drop an item here
-     */
-    private boolean canUnitDropItem() {
-        Optional<Tile> tile = this.view.game.world.getTile(this.x, this.y);
-        return tile.isPresent() && !tile.get().items.isFull();
-    }
-
-    /**
-     * The Unit on the currently open Tile drops the specified Item
-     */
-    private void unitDropsItem(Item item) {
-        Tile tile = this.view.game.world.getTile(this.x, this.y).get();
-        this.items.transfer(tile.items, item);
         this.view.menu.refresh(false);
     }
 
