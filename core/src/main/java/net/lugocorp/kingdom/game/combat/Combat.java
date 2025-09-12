@@ -1,8 +1,11 @@
 package net.lugocorp.kingdom.game.combat;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.builtin.animation.AttackAnimation;
+import net.lugocorp.kingdom.builtin.animation.DamagedAnimation;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Entity;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
@@ -83,6 +86,10 @@ public class Combat {
         if (this.health.get() <= damageEvent.dmg.total()) {
             effects.add(this.onDeath(view, attacker));
         }
+        if (this.bearer.getEntityType() == EntityType.UNIT) {
+            effects.add(() -> ((Unit) this.bearer).animation
+                    .add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
+        }
         return SideEffect.all(effects);
     }
 
@@ -105,6 +112,9 @@ public class Combat {
                 target.combat.takeDamage(view, dmg, this.bearer), () -> {
                     if (this.bearer.getLeader().map((Player l) -> l.isHumanPlayer()).orElse(false)) {
                         view.av.loaders.sounds.play("sfx/attack-enemy");
+                    }
+                    if (this.bearer.getEntityType() == EntityType.UNIT) {
+                        ((Unit) this.bearer).animation.add(new AttackAnimation((Unit) this.bearer, target.getPoint()));
                     }
                 });
     }
