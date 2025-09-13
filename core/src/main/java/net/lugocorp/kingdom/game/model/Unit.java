@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.builtin.animation.MoveAnimation;
+import net.lugocorp.kingdom.engine.animation.AnimationChain;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.Event;
@@ -366,10 +367,12 @@ public class Unit extends Entity implements MenuSubject {
             final List<Point> path = this.getMovePath(view, p);
             final int duration = 1000 / path.size();
             Point prev = this.getPoint();
+            AnimationChain chain = new AnimationChain();
             for (Point p1 : path) {
-                view.animations.add(new MoveAnimation(this, duration, prev, p1));
+                chain.add(new MoveAnimation(this, duration, prev, p1));
                 prev = p1;
             }
+            view.animations.add(chain.get());
         }, this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y)));
     }
 
