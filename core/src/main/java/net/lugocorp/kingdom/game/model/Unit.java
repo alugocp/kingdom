@@ -1,8 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.engine.animation.Animation;
-import net.lugocorp.kingdom.engine.animation.AnimationQueue;
-import net.lugocorp.kingdom.engine.animation.Tweening;
+import net.lugocorp.kingdom.builtin.animation.MoveAnimation;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.Event;
@@ -27,7 +25,6 @@ import net.lugocorp.kingdom.utils.Colors;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.HexSide;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -52,7 +49,6 @@ public class Unit extends Entity implements MenuSubject {
     private int loyalty = Unit.MAX_LOYALTY;
     private Optional<Player> leader = Optional.empty();
     private int timeToHunger = 20;
-    public final AnimationQueue animation = new AnimationQueue();
     public final UnitGlyphs glyphs = new UnitGlyphs();
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
@@ -356,7 +352,7 @@ public class Unit extends Entity implements MenuSubject {
     /**
      * Removes this Unit from its current position in the World
      */
-    private void removeFromPosition(Game g) {
+    public void removeFromPosition(Game g) {
         Tile origin = g.world.getTile(this.x, this.y).get();
         origin.building.ifPresent((Building b) -> b.setAlpha(1f));
         origin.unit = Optional.empty();
@@ -371,33 +367,8 @@ public class Unit extends Entity implements MenuSubject {
             final int duration = 1000 / path.size();
             Point prev = this.getPoint();
             for (Point p1 : path) {
-                final boolean last = p1.equals(path.get(path.size() - 1));
-                final float[] diff = Coords.grid.difference(prev, p1);
-                final float angle = Coords.grid.angle(prev, p1) - ((float) Math.PI / 2f);
+                view.animations.add(new MoveAnimation(this, duration, prev, p1));
                 prev = p1;
-                this.animation.add(new Animation(new Tweening().duration(duration)) {
-                    @Override
-                    public void animate(Unit u, float value) {
-                        // TODO the offset here is incorrect, you have to calculate the difference
-                        // in tile coords as raw coords (will also depend on the direction)
-                        u.setModelPositionOffset(diff[0] * value, diff[1] * value);
-                        u.setRotation(angle);
-                    }
-
-                    @Override
-                    public void onFinish(Unit u) {
-                        final Optional<HexSide> direction = Hexagons.getDirection(u.getPoint(), p1);
-                        if (!direction.isPresent()) {
-                            throw new RuntimeException("Should not be here - cannot find vision offset direction");
-                        }
-                        u.leader.ifPresent((Player l) -> u.vision.translate(l, view.game.world, direction.get()));
-                        u.removeFromPosition(view.game);
-                        u.setPosition(view, p1.x, p1.y);
-                        if (last) {
-                            u.setRotation(0f);
-                        }
-                    }
-                });
             }
         }, this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y)));
     }

@@ -87,8 +87,7 @@ public class Combat {
             effects.add(this.onDeath(view, attacker));
         }
         if (this.bearer.getEntityType() == EntityType.UNIT) {
-            effects.add(() -> ((Unit) this.bearer).animation
-                    .add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
+            effects.add(() -> view.animations.add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
         }
         return SideEffect.all(effects);
     }
@@ -114,7 +113,7 @@ public class Combat {
                         view.av.loaders.sounds.play("sfx/attack-enemy");
                     }
                     if (this.bearer.getEntityType() == EntityType.UNIT) {
-                        ((Unit) this.bearer).animation.add(new AttackAnimation((Unit) this.bearer, target.getPoint()));
+                        view.animations.add(new AttackAnimation((Unit) this.bearer, target.getPoint()));
                     }
                 });
     }

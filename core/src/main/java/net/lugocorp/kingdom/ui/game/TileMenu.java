@@ -14,7 +14,7 @@ public class TileMenu {
     private Optional<Menu> menu = Optional.empty();
     private Point menuCoords = new Point(0, 0);
 
-    // TODO make these Menus scroll out with the new Animation/Tweening system
+    // TODO make these Menus scroll out with the new Animation/Tween system
 
     public TileMenu(GameView view) {
         this.view = view;

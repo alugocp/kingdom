@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.animation.AnimationQueue;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.game.Logger;
 import net.lugocorp.kingdom.ui.game.TileMenu;
@@ -32,6 +32,7 @@ public class GameView implements View {
     private GameViewController camController;
     private PerspectiveCamera camera;
     private Environment environment;
+    public final AnimationQueue animations = new AnimationQueue();
     public final Popups popups = new Popups();
     public final AudioVideo av;
     public final TileSelector selector;
@@ -136,12 +137,8 @@ public class GameView implements View {
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         this.camController.update();
 
-        // Update Unit Animations
-        for (Unit u : this.game.units) {
-            // TODO optimize this by only updating a certain number of animations per frame
-            // here
-            u.animation.update(u, dt);
-        }
+        // Update Animations
+        this.animations.update(this, dt);
 
         // Render normals to a FrameBuffer
         this.av.frameBuffer.begin();

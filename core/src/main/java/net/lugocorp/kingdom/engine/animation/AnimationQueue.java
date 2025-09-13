@@ -1,16 +1,19 @@
 package net.lugocorp.kingdom.engine.animation;
-import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * This class handles switching between Animations for a Unit
+ * This class handles Animation
  */
 public class AnimationQueue {
     private final List<Animation> animations = new ArrayList<>();
+    private final List<Animation> dropList = new ArrayList<>();
+    private final List<Animation> addList = new ArrayList<>();
 
     /**
-     * Adds a new Animation to the queue
+     * Adds a new Animation
      */
     public AnimationQueue add(Animation a) {
         this.animations.add(a);
@@ -18,17 +21,22 @@ public class AnimationQueue {
     }
 
     /**
-     * Progresses the state of the current Animation (if there is one)
+     * Progresses the state of all active Animations
      */
-    public void update(Unit u, int dt) {
-        if (this.animations.size() == 0) {
-            return;
+    public void update(GameView view, int dt) {
+        for (Animation a : this.animations) {
+            final boolean remove = a.update(view, dt);
+            if (remove) {
+                final Optional<Animation> next = a.getFollowup();
+                this.dropList.add(a);
+                if (next.isPresent()) {
+                    this.addList.add(next.get());
+                }
+            }
         }
-
-        // Update the current Animation
-        final Animation a = this.animations.get(0);
-        if (a.update(u, dt)) {
-            this.animations.remove(0);
-        }
+        this.animations.removeAll(this.dropList);
+        this.animations.addAll(this.addList);
+        this.dropList.clear();
+        this.addList.clear();
     }
 }

@@ -3,7 +3,7 @@ package net.lugocorp.kingdom.engine.animation;
 /**
  * This class contains logic for smooth movement
  */
-public class Tweening {
+public class Tween {
     private static final float MIN = 0f;
     private static final float MAX = 1f;
     private boolean backToStart = false;
@@ -15,12 +15,12 @@ public class Tweening {
      * Returns the resulting value given a progress value
      */
     private float getValue(float p) {
-        final float line = (Tweening.MAX - Tweening.MIN) * p;
+        final float line = (Tween.MAX - Tween.MIN) * p;
         if (this.backToStart) {
-            final float downwards = Math.abs(Tweening.MAX - (line * 2f));
-            return this.increasing ? Tweening.MAX - downwards : downwards;
+            final float downwards = Math.abs(Tween.MAX - (line * 2f));
+            return this.increasing ? Tween.MAX - downwards : downwards;
         }
-        return this.increasing ? line : Tweening.MAX - line;
+        return this.increasing ? line : Tween.MAX - line;
     }
 
     /**
@@ -29,7 +29,7 @@ public class Tweening {
      */
     public float update(int dt) {
         final float diff = (float) dt / this.runtime;
-        this.progress = Math.min(Tweening.MAX, Math.max(Tweening.MIN, this.progress + diff));
+        this.progress = Math.min(Tween.MAX, Math.max(Tween.MIN, this.progress + diff));
         return this.getValue(this.progress);
     }
 
@@ -37,13 +37,13 @@ public class Tweening {
      * Returns true when this instance has completed its path
      */
     boolean isComplete() {
-        return this.progress == Tweening.MAX;
+        return this.progress == Tween.MAX;
     }
 
     /**
      * Tells this instance to move down instead of up
      */
-    public Tweening desc() {
+    public Tween desc() {
         this.increasing = false;
         return this;
     }
@@ -51,7 +51,7 @@ public class Tweening {
     /**
      * Sets how long the animation will take in total
      */
-    public Tweening duration(int runtime) {
+    public Tween duration(int runtime) {
         this.runtime = runtime;
         return this;
     }
@@ -59,7 +59,7 @@ public class Tweening {
     /**
      * Causes this instance to return to its starting point
      */
-    public Tweening goBackToStart() {
+    public Tween goBackToStart() {
         this.backToStart = true;
         return this;
     }
