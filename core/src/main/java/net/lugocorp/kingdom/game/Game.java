@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.HumanPlayer;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.player.PlayerColors;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
@@ -27,6 +28,7 @@ import java.util.Set;
  * Stores all the data for a single ongoing game
  */
 public class Game {
+    private final PlayerColors colorPool = new PlayerColors();
     public final List<CompPlayer> comps = new ArrayList<>();
     public final Set<Unit> units = new HashSet<>();
     public final World world = new World();
@@ -42,7 +44,7 @@ public class Game {
     public Game(AllEventHandlers events, OffsetTime startTime) {
         this.events = events;
         this.startTime = startTime;
-        this.human = new HumanPlayer();
+        this.human = new HumanPlayer(this.colorPool.getFromPool());
         this.mechanics = new Mechanics(this);
     }
 
@@ -85,7 +87,8 @@ public class Game {
      * Registers a new AI Player
      */
     public CompPlayer addComputerPlayer(int index) {
-        final CompPlayer player = new CompPlayer(index, this.world.getSize(), this.mechanics.fates.chooseRandomFate());
+        final CompPlayer player = new CompPlayer(index, this.world.getSize(), this.mechanics.fates.chooseRandomFate(),
+                this.colorPool.getFromPool());
         this.comps.add(player);
         return player;
     }

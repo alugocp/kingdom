@@ -5,7 +5,6 @@ import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.Colors;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
@@ -24,15 +23,16 @@ public abstract class Player {
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
-    public final Color color = Colors.getFromPool();
     public final String name;
+    public final Color color;
     public int gold = Player.INITIAL_GOLD;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
     public int unitPoints = 0;
     public int tiles = 0;
 
-    Player(String name, Fate fate) {
+    Player(String name, Fate fate, Color color) {
+        this.color = color;
         this.name = name;
         this.fate = fate;
     }

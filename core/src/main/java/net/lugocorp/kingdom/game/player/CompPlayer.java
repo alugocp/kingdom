@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +27,8 @@ public class CompPlayer extends Player {
     public final Statistics stats = new Statistics();
     public final MemoryMap memory;
 
-    public CompPlayer(int index, Point world, Fate fate) {
-        super(String.format("Computer %d", index), fate);
+    public CompPlayer(int index, Point world, Fate fate, Color color) {
+        super(String.format("Computer %d", index), fate, color);
         this.memory = new MemoryMap(world);
     }
 
