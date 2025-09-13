@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.builtin.animation.CameraMoveAnimation;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.animation.AnimationQueue;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
@@ -31,7 +32,7 @@ import java.util.function.Consumer;
  */
 public class GameView implements View {
     private final StartMenuView.Params params;
-    private GameViewController camController;
+    private GameViewController controller;
     private PerspectiveCamera camera;
     private Environment environment;
     public final AnimationQueue animations = new AnimationQueue();
@@ -85,6 +86,24 @@ public class GameView implements View {
         this.navigate.accept(new StartMenuView(this.params));
     }
 
+    /**
+     * Returns the Point in the World that the Camera is currently centered on
+     */
+    public Point getCenteredPoint() {
+        return CameraMath.getCoordUnderScreenPoint(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+    }
+
+    /**
+     * Centers the Camera on the given Point in the World
+     */
+    public void centerOnPoint(Point p, boolean instant) {
+        if (instant) {
+            this.controller.centerCameraOn(p);
+        } else {
+            this.animations.add(new CameraMoveAnimation(this.controller, this.getCenteredPoint(), p));
+        }
+    }
+
     /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
@@ -107,8 +126,8 @@ public class GameView implements View {
 
         // Camera
         this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
-        this.camController = new GameViewController(this, menuController, this.camera);
-        Gdx.input.setInputProcessor(this.camController);
+        this.controller = new GameViewController(this, menuController, this.camera);
+        Gdx.input.setInputProcessor(this.controller);
         this.camera.position.set(0f, 5f, 5f);
         this.camera.lookAt(0, 0, 0);
         this.camera.near = 1f;
@@ -117,22 +136,7 @@ public class GameView implements View {
 
         // Kick off the Player's turn
         this.game.mechanics.turns.kickOffTurn(this);
-        this.centerOnPoint(this.game.human.units.iterator().next().getPoint());
-    }
-
-    /**
-     * Returns the Point in the World that the Camera is currently centered on
-     */
-    public Point getCenteredPoint() {
-        return CameraMath.getCoordUnderScreenPoint(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
-    }
-
-    /**
-     * Centers the Camera on the given Point in the World
-     */
-    public void centerOnPoint(Point p) {
-        // TODO add non-instant option that leverages Animation
-        this.camController.centerCameraOn(p);
+        this.centerOnPoint(this.game.human.units.iterator().next().getPoint(), true);
     }
 
     /** {@inheritdoc} */
@@ -140,7 +144,7 @@ public class GameView implements View {
     public void render(int dt) {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-        this.camController.update();
+        this.controller.update();
 
         // Update Animations
         this.animations.update(this, dt);

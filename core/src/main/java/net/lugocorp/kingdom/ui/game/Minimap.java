@@ -66,7 +66,7 @@ public class Minimap {
 
         Point clicked = new Point((int) ((p.x - r.x) * this.tilesPerPixelInOneDimension / this.scale),
                 (int) ((p.y - r.y) * this.tilesPerPixelInOneDimension / this.scale));
-        view.centerOnPoint(clicked);
+        view.centerOnPoint(clicked, true);
         return true;
     }
 

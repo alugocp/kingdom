@@ -48,7 +48,7 @@ public class TurnStructure {
     public boolean goToNextUnit(GameView view) {
         Optional<Unit> next = this.getNextUnitToAct(view.game.human);
         if (next.isPresent()) {
-            view.centerOnPoint(next.get().getPoint());
+            view.centerOnPoint(next.get().getPoint(), false);
             view.selector.hover(next.get().getPoint());
             view.menu.open();
             return true;
