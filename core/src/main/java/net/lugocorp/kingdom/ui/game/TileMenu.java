@@ -41,7 +41,7 @@ public class TileMenu {
     public void open() {
         Optional<Point> p = this.view.selector.getHovered();
         this.view.selector.deselect();
-        this.close();
+        this.menu.ifPresent((Menu _m) -> this.view.game.world.getTile(this.menuCoords).get().decrementSelection());
         if (!p.isPresent()) {
             return;
         }
@@ -54,7 +54,8 @@ public class TileMenu {
      * Opens the Menu that is set in this View's recent memory
      */
     public void refresh(boolean onlyIfCurrentlyOpen) {
-        if (onlyIfCurrentlyOpen && !this.menu.isPresent()) {
+        final boolean wasMenuOpen = this.menu.isPresent();
+        if (onlyIfCurrentlyOpen && !wasMenuOpen) {
             return;
         }
         final Optional<Tile> t = this.view.game.world.getTile(this.menuCoords);
@@ -62,10 +63,12 @@ public class TileMenu {
             return;
         }
         final MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords));
-        this.menu = Optional.of(new Menu(-TileMenu.WIDTH, this.view.hud.getHeight() + this.view.hud.minimap.getHeight(),
-                TileMenu.WIDTH, true, node));
+        this.menu = Optional.of(new Menu(wasMenuOpen ? 0 : -TileMenu.WIDTH,
+                this.view.hud.getHeight() + this.view.hud.minimap.getHeight(), TileMenu.WIDTH, true, node));
         this.menu.get().outline();
-        this.view.animations.add(new OpenTileMenuAnimation(this.menu.get()));
+        if (!wasMenuOpen) {
+            this.view.animations.add(new OpenTileMenuAnimation(this.menu.get()));
+        }
     }
 
     /**

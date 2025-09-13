@@ -35,6 +35,5 @@ public class AttackAnimation extends Animation {
     @Override
     public void onFinish(GameView view) {
         this.unit.resetModelPosition();
-        this.unit.setRotation(0f);
     }
 }

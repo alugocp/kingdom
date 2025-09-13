@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.ui.game;
-import net.lugocorp.kingdom.utils.math.Point;
 
 /**
  * Represents a text label rising over the GameView
@@ -8,11 +7,11 @@ class Overlay {
     private static final float DURATION = 2000f;
     private static final float FADE_OUT = 0.3f;
     private float progress = 0f;
-    final Point origin;
+    final float[] origin;
     final String label;
     final int color;
 
-    Overlay(String label, int color, Point origin) {
+    Overlay(String label, int color, float[] origin) {
         this.origin = origin;
         this.color = color;
         this.label = label;

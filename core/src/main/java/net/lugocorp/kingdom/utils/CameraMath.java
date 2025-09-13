@@ -14,9 +14,9 @@ public class CameraMath {
     /**
      * Returns the screen coordinates for the given Point in the World
      */
-    public static Point getScreenPointFromTile(Camera camera, Point p) {
+    public static float[] getScreenPointFromTile(Camera camera, Point p) {
         final Vector3 v = camera.project(Coords.grid.vector(p.x, p.y));
-        return new Point((int) v.x, (int) v.y);
+        return new float[]{v.x, v.y};
     }
 
     /**

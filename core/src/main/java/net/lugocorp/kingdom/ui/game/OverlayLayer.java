@@ -23,7 +23,7 @@ public class OverlayLayer {
      * Adds a new Overlay to this instance
      */
     public void add(String label, int color, Point p) {
-        final Point origin = CameraMath.getScreenPointFromTile(this.view.getCamera(), p);
+        final float[] origin = CameraMath.getScreenPointFromTile(this.view.getCamera(), p);
         this.overlays.add(new Overlay(label, color, origin));
     }
 
@@ -43,7 +43,7 @@ public class OverlayLayer {
             final BitmapFont font = this.view.av.fonts.getFont(24, o.color);
             final Color c = font.getColor();
             font.setColor(c.r, c.g, c.b, o.getOpacity());
-            font.draw(this.view.av.sprites, o.label, o.origin.x, o.origin.y + (progress * 50f));
+            font.draw(this.view.av.sprites, o.label, o.origin[0], o.origin[1] + (progress * 50f));
             font.setColor(c);
         }
         this.view.av.sprites.end();

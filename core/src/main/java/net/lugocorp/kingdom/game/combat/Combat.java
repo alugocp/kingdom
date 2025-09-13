@@ -125,7 +125,10 @@ public class Combat {
     public SideEffect heal(GameView view, Entity target, int amount) {
         Events.HealEntityEvent heal = new Events.HealEntityEvent(this.bearer, target, amount);
         this.bearer.handleEvent(view, heal);
-        return () -> target.combat.health.set(target.combat.health.get() + heal.amount);
+        return () -> {
+            target.combat.health.set(target.combat.health.get() + heal.amount);
+            view.overlays.add(String.format("+%d", heal.amount), 0x00ff00, target.getPoint());
+        };
     }
 
     /**

@@ -33,9 +33,6 @@ public class MoveAnimation extends Animation {
         if (this.isFirstFrame()) {
             this.unit.setRotation(this.angle);
         }
-        if (this.isLastFrame()) {
-            this.unit.setRotation(0f);
-        }
         this.unit.setModelPositionOffset(this.diff[0] * value, this.diff[1] * value);
     }
 

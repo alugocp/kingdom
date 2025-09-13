@@ -358,7 +358,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.ability_edible, "TickEvent",
                 (GameView view, Building receiver, Event event) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
-                    return u.isPresent() ? () -> receiver.combat.heal(view, u.get(), 5) : SideEffect.none;
+                    return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : SideEffect.none;
                 });
 
         /**
@@ -430,7 +430,7 @@ public class KingdomMod implements GameMod {
                     final Optional<Player> favorite = receiver.getFavoritePlayer();
                     favorite.ifPresent((Player p) -> {
                         for (Unit u : Lambda.subset(4, p.units)) {
-                            effects.add(() -> u.combat.heal(view, 3));
+                            effects.add(u.combat.heal(view, 3));
                         }
                     });
                     return SideEffect.all(effects);
@@ -1347,7 +1347,7 @@ public class KingdomMod implements GameMod {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
-                                ? () -> attacker.combat.takeDamage(view, new Damage(2), target)
+                                ? attacker.combat.takeDamage(view, new Damage(2), target)
                                 : SideEffect.none;
                     }
                     return SideEffect.none;
@@ -1404,6 +1404,7 @@ public class KingdomMod implements GameMod {
                             Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                     return receiver.wielder.getLeader().get().select(view, mines, "No mines in range", (Point p) -> {
                         Set<Entity> targets = new HashSet<>();
+                        List<SideEffect> effects = SideEffect.list();
                         targets.add(view.game.world.getTile(p).get().unit.get());
                         targets.add(view.game.world.getTile(p).get().building.get());
                         for (Point p1 : Hexagons.getNeighbors(p, 1)) {
@@ -1412,11 +1413,10 @@ public class KingdomMod implements GameMod {
                                 targets.add(u.get());
                             }
                         }
-                        return () -> {
-                            for (Entity e : targets) {
-                                receiver.wielder.combat.attack(view, e, new Damage(5));
-                            }
-                        };
+                        for (Entity e : targets) {
+                            effects.add(receiver.wielder.combat.attack(view, e, new Damage(5)));
+                        }
+                        return SideEffect.all(effects);
                     });
                 });
 
@@ -1598,7 +1598,7 @@ public class KingdomMod implements GameMod {
                     for (Point p : targets) {
                         Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                         if (u.map((Unit u1) -> u1.isFriendly(receiver.wielder)).orElse(false)) {
-                            effects.add(() -> receiver.wielder.combat.heal(view, u.get(), 10));
+                            effects.add(receiver.wielder.combat.heal(view, u.get(), 10));
                         }
                     }
                     return SideEffect.all(effects);
@@ -1668,7 +1668,7 @@ public class KingdomMod implements GameMod {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
                     return b.map((Building b1) -> !b1.isActive()).orElse(false)
-                            ? () -> b.get().combat.takeDamage(view, new Damage(3), receiver.wielder)
+                            ? b.get().combat.takeDamage(view, new Damage(3), receiver.wielder)
                             : SideEffect.none;
                 });
 
@@ -1861,7 +1861,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_regeneration, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> () -> receiver.wielder.combat.heal(view, 1));
+                (GameView view, Ability receiver, Event event) -> receiver.wielder.combat.heal(view, 1));
 
         // Revenge of the Forest
         events.ability.addEventHandler(Labels.ability_revenge_of_the_forest, "GenerateAbilityEvent",
