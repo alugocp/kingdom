@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.ui.game.OverlayLayer;
 import net.lugocorp.kingdom.ui.game.TileMenu;
 import net.lugocorp.kingdom.ui.game.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.utils.CameraMath;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
@@ -20,7 +21,6 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -79,16 +79,6 @@ public class GameView implements View {
     }
 
     /**
-     * Returns a screen coordinates for the given Point in the World
-     */
-    public Point getScreenPointFromTile(Point p) {
-        // TODO move this (and other camera coordinate logic functions, and possibly
-        // also the camera) to another class
-        final Vector3 v = this.camera.project(Coords.grid.vector(p.x, p.y));
-        return new Point((int) v.x, (int) v.y);
-    }
-
-    /**
      * Returns to the StartMenuView
      */
     public void close() {
@@ -134,7 +124,7 @@ public class GameView implements View {
      * Returns the Point in the World that the Camera is currently centered on
      */
     public Point getCenteredPoint() {
-        return this.camController.getCoordUnderScreenPoint(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        return CameraMath.getCoordUnderScreenPoint(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
     }
 
     /**

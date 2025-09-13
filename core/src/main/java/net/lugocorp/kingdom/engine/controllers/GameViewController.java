@@ -1,12 +1,11 @@
 package net.lugocorp.kingdom.engine.controllers;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.CameraMath;
 import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import java.util.Optional;
 
 /**
@@ -39,42 +38,8 @@ public class GameViewController extends CameraInputController {
      */
     public void centerCameraOn(Point p) {
         Vector3 vec = Coords.grid.vector(p.x, p.y);
-        Vector3 endpoint = this.getScreenPointOnSurface(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        Vector3 endpoint = CameraMath.getScreenPointOnSurface(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
         this.moveCamera(vec.x - endpoint.x, vec.z - endpoint.z);
-    }
-
-    /**
-     * Calculates the point on the surface of the World that corresponds to a point
-     * on the viewing area (the plane where the mouse lives)
-     */
-    private Vector3 getScreenPointOnSurface(int x, int y) {
-        Ray ray = this.camera.getPickRay(x, y);
-        float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
-        return ray.getEndPoint(new Vector3(), distance);
-    }
-
-    /**
-     * Returns the Tile coordinate in the World that lives under the given Point on
-     * the screen
-     */
-    public Point getCoordUnderScreenPoint(int x, int y) {
-        // Cast out a ray from the mouseover point and find its point along the Y = 0
-        // plane. Then find which hexagon that point falls in on the world grid.
-        Vector3 endpoint = this.getScreenPointOnSurface(x, y);
-        int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
-        float lowestDist2 = Integer.MAX_VALUE;
-        Point closestPoint = null;
-        for (int a = 0; a < 2; a++) {
-            int minX = (int) Math.floor((endpoint.x / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
-            for (int b = 0; b < 2; b++) {
-                float dist = Coords.grid.vector(minX + b, minZ + a).dst2(endpoint);
-                if (dist < lowestDist2) {
-                    lowestDist2 = dist;
-                    closestPoint = new Point(minX + b, minZ + a);
-                }
-            }
-        }
-        return closestPoint;
     }
 
     /**
@@ -82,7 +47,8 @@ public class GameViewController extends CameraInputController {
      */
     private void moveCamera(float dx, float dz) {
         // Check bottom-left Camera bounds
-        Vector3 p1 = this.getScreenPointOnSurface(0, Coords.SIZE.y).add(Coords.raw.vector(dx, 0f, dz));
+        Vector3 p1 = CameraMath.getScreenPointOnSurface(this.camera, 0, Coords.SIZE.y)
+                .add(Coords.raw.vector(dx, 0f, dz));
         Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight());
         if (p1.x < botLeft.x) {
             dx += botLeft.x - p1.x;
@@ -92,14 +58,16 @@ public class GameViewController extends CameraInputController {
         }
 
         // Check bottom-right Camera bounds
-        Vector3 p2 = this.getScreenPointOnSurface(Coords.SIZE.x, Coords.SIZE.y).add(Coords.raw.vector(dx, 0f, dz));
+        Vector3 p2 = CameraMath.getScreenPointOnSurface(this.camera, Coords.SIZE.x, Coords.SIZE.y)
+                .add(Coords.raw.vector(dx, 0f, dz));
         Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(), this.view.game.world.getHeight());
         if (p2.x > botRight.x) {
             dx += botRight.x - p2.x;
         }
 
         // Check top-left Camera bounds
-        Vector3 p3 = this.getScreenPointOnSurface(0, this.view.hud.getHeight()).add(Coords.raw.vector(dx, 0f, dz));
+        Vector3 p3 = CameraMath.getScreenPointOnSurface(this.camera, 0, this.view.hud.getHeight())
+                .add(Coords.raw.vector(dx, 0f, dz));
         Vector3 topLeft = Coords.grid.vector(0, -8);
         if (p3.z < topLeft.z) {
             dz += topLeft.z - p3.z;
@@ -231,7 +199,7 @@ public class GameViewController extends CameraInputController {
         if (this.menu.mouseMoved(x, y)) {
             return true;
         }
-        Point closestPoint = this.getCoordUnderScreenPoint(x, y);
+        Point closestPoint = CameraMath.getCoordUnderScreenPoint(this.camera, x, y);
         this.view.selector.hover(closestPoint);
         return true;
     }
