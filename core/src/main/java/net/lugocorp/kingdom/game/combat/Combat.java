@@ -89,6 +89,7 @@ public class Combat {
         if (this.bearer.getEntityType() == EntityType.UNIT) {
             effects.add(() -> view.animations.add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
         }
+        effects.add(() -> view.overlays.add(String.format("-%d", dmg.total()), 0xff0000, this.bearer.getPoint()));
         return SideEffect.all(effects);
     }
 

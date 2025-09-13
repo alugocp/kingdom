@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.ui.game.Hud;
 import net.lugocorp.kingdom.ui.game.Logger;
+import net.lugocorp.kingdom.ui.game.OverlayLayer;
 import net.lugocorp.kingdom.ui.game.TileMenu;
 import net.lugocorp.kingdom.ui.game.TileSelector;
 import net.lugocorp.kingdom.ui.menu.Menu;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +36,9 @@ public class GameView implements View {
     private Environment environment;
     public final AnimationQueue animations = new AnimationQueue();
     public final Popups popups = new Popups();
-    public final AudioVideo av;
+    public final OverlayLayer overlays;
     public final TileSelector selector;
+    public final AudioVideo av;
     public final TileMenu menu;
     public final Logger logger;
     public final Game game;
@@ -50,6 +53,7 @@ public class GameView implements View {
         this.hud = new Hud(this);
         this.logger = new Logger(this);
         this.selector = new TileSelector(this);
+        this.overlays = new OverlayLayer(this);
         this.menu = new TileMenu(this);
     }
 
@@ -72,6 +76,16 @@ public class GameView implements View {
      */
     public SaveLoad getSerial() {
         return this.params.serial;
+    }
+
+    /**
+     * Returns a screen coordinates for the given Point in the World
+     */
+    public Point getScreenPointFromTile(Point p) {
+        // TODO move this (and other camera coordinate logic functions, and possibly
+        // also the camera) to another class
+        final Vector3 v = this.camera.project(Coords.grid.vector(p.x, p.y));
+        return new Point((int) v.x, (int) v.y);
     }
 
     /**
@@ -127,6 +141,7 @@ public class GameView implements View {
      * Centers the Camera on the given Point in the World
      */
     public void centerOnPoint(Point p) {
+        // TODO add non-instant option that leverages Animation
         this.camController.centerCameraOn(p);
     }
 
@@ -155,6 +170,7 @@ public class GameView implements View {
         this.av.models.end();
 
         // Draw 2D assets
+        this.overlays.render(dt);
         this.menu.get().ifPresent((Menu m) -> m.draw(this.av));
         if (this.popups.isDisplayed()) {
             this.popups.queue.get(0).draw(this.av);
