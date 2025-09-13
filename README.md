@@ -1,4 +1,4 @@
-# Kingdom
+# Legends of T'ahn
 
 ![Static Badge](https://img.shields.io/badge/Java-11-a?color=%23ED8B00)
 ![Static Badge](https://img.shields.io/badge/libGDX-1.12.1-a?color=%23E74A45)
