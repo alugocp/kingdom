@@ -66,6 +66,13 @@ public class Menu {
     }
 
     /**
+     * Sets this Menu's x position
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
      * Returns a Rect associated with the Menu's interactive area
      */
     public Rect getBoundingRect() {

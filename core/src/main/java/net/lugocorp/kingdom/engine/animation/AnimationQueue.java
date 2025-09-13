@@ -21,6 +21,13 @@ public class AnimationQueue {
     }
 
     /**
+     * Returns true if there are active Animations
+     */
+    public boolean inProgress() {
+        return this.animations.size() > 0;
+    }
+
+    /**
      * Progresses the state of all active Animations
      */
     public void update(GameView view, int dt) {

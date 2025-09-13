@@ -113,6 +113,11 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
+        // Turn off controls during Animations
+        if (this.view.animations.inProgress()) {
+            return true;
+        }
+
         // Menu logic
         if (this.popupMenu.touchDown(x, y, pointer, button) || this.view.popups.isDisplayed()) {
             return true;
@@ -132,6 +137,11 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
+        // Turn off controls during Animations
+        if (this.view.animations.inProgress()) {
+            return true;
+        }
+
         // Menu logic
         if (this.popupMenu.touchUp(x, y, pointer, button)) {
             return true;

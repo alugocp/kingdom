@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.ui.game;
+import net.lugocorp.kingdom.builtin.animation.CloseTileMenuAnimation;
+import net.lugocorp.kingdom.builtin.animation.OpenTileMenuAnimation;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.menu.MenuNode;
@@ -10,11 +12,10 @@ import java.util.Optional;
  * Handles any Menu that describes a Tile in the World
  */
 public class TileMenu {
+    public static final int WIDTH = 400;
     private final GameView view;
     private Optional<Menu> menu = Optional.empty();
     private Point menuCoords = new Point(0, 0);
-
-    // TODO make these Menus scroll out with the new Animation/Tween system
 
     public TileMenu(GameView view) {
         this.view = view;
@@ -56,23 +57,26 @@ public class TileMenu {
         if (onlyIfCurrentlyOpen && !this.menu.isPresent()) {
             return;
         }
-        Optional<Tile> t = this.view.game.world.getTile(this.menuCoords);
+        final Optional<Tile> t = this.view.game.world.getTile(this.menuCoords);
         if (!t.isPresent()) {
             return;
         }
-        MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords));
-        this.menu = Optional
-                .of(new Menu(0, this.view.hud.getHeight() + this.view.hud.minimap.getHeight(), 400, true, node));
+        final MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords));
+        this.menu = Optional.of(new Menu(-TileMenu.WIDTH, this.view.hud.getHeight() + this.view.hud.minimap.getHeight(),
+                TileMenu.WIDTH, true, node));
         this.menu.get().outline();
+        this.view.animations.add(new OpenTileMenuAnimation(this.menu.get()));
     }
 
     /**
      * Closes the currently open Menu
      */
     public void close() {
-        if (this.menu.isPresent()) {
+        this.menu.ifPresent((Menu m) -> {
             this.view.game.world.getTile(this.menuCoords).get().decrementSelection();
-        }
-        this.menu = Optional.empty();
+            this.view.animations.add(new CloseTileMenuAnimation(m, () -> {
+                this.menu = Optional.empty();
+            }));
+        });
     }
 }
