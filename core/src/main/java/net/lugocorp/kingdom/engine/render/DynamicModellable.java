@@ -40,6 +40,20 @@ public abstract class DynamicModellable extends Modellable {
     }
 
     /**
+     * Sets the current x position (in grid space)
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
+     * Sets the current y position (in grid space)
+     */
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    /**
      * Returns a Point representing this object's position in the World
      */
     public Point getPoint() {

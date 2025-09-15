@@ -44,7 +44,7 @@ public class MoveAnimation extends Animation {
             throw new RuntimeException("Should not be here - cannot find vision offset direction");
         }
         this.unit.getLeader().ifPresent((Player l) -> this.unit.vision.translate(l, view.game.world, direction.get()));
-        this.unit.removeFromPosition(view.game);
-        this.unit.setPosition(view, this.dest.x, this.dest.y);
+        this.unit.movement.removeFromPosition(view.game);
+        this.unit.movement.setPosition(view, this.dest.x, this.dest.y);
     }
 }

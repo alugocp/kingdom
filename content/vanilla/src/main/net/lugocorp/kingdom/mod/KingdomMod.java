@@ -9,10 +9,10 @@ import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
-import net.lugocorp.kingdom.game.model.Entity;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
@@ -150,7 +150,7 @@ public class KingdomMod implements GameMod {
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
             if (receiver.getLeader().isPresent()) {
-                return () -> receiver.loseLoyalty(view, 1);
+                return () -> receiver.loyalty.decrease(view, 1);
             }
             ((Events.RepeatedEvent) event).repeat = false;
             return SideEffect.none;
@@ -375,7 +375,7 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "pond-troll");
                     e.blob.desc = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
                     e.blob.preference = "Units that cannot swim";
-                    e.blob.isPreferredUnitType = (Unit u) -> !u.hasPassiveAbility(Labels.ability_swim);
+                    e.blob.isPreferredUnitType = (Unit u) -> !u.abilities.hasPassive(Labels.ability_swim);
                     return SideEffect.none;
                 });
         events.patron.addEventHandler(Labels.patron_pond_troll, "SpawnEvent",
@@ -1008,9 +1008,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.setModelInstance(view.av, "axolotl");
                     e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_sword_slash),
-                            Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
                             Labels.ability_plate_mail, Labels.ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1025,9 +1024,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "This nature spirit guards an ancient forest in Eaglehaven";
                     e.blob.setModelInstance(view.av, "beetlemoss");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_fire_cannon),
-                            Optional.of(Labels.ability_plant_forest));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_pick_apples,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_fire_cannon,
+                            Labels.ability_plant_forest);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1041,9 +1040,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.setModelInstance(view.av, "gloop");
                     e.blob.desc = "This Plasmoid adventurer is eager to prove themself in the dungeons";
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_sword_slash),
-                            Optional.of(Labels.ability_dungeon_delve));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_combat_loot,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash,
+                            Labels.ability_dungeon_delve);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_combat_loot,
                             Labels.ability_night_vision, Labels.ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1071,9 +1070,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "This golem wanders the rocky peaks where it was forged long ago";
                     e.blob.setModelInstance(view.av, "golem-grotto");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_smash),
-                            Optional.of(Labels.ability_plant_meadow));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_mountain_strider,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash, Labels.ability_plant_meadow);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_mountain_strider,
                             Labels.ability_local_defender);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(80);
@@ -1091,9 +1089,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "This Brownie is blind, but traverses the subterranean world with the aid of his nose";
                     e.blob.setModelInstance(view.av, "condylure");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_build_healing_fountain),
-                            Optional.of(Labels.ability_dig_mine));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_night_vision,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_build_healing_fountain,
+                            Labels.ability_dig_mine);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1108,9 +1106,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "Elven high missionary to Surgarde";
                     e.blob.setModelInstance(view.av, "daumia");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_heal_wounds),
-                            Optional.of(Labels.ability_self_sacrifice));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_night_vision,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_heal_wounds,
+                            Labels.ability_self_sacrifice);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_life_aura);
                     e.blob.glyphs.set(Glyph.HEALING);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1127,9 +1125,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "Just a little Gnome and his frog";
                     e.blob.setModelInstance(view.av, "frog-gnome");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_heal_wounds),
-                            Optional.of(Labels.ability_hungry_frog_magic));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_pick_flowers, Labels.ability_swim);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_heal_wounds,
+                            Labels.ability_hungry_frog_magic);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_flowers, Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.HEALING);
                     e.blob.combat.health.setMaxAndValue(40);
                     e.blob.haul.setMax(12);
@@ -1144,9 +1142,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "Enchanted waters accumulate into this Golem's bowl-shaped body";
                     e.blob.setModelInstance(view.av, "stalagmus");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_dig_mine),
-                            Optional.of(Labels.ability_hurl_rock));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_night_vision,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_dig_mine, Labels.ability_hurl_rock);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_stone_defense, Labels.ability_mine_gems, Labels.ability_mine_gold,
                             Labels.ability_subterranean_potions);
                     e.blob.glyphs.set(Glyph.MINING);
@@ -1164,9 +1161,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "A mysterious Druid who rarely speaks";
                     e.blob.setModelInstance(view.av, "druid");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_plant_forest),
-                            Optional.of(Labels.ability_revenge_of_the_forest));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_pick_apples,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_forest,
+                            Labels.ability_revenge_of_the_forest);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_night_vision, Labels.ability_green_fortress);
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1188,9 +1185,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "A ravenous Plasmoid with an acidic body";
                     e.blob.setModelInstance(view.av, "blob");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_slime_shot),
-                            Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_acid_skin,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_slime_shot);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_acid_skin,
                             Labels.ability_liquifying_presence);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.combat.health.setMaxAndValue(80);
@@ -1206,9 +1202,9 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.setModelInstance(view.av, Labels.asset_crystal);
                     e.blob.desc = "This Gemstone can focus light into powerful attacks";
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_fire_laser),
-                            Optional.of(Labels.ability_collapse_mine));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_crystal_skin,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_fire_laser,
+                            Labels.ability_collapse_mine);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_crystal_skin,
                             Labels.ability_night_vision, Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1233,9 +1229,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "He doesn't say much, he's just a little guy";
                     e.blob.setModelInstance(view.av, "pumpkin-boy");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_plant_meadow),
-                            Optional.of(Labels.ability_hug));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_night_vision,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_meadow, Labels.ability_hug);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_regeneration, Labels.ability_running_through_nature,
                             Labels.ability_sacred_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
@@ -1251,8 +1246,8 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "This sheep-like Sprite blooms with delicious fruit";
                     e.blob.setModelInstance(view.av, "barometz");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_bite), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_regeneration, Labels.ability_edible,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_bite);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration, Labels.ability_edible,
                             Labels.ability_deposit_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1269,8 +1264,7 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
                     e.blob.setModelInstance(view.av, "alfikra");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.empty(), Optional.empty());
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_regeneration,
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
                             Labels.ability_market_indicator);
                     e.blob.glyphs.set(Glyph.TRADE);
                     e.blob.combat.health.setMaxAndValue(40);
@@ -1304,13 +1298,12 @@ public class KingdomMod implements GameMod {
                     Events.GenerateUnitEvent e = (Events.GenerateUnitEvent) event;
                     e.blob.desc = "Warrior-king of the Tortoise Kingdom";
                     e.blob.setModelInstance(view.av, "gargantos");
-                    e.blob.setActiveAbilities(view.game.generator, Optional.of(Labels.ability_smash),
-                            Optional.of(Labels.ability_build_vault));
-                    e.blob.setPassiveAbilities(view.game.generator, Labels.ability_shell_defense,
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash, Labels.ability_build_vault);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_shell_defense,
                             Labels.ability_market_boom, Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
                     e.blob.combat.health.setMaxAndValue(80);
-                    e.blob.setTimeToHunger(view, 10);
+                    e.blob.hunger.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_tortugan;
                     return SideEffect.none;
                 });
@@ -1632,7 +1625,7 @@ public class KingdomMod implements GameMod {
                         new Damage(4), 2, Optional.of((Point p) -> {
                             Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                             return u.isPresent()
-                                    ? u.get().addStatusEffect(view, Labels.status_effect_stunned)
+                                    ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
                                     : SideEffect.none;
                         })));
 
@@ -1956,7 +1949,7 @@ public class KingdomMod implements GameMod {
                         new Damage(5), 1, Optional.of((Point p) -> {
                             Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                             return u.isPresent()
-                                    ? u.get().addStatusEffect(view, Labels.status_effect_stunned)
+                                    ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
                                     : SideEffect.none;
                         })));
 
@@ -2030,8 +2023,8 @@ public class KingdomMod implements GameMod {
                     view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Labels.status_effect_stunned, "TickEvent",
-                (GameView view, Ability receiver, Event event) -> () -> receiver.wielder.removeStatusEffect(receiver));
+        events.ability.addEventHandler(Labels.status_effect_stunned, "TickEvent", (GameView view, Ability receiver,
+                Event event) -> () -> receiver.wielder.abilities.removeStatusEffect(receiver));
         events.ability.addEventHandler(Labels.status_effect_stunned, "IsStunnedEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     ((Events.IsStunnedEvent) event).isStunned = true;
@@ -2067,7 +2060,7 @@ public class KingdomMod implements GameMod {
         events.item.addEventHandler(Labels.item_sacred_seed, "ItemConsumedEvent",
                 (GameView view, Item receiver, Event event) -> {
                     Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-                    return () -> e.consumer.addStatusEffect(view, Labels.status_effect_more_favor);
+                    return () -> e.consumer.abilities.addStatusEffect(view, Labels.status_effect_more_favor);
                 });
 
         // Flower

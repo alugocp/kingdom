@@ -20,9 +20,9 @@ public class MoveNode extends PlanNode {
     /** {@inheritdoc} */
     @Override
     public ActionResult act(GameView view) {
-        Set<Point> options = this.unit.getMoveTargets(view);
+        Set<Point> options = this.unit.movement.getTargets(view);
         if (options.contains(this.dest)) {
-            this.unit.move(view, this.dest).execute();
+            this.unit.movement.move(view, this.dest).execute();
             return ActionResult.POP;
         }
         return ActionResult.POP_ALL;

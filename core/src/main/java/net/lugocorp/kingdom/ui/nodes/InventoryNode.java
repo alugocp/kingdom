@@ -180,7 +180,7 @@ public class InventoryNode implements MenuNode {
      * Returns true if the given Unit can be recruited using an Item
      */
     private boolean canUnitBeRecruitedWithItem(Unit unit) {
-        return unit.isFreeRadical() && !unit.haul.isFull();
+        return unit.leadership.isFreeRadical() && !unit.haul.isFull();
     }
 
     /**
@@ -244,8 +244,8 @@ public class InventoryNode implements MenuNode {
                 .flatMap((Unit u) -> u.getLeader()).get();
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
-        if (unit.isFreeRadical()) {
-            unit.getRecruited(this.view, leader);
+        if (unit.leadership.isFreeRadical()) {
+            unit.leadership.recruit(this.view, leader);
         }
         this.view.menu.refresh(false);
     }

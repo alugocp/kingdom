@@ -22,7 +22,7 @@ public class ExploreMap extends Goal {
     /** {@inheritdoc} */
     @Override
     public Optional<Plan> suggestPlan(GameView view, Unit u) {
-        Set<Point> targets = u.getMoveTargets(view);
+        Set<Point> targets = u.movement.getTargets(view);
         return this.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
     }
 

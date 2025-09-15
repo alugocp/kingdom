@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.MenuNode;
@@ -32,7 +33,7 @@ import java.util.Optional;
  * Represents a single hexagon in the game world and its corresponding
  * properties
  */
-public class Tile extends DynamicModellable implements EventReceiver, MenuSubject {
+public class Tile extends DynamicModellable implements EventReceiver, MenuSubject, Spawnable {
     private final TileUserData userData = new TileUserData();
     private Optional<GlyphCategory> glyph = Optional.empty();
     private Color minimapColor = Color.BLACK;
@@ -181,9 +182,8 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         return this.name;
     }
 
-    /**
-     * Spawns this loaded object into the World
-     */
+    /** {@inheritdoc} */
+    @Override
     public void spawn(GameView view) {
         view.game.world.setTile(this, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Tile>(this));

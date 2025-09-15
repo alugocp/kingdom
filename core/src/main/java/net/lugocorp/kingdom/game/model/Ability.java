@@ -67,7 +67,7 @@ public class Ability implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        return new ActionNode(view, this.name, Optional.of(this.desc), this.wielder.belongsToHuman()
+        return new ActionNode(view, this.name, Optional.of(this.desc), this.wielder.leadership.belongsToHuman()
                 && this.isActive(view) && !view.game.mechanics.turns.hasUnitActed(this.wielder), () -> {
                     this.activate(view).execute();
                     view.menu.refresh(true);

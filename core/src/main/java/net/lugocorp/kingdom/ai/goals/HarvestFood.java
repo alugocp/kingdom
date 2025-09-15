@@ -28,7 +28,7 @@ public class HarvestFood extends Goal {
     /** {@inheritdoc} */
     @Override
     public Optional<Plan> suggestPlan(GameView view, Unit u) {
-        Set<Point> targets = u.getMoveTargets(view);
+        Set<Point> targets = u.movement.getTargets(view);
         return this.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
     }
 
@@ -45,7 +45,7 @@ public class HarvestFood extends Goal {
         // Get Building that we may move to
         Building b = view.game.generator.building(cell.getBuilding().get(), 0, 0);
         CapturedEvents.instance.setFakePoint(dest);
-        for (Ability ability : root.unit.passives) {
+        for (Ability ability : root.unit.abilities.getPassives()) {
             if (!ability.hasEventHandler(view, "TickEvent")) {
                 continue;
             }

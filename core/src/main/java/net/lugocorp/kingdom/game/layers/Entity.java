@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.game.model;
+package net.lugocorp.kingdom.game.layers;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -18,7 +18,7 @@ public abstract class Entity extends DynamicModellable implements EventReceiver 
     public final String name;
     public String desc = "";
 
-    Entity(String name, int x, int y) {
+    public Entity(String name, int x, int y) {
         super(x, y);
         this.name = name;
         this.combat = new Combat(this);

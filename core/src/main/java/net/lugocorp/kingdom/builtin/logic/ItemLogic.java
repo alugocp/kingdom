@@ -40,7 +40,7 @@ public class ItemLogic {
         Events.CanEatEvent e1 = new Events.CanEatEvent(e.consumer, e.item);
         e.consumer.handleEvent(view, e1);
         if (e1.edible) {
-            return () -> e.consumer.eat(view.game);
+            return () -> e.consumer.hunger.eat(view.game);
         }
         e.consumed = false;
         return () -> view.logger.error("Item is not edible for this unit");

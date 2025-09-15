@@ -162,7 +162,7 @@ public class Game {
         u.getLeader().ifPresent((Player p) -> p.units.remove(u));
         op.ifPresent((Player p) -> p.units.add(u));
         u.getLeader().ifPresent((Player l) -> u.vision.remove(l, this.world));
-        u.setLeader(op);
+        u.leadership.setLeader(op);
         u.getLeader().ifPresent((Player l) -> u.vision.set(view, l, u, u.getPoint()));
         this.setLeader(view, this.world.getTile(u.getPoint()).get(), op);
     }

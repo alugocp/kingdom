@@ -63,7 +63,7 @@ public class AttackEnemy extends Goal {
     @Override
     public Optional<Plan> suggestPlan(GameView view, Unit u) {
         return this.getBestPlan(Lambda.map((Ability a) -> this.wrapPlanNode(view, new CastSpellNode(view, u, a)),
-                u.getActiveAbilities()));
+                u.abilities.getActives()));
     }
 
     /** {@inheritdoc} */

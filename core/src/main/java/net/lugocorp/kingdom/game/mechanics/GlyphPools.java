@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
-import net.lugocorp.kingdom.game.model.DummyUnit;
+import net.lugocorp.kingdom.game.layers.DummyUnit;
 import net.lugocorp.kingdom.game.model.Unit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,13 +28,9 @@ public class GlyphPools {
             // Set a couple of defaults on the Unit before running the generation event
             u.setNameOverride(name);
             u.glyphs.setDefault();
-            u.playable = true;
 
             // Run the generation event without instantiating a new Unit object
             g.generator.unitOptimal(u);
-            if (u.playable) {
-                this.add(name, u.glyphs.get());
-            }
         }
     }
 

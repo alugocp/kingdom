@@ -1,16 +1,22 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.builtin.animation.MoveAnimation;
-import net.lugocorp.kingdom.engine.animation.AnimationChain;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.glyph.UnitGlyphs;
+import net.lugocorp.kingdom.game.layers.Entity;
+import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.properties.Species;
+import net.lugocorp.kingdom.game.unit.Abilities;
+import net.lugocorp.kingdom.game.unit.Hunger;
+import net.lugocorp.kingdom.game.unit.Leadership;
+import net.lugocorp.kingdom.game.unit.Loyalty;
+import net.lugocorp.kingdom.game.unit.Movement;
+import net.lugocorp.kingdom.game.unit.Sleep;
+import net.lugocorp.kingdom.game.unit.SleepState;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.MenuSubject;
 import net.lugocorp.kingdom.ui.nodes.ActionNode;
@@ -23,41 +29,33 @@ import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Colors;
-import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * A single controllable character (or NPC) that the player can interact with
  * in-game
  */
-public class Unit extends Entity implements MenuSubject {
-    public static final int MAX_LOYALTY = 10;
+public class Unit extends Entity implements MenuSubject, Spawnable {
     private final CoordUserData userData = new CoordUserData();
-    private Optional<Ability> active1 = Optional.empty();
-    private Optional<Ability> active2 = Optional.empty();
-    private SleepState sleep = SleepState.AWAKE;
-    private int loyalty = Unit.MAX_LOYALTY;
-    private Optional<Player> leader = Optional.empty();
-    private int timeToHunger = 20;
+    public final Leadership leadership = new Leadership(this);
+    public final Sleep sleep = new Sleep(this);
+    public final Loyalty loyalty = new Loyalty(this);
+    public final Abilities abilities = new Abilities(this);
+    public final Hunger hunger = new Hunger(this);
+    public final Movement movement = new Movement(this, this.userData);
     public final UnitGlyphs glyphs = new UnitGlyphs();
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
-    public List<Ability> passives = new ArrayList<>();
     public Species species = Species.UNKNOWN;
-    public boolean playable = true;
 
-    Unit(String name, int x, int y) {
+    public Unit(String name, int x, int y) {
         super(name, x, y);
     }
 
@@ -70,320 +68,29 @@ public class Unit extends Entity implements MenuSubject {
 
     /** {@inheritdoc} */
     @Override
+    public void spawn(GameView view) {
+        this.movement.setPosition(view, this.x, this.y);
+        this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
+        this.hunger.eat(view.game);
+        view.game.units.add(this);
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public EntityType getEntityType() {
         return EntityType.UNIT;
-    }
-
-    /**
-     * Returns true if this Unit is sleeping
-     */
-    public boolean isSleeping() {
-        return this.sleep != SleepState.AWAKE;
-    }
-
-    /**
-     * Checks if we should reset this Unit's SleepState at the start of a turn
-     */
-    public void wakeUpCheck(GameView view) {
-        Events.IsStunnedEvent event = new Events.IsStunnedEvent(this);
-        this.handleEvent(view, event).execute();
-        if (event.isStunned) {
-            this.sleep = SleepState.SLEEPING;
-        } else if (this.sleep == SleepState.SLEEPING
-                || (this.sleep == SleepState.SLEEPING_INVENTORY && this.haul.isFull())) {
-            this.wakeUp();
-        }
-    }
-
-    /**
-     * Reset this Unit's SleepState
-     */
-    public void wakeUp() {
-        this.sleep = SleepState.AWAKE;
     }
 
     /** {@inheritdoc} */
     @Override
     public Optional<Player> getLeader() {
-        return this.leader;
-    }
-
-    /**
-     * Sets the Player that commands this Unit (this should only ever be used in the
-     * Game class)
-     */
-    public void setLeader(Optional<Player> leader) {
-        this.leader = leader;
-    }
-
-    /**
-     * Returns all the active Abilities this Unit has access to
-     */
-    public List<Ability> getActiveAbilities() {
-        final List<Ability> list = new ArrayList<>();
-        this.active1.ifPresent((Ability a) -> list.add(a));
-        this.active2.ifPresent((Ability a) -> list.add(a));
-        return list;
-    }
-
-    /**
-     * Sets up to 2 active Abilities for this Unit
-     */
-    public void setActiveAbilities(Generator g, Optional<String> a1, Optional<String> a2) {
-        a1.ifPresent((String active1) -> {
-            this.active1 = Optional.of(g.ability(this, active1));
-        });
-        a2.ifPresent((String active2) -> {
-            this.active2 = Optional.of(g.ability(this, active2));
-        });
-    }
-
-    /**
-     * Sets some passive Abilities for this Unit
-     */
-    public void setPassiveAbilities(Generator g, String... passives) {
-        for (String p : passives) {
-            this.passives.add(g.ability(this, p));
-        }
-    }
-
-    /**
-     * Returns true if this Unit has a passive ability by the given name
-     */
-    public boolean hasPassiveAbility(String name) {
-        for (Ability a : this.passives) {
-            if (a.name.equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Adds a status effect (Ability under the hood) to this Unit. Also triggers a
-     * special Event on the Ability so it can kick off tick events
-     */
-    public SideEffect addStatusEffect(GameView view, String name) {
-        Ability status = view.game.generator.ability(this, name);
-        return SideEffect.all(() -> this.passives.add(status),
-                status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this)));
-    }
-
-    /**
-     * Removes a status effect (Ability under the hood) from this Unit
-     */
-    public void removeStatusEffect(Ability status) {
-        this.passives.remove(status);
-    }
-
-    /**
-     * Changes how long this Unit takes to get hungry
-     */
-    public void setTimeToHunger(GameView view, int n) {
-        final int diff = n - this.timeToHunger;
-        final int remainingTurns = view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry");
-        if (remainingTurns >= 0 && remainingTurns + diff <= 0) {
-            view.game.mechanics.turns.handleFutureTicksEarly(view, this, "GetsHungry");
-        }
-        this.timeToHunger = n;
-    }
-
-    /**
-     * Resets this Unit's hunger
-     */
-    public void eat(Game game) {
-        game.mechanics.turns.removeFutureEvents(this, "GetsHungry");
-        game.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
-        game.mechanics.turns.addFutureTick("GetsHungry", this, this.timeToHunger, false);
-    }
-
-    /**
-     * This Unit loses loyalty and may abandon the cause
-     */
-    public void loseLoyalty(GameView view, int points) {
-        this.loyalty = Math.max(0, this.loyalty - points);
-        if (this.loyalty == 0) {
-            view.game.mechanics.turns.removeFutureEvents(this, "HungerStrikes");
-            view.game.setLeader(view, this, Optional.empty());
-        }
-    }
-
-    /**
-     * Resets this Unit's loyalty
-     */
-    public void resetLoyalty() {
-        this.loyalty = Unit.MAX_LOYALTY;
-    }
-
-    /**
-     * Returns true if this Unit is leaderless and can be picked up by anyone
-     */
-    public boolean isFreeRadical() {
-        return !this.leader.isPresent() && this.loyalty == 0;
-    }
-
-    /**
-     * Returns true if this Unit belongs to the human Player
-     */
-    public boolean belongsToHuman() {
-        return this.leader.map((Player p) -> p.isHumanPlayer()).orElse(false);
-    }
-
-    /**
-     * Recruits this Unit into to a new Player
-     */
-    public void getRecruited(GameView view, Player player) {
-        if (!this.isFreeRadical()) {
-            throw new RuntimeException("Cannot recruit another player's unit");
-        }
-        view.game.mechanics.turns.addFutureTick("HungerStrikes", this, 1, true);
-        view.game.setLeader(view, this, player);
-        this.resetLoyalty();
-    }
-
-    /**
-     * Returns the maximum distance that this Unit can move in a turn
-     */
-    private int getMaxMoveDistance(GameView view) {
-        Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(this);
-        this.handleEvent(view, event);
-        return event.distance;
-    }
-
-    /**
-     * Returns the list of Points that this Unit can move to
-     */
-    public Set<Point> getMoveTargets(GameView view) {
-        return this.getPotentialMoveGraph(view).keySet();
-    }
-
-    /**
-     * Returns a map where each key is a potential move target and each value is the
-     * Point we arrive there from
-     */
-    public Map<Point, Point> getPotentialMoveGraph(GameView view) {
-        // Returns nothing if this Unit cannot move
-        final int max = this.getMaxMoveDistance(view);
-        if (max == 0) {
-            return new HashMap<Point, Point>();
-        }
-
-        // Set up the algorithm's variables
-        final Point origin = new Point(this.x, this.y);
-        final Map<Point, Integer> distance = new HashMap<>();
-        final Map<Point, Point> graph = new HashMap<>();
-        distance.put(origin, 0);
-
-        // Iterate for each distance up to the max
-        for (int a = 0; a < max; a++) {
-            // Do this for each Point with the current distance value
-            final int steps = a;
-            final Set<Point> outside = Lambda.filter((Point p) -> distance.get(p) == steps, distance.keySet());
-            for (Point p : outside) {
-                // Do this for each of the current Point's adjacents,
-                // unless if they've already been processed
-                final Set<Point> adjs = Hexagons.getAdjacents(p);
-                for (Point p1 : adjs) {
-                    // Skip this adjacent Point if we've already processed it
-                    if (distance.containsKey(p1)) {
-                        continue;
-                    }
-
-                    // Check if we can move to this adjacent Point
-                    if (!view.game.world.isInBounds(p1)) {
-                        continue;
-                    }
-                    Tile t = view.game.world.getTile(p1).get();
-                    if (t.unit.isPresent()) {
-                        continue;
-                    }
-                    Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this, t);
-                    this.handleEvent(view, event);
-                    if (!event.possible()) {
-                        continue;
-                    }
-
-                    // If we can move to this adjacent Point then record it in the graph
-                    distance.put(p1, a + 1);
-                    graph.put(p1, p);
-                }
-            }
-        }
-        return graph;
-    }
-
-    /**
-     * Returns a list of Points to take you from one to another
-     */
-    private List<Point> getMovePath(GameView view, Point dest) {
-        final Map<Point, Point> graph = this.getPotentialMoveGraph(view);
-        if (!graph.containsKey(dest)) {
-            throw new RuntimeException(String.format("Invalid destination %s", dest.toString()));
-        }
-
-        List<Point> path = new ArrayList<>();
-        path.add(dest);
-        while (!Hexagons.areNeighbors(path.get(0), this.getPoint())) {
-            path.add(0, graph.get(path.get(0)));
-        }
-        return path;
+        return this.leadership.getLeader();
     }
 
     /** {@inheritdoc} */
     @Override
     protected void setupModelInstance(ModelInstance model) {
         model.userData = this.userData;
-    }
-
-    /**
-     * Sets this Unit's position in the World. Useful for spawning or movement.
-     */
-    public void setPosition(GameView view, int x, int y) {
-        Tile destin = view.game.world.getTile(x, y).get();
-        destin.unit = Optional.of(this);
-        this.x = x;
-        this.y = y;
-        this.resetModelPosition();
-        view.game.setLeader(view, destin, this.leader);
-        destin.building.ifPresent((Building b) -> b.setAlpha(0.5f));
-        this.userData.point.x = x;
-        this.userData.point.y = y;
-    }
-
-    /**
-     * Removes this Unit from its current position in the World
-     */
-    public void removeFromPosition(Game g) {
-        Tile origin = g.world.getTile(this.x, this.y).get();
-        origin.building.ifPresent((Building b) -> b.setAlpha(1f));
-        origin.unit = Optional.empty();
-    }
-
-    /**
-     * Moves this Unit to another Tile in the grid
-     */
-    public SideEffect move(GameView view, Point p) {
-        return SideEffect.all(() -> {
-            final List<Point> path = this.getMovePath(view, p);
-            final int duration = 1000 / path.size();
-            Point prev = this.getPoint();
-            AnimationChain chain = new AnimationChain();
-            for (Point p1 : path) {
-                chain.add(new MoveAnimation(this, duration, prev, p1));
-                prev = p1;
-            }
-            view.animations.add(chain.get());
-        }, this.handleEvent(view, new Events.UnitMovedEvent(this, x, y, p.x, p.y)));
-    }
-
-    /**
-     * Spawns this loaded object into the World
-     */
-    public void spawn(GameView view) {
-        this.setPosition(view, this.x, this.y);
-        this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
-        this.eat(view.game);
-        view.game.units.add(this);
     }
 
     /** {@inheritdoc} */
@@ -398,9 +105,10 @@ public class Unit extends Entity implements MenuSubject {
         List<SideEffect> effects = SideEffect.list();
         effects.add(view.game.events.unit.handle(view, this, e));
         if (e.propagate) {
-            this.active1.ifPresent((Ability a) -> effects.add(a.handleEventWithoutSignalBooster(view, e)));
-            this.active2.ifPresent((Ability a) -> effects.add(a.handleEventWithoutSignalBooster(view, e)));
-            for (Ability a : this.passives) {
+            for (Ability a : this.abilities.getActives()) {
+                effects.add(a.handleEventWithoutSignalBooster(view, e));
+            }
+            for (Ability a : this.abilities.getPassives()) {
                 effects.add(a.handleEventWithoutSignalBooster(view, e));
             }
             for (Item i : this.equipped) {
@@ -414,12 +122,12 @@ public class Unit extends Entity implements MenuSubject {
     @Override
     public void deactivate(GameView view) {
         super.deactivate(view);
-        this.leader.ifPresent((Player l) -> {
+        this.getLeader().ifPresent((Player l) -> {
             this.vision.remove(l, view.game.world);
             l.units.remove(this);
         });
         view.game.units.remove(this);
-        this.removeFromPosition(view.game);
+        this.movement.removeFromPosition(view.game);
         this.dispose();
     }
 
@@ -432,51 +140,51 @@ public class Unit extends Entity implements MenuSubject {
         MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
         int turnsUntilHungry = Math.max(0, view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry"));
         node.add(new BadgeNode(view.av, this.species.color, 0xffffff, this.species.toString()));
-        node.add(
-                this.leader.isPresent()
-                        ? new RowNode().add(glyphsNode)
-                                .add(new BadgeNode(view.av, Colors.asInt(this.leader.get().color), 0xffffff,
-                                        this.leader.get().name))
-                        : glyphsNode);
+        node.add(this.getLeader().isPresent()
+                ? new RowNode().add(glyphsNode)
+                        .add(new BadgeNode(view.av, Colors.asInt(this.getLeader().get().color), 0xffffff,
+                                this.getLeader().get().name))
+                : glyphsNode);
         node.add(new TextNode(view.av, this.desc));
         node.add(new ResourceBarsNode(view.av,
                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
-                new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty, Unit.MAX_LOYALTY),
-                new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.timeToHunger)));
+                new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
+                new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.hunger.getTurnsBeforeHunger())));
 
         // Abilities section
-        if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
+        if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             if (view.game.mechanics.turns.hasUnitActed(this)) {
                 node.add(new TextNode(view.av, "This unit has already acted this turn"));
-            } else if (this.isSleeping()) {
+            } else if (this.sleep.isSleeping()) {
                 node.add(new TextNode(view.av, "This unit does not have to act this turn"));
             }
             node.add(new ActionNode(view, "Move", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
-                    () -> view.selector.select(this.getMoveTargets(view), "This unit cannot move", (Point p1) -> {
+                    () -> view.selector.select(this.movement.getTargets(view), "This unit cannot move", (Point p1) -> {
                         view.av.loaders.sounds.play("sfx/footstep");
-                        this.move(view, p1).execute();
+                        this.movement.move(view, p1).execute();
                         view.game.mechanics.turns.unitHasActed(view, this);
                         view.hud.minimap.refresh(view.game.world);
                     })));
             node.add(new ActionNode(view, "Skip turn", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
                     () -> {
-                        this.sleep = SleepState.SLEEPING;
+                        this.sleep.set(SleepState.SLEEPING);
                         view.game.mechanics.turns.goToNextUnit(view);
                     }));
             node.add(new ActionNode(view, "Skip until inventory is full", Optional.empty(),
                     !view.game.mechanics.turns.hasUnitActed(this), () -> {
-                        this.sleep = SleepState.SLEEPING_INVENTORY;
+                        this.sleep.set(SleepState.SLEEPING_INVENTORY);
                         view.game.mechanics.turns.goToNextUnit(view);
                     }));
         }
-        this.active1.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));
-        this.active2.ifPresent((Ability a) -> node.add(a.getMenuContent(view, p)));
-        for (Ability a : this.passives) {
+        for (Ability a : this.abilities.getActives()) {
+            node.add(a.getMenuContent(view, p));
+        }
+        for (Ability a : this.abilities.getPassives()) {
             node.add(a.getMenuContent(view, p));
         }
 
         // Items section
-        if (this.leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
+        if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             node.add(new TextNode(view.av, "Equipped Items"));
             node.add(this.equipped.getMenuContent(view, p));
             node.add(new TextNode(view.av, "Hauled Items"));
@@ -486,12 +194,5 @@ public class Unit extends Entity implements MenuSubject {
             node.add(new TextNode(view.av, String.format("Can haul %d items", this.haul.getMax())));
         }
         return node;
-    }
-
-    /**
-     * Enums to control sleeping state (how long to sleep for)
-     */
-    public static enum SleepState {
-        AWAKE, SLEEPING, SLEEPING_INVENTORY
     }
 }

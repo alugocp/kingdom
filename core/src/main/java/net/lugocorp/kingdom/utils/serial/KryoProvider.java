@@ -48,7 +48,6 @@ class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.player.Player.class);
         kryo.register(net.lugocorp.kingdom.game.model.Tile.class);
         kryo.register(net.lugocorp.kingdom.game.model.Unit.class);
-        kryo.register(net.lugocorp.kingdom.game.model.Unit.SleepState.class);
         kryo.register(net.lugocorp.kingdom.game.model.Item.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.GlyphCategory.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.UnitGlyphs.class);

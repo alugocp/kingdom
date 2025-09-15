@@ -1,4 +1,5 @@
-package net.lugocorp.kingdom.game.model;
+package net.lugocorp.kingdom.game.layers;
+import net.lugocorp.kingdom.game.model.Unit;
 
 /**
  * A subclass of Unit used for non-gameplay-related purposes (should never be

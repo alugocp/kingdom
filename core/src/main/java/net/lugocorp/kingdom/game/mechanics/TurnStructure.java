@@ -61,7 +61,8 @@ public class TurnStructure {
      */
     public void unitHasActed(GameView view, Unit u) {
         this.unitsThatHaveActed.add(u);
-        u.wakeUp();
+        // TODO this may cause a bug where it dispells any sleep ability on the unit
+        u.sleep.wakeUp();
         if (u.getLeader().isPresent() && u.getLeader().get() == view.game.human) {
             this.goToNextUnit(view);
         }
@@ -79,7 +80,7 @@ public class TurnStructure {
      */
     public Optional<Unit> getNextUnitToAct(Player player) {
         for (Unit u : player.units) {
-            if (!this.hasUnitActed(u) && !u.isSleeping()) {
+            if (!this.hasUnitActed(u) && !u.sleep.isSleeping()) {
                 return Optional.of(u);
             }
         }
@@ -241,7 +242,7 @@ public class TurnStructure {
         // TODO make this entire function more readable
         // TODO run this logic in another thread for optimization
         for (Unit u : this.turnPlayer.units) {
-            u.wakeUpCheck(view);
+            u.sleep.wakeUpCheck(view);
         }
         this.unitsThatHaveActed.clear();
         // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get

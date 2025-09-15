@@ -2,6 +2,8 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.layers.Entity;
+import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.BuildingType;
 import net.lugocorp.kingdom.game.properties.EntityType;
@@ -28,7 +30,7 @@ import java.util.function.Supplier;
 /**
  * Some structure that can be built on top of a Tile to modify its properties
  */
-public class Building extends Entity implements MenuSubject {
+public class Building extends Entity implements MenuSubject, Spawnable {
     private final CoordUserData userData = new CoordUserData();
     private final Supplier<Tile> getTile;
     private Optional<Color> minimapColor = Optional.empty();
@@ -122,9 +124,8 @@ public class Building extends Entity implements MenuSubject {
         this.minimapColor = Optional.of(Colors.fromHex(hexcode));
     }
 
-    /**
-     * Spawns this loaded object into the World
-     */
+    /** {@inheritdoc} */
+    @Override
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
