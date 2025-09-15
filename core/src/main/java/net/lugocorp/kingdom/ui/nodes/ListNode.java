@@ -1,47 +1,53 @@
-package net.lugocorp.kingdom.ui.menu;
+package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.Menu;
+import net.lugocorp.kingdom.ui.MenuNode;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * MenuNode item containing many child nodes
  */
-public class RowNode implements MenuNode {
+public class ListNode implements MenuNode {
     private final List<MenuNode> children = new ArrayList<>();
-    private Optional<Integer> columns = Optional.empty();
+    private boolean border = false;
+    private int margin = 0;
 
     /**
-     * Adds a child MenuNode to this RowNode
+     * Adds a child MenuNode to this ListNode
      */
-    public RowNode add(MenuNode child) {
+    public ListNode add(MenuNode child) {
         this.children.add(child);
         return this;
     }
 
     /**
-     * Sets a static number of columns to display in this RowNode
+     * Clears the child MenuNodes form this ListNode
      */
-    public RowNode setColumns(int columns) {
-        this.columns = Optional.of(columns);
-        return this;
+    public void clear() {
+        this.children.clear();
     }
 
     /**
-     * Returns the number of columns to render in this RowNode
+     * Adds a border (and some margin) to this ListNode
      */
-    private int getColumns() {
-        return this.columns.map((Integer i) -> i).orElse(this.children.size());
+    public ListNode addBorder() {
+        this.border = true;
+        this.margin = 3;
+        return this;
     }
 
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
-        int h = 0;
+        int h = this.margin * 2;
         for (MenuNode child : this.children) {
-            h = Math.max(h, child.getHeight());
+            h += child.getHeight();
         }
         return h;
     }
@@ -49,39 +55,41 @@ public class RowNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void pack(Menu menu, int width) {
-        if (this.getColumns() < this.children.size()) {
-            throw new RuntimeException("Not enough columns set for this RowNode");
-        }
         for (MenuNode child : this.children) {
-            child.pack(menu, width / this.getColumns());
+            child.pack(menu, width - (this.margin * 2));
         }
     }
 
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
-        int x = bounds.x;
-        int w = bounds.w / this.getColumns();
+        int y = bounds.y + this.margin;
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+            final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
             child.draw(av, r);
-            x += w;
+            y += r.h;
+        }
+        if (this.border) {
+            Rect flip = Coords.screen.flip(bounds.x, bounds.y, bounds.w, bounds.h - 1);
+            av.shapes.begin(ShapeType.Line);
+            av.shapes.setColor(Color.WHITE);
+            av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
+            av.shapes.end();
         }
     }
 
     /** {@inheritdoc} */
     @Override
     public void click(Rect bounds, Point p) {
-        int x = bounds.x;
-        int w = bounds.w / this.getColumns();
+        int y = bounds.y + this.margin;
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+            final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
             if (r.contains(p)) {
                 child.click(r, p);
             } else {
                 child.unclick();
             }
-            x += w;
+            y += r.h;
         }
     }
 
@@ -97,12 +105,11 @@ public class RowNode implements MenuNode {
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         if (bounds.contains(prev) || bounds.contains(curr)) {
-            int x = bounds.x;
-            int w = bounds.w / this.getColumns();
+            int y = bounds.y + this.margin;
             for (MenuNode child : this.children) {
-                final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+                final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
                 child.mouseMoved(r, prev, curr);
-                x += w;
+                y += r.h;
             }
         }
     }

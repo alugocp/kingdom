@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.menu;
+package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 

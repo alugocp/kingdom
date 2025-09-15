@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.menu;
+package net.lugocorp.kingdom.ui;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;

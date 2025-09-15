@@ -1,6 +1,7 @@
-package net.lugocorp.kingdom.ui.menu;
+package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.model.Fate;
+import net.lugocorp.kingdom.ui.Menu;
 
 /**
  * A node that displays some Fate and its description

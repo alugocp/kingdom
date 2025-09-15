@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.builtin.animation;
 import net.lugocorp.kingdom.engine.animation.Animation;
 import net.lugocorp.kingdom.engine.animation.Tween;
+import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.game.TileMenu;
-import net.lugocorp.kingdom.ui.menu.Menu;
 import net.lugocorp.kingdom.ui.views.GameView;
 
 /**

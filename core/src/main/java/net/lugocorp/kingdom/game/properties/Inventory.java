@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.properties;
 import net.lugocorp.kingdom.game.model.Item;
-import net.lugocorp.kingdom.ui.menu.InventoryNode;
-import net.lugocorp.kingdom.ui.menu.MenuNode;
-import net.lugocorp.kingdom.ui.menu.MenuSubject;
+import net.lugocorp.kingdom.ui.MenuNode;
+import net.lugocorp.kingdom.ui.MenuSubject;
+import net.lugocorp.kingdom.ui.nodes.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;

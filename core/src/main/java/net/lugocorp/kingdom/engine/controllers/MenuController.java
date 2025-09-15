@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine.controllers;
-import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;

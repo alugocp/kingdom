@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.menu;
+package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;

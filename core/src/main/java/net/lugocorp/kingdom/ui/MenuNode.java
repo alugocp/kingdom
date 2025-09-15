@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.menu;
+package net.lugocorp.kingdom.ui;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;

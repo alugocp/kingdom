@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.views;
+package net.lugocorp.kingdom.ui;
 import com.badlogic.gdx.graphics.Color;
 import java.util.function.Consumer;
 

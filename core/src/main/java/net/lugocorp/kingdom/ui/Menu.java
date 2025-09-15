@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.menu;
+package net.lugocorp.kingdom.ui;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -82,14 +82,14 @@ public class Menu {
     /**
      * Removes the mini menu from this Menu
      */
-    void closeMiniMenu() {
+    public void closeMiniMenu() {
         this.mini = Optional.empty();
     }
 
     /**
      * Sets a mini menu on this Menu
      */
-    void setMiniMenu(MenuNode root, int x, int y) {
+    public void setMiniMenu(MenuNode root, int x, int y) {
         final int xBounded = Math.min(Coords.SIZE.x - Menu.MINI_MENU_WIDTH, x);
         final int yBounded = Math.max(root.getHeight(), y);
         if (this.mini.isPresent() && this.mini.get().root == root) {

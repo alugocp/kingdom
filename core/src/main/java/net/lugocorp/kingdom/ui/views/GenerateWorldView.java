@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.game.world.WorldGenOptions;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
+import net.lugocorp.kingdom.ui.View;
 
 /**
  * View for when we're generating a new World

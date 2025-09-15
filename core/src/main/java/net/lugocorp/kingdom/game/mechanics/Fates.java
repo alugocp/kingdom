@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Fate;
-import net.lugocorp.kingdom.ui.menu.ButtonNode;
-import net.lugocorp.kingdom.ui.menu.FateViewNode;
-import net.lugocorp.kingdom.ui.menu.ListNode;
-import net.lugocorp.kingdom.ui.menu.Menu;
+import net.lugocorp.kingdom.ui.Menu;
+import net.lugocorp.kingdom.ui.nodes.ButtonNode;
+import net.lugocorp.kingdom.ui.nodes.FateViewNode;
+import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import java.util.ArrayList;
