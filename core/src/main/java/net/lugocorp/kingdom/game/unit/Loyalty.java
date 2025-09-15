@@ -28,7 +28,7 @@ public class Loyalty {
     public void decrease(GameView view, int points) {
         this.loyalty = Math.max(0, this.loyalty - points);
         if (this.loyalty == 0) {
-            view.game.mechanics.turns.removeFutureEvents(this.unit, "HungerStrikes");
+            view.game.future.removeFutureEvents(this.unit, "HungerStrikes");
             view.game.setLeader(view, this.unit, Optional.empty());
         }
     }

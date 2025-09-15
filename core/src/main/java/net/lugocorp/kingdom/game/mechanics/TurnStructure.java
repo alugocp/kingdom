@@ -1,7 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.model.Building;
@@ -15,9 +13,7 @@ import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,8 +21,6 @@ import java.util.Set;
  * This class handles human and AI Players taking turns during the Game
  */
 public class TurnStructure {
-    // TODO optimize the futures field with a different data structure
-    private final List<FutureTick> futures = new ArrayList<>();
     private final Set<Unit> unitsThatHaveActed = new HashSet<>();
     private boolean canPlayerAct = false;
     private Player turnPlayer;
@@ -40,6 +34,13 @@ public class TurnStructure {
      * This should only be used in conjunction with Kryo rehydration
      */
     public TurnStructure() {
+    }
+
+    /**
+     * Returns the current turn number
+     */
+    public int getTurn() {
+        return this.turn;
     }
 
     /**
@@ -88,97 +89,6 @@ public class TurnStructure {
     }
 
     /**
-     * Sets up an Event that will trigger on the given EventReceiver in the given
-     * number of turns
-     */
-    public void addFutureTick(String channel, EventReceiver receiver, int interval, boolean repeat) {
-        if (interval < 1) {
-            throw new RuntimeException("You cannot set up a tick for the current or any past turns");
-        }
-        this.futures.add(new FutureTick(receiver, channel, this.turn + interval, interval, repeat));
-    }
-
-    /**
-     * Returns a list of future Events by their receiver and maybe a channel
-     */
-    private List<FutureTick> getFutureTicks(EventReceiver receiver, Optional<String> channel) {
-        List<FutureTick> lst = new ArrayList<>();
-        for (FutureTick ft : this.futures) {
-            if (ft.receiver == receiver && channel.map((String ch) -> ch == ft.channel).orElse(true)) {
-                lst.add(ft);
-            }
-        }
-        return lst;
-    }
-
-    /**
-     * Removes all upcoming FutureTicks associated with the given EventReceiver
-     */
-    public void removeFutureTicks(EventReceiver receiver) {
-        for (FutureTick ft : this.getFutureTicks(receiver, Optional.empty())) {
-            this.futures.remove(ft);
-        }
-    }
-
-    /**
-     * Removes all future Events registered for the given receiver on a single
-     * channel
-     */
-    public void removeFutureEvents(EventReceiver receiver, String channel) {
-        for (FutureTick ft : this.getFutureTicks(receiver, Optional.of(channel))) {
-            this.futures.remove(ft);
-        }
-    }
-
-    /**
-     * Returns how many turns must pass before this Event triggers
-     */
-    public int getFutureEventRemainingTurns(EventReceiver receiver, String channel) {
-        List<FutureTick> ticks = this.getFutureTicks(receiver, Optional.of(channel));
-        if (ticks.size() == 0) {
-            return -1;
-        }
-        return ticks.get(0).turn - this.turn;
-    }
-
-    /**
-     * Removes a FutureTick from the queue and processes it
-     */
-    private void processFutureTick(GameView view, FutureTick ft) {
-        this.futures.remove(ft);
-        Events.RepeatedEvent e = new Events.RepeatedEvent(ft.channel, ft.interval, ft.repeat);
-        ft.receiver.handleEvent(view, e).execute();
-        if (e.repeat) {
-            this.addFutureTick(ft.channel, ft.receiver, e.interval, true);
-        }
-    }
-
-    /**
-     * Triggers an Event for every FutureTick that has reached its time
-     */
-    private void checkFutureTicks(GameView view) {
-        int a = 0;
-        while (a < this.futures.size()) {
-            FutureTick ft = this.futures.get(a);
-            if (ft.turn == this.turn) {
-                this.processFutureTick(view, ft);
-            } else {
-                a++;
-            }
-        }
-    }
-
-    /**
-     * Pulls out all FutureTicks as described and processes them right now
-     */
-    public void handleFutureTicksEarly(GameView view, EventReceiver receiver, String channel) {
-        List<FutureTick> ticks = this.getFutureTicks(receiver, Optional.of(channel));
-        for (FutureTick ft : ticks) {
-            this.processFutureTick(view, ft);
-        }
-    }
-
-    /**
      * Returns true when the turn Player is the human
      */
     public boolean canHumanPlayerAct() {
@@ -196,7 +106,7 @@ public class TurnStructure {
             if (index == view.game.comps.size() - 1) {
                 this.turnPlayer = view.game.human;
                 this.turn++;
-                this.checkFutureTicks(view);
+                view.game.future.checkFutureTicks(view);
                 this.startNewTurnGroup(view);
             } else {
                 this.turnPlayer = view.game.comps.get(index + 1);
@@ -322,37 +232,6 @@ public class TurnStructure {
             view.menu.refresh(true);
             this.iterateTurnPlayer(view);
             player.stats.commit();
-        }
-    }
-
-    /**
-     * Represents an Event trigger that should happen during some future turn
-     */
-    public static class FutureTick {
-        // TODO this doesn't rehydrate quite right, units load hungry from save file
-        private final EventReceiver receiver;
-        private final String channel;
-        private final boolean repeat;
-        private final int interval;
-        private final int turn;
-
-        private FutureTick(EventReceiver receiver, String channel, int turn, int interval, boolean repeat) {
-            this.receiver = receiver;
-            this.interval = interval;
-            this.channel = channel;
-            this.repeat = repeat;
-            this.turn = turn;
-        }
-
-        /**
-         * This should only be used in conjunction with Kryo rehydration
-         */
-        public FutureTick() {
-            this.receiver = null;
-            this.interval = 0;
-            this.channel = null;
-            this.repeat = false;
-            this.turn = 0;
         }
     }
 }

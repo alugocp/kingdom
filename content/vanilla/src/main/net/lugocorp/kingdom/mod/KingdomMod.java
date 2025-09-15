@@ -145,7 +145,7 @@ public class KingdomMod implements GameMod {
 
         // GetsHungry
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
-                Event event) -> () -> view.game.mechanics.turns.addFutureTick("HungerStrikes", receiver, 1, true));
+                Event event) -> () -> view.game.future.addFutureTick("HungerStrikes", receiver, 1, true));
 
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
@@ -352,7 +352,7 @@ public class KingdomMod implements GameMod {
                 });
         events.building.addEventHandler(Labels.ability_edible, "SpawnEvent",
                 (GameView view, Building receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.building.addEventHandler(Labels.ability_edible, "TickEvent",
@@ -421,7 +421,7 @@ public class KingdomMod implements GameMod {
                 });
         events.patron.addEventHandler(Labels.patron_shining_eyes, "SpawnEvent",
                 (GameView view, Patron receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.patron.addEventHandler(Labels.patron_shining_eyes, "TickEvent",
@@ -619,7 +619,7 @@ public class KingdomMod implements GameMod {
                 });
         events.artifact.addEventHandler(Labels.artifact_shadas_flute, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_shadas_flute, "TickEvent",
@@ -837,7 +837,7 @@ public class KingdomMod implements GameMod {
                 });
         events.artifact.addEventHandler(Labels.artifact_gaias_effigy, "ArtifactClaimedEvent",
                 (GameView view, Artifact receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_gaias_effigy, "TickEvent",
@@ -1492,7 +1492,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_edible, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_edible, "TickEvent",
@@ -1606,7 +1606,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_hunt_fish, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_hunt_fish, "TickEvent",
@@ -1638,7 +1638,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_life_aura, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_life_aura, "TickEvent", (GameView view, Ability receiver,
@@ -1653,7 +1653,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_liquifying_presence, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_liquifying_presence, "TickEvent",
@@ -1707,7 +1707,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_market_indicator, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_market_indicator, "TickEvent",
@@ -1724,7 +1724,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_mine_gems, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_mine_gems, "TickEvent",
@@ -1740,7 +1740,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_mine_gold, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_mine_gold, "TickEvent",
@@ -1786,7 +1786,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_pick_apples, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_pick_apples, "TickEvent",
@@ -1802,7 +1802,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_pick_flowers, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_pick_flowers, "TickEvent",
@@ -1850,7 +1850,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_regeneration, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_regeneration, "TickEvent",
@@ -1909,7 +1909,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_sacred_seeds, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_sacred_seeds, "TickEvent",
@@ -1972,7 +1972,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_subterranean_potions, "SpawnEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 4, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 4, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_subterranean_potions, "TickEvent",
@@ -2020,7 +2020,7 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.status_effect_stunned, "StatusEffectAddedEvent",
                 (GameView view, Ability receiver, Event event) -> {
-                    view.game.mechanics.turns.addFutureTick("TickEvent", receiver, 1, true);
+                    view.game.future.addFutureTick("TickEvent", receiver, 1, true);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.status_effect_stunned, "TickEvent", (GameView view, Ability receiver,

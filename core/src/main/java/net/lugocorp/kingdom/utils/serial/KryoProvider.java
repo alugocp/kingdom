@@ -36,7 +36,6 @@ class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.mechanics.GlyphPools.class);
         kryo.register(net.lugocorp.kingdom.game.mechanics.NewUnit.class);
         kryo.register(net.lugocorp.kingdom.game.mechanics.TurnStructure.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.TurnStructure.FutureTick.class);
         kryo.register(net.lugocorp.kingdom.game.model.Ability.class);
         kryo.register(net.lugocorp.kingdom.game.model.Building.class);
         kryo.register(net.lugocorp.kingdom.game.model.Artifact.class);

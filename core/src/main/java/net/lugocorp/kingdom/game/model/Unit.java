@@ -138,7 +138,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
         // Unit stats section
         MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
-        int turnsUntilHungry = Math.max(0, view.game.mechanics.turns.getFutureEventRemainingTurns(this, "GetsHungry"));
+        int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
         node.add(new BadgeNode(view.av, this.species.color, 0xffffff, this.species.toString()));
         node.add(this.getLeader().isPresent()
                 ? new RowNode().add(glyphsNode)

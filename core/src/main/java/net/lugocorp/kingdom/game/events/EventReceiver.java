@@ -35,7 +35,7 @@ public interface EventReceiver {
      * Call this function when the EventReceiver should no longer listen for Events
      */
     public default void deactivate(GameView view) {
-        view.game.mechanics.turns.removeFutureTicks(this);
+        view.game.future.removeFutureTicks(this);
         view.game.events.signals.deactivateListener(this);
         view.menu.refresh(true);
     }

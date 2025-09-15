@@ -26,9 +26,9 @@ public class Hunger {
      */
     public void setTimeToHunger(GameView view, int n) {
         final int diff = n - this.turnsToGetHungry;
-        final int remainingTurns = view.game.mechanics.turns.getFutureEventRemainingTurns(this.unit, "GetsHungry");
+        final int remainingTurns = view.game.future.getFutureEventRemainingTurns(this.unit, "GetsHungry");
         if (remainingTurns >= 0 && remainingTurns + diff <= 0) {
-            view.game.mechanics.turns.handleFutureTicksEarly(view, this.unit, "GetsHungry");
+            view.game.future.handleFutureTicksEarly(view, this.unit, "GetsHungry");
         }
         this.turnsToGetHungry = n;
     }
@@ -37,8 +37,8 @@ public class Hunger {
      * Resets this instance's hunger
      */
     public void eat(Game game) {
-        game.mechanics.turns.removeFutureEvents(this.unit, "GetsHungry");
-        game.mechanics.turns.removeFutureEvents(this.unit, "HungerStrikes");
-        game.mechanics.turns.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false);
+        game.future.removeFutureEvents(this.unit, "GetsHungry");
+        game.future.removeFutureEvents(this.unit, "HungerStrikes");
+        game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false);
     }
 }
