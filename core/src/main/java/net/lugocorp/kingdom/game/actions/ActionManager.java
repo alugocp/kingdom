@@ -17,7 +17,8 @@ public class ActionManager {
      * Run this function at the start of a new turn
      */
     public void startOfNewTurn() {
-        final Set<Unit> acted = this.actions.keySet();
+        final Set<Unit> acted = new HashSet<>();
+        acted.addAll(this.actions.keySet());
         for (Unit u : acted) {
             if (!this.actions.get(u).nextTurnStart()) {
                 this.actions.remove(u);
