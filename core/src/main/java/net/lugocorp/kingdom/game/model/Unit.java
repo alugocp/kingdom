@@ -154,6 +154,9 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
         // Abilities section
         if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
+            node.add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
+
+            // Move Action
             final int remainingDistance = view.game.actions.getRemainingMoveDistance(view, this);
             node.add(new ActionNode(view, "Move", Optional.empty(), remainingDistance > 0, () -> view.selector
                     .select(this.movement.getTargets(view, remainingDistance), "This unit cannot move", (Point p1) -> {
@@ -161,10 +164,14 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         this.movement.move(view, p1).execute();
                         view.hud.minimap.refresh(view.game.world);
                     })));
+
+            // Skip Action
             node.add(new ActionNode(view, "Skip turn", Optional.empty(), !view.game.actions.hasUnitActed(this), () -> {
                 view.game.actions.unitHasActed(view, this, new SkipAction());
                 view.game.actions.goToNextUnit(view);
             }));
+
+            // Skip Inventory Action
             node.add(new ActionNode(view, "Skip until inventory is full", Optional.empty(),
                     !view.game.actions.hasUnitActed(this), () -> {
                         view.game.actions.unitHasActed(view, this, new SkipInventoryAction(this.haul));

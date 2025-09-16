@@ -103,4 +103,14 @@ public class ActionManager {
         }
         return Optional.empty();
     }
+
+    /**
+     * Returns a string describing the given Unit's Action for this turn
+     */
+    public String getUnitActionLabel(Unit u) {
+        if (this.actions.containsKey(u)) {
+            return this.actions.get(u).getDescription();
+        }
+        return "This unit has not acted this turn";
+    }
 }

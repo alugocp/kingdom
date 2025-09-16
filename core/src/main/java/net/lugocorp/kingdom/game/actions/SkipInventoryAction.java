@@ -28,4 +28,10 @@ public class SkipInventoryAction implements Action {
     public boolean nextTurnStart() {
         return !this.haul.isFull();
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getDescription() {
+        return "This unit is waiting to fill its haul inventory";
+    }
 }

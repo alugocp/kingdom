@@ -22,4 +22,10 @@ public class SkipAction implements Action {
     public boolean nextTurnStart() {
         return false;
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getDescription() {
+        return "This unit is skipping its turn";
+    }
 }

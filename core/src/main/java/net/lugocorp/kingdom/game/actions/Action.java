@@ -21,4 +21,9 @@ public interface Action {
      * Action should stay in play)
      */
     public boolean nextTurnStart();
+
+    /**
+     * Returns a String explaining this Action to the player
+     */
+    public String getDescription();
 }

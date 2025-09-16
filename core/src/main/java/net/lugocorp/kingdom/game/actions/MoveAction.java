@@ -50,4 +50,12 @@ public class MoveAction implements Action {
     public boolean nextTurnStart() {
         return false;
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getDescription() {
+        return this.isFinished()
+                ? "This unit has moved its maximum distance this turn"
+                : "This unit has moved this turn";
+    }
 }

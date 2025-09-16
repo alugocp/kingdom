@@ -115,7 +115,9 @@ public class FutureEventManager {
     public void checkFutureTicks(GameView view) {
         final int turn = this.game.mechanics.turns.getTurn();
         if (this.futures.containsKey(turn)) {
-            for (FutureTick ft : this.futures.get(turn)) {
+            final List<FutureTick> ls = new ArrayList<>();
+            ls.addAll(this.futures.get(turn));
+            for (FutureTick ft : ls) {
                 this.processFutureTick(view, ft);
             }
         }

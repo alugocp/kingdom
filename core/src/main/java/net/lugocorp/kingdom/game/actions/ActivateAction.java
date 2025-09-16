@@ -22,4 +22,10 @@ public class ActivateAction implements Action {
     public boolean nextTurnStart() {
         return false;
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public String getDescription() {
+        return "This unit has cast a spell this turn";
+    }
 }
