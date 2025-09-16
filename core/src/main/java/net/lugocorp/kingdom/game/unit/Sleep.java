@@ -8,44 +8,43 @@ import net.lugocorp.kingdom.ui.views.GameView;
  */
 public class Sleep {
     private final Unit unit;
-    private SleepState state = SleepState.AWAKE;
+    private boolean sleeping = false;
 
     public Sleep(Unit unit) {
         this.unit = unit;
     }
 
     /**
-     * Sets this instance's SleepState
+     * Sets this instance's sleep state
      */
-    public void set(SleepState state) {
-        this.state = state;
+    public void set(boolean sleeping) {
+        this.sleeping = sleeping;
     }
 
     /**
      * Returns true if we're in a sleep state
      */
     public boolean isSleeping() {
-        return this.state != SleepState.AWAKE;
+        return this.sleeping;
     }
 
     /**
-     * Checks if we should reset this Unit's SleepState at the start of a turn
+     * Checks if we should reset this Unit's sleep state at the start of a turn
      */
     public void wakeUpCheck(GameView view) {
         Events.IsStunnedEvent event = new Events.IsStunnedEvent(this.unit);
         this.unit.handleEvent(view, event).execute();
         if (event.isStunned) {
-            this.state = SleepState.SLEEPING;
-        } else if (this.state == SleepState.SLEEPING
-                || (this.state == SleepState.SLEEPING_INVENTORY && this.unit.haul.isFull())) {
+            this.sleeping = true;
+        } else if (this.sleeping) {
             this.wakeUp();
         }
     }
 
     /**
-     * Reset this Unit's SleepState
+     * Reset this Unit's sleep state
      */
     public void wakeUp() {
-        this.state = SleepState.AWAKE;
+        this.sleeping = false;
     }
 }

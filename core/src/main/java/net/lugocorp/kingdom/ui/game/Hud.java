@@ -38,7 +38,7 @@ public class Hud extends Menu {
                 .add(new ButtonNode(view.av, "Complete Turn", () -> {
                     if (view.popups.get().isPresent()) {
                         view.popups.setDisplay(true);
-                    } else if (!view.game.mechanics.turns.goToNextUnit(view)) {
+                    } else if (!view.game.actions.goToNextUnit(view)) {
                         view.logger.log("You have ended your turn", true);
                         view.game.mechanics.turns.iterateTurnPlayer(view);
                         view.menu.refresh(true);

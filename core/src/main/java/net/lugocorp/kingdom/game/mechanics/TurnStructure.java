@@ -13,15 +13,12 @@ import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * This class handles human and AI Players taking turns during the Game
  */
 public class TurnStructure {
-    private final Set<Unit> unitsThatHaveActed = new HashSet<>();
     private boolean canPlayerAct = false;
     private Player turnPlayer;
     private int turn = 1;
@@ -41,51 +38,6 @@ public class TurnStructure {
      */
     public int getTurn() {
         return this.turn;
-    }
-
-    /**
-     * Opens a TileMenu on the next Unit who must act this turn
-     */
-    public boolean goToNextUnit(GameView view) {
-        Optional<Unit> next = this.getNextUnitToAct(view.game.human);
-        if (next.isPresent()) {
-            view.centerOnPoint(next.get().getPoint(), false);
-            view.selector.hover(next.get().getPoint());
-            view.menu.open();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Marks a Unit as having acted this turn
-     */
-    public void unitHasActed(GameView view, Unit u) {
-        this.unitsThatHaveActed.add(u);
-        // TODO this may cause a bug where it dispells any sleep ability on the unit
-        u.sleep.wakeUp();
-        if (u.getLeader().isPresent() && u.getLeader().get() == view.game.human) {
-            this.goToNextUnit(view);
-        }
-    }
-
-    /**
-     * Returns true if the given Unit has acted yet this turn
-     */
-    public boolean hasUnitActed(Unit u) {
-        return this.unitsThatHaveActed.contains(u);
-    }
-
-    /**
-     * Returns the next Unit that must act this turn
-     */
-    public Optional<Unit> getNextUnitToAct(Player player) {
-        for (Unit u : player.units) {
-            if (!this.hasUnitActed(u) && !u.sleep.isSleeping()) {
-                return Optional.of(u);
-            }
-        }
-        return Optional.empty();
     }
 
     /**
@@ -154,7 +106,7 @@ public class TurnStructure {
         for (Unit u : this.turnPlayer.units) {
             u.sleep.wakeUpCheck(view);
         }
-        this.unitsThatHaveActed.clear();
+        view.game.actions.startOfNewTurn();
         // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
         // confused
         this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer);

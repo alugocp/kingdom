@@ -1,6 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
+import net.lugocorp.kingdom.game.actions.SkipAction;
+import net.lugocorp.kingdom.game.actions.SkipInventoryAction;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.glyph.UnitGlyphs;
 import net.lugocorp.kingdom.game.layers.Entity;
@@ -16,7 +18,6 @@ import net.lugocorp.kingdom.game.unit.Leadership;
 import net.lugocorp.kingdom.game.unit.Loyalty;
 import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
-import net.lugocorp.kingdom.game.unit.SleepState;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.MenuSubject;
 import net.lugocorp.kingdom.ui.nodes.ActionNode;
@@ -153,27 +154,21 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
         // Abilities section
         if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-            if (view.game.mechanics.turns.hasUnitActed(this)) {
-                node.add(new TextNode(view.av, "This unit has already acted this turn"));
-            } else if (this.sleep.isSleeping()) {
-                node.add(new TextNode(view.av, "This unit does not have to act this turn"));
-            }
-            node.add(new ActionNode(view, "Move", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
-                    () -> view.selector.select(this.movement.getTargets(view), "This unit cannot move", (Point p1) -> {
+            final int remainingDistance = view.game.actions.getRemainingMoveDistance(view, this);
+            node.add(new ActionNode(view, "Move", Optional.empty(), remainingDistance > 0, () -> view.selector
+                    .select(this.movement.getTargets(view, remainingDistance), "This unit cannot move", (Point p1) -> {
                         view.av.loaders.sounds.play("sfx/footstep");
                         this.movement.move(view, p1).execute();
-                        view.game.mechanics.turns.unitHasActed(view, this);
                         view.hud.minimap.refresh(view.game.world);
                     })));
-            node.add(new ActionNode(view, "Skip turn", Optional.empty(), !view.game.mechanics.turns.hasUnitActed(this),
-                    () -> {
-                        this.sleep.set(SleepState.SLEEPING);
-                        view.game.mechanics.turns.goToNextUnit(view);
-                    }));
+            node.add(new ActionNode(view, "Skip turn", Optional.empty(), !view.game.actions.hasUnitActed(this), () -> {
+                view.game.actions.unitHasActed(view, this, new SkipAction());
+                view.game.actions.goToNextUnit(view);
+            }));
             node.add(new ActionNode(view, "Skip until inventory is full", Optional.empty(),
-                    !view.game.mechanics.turns.hasUnitActed(this), () -> {
-                        this.sleep.set(SleepState.SLEEPING_INVENTORY);
-                        view.game.mechanics.turns.goToNextUnit(view);
+                    !view.game.actions.hasUnitActed(this), () -> {
+                        view.game.actions.unitHasActed(view, this, new SkipInventoryAction(this.haul));
+                        view.game.actions.goToNextUnit(view);
                     }));
         }
         for (Ability a : this.abilities.getActives()) {

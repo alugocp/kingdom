@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.game.actions.ActivateAction;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.layers.Entity;
@@ -59,7 +60,7 @@ public class AbilityLogic {
         return attacker.getLeader().get().select(view, points, "No attack targets are in range", (Point p) -> {
             final Damage dmg = getDamage.apply(view.game.world.getTile(p).get());
             return SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
-                    () -> view.game.mechanics.turns.unitHasActed(view, attacker));
+                    () -> view.game.actions.unitHasActed(view, attacker, new ActivateAction()));
         });
     }
 
@@ -95,7 +96,7 @@ public class AbilityLogic {
         return attacker.getLeader().get().select(view, points, "No attack targets are in range",
                 (Point p) -> SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
                         () -> effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(SideEffect.none),
-                        () -> view.game.mechanics.turns.unitHasActed(view, attacker)));
+                        () -> view.game.actions.unitHasActed(view, attacker, new ActivateAction())));
     }
 
     /**
@@ -129,7 +130,7 @@ public class AbilityLogic {
         // Have the Player select which target to heal
         return healer.getLeader().get().select(view, points, "No heal targets are in range",
                 (Point p) -> SideEffect.all(healer.combat.heal(view, targets.get(p), hitPoints),
-                        () -> view.game.mechanics.turns.unitHasActed(view, healer)));
+                        () -> view.game.actions.unitHasActed(view, healer, new ActivateAction())));
     }
 
     /**
@@ -179,7 +180,7 @@ public class AbilityLogic {
                 Building b = view.game.generator.building(building, p.x, p.y);
                 return () -> {
                     b.spawn(view);
-                    view.game.mechanics.turns.unitHasActed(view, caster);
+                    view.game.actions.unitHasActed(view, caster, new ActivateAction());
                 };
             }
             return () -> view.logger.error("Invalid tile for this ability");

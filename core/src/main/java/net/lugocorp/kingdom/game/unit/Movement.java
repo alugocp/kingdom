@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.builtin.animation.MoveAnimation;
 import net.lugocorp.kingdom.engine.animation.AnimationChain;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.actions.MoveAction;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -34,7 +35,7 @@ public class Movement {
     /**
      * Returns the maximum distance that this Unit can move in a turn
      */
-    private int getMaxDistance(GameView view) {
+    public int getMaxDistance(GameView view) {
         Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(this.unit);
         this.unit.handleEvent(view, event);
         return event.distance;
@@ -43,17 +44,24 @@ public class Movement {
     /**
      * Returns the list of Points that this Unit can move to
      */
+    public Set<Point> getTargets(GameView view, int max) {
+        return this.getPotentialMoveGraph(view, Optional.of(max)).keySet();
+    }
+
+    /**
+     * Returns the list of Points that this Unit can move to
+     */
     public Set<Point> getTargets(GameView view) {
-        return this.getPotentialMoveGraph(view).keySet();
+        return this.getPotentialMoveGraph(view, Optional.empty()).keySet();
     }
 
     /**
      * Returns a map where each key is a potential move target and each value is the
      * Point we arrive there from
      */
-    public Map<Point, Point> getPotentialMoveGraph(GameView view) {
+    private Map<Point, Point> getPotentialMoveGraph(GameView view, Optional<Integer> maxOverride) {
         // Returns nothing if this Unit cannot move
-        final int max = this.getMaxDistance(view);
+        final int max = maxOverride.orElse(this.getMaxDistance(view));
         if (max == 0) {
             return new HashMap<Point, Point>();
         }
@@ -106,7 +114,7 @@ public class Movement {
      * Returns a list of Points to take you from one to another
      */
     private List<Point> getMovePath(GameView view, Point dest) {
-        final Map<Point, Point> graph = this.getPotentialMoveGraph(view);
+        final Map<Point, Point> graph = this.getPotentialMoveGraph(view, Optional.empty());
         if (!graph.containsKey(dest)) {
             throw new RuntimeException(String.format("Invalid destination %s", dest.toString()));
         }
@@ -157,6 +165,7 @@ public class Movement {
                 prev = p1;
             }
             view.animations.add(chain.get());
+            view.game.actions.unitHasActed(view, this.unit, new MoveAction(path.size(), this.getMaxDistance(view)));
         }, this.unit.handleEvent(view,
                 new Events.UnitMovedEvent(this.unit, this.unit.getX(), this.unit.getY(), p.x, p.y)));
     }

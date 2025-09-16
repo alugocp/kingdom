@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
+import net.lugocorp.kingdom.game.actions.ActionManager;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.future.FutureEventManager;
 import net.lugocorp.kingdom.game.glyph.Glyph;
@@ -31,6 +32,7 @@ import java.util.Set;
 public class Game {
     private final PlayerColors colorPool = new PlayerColors();
     public final FutureEventManager future = new FutureEventManager(this);
+    public final ActionManager actions = new ActionManager();
     public final List<CompPlayer> comps = new ArrayList<>();
     public final Set<Unit> units = new HashSet<>();
     public final World world = new World();
