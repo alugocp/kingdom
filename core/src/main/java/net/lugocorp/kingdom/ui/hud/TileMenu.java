@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.game;
+package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.builtin.animation.CloseTileMenuAnimation;
 import net.lugocorp.kingdom.builtin.animation.OpenTileMenuAnimation;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -38,15 +38,10 @@ public class TileMenu {
     /**
      * Handles click logic on a Tile (open a Menu for said Tile)
      */
-    public void open() {
-        Optional<Point> p = this.view.selector.getHovered();
-        this.view.selector.deselect();
+    public void open(Point p) {
         this.menu.ifPresent((Menu _m) -> this.view.game.world.getTile(this.menuCoords).get().decrementSelection());
-        if (!p.isPresent()) {
-            return;
-        }
-        this.menuCoords = p.get();
-        this.view.game.world.getTile(p.get()).ifPresent((Tile t) -> t.incrementSelection());
+        this.view.game.world.getTile(p).ifPresent((Tile t) -> t.incrementSelection());
+        this.menuCoords = p;
         this.refresh(false);
     }
 

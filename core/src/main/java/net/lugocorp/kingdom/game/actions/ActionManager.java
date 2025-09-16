@@ -2,7 +2,9 @@ package net.lugocorp.kingdom.game.actions;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -84,9 +86,10 @@ public class ActionManager {
     public boolean goToNextUnit(GameView view) {
         Optional<Unit> next = this.getNextUnitToAct(view.game.human);
         if (next.isPresent()) {
-            view.centerOnPoint(next.get().getPoint(), false);
-            view.selector.hover(next.get().getPoint());
-            view.menu.open();
+            final Point p = next.get().getPoint();
+            view.centerOnPoint(p, false);
+            view.selector.hover(p);
+            view.menu.open(p);
             return true;
         }
         return false;

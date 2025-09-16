@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.game;
+package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;

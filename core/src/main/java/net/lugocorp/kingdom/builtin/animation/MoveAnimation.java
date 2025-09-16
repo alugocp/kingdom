@@ -19,8 +19,8 @@ public class MoveAnimation extends Animation {
     private final Point dest;
     private final Unit unit;
 
-    public MoveAnimation(Unit unit, int duration, Point p1, Point p2) {
-        super(new Tween().duration(duration));
+    public MoveAnimation(Unit unit, Point p1, Point p2) {
+        super(new Tween().duration(500));
         this.diff = Coords.grid.difference(p1, p2);
         this.angle = Coords.grid.angle(p1, p2) - ((float) Math.PI / 2f);
         this.unit = unit;

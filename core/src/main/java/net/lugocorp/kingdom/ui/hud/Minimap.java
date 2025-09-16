@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.game;
+package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.views.GameView;

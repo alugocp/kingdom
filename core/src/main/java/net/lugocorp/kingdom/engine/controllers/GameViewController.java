@@ -126,14 +126,7 @@ public class GameViewController extends CameraInputController {
             return true;
         }
         if (!this.dragging) {
-            if (this.view.selector.isHoveringSelectedTile()) {
-                this.view.selector.runSelectionAction();
-            } else if (this.view.selector.isHoveringVisibleTile()) {
-                this.view.av.loaders.sounds.play("sfx/select-unit");
-                this.view.menu.open();
-            } else {
-                this.view.logger.error("Cannot view tile under fog of war", true);
-            }
+            this.view.selector.click();
         }
         this.prev = Optional.empty();
         this.dragging = false;

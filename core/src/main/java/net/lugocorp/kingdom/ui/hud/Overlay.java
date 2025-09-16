@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.game;
+package net.lugocorp.kingdom.ui.hud;
 
 /**
  * Represents a text label rising over the GameView

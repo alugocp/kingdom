@@ -157,11 +157,10 @@ public class Movement {
     public SideEffect move(GameView view, Point p) {
         return SideEffect.all(() -> {
             final List<Point> path = this.getMovePath(view, p);
-            final int duration = 1000 / path.size();
             Point prev = this.unit.getPoint();
             AnimationChain chain = new AnimationChain();
             for (Point p1 : path) {
-                chain.add(new MoveAnimation(this.unit, duration, prev, p1));
+                chain.add(new MoveAnimation(this.unit, prev, p1));
                 prev = p1;
             }
             view.animations.add(chain.get());
