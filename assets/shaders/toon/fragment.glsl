@@ -25,6 +25,7 @@ uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_vision;
+uniform int u_distanceBorder;
 uniform int u_domainBorder;
 uniform int u_tileBorder;
 uniform int u_selection;
@@ -120,7 +121,8 @@ void main() {
     }
 
     // Border rendering logic
-    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0)) {
+    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0 || u_distanceBorder > 0)) {
+        // (64.0 / 19.0) and (64.0 / 18.0) are special ratios based on the top face texture for tiles
         float bx = v_diffuseUV.x * 64.0 / 19.0;
         float by = v_diffuseUV.y * 64.0 / 18.0;
 
@@ -145,6 +147,18 @@ void main() {
             border -= checkBorderColor(border, white, u_borderTexture4, 4, bx, 1.0 - by); // Top left
             border -= checkBorderColor(border, white, u_borderTexture3, 2, bx, by); // Right
             border -= checkBorderColor(border, white, u_borderTexture3, 1, bx, 1.0 - by); // Left
+        }
+
+        // Distance borders
+        if (u_distanceBorder > 0) {
+            int border = u_distanceBorder;
+            vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
+            border -= checkBorderColor(border, black, u_borderTexture4, 32, 1.0 - bx, by); // Bot right
+            border -= checkBorderColor(border, black, u_borderTexture4, 16, 1.0 - bx, 1.0 - by); // Bot left
+            border -= checkBorderColor(border, black, u_borderTexture4, 8, bx, by); // Top right
+            border -= checkBorderColor(border, black, u_borderTexture4, 4, bx, 1.0 - by); // Top left
+            border -= checkBorderColor(border, black, u_borderTexture3, 2, bx, by); // Right
+            border -= checkBorderColor(border, black, u_borderTexture3, 1, bx, 1.0 - by); // Left
         }
     }
 

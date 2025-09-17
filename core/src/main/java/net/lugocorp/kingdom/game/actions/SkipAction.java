@@ -13,13 +13,13 @@ public class SkipAction implements Action {
 
     /** {@inheritdoc} */
     @Override
-    public boolean canBeFollowedBy(ActionType type) {
-        return true;
+    public Action followedBy(Action a) {
+        return a;
     }
 
     /** {@inheritdoc} */
     @Override
-    public boolean nextTurnStart() {
+    public boolean endOfTurn() {
         return false;
     }
 

@@ -11,16 +11,22 @@ public interface Action {
     public ActionType getType();
 
     /**
-     * Returns true if an Action of the given type can follow this Action in the
-     * same turn
+     * Run this when the Action is logged in an empty spot
      */
-    public boolean canBeFollowedBy(ActionType type);
+    public default void addedFirst() {
+        // No-op
+    }
 
     /**
-     * Runs this method at the beginning of the next turn (returns true if this
-     * Action should stay in play)
+     * Returns which Action to save when this Action is followed by the given Action
      */
-    public boolean nextTurnStart();
+    public Action followedBy(Action a);
+
+    /**
+     * Runs this method at the end of the turn (returns true if this Action should
+     * remain active)
+     */
+    public boolean endOfTurn();
 
     /**
      * Returns a String explaining this Action to the player

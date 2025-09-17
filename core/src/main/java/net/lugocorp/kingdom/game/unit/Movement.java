@@ -33,6 +33,60 @@ public class Movement {
     }
 
     /**
+     * Moves this Unit to another Tile in the grid
+     */
+    public SideEffect move(GameView view, Point p) {
+        final Map<Point, Point> graph = this.getPotentialMoveGraph(view, this.getMaxDistance(view));
+
+        // If we can move to the destination this turn then do so
+        if (graph.containsKey(p)) {
+            return SideEffect.all(() -> {
+                final List<Point> path = this.getMovePath(view, graph, p);
+                Point prev = this.unit.getPoint();
+                AnimationChain chain = new AnimationChain();
+                for (Point p1 : path) {
+                    chain.add(new MoveAnimation(this.unit, prev, p1));
+                    prev = p1;
+                }
+                view.animations.add(chain.get());
+                view.game.actions.unitHasActed(view, this.unit,
+                        new MoveAction(path, path.size(), this.getMaxDistance(view)));
+            }, this.unit.handleEvent(view,
+                    new Events.UnitMovedEvent(this.unit, this.unit.getX(), this.unit.getY(), p.x, p.y)));
+        }
+
+        // If we cannot move to the destination this single turn, then use a more
+        // expensive pathfinding algorithm
+        // TODO MOVEMENT multi-turn movement
+        System.out.println("Multi-turn movement happens here");
+        return SideEffect.none;
+    }
+
+    /**
+     * Sets this Unit's position in the World. Useful for spawning or movement.
+     */
+    public void setPosition(GameView view, int x, int y) {
+        Tile destin = view.game.world.getTile(x, y).get();
+        destin.unit = Optional.of(this.unit);
+        this.unit.setX(x);
+        this.unit.setY(y);
+        this.unit.resetModelPosition();
+        view.game.setLeader(view, destin, this.unit.getLeader());
+        destin.building.ifPresent((Building b) -> b.setAlpha(0.5f));
+        this.userData.point.x = x;
+        this.userData.point.y = y;
+    }
+
+    /**
+     * Removes this Unit from its current position in the World
+     */
+    public void removeFromPosition(Game g) {
+        Tile origin = g.world.getTile(this.unit.getX(), this.unit.getY()).get();
+        origin.building.ifPresent((Building b) -> b.setAlpha(1f));
+        origin.unit = Optional.empty();
+    }
+
+    /**
      * Returns the maximum distance that this Unit can move in a turn
      */
     public int getMaxDistance(GameView view) {
@@ -45,23 +99,38 @@ public class Movement {
      * Returns the list of Points that this Unit can move to
      */
     public Set<Point> getTargets(GameView view, int max) {
-        return this.getPotentialMoveGraph(view, Optional.of(max)).keySet();
+        return this.getPotentialMoveGraph(view, max).keySet();
     }
 
     /**
      * Returns the list of Points that this Unit can move to
      */
     public Set<Point> getTargets(GameView view) {
-        return this.getPotentialMoveGraph(view, Optional.empty()).keySet();
+        return this.getPotentialMoveGraph(view, this.getMaxDistance(view)).keySet();
+    }
+
+    /**
+     * Returns a list of Points to take you from one to another
+     */
+    private List<Point> getMovePath(GameView view, Map<Point, Point> graph, Point dest) {
+        if (!graph.containsKey(dest)) {
+            throw new RuntimeException(String.format("Invalid destination %s", dest.toString()));
+        }
+
+        List<Point> path = new ArrayList<>();
+        path.add(dest);
+        while (!Hexagons.areNeighbors(path.get(0), this.unit.getPoint())) {
+            path.add(0, graph.get(path.get(0)));
+        }
+        return path;
     }
 
     /**
      * Returns a map where each key is a potential move target and each value is the
      * Point we arrive there from
      */
-    private Map<Point, Point> getPotentialMoveGraph(GameView view, Optional<Integer> maxOverride) {
+    private Map<Point, Point> getPotentialMoveGraph(GameView view, int max) {
         // Returns nothing if this Unit cannot move
-        final int max = maxOverride.orElse(this.getMaxDistance(view));
         if (max == 0) {
             return new HashMap<Point, Point>();
         }
@@ -108,64 +177,5 @@ public class Movement {
             }
         }
         return graph;
-    }
-
-    /**
-     * Returns a list of Points to take you from one to another
-     */
-    private List<Point> getMovePath(GameView view, Point dest) {
-        final Map<Point, Point> graph = this.getPotentialMoveGraph(view, Optional.empty());
-        if (!graph.containsKey(dest)) {
-            throw new RuntimeException(String.format("Invalid destination %s", dest.toString()));
-        }
-
-        List<Point> path = new ArrayList<>();
-        path.add(dest);
-        while (!Hexagons.areNeighbors(path.get(0), this.unit.getPoint())) {
-            path.add(0, graph.get(path.get(0)));
-        }
-        return path;
-    }
-
-    /**
-     * Sets this Unit's position in the World. Useful for spawning or movement.
-     */
-    public void setPosition(GameView view, int x, int y) {
-        Tile destin = view.game.world.getTile(x, y).get();
-        destin.unit = Optional.of(this.unit);
-        this.unit.setX(x);
-        this.unit.setY(y);
-        this.unit.resetModelPosition();
-        view.game.setLeader(view, destin, this.unit.getLeader());
-        destin.building.ifPresent((Building b) -> b.setAlpha(0.5f));
-        this.userData.point.x = x;
-        this.userData.point.y = y;
-    }
-
-    /**
-     * Removes this Unit from its current position in the World
-     */
-    public void removeFromPosition(Game g) {
-        Tile origin = g.world.getTile(this.unit.getX(), this.unit.getY()).get();
-        origin.building.ifPresent((Building b) -> b.setAlpha(1f));
-        origin.unit = Optional.empty();
-    }
-
-    /**
-     * Moves this Unit to another Tile in the grid
-     */
-    public SideEffect move(GameView view, Point p) {
-        return SideEffect.all(() -> {
-            final List<Point> path = this.getMovePath(view, p);
-            Point prev = this.unit.getPoint();
-            AnimationChain chain = new AnimationChain();
-            for (Point p1 : path) {
-                chain.add(new MoveAnimation(this.unit, prev, p1));
-                prev = p1;
-            }
-            view.animations.add(chain.get());
-            view.game.actions.unitHasActed(view, this.unit, new MoveAction(path.size(), this.getMaxDistance(view)));
-        }, this.unit.handleEvent(view,
-                new Events.UnitMovedEvent(this.unit, this.unit.getX(), this.unit.getY(), p.x, p.y)));
     }
 }

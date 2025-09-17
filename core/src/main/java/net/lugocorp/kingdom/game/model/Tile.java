@@ -170,6 +170,13 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         this.userData.domainBorders |= border;
     }
 
+    /**
+     * Sets this Tile's border integer for distance borders
+     */
+    public void setDistanceBorder(int border) {
+        this.userData.distanceBorders = border;
+    }
+
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {

@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.selection;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
@@ -36,6 +37,13 @@ public class TileSelector {
             return;
         }
         this.setMode(new TileSetSelectMode(points, action));
+    }
+
+    /**
+     * Sets TileMoveSelectMode mode
+     */
+    public final void move(Unit unit) {
+        this.setMode(new TileMoveSelectMode(unit));
     }
 
     /**

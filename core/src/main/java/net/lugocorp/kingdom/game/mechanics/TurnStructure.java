@@ -51,6 +51,7 @@ public class TurnStructure {
      * Sets up the next turn Player
      */
     public void iterateTurnPlayer(GameView view) {
+        view.game.actions.endOfTurn();
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = view.game.comps.get(0);
         } else {
@@ -106,7 +107,6 @@ public class TurnStructure {
         for (Unit u : this.turnPlayer.units) {
             u.sleep.wakeUpCheck(view);
         }
-        view.game.actions.startOfNewTurn();
         // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
         // confused
         this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer);

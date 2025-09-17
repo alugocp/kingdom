@@ -16,13 +16,13 @@ public class ActionManager {
     private final Map<Unit, Action> actions = new HashMap<>();
 
     /**
-     * Run this function at the start of a new turn
+     * Run this function at the end of the turn (purges stale Actions)
      */
-    public void startOfNewTurn() {
+    public void endOfTurn() {
         final Set<Unit> acted = new HashSet<>();
         acted.addAll(this.actions.keySet());
         for (Unit u : acted) {
-            if (!this.actions.get(u).nextTurnStart()) {
+            if (!this.actions.get(u).endOfTurn()) {
                 this.actions.remove(u);
             }
         }
@@ -64,16 +64,11 @@ public class ActionManager {
      * Marks a Unit as having acted this turn
      */
     public void unitHasActed(GameView view, Unit u, Action a) {
-        if (this.actions.containsKey(u) && this.actions.get(u).getType() == ActionType.MOVE
-                && a.getType() == ActionType.MOVE) {
-            // If we're doing a move after another move then just increment the distance
-            final MoveAction move = (MoveAction) this.actions.get(u);
-            move.addDistance(move.getDistance());
-            if (move.isFinished() && u.leadership.belongsToHuman()) {
-                this.goToNextUnit(view);
-            }
+        if (this.actions.containsKey(u)) {
+            this.actions.put(u, this.actions.get(u).followedBy(a));
         } else {
             this.actions.put(u, a);
+            a.addedFirst();
             if (u.leadership.belongsToHuman()) {
                 this.goToNextUnit(view);
             }

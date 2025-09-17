@@ -5,5 +5,5 @@ package net.lugocorp.kingdom.game.actions;
  */
 public enum ActionType {
     MOVE, ACTIVATE, SKIP, SKIP_INVENTORY;
-    // TODO add MOVE_MULTITURN and HARVEST
+    // TODO add HARVEST
 }

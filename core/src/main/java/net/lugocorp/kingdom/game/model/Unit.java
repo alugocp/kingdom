@@ -158,12 +158,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Move Action
             final int remainingDistance = view.game.actions.getRemainingMoveDistance(view, this);
-            node.add(new ActionNode(view, "Move", Optional.empty(), remainingDistance > 0, () -> view.selector
-                    .select(this.movement.getTargets(view, remainingDistance), "This unit cannot move", (Point p1) -> {
-                        view.av.loaders.sounds.play("sfx/footstep");
-                        this.movement.move(view, p1).execute();
-                        view.hud.minimap.refresh(view.game.world);
-                    })));
+            node.add(new ActionNode(view, "Move", Optional.empty(), remainingDistance > 0,
+                    () -> view.selector.move(this)));
 
             // Skip Action
             node.add(new ActionNode(view, "Skip turn", Optional.empty(), !view.game.actions.hasUnitActed(this), () -> {

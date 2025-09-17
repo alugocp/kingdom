@@ -21,6 +21,9 @@ public class TileUserData {
     // This int tracks which sides should display a Patron domain border
     public int domainBorders = 0;
 
+    // This int tracks how far a Unit can move (used in the move Action UI)
+    public int distanceBorders = 0;
+
     // Fog of war system
     public boolean hasBeenSeen = false;
     public int vision = 0;
