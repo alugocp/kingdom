@@ -77,6 +77,20 @@ void main() {
             gl_FragColor.y += coeff;
             gl_FragColor.z += coeff * 0.5;
         }
+
+        // Allow for distance borders to be visible beneath fog of war
+        if (u_vision == NO_VISIBILITY && u_distanceBorder > 0) {
+            int border = u_distanceBorder;
+            vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+            float bx = v_diffuseUV.x * 64.0 / 19.0;
+            float by = v_diffuseUV.y * 64.0 / 18.0;
+            border -= checkBorderColor(border, white, u_borderTexture4, 32, 1.0 - bx, by); // Bot right
+            border -= checkBorderColor(border, white, u_borderTexture4, 16, 1.0 - bx, 1.0 - by); // Bot left
+            border -= checkBorderColor(border, white, u_borderTexture4, 8, bx, by); // Top right
+            border -= checkBorderColor(border, white, u_borderTexture4, 4, bx, 1.0 - by); // Top left
+            border -= checkBorderColor(border, white, u_borderTexture3, 2, bx, by); // Right
+            border -= checkBorderColor(border, white, u_borderTexture3, 1, bx, 1.0 - by); // Left
+        }
         return;
     }
 
