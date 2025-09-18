@@ -153,25 +153,36 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                 new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.hunger.getTurnsBeforeHunger())));
 
         // Abilities section
-        if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
+        if (this.leadership.belongsToHuman()) {
             node.add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
 
-            // Move Action
-            node.add(new ActionNode(view, "Move", Optional.empty(),
-                    view.game.actions.canUnitDoThis(this, ActionType.MOVE), () -> view.selector.move(this)));
+            // Move unit
+            node.add(
+                    new ActionNode(view, "Move", Optional.empty(),
+                            view.game.mechanics.turns.canHumanPlayerAct()
+                                    && view.game.actions.canUnitDoThis(this, ActionType.MOVE),
+                            () -> view.selector.move(this)));
 
-            // Skip Inventory Action
-            node.add(new ActionNode(view, "Skip indefinitely", Optional.empty(),
-                    view.game.actions.canUnitDoThis(this, ActionType.SKIP), () -> {
-                        view.game.actions.unitHasActed(view, this, new SkipAction(true));
+            // Deposit Items
+            node.add(new ActionNode(view, "Deposit", Optional.empty(), view.game.mechanics.turns.canHumanPlayerAct(),
+                    () -> view.selector.deposit(this)));
+
+            // Skip turn until haul Inventory is full
+            node.add(new ActionNode(view, "Wait to fill haul", Optional.empty(),
+                    view.game.mechanics.turns.canHumanPlayerAct()
+                            && view.game.actions.canUnitDoThis(this, ActionType.SKIP),
+                    () -> {
+                        view.game.actions.unitHasActed(view, this, new SkipAction(
+                                "This unit is waiting for its haul inventory to be full", () -> this.haul.isFull()));
                         view.menu.refresh(true);
                         view.game.actions.goToNextUnit(view);
                     }));
 
-            // Skip Action
-            node.add(new ActionNode(view, "Skip turn", Optional.empty(),
-                    view.game.actions.canUnitDoThis(this, ActionType.SKIP), () -> {
-                        view.game.actions.unitHasActed(view, this, new SkipAction(false));
+            // Skip turn
+            node.add(new ActionNode(view, "Skip turn", Optional.empty(), view.game.mechanics.turns.canHumanPlayerAct()
+                    && view.game.actions.canUnitDoThis(this, ActionType.SKIP), () -> {
+                        view.game.actions.unitHasActed(view, this,
+                                new SkipAction("This unit is skipping its turn", () -> true));
                         view.menu.refresh(true);
                         view.game.actions.goToNextUnit(view);
                     }));

@@ -1,13 +1,16 @@
 package net.lugocorp.kingdom.game.actions;
+import java.util.function.Supplier;
 
 /**
  * This Action represents a Unit skipping their turn
  */
 public class SkipAction implements Action {
-    private final boolean indefinite;
+    private final Supplier<Boolean> readyToDrop;
+    private final String label;
 
-    public SkipAction(boolean indefinite) {
-        this.indefinite = indefinite;
+    public SkipAction(String label, Supplier<Boolean> readyToDrop) {
+        this.readyToDrop = readyToDrop;
+        this.label = label;
     }
 
     /** {@inheritdoc} */
@@ -31,12 +34,12 @@ public class SkipAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean endOfTurn() {
-        return this.indefinite;
+        return this.readyToDrop.get();
     }
 
     /** {@inheritdoc} */
     @Override
     public String getDescription() {
-        return this.indefinite ? "This unit is skipping its turns" : "This unit is skipping its turn";
+        return this.label;
     }
 }

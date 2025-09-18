@@ -1,7 +1,10 @@
 package net.lugocorp.kingdom.ui.selection;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.code.Lambda;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 import java.util.Set;
@@ -44,6 +47,19 @@ public class TileSelector {
      */
     public final void move(Unit unit) {
         this.setMode(new TileMoveSelectMode(unit));
+    }
+
+    /**
+     * Sets TileSetSelectMode mode for the express purpose of depositing a Unit's
+     * items
+     */
+    public final void deposit(Unit unit) {
+        final Set<Point> points = Lambda.filter((Point p) -> Hexagons.areNeighbors(p, unit.getPoint()),
+                this.view.game.getVaultBuildings(unit.getLeader().get()));
+        this.select(points, "Nowhere to deposit this unit's items", (Point p) -> {
+            final Building b = this.view.game.world.getTile(p).flatMap((Tile t) -> t.building).get();
+            unit.haul.transferMaximum(b.items.get());
+        });
     }
 
     /**

@@ -15,7 +15,7 @@ import java.util.Set;
  * This class implements the A* pathfinding algorithm
  */
 public class Pathfinder {
-    private static final int DEFAULT = (int) Float.POSITIVE_INFINITY;
+    private static final int INFINITY = (int) Float.POSITIVE_INFINITY;
 
     public static final List<Point> pathfind(GameView view, Unit unit, Point dest) {
         // TODO optimize this for larger map sizes one day
@@ -24,6 +24,12 @@ public class Pathfinder {
         final Set<Point> openSet = new HashSet<>();
         gScore.put(unit.getPoint(), 0);
         openSet.add(unit.getPoint());
+
+        // If the destination Point is occupied (or this Unit otherwise cannot move
+        // there) then we can return early
+        if (!unit.movement.canMoveToPoint(view, dest)) {
+            return new ArrayList<Point>();
+        }
 
         // A* algorithm iteration
         while (openSet.size() > 0) {
@@ -36,7 +42,7 @@ public class Pathfinder {
             openSet.remove(current);
             for (Point neighbor : Pathfinder.getNeighbors(view, unit, current)) {
                 final int score = gScore.get(current) + 1;
-                if (score < gScore.getOrDefault(neighbor, Pathfinder.DEFAULT)) {
+                if (score < gScore.getOrDefault(neighbor, Pathfinder.INFINITY)) {
                     cameFrom.put(neighbor, current);
                     gScore.put(neighbor, score);
                     if (!openSet.contains(neighbor)) {
@@ -75,10 +81,10 @@ public class Pathfinder {
      * Returns the next Point we should iterate on in the A* algorithm
      */
     private static final Point getLikelyClosestPoint(Set<Point> openSet, Map<Point, Integer> gScore) {
-        int thresh = Pathfinder.DEFAULT;
+        int thresh = Pathfinder.INFINITY;
         Point lowest = null;
         for (Point p : openSet) {
-            final int score = gScore.getOrDefault(p, Pathfinder.DEFAULT);
+            final int score = gScore.getOrDefault(p, Pathfinder.INFINITY);
             if (score < thresh) {
                 thresh = score;
                 lowest = p;

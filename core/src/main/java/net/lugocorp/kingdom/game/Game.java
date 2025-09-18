@@ -197,6 +197,7 @@ public class Game {
      * Returns all Buildings under a Player's control that can store Items
      */
     public Set<Point> getVaultBuildings(Player player) {
+        // TODO should probably optimize this
         Set<Point> vaults = new HashSet<>();
         for (Building b : player.buildings) {
             if (b.items.isPresent()) {

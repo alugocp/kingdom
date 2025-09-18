@@ -117,6 +117,15 @@ public class Inventory implements MenuSubject, Iterable<Item> {
     }
 
     /**
+     * Moves as many Items as possible from this Inventory to another one
+     */
+    public void transferMaximum(Inventory inventory) {
+        while (this.hasItems() && !inventory.isFull()) {
+            this.transfer(inventory, this.items.get(0));
+        }
+    }
+
+    /**
      * Returns the sum total of every Item's value in gold
      */
     public int getTotalGold() {

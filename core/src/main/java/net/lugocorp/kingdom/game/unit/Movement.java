@@ -70,9 +70,15 @@ public class Movement {
                     ? () -> view.logger.error("Unit cannot move there")
                     : SideEffect.none;
         }
+        final int targetIndex = Math.min(max, view.game.actions.getRemainingMoveDistance(view, this.unit)) - 1;
+        if (targetIndex < 0) {
+            return this.unit.leadership.belongsToHuman()
+                    ? () -> view.logger.error("The unit cannot move anymore this turn")
+                    : SideEffect.none;
+        }
         return SideEffect.all(
                 () -> view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, 0)),
-                this.move(view, path.get(max - 1)));
+                this.move(view, path.get(targetIndex)));
     }
 
     /**
