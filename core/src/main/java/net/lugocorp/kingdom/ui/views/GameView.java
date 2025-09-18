@@ -12,7 +12,7 @@ import net.lugocorp.kingdom.ui.hud.Logger;
 import net.lugocorp.kingdom.ui.hud.OverlayLayer;
 import net.lugocorp.kingdom.ui.hud.TileMenu;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
-import net.lugocorp.kingdom.utils.CameraMath;
+import net.lugocorp.kingdom.utils.logic.CameraMath;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;

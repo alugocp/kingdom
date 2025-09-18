@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.logic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;

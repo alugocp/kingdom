@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.CameraMath;
+import net.lugocorp.kingdom.utils.logic.CameraMath;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

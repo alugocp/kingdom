@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.player;
-import net.lugocorp.kingdom.utils.Colors;
+import net.lugocorp.kingdom.utils.logic.Colors;
 import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.List;

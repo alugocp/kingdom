@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine.assets;
-import net.lugocorp.kingdom.utils.Colors;
+import net.lugocorp.kingdom.utils.logic.Colors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;

@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.Menu;
-import net.lugocorp.kingdom.utils.Colors;
+import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;

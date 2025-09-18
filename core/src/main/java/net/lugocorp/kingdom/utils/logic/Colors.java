@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils;
+package net.lugocorp.kingdom.utils.logic;
 import com.badlogic.gdx.graphics.Color;
 
 /**
