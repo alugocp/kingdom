@@ -45,6 +45,13 @@ public class Leadership {
     }
 
     /**
+     * Returns true if this Unit belongs to the given Player
+     */
+    public boolean belongsToPlayer(Player p) {
+        return this.leader.map((Player p1) -> p.equals(p1)).orElse(false);
+    }
+
+    /**
      * Recruits this Unit into to a new Player
      */
     public void recruit(GameView view, Player player) {

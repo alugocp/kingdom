@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
+import net.lugocorp.kingdom.utils.logic.Pathfinder;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
@@ -36,7 +37,8 @@ public class Movement {
      * Moves this Unit to another Tile in the grid
      */
     public SideEffect move(GameView view, Point p) {
-        final Map<Point, Point> graph = this.getPotentialMoveGraph(view, this.getMaxDistance(view));
+        final int max = this.getMaxDistance(view);
+        final Map<Point, Point> graph = this.getPotentialMoveGraph(view, max);
 
         // If we can move to the destination this turn then do so
         if (graph.containsKey(p)) {
@@ -49,17 +51,28 @@ public class Movement {
                     prev = p1;
                 }
                 view.animations.add(chain.get());
-                view.game.actions.unitHasActed(view, this.unit,
-                        new MoveAction(path, path.size(), this.getMaxDistance(view)));
+                view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, path.size()));
             }, this.unit.handleEvent(view,
                     new Events.UnitMovedEvent(this.unit, this.unit.getX(), this.unit.getY(), p.x, p.y)));
         }
 
         // If we cannot move to the destination this single turn, then use a more
         // expensive pathfinding algorithm
-        // TODO MOVEMENT multi-turn movement
-        System.out.println("Multi-turn movement happens here");
-        return SideEffect.none;
+        final List<Point> path = Pathfinder.pathfind(view, this.unit, p);
+        if (path.size() < max) {
+            // If the path is shorter than our max move distance (it should only ever be 0
+            // in this case)
+            // then there is no possible path here. Alert the player if they're human.
+            if (path.size() > 0) {
+                throw new RuntimeException("A* found too short a path, this should not happen");
+            }
+            return this.unit.leadership.belongsToHuman()
+                    ? () -> view.logger.error("Unit cannot move there")
+                    : SideEffect.none;
+        }
+        return SideEffect.all(
+                () -> view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, 0)),
+                this.move(view, path.get(max - 1)));
     }
 
     /**
@@ -110,6 +123,27 @@ public class Movement {
     }
 
     /**
+     * Returns true if the given Unit can move to the given Point
+     */
+    public boolean canMoveToPoint(GameView view, Point p) {
+        // Cannot move out of bounds
+        if (!view.game.world.isInBounds(p)) {
+            return false;
+        }
+
+        // Cannot move if a Unit already exists there
+        Tile t = view.game.world.getTile(p).get();
+        if (t.unit.isPresent()) {
+            return false;
+        }
+
+        // Check if this Unit is allowed to move there (Tile and Building logic)
+        Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this.unit, t);
+        this.unit.handleEvent(view, event);
+        return event.possible();
+    }
+
+    /**
      * Returns a list of Points to take you from one to another
      */
     private List<Point> getMovePath(GameView view, Map<Point, Point> graph, Point dest) {
@@ -157,16 +191,7 @@ public class Movement {
                     }
 
                     // Check if we can move to this adjacent Point
-                    if (!view.game.world.isInBounds(p1)) {
-                        continue;
-                    }
-                    Tile t = view.game.world.getTile(p1).get();
-                    if (t.unit.isPresent()) {
-                        continue;
-                    }
-                    Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this.unit, t);
-                    this.unit.handleEvent(view, event);
-                    if (!event.possible()) {
+                    if (!this.canMoveToPoint(view, p1)) {
                         continue;
                     }
 

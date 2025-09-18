@@ -18,24 +18,28 @@ public class ActionManager {
     /**
      * Run this function at the end of the turn (purges stale Actions)
      */
-    public void endOfTurn() {
+    public void endOfTurn(Player p) {
         final Set<Unit> acted = new HashSet<>();
         acted.addAll(this.actions.keySet());
         for (Unit u : acted) {
-            if (!this.actions.get(u).endOfTurn()) {
+            if (u.leadership.belongsToPlayer(p) && !this.actions.get(u).endOfTurn()) {
                 this.actions.remove(u);
             }
         }
     }
 
     /**
-     * Returns how far the given Unit has moved this turn
+     * Returns how far the given Unit has moved this turn (returns -1 if the unit
+     * has done something else this turn)
      */
     private int unitMovedDistance(Unit u) {
         if (this.actions.containsKey(u)) {
             Action a = this.actions.get(u);
             if (a.getType() == ActionType.MOVE) {
                 return ((MoveAction) a).getDistance();
+            }
+            if (a.getType() == ActionType.ACTIVATE) {
+                return -1;
             }
         }
         return 0;
@@ -50,7 +54,7 @@ public class ActionManager {
             return max;
         }
         final int moved = this.unitMovedDistance(u);
-        return moved > 0 ? max - moved : 0;
+        return moved >= 0 ? max - moved : 0;
     }
 
     /**

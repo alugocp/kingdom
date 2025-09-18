@@ -51,7 +51,7 @@ public class TurnStructure {
      * Sets up the next turn Player
      */
     public void iterateTurnPlayer(GameView view) {
-        view.game.actions.endOfTurn();
+        view.game.actions.endOfTurn(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = view.game.comps.get(0);
         } else {

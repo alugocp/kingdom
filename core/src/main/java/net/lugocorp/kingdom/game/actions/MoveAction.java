@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.game.actions;
+import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.List;
 
@@ -7,13 +9,17 @@ import java.util.List;
  */
 public class MoveAction implements Action {
     private final List<Point> path;
-    private final int max;
+    private final GameView view;
+    private final Unit unit;
     private int distance;
+    private int max;
 
-    public MoveAction(List<Point> path, int distance, int max) {
+    public MoveAction(GameView view, Unit unit, List<Point> path, int distance) {
+        this.max = unit.movement.getMaxDistance(view);
         this.distance = distance;
         this.path = path;
-        this.max = max;
+        this.view = view;
+        this.unit = unit;
     }
 
     /**
@@ -88,15 +94,26 @@ public class MoveAction implements Action {
     @Override
     public boolean endOfTurn() {
         final boolean remain = this.path.size() > 0;
+        this.max = this.unit.movement.getMaxDistance(this.view);
+
+        // If there's more path to move on and we haven't hit max
+        // distance yet this turn then do that now
         if (remain && this.distance < this.max) {
-            // TODO MOVEMENT kick off unit.movement.move() right here
+            final Point dest = this.path.get(Math.min(this.max - this.distance, this.path.size()) - 1);
+            this.unit.movement.move(this.view, dest).execute();
         }
+
+        // Reset distance moved for the next turn
+        this.distance = 0;
         return remain;
     }
 
     /** {@inheritdoc} */
     @Override
     public String getDescription() {
+        if (this.path.size() > 0) {
+            return String.format("This unit still wants to move %d more tile(s)", this.path.size());
+        }
         return this.distance == this.max
                 ? "This unit has moved its maximum distance this turn"
                 : "This unit has moved this turn";
