@@ -34,7 +34,7 @@ public class SkipAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean endOfTurn() {
-        return this.readyToDrop.get();
+        return !this.readyToDrop.get();
     }
 
     /** {@inheritdoc} */

@@ -91,15 +91,14 @@ public class Menu {
      */
     public void setMiniMenu(MenuNode root, int x, int y) {
         final int xBounded = Math.min(Coords.SIZE.x - Menu.MINI_MENU_WIDTH, x);
-        final int yBounded = Math.max(root.getHeight(), y);
         if (this.mini.isPresent() && this.mini.get().root == root) {
             this.mini.get().x = xBounded;
-            this.mini.get().y = yBounded;
         } else {
-            final Menu menu = new Menu(xBounded, yBounded, Menu.MINI_MENU_WIDTH, false, root);
+            final Menu menu = new Menu(xBounded, y, Menu.MINI_MENU_WIDTH, false, root);
             menu.outlined = true;
             this.mini = Optional.of(menu);
         }
+        this.mini.get().y = Math.min(Coords.SIZE.y - (this.mini.get().root.getHeight() + (Menu.MARGIN * 2)), y);
     }
 
     /**
