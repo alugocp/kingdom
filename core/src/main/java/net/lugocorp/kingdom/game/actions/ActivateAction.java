@@ -13,6 +13,12 @@ public class ActivateAction implements Action {
 
     /** {@inheritdoc} */
     @Override
+    public boolean canBeFollowedBy(ActionType a) {
+        return false;
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public Action followedBy(Action a) {
         return this;
     }

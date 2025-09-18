@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.game.actions.ActionType;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.MenuNode;
@@ -68,7 +69,7 @@ public class Ability implements EventReceiver, MenuSubject {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         return new ActionNode(view, this.name, Optional.of(this.desc), this.wielder.leadership.belongsToHuman()
-                && this.isActive(view) && !view.game.actions.hasUnitActed(this.wielder), () -> {
+                && this.isActive(view) && view.game.actions.canUnitDoThis(this.wielder, ActionType.ACTIVATE), () -> {
                     this.activate(view).execute();
                     view.menu.refresh(true);
                 });

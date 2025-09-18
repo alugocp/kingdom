@@ -67,11 +67,15 @@ public class MoveAction implements Action {
 
     /** {@inheritdoc} */
     @Override
+    public boolean canBeFollowedBy(ActionType a) {
+        return this.distance == 0 || (a == ActionType.MOVE && this.distance < this.max);
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public Action followedBy(Action a) {
         switch (a.getType()) {
             case SKIP :
-            case SKIP_INVENTORY :
-                return this;
             case ACTIVATE :
                 return a;
             case MOVE : {

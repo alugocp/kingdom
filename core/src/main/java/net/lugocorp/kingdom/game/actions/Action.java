@@ -18,6 +18,11 @@ public interface Action {
     }
 
     /**
+     * Returns true if the given Action can follow this Action in the same turn
+     */
+    public boolean canBeFollowedBy(ActionType a);
+
+    /**
      * Returns which Action to save when this Action is followed by the given Action
      */
     public Action followedBy(Action a);

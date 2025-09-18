@@ -65,6 +65,13 @@ public class ActionManager {
     }
 
     /**
+     * Returns true if thie given Unit can make an Action of the following type
+     */
+    public boolean canUnitDoThis(Unit u, ActionType type) {
+        return !this.hasUnitActed(u) || this.actions.get(u).canBeFollowedBy(type);
+    }
+
+    /**
      * Marks a Unit as having acted this turn
      */
     public void unitHasActed(GameView view, Unit u, Action a) {

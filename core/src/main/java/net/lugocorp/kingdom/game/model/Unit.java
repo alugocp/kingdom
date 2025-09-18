@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
+import net.lugocorp.kingdom.game.actions.ActionType;
 import net.lugocorp.kingdom.game.actions.SkipAction;
-import net.lugocorp.kingdom.game.actions.SkipInventoryAction;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.glyph.UnitGlyphs;
 import net.lugocorp.kingdom.game.layers.Entity;
@@ -157,20 +157,22 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             node.add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
 
             // Move Action
-            final int remainingDistance = view.game.actions.getRemainingMoveDistance(view, this);
-            node.add(new ActionNode(view, "Move", Optional.empty(), remainingDistance > 0,
-                    () -> view.selector.move(this)));
-
-            // Skip Action
-            node.add(new ActionNode(view, "Skip turn", Optional.empty(), !view.game.actions.hasUnitActed(this), () -> {
-                view.game.actions.unitHasActed(view, this, new SkipAction());
-                view.game.actions.goToNextUnit(view);
-            }));
+            node.add(new ActionNode(view, "Move", Optional.empty(),
+                    view.game.actions.canUnitDoThis(this, ActionType.MOVE), () -> view.selector.move(this)));
 
             // Skip Inventory Action
-            node.add(new ActionNode(view, "Skip until inventory is full", Optional.empty(),
-                    !view.game.actions.hasUnitActed(this), () -> {
-                        view.game.actions.unitHasActed(view, this, new SkipInventoryAction(this.haul));
+            node.add(new ActionNode(view, "Skip indefinitely", Optional.empty(),
+                    view.game.actions.canUnitDoThis(this, ActionType.SKIP), () -> {
+                        view.game.actions.unitHasActed(view, this, new SkipAction(true));
+                        view.menu.refresh(true);
+                        view.game.actions.goToNextUnit(view);
+                    }));
+
+            // Skip Action
+            node.add(new ActionNode(view, "Skip turn", Optional.empty(),
+                    view.game.actions.canUnitDoThis(this, ActionType.SKIP), () -> {
+                        view.game.actions.unitHasActed(view, this, new SkipAction(false));
+                        view.menu.refresh(true);
                         view.game.actions.goToNextUnit(view);
                     }));
         }
