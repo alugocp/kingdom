@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.unit;
+import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -49,6 +50,20 @@ public class Leadership {
      */
     public boolean belongsToPlayer(Player p) {
         return this.leader.map((Player p1) -> p.equals(p1)).orElse(false);
+    }
+
+    /**
+     * Returns true if this instance has the same Player as the given Unit
+     */
+    public boolean sameLeader(Unit u) {
+        return this.getLeader().equals(u.leadership.getLeader());
+    }
+
+    /**
+     * Returns true if this instance's Player has the given Fate instance
+     */
+    public boolean hasFate(Fate fate) {
+        return this.leader.map((Player p) -> p.getFate() == fate).orElse(false);
     }
 
     /**

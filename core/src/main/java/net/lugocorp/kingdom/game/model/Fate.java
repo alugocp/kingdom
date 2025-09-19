@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Fate implements EventReceiver {
     public final String name;
     public final List<String> desc = new ArrayList<>();
     public Optional<String> image = Optional.empty();
+    private Player player = null;
 
     Fate(String name) {
         this.name = name;
@@ -25,6 +27,10 @@ public class Fate implements EventReceiver {
      */
     public Fate() {
         this.name = null;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     /**

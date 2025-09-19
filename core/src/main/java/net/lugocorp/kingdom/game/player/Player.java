@@ -77,6 +77,7 @@ public abstract class Player {
      */
     public void setFate(Fate fate) {
         this.fate = fate;
+        fate.setPlayer(this);
     }
 
     /** {@inheritdoc} */

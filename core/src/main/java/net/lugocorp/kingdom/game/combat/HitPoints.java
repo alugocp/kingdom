@@ -67,4 +67,12 @@ public class HitPoints {
     public boolean isDead() {
         return this.value == 0;
     }
+
+    /**
+     * Returns true if the health is currently at or below the given percentage of
+     * the max value
+     */
+    public boolean atOrBelowPercent(int percent) {
+        return this.value <= this.max * percent / 100;
+    }
 }

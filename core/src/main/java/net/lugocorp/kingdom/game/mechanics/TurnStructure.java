@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
@@ -97,9 +98,22 @@ public class TurnStructure {
     }
 
     /**
+     * Perform these actions when the Game starts
+     */
+    private void initializeGame(GameView view) {
+        for (Player p : view.game.getAllPlayers()) {
+            p.getFate().handleEvent(view, new Events.GameStartEvent(p)).execute();
+        }
+    }
+
+    /**
      * Runs the per-turn logic and then allows the turn Player to act
      */
     public void kickOffTurn(GameView view) {
+        if (this.turn == 1 && this.turnPlayer.isHumanPlayer()) {
+            this.initializeGame(view);
+        }
+
         // Run per-turn calculations for the turn Player
         this.canPlayerAct = false;
         // TODO make this entire function more readable

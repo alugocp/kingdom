@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
@@ -143,6 +144,13 @@ public class ArtifactAuction {
         if (firstIteration) {
             Optional<Player> winner = this.auction.get().getWinner(view.game.world, this.random);
             boolean humanPlayerWon = winner.map((Player p) -> p.isHumanPlayer()).orElse(false);
+            for (Player p : view.game.getAllPlayers()) {
+                if (winner.map((Player p1) -> p.equals(p1)).orElse(false)) {
+                    p.getFate().handleEvent(view, new Events.WonAuctionEvent(p)).execute();
+                } else {
+                    p.getFate().handleEvent(view, new Events.LostAuctionEvent(p)).execute();
+                }
+            }
             if (humanPlayerWon) {
                 view.game.human.auctionChips++;
             } else {

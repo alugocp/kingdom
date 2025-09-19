@@ -935,42 +935,100 @@ public class KingdomMod implements GameMod {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_raider);
                     e.blob.desc.add("Playstyle: High-risk aggro");
+                    e.blob.desc.add("• Your first unit will have the battle glyph");
+                    e.blob.desc.add("• Your units always deal critical hits at or below 25% of their max health");
+                    e.blob.desc
+                            .add("• 15% chance for your units to fully heal themselves when they kill an enemy unit");
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_raider, "GetInitialGlyphEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GetInitialGlyphEvent e = (Events.GetInitialGlyphEvent) event;
+                    e.glyph = Optional.of(Glyph.BATTLE);
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_raider, "GameStartEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    view.game.events.signals.addListener("CheckCriticalHitEvent", receiver);
+                    view.game.events.signals.addListener("KilledEntityEvent", receiver);
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_raider, "CheckCriticalHitEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.CheckCriticalHitEvent e = (Events.CheckCriticalHitEvent) event;
+                    if (e.entity.isEntityType(EntityType.UNIT)) {
+                        final Unit u = (Unit) e.entity;
+                        if (u.leadership.hasFate(receiver) && u.combat.health.atOrBelowPercent(25)) {
+                            e.chance = 100;
+                        }
+                    }
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_raider, "KilledEntityEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.KilledEntityEvent e = (Events.KilledEntityEvent) event;
+                    if (e.killer.isEntityType(EntityType.UNIT) && e.target.isEntityType(EntityType.UNIT)) {
+                        final Unit k = (Unit) e.killer;
+                        final Unit t = (Unit) e.target;
+                        if (k.leadership.hasFate(receiver) && !k.leadership.sameLeader(t) && Lambda.chance(15)) {
+                            k.combat.health.set(k.combat.health.getMax());
+                        }
+                    }
                     return SideEffect.none;
                 });
 
-        // The Merchant
+        // The Merchant (TODO)
         events.fate.addEventHandler(Labels.fate_merchant, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_merchant);
                     e.blob.desc.add("Playstyle: Market control");
+                    e.blob.desc.add("• Your first unit will have the trade glyph");
+                    e.blob.desc.add("• Your vault buildings contribute towards unit points");
+                    e.blob.desc.add("• Your units provide extra auction points");
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_merchant, "GetInitialGlyphEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GetInitialGlyphEvent e = (Events.GetInitialGlyphEvent) event;
+                    e.glyph = Optional.of(Glyph.TRADE);
                     return SideEffect.none;
                 });
 
-        // The Veteran
+        // The Veteran (TODO)
         events.fate.addEventHandler(Labels.fate_veteran, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_veteran);
                     e.blob.desc.add("Playstyle: Military production");
+                    e.blob.desc.add("• Your battle glyph units heal when they don't act in a turn");
+                    e.blob.desc.add("• Recruiting a battle glyph unit gives you some unit points");
                     return SideEffect.none;
                 });
 
-        // The Devout
+        // The Devout (TODO)
         events.fate.addEventHandler(Labels.fate_devout, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_devout);
                     e.blob.desc.add("Playstyle: Patron collection");
+                    e.blob.desc.add("• Your active patrons contribute to your unit points");
+                    e.blob.desc
+                            .add("• You spawn as the favorite player of the closest patron at the start of the game");
+                    e.blob.desc.add("• Your units generate extra favor");
                     return SideEffect.none;
                 });
 
-        // The Sentinel
+        // The Sentinel (TODO)
         events.fate.addEventHandler(Labels.fate_sentinel, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_sentinel);
                     e.blob.desc.add("Playstyle: Defensive expansion");
+                    e.blob.desc.add("• Your buildings take less damage");
+                    e.blob.desc.add(
+                            "• Build abilities apply a status to the builder that increases their attack and defense");
+                    e.blob.desc.add("• Recruiting a defense glyph unit gives you unit points");
                     return SideEffect.none;
                 });
 
@@ -980,6 +1038,27 @@ public class KingdomMod implements GameMod {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_usurper);
                     e.blob.desc.add("Playstyle: Early market bonus into unit production");
+                    e.blob.desc.add("• Your first unit will have the trade glyph");
+                    e.blob.desc.add("• You get a free auction chip at the start of the game");
+                    e.blob.desc.add("• You get 25 unit points when you do not win an auction");
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_usurper, "GetInitialGlyphEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GetInitialGlyphEvent e = (Events.GetInitialGlyphEvent) event;
+                    e.glyph = Optional.of(Glyph.TRADE);
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_usurper, "GameStartEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GameStartEvent e = (Events.GameStartEvent) event;
+                    e.player.auctionChips++;
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_usurper, "LostAuctionEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.LostAuctionEvent e = (Events.LostAuctionEvent) event;
+                    e.player.unitPoints += 25;
                     return SideEffect.none;
                 });
 
@@ -989,6 +1068,38 @@ public class KingdomMod implements GameMod {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_forager);
                     e.blob.desc.add("Playstyle: Resource accumulation");
+                    e.blob.desc.add("• Your first unit will have the nature glyph");
+                    e.blob.desc.add("• Your units have a 20% chance to generate an extra item while harvesting");
+                    e.blob.desc.add("• Your nature glyph units have +1 speed");
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_forager, "GetInitialGlyphEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GetInitialGlyphEvent e = (Events.GetInitialGlyphEvent) event;
+                    e.glyph = Optional.of(Glyph.NATURE);
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_forager, "GameStartEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GameStartEvent e = (Events.GameStartEvent) event;
+                    view.game.events.signals.addListener("HarvestEvent", receiver);
+                    view.game.events.signals.addListener("UnitMoveDistanceEvent", receiver);
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_forager, "HarvestEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.HarvestEvent e = (Events.HarvestEvent) event;
+                    if (e.unit.leadership.hasFate(receiver) && !e.unit.haul.isFull() && Lambda.chance(20)) {
+                        e.unit.haul.add(view.game.generator.item(e.item.name));
+                    }
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_forager, "UnitMoveDistanceEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.UnitMoveDistanceEvent e = (Events.UnitMoveDistanceEvent) event;
+                    if (e.unit.leadership.hasFate(receiver) && e.unit.glyphs.has(Glyph.NATURE)) {
+                        e.distance++;
+                    }
                     return SideEffect.none;
                 });
 

@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -195,14 +195,10 @@ public class WorldGenerator {
             }
 
             // Pick a starting point from the available candidates and spawn a Vault
-            Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
+            final Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
+            final Player player = a == 0 ? g.human : g.addComputerPlayer(a);
             g.generator.building("Vault", p.x, p.y).spawn(view);
-            if (a == 0) {
-                g.getInitialUnit(view, g.human, p.x, p.y).spawn(view);
-            } else {
-                CompPlayer ai = g.addComputerPlayer(a);
-                g.getInitialUnit(view, ai, p.x, p.y).spawn(view);
-            }
+            g.getInitialUnit(view, player, p.x, p.y).spawn(view);
             startingPoints.get(startingPointIndex++).remove(p);
         }
         progress.accept(95);

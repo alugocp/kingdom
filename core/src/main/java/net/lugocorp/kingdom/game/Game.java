@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.actions.ActionManager;
@@ -79,7 +80,9 @@ public class Game {
      * GlyphPools.
      */
     public Unit getInitialUnit(GameView view, Player p, int x, int y) {
-        final Glyph g = Lambda.random(Glyph.class);
+        final Events.GetInitialGlyphEvent e = new Events.GetInitialGlyphEvent();
+        p.getFate().handleEvent(view, e).execute();
+        final Glyph g = e.glyph.orElse(Lambda.random(Glyph.class));
         final String name = this.mechanics.pools.random(g, 1)[0];
         final Unit u = this.generator.unit(name, x, y);
         this.mechanics.pools.remove(u);

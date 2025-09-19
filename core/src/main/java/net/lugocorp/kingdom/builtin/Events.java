@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.builtin;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
@@ -13,6 +14,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.utils.math.Point;
+import java.util.Optional;
 
 /**
  * Contains a collection of Events that are integral to the game's core
@@ -452,6 +454,47 @@ public class Events {
             super();
             this.unit = unit;
             this.item = item;
+        }
+    }
+
+    /**
+     * Triggers when a Player is spawning its initial Unit, so we can control which
+     * Glyph it comes from
+     */
+    public static class GetInitialGlyphEvent extends Event {
+        public Optional<Glyph> glyph = Optional.empty();
+    }
+
+    /**
+     * Triggers when the Game starts
+     */
+    public static class GameStartEvent extends Event {
+        public final Player player;
+
+        public GameStartEvent(Player player) {
+            this.player = player;
+        }
+    }
+
+    /**
+     * Triggers when the given Player wins an auction
+     */
+    public static class WonAuctionEvent extends Event {
+        public final Player player;
+
+        public WonAuctionEvent(Player player) {
+            this.player = player;
+        }
+    }
+
+    /**
+     * Triggers when the given Player loses an auction
+     */
+    public static class LostAuctionEvent extends Event {
+        public final Player player;
+
+        public LostAuctionEvent(Player player) {
+            this.player = player;
         }
     }
 }
