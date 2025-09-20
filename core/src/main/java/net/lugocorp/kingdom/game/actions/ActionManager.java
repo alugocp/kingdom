@@ -87,6 +87,13 @@ public class ActionManager {
     }
 
     /**
+     * Returns the ActionType of the Action associated with the given Unit (if any)
+     */
+    public Optional<ActionType> getUnitActionType(Unit u) {
+        return this.actions.containsKey(u) ? Optional.of(this.actions.get(u).getType()) : Optional.empty();
+    }
+
+    /**
      * Opens a TileMenu on the next Unit who must act this turn
      */
     public boolean goToNextUnit(GameView view) {

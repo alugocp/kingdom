@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.builtin.logic.ItemLogic;
 import net.lugocorp.kingdom.builtin.logic.UnitLogic;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
+import net.lugocorp.kingdom.game.actions.ActionType;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
@@ -977,15 +978,15 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
-        // The Merchant (TODO)
+        // The Merchant
         events.fate.addEventHandler(Labels.fate_merchant, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_merchant);
                     e.blob.desc.add("Playstyle: Market control");
                     e.blob.desc.add("• Your first unit will have the trade glyph");
-                    e.blob.desc.add("• Your vault buildings contribute towards unit points");
-                    e.blob.desc.add("• Your units provide extra auction points");
+                    e.blob.desc.add("• Your vault buildings generate 5 unit points each turn");
+                    e.blob.desc.add("• Your units generate 150% auction points");
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_merchant, "GetInitialGlyphEvent",
@@ -994,41 +995,127 @@ public class KingdomMod implements GameMod {
                     e.glyph = Optional.of(Glyph.TRADE);
                     return SideEffect.none;
                 });
+        events.fate.addEventHandler(Labels.fate_merchant, "EndOfTurnEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    for (Point p : view.game.getVaultBuildings(receiver.getPlayer())) {
+                        receiver.getPlayer().unitPoints += 5;
+                    }
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_merchant, "GenerateAuctionPointsEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.GenerateAuctionPointsEvent e = (Events.GenerateAuctionPointsEvent) event;
+                    if (e.unit.leadership.hasFate(receiver)) {
+                        e.points += e.points / 2;
+                    }
+                    return SideEffect.none;
+                });
 
-        // The Veteran (TODO)
+        // The Veteran
         events.fate.addEventHandler(Labels.fate_veteran, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_veteran);
                     e.blob.desc.add("Playstyle: Military production");
-                    e.blob.desc.add("• Your battle glyph units heal when they don't act in a turn");
-                    e.blob.desc.add("• Recruiting a battle glyph unit gives you some unit points");
+                    e.blob.desc.add("• Your battle glyph units heal for 3 damage when they don't act in a turn");
+                    e.blob.desc.add("• Recruiting a battle glyph unit gives you 20 unit points");
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_veteran, "EndOfTurnEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    for (Unit u : receiver.getPlayer().units) {
+                        if (view.game.actions.getUnitActionType(u).map((ActionType at) -> at == ActionType.SKIP)
+                                .orElse(false)) {
+                            u.combat.heal(view, 3);
+                        }
+                    }
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_veteran, "RecruitNewUnitEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.RecruitNewUnitEvent e = (Events.RecruitNewUnitEvent) event;
+                    if (e.unit.glyphs.has(Glyph.BATTLE)) {
+                        receiver.getPlayer().unitPoints += 20;
+                    }
                     return SideEffect.none;
                 });
 
-        // The Devout (TODO)
+        // The Devout
         events.fate.addEventHandler(Labels.fate_devout, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_devout);
                     e.blob.desc.add("Playstyle: Patron collection");
-                    e.blob.desc.add("• Your active patrons contribute to your unit points");
-                    e.blob.desc
-                            .add("• You spawn as the favorite player of the closest patron at the start of the game");
-                    e.blob.desc.add("• Your units generate extra favor");
+                    e.blob.desc.add("• Your active patrons generate +10 unit points");
+                    e.blob.desc.add("• Your units generate +3 favor");
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_sentinel, "GameStartEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    view.game.events.signals.addListener("GenerateFavorEvent", receiver);
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_devout, "EndOfTurnEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    for (Patron p : view.game.mechanics.patronage) {
+                        if (p.getFavoritePlayer().map((Player p1) -> receiver.getPlayer().equals(p1)).orElse(false)) {
+                            receiver.getPlayer().unitPoints += 10;
+                        }
+                    }
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_devout, "GenerateFavorEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    final Events.GenerateFavorEvent e = (Events.GenerateFavorEvent) event;
+                    if (e.unit.leadership.hasFate(receiver)) {
+                        e.favor += 3;
+                    }
                     return SideEffect.none;
                 });
 
-        // The Sentinel (TODO)
+        // The Sentinel
         events.fate.addEventHandler(Labels.fate_sentinel, "GenerateFateEvent",
                 (GameView view, Fate receiver, Event event) -> {
                     Events.GenerateFateEvent e = (Events.GenerateFateEvent) event;
                     e.blob.image = Optional.of(Labels.asset_sentinel);
                     e.blob.desc.add("Playstyle: Defensive expansion");
-                    e.blob.desc.add("• Your buildings take less damage");
-                    e.blob.desc.add(
-                            "• Build abilities apply a status to the builder that increases their attack and defense");
-                    e.blob.desc.add("• Recruiting a defense glyph unit gives you unit points");
+                    e.blob.desc.add("• Your buildings take 15% less damage");
+                    e.blob.desc.add("• When you create a building the occupying unit gains 3 attack and defense");
+                    e.blob.desc.add("• Recruiting a defense glyph unit gives you 25 unit points");
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_sentinel, "GameStartEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    view.game.events.signals.addListener("TakeDamageEvent", receiver);
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_sentinel, "TakeDamageEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
+                    if (e.target.getEntityType() == EntityType.BUILDING
+                            && e.target.getLeader().map((Player p) -> p.equals(receiver.getPlayer())).orElse(false)) {
+                        e.dmg.base -= (int) (e.dmg.base * 0.15);
+                    }
+                    return SideEffect.none;
+                });
+        events.fate.addEventHandler(Labels.fate_sentinel, "SpawnEvent", (GameView view, Fate receiver, Event event) -> {
+            final Events.SpawnEvent e = (Events.SpawnEvent) event;
+            if (e.spawned instanceof Building) {
+                final Building b = (Building) e.spawned;
+                if (b.getLeader().map((Player p) -> p.equals(receiver.getPlayer())).orElse(false)) {
+                    view.game.world.getTile(b.getPoint()).flatMap((Tile t) -> t.unit).ifPresent((Unit u) -> {
+                        u.abilities.addStatusEffect(view, Labels.status_effect_proud_builder);
+                    });
+                }
+            }
+            return SideEffect.none;
+        });
+        events.fate.addEventHandler(Labels.fate_sentinel, "RecruitNewUnitEvent",
+                (GameView view, Fate receiver, Event event) -> {
+                    Events.RecruitNewUnitEvent e = (Events.RecruitNewUnitEvent) event;
+                    if (e.unit.glyphs.has(Glyph.DEFENSE)) {
+                        receiver.getPlayer().unitPoints += 25;
+                    }
                     return SideEffect.none;
                 });
 
@@ -2151,7 +2238,40 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.status_effect_more_favor, "GenerateFavorEvent",
                 (GameView view, Ability receiver, Event event) -> {
+                    receiver.wielder.abilities.removeStatusEffect(receiver);
                     ((Events.GenerateFavorEvent) event).favor += 5;
+                    return SideEffect.none;
+                });
+
+        // Proud Builder
+        events.ability.addEventHandler(Labels.status_effect_proud_builder, "GenerateAbilityEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
+                    e.blob.desc = String.format("+3 attack and defense for 2 turns");
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Labels.status_effect_proud_builder, "StatusEffectAddedEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    view.game.future.addFutureTick("TickEvent", receiver, 2, true);
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Labels.status_effect_proud_builder, "TickEvent", (GameView view,
+                Ability receiver, Event event) -> () -> receiver.wielder.abilities.removeStatusEffect(receiver));
+        events.ability.addEventHandler(Labels.status_effect_proud_builder, "GenerateFavorEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    ((Events.GenerateFavorEvent) event).favor += 5;
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Labels.status_effect_proud_builder, "TakeDamageEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
+                    e.dmg.base -= 3;
+                    return SideEffect.none;
+                });
+        events.ability.addEventHandler(Labels.status_effect_proud_builder, "AttackEvent",
+                (GameView view, Ability receiver, Event event) -> {
+                    Events.AttackEvent e = (Events.AttackEvent) event;
+                    e.dmg.base += 3;
                     return SideEffect.none;
                 });
 
@@ -2230,6 +2350,7 @@ public class KingdomMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural).add(Labels.tag_fruit);
+                    // TODO eating the apple is broken (does not reset hunger bar)
                     return SideEffect.none;
                 });
         events.item.addEventHandler(Labels.item_apple, "ItemConsumedEvent",

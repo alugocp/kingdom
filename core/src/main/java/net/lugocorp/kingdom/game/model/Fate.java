@@ -29,6 +29,16 @@ public class Fate implements EventReceiver {
         this.name = null;
     }
 
+    /**
+     * Returns the Player that this Fate is associated with
+     */
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    /**
+     * Associated this Fate with a Player
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }

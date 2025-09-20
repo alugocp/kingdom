@@ -224,6 +224,7 @@ public class Labels {
      */
     public static final String status_effect_stunned = "Stunned";
     public static final String status_effect_more_favor = "More Favor";
+    public static final String status_effect_proud_builder = "Proud Builder";
 
     /**
      * SECTION Items

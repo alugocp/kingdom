@@ -73,7 +73,7 @@ public class Patron extends Building {
 
             // Calculate favor from the given Unit
             final Unit u = unit.get();
-            final Events.GenerateFavorEvent event = new Events.GenerateFavorEvent(this,
+            final Events.GenerateFavorEvent event = new Events.GenerateFavorEvent(this, u,
                     this.isPreferredUnitType.apply(u) ? Patron.MIN_FAVOR * 2 : Patron.MIN_FAVOR);
             u.handleEvent(view, event);
             if (event.favor <= 0) {

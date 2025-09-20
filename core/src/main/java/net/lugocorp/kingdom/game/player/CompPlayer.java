@@ -30,6 +30,7 @@ public class CompPlayer extends Player {
     public CompPlayer(int index, Point world, Fate fate, Color color) {
         super(String.format("Computer %d", index), fate, color);
         this.memory = new MemoryMap(world);
+        this.getFate().setPlayer(this);
     }
 
     /**

@@ -104,7 +104,7 @@ public class Lambda {
      * Returns true if a coin flip lands with the given chance of success
      */
     public static boolean chance(int percentage) {
-        return (int) Math.floor(Math.random() * 100) < percentage;
+        return (int) Math.floor(100 * Math.random()) < percentage;
     }
 
     /**

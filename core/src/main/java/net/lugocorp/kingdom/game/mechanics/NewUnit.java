@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -149,6 +150,7 @@ public class NewUnit {
             p.unitPoints -= NewUnit.MAX_UNIT_POINTS;
             view.game.setLeader(view, u, p);
             u.spawn(view);
+            p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u));
         });
     }
 }

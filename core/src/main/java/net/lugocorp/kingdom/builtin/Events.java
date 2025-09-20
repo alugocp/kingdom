@@ -420,12 +420,14 @@ public class Events {
      */
     public static class GenerateFavorEvent extends Event {
         public final Patron patron;
+        public final Unit unit;
         public int favor;
 
-        public GenerateFavorEvent(Patron patron, int favor) {
+        public GenerateFavorEvent(Patron patron, Unit unit, int favor) {
             super();
             this.patron = patron;
             this.favor = favor;
+            this.unit = unit;
         }
     }
 
@@ -496,5 +498,22 @@ public class Events {
         public LostAuctionEvent(Player player) {
             this.player = player;
         }
+    }
+
+    /**
+     * Triggers when a Player recruits a Unit using unit points
+     */
+    public static class RecruitNewUnitEvent extends Event {
+        public final Unit unit;
+
+        public RecruitNewUnitEvent(Unit unit) {
+            this.unit = unit;
+        }
+    }
+
+    /**
+     * Triggers when a Player's turn ends
+     */
+    public static class EndOfTurnEvent extends Event {
     }
 }

@@ -52,6 +52,7 @@ public class TurnStructure {
      * Sets up the next turn Player
      */
     public void iterateTurnPlayer(GameView view) {
+        this.turnPlayer.getFate().handleEvent(view, new Events.EndOfTurnEvent());
         view.game.actions.endOfTurn(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = view.game.comps.get(0);
