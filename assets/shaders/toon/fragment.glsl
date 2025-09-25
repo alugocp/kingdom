@@ -50,7 +50,7 @@ bool outline() {
     }
     vec4 topRight = normalsTexSample(gl_FragCoord.x + OUTLINE_WIDTH, gl_FragCoord.y + OUTLINE_WIDTH);
     vec4 botLeft = normalsTexSample(gl_FragCoord.x - OUTLINE_WIDTH, gl_FragCoord.y - OUTLINE_WIDTH);
-    return topRight != center || botLeft != center;
+    return center.z <= topRight.z - 0.01 || center.z <= botLeft.z - 0.01;
 }
 
 // Changes the output color based on Tile borders
