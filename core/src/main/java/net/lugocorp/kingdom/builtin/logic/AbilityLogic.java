@@ -216,7 +216,8 @@ public class AbilityLogic {
             Supplier<SideEffect> effect) {
         final Set<Point> coords = Hexagons.getNeighbors(wielder.getPoint(), 1);
         for (Point p : coords) {
-            if (criteria.apply(view.game.world.getTile(p).get())) {
+            final Optional<Tile> t = view.game.world.getTile(p);
+            if (t.isPresent() && criteria.apply(t.get())) {
                 return effect.get();
             }
         }

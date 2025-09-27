@@ -12,15 +12,18 @@ import java.util.Optional;
  * Handles all user control input for the GameView
  */
 public class GameViewController extends CameraInputController {
+    // TODO don't rely on isInBounds() for sub-controller touchUp / touchDragged
+    // logic,
+    // rather just check which controller is active (this will make the controls
+    // less finnicky)
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
+    private final TouchState state = new TouchState();
     private final MenuController popupMenu;
     private final MenuController hudMenu;
     private final MenuController menu;
     private final GameView view;
-    private Optional<Point> prev = Optional.empty();
     private float currentZoom = 0.0f;
-    private boolean dragging = false;
 
     public GameViewController(GameView view, MenuController menu, Camera camera) {
         super(camera);
@@ -98,7 +101,7 @@ public class GameViewController extends CameraInputController {
         if (this.hudMenu.touchDown(x, y, pointer, button)) {
             return true;
         }
-        this.prev = Optional.of(new Point(x, y));
+        this.state.start(new Point(x, y));
         return true;
     }
 
@@ -125,11 +128,10 @@ public class GameViewController extends CameraInputController {
         if (this.hudMenu.touchUp(x, y, pointer, button)) {
             return true;
         }
-        if (!this.dragging) {
+        if (!this.state.isDragging()) {
             this.view.selector.click();
         }
-        this.prev = Optional.empty();
-        this.dragging = false;
+        this.state.reset();
         return true;
     }
 
@@ -148,14 +150,13 @@ public class GameViewController extends CameraInputController {
         if (this.hudMenu.touchDragged(x, y, pointer)) {
             return true;
         }
-        if (!this.prev.isPresent()) {
-            return false;
+        final Point p = new Point(x, y);
+        final Point prev = this.state.update(p);
+        if (this.state.isDragging()) {
+            this.moveCamera((float) (prev.x - x) / 100, (float) (prev.y - y) / 100);
+            return true;
         }
-        Point p = this.prev.get();
-        this.moveCamera((float) (p.x - x) / 100, (float) (p.y - y) / 100);
-        this.prev = Optional.of(new Point(x, y));
-        this.dragging = true;
-        return true;
+        return false;
     }
 
     /** {@inheritdoc} */

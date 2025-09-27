@@ -10,9 +10,8 @@ import java.util.function.Supplier;
  * Handles all user input meant for Menu objects in the game
  */
 public class MenuController implements InputProcessor {
+    private final TouchState state = new TouchState();
     private final Supplier<Optional<Menu>> getMenu;
-    private Optional<Point> prev = Optional.empty();
-    private boolean dragging = false;
 
     public MenuController(Supplier<Optional<Menu>> getMenu) {
         this.getMenu = getMenu;
@@ -29,16 +28,21 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
-        this.prev = Optional.of(new Point(x, y));
-        return this.isInMenu(this.prev.get());
+        final Point p = new Point(x, y);
+        this.state.start(p);
+        return this.isInMenu(p);
     }
 
     /** {@inheritdoc} */
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
-        this.dragging = true;
-        if (this.prev.isPresent() && this.isInMenu(this.prev.get()) && this.isInMenu(new Point(x, y))) {
-            return this.scrolled(0, this.prev.get().y - y);
+        if (!this.state.isActive()) {
+            return true;
+        }
+        final Point p = new Point(x, y);
+        final Point prev = this.state.update(p);
+        if (this.state.isDragging() && this.isInMenu(prev) && this.isInMenu(p)) {
+            return this.scrolled(0, prev.y - y);
         }
         return false;
     }
@@ -47,11 +51,10 @@ public class MenuController implements InputProcessor {
     @Override
     public boolean touchUp​(int x, int y, int pointer, int button) {
         boolean result = this.isInMenu(new Point(x, y));
-        if (!this.dragging) {
+        if (!this.state.isDragging()) {
             result = this.getMenu.get().map((Menu m) -> m.click(new Point(x, y))).orElse(false) || result;
         }
-        this.dragging = false;
-        this.prev = Optional.empty();
+        this.state.reset();
         return result;
     }
 
