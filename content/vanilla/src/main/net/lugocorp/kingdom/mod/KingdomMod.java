@@ -118,6 +118,12 @@ public class KingdomMod implements GameMod {
         // Artifact sprites
         sprites.register(Labels.asset_golden_feather, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
                 0, 0);
+        sprites.register(Labels.asset_rod_of_adelon, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 2,
+                3);
+        sprites.register(Labels.asset_blade_of_sanguinor, Labels.asset_artifacts, ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 3, 3);
+        sprites.register(Labels.asset_cask_of_amontior, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
+                4, 3);
 
         // Fate sprites
         sprites.register(Labels.asset_raider, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
@@ -852,7 +858,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "5% chance to recruit an enemy unit when you kill it";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_rod_of_adelon);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });
@@ -877,7 +883,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your battle glyph units deal +2 damage";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_blade_of_sanguinor);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });
@@ -902,7 +908,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your unoccupied tiles in a patron's domain provide +1 favor";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_cask_of_amontior);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });

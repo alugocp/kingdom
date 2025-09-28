@@ -17,7 +17,8 @@ public class ArtifactNode implements MenuNode {
     private final Drawable image;
     private final Drawable mask;
     private final Artifact artifact;
-    private final TextNode text;
+    private final ArtifactNameNode name;
+    private final TextNode desc;
 
     public ArtifactNode(AudioVideo av, Artifact artifact) {
         String cost = String.format("%s chip", artifact.chips);
@@ -25,7 +26,8 @@ public class ArtifactNode implements MenuNode {
             cost += "s";
         }
         this.artifact = artifact;
-        this.text = new TextNode(av, String.format("%s: %s (costs %s)", artifact.name, artifact.desc, cost));
+        this.name = new ArtifactNameNode(av, artifact.name);
+        this.desc = new TextNode(av, String.format("%s (costs %s)", artifact.desc, cost));
         this.image = new Drawable(av.loaders.sprites, artifact.image.orElse("placeholder"));
         this.mask = new Drawable(av.loaders.sprites, "artifact-mask");
     }
@@ -39,7 +41,9 @@ public class ArtifactNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void pack(Menu menu, int width) {
-        this.text.pack(menu, ArtifactNode.WIDTH - (ArtifactNode.MARGIN * 2));
+        final int w = ArtifactNode.WIDTH - (ArtifactNode.MARGIN * 2);
+        this.desc.pack(menu, w);
+        this.name.pack(menu, w);
     }
 
     /** {@inheritdoc} */
@@ -53,8 +57,11 @@ public class ArtifactNode implements MenuNode {
         av.sprites.end();
 
         // Draw foreground text
-        int h = this.text.getHeight();
-        this.text.draw(av,
-                new Rect(bounds.x + ArtifactNode.MARGIN, bounds.y + bounds.h - h - ArtifactNode.MARGIN, bounds.w, h));
+        final int h1 = this.desc.getHeight();
+        this.desc.draw(av,
+                new Rect(bounds.x + ArtifactNode.MARGIN, bounds.y + bounds.h - h1 - ArtifactNode.MARGIN, bounds.w, h1));
+        final int h2 = this.name.getHeight();
+        this.name.draw(av, new Rect(bounds.x + ArtifactNode.MARGIN, bounds.y + bounds.h - h1 - h2 - ArtifactNode.MARGIN,
+                bounds.w, h2));
     }
 }

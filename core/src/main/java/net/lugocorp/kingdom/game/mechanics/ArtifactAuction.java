@@ -231,6 +231,35 @@ public class ArtifactAuction {
     }
 
     /**
+     * Returns a Menu to show the human Player all Artifacts in the Game
+     */
+    public Menu getAllArtifactsMenu(GameView view) {
+        // TODO merge this with other Artifact Menu methods so we can reuse it for the
+        // auction win screen
+        // and just viewing Artifacts. There should be tabs for your Artifacts vs all
+        // Artifacts.
+        int a = 0;
+        final int columns = 3;
+        final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
+        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.complete()));
+        if (artifacts.size() == 0) {
+            node.add(new TextNode(view.av, "There are no artifacts in this game"));
+        } else {
+            while (a < artifacts.size()) {
+                RowNode row = new RowNode().setColumns(columns);
+                for (int b = 0; b < columns && a < this.artifacts.size();) {
+                    final Artifact artifact = this.artifacts.get(a);
+                    row.add(new ArtifactNode(view.av, artifact));
+                    a++;
+                    b++;
+                }
+                node.add(row);
+            }
+        }
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, node);
+    }
+
+    /**
      * Nested class that contains a single artifact auction's data
      */
     public static class Auction {

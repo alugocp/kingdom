@@ -73,6 +73,9 @@ public class Labels {
     public static final String asset_scales = "scales";
     public static final String asset_eye = "eye";
     public static final String asset_golden_feather = "golden feather";
+    public static final String asset_rod_of_adelon = "rod of adelon";
+    public static final String asset_blade_of_sanguinor = "blade of sanguinor";
+    public static final String asset_cask_of_amontior = "cask of amontior";
     public static final String asset_raider = "raider";
     public static final String asset_merchant = "merchant";
     public static final String asset_veteran = "veteran";

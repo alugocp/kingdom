@@ -31,8 +31,10 @@ public class Hud extends Menu {
                 .add(new ButtonNode(view.av, "Minimap", () -> this.toggleMinimap()))
                 .add(new ButtonNode(view.av, "View Fate",
                         () -> view.popups.addNextUnrequired(view.game.mechanics.fates.getPlayerFateMenu(view))))
-                .add(new ButtonNode(view.av, "View Artifacts",
+                .add(new ButtonNode(view.av, "Your Artifacts",
                         () -> view.popups.addNextUnrequired(view.game.mechanics.auction.getOwnedArtifactsMenu(view))))
+                .add(new ButtonNode(view.av, "All Artifacts",
+                        () -> view.popups.addNextUnrequired(view.game.mechanics.auction.getAllArtifactsMenu(view))))
                 .add(new ButtonNode(view.av, "Settings",
                         () -> view.popups.addNextUnrequired(this.getSettingsMenu(view))))
                 .add(new ButtonNode(view.av, "Complete Turn", () -> {
