@@ -116,8 +116,40 @@ public class KingdomMod implements GameMod {
         sprites.register(Labels.asset_eye, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 6);
 
         // Artifact sprites
-        sprites.register(Labels.asset_golden_feather, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
-                0, 0);
+        sprites.register(Labels.asset_chos_sigil_of_haste, Labels.asset_artifacts, ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 0, 0);
+        sprites.register(Labels.asset_urdins_scroll_of_agility, Labels.asset_artifacts, ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 1, 0);
+        sprites.register(Labels.asset_sword_of_aesethos, Labels.asset_artifacts, ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 2, 0);
+        sprites.register(Labels.asset_kaunas_amulet, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 3,
+                0);
+        sprites.register(Labels.asset_staff_of_wurmdel, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
+                4, 0);
+        sprites.register(Labels.asset_tome_of_morun, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
+                1);
+        sprites.register(Labels.asset_orb_of_nerketo, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
+                1, 1);
+        sprites.register(Labels.asset_shadas_flute, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 2,
+                1);
+        sprites.register(Labels.asset_stones_of_thudin, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT,
+                3, 1);
+        sprites.register(Labels.asset_chasi_bones, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 4,
+                1);
+        sprites.register(Labels.asset_uchas_bowl_of_plenty, Labels.asset_artifacts, ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 0, 2);
+        sprites.register(Labels.asset_nerketos_helm, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 1,
+                2);
+        sprites.register(Labels.asset_bounty_of_ahn_june, Labels.asset_artifacts, ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 2, 2);
+        sprites.register(Labels.asset_mark_of_kung, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 3,
+                2);
+        sprites.register(Labels.asset_chalcos_seal_of_protection, Labels.asset_artifacts, ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 4, 2);
+        sprites.register(Labels.asset_podas_elixir, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
+                3);
+        sprites.register(Labels.asset_gaias_effigy, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 1,
+                3);
         sprites.register(Labels.asset_rod_of_adelon, Labels.asset_artifacts, ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 2,
                 3);
         sprites.register(Labels.asset_blade_of_sanguinor, Labels.asset_artifacts, ArtifactNode.WIDTH,
@@ -452,7 +484,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your healing glyph units get +1 movement speed";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_chos_sigil_of_haste);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_chos_sigil_of_haste, "ArtifactClaimedEvent",
@@ -475,7 +507,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your defense glyph units get +1 movement speed";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_urdins_scroll_of_agility);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_urdins_scroll_of_agility, "ArtifactClaimedEvent",
@@ -498,7 +530,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units have +10% critical hit chance";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_sword_of_aesethos);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_sword_of_aesethos, "ArtifactClaimedEvent",
@@ -521,7 +553,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units within a patron's domain have extra defense";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_kaunas_amulet);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_kaunas_amulet, "ArtifactClaimedEvent",
@@ -549,7 +581,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your healing spells restore +4 more health";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_staff_of_wurmdel);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_staff_of_wurmdel, "ArtifactClaimedEvent",
@@ -572,7 +604,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "20% chance to spawn a glyph when your units kill an enemy";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_tome_of_morun);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_tome_of_morun, "ArtifactClaimedEvent",
@@ -598,7 +630,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your units have +1 vision";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_orb_of_nerketo);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_orb_of_nerketo, "ArtifactClaimedEvent",
@@ -621,7 +653,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your patrons generate 5 unit points per turn";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_shadas_flute);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_shadas_flute, "ArtifactClaimedEvent",
@@ -644,7 +676,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your vaults have +3 defense";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_stones_of_thudin);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_stones_of_thudin, "ArtifactClaimedEvent",
@@ -669,7 +701,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your nature glyph units have a 20% chance to harvest an additional item";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_chasi_bones);
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_chasi_bones, "ArtifactClaimedEvent",
@@ -693,7 +725,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "+1 option when selecting a new unit";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_uchas_bowl_of_plenty);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -709,7 +741,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Critical hits against your units are less effective";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_nerketos_helm);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -733,7 +765,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Trade glyph units on your vaults generate +2 more auction points";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_bounty_of_ahn_june);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -759,7 +791,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your battle glyph units get +1 movement speed";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_mark_of_kung);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -783,7 +815,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "Your trade glyph units have +2 defense";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_chalcos_seal_of_protection);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -810,7 +842,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "15% chance refresh a glyph when you recruit a unit";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_podas_elixir);
                     e.blob.chips = 2;
                     return SideEffect.none;
                 });
@@ -838,7 +870,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.GenerateArtifactEvent e = (Events.GenerateArtifactEvent) event;
                     e.blob.desc = "+10 unit points each turn";
-                    e.blob.image = Optional.of(Labels.asset_golden_feather);
+                    e.blob.image = Optional.of(Labels.asset_gaias_effigy);
                     e.blob.chips = 3;
                     return SideEffect.none;
                 });
