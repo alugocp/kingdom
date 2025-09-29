@@ -134,6 +134,11 @@ public class GameViewController extends CameraInputController {
     /** {@inheritdoc} */
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
+        // Turn off controls during Animations
+        if (this.view.animations.inProgress()) {
+            return true;
+        }
+
         // Menu logic
         if (this.popupMenu.touchDragged(x, y, pointer) || this.view.popups.isDisplayed()) {
             return true;
