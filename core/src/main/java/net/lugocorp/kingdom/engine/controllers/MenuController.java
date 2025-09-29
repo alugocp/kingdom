@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.engine.controllers;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -25,46 +24,58 @@ public class MenuController implements InputProcessor {
         return menu.isPresent() && menu.get().getBoundingRect().contains(p);
     }
 
-    /** {@inheritdoc} */
-    @Override
-    public boolean touchDown​(int x, int y, int pointer, int button) {
-        final Point p = new Point(x, y);
-        this.state.start(p);
-        return this.isInMenu(p);
+    /**
+     * Returns true if getMenu()'s return value is present
+     */
+    private boolean isRelevant() {
+        return this.getMenu.get().isPresent();
     }
 
     /** {@inheritdoc} */
     @Override
-    public boolean touchDragged​(int x, int y, int pointer) {
-        if (!this.state.isActive()) {
-            return true;
+    public boolean touchDown​(int x, int y, int pointer, int button) {
+        if (!this.isRelevant()) {
+            return false;
         }
         final Point p = new Point(x, y);
-        final Point prev = this.state.update(p);
-        if (this.state.isDragging() && this.isInMenu(prev) && this.isInMenu(p)) {
-            return this.scrolled(0, prev.y - y);
+        if (this.isInMenu(p)) {
+            this.state.start(p);
+            return true;
         }
         return false;
     }
 
     /** {@inheritdoc} */
     @Override
+    public boolean touchDragged​(int x, int y, int pointer) {
+        if (!this.isRelevant() || !this.state.isActive()) {
+            return false;
+        }
+        final Point p = new Point(x, y);
+        final Point prev = this.state.update(p);
+        if (this.state.isDragging()) {
+            this.scrolled(0, prev.y - y);
+        }
+        return true;
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public boolean touchUp​(int x, int y, int pointer, int button) {
-        boolean result = this.isInMenu(new Point(x, y));
+        if (!this.isRelevant() || !this.state.isActive()) {
+            return false;
+        }
         if (!this.state.isDragging()) {
-            result = this.getMenu.get().map((Menu m) -> m.click(new Point(x, y))).orElse(false) || result;
+            this.getMenu.get().get().click(new Point(x, y));
         }
         this.state.reset();
-        return result;
+        return true;
     }
 
     /** {@inheritdoc} */
     @Override
     public boolean scrolled​(float dx, float dy) {
-        if (this.isInMenu(new Point(Gdx.input.getX(), Gdx.input.getY()))) {
-            this.getMenu.get().ifPresent((Menu m) -> m.scroll((int) -dy));
-            return true;
-        }
+        this.getMenu.get().ifPresent((Menu m) -> m.scroll((int) -dy));
         return false;
     }
 

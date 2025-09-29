@@ -12,10 +12,6 @@ import java.util.Optional;
  * Handles all user control input for the GameView
  */
 public class GameViewController extends CameraInputController {
-    // TODO don't rely on isInBounds() for sub-controller touchUp / touchDragged
-    // logic,
-    // rather just check which controller is active (this will make the controls
-    // less finnicky)
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
     private final TouchState state = new TouchState();
@@ -153,7 +149,7 @@ public class GameViewController extends CameraInputController {
         final Point p = new Point(x, y);
         final Point prev = this.state.update(p);
         if (this.state.isDragging()) {
-            this.moveCamera((float) (prev.x - x) / 100, (float) (prev.y - y) / 100);
+            this.moveCamera((float) (prev.x - p.x) / 100, (float) (prev.y - p.y) / 100);
             return true;
         }
         return false;
