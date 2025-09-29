@@ -71,7 +71,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     @Override
     public void spawn(GameView view) {
         this.movement.setPosition(view, this.x, this.y);
-        this.handleEvent(view, new Events.SpawnEvent<Unit>(this));
+        this.handleEvent(view, new Events.SpawnEvent<Unit>(this)).execute();
         this.hunger.eat(view.game);
         view.game.units.add(this);
     }

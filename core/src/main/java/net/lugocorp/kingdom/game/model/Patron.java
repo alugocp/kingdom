@@ -163,7 +163,7 @@ public class Patron extends Building {
             t.setGlyph(Optional.empty());
         });
         this.initializeDomain(view.game.world);
-        this.handleEvent(view, new Events.SpawnEvent<Patron>(this));
+        this.handleEvent(view, new Events.SpawnEvent<Patron>(this)).execute();
     }
 
     /** {@inheritdoc} */

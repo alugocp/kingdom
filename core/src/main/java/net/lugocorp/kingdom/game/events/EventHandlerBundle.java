@@ -61,6 +61,15 @@ public class EventHandlerBundle<T extends EventReceiver> {
     }
 
     /**
+     * Calls into this.addEventHandler() using an Event class
+     */
+    public <E extends Event> void addEventHandler(String stratifier, Class<E> eventClass,
+            SingleEventHandler<T, E> handler) {
+        this.addEventHandler(stratifier, eventClass.getSimpleName(),
+                (GameView view, T receiver, Event event) -> handler.handle(view, receiver, (E) event));
+    }
+
+    /**
      * Registers a new default EventHandler to some channel on this EventReceiver
      */
     public void setDefaultHandler(String channel, EventHandler<T> handler) {

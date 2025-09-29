@@ -238,6 +238,7 @@ public class ArtifactAuction {
         // auction win screen
         // and just viewing Artifacts. There should be tabs for your Artifacts vs all
         // Artifacts.
+        // TODO also, display Artifacts in ascending order of their cost
         int a = 0;
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);

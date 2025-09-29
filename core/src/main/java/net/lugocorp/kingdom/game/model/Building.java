@@ -135,7 +135,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
             }
             view.game.buildingSpawned(this);
         });
-        this.handleEvent(view, new Events.SpawnEvent<Building>(this));
+        this.handleEvent(view, new Events.SpawnEvent<Building>(this)).execute();
         this.getMinimapColor().ifPresent((Color c) -> view.hud.minimap.refresh(view.game.world));
     }
 
