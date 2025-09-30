@@ -62,10 +62,11 @@ public class RowNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
+        final int h = this.getHeight();
+        final int w = bounds.w / this.getColumns();
         int x = bounds.x;
-        int w = bounds.w / this.getColumns();
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+            final Rect r = new Rect(x, bounds.y, w, h);
             child.draw(av, r);
             x += w;
         }
@@ -74,10 +75,11 @@ public class RowNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void click(Rect bounds, Point p) {
+        final int h = this.getHeight();
+        final int w = bounds.w / this.getColumns();
         int x = bounds.x;
-        int w = bounds.w / this.getColumns();
         for (MenuNode child : this.children) {
-            final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+            final Rect r = new Rect(x, bounds.y, w, h);
             if (r.contains(p)) {
                 child.click(r, p);
             } else {
@@ -99,10 +101,11 @@ public class RowNode implements MenuNode {
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         if (bounds.contains(prev) || bounds.contains(curr)) {
+            final int h = this.getHeight();
+            final int w = bounds.w / this.getColumns();
             int x = bounds.x;
-            int w = bounds.w / this.getColumns();
             for (MenuNode child : this.children) {
-                final Rect r = new Rect(x, bounds.y, w, child.getHeight());
+                final Rect r = new Rect(x, bounds.y, w, h);
                 child.mouseMoved(r, prev, curr);
                 x += w;
             }

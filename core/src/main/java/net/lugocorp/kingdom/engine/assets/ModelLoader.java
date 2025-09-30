@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.engine.assets;
 import net.lugocorp.kingdom.mods.ModAssetsMap;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -29,13 +28,12 @@ public class ModelLoader extends AssetsPool<Model> {
      * Calculates the width and height of the given model
      */
     private boolean calculateDimensions(String name) {
-        AssetManager assets = this.getAssetManager(name);
-        Model model = assets.get(this.getFilename(name), false);
-        if (model == null) {
+        final Optional<Model> model = this.getAsset(name);
+        if (!model.isPresent()) {
             return false;
         }
-        BoundingBox box = new BoundingBox();
-        model.calculateBoundingBox(box);
+        final BoundingBox box = new BoundingBox();
+        model.get().calculateBoundingBox(box);
         this.bounds.put(name, new ModelBounds(box.getDepth(), box.getHeight(), 0f));
         return true;
     }
