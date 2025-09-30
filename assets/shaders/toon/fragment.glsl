@@ -53,7 +53,7 @@ bool outline() {
     return center.z <= topRight.z - 0.01 || center.z <= botLeft.z - 0.01;
 }
 
-// Changes the output color based on Tile borders
+// Changes the output color based on Tile borders (for a single side)
 int checkBorderColor(int border, vec4 color, sampler2D tex, int thresh, float x, float y) {
     if (border >= thresh) {
         vec4 value = texture2D(tex, vec2(x, y));
@@ -63,6 +63,21 @@ int checkBorderColor(int border, vec4 color, sampler2D tex, int thresh, float x,
         return thresh;
     }
     return 0;
+}
+
+// Handles all border-related logic
+void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2) {
+    if (border == 0) {
+        return;
+    }
+    float bx = v_diffuseUV.x * 64.0 / 19.0;
+    float by = v_diffuseUV.y * 64.0 / 18.0;
+    border -= checkBorderColor(border, color, texture2, 32, 1.0 - bx, by); // Bot right
+    border -= checkBorderColor(border, color, texture2, 16, 1.0 - bx, 1.0 - by); // Bot left
+    border -= checkBorderColor(border, color, texture2, 8, bx, by); // Top right
+    border -= checkBorderColor(border, color, texture2, 4, bx, 1.0 - by); // Top left
+    border -= checkBorderColor(border, color, texture1, 2, bx, by); // Right
+    border -= checkBorderColor(border, color, texture1, 1, bx, 1.0 - by); // Left
 }
 
 void main() {
@@ -79,17 +94,8 @@ void main() {
         }
 
         // Allow for distance borders to be visible beneath fog of war
-        if (u_vision == NO_VISIBILITY && u_distanceBorder > 0) {
-            int border = u_distanceBorder;
-            vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-            float bx = v_diffuseUV.x * 64.0 / 19.0;
-            float by = v_diffuseUV.y * 64.0 / 18.0;
-            border -= checkBorderColor(border, white, u_borderTexture4, 32, 1.0 - bx, by); // Bot right
-            border -= checkBorderColor(border, white, u_borderTexture4, 16, 1.0 - bx, 1.0 - by); // Bot left
-            border -= checkBorderColor(border, white, u_borderTexture4, 8, bx, by); // Top right
-            border -= checkBorderColor(border, white, u_borderTexture4, 4, bx, 1.0 - by); // Top left
-            border -= checkBorderColor(border, white, u_borderTexture3, 2, bx, by); // Right
-            border -= checkBorderColor(border, white, u_borderTexture3, 1, bx, 1.0 - by); // Left
+        if (u_vision == NO_VISIBILITY) {
+            applyBorder(u_distanceBorder, vec4(1.0, 1.0, 1.0, 1.0), u_borderTexture3, u_borderTexture4);
         }
         return;
     }
@@ -140,40 +146,10 @@ void main() {
         float bx = v_diffuseUV.x * 64.0 / 19.0;
         float by = v_diffuseUV.y * 64.0 / 18.0;
 
-        // Player borders
-        if (u_tileBorder > 0) {
-            int border = u_tileBorder;
-            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 32, 1.0 - bx, by); // Bot right
-            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 16, 1.0 - bx, 1.0 - by); // Bot left
-            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 8, bx, by); // Top right
-            border -= checkBorderColor(border, u_borderColor, u_borderTexture2, 4, bx, 1.0 - by); // Top left
-            border -= checkBorderColor(border, u_borderColor, u_borderTexture1, 2, bx, by); // Right
-            border -= checkBorderColor(border, u_borderColor, u_borderTexture1, 1, bx, 1.0 - by); // Left
-        }
-
-        // Domain borders
-        if (u_domainBorder > 0) {
-            int border = u_domainBorder;
-            vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-            border -= checkBorderColor(border, white, u_borderTexture4, 32, 1.0 - bx, by); // Bot right
-            border -= checkBorderColor(border, white, u_borderTexture4, 16, 1.0 - bx, 1.0 - by); // Bot left
-            border -= checkBorderColor(border, white, u_borderTexture4, 8, bx, by); // Top right
-            border -= checkBorderColor(border, white, u_borderTexture4, 4, bx, 1.0 - by); // Top left
-            border -= checkBorderColor(border, white, u_borderTexture3, 2, bx, by); // Right
-            border -= checkBorderColor(border, white, u_borderTexture3, 1, bx, 1.0 - by); // Left
-        }
-
-        // Distance borders
-        if (u_distanceBorder > 0) {
-            int border = u_distanceBorder;
-            vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
-            border -= checkBorderColor(border, black, u_borderTexture4, 32, 1.0 - bx, by); // Bot right
-            border -= checkBorderColor(border, black, u_borderTexture4, 16, 1.0 - bx, 1.0 - by); // Bot left
-            border -= checkBorderColor(border, black, u_borderTexture4, 8, bx, by); // Top right
-            border -= checkBorderColor(border, black, u_borderTexture4, 4, bx, 1.0 - by); // Top left
-            border -= checkBorderColor(border, black, u_borderTexture3, 2, bx, by); // Right
-            border -= checkBorderColor(border, black, u_borderTexture3, 1, bx, 1.0 - by); // Left
-        }
+        // Player, domain, and distance borders
+        applyBorder(u_tileBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
+        applyBorder(u_domainBorder, vec4(1.0, 1.0, 1.0, 1.0), u_borderTexture3, u_borderTexture4);
+        applyBorder(u_distanceBorder, vec4(0.0, 0.0, 0.0, 1.0), u_borderTexture3, u_borderTexture4);
     }
 
     // Make the color darker if it's night time or half vision
