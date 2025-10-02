@@ -93,9 +93,9 @@ public class Game {
     /**
      * Registers a new AI Player
      */
-    public CompPlayer addComputerPlayer(int index) {
-        final CompPlayer player = new CompPlayer(index, this.world.getSize(), this.mechanics.fates.chooseRandomFate(),
-                this.colorPool.getFromPool());
+    public CompPlayer addComputerPlayer(GameView view, int index) {
+        final CompPlayer player = new CompPlayer(view, index, this.world.getSize(),
+                this.mechanics.fates.chooseRandomFate(), this.colorPool.getFromPool());
         this.comps.add(player);
         return player;
     }

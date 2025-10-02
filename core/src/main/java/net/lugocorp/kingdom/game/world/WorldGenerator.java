@@ -196,7 +196,7 @@ public class WorldGenerator {
 
             // Pick a starting point from the available candidates and spawn a Vault
             final Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
-            final Player player = a == 0 ? g.human : g.addComputerPlayer(a);
+            final Player player = a == 0 ? g.human : g.addComputerPlayer(view, a);
             g.generator.building("Vault", p.x, p.y).spawn(view);
             g.getInitialUnit(view, player, p.x, p.y).spawn(view);
             startingPoints.get(startingPointIndex++).remove(p);

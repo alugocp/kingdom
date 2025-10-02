@@ -42,6 +42,21 @@ public class EventHandlerBundle<T extends EventReceiver> {
     }
 
     /**
+     * Returns all registered Event channels for the given stratifier
+     */
+    public Set<String> getChannels(String stratifier) {
+        final Pattern p = Pattern.compile(String.format("%s\\.([A-Z]+Event)", stratifier), Pattern.CASE_INSENSITIVE);
+        final Set<String> channels = new HashSet<>();
+        for (String key : this.handlers.keySet()) {
+            final Matcher m = p.matcher(key);
+            if (m.matches()) {
+                channels.add(m.group(1));
+            }
+        }
+        return channels;
+    }
+
+    /**
      * Returns true if the EventReceiver with the given stratifier has an
      * EventHandler that listens on the given channel
      */

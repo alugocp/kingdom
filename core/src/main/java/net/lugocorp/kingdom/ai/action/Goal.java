@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.ai.action;
 import net.lugocorp.kingdom.ai.plans.LazyNode;
+import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
@@ -31,6 +33,27 @@ public abstract class Goal {
      * Returns a score value for the given PlanNode
      */
     protected abstract float getScore(GameView view, PlanNode root);
+
+    /**
+     * Returns true if the given Glyph aligns with this Goal
+     */
+    public boolean likesGlyph(Glyph glyph) {
+        return false;
+    }
+
+    /**
+     * Returns true if the given Event channel aligns with this Goal
+     */
+    public boolean likesEventChannel(String channel) {
+        return false;
+    }
+
+    /**
+     * Calls into likesEventChannel() using the class name
+     */
+    public final <E extends Event> boolean likesEventChannel(Class<E> channel) {
+        return this.likesEventChannel(channel.getSimpleName());
+    }
 
     /**
      * Wraps a PlanNode in the expected output type for suggestPlan()

@@ -174,14 +174,14 @@ public class TurnStructure {
                 view.game.mechanics.auction.getAuction().get().hasSeenResults();
             } else if (view.game.mechanics.auction.getAuction().isPresent()) {
                 // The CompPlayer decides whether or not it will enter the Auction
-                comp.wishlist.decideOnAuctionEntry(view, comp);
+                comp.wishlist.artifacts.decideOnAuctionEntry(view, comp);
             }
 
             // Handle CompPlayer Unit recruitment logic
             for (int a = 0; a < Math.floor(comp.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
-                Optional<Glyph> glyph = comp.recruiter.glyphToSelect(comp);
+                Optional<Glyph> glyph = comp.wishlist.units.getDesiredOptions().getMostWanted();
                 if (glyph.isPresent()) {
-                    Optional<Point> spawnPoint = comp.recruiter.getSpawnPoint(view, comp, glyph.get());
+                    Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(view, comp, glyph.get());
                     if (spawnPoint.isPresent()) {
                         final Unit u = view.game.mechanics.newUnits
                                 .getRecruitmentOptions(view, glyph.get(), spawnPoint.get(), 1).get(0);

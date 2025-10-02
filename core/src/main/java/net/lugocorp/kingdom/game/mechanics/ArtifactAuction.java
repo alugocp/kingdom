@@ -154,7 +154,8 @@ public class ArtifactAuction {
             if (humanPlayerWon) {
                 view.game.human.auctionChips++;
             } else {
-                winner.ifPresent((Player p) -> ((CompPlayer) p).wishlist.doAfterAuction(view, (CompPlayer) p));
+                winner.ifPresent(
+                        (Player p) -> ((CompPlayer) p).wishlist.artifacts.doAfterAuction(view, (CompPlayer) p));
                 return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                         new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))

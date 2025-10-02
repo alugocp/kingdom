@@ -1,11 +1,10 @@
 package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.ai.Actor;
-import net.lugocorp.kingdom.ai.ArtifactWishlist;
-import net.lugocorp.kingdom.ai.UnitRecruiter;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
 import net.lugocorp.kingdom.ai.stats.Statistics;
+import net.lugocorp.kingdom.ai.wishlist.Wishlists;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -22,15 +21,22 @@ import java.util.function.Function;
  */
 public class CompPlayer extends Player {
     private final Actor actor = new Actor();
-    public final ArtifactWishlist wishlist = new ArtifactWishlist();
-    public final UnitRecruiter recruiter = new UnitRecruiter();
     public final Statistics stats = new Statistics();
+    public final Wishlists wishlist;
     public final MemoryMap memory;
 
-    public CompPlayer(int index, Point world, Fate fate, Color color) {
+    public CompPlayer(GameView view, int index, Point world, Fate fate, Color color) {
         super(String.format("Computer %d", index), fate, color);
+        this.wishlist = new Wishlists(view, this);
         this.memory = new MemoryMap(world);
         this.getFate().setPlayer(this);
+    }
+
+    /**
+     * Returns this CompPlayer's Actor instance
+     */
+    public Actor getActor() {
+        return this.actor;
     }
 
     /**

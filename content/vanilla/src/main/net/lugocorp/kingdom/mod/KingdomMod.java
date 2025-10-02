@@ -970,6 +970,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc.add("• Your units always deal critical hits at or below 25% of their max health");
                     e.blob.desc
                             .add("• 15% chance for your units to fully heal themselves when they kill an enemy unit");
+                    // TODO add strategicGoals
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_raider, "GetInitialGlyphEvent",
@@ -1017,6 +1018,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc.add("• Your first unit will have the trade glyph");
                     e.blob.desc.add("• Your vault buildings generate 5 unit points each turn");
                     e.blob.desc.add("• Your units generate 150% auction points");
+                    // TODO add strategicGoals
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_merchant, "GetInitialGlyphEvent",
@@ -1049,6 +1051,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc.add("Playstyle: Military production");
                     e.blob.desc.add("• Your battle glyph units heal for 3 damage when they don't act in a turn");
                     e.blob.desc.add("• Recruiting a battle glyph unit gives you 20 unit points");
+                    // TODO add strategicGoals
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_veteran, "EndOfTurnEvent",
@@ -1078,6 +1081,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc.add("Playstyle: Patron collection");
                     e.blob.desc.add("• Your active patrons generate +10 unit points");
                     e.blob.desc.add("• Your units generate +3 favor");
+                    // TODO add strategicGoals
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_sentinel, "GameStartEvent",
@@ -1112,6 +1116,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc.add("• Your buildings take 15% less damage");
                     e.blob.desc.add("• When you create a building the occupying unit gains 3 attack and defense");
                     e.blob.desc.add("• Recruiting a defense glyph unit gives you 25 unit points");
+                    // TODO add strategicGoals
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_sentinel, "GameStartEvent",
@@ -1159,6 +1164,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc.add("• Your first unit will have the trade glyph");
                     e.blob.desc.add("• You get a free auction chip at the start of the game");
                     e.blob.desc.add("• You get 25 unit points when you do not win an auction");
+                    // TODO add strategicGoals
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_usurper, "GetInitialGlyphEvent",
@@ -1189,6 +1195,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc.add("• Your first unit will have the nature glyph");
                     e.blob.desc.add("• Your units have a 20% chance to generate an extra item while harvesting");
                     e.blob.desc.add("• Your nature glyph units have +1 speed");
+                    // TODO add strategicGoals
                     return SideEffect.none;
                 });
         events.fate.addEventHandler(Labels.fate_forager, "GetInitialGlyphEvent",

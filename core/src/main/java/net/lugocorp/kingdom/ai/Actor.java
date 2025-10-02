@@ -37,9 +37,19 @@ public class Actor {
     }
 
     /**
+     * Returns all of this Actor's Goals
+     */
+    public Set<Goal> getGoals() {
+        return this.goals;
+    }
+
+    /**
      * Determines which Goals the CompPlayer should focus on right now
      */
     public void assessGoals(CompPlayer comp) {
+        // Add Fate-based Goals
+        this.goals.addAll(comp.getFate().strategicGoals);
+
         // Mine gold
         if (comp.stats.income.getMean() < 4.0) {
             this.goals.add(new MineGold());

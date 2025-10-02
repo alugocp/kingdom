@@ -1,12 +1,15 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A Fate is a general path the players can choose at the start of the game.
@@ -15,6 +18,7 @@ import java.util.Optional;
 public class Fate implements EventReceiver {
     public final String name;
     public final List<String> desc = new ArrayList<>();
+    public final Set<Goal> strategicGoals = new HashSet<>();
     public Optional<String> image = Optional.empty();
     private Player player = null;
 
@@ -41,15 +45,6 @@ public class Fate implements EventReceiver {
      */
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    /**
-     * Reads the EventHandlers on an Artifact and returns a score based on how many
-     * align with this Fate's playstyle
-     */
-    public int evaluateArtifact(Artifact a) {
-        // TODO implement me, I'm just random right now
-        return (int) Math.floor(Math.random() * 10.0);
     }
 
     /** {@inheritdoc} */
