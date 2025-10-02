@@ -32,11 +32,11 @@ public class CastSpellNode extends PlanNode {
      * Grants another class access to our prediction of future Events, so that they
      * can calculate a score value from it
      */
-    public float scoreByPrediction(Function<EventLog, Tuple<Path, Float>> selectPathAndScore) {
-        Tuple<Path, Float> result = selectPathAndScore.apply(this.prediction);
-        if (result.b > 0f) {
-            this.selectedPath = Optional.of(result.a);
-            return result.b;
+    public float scoreByPrediction(Function<EventLog, Optional<Tuple<Path, Float>>> selectPathAndScore) {
+        Optional<Tuple<Path, Float>> result = selectPathAndScore.apply(this.prediction);
+        if (result.map((Tuple<Path, Float> r) -> r.b > 0f).orElse(false)) {
+            this.selectedPath = Optional.of(result.get().a);
+            return result.get().b;
         }
         return 0f;
     }

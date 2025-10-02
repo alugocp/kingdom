@@ -9,9 +9,9 @@ import java.util.function.Consumer;
  * the possible consequences of its actions.
  */
 public class CapturedEvents {
+    public static final CapturedEvents instance = new CapturedEvents();
     private Optional<Point> fakePoint = Optional.empty();
     private EventLog log = null;
-    public static final CapturedEvents instance = new CapturedEvents();
 
     /**
      * Adds an Event to the log

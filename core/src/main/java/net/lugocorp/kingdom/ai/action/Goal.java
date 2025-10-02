@@ -74,15 +74,13 @@ public abstract class Goal {
      * any Plans with a score of 0
      */
     protected final Optional<Plan> getBestPlan(Iterable<Plan> plans) {
-        float score = 0f;
-        Plan result = null;
+        Optional<Plan> best = Optional.empty();
         for (Plan p : plans) {
-            if (p.score > score) {
-                score = p.score;
-                result = p;
+            if (!best.isPresent() || p.score > best.get().score) {
+                best = Optional.of(p);
             }
         }
-        return score == 0f ? Optional.empty() : Optional.of(result);
+        return best;
     }
 
     @Override

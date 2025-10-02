@@ -72,7 +72,7 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
 
         // Decide if the buy-in price is too high
         final int cost = auction.getBuyInCost(player.gold);
-        final int turnsToRecover = cost / this.player.stats.income.getAverage();
+        final int turnsToRecover = cost / Math.max(this.player.stats.income.getAverage(), 1);
         final int desire = this.getDesireForOption(artifact);
         final int chipsMissing = artifact.chips - this.player.auctionChips;
         if (cost * chipsMissing > turnsToRecover * desire) {

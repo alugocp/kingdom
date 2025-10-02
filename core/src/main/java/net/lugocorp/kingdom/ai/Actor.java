@@ -70,13 +70,13 @@ public class Actor {
     /**
      * Returns the Plan with the highest score in the given List
      */
-    private Plan getBestPlan(Iterable<Plan> plans) {
+    private Optional<Plan> getBestPlan(Iterable<Plan> plans) {
         float score = -1f;
-        Plan result = null;
+        Optional<Plan> result = Optional.empty();
         for (Plan p : plans) {
             if (p.score > score) {
+                result = Optional.of(p);
                 score = p.score;
-                result = p;
             }
         }
         return result;
@@ -124,6 +124,6 @@ public class Actor {
     private Optional<PlanNode> determinePlanNode(GameView view, Unit u) {
         Set<Plan> options = Lambda.map((Optional<Plan> o) -> o.get(), Lambda.filter((Optional<Plan> o) -> o.isPresent(),
                 Lambda.map((Goal n) -> n.suggestPlan(view, u), this.goals)));
-        return options.size() > 0 ? Optional.of(this.getBestPlan(options).root) : Optional.empty();
+        return options.size() > 0 ? this.getBestPlan(options).map((Plan p) -> p.root) : Optional.empty();
     }
 }

@@ -19,10 +19,20 @@ public class SelectedTargets {
     }
 
     /**
+     * Returns true if this instance is in active use
+     */
+    public boolean isActive() {
+        return this.path != null;
+    }
+
+    /**
      * Pops a single Point from this target Path. This is used to feed the Player
      * select() function as they cast an active Ability.
      */
     public Point popPath() {
+        if (!this.isActive()) {
+            throw new RuntimeException("Cannot select inactive targets");
+        }
         return this.path.popFromFront();
     }
 

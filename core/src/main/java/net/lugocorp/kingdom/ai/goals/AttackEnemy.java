@@ -69,12 +69,12 @@ public class AttackEnemy extends Goal {
     /** {@inheritdoc} */
     @Override
     protected float getScore(GameView view, PlanNode root) {
-        CastSpellNode node = (CastSpellNode) root;
-        Unit unit = root.unit;
+        final CastSpellNode node = (CastSpellNode) root;
+        final Unit unit = root.unit;
         return node.scoreByPrediction((EventLog prediction) -> {
-            Tuple<Path, Float> best = new Tuple<>(null, 0f);
+            Optional<Tuple<Path, Float>> best = Optional.empty();
             for (Path branch : prediction.getTargetPaths()) {
-                List<Event> events = prediction.getEvents(branch);
+                final List<Event> events = prediction.getEvents(branch);
                 boolean attackerDied = Lambda.some((Event e) -> this.hasUnitDied(e, unit), events);
                 int enemiesDied = Lambda.filter((Event e) -> this.alignedUnitDied(e, unit, false), events).size();
                 int alliesDied = Lambda.filter((Event e) -> this.alignedUnitDied(e, unit, true), events).size();
@@ -90,8 +90,8 @@ public class AttackEnemy extends Goal {
                 if (alliesDied == enemiesDied) {
                     score = (Math.min(damageDealt, 10f) / 10f);
                 }
-                if (score > best.b) {
-                    best = new Tuple(branch, score);
+                if (!best.isPresent() || score > best.get().b) {
+                    best = Optional.of(new Tuple(branch, score));
                 }
             }
             return best;

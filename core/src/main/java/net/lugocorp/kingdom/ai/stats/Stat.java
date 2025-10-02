@@ -33,13 +33,14 @@ public class Stat {
      * Returns the average value across the data (as an int)
      */
     public int getAverage() {
-        return Lambda.fold((Integer acc, Integer x) -> acc + x, 0, this.data) / this.data.size();
+        return Lambda.fold((Integer acc, Integer x) -> acc + x, 0, this.data) / Math.max(this.data.size(), 1);
     }
 
     /**
      * Returns the average value across the data (as a float)
      */
     public float getMean() {
-        return Lambda.fold((Float acc, Integer x) -> acc + (float) x, 0f, this.data) / (float) this.data.size();
+        return Lambda.fold((Float acc, Integer x) -> acc + (float) x, 0f, this.data)
+                / (float) Math.max(this.data.size(), 1);
     }
 }
