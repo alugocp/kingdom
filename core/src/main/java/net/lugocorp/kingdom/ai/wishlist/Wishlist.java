@@ -32,6 +32,16 @@ abstract class Wishlist<T> {
     }
 
     /**
+     * Sets the available options to choose from
+     */
+    public void setOptions(T[] ops) {
+        this.options.clear();
+        for (T t : ops) {
+            this.options.add(t);
+        }
+    }
+
+    /**
      * Returns the score for the given option
      */
     int getDesireForOption(T t) {

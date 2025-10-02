@@ -7,10 +7,12 @@ import net.lugocorp.kingdom.ui.views.GameView;
  */
 public class Wishlists {
     public final ArtifactWishlist artifacts;
+    public final GlyphWishlist glyphs;
     public final UnitWishlist units;
 
     public Wishlists(GameView view, CompPlayer player) {
         this.artifacts = new ArtifactWishlist(view, player);
-        this.units = new UnitWishlist(player.getActor());
+        this.units = new UnitWishlist(view, player.getActor());
+        this.glyphs = new GlyphWishlist(player.getActor());
     }
 }

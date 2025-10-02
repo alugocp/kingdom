@@ -29,15 +29,15 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
     /**
      * Handles whether or not the CompPlayer will enter into an Auction
      */
-    public void decideOnAuctionEntry(GameView view, CompPlayer player) {
+    public void decideOnAuctionEntry() {
         this.setOptions(view.game.mechanics.auction.getArtifacts());
         this.wanted = this.getDesiredOptions().getMostWanted();
 
         // Check which vault Building we should bid with
         if (this.wanted.isPresent()) {
-            for (Point p : view.game.getVaultBuildings(player)) {
-                if (this.shouldBidWithVault(view, player, this.wanted.get(), p)) {
-                    view.game.mechanics.auction.getAuction()
+            for (Point p : this.view.game.getVaultBuildings(player)) {
+                if (this.shouldBidWithVault(this.wanted.get(), p)) {
+                    this.view.game.mechanics.auction.getAuction()
                             .ifPresent((ArtifactAuction.Auction a) -> a.addBidder(player, p));
                     return;
                 }
@@ -45,19 +45,21 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
         }
 
         // Don't add a bid if we can't find a good enough vault
-        view.game.mechanics.auction.getAuction().ifPresent((ArtifactAuction.Auction a) -> a.doNotAddBidder());
+        this.view.game.mechanics.auction.getAuction().ifPresent((ArtifactAuction.Auction a) -> a.doNotAddBidder());
     }
 
     /**
      * Handles logic for the CompPlayer to select an Artifact
      */
-    public void doAfterAuction(GameView view, CompPlayer player) {
-        player.auctionChips++;
-        while (this.wanted.map((Artifact a) -> player.auctionChips >= a.chips).orElse(false)) {
+    public void doAfterAuction() {
+        // TODO make this more consistent with the way HumanPlayers do it (move to the
+        // Auction code)
+        this.player.auctionChips++;
+        while (this.wanted.map((Artifact a) -> this.player.auctionChips >= a.chips).orElse(false)) {
             final Artifact a = this.wanted.get();
-            player.auctionChips -= a.chips;
-            a.claim(view, player);
-            view.game.mechanics.auction.removeArtifact(a);
+            this.player.auctionChips -= a.chips;
+            a.claim(this.view, this.player);
+            this.view.game.mechanics.auction.removeArtifact(a);
         }
     }
 
@@ -65,20 +67,20 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
      * Determines whether or not this CompPlayer should bid in an Auction using a
      * vault at the given Point
      */
-    private boolean shouldBidWithVault(GameView view, CompPlayer player, Artifact artifact, Point p) {
-        final ArtifactAuction auction = view.game.mechanics.auction;
+    private boolean shouldBidWithVault(Artifact artifact, Point p) {
+        final ArtifactAuction auction = this.view.game.mechanics.auction;
 
         // Decide if the buy-in price is too high
         final int cost = auction.getBuyInCost(player.gold);
-        final int turnsToRecover = cost / player.stats.income.getAverage();
+        final int turnsToRecover = cost / this.player.stats.income.getAverage();
         final int desire = this.getDesireForOption(artifact);
-        final int chipsMissing = artifact.chips - player.auctionChips;
+        final int chipsMissing = artifact.chips - this.player.auctionChips;
         if (cost * chipsMissing > turnsToRecover * desire) {
             return false;
         }
 
         // Decide if the vault at this Point is a good bet
-        int value = view.game.world.getTile(p).flatMap((Tile t) -> t.building).flatMap((Building b) -> b.items)
+        int value = this.view.game.world.getTile(p).flatMap((Tile t) -> t.building).flatMap((Building b) -> b.items)
                 .map((Inventory i) -> i.getTotalGold()).orElse(0);
         return value > cost;
     }
@@ -86,7 +88,7 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
     /** {@inheritdoc} */
     @Override
     protected int getScoreForGoal(Artifact option, Goal g) {
-        final Set<String> channels = view.game.events.artifact.getChannels(option.getStratifier());
+        final Set<String> channels = this.view.game.events.artifact.getChannels(option.getStratifier());
         int score = 0;
         for (String c : channels) {
             score += g.likesEventChannel(c) ? 1 : 0;

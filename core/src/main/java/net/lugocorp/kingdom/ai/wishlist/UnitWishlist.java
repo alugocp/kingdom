@@ -2,8 +2,10 @@ package net.lugocorp.kingdom.ai.wishlist;
 import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.game.glyph.Glyph;
+import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -14,30 +16,50 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Makes decisions for a CompPlayer when they need to recruit more Units
+ * Helps a CompPlayer decide which Unit to recruit
  */
-public class UnitWishlist extends Wishlist<Glyph> {
+public class UnitWishlist extends Wishlist<Unit> {
+    private final GameView view;
 
-    public UnitWishlist(Actor actor) {
+    public UnitWishlist(GameView view, Actor actor) {
         super(actor);
+        this.view = view;
     }
 
     /** {@inheritdoc} */
     @Override
-    protected int getScoreForGoal(Glyph option, Goal g) {
-        return g.likesGlyph(option) ? 1 : 0;
+    protected int getScoreForGoal(Unit option, Goal g) {
+        int score = 0;
+        for (Glyph glyph : option.glyphs.get()) {
+            score += g.likesGlyph(glyph) ? 1 : 0;
+        }
+        for (Ability a : option.abilities.getPassives()) {
+            for (String channel : this.getAbilityChannels(a)) {
+                score += g.likesEventChannel(channel) ? 1 : 0;
+            }
+        }
+        // TODO dry run active Ability click events and check against the resulting
+        // events
+        return score;
+    }
+
+    /**
+     * Returns the Event channels associated with the given Ability
+     */
+    private Set<String> getAbilityChannels(Ability a) {
+        return this.view.game.events.ability.getChannels(a.getStratifier());
     }
 
     /**
      * Returns the Point where the CompPlayer should spawn its new Unit
      */
-    public Optional<Point> getSpawnPoint(GameView view, CompPlayer player, Glyph glyph) {
+    public Optional<Point> getSpawnPoint(CompPlayer player, Glyph glyph) {
         // Get the average value from the CompPlayer's vaults
-        final Set<Point> vaults = view.game.getVaultBuildings(player);
+        final Set<Point> vaults = this.view.game.getVaultBuildings(player);
         final Map<Point, Integer> vaultValues = new HashMap<>();
         float average = 0f;
         for (Point p : vaults) {
-            int value = view.game.world.getTile(p).flatMap((Tile t) -> t.building).flatMap((Building b) -> b.items)
+            int value = this.view.game.world.getTile(p).flatMap((Tile t) -> t.building).flatMap((Building b) -> b.items)
                     .map((Inventory i) -> i.getTotalGold()).orElse(0);
             vaultValues.put(p, value);
             average += value;
@@ -53,7 +75,8 @@ public class UnitWishlist extends Wishlist<Glyph> {
                 chosen = Optional.of(p);
             }
         }
-        // TODO AI wow this is just broken
+        // TODO wow this is just broken, erase this function and completely rewrite when
+        // we have SQL lookup for a Player's Tiles
         return Optional.empty();
     }
 }
