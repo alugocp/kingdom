@@ -35,15 +35,15 @@ public class MineGold extends Goal {
     /** {@inheritdoc} */
     @Override
     protected float getScore(GameView view, PlanNode root) {
-        MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
-        Point dest = ((MoveNode) root).dest;
-        MemoryCell cell = memory.getCell(dest);
-        if (!cell.getBuilding().isPresent()) {
+        final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
+        final Point dest = ((MoveNode) root).dest;
+        final Optional<MemoryCell> cell = memory.getCell(dest);
+        if (!cell.flatMap((MemoryCell c) -> c.getBuilding()).isPresent()) {
             return 0f;
         }
 
         // Get Building that we may move to
-        Building b = view.game.generator.building(cell.getBuilding().get(), 0, 0);
+        final Building b = view.game.generator.building(cell.flatMap((MemoryCell c) -> c.getBuilding()).get(), 0, 0);
         CapturedEvents.instance.setFakePoint(dest);
         for (Ability ability : root.unit.abilities.getPassives()) {
             if (!ability.hasEventHandler(view, "TickEvent")) {

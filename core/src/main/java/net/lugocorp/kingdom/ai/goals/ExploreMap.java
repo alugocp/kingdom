@@ -46,9 +46,9 @@ public class ExploreMap extends Goal {
         if (!view.game.world.isInBounds(p)) {
             return 0f;
         }
-        MemoryCell cell = memory.getCell(p);
-        if (!cell.isVisible()) {
-            return cell.wasEverVisible() ? 0.5f : 1f;
+        final Optional<MemoryCell> cell = memory.getCell(p);
+        if (cell.map((MemoryCell c) -> !c.isVisible()).orElse(false)) {
+            return cell.get().wasEverVisible() ? 0.5f : 1f;
         }
         return 0f;
     }

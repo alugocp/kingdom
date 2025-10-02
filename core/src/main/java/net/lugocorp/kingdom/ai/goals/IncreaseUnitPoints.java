@@ -29,9 +29,10 @@ public class IncreaseUnitPoints extends Goal {
     /** {@inheritdoc} */
     @Override
     protected float getScore(GameView view, PlanNode root) {
-        MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
-        Point dest = ((MoveNode) root).dest;
-        MemoryCell cell = memory.getCell(dest);
-        return cell.getBuilding().isPresent() || cell.getOwner().equals(root.unit.getLeader()) ? 0f : 1f;
+        final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
+        final Point dest = ((MoveNode) root).dest;
+        final Optional<MemoryCell> cell = memory.getCell(dest);
+        return cell.map((MemoryCell c) -> c.getBuilding().isPresent() || c.getOwner().equals(root.unit.getLeader()))
+                .orElse(false) ? 0f : 1f;
     }
 }

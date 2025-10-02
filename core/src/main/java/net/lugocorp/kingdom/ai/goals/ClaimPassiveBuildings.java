@@ -22,20 +22,21 @@ public class ClaimPassiveBuildings extends Goal {
     /** {@inheritdoc} */
     @Override
     public Optional<Plan> suggestPlan(GameView view, Unit u) {
-        Set<Point> targets = u.movement.getTargets(view);
+        final Set<Point> targets = u.movement.getTargets(view);
         return this.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
     }
 
     /** {@inheritdoc} */
     @Override
     protected float getScore(GameView view, PlanNode root) {
-        MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
-        Point dest = ((MoveNode) root).dest;
-        MemoryCell cell = memory.getCell(dest);
-        if (!cell.getBuilding().isPresent() || cell.getOwner().equals(root.unit.getLeader())) {
+        final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
+        final Point dest = ((MoveNode) root).dest;
+        final Optional<MemoryCell> cell = memory.getCell(dest);
+        if (cell.map((MemoryCell c) -> !c.getBuilding().isPresent() || c.getOwner().equals(root.unit.getLeader()))
+                .orElse(false)) {
             return 0f;
         }
-        Building b = view.game.generator.building(cell.getBuilding().get(), 0, 0);
+        final Building b = view.game.generator.building(cell.flatMap((MemoryCell c) -> c.getBuilding()).get(), 0, 0);
         return b.isActive() ? 0f : 1f;
     }
 }

@@ -9,8 +9,10 @@ import java.util.Optional;
  */
 public class MemoryMap {
     private final MemoryCell[][] grid;
+    private final Point size;
 
     public MemoryMap(Point p) {
+        this.size = p;
         this.grid = new MemoryCell[p.x][p.y];
         for (int a = 0; a < p.x; a++) {
             for (int b = 0; b < p.y; b++) {
@@ -22,31 +24,35 @@ public class MemoryMap {
     /**
      * Returns the MemoryCell at the given coordinate in the grid
      */
-    public MemoryCell getCell(Point p) {
-        return this.grid[p.x][p.y];
+    public Optional<MemoryCell> getCell(Point p) {
+        return p.x >= 0 && p.y >= 0 && p.x < this.size.x && p.y < this.size.y
+                ? Optional.of(this.grid[p.x][p.y])
+                : Optional.empty();
     }
 
     /**
      * Adds vision to this MemoryMap on the given MemoryCell
      */
     public void incrementVision(Tile t) {
-        MemoryCell cell = this.getCell(t.getPoint());
-        cell.hasBeenSeen = true;
-        cell.vision++;
-        cell.building = t.building.isPresent() ? Optional.of(t.building.get().getStratifier()) : Optional.empty();
-        cell.unit = t.unit.isPresent() ? Optional.of(t.unit.get().getStratifier()) : Optional.empty();
-        cell.glyph = t.getGlyph();
-        cell.owner = t.leader;
+        this.getCell(t.getPoint()).ifPresent((MemoryCell cell) -> {
+            cell.hasBeenSeen = true;
+            cell.vision++;
+            cell.building = t.building.isPresent() ? Optional.of(t.building.get().getStratifier()) : Optional.empty();
+            cell.unit = t.unit.isPresent() ? Optional.of(t.unit.get().getStratifier()) : Optional.empty();
+            cell.glyph = t.getGlyph();
+            cell.owner = t.leader;
+        });
     }
 
     /**
      * Removes vision from this MemoryMap on the given MemoryCell
      */
     public void decrementVision(Tile t) {
-        MemoryCell cell = this.getCell(t.getPoint());
-        cell.vision--;
-        if (cell.vision == 0) {
-            cell.unit = Optional.empty();
-        }
+        this.getCell(t.getPoint()).ifPresent((MemoryCell cell) -> {
+            cell.vision--;
+            if (cell.vision == 0) {
+                cell.unit = Optional.empty();
+            }
+        });
     }
 }
