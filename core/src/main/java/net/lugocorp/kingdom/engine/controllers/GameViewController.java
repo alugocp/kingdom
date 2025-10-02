@@ -3,31 +3,37 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.logic.CameraMath;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
 /**
  * Handles all user control input for the GameView
  */
-public class GameViewController extends CameraInputController {
+public class GameViewController implements InputProcessor {
+    private static final float SCROLL_SPEED = 3f;
+    private static final float ZOOM_SPEED = 1f;
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
-    private final TouchState state = new TouchState();
+    private final TouchState touch = new TouchState();
+    private final Vector3 vector = new Vector3();
     private final MenuController popupMenu;
     private final MenuController hudMenu;
     private final MenuController menu;
     private final GameView view;
+    private final Camera camera;
     private float currentZoom = 0.0f;
+    public final KeyState keys = new KeyState();
 
     public GameViewController(GameView view, MenuController menu, Camera camera) {
-        super(camera);
         this.popupMenu = new MenuController(
                 () -> view.game.mechanics.turns.canHumanPlayerAct() && view.popups.isDisplayed()
                         ? view.popups.get()
                         : Optional.empty());
         this.hudMenu = new MenuController(() -> Optional.of(view.hud));
+        this.camera = camera;
         this.menu = menu;
         this.view = view;
     }
@@ -77,6 +83,24 @@ public class GameViewController extends CameraInputController {
         this.camera.update();
     }
 
+    /**
+     * Internal function handles zooming the Camera in or out
+     */
+    private void zoomCamera(float amount) {
+        // Calculate a good value to actually zoom by (apply min/max bounds)
+        final float diff = Math.max(GameViewController.MIN_ZOOM,
+                Math.min(GameViewController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
+        this.currentZoom += diff;
+
+        // Move the Camera if we want to zoom by a nonzero amount
+        if (diff != 0) {
+            this.camera.translate(this.vector.set(camera.direction).scl(amount));
+
+            // This moveCamera() call keeps the Camera within World bounds after zooming
+            this.moveCamera(0f, 0f);
+        }
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
@@ -97,7 +121,7 @@ public class GameViewController extends CameraInputController {
         if (this.hudMenu.touchDown(x, y, pointer, button)) {
             return true;
         }
-        this.state.start(new Point(x, y));
+        this.touch.start(new Point(x, y));
         return true;
     }
 
@@ -124,10 +148,12 @@ public class GameViewController extends CameraInputController {
         if (this.hudMenu.touchUp(x, y, pointer, button)) {
             return true;
         }
-        if (!this.state.isDragging()) {
-            this.view.selector.click();
+        if (this.touch.isActive()) {
+            if (!this.touch.isDragging()) {
+                this.view.selector.click();
+            }
+            this.touch.reset();
         }
-        this.state.reset();
         return true;
     }
 
@@ -151,23 +177,31 @@ public class GameViewController extends CameraInputController {
         if (this.hudMenu.touchDragged(x, y, pointer)) {
             return true;
         }
-        final Point p = new Point(x, y);
-        final Point prev = this.state.update(p);
-        if (this.state.isDragging()) {
-            this.moveCamera((float) (prev.x - p.x) / 100, (float) (prev.y - p.y) / 100);
-            return true;
+        if (this.touch.isActive()) {
+            final Point p = new Point(x, y);
+            final Point prev = this.touch.update(p);
+            if (this.touch.isDragging()) {
+                this.moveCamera((float) (prev.x - p.x) / 100, (float) (prev.y - p.y) / 100);
+                return true;
+            }
         }
         return false;
     }
 
     /** {@inheritdoc} */
     @Override
-    public boolean zoom(float amount) {
+    public boolean touchCancelled​(int x, int y, int pointer, int button) {
+        return false;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean scrolled(float dx, float dy) {
         // Menu logic
-        if (this.popupMenu.scrolled(0, amount)) {
+        if (this.popupMenu.scrolled(0, dy)) {
             return true;
         }
-        if (this.menu.scrolled(0, amount)) {
+        if (this.menu.scrolled(0, dy)) {
             return true;
         }
         if (this.view.menu.get().isPresent() || this.view.popups.isDisplayed()) {
@@ -175,11 +209,8 @@ public class GameViewController extends CameraInputController {
         }
 
         // Handle game interface
-        final float diff = Math.max(GameViewController.MIN_ZOOM,
-                Math.min(GameViewController.MAX_ZOOM, this.currentZoom + amount)) - this.currentZoom;
-        this.currentZoom += diff;
-        this.moveCamera(0f, 0f);
-        return diff == 0 ? false : super.zoom(amount);
+        this.zoomCamera((dy > 0 ? -1 : 1) * GameViewController.ZOOM_SPEED);
+        return true;
     }
 
     /** {@inheritdoc} */
@@ -197,5 +228,37 @@ public class GameViewController extends CameraInputController {
         Point closestPoint = CameraMath.getCoordUnderScreenPoint(this.camera, x, y);
         this.view.selector.hover(closestPoint);
         return true;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean keyDown​(int keycode) {
+        // TODO have the up/down and w/s keys affect menus if they're open?
+
+        // WASD
+        this.keys.down(keycode, Keys.W, () -> this.moveCamera(0, -GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.A, () -> this.moveCamera(-GameViewController.SCROLL_SPEED, 0));
+        this.keys.down(keycode, Keys.S, () -> this.moveCamera(0, GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.D, () -> this.moveCamera(GameViewController.SCROLL_SPEED, 0));
+
+        // Arrow keys
+        this.keys.down(keycode, Keys.UP, () -> this.moveCamera(0, -GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.LEFT, () -> this.moveCamera(-GameViewController.SCROLL_SPEED, 0));
+        this.keys.down(keycode, Keys.DOWN, () -> this.moveCamera(0, GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.RIGHT, () -> this.moveCamera(GameViewController.SCROLL_SPEED, 0));
+        return false;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean keyUp​(int keycode) {
+        this.keys.up(keycode);
+        return false;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean keyTyped​(char character) {
+        return false;
     }
 }

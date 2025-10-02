@@ -146,7 +146,8 @@ public class GameView implements View {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
-        this.controller.update();
+        this.controller.keys.performActions();
+        // this.camera.update();
 
         // Update Animations
         this.animations.update(this, dt);

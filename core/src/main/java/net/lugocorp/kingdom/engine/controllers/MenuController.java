@@ -9,7 +9,8 @@ import java.util.function.Supplier;
  * Handles all user input meant for Menu objects in the game
  */
 public class MenuController implements InputProcessor {
-    private final TouchState state = new TouchState();
+    private static final int SCROLL_SPEED = 20;
+    private final TouchState touch = new TouchState();
     private final Supplier<Optional<Menu>> getMenu;
 
     public MenuController(Supplier<Optional<Menu>> getMenu) {
@@ -39,7 +40,7 @@ public class MenuController implements InputProcessor {
         }
         final Point p = new Point(x, y);
         if (this.isInMenu(p)) {
-            this.state.start(p);
+            this.touch.start(p);
             return true;
         }
         return false;
@@ -48,12 +49,12 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
-        if (!this.isRelevant() || !this.state.isActive()) {
+        if (!this.isRelevant() || !this.touch.isActive()) {
             return false;
         }
         final Point p = new Point(x, y);
-        final Point prev = this.state.update(p);
-        if (this.state.isDragging()) {
+        final Point prev = this.touch.update(p);
+        if (this.touch.isDragging()) {
             this.scrolled(0, prev.y - y);
         }
         return true;
@@ -62,20 +63,20 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchUp​(int x, int y, int pointer, int button) {
-        if (!this.isRelevant() || !this.state.isActive()) {
+        if (!this.isRelevant() || !this.touch.isActive()) {
             return false;
         }
-        if (!this.state.isDragging()) {
+        if (!this.touch.isDragging()) {
             this.getMenu.get().get().click(new Point(x, y));
         }
-        this.state.reset();
+        this.touch.reset();
         return true;
     }
 
     /** {@inheritdoc} */
     @Override
     public boolean scrolled​(float dx, float dy) {
-        this.getMenu.get().ifPresent((Menu m) -> m.scroll((int) -dy));
+        this.getMenu.get().ifPresent((Menu m) -> m.scroll((dy > 0 ? -1 : 1) * MenuController.SCROLL_SPEED));
         return false;
     }
 
