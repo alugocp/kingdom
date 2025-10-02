@@ -150,7 +150,7 @@ public class NewUnit {
             p.unitPoints -= NewUnit.MAX_UNIT_POINTS;
             view.game.setLeader(view, u, p);
             u.spawn(view);
-            p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u));
+            p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u)).execute();
         });
     }
 }

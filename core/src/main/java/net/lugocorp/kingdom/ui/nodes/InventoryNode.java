@@ -212,7 +212,7 @@ public class InventoryNode implements MenuNode {
     private void unitConsumesItem(Item item) {
         Unit unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit).get();
         Events.ItemConsumedEvent event = new Events.ItemConsumedEvent(item, unit);
-        item.handleEvent(this.view, event);
+        item.handleEvent(this.view, event).execute();
         if (event.consumed) {
             this.items.remove(item);
         }
