@@ -1,8 +1,10 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -197,7 +199,13 @@ public class WorldGenerator {
             // Pick a starting point from the available candidates and spawn a Vault
             final Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
             final Player player = a == 0 ? g.human : g.addComputerPlayer(view, a);
-            g.generator.building("Vault", p.x, p.y).spawn(view);
+            // TODO figure out how we can avoid using hard-coded labels here (what if the
+            // mods define other values?)
+            final Building b = g.generator.building("Vault", p.x, p.y);
+            for (int c = 0; c < 5; c++) {
+                b.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
+            }
+            b.spawn(view);
             g.getInitialUnit(view, player, p.x, p.y).spawn(view);
             startingPoints.get(startingPointIndex++).remove(p);
         }

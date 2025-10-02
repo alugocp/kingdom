@@ -18,8 +18,8 @@ import java.util.function.Function;
  * Represents a human or AI that is playing the game
  */
 public abstract class Player {
+    public static final int INITIAL_GOLD = 100;
     private Fate fate;
-    public static final int INITIAL_GOLD = 50;
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
