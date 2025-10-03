@@ -12,7 +12,7 @@ import net.lugocorp.kingdom.ui.hud.Logger;
 import net.lugocorp.kingdom.ui.hud.OverlayLayer;
 import net.lugocorp.kingdom.ui.hud.TileMenu;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
-import net.lugocorp.kingdom.utils.logic.CameraMath;
+import net.lugocorp.kingdom.utils.logic.CameraLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
@@ -123,7 +123,7 @@ public class GameView implements View {
      * Returns the Point in the World that the Camera is currently centered on
      */
     public Point getCenteredPoint() {
-        return CameraMath.getCoordUnderScreenPoint(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        return CameraLogic.getCoordUnderScreenPoint(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
     }
 
     /**

@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.collision.Ray;
 /**
  * This class contains logic for converting between world and screen coordinates
  */
-public class CameraMath {
+public class CameraLogic {
 
     /**
      * Returns the screen coordinates for the given Point in the World
@@ -36,7 +36,7 @@ public class CameraMath {
     public static Point getCoordUnderScreenPoint(Camera camera, int x, int y) {
         // Cast out a ray from the mouseover point and find its point along the Y = 0
         // plane. Then find which hexagon that point falls in on the world grid.
-        Vector3 endpoint = CameraMath.getScreenPointOnSurface(camera, x, y);
+        Vector3 endpoint = CameraLogic.getScreenPointOnSurface(camera, x, y);
         int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
         float lowestDist2 = Integer.MAX_VALUE;
         Point closestPoint = null;

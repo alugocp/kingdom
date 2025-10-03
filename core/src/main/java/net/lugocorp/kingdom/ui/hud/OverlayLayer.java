@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.logic.CameraMath;
+import net.lugocorp.kingdom.utils.logic.CameraLogic;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,7 +23,7 @@ public class OverlayLayer {
      * Adds a new Overlay to this instance
      */
     public void add(String label, int color, Point p) {
-        final float[] origin = CameraMath.getScreenPointFromTile(this.view.getCamera(), p);
+        final float[] origin = CameraLogic.getScreenPointFromTile(this.view.getCamera(), p);
         this.overlays.add(new Overlay(label, color, origin));
     }
 
