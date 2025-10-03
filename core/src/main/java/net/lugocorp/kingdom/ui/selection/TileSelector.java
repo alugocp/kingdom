@@ -23,6 +23,13 @@ public class TileSelector {
     }
 
     /**
+     * Returns the currently hovered Point
+     */
+    public Optional<Point> getHovered() {
+        return this.hovered;
+    }
+
+    /**
      * Sets the current TileSelectMode
      */
     private void setMode(TileSelectMode mode) {

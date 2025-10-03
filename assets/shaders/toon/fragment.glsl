@@ -29,6 +29,7 @@ uniform int u_distanceBorder;
 uniform int u_domainBorder;
 uniform int u_tileBorder;
 uniform int u_selection;
+uniform bool u_lightOutline;
 uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
 varying vec3 v_lightDiffuse;
@@ -82,11 +83,11 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
 
 void main() {
     // Return black color for fog of war
-    if (u_vision == NO_VISIBILITY || outline()) {
+    if (u_vision == NO_VISIBILITY) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
         // Allow for tile selection to be visible beneath fog of war
-        if (u_vision == NO_VISIBILITY && u_selection > 0) {
+        if (u_selection > 0) {
             float coeff = 0.2 * float(u_selection);
             gl_FragColor.x += coeff;
             gl_FragColor.y += coeff;
@@ -94,8 +95,16 @@ void main() {
         }
 
         // Allow for distance borders to be visible beneath fog of war
-        if (u_vision == NO_VISIBILITY) {
-            applyBorder(u_distanceBorder, vec4(1.0, 1.0, 1.0, 1.0), u_borderTexture3, u_borderTexture4);
+        applyBorder(u_distanceBorder, vec4(1.0, 1.0, 1.0, 1.0), u_borderTexture3, u_borderTexture4);
+        return;
+    }
+
+    // Apply the outline color
+    if (outline()) {
+        if (u_lightOutline) {
+            gl_FragColor = vec4(0.25, 0.25, 0.25, 1.0);
+        } else {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         }
         return;
     }

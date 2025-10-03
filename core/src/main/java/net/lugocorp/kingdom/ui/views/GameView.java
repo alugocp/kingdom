@@ -59,6 +59,7 @@ public class GameView implements View {
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
         this.menu = new TileMenu(this);
+        this.av.getToonShader().setTileSelector(this.selector);
     }
 
     /**

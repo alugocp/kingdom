@@ -1,7 +1,10 @@
 package net.lugocorp.kingdom.engine.shaders;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
+import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.engine.userdata.TileUserData;
+import net.lugocorp.kingdom.ui.selection.TileSelector;
 import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,6 +34,7 @@ import java.util.Optional;
 public class ToonShader implements Shader {
     private static final int TIMER_MAX = 12000;
     private final FrameBuffer frameBuffer;
+    private Optional<TileSelector> tileSelector = Optional.empty();
     private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
@@ -62,6 +66,7 @@ public class ToonShader implements Shader {
     private int u_nighttime;
     private int u_selection;
     private int u_vision;
+    private int u_lightOutline;
     private int u_domainBorder;
     private int u_distanceBorder;
     private int u_borderColor;
@@ -98,6 +103,7 @@ public class ToonShader implements Shader {
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_selection = this.program.getUniformLocation("u_selection");
         this.u_vision = this.program.getUniformLocation("u_vision");
+        this.u_lightOutline = this.program.getUniformLocation("u_lightOutline");
         this.u_domainBorder = this.program.getUniformLocation("u_domainBorder");
         this.u_distanceBorder = this.program.getUniformLocation("u_distanceBorder");
         this.u_borderColor = this.program.getUniformLocation("u_borderColor");
@@ -124,6 +130,13 @@ public class ToonShader implements Shader {
      */
     public void setTextureLoader(TextureLoader textures) {
         this.textures = Optional.of(textures);
+    }
+
+    /**
+     * Sets this Shader's TileSelector instance
+     */
+    public void setTileSelector(TileSelector tileSelector) {
+        this.tileSelector = Optional.of(tileSelector);
     }
 
     /** {@inheritdoc} */
@@ -234,6 +247,14 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_distanceBorder, 0);
             this.program.setUniformi(this.u_vision, 2);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
+
+            // Make the outline change color if this Unit / Building is being hovered over
+            if (renderable.userData != null && renderable.userData instanceof CoordUserData) {
+                final CoordUserData data = (CoordUserData) renderable.userData;
+                this.program.setUniformi(this.u_lightOutline,
+                        this.tileSelector.flatMap((TileSelector ts) -> ts.getHovered())
+                                .map((Point p) -> p.equals(data.point)).orElse(false) ? 1 : 0);
+            }
         }
 
         // Set context and render
