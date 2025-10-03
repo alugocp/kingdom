@@ -14,12 +14,13 @@ import java.util.Optional;
  */
 public class Menu {
     private static final int MINI_MENU_WIDTH = 250;
-    private static final int MARGIN = 10;
+    private static final int MARGIN = 15;
     private final boolean tall;
     private final int width;
     private Optional<Point> prev = Optional.empty();
     private Optional<Point> curr = Optional.empty();
     private Optional<Menu> mini = Optional.empty();
+    private boolean scrollBarHighlighted = false;
     private boolean outlined = false;
     private int offset = 0;
     private int x;
@@ -52,7 +53,7 @@ public class Menu {
     /**
      * Returns true if this Menu should allow for scrolling
      */
-    private boolean shouldScroll() {
+    public boolean shouldScroll() {
         return this.root.getHeight() > this.getHeight();
     }
 
@@ -63,6 +64,27 @@ public class Menu {
         if (this.shouldScroll()) {
             this.offset = Math.max(0, Math.min(this.root.getHeight() - this.getHeight(), this.offset + dy));
         }
+    }
+
+    /**
+     * Returns the bounds of this Menu's scroll gutter
+     */
+    public Optional<Rect> getGutterBounds() {
+        return this.shouldScroll()
+                ? Optional.of(new Rect(this.x + this.width - Menu.MARGIN, this.y, Menu.MARGIN, this.getHeight()))
+                : Optional.empty();
+    }
+
+    /**
+     * Returns the bounds of this Menu's scroll bar
+     */
+    public Optional<Rect> getScrollBarBounds() {
+        final int h = this.getHeight();
+        final int rh = this.root.getHeight();
+        return this.shouldScroll()
+                ? Optional.of(new Rect(this.x + this.width - Menu.MARGIN, this.y + (this.offset * h / rh), Menu.MARGIN,
+                        (h * h) / rh))
+                : Optional.empty();
     }
 
     /**
@@ -131,12 +153,13 @@ public class Menu {
 
         // Draw scrollbar
         if (this.shouldScroll()) {
-            final int rh = this.root.getHeight();
-            Rect flip = Coords.screen.flip(this.x + this.width - Menu.MARGIN, this.y + (this.offset * h / rh),
-                    Menu.MARGIN, (h * h) / rh);
+            final Rect gutter = Coords.screen.flip(this.getGutterBounds().get());
+            final Rect scrollbar = Coords.screen.flip(this.getScrollBarBounds().get());
             av.shapes.begin(ShapeType.Filled);
-            av.shapes.setColor(Color.TEAL);
-            av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
+            av.shapes.setColor(Color.GRAY);
+            av.shapes.rect(gutter.x, gutter.y, gutter.w, gutter.h);
+            av.shapes.setColor(this.scrollBarHighlighted ? Color.BLUE : Color.TEAL);
+            av.shapes.rect(scrollbar.x, scrollbar.y, scrollbar.w, scrollbar.h);
             av.shapes.end();
         }
 
@@ -183,6 +206,7 @@ public class Menu {
                 p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
         this.prev = curr;
         this.curr = Optional.of(p1);
+        this.scrollBarHighlighted = this.getScrollBarBounds().map((Rect r) -> r.contains(p1)).orElse(false);
         if (this.prev.isPresent()) {
             this.root.mouseMoved(bounds, this.prev.get(), this.curr.get());
             if (bounds.contains(this.prev.get()) || bounds.contains(this.curr.get())) {

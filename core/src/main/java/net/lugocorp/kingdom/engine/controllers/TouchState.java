@@ -26,6 +26,13 @@ class TouchState {
     }
 
     /**
+     * Returns this instance's origin Point
+     */
+    Optional<Point> getOrigin() {
+        return this.origin;
+    }
+
+    /**
      * Begins a new transaction with this state
      */
     void start(Point p) {

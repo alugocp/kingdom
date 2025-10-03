@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.engine.controllers;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -32,6 +33,14 @@ public class MenuController implements InputProcessor {
         return this.getMenu.get().isPresent();
     }
 
+    /**
+     * Returns true if we're clicking / dragging on the Menu's scroll gutter
+     */
+    private boolean startedInScrollGutter() {
+        return this.touch.getOrigin().map((Point o) -> this.getMenu.get().flatMap((Menu m) -> m.getGutterBounds())
+                .map((Rect r) -> r.contains(o)).orElse(false)).orElse(false);
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
@@ -55,7 +64,7 @@ public class MenuController implements InputProcessor {
         final Point p = new Point(x, y);
         final Point prev = this.touch.update(p);
         if (this.touch.isDragging()) {
-            this.scrolled(0, prev.y - y);
+            this.scrolled(0, (prev.y - y) * (this.startedInScrollGutter() ? 1 : -1));
         }
         return true;
     }

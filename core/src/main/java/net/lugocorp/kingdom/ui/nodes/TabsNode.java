@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.utils.code.Tuple;
-import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -23,7 +22,7 @@ public class TabsNode implements MenuNode {
     private int selected = 0;
 
     public TabsNode(AudioVideo av) {
-        this.selectedTabColor = Colors.fromHex(0x333333);
+        this.selectedTabColor = Color.GRAY;
         this.av = av;
     }
 
