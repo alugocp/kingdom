@@ -14,6 +14,7 @@ import java.util.function.Supplier;
  * Like a TextNode but it stands out and does something when you click it
  */
 public class ButtonNode extends TextNode {
+    private static final int OUTER_MARGIN = 2;
     private final Runnable action;
     private Optional<Supplier<Boolean>> criteria = Optional.empty();
     private boolean disabled = false;
@@ -30,7 +31,7 @@ public class ButtonNode extends TextNode {
      */
     private Color getColor() {
         if (this.disabled) {
-            return ColorScheme.TEXT; // TODO update
+            return ColorScheme.DISABLE;
         }
         return this.hovered ? ColorScheme.HOVER : ColorScheme.BUTTON;
     }
@@ -79,13 +80,21 @@ public class ButtonNode extends TextNode {
         return this;
     }
 
+    /**
+     * Converts a set of bounds into this ButtonNode's inner bounds
+     */
+    private Rect getInnerBounds(Rect b) {
+        return new Rect(b.x + ButtonNode.OUTER_MARGIN, b.y + ButtonNode.OUTER_MARGIN,
+                b.w - (ButtonNode.OUTER_MARGIN * 2), b.h - (ButtonNode.OUTER_MARGIN * 2));
+    }
+
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         this.criteria.ifPresent((Supplier<Boolean> supplier) -> this.enable(supplier.get()));
 
         // Draw the background
-        final Rect bg = Coords.screen.flip(bounds);
+        final Rect bg = Coords.screen.flip(this.getInnerBounds(bounds));
         av.shapes.begin(ShapeType.Filled);
         av.shapes.setColor(this.getColor());
         av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
@@ -98,7 +107,8 @@ public class ButtonNode extends TextNode {
     /** {@inheritdoc} */
     @Override
     public void click(Rect bounds, Point p) {
-        if (!this.disabled) {
+        final Rect inner = this.getInnerBounds(bounds);
+        if (!this.disabled && inner.contains(p)) {
             this.av.loaders.sounds.play(this.ping);
             this.action.run();
         }
@@ -107,8 +117,9 @@ public class ButtonNode extends TextNode {
     /** {@inheritdoc} */
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
-        final boolean prevIn = bounds.contains(prev);
-        final boolean currIn = bounds.contains(curr);
+        final Rect inner = this.getInnerBounds(bounds);
+        final boolean prevIn = inner.contains(prev);
+        final boolean currIn = inner.contains(curr);
         if (!prevIn && currIn) {
             this.hovered = true;
         }

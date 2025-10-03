@@ -41,6 +41,13 @@ public class MenuController implements InputProcessor {
                 .map((Rect r) -> r.contains(o)).orElse(false)).orElse(false);
     }
 
+    /**
+     * Causes the underlying Menu to scroll
+     */
+    private void scroll(int dy) {
+        this.getMenu.get().ifPresent((Menu m) -> m.scroll(dy));
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
@@ -64,8 +71,7 @@ public class MenuController implements InputProcessor {
         final Point p = new Point(x, y);
         final Point prev = this.touch.update(p);
         if (this.touch.isDragging()) {
-            // TODO scrolling this way should actually use dy, not the pre-set speed value
-            this.scrolled(0, (prev.y - y) * (this.startedInScrollGutter() ? 1 : -1));
+            this.scroll((y - prev.y) * (this.startedInScrollGutter() ? 1 : -1));
         }
         return true;
     }
@@ -86,7 +92,7 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean scrolled​(float dx, float dy) {
-        this.getMenu.get().ifPresent((Menu m) -> m.scroll((dy > 0 ? -1 : 1) * MenuController.SCROLL_SPEED));
+        this.scroll((dy > 0 ? -1 : 1) * MenuController.SCROLL_SPEED);
         return false;
     }
 

@@ -13,4 +13,5 @@ public class ColorScheme {
     public static final Color BUTTON = Colors.fromHex(0x4FB0DC);
     public static final Color HOVER = Colors.fromHex(0x7DC2E2);
     public static final Color ERROR = Colors.fromHex(0xDD3333);
+    public static final Color DISABLE = Colors.fromHex(0xBBBBBB);
 }
