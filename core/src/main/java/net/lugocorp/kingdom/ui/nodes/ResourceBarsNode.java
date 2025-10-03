@@ -21,7 +21,7 @@ public class ResourceBarsNode implements MenuNode {
     private int textWidth = 0;
 
     public ResourceBarsNode(AudioVideo av, ResourceBarsNode.Bar... bars) {
-        this.font = av.fonts.getFont(20, 0xffffff);
+        this.font = av.fonts.getFont(20, ColorScheme.TEXT);
         this.bars = bars;
         this.av = av;
     }

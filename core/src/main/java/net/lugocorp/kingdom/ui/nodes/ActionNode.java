@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.Optional;
 
 /**
@@ -21,13 +20,11 @@ public class ActionNode extends ButtonNode {
     }
 
     /** {@inheritdoc} */
-    @Override
-    protected BitmapFont getFont() {
-        if (!this.isEnabled() && this.isHovered()) {
-            return this.av.fonts.getFont(24, 0xdddddd);
-        }
-        return super.getFont();
-    }
+    /*
+     * @Override protected BitmapFont getFont() { if (!this.isEnabled() &&
+     * this.isHovered()) { return this.av.fonts.getFont(24, 0xdddddd); } return
+     * super.getFont(); }
+     */
 
     /** {@inheritdoc} */
     @Override

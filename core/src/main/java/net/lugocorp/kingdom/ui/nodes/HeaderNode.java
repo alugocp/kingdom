@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
@@ -18,6 +19,6 @@ public class HeaderNode extends TextNode {
 
     /** {@inheritdoc} */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(36, 0xffffff);
+        return this.av.fonts.getFont(36, ColorScheme.TEXT);
     }
 }

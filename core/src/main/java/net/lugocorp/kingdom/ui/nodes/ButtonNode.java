@@ -1,8 +1,12 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
+import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -21,13 +25,20 @@ public class ButtonNode extends TextNode {
         this.action = action;
     }
 
+    /**
+     * Returns the current background Color
+     */
+    private Color getColor() {
+        if (this.disabled) {
+            return ColorScheme.TEXT; // TODO update
+        }
+        return this.hovered ? ColorScheme.HOVER : ColorScheme.BUTTON;
+    }
+
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        if (this.disabled) {
-            return this.av.fonts.getFont(24, 0xffffff);
-        }
-        return this.hovered ? this.av.fonts.getFont(24, 0xbfffff) : this.av.fonts.getFont(24, 0x72ffff);
+        return this.av.fonts.getFont(24, ColorScheme.TEXT);
     }
 
     /**
@@ -72,6 +83,15 @@ public class ButtonNode extends TextNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         this.criteria.ifPresent((Supplier<Boolean> supplier) -> this.enable(supplier.get()));
+
+        // Draw the background
+        final Rect bg = Coords.screen.flip(bounds);
+        av.shapes.begin(ShapeType.Filled);
+        av.shapes.setColor(this.getColor());
+        av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
+        av.shapes.end();
+
+        // Draw the actual text
         super.draw(av, bounds);
     }
 

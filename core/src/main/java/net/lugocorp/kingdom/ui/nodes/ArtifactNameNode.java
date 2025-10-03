@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
@@ -14,6 +15,6 @@ class ArtifactNameNode extends TextNode {
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(20, 0xffffff);
+        return this.av.fonts.getFont(20, ColorScheme.TEXT);
     }
 }

@@ -19,13 +19,13 @@ import java.util.List;
 public class BadgeNode extends TextNode {
     private static final int BADGE_MARGIN = 2;
     private final List<Point> slashes = new ArrayList<>();
-    private final int foreground;
+    private final Color foreground;
     private final Color color;
 
     public BadgeNode(AudioVideo av, int background, int foreground, String message) {
         super(av, message);
+        this.foreground = Colors.fromHex(foreground);
         this.color = Colors.fromHex(background);
-        this.foreground = foreground;
     }
 
     /** {@inheritdoc} */

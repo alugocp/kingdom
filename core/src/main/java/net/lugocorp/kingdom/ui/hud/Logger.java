@@ -41,7 +41,7 @@ public class Logger {
         }
 
         // Add this message to the log
-        layout.setText(this.view.av.fonts.getFont(0xffffff), message);
+        layout.setText(this.view.av.fonts.getFont(ColorScheme.TEXT), message);
         messages.add(0, new LogMessage(message, layout.width, layout.height));
         if (this.messages.size() > Logger.MAX_ROWS) {
             messages.remove(messages.size() - 1);
@@ -104,7 +104,7 @@ public class Logger {
 
         // Draw the text
         this.view.av.sprites.begin();
-        BitmapFont font = this.view.av.fonts.getFont(18, 0xff0000);
+        BitmapFont font = this.view.av.fonts.getFont(18, ColorScheme.ERROR);
         for (int a = 0; a < rows; a++) {
             LogMessage lm = this.messages.get(a);
             font.setColor(ColorScheme.ERROR.r, ColorScheme.ERROR.g, ColorScheme.ERROR.b, alphas[a]);

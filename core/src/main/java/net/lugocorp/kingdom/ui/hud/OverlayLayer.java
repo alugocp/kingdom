@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.logic.CameraLogic;
+import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,7 +41,7 @@ public class OverlayLayer {
             }
 
             // Draw the Overlay
-            final BitmapFont font = this.view.av.fonts.getFont(24, o.color);
+            final BitmapFont font = this.view.av.fonts.getFont(24, Colors.fromHex(o.color));
             final Color c = font.getColor();
             font.setColor(c.r, c.g, c.b, o.getOpacity());
             font.draw(this.view.av.sprites, o.label, o.origin[0], o.origin[1] + (progress * 50f));

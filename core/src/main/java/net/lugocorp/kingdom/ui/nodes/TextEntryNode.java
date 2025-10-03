@@ -30,7 +30,7 @@ public class TextEntryNode implements MenuNode {
 
     public TextEntryNode(AudioVideo av, String initial, Consumer<String> entered) {
         this.builder = new StringBuilder(initial);
-        this.font = av.fonts.getFont(0xffffff);
+        this.font = av.fonts.getFont(ColorScheme.TEXT);
         this.entered = entered;
         this.av = av;
 
