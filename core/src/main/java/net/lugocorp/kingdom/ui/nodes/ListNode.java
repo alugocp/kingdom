@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class ListNode implements MenuNode {
         if (this.border) {
             Rect flip = Coords.screen.flip(bounds.x, bounds.y, bounds.w, bounds.h - 1);
             av.shapes.begin(ShapeType.Line);
-            av.shapes.setColor(Color.WHITE);
+            av.shapes.setColor(ColorScheme.OUTLINE);
             av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
             av.shapes.end();
         }

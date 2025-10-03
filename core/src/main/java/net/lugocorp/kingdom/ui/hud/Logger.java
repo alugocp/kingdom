@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.hud;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -95,7 +95,7 @@ public class Logger {
             alphas[a] = (a == 0 && this.timer > Logger.MAX_TIMER - Logger.FADE_OUT)
                     ? (float) (Logger.MAX_TIMER - this.timer) / Logger.FADE_OUT
                     : 1f;
-            this.view.av.shapes.setColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, alphas[a]);
+            this.view.av.shapes.setColor(ColorScheme.MENU.r, ColorScheme.MENU.g, ColorScheme.MENU.b, alphas[a]);
             this.view.av.shapes.rect(rects[a].x - Logger.MARGIN, rects[a].y, rects[a].w + (Logger.MARGIN * 2),
                     rects[a].h);
             y += lm.h + Logger.MARGIN;
@@ -107,10 +107,10 @@ public class Logger {
         BitmapFont font = this.view.av.fonts.getFont(18, 0xff0000);
         for (int a = 0; a < rows; a++) {
             LogMessage lm = this.messages.get(a);
-            font.setColor(Color.RED.r, Color.RED.g, Color.RED.b, alphas[a]);
+            font.setColor(ColorScheme.ERROR.r, ColorScheme.ERROR.g, ColorScheme.ERROR.b, alphas[a]);
             font.draw(this.view.av.sprites, lm.message, rects[a].x, rects[a].y + lm.h + Logger.MARGIN);
         }
-        font.setColor(Color.RED);
+        font.setColor(ColorScheme.ERROR);
         this.view.av.sprites.end();
 
         // Remove a message when the timer runs out

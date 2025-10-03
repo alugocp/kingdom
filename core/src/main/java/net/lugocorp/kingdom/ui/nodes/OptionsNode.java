@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class OptionsNode implements MenuNode {
         final int w = bounds.w - OptionsNode.MARGIN - (OptionsNode.RADIUS * 2);
         for (int a = 0; a < this.options.size(); a++) {
             final Rect r = new Rect(x, y, w, this.options.get(a).getHeight());
-            av.shapes.setColor(Color.TEAL);
+            av.shapes.setColor(ColorScheme.BUTTON);
             av.shapes.begin(this.index == a ? ShapeType.Filled : ShapeType.Line);
             av.shapes.circle(bounds.x + OptionsNode.RADIUS, Coords.SIZE.y - y - (OptionsNode.RADIUS * 2),
                     OptionsNode.RADIUS);

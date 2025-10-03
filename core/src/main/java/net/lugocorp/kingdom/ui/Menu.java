@@ -1,11 +1,9 @@
 package net.lugocorp.kingdom.ui;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
@@ -141,7 +139,7 @@ public class Menu {
 
         // Draw black background
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(Color.BLACK);
+        av.shapes.setColor(ColorScheme.MENU);
         av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
         av.shapes.end();
 
@@ -157,9 +155,9 @@ public class Menu {
             final Rect gutter = Coords.screen.flip(this.getGutterBounds().get());
             final Rect scrollbar = Coords.screen.flip(this.getScrollBarBounds().get());
             av.shapes.begin(ShapeType.Filled);
-            av.shapes.setColor(Colors.fromHex(0x333333));
+            av.shapes.setColor(ColorScheme.GUTTER);
             av.shapes.rect(gutter.x, gutter.y, gutter.w, gutter.h);
-            av.shapes.setColor(this.scrollBarHighlighted ? Colors.fromHex(0x7DC2E2) : Colors.fromHex(0x4FB0DC));
+            av.shapes.setColor(this.scrollBarHighlighted ? ColorScheme.HOVER : ColorScheme.BUTTON);
             av.shapes.rect(scrollbar.x, scrollbar.y, scrollbar.w, scrollbar.h);
             av.shapes.end();
         }
@@ -167,7 +165,7 @@ public class Menu {
         // Draw Menu outline
         if (this.outlined) {
             av.shapes.begin(ShapeType.Line);
-            av.shapes.setColor(Color.WHITE);
+            av.shapes.setColor(ColorScheme.OUTLINE);
             av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
             av.shapes.end();
         }

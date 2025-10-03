@@ -1,12 +1,12 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -79,14 +79,14 @@ public class TextEntryNode implements MenuNode {
         Rect flip2 = Coords.screen.flip(bounds.x + (this.charWidth * (this.cursor - this.delta)),
                 bounds.y + TextEntryNode.MARGIN, this.charWidth, bounds.h - (TextEntryNode.MARGIN * 2));
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(Color.TEAL);
+        av.shapes.setColor(ColorScheme.BUTTON);
         av.shapes.rect(flip2.x, flip2.y, flip2.w, flip2.h);
         av.shapes.end();
 
         // Draw the selected highlight
         Rect flip1 = Coords.screen.flip(bounds.x, bounds.y, bounds.w, bounds.h);
         av.shapes.begin(ShapeType.Line);
-        av.shapes.setColor(this.selected ? Color.TEAL : Color.WHITE);
+        av.shapes.setColor(this.selected ? ColorScheme.BUTTON : ColorScheme.OUTLINE);
         av.shapes.rect(flip1.x, flip1.y, flip1.w, flip1.h);
         av.shapes.end();
 

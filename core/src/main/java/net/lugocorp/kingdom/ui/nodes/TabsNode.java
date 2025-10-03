@@ -1,13 +1,12 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.utils.code.Tuple;
-import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +17,10 @@ import java.util.List;
 public class TabsNode implements MenuNode {
     private final List<Tuple<String, MenuNode>> data = new ArrayList<>();
     private final RowNode tabs = new RowNode();
-    private final Color selectedTabColor;
     private final AudioVideo av;
     private int selected = 0;
 
     public TabsNode(AudioVideo av) {
-        this.selectedTabColor = Colors.fromHex(0x333333);
         this.av = av;
     }
 
@@ -59,7 +56,7 @@ public class TabsNode implements MenuNode {
         final int w = bounds.w / this.data.size();
         final int h = this.tabs.getHeight();
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(this.selectedTabColor);
+        av.shapes.setColor(ColorScheme.GUTTER);
         av.shapes.rect(bounds.x + (w * this.selected), Coords.SIZE.y - bounds.y - h, w, h);
         av.shapes.end();
 

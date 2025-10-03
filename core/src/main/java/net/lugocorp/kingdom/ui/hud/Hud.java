@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.HudInfoNode;
@@ -11,7 +12,6 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.SettingsView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
@@ -92,7 +92,7 @@ public class Hud extends Menu {
 
         // Draw a white bar at the bottom of the HUD
         av.shapes.begin(ShapeType.Line);
-        av.shapes.setColor(Color.WHITE);
+        av.shapes.setColor(ColorScheme.OUTLINE);
         av.shapes.rect(0, Coords.SIZE.y - this.getHeight(), Coords.SIZE.x, 1);
         av.shapes.end();
 

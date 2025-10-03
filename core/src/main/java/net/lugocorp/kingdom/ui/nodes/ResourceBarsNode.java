@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -63,7 +63,7 @@ public class ResourceBarsNode implements MenuNode {
 
         // Draw white outline on the resource bars
         av.shapes.begin(ShapeType.Line);
-        av.shapes.setColor(Color.WHITE);
+        av.shapes.setColor(ColorScheme.OUTLINE);
         for (int a = 0; a < this.bars.length; a++) {
             final int y = yInitial - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
             av.shapes.rect(barX, y, barWidth, this.font.getLineHeight());

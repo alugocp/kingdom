@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility to handle Color values
+ * Utility to convert between Colors and hexadecimal integers
  */
 public class Colors {
     private static Map<Integer, Color> cache = new HashMap<>();

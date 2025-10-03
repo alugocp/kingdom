@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -81,7 +82,7 @@ public class BadgeNode extends TextNode {
 
         // Draw a gap over any slashes
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(Color.BLACK);
+        av.shapes.setColor(ColorScheme.MENU);
         for (Point slash : this.slashes) {
             int sy = yInitial - (lineHeight * slash.y);
             int sx = bounds.x + slash.x;
