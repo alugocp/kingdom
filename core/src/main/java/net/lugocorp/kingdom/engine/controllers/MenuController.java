@@ -64,6 +64,7 @@ public class MenuController implements InputProcessor {
         final Point p = new Point(x, y);
         final Point prev = this.touch.update(p);
         if (this.touch.isDragging()) {
+            // TODO scrolling this way should actually use dy, not the pre-set speed value
             this.scrolled(0, (prev.y - y) * (this.startedInScrollGutter() ? 1 : -1));
         }
         return true;

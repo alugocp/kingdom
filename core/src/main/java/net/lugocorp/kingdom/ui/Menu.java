@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -156,9 +157,9 @@ public class Menu {
             final Rect gutter = Coords.screen.flip(this.getGutterBounds().get());
             final Rect scrollbar = Coords.screen.flip(this.getScrollBarBounds().get());
             av.shapes.begin(ShapeType.Filled);
-            av.shapes.setColor(Color.GRAY);
+            av.shapes.setColor(Colors.fromHex(0x333333));
             av.shapes.rect(gutter.x, gutter.y, gutter.w, gutter.h);
-            av.shapes.setColor(this.scrollBarHighlighted ? Color.BLUE : Color.TEAL);
+            av.shapes.setColor(this.scrollBarHighlighted ? Colors.fromHex(0x7DC2E2) : Colors.fromHex(0x4FB0DC));
             av.shapes.rect(scrollbar.x, scrollbar.y, scrollbar.w, scrollbar.h);
             av.shapes.end();
         }
