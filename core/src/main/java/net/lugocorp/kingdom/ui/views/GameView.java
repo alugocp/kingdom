@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import java.util.function.Consumer;
  */
 public class GameView implements View {
     private final StartMenuView.Params params;
+    private Point frameBufferMappedPoint = new Point(-1, -1);
     private GameViewController controller;
     private PerspectiveCamera camera;
     private Environment environment;
@@ -85,6 +87,35 @@ public class GameView implements View {
      */
     public void close() {
         this.navigate.accept(new StartMenuView(this.params));
+    }
+
+    /**
+     * Gets the grid Point associated with the moused over screen Point from the
+     * FrameBuffer
+     */
+    public Point getFrameBufferMappedPoint() {
+        return this.frameBufferMappedPoint;
+    }
+
+    /**
+     * Sets the grid Point associated with the moused over screen Point from the
+     * FrameBuffer
+     */
+    private void setFrameBufferMappedPoint() {
+        // TODO right now we can only have map sizes up to 254, then the outline shader
+        // will break. We should eventually implement some sort of modulo operation
+        // there, and find the closest possible point using some algorithm implemented
+        // here
+        final int x = Gdx.input.getX();
+        final int y = Gdx.input.getY();
+        if (x >= 0 && y >= 0 && x < Coords.SIZE.x && y < Coords.SIZE.y) {
+            final byte[] data = ScreenUtils.getFrameBufferPixels(x, Coords.SIZE.y - y - 1, 1, 1, false);
+            if (data[0] < 255 && data[1] < 255) {
+                this.frameBufferMappedPoint.set(data[0], data[1]);
+                return;
+            }
+        }
+        this.frameBufferMappedPoint.set(-1, -1);
     }
 
     /**
@@ -159,6 +190,7 @@ public class GameView implements View {
         this.av.outlines.begin(this.camera);
         this.av.outlines.render(this.game.world.getModelInstances(false), this.environment);
         this.av.outlines.end();
+        this.setFrameBufferMappedPoint();
         this.av.frameBuffer.end();
 
         // Draw all 3D models with the ToonShader

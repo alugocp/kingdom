@@ -216,6 +216,7 @@ public class GameViewController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean mouseMoved​(int x, int y) {
+        // Menu mouse logic
         if (this.popupMenu.mouseMoved(x, y)) {
             return true;
         }
@@ -225,7 +226,14 @@ public class GameViewController implements InputProcessor {
         if (this.menu.mouseMoved(x, y)) {
             return true;
         }
-        Point closestPoint = CameraMath.getCoordUnderScreenPoint(this.camera, x, y);
+
+        // Unit/Building/Tile mouse over logic
+        final Point p = this.view.getFrameBufferMappedPoint();
+        if (!(p.x == -1 && p.y == -1)) {
+            this.view.selector.hover(new Point(p.x, p.y));
+            return true;
+        }
+        final Point closestPoint = CameraMath.getCoordUnderScreenPoint(this.camera, x, y);
         this.view.selector.hover(closestPoint);
         return true;
     }

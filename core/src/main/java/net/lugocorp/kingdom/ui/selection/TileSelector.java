@@ -66,6 +66,9 @@ public class TileSelector {
      * Keeps track of the currently hovered Tile
      */
     public final void hover(Point p) {
+        if (this.hovered.map((Point h) -> h.equals(p)).orElse(false)) {
+            return;
+        }
         this.hovered
                 .ifPresent((Point h) -> this.view.game.world.getTile(h).ifPresent((Tile t) -> t.decrementSelection()));
         if (this.view.game.world.isInBounds(p)) {

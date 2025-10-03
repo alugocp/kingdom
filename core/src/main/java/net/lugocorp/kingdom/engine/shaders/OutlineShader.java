@@ -59,8 +59,8 @@ public class OutlineShader implements Shader {
         this.program.setUniformMatrix(this.u_worldTrans, renderable.worldTransform);
         if (renderable.userData != null && renderable.userData instanceof CoordUserData) {
             CoordUserData data = (CoordUserData) renderable.userData;
-            this.program.setUniformf(this.u_coordColor, ((data.point.x * 15) % 100) / 255f,
-                    ((data.point.y * 15) % 100) / 255f, 1f, 1f);
+            this.program.setUniformf(this.u_coordColor, (float) data.point.x / 255f, (float) data.point.y / 255f, 1f,
+                    1f);
         } else {
             this.program.setUniformf(this.u_coordColor, 1f, 1f, 1f, 1f);
         }
