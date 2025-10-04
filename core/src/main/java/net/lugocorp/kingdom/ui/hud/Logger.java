@@ -23,6 +23,8 @@ public class Logger {
     private final GlyphLayout layout = new GlyphLayout();
     private final GameView view;
     private int timer = 0;
+    // TODO make logs pop up at the bottom and push the top messages away (or
+    // something) and remove the dispel parameter
 
     public Logger(GameView view) {
         this.view = view;

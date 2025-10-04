@@ -229,15 +229,16 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         // TabsNode
         if (this.unit.isPresent() || this.building.isPresent()) {
             final TabsNode tabs = new TabsNode(view.av);
-            this.unit.ifPresent((Unit u) -> tabs.add("Unit", u.getMenuContent(view, p)));
-            this.building.ifPresent((Building b) -> tabs.add(b.getMenuTabLabel(), b.getMenuContent(view, p)));
+            this.unit.ifPresent((Unit u) -> tabs.add("Unit", Optional.of(u.name), u.getMenuContent(view, p)));
+            this.building.ifPresent(
+                    (Building b) -> tabs.add(b.getMenuTabLabel(), Optional.of(b.name), b.getMenuContent(view, p)));
 
             // Tile tab
             final ListNode tileTab = new ListNode();
             for (MenuNode n : tileNodes) {
                 tileTab.add(n);
             }
-            tabs.add("Tile", tileTab);
+            tabs.add("Tile", Optional.of(this.name), tileTab);
             node.add(tabs);
         } else {
             for (MenuNode n : tileNodes) {

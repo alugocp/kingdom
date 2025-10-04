@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.Optional;
 
@@ -14,23 +13,17 @@ public class NakedButtonNode extends TextNode {
     private final Runnable action;
     private Optional<String> ping = Optional.of("sfx/arrow");
     private boolean hovered = false;
+    // TODO calculate inner bounds in the pack() method
 
     public NakedButtonNode(AudioVideo av, String message, Runnable action) {
         super(av, message);
         this.action = action;
     }
 
-    /**
-     * Returns the current background Color
-     */
-    protected Color getColor() {
-        return this.hovered ? ColorScheme.HOVER : ColorScheme.BUTTON;
-    }
-
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, ColorScheme.TEXT);
+        return this.av.fonts.getFont(24, this.hovered ? ColorScheme.HOVER : ColorScheme.BUTTON);
     }
 
     /**

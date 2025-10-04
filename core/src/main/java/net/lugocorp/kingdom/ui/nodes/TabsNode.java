@@ -4,12 +4,12 @@ import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.utils.code.Tuple;
-import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This MenuNode allows us to swap between different MenuNodes as tabs
@@ -27,12 +27,41 @@ public class TabsNode implements MenuNode {
     /**
      * Adds a new tab with a label and content
      */
-    public TabsNode add(String label, MenuNode root) {
+    public TabsNode add(String label, Optional<String> desc, MenuNode root) {
+        final Optional<TextNode> popup = desc.map((String s) -> new TextNode(this.av, s));
         final int index = this.data.size();
+        final TabsNode tabs = this;
         this.data.add(new Tuple<String, MenuNode>(label, root));
         this.tabs.add(new ButtonNode(this.av, label, () -> {
             this.selected = index;
-        }));
+        }) {
+            /** {@inheritdoc} */
+            @Override
+            protected Color getColor() {
+                if (tabs.selected == index) {
+                    return this.isHovered() ? ColorScheme.HOVER : ColorScheme.BUTTON;
+                }
+                return this.isHovered() ? ColorScheme.DISABLE : ColorScheme.GUTTER;
+            }
+
+            /** {@inheritdoc} */
+            @Override
+            public void mouseMoved(Rect bounds, Point prev, Point curr) {
+                super.mouseMoved(bounds, prev, curr);
+
+                // Perform logic for the description popup
+                if (!popup.isPresent()) {
+                    return;
+                }
+                final boolean prevIn = bounds.contains(prev);
+                final boolean currIn = bounds.contains(curr);
+                if (currIn) {
+                    this.menu.setMiniMenu(popup.get(), curr.x + 25, curr.y + 15);
+                } else if (prevIn) {
+                    this.menu.closeMiniMenu();
+                }
+            }
+        });
         return this;
     }
 
@@ -52,15 +81,7 @@ public class TabsNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
-        // Draw the tab highlight
-        final int w = bounds.w / this.data.size();
         final int h = this.tabs.getHeight();
-        av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(ColorScheme.GUTTER);
-        av.shapes.rect(bounds.x + (w * this.selected), Coords.SIZE.y - bounds.y - h, w, h);
-        av.shapes.end();
-
-        // Draw tabs and content
         this.tabs.draw(av, bounds);
         final Rect r = new Rect(bounds.x, bounds.y + h, bounds.w, bounds.h - h);
         this.content().draw(av, r);

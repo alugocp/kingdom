@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -22,13 +23,20 @@ public class ButtonNode extends NakedButtonNode {
         this.center();
     }
 
-    /** {@inheritdoc} */
-    @Override
+    /**
+     * Returns the current background Color
+     */
     protected Color getColor() {
         if (this.disabled) {
             return ColorScheme.DISABLE;
         }
-        return super.getColor();
+        return this.isHovered() ? ColorScheme.HOVER : ColorScheme.BUTTON;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    protected BitmapFont getFont() {
+        return this.av.fonts.getFont(24, ColorScheme.TEXT);
     }
 
     /**
