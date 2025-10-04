@@ -15,6 +15,8 @@ import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.code.Tuple;
+import net.lugocorp.kingdom.utils.logic.CameraLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class NewUnit {
                     }
                     view.popups.setDisplay(false);
                     view.logger.log("Please select a tile to recruit your new unit");
+                    this.scrollToNearestCandidate(view, tiles);
                     view.selector.select(tiles, error, (Point p) -> {
                         view.popups.complete();
                         view.popups.addNext(this.getUnitSelectionMenu(view, p));
@@ -66,9 +69,8 @@ public class NewUnit {
      */
     private Menu getUnitSelectionMenu(GameView view, Point p) {
         // Retrieve the selected Tile's GlyphCategory. This should exist (as per the
-        // definition of
-        // view.game.getRecruitmentTiles()) so if we hit this error then something is
-        // wrong.
+        // definition of view.game.getRecruitmentTiles()) so if we hit this error then
+        // something is wrong.
         Optional<GlyphCategory> category = view.game.world.getTile(p).flatMap((Tile t) -> t.getGlyph());
         if (!category.isPresent()) {
             throw new RuntimeException("Attempt to recruit onto a tile without a glyph");
@@ -153,5 +155,20 @@ public class NewUnit {
             u.spawn(view);
             p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u)).execute();
         });
+    }
+
+    /**
+     * Scrolls the Game camera to the nearest possible recruitment Tile
+     */
+    private void scrollToNearestCandidate(GameView view, Set<Point> tiles) {
+        final Point p = CameraLogic.getCoordUnderScreenPoint(view.getCamera(), Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        Optional<Tuple<Point, Float>> best = Optional.empty();
+        for (Point p1 : tiles) {
+            final float distance = Coords.grid.distance(p, p1);
+            if (best.map((Tuple<Point, Float> t) -> distance < t.b).orElse(true)) {
+                best = Optional.of(new Tuple<Point, Float>(p1, distance));
+            }
+        }
+        best.ifPresent((Tuple<Point, Float> t) -> view.centerOnPoint(t.a, false));
     }
 }

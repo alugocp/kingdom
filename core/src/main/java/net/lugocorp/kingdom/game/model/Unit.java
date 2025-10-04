@@ -174,6 +174,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                     view.game.mechanics.turns.canHumanPlayerAct()
                             && view.game.actions.canUnitDoThis(this, ActionType.SKIP),
                     () -> {
+                        view.logger.log(String.format("%s will wait where they are", this.name));
                         view.game.actions.unitHasActed(view, this, new SkipAction(
                                 "This unit is waiting for its haul inventory to be full", () -> this.haul.isFull()));
                         view.menu.refresh(true);

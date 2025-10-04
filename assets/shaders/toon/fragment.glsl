@@ -88,7 +88,7 @@ void main() {
 
         // Allow for tile selection to be visible beneath fog of war
         if (u_selection > 0) {
-            float coeff = 0.2 * float(u_selection);
+            float coeff = 0.3 * min(float(u_selection), 2.0);
             gl_FragColor.x += coeff;
             gl_FragColor.y += coeff;
             gl_FragColor.z += coeff * 0.5;
@@ -143,7 +143,7 @@ void main() {
 
     // Tile selection logic
     if (u_selection > 0) {
-        float coeff = 0.2 * float(u_selection);
+        float coeff = 0.4 * float(u_selection);
         gl_FragColor.x += coeff;
         gl_FragColor.y += coeff;
         gl_FragColor.z += coeff * 0.5;
@@ -163,9 +163,9 @@ void main() {
 
     // Make the color darker if it's night time or half vision
     if (u_nighttime > 0.0 || u_vision == HALF_VISIBILITY) {
-        float coeff = 0.8;
+        float coeff = 0.6;
         if (u_nighttime > 0.0 && u_vision == HALF_VISIBILITY) {
-            coeff = 0.4;
+            coeff = 0.3;
         }
         mat4 darker;
         darker[0] = vec4(coeff, 0.0, 0.0, 0.0);

@@ -57,6 +57,13 @@ public class Coords {
             float[] diff = this.difference(p1, p2);
             return (float) Math.atan2(diff[1], diff[0]);
         }
+
+        /**
+         * Returns the euclidean distance between the two grid Points
+         */
+        public float distance(Point p1, Point p2) {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        }
     }
 
     /**

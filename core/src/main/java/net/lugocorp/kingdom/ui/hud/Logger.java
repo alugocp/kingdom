@@ -104,6 +104,7 @@ public class Logger {
 
         // Draw the text
         this.view.av.sprites.begin();
+        // TODO support different colors here (based on the message)
         BitmapFont font = this.view.av.fonts.getFont(18, ColorScheme.ERROR);
         for (int a = 0; a < rows; a++) {
             LogMessage lm = this.messages.get(a);
