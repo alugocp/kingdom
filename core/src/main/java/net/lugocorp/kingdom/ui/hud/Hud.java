@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.HudInfoNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
+import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -46,7 +47,7 @@ public class Hud extends Menu {
                         view.game.mechanics.turns.iterateTurnPlayer(view);
                         view.menu.refresh(true);
                     }
-                }).disableNoise().setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
+                }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise()));
         this.pack();
     }
 
@@ -64,7 +65,8 @@ public class Hud extends Menu {
         return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                 SettingsView
                         .addSettingsMenuNodes(view.av,
-                                new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false))))
+                                new ListNode()
+                                        .add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false))))
                         .add(new SpacerNode()).add(new ButtonNode(view.av, "Save game", () -> {
                             try {
                                 view.getSerial().saveGame(view.game);

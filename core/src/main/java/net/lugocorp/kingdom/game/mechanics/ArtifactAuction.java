@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.ui.nodes.ArtifactNode;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
+import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -102,7 +103,7 @@ public class ArtifactAuction {
      */
     public Menu getAuctionBuyInMenu(GameView view) {
         int price = this.getBuyInCost(view.game.human.gold);
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)));
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)));
         if (this.artifacts.size() > 0) {
             node.add(new HeaderNode(view.av, "Artifact Auction"))
                     .add(new TextNode(view.av, String.format("Pay %d gold to participate in the auction?", price)))
@@ -157,7 +158,7 @@ public class ArtifactAuction {
                 winner.ifPresent((Player p) -> ((CompPlayer) p).wishlist.artifacts.doAfterAuction());
                 return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+                        new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
                                 .add(new TextNode(view.av,
                                         winner.isPresent()
                                                 ? "You did not win the auction"
@@ -171,7 +172,7 @@ public class ArtifactAuction {
         int a = 0;
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
                 .add(new ButtonNode(view.av, "Buy an artifact next time", () -> view.popups.complete()));
         while (a < artifacts.size()) {
             RowNode row1 = new RowNode().setColumns(columns);
@@ -212,7 +213,7 @@ public class ArtifactAuction {
         List<Artifact> artifacts = view.game.human.artifacts;
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.complete()));
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.complete()));
         if (artifacts.size() == 0) {
             node.add(new TextNode(view.av, "You do not have any artifacts"));
         } else {
@@ -242,7 +243,7 @@ public class ArtifactAuction {
         int a = 0;
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.complete()));
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.complete()));
         if (artifacts.size() == 0) {
             node.add(new TextNode(view.av, "There are no artifacts in this game"));
         } else {

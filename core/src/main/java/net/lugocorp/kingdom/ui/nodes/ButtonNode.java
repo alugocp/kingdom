@@ -5,49 +5,30 @@ import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- * Like a TextNode but it stands out and does something when you click it
+ * A prettier version of the NakedButtonNode
  */
-public class ButtonNode extends TextNode {
+public class ButtonNode extends NakedButtonNode {
     private static final int OUTER_MARGIN = 2;
-    private final Runnable action;
     private Optional<Supplier<Boolean>> criteria = Optional.empty();
-    private Optional<String> ping = Optional.of("sfx/arrow");
     private boolean disabled = false;
-    private boolean hovered = false;
 
     public ButtonNode(AudioVideo av, String message, Runnable action) {
-        super(av, message);
-        this.action = action;
+        super(av, message, action);
         this.center();
-    }
-
-    /**
-     * Returns the current background Color
-     */
-    private Color getColor() {
-        if (this.disabled) {
-            return ColorScheme.DISABLE;
-        }
-        return this.hovered ? ColorScheme.HOVER : ColorScheme.BUTTON;
     }
 
     /** {@inheritdoc} */
     @Override
-    protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, ColorScheme.TEXT);
-    }
-
-    /**
-     * Returns whether or not the mouse is hovering over this ButtonNode
-     */
-    protected boolean isHovered() {
-        return this.hovered;
+    protected Color getColor() {
+        if (this.disabled) {
+            return ColorScheme.DISABLE;
+        }
+        return super.getColor();
     }
 
     /**
@@ -70,22 +51,6 @@ public class ButtonNode extends TextNode {
      */
     public ButtonNode setEnabledCriteria(Supplier<Boolean> supplier) {
         this.criteria = Optional.of(supplier);
-        return this;
-    }
-
-    /**
-     * Sets the noise that plays when you click this ButtonNode
-     */
-    public ButtonNode setNoise(String ping) {
-        this.ping = Optional.of(ping);
-        return this;
-    }
-
-    /**
-     * Sets no noise to play when you click this ButtonNode
-     */
-    public ButtonNode disableNoise() {
-        this.ping = Optional.empty();
         return this;
     }
 
@@ -121,8 +86,7 @@ public class ButtonNode extends TextNode {
             if (this.disabled) {
                 this.av.loaders.sounds.play("sfx/error");
             } else {
-                this.ping.ifPresent((String sound) -> this.av.loaders.sounds.play(sound));
-                this.action.run();
+                super.click(inner, p);
             }
         }
     }
@@ -131,13 +95,6 @@ public class ButtonNode extends TextNode {
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         final Rect inner = this.getInnerBounds(bounds);
-        final boolean prevIn = inner.contains(prev);
-        final boolean currIn = inner.contains(curr);
-        if (!prevIn && currIn) {
-            this.hovered = true;
-        }
-        if (prevIn && !currIn) {
-            this.hovered = false;
-        }
+        super.mouseMoved(inner, prev, curr);
     }
 }

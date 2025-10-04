@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.ui.nodes.GlyphBadgeNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.nodes.ModelNode;
+import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -38,7 +39,7 @@ public class NewUnit {
      * Returns the Menu to handle new Unit placement
      */
     public Menu getNewUnitMenu(GameView view) {
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)));
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)));
         node.add(new HeaderNode(view.av, "Recruit New Unit"))
                 .add(new TextNode(view.av, "Select a tile to recruit your new unit?"))
                 .add(new RowNode().add(new ButtonNode(view.av, "Yes", () -> {
@@ -74,7 +75,7 @@ public class NewUnit {
         }
 
         // Create the Menu content for Glyph selection
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit").center())
                 .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()));
         RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
@@ -101,7 +102,7 @@ public class NewUnit {
      */
     private Menu getGlyphUnitSelectionMenu(GameView view, Glyph glyph, Point p) {
         List<Unit> options = this.getRecruitmentOptions(view, glyph, p, view.game.human.numRecruitmentOptions);
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit"))
                 .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()));
         RowNode previews = new RowNode().setColumns(view.game.human.numRecruitmentOptions);

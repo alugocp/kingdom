@@ -68,7 +68,9 @@ public class Ability implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        return new ActionNode(view, this.name, Optional.of(this.desc),
+        final String popup = String.format("%s (%s)", this.desc,
+                this.isActive(view) ? "click to activate" : "passive ability");
+        return new ActionNode(view, this.name, Optional.of(popup),
                 this.wielder.leadership.belongsToHuman() && this.isActive(view)
                         && view.game.mechanics.turns.canHumanPlayerAct()
                         && view.game.actions.canUnitDoThis(this.wielder, ActionType.ACTIVATE),
