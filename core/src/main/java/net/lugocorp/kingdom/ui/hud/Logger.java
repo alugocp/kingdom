@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -13,6 +14,7 @@ import java.util.List;
  * Handles UI for log messages
  */
 public class Logger {
+    private static final int FONT_SIZE = 22;
     private static final int MAX_TIMER = 4500;
     private static final int FADE_OUT = 500;
     private static final int MAX_ROWS = 8;
@@ -29,7 +31,7 @@ public class Logger {
     /**
      * Adds a new log message to the queue
      */
-    public void log(String message, boolean dispel) {
+    public void log(String message, boolean dispel, Color color) {
         // If we dispel then remove this message from the log
         if (dispel) {
             for (int a = this.messages.size() - 1; a >= 0; a--) {
@@ -41,8 +43,8 @@ public class Logger {
         }
 
         // Add this message to the log
-        layout.setText(this.view.av.fonts.getFont(ColorScheme.TEXT), message);
-        messages.add(0, new LogMessage(message, layout.width, layout.height));
+        layout.setText(this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT), message);
+        messages.add(0, new LogMessage(message, color, layout.width, layout.height));
         if (this.messages.size() > Logger.MAX_ROWS) {
             messages.remove(messages.size() - 1);
         }
@@ -50,10 +52,17 @@ public class Logger {
     }
 
     /**
-     * Calls into log() with dispel = false
+     * Calls into log() with color = ColorScheme.TEXT
+     */
+    public void log(String message, boolean dispel) {
+        this.log(message, dispel, ColorScheme.TEXT);
+    }
+
+    /**
+     * Calls into log() with dispel = false and color = ColorScheme.TEXT
      */
     public void log(String message) {
-        this.log(message, false);
+        this.log(message, false, ColorScheme.TEXT);
     }
 
     /**
@@ -61,7 +70,7 @@ public class Logger {
      */
     public void error(String message, boolean dispel) {
         this.view.av.loaders.sounds.play("sfx/error");
-        this.log(message, dispel);
+        this.log(message, dispel, ColorScheme.ERROR);
     }
 
     /**
@@ -104,35 +113,19 @@ public class Logger {
 
         // Draw the text
         this.view.av.sprites.begin();
-        // TODO support different colors here (based on the message)
-        BitmapFont font = this.view.av.fonts.getFont(18, ColorScheme.ERROR);
+        BitmapFont font = this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.ERROR);
         for (int a = 0; a < rows; a++) {
             LogMessage lm = this.messages.get(a);
-            font.setColor(ColorScheme.ERROR.r, ColorScheme.ERROR.g, ColorScheme.ERROR.b, alphas[a]);
+            font.setColor(lm.color.r, lm.color.g, lm.color.b, alphas[a]);
             font.draw(this.view.av.sprites, lm.message, rects[a].x, rects[a].y + lm.h + Logger.MARGIN);
         }
-        font.setColor(ColorScheme.ERROR);
+        font.setColor(ColorScheme.TEXT);
         this.view.av.sprites.end();
 
         // Remove a message when the timer runs out
         if (this.timer == Logger.MAX_TIMER) {
             this.messages.remove(0);
             this.timer = 0;
-        }
-    }
-
-    /**
-     * An internal representation of a single message in the log
-     */
-    private static class LogMessage {
-        private final String message;
-        private final float w;
-        private final float h;
-
-        private LogMessage(String message, float w, float h) {
-            this.message = message;
-            this.w = w;
-            this.h = h;
         }
     }
 }

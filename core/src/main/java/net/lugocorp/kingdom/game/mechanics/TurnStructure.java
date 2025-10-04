@@ -77,7 +77,7 @@ public class TurnStructure {
         // Iterate day/night logic
         DayNight dayNight = view.game.mechanics.dayNight;
         boolean isDayBeforeTick = dayNight.isDay();
-        dayNight.tick();
+        dayNight.tick(view);
         boolean isDayAfterTick = dayNight.isDay();
         view.av.getToonShader().setNighttime(dayNight.isNight());
 

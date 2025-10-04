@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
+import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -12,10 +13,11 @@ public class DayNight {
     /**
      * Ticks the countdown until the DayNight cycle changes state
      */
-    void tick() {
+    void tick(GameView view) {
         if (--this.countdown == 0) {
             this.countdown = DayNight.DURATION;
             this.state = this.isDay() ? DayNight.State.NIGHT : DayNight.State.DAY;
+            view.logger.log(this.isDay() ? "The sun has risen once more" : "Night has fallen");
             // TODO trigger an event here
         }
     }
