@@ -20,13 +20,6 @@ public class ActionNode extends ButtonNode {
     }
 
     /** {@inheritdoc} */
-    /*
-     * @Override protected BitmapFont getFont() { if (!this.isEnabled() &&
-     * this.isHovered()) { return this.av.fonts.getFont(24, 0xdddddd); } return
-     * super.getFont(); }
-     */
-
-    /** {@inheritdoc} */
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         super.mouseMoved(bounds, prev, curr);

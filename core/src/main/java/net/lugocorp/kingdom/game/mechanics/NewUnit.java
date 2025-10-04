@@ -74,9 +74,9 @@ public class NewUnit {
         }
 
         // Create the Menu content for Glyph selection
-        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)).center())
+        ListNode node = new ListNode().add(new ButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit").center())
-                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()).center());
+                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()));
         RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
         RowNode badges = new RowNode().setColumns(category.get().glyphs.length);
         RowNode buttons = new RowNode().setColumns(category.get().glyphs.length);
@@ -87,7 +87,7 @@ public class NewUnit {
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
                 view.popups.complete();
                 view.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
-            }).enable(view.game.mechanics.pools.remaining(glyph) > 0).center());
+            }).enable(view.game.mechanics.pools.remaining(glyph) > 0));
         }
         node.add(glyphs);
         node.add(badges);

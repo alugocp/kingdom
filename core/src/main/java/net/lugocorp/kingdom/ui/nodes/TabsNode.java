@@ -32,7 +32,7 @@ public class TabsNode implements MenuNode {
         this.data.add(new Tuple<String, MenuNode>(label, root));
         this.tabs.add(new ButtonNode(this.av, label, () -> {
             this.selected = index;
-        }).center());
+        }));
         return this;
     }
 

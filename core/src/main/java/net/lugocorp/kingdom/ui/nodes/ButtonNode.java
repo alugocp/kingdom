@@ -17,13 +17,14 @@ public class ButtonNode extends TextNode {
     private static final int OUTER_MARGIN = 2;
     private final Runnable action;
     private Optional<Supplier<Boolean>> criteria = Optional.empty();
+    private Optional<String> ping = Optional.of("sfx/arrow");
     private boolean disabled = false;
     private boolean hovered = false;
-    private String ping = "sfx/arrow";
 
     public ButtonNode(AudioVideo av, String message, Runnable action) {
         super(av, message);
         this.action = action;
+        this.center();
     }
 
     /**
@@ -76,7 +77,15 @@ public class ButtonNode extends TextNode {
      * Sets the noise that plays when you click this ButtonNode
      */
     public ButtonNode setNoise(String ping) {
-        this.ping = ping;
+        this.ping = Optional.of(ping);
+        return this;
+    }
+
+    /**
+     * Sets no noise to play when you click this ButtonNode
+     */
+    public ButtonNode disableNoise() {
+        this.ping = Optional.empty();
         return this;
     }
 
@@ -108,9 +117,13 @@ public class ButtonNode extends TextNode {
     @Override
     public void click(Rect bounds, Point p) {
         final Rect inner = this.getInnerBounds(bounds);
-        if (!this.disabled && inner.contains(p)) {
-            this.av.loaders.sounds.play(this.ping);
-            this.action.run();
+        if (inner.contains(p)) {
+            if (this.disabled) {
+                this.av.loaders.sounds.play("sfx/error");
+            } else {
+                this.ping.ifPresent((String sound) -> this.av.loaders.sounds.play(sound));
+                this.action.run();
+            }
         }
     }
 

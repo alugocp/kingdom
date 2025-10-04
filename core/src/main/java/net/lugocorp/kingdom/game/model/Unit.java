@@ -158,17 +158,19 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Move unit
             node.add(
-                    new ActionNode(view, "Move", Optional.empty(),
+                    new ActionNode(view, "Move", Optional.of("Moves this unit to the target tile"),
                             view.game.mechanics.turns.canHumanPlayerAct()
                                     && view.game.actions.canUnitDoThis(this, ActionType.MOVE),
                             () -> view.selector.move(this)));
 
             // Deposit Items
-            node.add(new ActionNode(view, "Deposit", Optional.empty(), view.game.mechanics.turns.canHumanPlayerAct(),
-                    () -> view.selector.deposit(this)));
+            node.add(
+                    new ActionNode(view, "Deposit", Optional.of("Gives all of this unit's hauled to an adjacent vault"),
+                            view.game.mechanics.turns.canHumanPlayerAct(), () -> view.selector.deposit(this)));
 
             // Skip turn until haul Inventory is full
-            node.add(new ActionNode(view, "Wait to fill haul", Optional.empty(),
+            node.add(new ActionNode(view, "Wait to fill haul",
+                    Optional.of("This unit won't ask for commands until its haul inventory is full"),
                     view.game.mechanics.turns.canHumanPlayerAct()
                             && view.game.actions.canUnitDoThis(this, ActionType.SKIP),
                     () -> {
@@ -179,8 +181,10 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                     }));
 
             // Skip turn
-            node.add(new ActionNode(view, "Skip turn", Optional.empty(), view.game.mechanics.turns.canHumanPlayerAct()
-                    && view.game.actions.canUnitDoThis(this, ActionType.SKIP), () -> {
+            node.add(new ActionNode(view, "Skip turn", Optional.of("This unit won't ask for commands this turn"),
+                    view.game.mechanics.turns.canHumanPlayerAct()
+                            && view.game.actions.canUnitDoThis(this, ActionType.SKIP),
+                    () -> {
                         view.game.actions.unitHasActed(view, this,
                                 new SkipAction("This unit is skipping its turn", () -> true));
                         view.menu.refresh(true);

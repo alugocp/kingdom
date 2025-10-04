@@ -41,11 +41,12 @@ public class Hud extends Menu {
                     if (view.popups.get().isPresent()) {
                         view.popups.setDisplay(true);
                     } else if (!view.game.actions.goToNextUnit(view)) {
+                        view.av.loaders.sounds.play("sfx/end-turn");
                         view.logger.log("You have ended your turn", true);
                         view.game.mechanics.turns.iterateTurnPlayer(view);
                         view.menu.refresh(true);
                     }
-                }).setNoise("sfx/end-turn").setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
+                }).disableNoise().setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct())));
         this.pack();
     }
 
