@@ -5,6 +5,9 @@ import net.lugocorp.kingdom.engine.animation.AnimationQueue;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.hud.Hud;
@@ -137,6 +140,19 @@ public class GameView implements View {
         }
     }
 
+    /**
+     * Sets up HUD state at the beginning of the Game to help guide new Players
+     */
+    private void initHudMessages() {
+        final Unit u = this.game.human.units.iterator().next();
+        final Optional<Building> b = this.game.world.getTile(u.getPoint()).flatMap((Tile t) -> t.building);
+        this.logger.log(b.isPresent()
+                ? String.format("%s joined your ranks on the %s", u.name, b.get().name)
+                : String.format("%s joined your ranks", u.name));
+        this.centerOnPoint(u.getPoint(), true);
+        this.menu.open(u.getPoint());
+    }
+
     /** {@inheritdoc} */
     @Override
     public Color getBackgroundColor() {
@@ -169,7 +185,7 @@ public class GameView implements View {
 
         // Kick off the Player's turn
         this.game.mechanics.turns.kickOffTurn(this);
-        this.centerOnPoint(this.game.human.units.iterator().next().getPoint(), true);
+        this.initHudMessages();
     }
 
     /** {@inheritdoc} */

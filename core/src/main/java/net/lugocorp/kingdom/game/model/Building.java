@@ -169,6 +169,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
+        // TODO add something about active vs passive buildings here
         Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
                 .flatMap((Tile t) -> t.leader);
         ListNode node = new ListNode().add(new HeaderNode(view.av, this.name));

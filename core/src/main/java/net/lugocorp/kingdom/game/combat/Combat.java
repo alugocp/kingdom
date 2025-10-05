@@ -44,6 +44,8 @@ public class Combat {
             Optional<Player> destroyer = attacker.getLeader();
             if (b.isActive() && !b.getLeader().equals(destroyer)) {
                 effects.add(() -> {
+                    view.logger.log(String.format("You claimed the %s", b.name));
+                    // TODO play a noise here
                     this.health.set(this.health.getMax());
                     view.game.world.getTile(b.getPoint())
                             .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));
