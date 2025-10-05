@@ -108,11 +108,18 @@ public class Menu {
     }
 
     /**
+     * Returns the mini-Menu's root MenuNode (if any)
+     */
+    public Optional<MenuNode> getMiniMenuRoot() {
+        return this.mini.map((Menu m) -> m.root);
+    }
+
+    /**
      * Sets a mini menu on this Menu
      */
     public void setMiniMenu(MenuNode root, int x, int y) {
         final int xBounded = Math.min(Coords.SIZE.x - Menu.MINI_MENU_WIDTH, x);
-        if (this.mini.isPresent() && this.mini.get().root == root) {
+        if (this.getMiniMenuRoot().map((MenuNode n) -> n == root).orElse(false)) {
             this.mini.get().x = xBounded;
         } else {
             final Menu menu = new Menu(xBounded, y, Menu.MINI_MENU_WIDTH, false, root);

@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
+import net.lugocorp.kingdom.ui.MenuPopup;
 import net.lugocorp.kingdom.utils.code.Tuple;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -28,13 +29,22 @@ public class TabsNode implements MenuNode {
      * Adds a new tab with a label and content
      */
     public TabsNode add(String label, Optional<String> desc, MenuNode root) {
-        final Optional<TextNode> popup = desc.map((String s) -> new TextNode(this.av, s));
+        final Optional<TextNode> popupNode = desc.map((String s) -> new TextNode(this.av, s));
         final int index = this.data.size();
         final TabsNode tabs = this;
         this.data.add(new Tuple<String, MenuNode>(label, root));
         this.tabs.add(new ButtonNode(this.av, label, () -> {
             this.selected = index;
         }) {
+            private final MenuPopup popup = new MenuPopup();
+
+            /** {@inheritdoc} */
+            @Override
+            public void pack(Menu menu, int width) {
+                super.pack(menu, width);
+                this.popup.setMenu(menu);
+            }
+
             /** {@inheritdoc} */
             @Override
             protected Color getColor() {
@@ -48,18 +58,7 @@ public class TabsNode implements MenuNode {
             @Override
             public void mouseMoved(Rect bounds, Point prev, Point curr) {
                 super.mouseMoved(bounds, prev, curr);
-
-                // Perform logic for the description popup
-                if (!popup.isPresent()) {
-                    return;
-                }
-                final boolean prevIn = bounds.contains(prev);
-                final boolean currIn = bounds.contains(curr);
-                if (currIn) {
-                    this.menu.setMiniMenu(popup.get(), curr.x + 25, curr.y + 15);
-                } else if (prevIn) {
-                    this.menu.closeMiniMenu();
-                }
+                popupNode.ifPresent((TextNode n) -> this.popup.update(bounds, prev, curr, n));
             }
         });
         return this;
