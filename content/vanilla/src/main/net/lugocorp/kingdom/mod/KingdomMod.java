@@ -1653,7 +1653,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_combat_loot, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("+2 damage if this unit has a hauled item");
+                    e.blob.desc = String.format("+2 damage if this unit has a stored item");
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_combat_loot, "AttackEvent",
@@ -1814,7 +1814,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_hungry_frog_magic, "GenerateAbilityEvent",
                 (GameView view, Ability receiver, Event event) -> {
                     Events.GenerateAbilityEvent e = (Events.GenerateAbilityEvent) event;
-                    e.blob.desc = String.format("Consumes all hauled items and heals adjacent friendly units");
+                    e.blob.desc = String.format("Consumes all stored items and heals adjacent friendly units");
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_hungry_frog_magic, "AbilityActivatedEvent",

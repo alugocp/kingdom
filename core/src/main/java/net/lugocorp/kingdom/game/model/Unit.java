@@ -152,46 +152,58 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                 new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
                 new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.hunger.getTurnsBeforeHunger())));
 
-        // Abilities section
-        if (this.leadership.belongsToHuman()) {
+        // Actions section
+        if (this.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()) {
             node.add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
 
             // Move unit
-            node.add(
-                    new ActionNode(view, "Move", Optional.of("Moves this unit to the target tile"),
-                            view.game.mechanics.turns.canHumanPlayerAct()
-                                    && view.game.actions.canUnitDoThis(this, ActionType.MOVE),
-                            () -> view.selector.move(this)));
+            if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
+                node.add(new ActionNode(view, "Move", Optional.of("Moves this unit to the target tile"),
+                        () -> view.selector.move(this)));
+            }
 
             // Deposit Items
-            node.add(
-                    new ActionNode(view, "Deposit", Optional.of("Gives all of this unit's hauled to an adjacent vault"),
-                            view.game.mechanics.turns.canHumanPlayerAct(), () -> view.selector.deposit(this)));
+            if (true /** Check for adjacent vaults here */
+            ) {
+                node.add(new ActionNode(view, "Deposit", Optional.of("Gives all stored items to an adjacent vault"),
+                        () -> view.selector.deposit(this)));
+            }
+
+            if (true /** Check for adjacent units who can eat stored items here */
+            ) {
+                node.add(new ActionNode(view, "Feed",
+                        Optional.of("This unit uses one of its stored items to feed an adjacent hungry unit"), () -> {
+                            // TODO implement this
+                        }));
+            }
 
             // Skip turn until haul Inventory is full
-            node.add(new ActionNode(view, "Wait to fill haul",
-                    Optional.of("This unit won't ask for commands until its haul inventory is full"),
-                    view.game.mechanics.turns.canHumanPlayerAct()
-                            && view.game.actions.canUnitDoThis(this, ActionType.SKIP),
-                    () -> {
-                        view.logger.log(String.format("%s will wait where they are", this.name));
-                        view.game.actions.unitHasActed(view, this, new SkipAction(
-                                "This unit is waiting for its haul inventory to be full", () -> this.haul.isFull()));
-                        view.menu.refresh(true);
-                        view.game.actions.goToNextUnit(view);
-                    }));
+            if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
+                node.add(new ActionNode(view, "Store items",
+                        Optional.of("This unit won't ask for commands until it runs out of stored item space"), () -> {
+                            view.logger.log(String.format("%s will wait where they are", this.name));
+                            view.game.actions.unitHasActed(view, this, new SkipAction(
+                                    "This unit is waiting for maximum stored items", () -> this.haul.isFull()));
+                            view.menu.refresh(true);
+                            view.game.actions.goToNextUnit(view);
+                        }));
+            }
 
             // Skip turn
-            node.add(new ActionNode(view, "Skip turn", Optional.of("This unit won't ask for commands this turn"),
-                    view.game.mechanics.turns.canHumanPlayerAct()
-                            && view.game.actions.canUnitDoThis(this, ActionType.SKIP),
-                    () -> {
-                        view.game.actions.unitHasActed(view, this,
-                                new SkipAction("This unit is skipping its turn", () -> true));
-                        view.menu.refresh(true);
-                        view.game.actions.goToNextUnit(view);
-                    }));
+            if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
+                node.add(new ActionNode(view, "Skip turn", Optional.of("This unit won't ask for commands this turn"),
+                        () -> {
+                            view.game.actions.unitHasActed(view, this,
+                                    new SkipAction("This unit is skipping its turn", () -> true));
+                            view.menu.refresh(true);
+                            view.game.actions.goToNextUnit(view);
+                        }));
+            }
         }
+
+        // Spells section
+        // TODO add a subheader TextNode
+        node.add(new TextNode(view.av, "Spells"));
         for (Ability a : this.abilities.getActives()) {
             node.add(a.getMenuContent(view, p));
         }
@@ -203,11 +215,11 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             node.add(new TextNode(view.av, "Equipped Items"));
             node.add(this.equipped.getMenuContent(view, p));
-            node.add(new TextNode(view.av, "Hauled Items"));
+            node.add(new TextNode(view.av, "Stored Items"));
             node.add(this.haul.getMenuContent(view, p));
         } else {
             node.add(new TextNode(view.av, String.format("Can equip %d items", this.equipped.getMax())));
-            node.add(new TextNode(view.av, String.format("Can haul %d items", this.haul.getMax())));
+            node.add(new TextNode(view.av, String.format("Can store %d items", this.haul.getMax())));
         }
         return node;
     }

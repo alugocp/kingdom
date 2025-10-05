@@ -15,9 +15,8 @@ public class ActionNode extends ButtonNode {
     private final Optional<MenuNode> desc;
     private final GameView view;
 
-    public ActionNode(GameView view, String name, Optional<String> desc, boolean active, Runnable action) {
+    public ActionNode(GameView view, String name, Optional<String> desc, Runnable action) {
         super(view.av, name, action);
-        this.enable(active);
         this.desc = desc.map((String s) -> new TextNode(view.av, s));
         this.view = view;
     }
