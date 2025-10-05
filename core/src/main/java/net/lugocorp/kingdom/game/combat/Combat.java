@@ -46,6 +46,7 @@ public class Combat {
                 effects.add(() -> {
                     view.logger.log(String.format("You claimed the %s", b.name));
                     // TODO play a noise here
+                    view.av.loaders.sounds.play("sfx/select-unit");
                     this.health.set(this.health.getMax());
                     view.game.world.getTile(b.getPoint())
                             .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));

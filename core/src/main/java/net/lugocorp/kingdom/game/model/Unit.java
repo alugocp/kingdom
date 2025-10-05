@@ -23,10 +23,10 @@ import net.lugocorp.kingdom.ui.MenuSubject;
 import net.lugocorp.kingdom.ui.nodes.ActionNode;
 import net.lugocorp.kingdom.ui.nodes.BadgeNode;
 import net.lugocorp.kingdom.ui.nodes.GlyphIconsNode;
-import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.nodes.ResourceBarsNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
+import net.lugocorp.kingdom.ui.nodes.SubheaderNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
@@ -135,11 +135,11 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name));
+        final ListNode node = new ListNode().add(new SubheaderNode(view.av, this.name));
 
         // Unit stats section
-        MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
-        int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
+        final MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
+        final int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
         node.add(new BadgeNode(view.av, this.species.color, 0xffffff, this.species.toString()));
         node.add(this.getLeader().isPresent()
                 ? new RowNode().add(glyphsNode)
@@ -202,8 +202,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         }
 
         // Spells section
-        // TODO add a subheader TextNode
-        node.add(new TextNode(view.av, "Spells"));
+        node.add(new SubheaderNode(view.av, "Spells"));
         for (Ability a : this.abilities.getActives()) {
             node.add(a.getMenuContent(view, p));
         }
@@ -213,13 +212,14 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
         // Items section
         if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-            node.add(new TextNode(view.av, "Equipped Items"));
+            node.add(new SubheaderNode(view.av, "Equipped Items"));
             node.add(this.equipped.getMenuContent(view, p));
-            node.add(new TextNode(view.av, "Stored Items"));
+            node.add(new SubheaderNode(view.av, "Stored Items"));
             node.add(this.haul.getMenuContent(view, p));
         } else {
-            node.add(new TextNode(view.av, String.format("Can equip %d items", this.equipped.getMax())));
-            node.add(new TextNode(view.av, String.format("Can store %d items", this.haul.getMax())));
+            node.add(new SubheaderNode(view.av, "Inventory"));
+            node.add(new TextNode(view.av, String.format("Can equip up to %d items", this.equipped.getMax())));
+            node.add(new TextNode(view.av, String.format("Can store up to %d items", this.haul.getMax())));
         }
         return node;
     }

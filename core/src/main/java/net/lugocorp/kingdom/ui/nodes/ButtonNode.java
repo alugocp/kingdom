@@ -62,10 +62,9 @@ public class ButtonNode extends NakedButtonNode {
         return this;
     }
 
-    /**
-     * Converts a set of bounds into this ButtonNode's inner bounds
-     */
-    private Rect getInnerBounds(Rect b) {
+    /** {@inheritdoc} */
+    @Override
+    protected Rect getInnerBounds(Rect b) {
         return new Rect(b.x + ButtonNode.OUTER_MARGIN, b.y + ButtonNode.OUTER_MARGIN,
                 b.w - (ButtonNode.OUTER_MARGIN * 2), b.h - (ButtonNode.OUTER_MARGIN * 2));
     }
@@ -94,15 +93,8 @@ public class ButtonNode extends NakedButtonNode {
             if (this.disabled) {
                 this.av.loaders.sounds.play("sfx/error");
             } else {
-                super.click(inner, p);
+                super.click(bounds, p);
             }
         }
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public void mouseMoved(Rect bounds, Point prev, Point curr) {
-        final Rect inner = this.getInnerBounds(bounds);
-        super.mouseMoved(inner, prev, curr);
     }
 }

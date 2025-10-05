@@ -62,6 +62,13 @@ public class TextNode implements MenuNode {
         return this;
     }
 
+    /**
+     * Returns true if this text is centered
+     */
+    protected boolean isCentered() {
+        return this.centered;
+    }
+
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
