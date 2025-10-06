@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
+import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import java.util.ArrayList;
@@ -69,6 +70,6 @@ public class Fates {
                         .add(new ButtonNode(view.av,
                                 next.isHumanPlayer() ? "View your fate" : String.format("View %s's fate", next.name),
                                 () -> view.popups.replaceUnrequired(this.getViewFatesMenu(view, next)))))
-                .add(new FateViewNode(view.av, p.getFate(), false)));
+                .add(new SpacerNode()).add(new FateViewNode(view.av, p.getFate(), false)));
     }
 }

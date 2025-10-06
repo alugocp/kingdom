@@ -48,6 +48,7 @@ class LoadGameView implements View {
         this.navigate = navigate;
         MenuController menuController = new MenuController(() -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
+        menuController.reset();
 
         // Loads the saved games
         List<Path> savedGames = this.params.serial.getSavedGames();

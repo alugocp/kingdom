@@ -55,6 +55,7 @@ class ActiveModsView implements View {
         this.navigate = navigate;
         MenuController menuController = new MenuController(() -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
+        menuController.reset();
     }
 
     /** {@inheritdoc} */

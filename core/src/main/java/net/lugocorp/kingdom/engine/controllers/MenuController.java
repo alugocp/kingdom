@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.engine.controllers;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -16,6 +17,14 @@ public class MenuController implements InputProcessor {
 
     public MenuController(Supplier<Optional<Menu>> getMenu) {
         this.getMenu = getMenu;
+    }
+
+    /**
+     * Resets the mouse position and triggers mouseMove logic
+     */
+    public void reset() {
+        this.mouseMoved(-1, -1);
+        this.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
     }
 
     /**
