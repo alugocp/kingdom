@@ -35,6 +35,7 @@ import java.util.Optional;
  */
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject, Spawnable {
     private final TileUserData userData = new TileUserData();
+    private Optional<ModelInstance> placeholderBuildingModel = Optional.empty();
     private Optional<GlyphCategory> glyph = Optional.empty();
     private Color minimapColor = Color.BLACK;
     private boolean obstacle = false;
@@ -105,11 +106,19 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
+     * Returns true if this Tile has ever been visible
+     */
+    public boolean hasBeenSeen() {
+        return this.userData.hasBeenSeen;
+    }
+
+    /**
      * Adds a vision point (fog of war system)
      */
     public void incrementVision() {
         this.userData.hasBeenSeen = true;
         this.userData.vision++;
+        this.placeholderBuildingModel = Optional.empty();
     }
 
     /**
@@ -117,6 +126,17 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public void decrementVision() {
         this.userData.vision--;
+        if (this.userData.vision == 0) {
+            this.placeholderBuildingModel = this.building.flatMap((Building b) -> b.getModelInstance());
+        }
+    }
+
+    /**
+     * Returns the placeholder Building ModelInstance for this Tile (if there is
+     * one)
+     */
+    public Optional<ModelInstance> getPlaceholderBuildingModel() {
+        return this.placeholderBuildingModel;
     }
 
     /**

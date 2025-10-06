@@ -96,10 +96,13 @@ public class World {
      * Returns all Modellable instances present in the World
      */
     public Array<Modellable> getModellables(boolean includeTiles) {
-        Array<Modellable> models = new Array<>();
+        // TODO includeTiles -> "justTiles vs justEntities" when we split the Toon
+        // shader
+        // TODO include placeholder building models somehow
+        final Array<Modellable> models = new Array<>();
         for (int x = 0; x < this.w; x++) {
             for (int y = 0; y < this.h; y++) {
-                Optional<Tile> tile = this.getTile(x, y);
+                final Optional<Tile> tile = this.getTile(x, y);
                 if (!tile.isPresent()) {
                     continue;
                 }
@@ -121,9 +124,20 @@ public class World {
      * Tiles, and if false then it will return all others.
      */
     public Array<ModelInstance> getModelInstances(boolean includeTiles) {
-        Array<ModelInstance> models = new Array<>();
+        final Array<ModelInstance> models = new Array<>();
         this.getModellables(includeTiles)
                 .forEach((Modellable m) -> m.getModelInstance().ifPresent((ModelInstance m1) -> models.add(m1)));
+        for (int x = 0; x < this.w; x++) {
+            for (int y = 0; y < this.h; y++) {
+                final Optional<Tile> tile = this.getTile(x, y);
+                if (!tile.isPresent()) {
+                    continue;
+                }
+                if (tile.map((Tile t) -> t.hasBeenSeen() && !t.isVisible()).orElse(false)) {
+                    tile.get().getPlaceholderBuildingModel().ifPresent((ModelInstance m) -> models.add(m));
+                }
+            }
+        }
         return models;
     }
 }
