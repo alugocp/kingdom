@@ -16,4 +16,5 @@ public class ColorScheme {
     public static final Color DISABLE = Colors.fromHex(0xBBBBBB);
     public static final Color SPECIAL_BUTTON = Colors.fromHex(0x2f8729);
     public static final Color SPECIAL_HOVER = Colors.fromHex(0x59b65a);
+    public static final Color GOLD = Colors.fromHex(0xFFFF99);
 }

@@ -9,10 +9,12 @@ import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.GlyphBadgeNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
+import net.lugocorp.kingdom.ui.nodes.HelperNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.nodes.ModelNode;
 import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
+import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Tuple;
@@ -77,16 +79,22 @@ public class NewUnit {
         }
 
         // Create the Menu content for Glyph selection
-        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+        ListNode node = new ListNode().add(new RowNode()
+                .add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit").center())
-                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()));
+                .add(new HelperNode(view.av,
+                        "Glyphs are general categories that units fall under. They help narrow down your search when recruiting a new unit. A unit can have either one or two glyphs. Tiles also have glyphs - the tile you selected determines the glyphs that appear in this screen. The sword (combat glyphs) means battle, defense, and healing. The hammer (worker glyphs) means nature, mining and trade."))
+                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete())))
+                .add(new SpacerNode());
         RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
         RowNode badges = new RowNode().setColumns(category.get().glyphs.length);
+        RowNode descs = new RowNode().setColumns(category.get().glyphs.length);
         RowNode buttons = new RowNode().setColumns(category.get().glyphs.length);
         for (int a = 0; a < category.get().glyphs.length; a++) {
             final Glyph glyph = category.get().glyphs[a];
             glyphs.add(new HeaderNode(view.av, glyph.toString()).center());
             badges.add(new GlyphBadgeNode(view.av, glyph));
+            descs.add(new TextNode(view.av, this.getGlyphDescription(glyph)));
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
                 view.popups.complete();
                 view.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
@@ -94,6 +102,7 @@ public class NewUnit {
         }
         node.add(glyphs);
         node.add(badges);
+        node.add(descs);
         node.add(buttons);
         return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                 node);
@@ -171,5 +180,26 @@ public class NewUnit {
             }
         }
         best.ifPresent((Tuple<Point, Float> t) -> view.centerOnPoint(t.a, false));
+    }
+
+    /**
+     * Returns a description of the current Glyph
+     */
+    private String getGlyphDescription(Glyph g) {
+        switch (g) {
+            case BATTLE :
+                return "Battle glyph units are good at quickly destroying enemy units and structures";
+            case DEFENSE :
+                return "Defense glyphs units have high health pools and armor, and can guard your besieged buildings until backup arrives";
+            case HEALING :
+                return "Healing glyph units provide rest and recovery to the rest of your army";
+            case NATURE :
+                return "Nature glyph units plant natural buildings and harvest food to keep your army fed and loyal";
+            case MINING :
+                return "Mining glyph units harvest gold and other valuable items from mines";
+            case TRADE :
+                return "Trade glyph units generate auction points as they transfer items across your kingdom";
+        }
+        return "If you're seeing this, please file a bug ticket";
     }
 }

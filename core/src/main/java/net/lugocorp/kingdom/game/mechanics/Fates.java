@@ -69,6 +69,6 @@ public class Fates {
                         .add(new ButtonNode(view.av,
                                 next.isHumanPlayer() ? "View your fate" : String.format("View %s's fate", next.name),
                                 () -> view.popups.replaceUnrequired(this.getViewFatesMenu(view, next)))))
-                .add(new FateViewNode(view.av, p.getFate())));
+                .add(new FateViewNode(view.av, p.getFate(), false)));
     }
 }

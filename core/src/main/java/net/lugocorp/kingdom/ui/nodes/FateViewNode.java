@@ -6,16 +6,22 @@ import net.lugocorp.kingdom.ui.Menu;
 /**
  * A node that displays some Fate and its description
  */
-public class FateViewNode extends RowNode {
+public class FateViewNode extends ListNode {
     private final ListNode desc = new ListNode();
     private final FateNode fate;
     private Menu menu = null;
     private int width = 0;
 
-    public FateViewNode(AudioVideo av, Fate initial) {
+    public FateViewNode(AudioVideo av, Fate initial, boolean vertical) {
         this.fate = new FateNode(av, initial, () -> {
         });
-        this.add(this.fate).add(this.desc);
+        this.add(new HelperNode(av,
+                "A fate is a set of abilities designed around a certain playstyle. Each player chooses their fate at the start of the game, and it cannot be changed once the game starts."));
+        if (vertical) {
+            this.add(this.fate).add(this.desc);
+        } else {
+            this.add(new RowNode().add(this.fate).add(this.desc));
+        }
         this.setFate(av, initial);
     }
 

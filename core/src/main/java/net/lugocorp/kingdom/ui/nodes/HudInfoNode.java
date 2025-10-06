@@ -3,24 +3,34 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
+import net.lugocorp.kingdom.ui.ColorScheme;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
  * Used to display resources on the in-game HUD
  */
 public class HudInfoNode extends RowNode {
-    private final TextNode gold;
-    private final TextNode unitPoints;
-    private final TextNode auctionPoints;
+    private final ResourceBarsNode unitPoints;
+    private final ResourceBarsNode auctionPoints;
     private final TextNode auctionChips;
     private final TextNode artifacts;
+    private final TextNode gold;
 
     public HudInfoNode(AudioVideo av) {
-        this.gold = new TextNode(av, "");
-        this.unitPoints = new TextNode(av, "");
-        this.auctionPoints = new TextNode(av, "");
+        this.unitPoints = new ResourceBarsNode(av,
+                new ResourceBarsNode.Bar("Unit Points", 0x00FF00, 0, NewUnit.MAX_UNIT_POINTS));
+        this.auctionPoints = new ResourceBarsNode(av,
+                new ResourceBarsNode.Bar("Auction Points", 0xAAAA44, 0, ArtifactAuction.MAX_AUCTION_POINTS));
         this.auctionChips = new TextNode(av, "");
         this.artifacts = new TextNode(av, "");
-        this.add(this.gold).add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips).add(this.artifacts);
+        this.gold = new TextNode(av, "") {
+            /** {@inheritdoc} */
+            @Override
+            protected BitmapFont getFont() {
+                return this.av.fonts.getFont(ColorScheme.GOLD);
+            }
+        };
+        this.add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips).add(this.artifacts).add(this.gold);
     }
 
     /**
@@ -28,9 +38,8 @@ public class HudInfoNode extends RowNode {
      */
     public void updateInfo(Game game) {
         this.gold.setText(String.format("%s Gold", this.prettyInt(game.human.gold)));
-        this.unitPoints.setText(String.format("%d / %d Unit Points", game.human.unitPoints, NewUnit.MAX_UNIT_POINTS));
-        this.auctionPoints.setText(String.format("%d / %d Auction Points", game.mechanics.auction.points,
-                ArtifactAuction.MAX_AUCTION_POINTS));
+        this.unitPoints.setValue(0, game.human.unitPoints);
+        this.auctionPoints.setValue(0, game.mechanics.auction.points);
         this.auctionChips.setText(this.plural("Auction Chip", game.human.auctionChips));
         this.artifacts.setText(this.plural("Artifact", game.human.artifacts.size()));
     }

@@ -156,7 +156,7 @@ class GameCreationView implements View {
         view.game.human.setFate(view.game.mechanics.fates.getFirstFate());
         final ListNode options = new ListNode();
         final MenuMenuNode wrapper = new MenuMenuNode(options);
-        final FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
+        final FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate(), true);
         final ListNode root = new ListNode()
                 .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
                         .add(new HeaderNode(view.av, "Select a Fate").center())
@@ -183,6 +183,7 @@ class GameCreationView implements View {
                 b++;
             }
             options.add(row);
+            options.add(new SpacerNode(false));
         }
         return new Menu(0, 0, Coords.SIZE.x, true, root);
     }

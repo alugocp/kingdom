@@ -8,9 +8,11 @@ import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.nodes.ArtifactNode;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
+import net.lugocorp.kingdom.ui.nodes.HelperNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
+import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
@@ -206,12 +208,15 @@ public class ArtifactAuction {
         final List<Artifact> artifacts = owner.map((Player p) -> p.artifacts).orElse(this.artifacts);
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
-        final ListNode node = new ListNode()
-                .add(new RowNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.complete()))
-                        .add(new HeaderNode(view.av, owner.isPresent() ? "Your Artifacts" : "All Artifacts"))
-                        .add(new ButtonNode(view.av, owner.isPresent() ? "Show all artifacts" : "Show your artifacts",
-                                () -> view.popups.replaceUnrequired(this.getArtifactsMenu(view,
-                                        owner.isPresent() ? Optional.empty() : Optional.of(view.game.human))))));
+        final ListNode node = new ListNode().add(new RowNode()
+                .add(new NakedButtonNode(view.av, "x", () -> view.popups.complete()))
+                .add(new HeaderNode(view.av, owner.isPresent() ? "Your Artifacts" : "All Artifacts"))
+                .add(new HelperNode(view.av,
+                        "Artifacts are powerful abilities that you can unlock in auctions. An auction occurs every time the auction points bar fills up. If you win an auction then you can either claim an artifact right away or save up auction chips to buy more powerful artifacts later."))
+                .add(new ButtonNode(view.av, owner.isPresent() ? "Show all artifacts" : "Show your artifacts",
+                        () -> view.popups.replaceUnrequired(this.getArtifactsMenu(view,
+                                owner.isPresent() ? Optional.empty() : Optional.of(view.game.human))))))
+                .add(new SpacerNode());
         if (artifacts.size() == 0) {
             node.add(new TextNode(view.av, "There are no artifacts to display"));
         } else {

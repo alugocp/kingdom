@@ -6,7 +6,9 @@ import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
+import net.lugocorp.kingdom.ui.nodes.HelperNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
+import net.lugocorp.kingdom.ui.nodes.SubheaderNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
@@ -182,14 +184,18 @@ public class Patron extends Building {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
-                .add(new TextNode(view.av, String.format("Preferred units: %s", this.preference)));
+                .add(new TextNode(view.av, String.format("Preferred units: %s", this.preference)))
+                .add(new HelperNode(view.av,
+                        "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn."));
         if (this.favor.size() > 0) {
             for (Player k : this.favor.keySet()) {
-                String label = String.format("%s: %d", k.name, this.favor.get(k));
-                if (this.favorite.map((Player f) -> k == f).orElse(false)) {
-                    label += " (FAVORITE)";
+                final String label = String.format("%s: %d", k.name, this.favor.get(k));
+                final boolean fav = this.favorite.map((Player f) -> k == f).orElse(false);
+                if (fav) {
+                    node.add(new SubheaderNode(view.av, String.format("%s (FAVORITE)", label)));
+                } else {
+                    node.add(new TextNode(view.av, label));
                 }
-                node.add(new TextNode(view.av, label));
             }
         } else {
             node.add(new TextNode(view.av, "No players are competing for this patron right now"));

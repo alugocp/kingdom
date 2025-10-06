@@ -26,6 +26,14 @@ public class ResourceBarsNode implements MenuNode {
         this.av = av;
     }
 
+    /**
+     * Updates the current value for the Bar at the given index
+     */
+    public void setValue(int index, int value) {
+        this.bars[index].numbers = String.format("%d / %d", value, this.bars[index].max);
+        this.bars[index].value = value;
+    }
+
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
@@ -77,8 +85,7 @@ public class ResourceBarsNode implements MenuNode {
             final int y = yInitial + (int) this.font.getLineHeight() - ResourceBarsNode.PADDING
                     - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
             this.font.draw(this.av.sprites, bar.label, bounds.x, y);
-            this.font.draw(this.av.sprites, String.format("%d / %d", bar.value, bar.max),
-                    bounds.x + this.textWidth + ResourceBarsNode.PADDING, y);
+            this.font.draw(this.av.sprites, bar.numbers, bounds.x + this.textWidth + ResourceBarsNode.PADDING, y);
         }
         av.sprites.end();
     }
@@ -89,14 +96,16 @@ public class ResourceBarsNode implements MenuNode {
     public static class Bar {
         private final String label;
         private final int color;
-        private final int value;
         private final int max;
+        private String numbers;
+        private int value;
 
         public Bar(String label, int color, int value, int max) {
             this.label = label;
             this.color = color;
             this.value = value;
             this.max = max;
+            this.numbers = String.format("%d / %d", value, max);
         }
     }
 }
