@@ -1715,12 +1715,11 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.ability_dungeon_delve, "AbilityActivatedEvent",
                 (GameView view, Ability receiver, Event event) -> AbilityLogic.attackAndEffect(view, receiver.wielder,
-                        new Damage(5), 1, Optional.of((Point p) -> {
-                            return !receiver.wielder.haul.isFull() && view.game.world.getTile(p)
-                                    .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false)
-                                            ? () -> receiver.wielder.haul.add(view.game.mechanics.loot.drop(view.game))
-                                            : SideEffect.none;
-                        })));
+                        new Damage(5), 1,
+                        Optional.of((Point p) -> !receiver.wielder.haul.isFull() && view.game.world.getTile(p)
+                                .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false)
+                                        ? () -> receiver.wielder.haul.add(view.game.mechanics.loot.drop(view.game))
+                                        : SideEffect.none)));
 
         // Edible
         events.ability.addEventHandler(Labels.ability_edible, "GenerateAbilityEvent",
