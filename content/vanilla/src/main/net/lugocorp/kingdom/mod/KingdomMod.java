@@ -630,6 +630,9 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Event event) -> {
                     Events.ArtifactClaimedEvent e = (Events.ArtifactClaimedEvent) event;
                     view.game.events.signals.addListener("GetVisionEvent", e.artifact);
+                    for (Unit u : e.player.units) {
+                        u.vision.set(view, e.player, u, u.getPoint());
+                    }
                     return SideEffect.none;
                 });
         events.artifact.addEventHandler(Labels.artifact_orb_of_nerketo, "GetVisionEvent",

@@ -67,6 +67,7 @@ public class ArtifactNode implements MenuNode {
     @Override
     public void pack(Menu menu, int width) {
         final int w = ArtifactNode.WIDTH - (ArtifactNode.MARGIN * 2);
+        this.ownership.ifPresent((BadgeNode b) -> b.pack(menu, w));
         this.desc.pack(menu, w);
         this.name.pack(menu, w);
     }
@@ -95,7 +96,7 @@ public class ArtifactNode implements MenuNode {
                 bounds.w, h2));
         this.ownership.ifPresent((BadgeNode b) -> {
             final int h3 = b.getHeight();
-            b.draw(av, new Rect(bounds.x + ArtifactNode.MARGIN,
+            b.draw(av, new Rect(bounds.x + ArtifactNode.MARGIN + 5,
                     bounds.y + bounds.h - h1 - h2 - h3 - ArtifactNode.MARGIN, bounds.w, h3));
         });
     }

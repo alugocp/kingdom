@@ -32,7 +32,7 @@ public class ArtifactAuction {
     private final Random random = new Random();
     private final List<Artifact> artifacts = new ArrayList<>();
     private Optional<Auction> auction = Optional.empty();
-    public int points = 250;
+    public int points = 0;
 
     /**
      * Generates all registered Artifacts at the start of the Game

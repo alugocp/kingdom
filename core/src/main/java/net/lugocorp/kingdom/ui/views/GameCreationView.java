@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.FateNode;
 import net.lugocorp.kingdom.ui.nodes.FateViewNode;
+import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.SpacerNode;
@@ -133,7 +134,7 @@ class GameCreationView implements View {
                         .add(new RowNode()
                                 .add(new ButtonNode(view.av, "Back",
                                         () -> this.navigate.accept(new StartMenuView(this.params))))
-                                .add(new TextNode(view.av, "World Generation").center())
+                                .add(new HeaderNode(view.av, "World Generation").center())
                                 .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
                         .add(new SpacerNode())
                         .add(new RowNode().add(new TextNode(view.av, "World Seed"))
@@ -155,7 +156,7 @@ class GameCreationView implements View {
         FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
         ListNode root = new ListNode()
                 .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
-                        .add(new TextNode(view.av, "Select a Fate").center())
+                        .add(new HeaderNode(view.av, "Select a Fate").center())
                         .add(new ButtonNode(view.av, "Start Game", () -> this.startGame())))
                 .add(display).add(options);
 
