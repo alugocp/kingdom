@@ -25,6 +25,10 @@ public class LoadingGameView extends ThreadedTaskView {
         // Load built-in sprites
         av.loaders.sprites.register("artifact-mask", "game/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
                 0);
+        av.loaders.sprites.register("artifact-claimed-mask", "game/artifact-claimed-mask", ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 0, 0);
+        av.loaders.sprites.register("artifact-hovered-mask", "game/artifact-hovered-mask", ArtifactNode.WIDTH,
+                ArtifactNode.HEIGHT, 0, 0);
         av.loaders.sprites.register("fate-highlight", "game/fate-highlight", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
         av.loaders.sprites.register("glyph-icon-battle", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 0, 0);

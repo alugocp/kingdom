@@ -263,6 +263,6 @@ public class AbilityLogic {
     public static SideEffect generateAuctionPoints(GameView view, Unit caster, int points) {
         Events.GenerateAuctionPointsEvent event = new Events.GenerateAuctionPointsEvent(caster, points);
         caster.handleEvent(view, event);
-        return () -> view.game.auctionPoints += event.points;
+        return () -> view.game.mechanics.auction.points += event.points;
     }
 }

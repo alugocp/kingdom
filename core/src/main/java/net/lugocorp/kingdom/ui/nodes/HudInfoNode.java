@@ -29,8 +29,8 @@ public class HudInfoNode extends RowNode {
     public void updateInfo(Game game) {
         this.gold.setText(String.format("%s Gold", this.prettyInt(game.human.gold)));
         this.unitPoints.setText(String.format("%d / %d Unit Points", game.human.unitPoints, NewUnit.MAX_UNIT_POINTS));
-        this.auctionPoints.setText(
-                String.format("%d / %d Auction Points", game.auctionPoints, ArtifactAuction.MAX_AUCTION_POINTS));
+        this.auctionPoints.setText(String.format("%d / %d Auction Points", game.mechanics.auction.points,
+                ArtifactAuction.MAX_AUCTION_POINTS));
         this.auctionChips.setText(this.plural("Auction Chip", game.human.auctionChips));
         this.artifacts.setText(this.plural("Artifact", game.human.artifacts.size()));
     }

@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
-import net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
@@ -148,11 +147,11 @@ public class TurnStructure {
                 view.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
             }
             // Start a new ArtifactAuction at the maximum auction points
-            if (view.game.auctionPoints >= ArtifactAuction.MAX_AUCTION_POINTS
+            if (view.game.mechanics.auction.points >= ArtifactAuction.MAX_AUCTION_POINTS
                     && !view.game.mechanics.auction.getAuction().isPresent()) {
-                view.game.auctionPoints -= ArtifactAuction.MAX_AUCTION_POINTS;
-                view.game.mechanics.auction.openNewAuction();
-                view.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view));
+                view.game.mechanics.auction.points -= ArtifactAuction.MAX_AUCTION_POINTS;
+                view.game.mechanics.auction.openNewAuction(view.game,
+                        () -> view.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view)));
             }
             // Show the aftermath of any active ArtifactAuction
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))

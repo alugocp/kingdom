@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ai.wishlist;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
+import net.lugocorp.kingdom.game.mechanics.Auction;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -37,15 +38,14 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
         if (this.wanted.isPresent()) {
             for (Point p : this.view.game.getVaultBuildings(player)) {
                 if (this.shouldBidWithVault(this.wanted.get(), p)) {
-                    this.view.game.mechanics.auction.getAuction()
-                            .ifPresent((ArtifactAuction.Auction a) -> a.addBidder(player, p));
+                    this.view.game.mechanics.auction.getAuction().ifPresent((Auction a) -> a.addBidder(player, p));
                     return;
                 }
             }
         }
 
         // Don't add a bid if we can't find a good enough vault
-        this.view.game.mechanics.auction.getAuction().ifPresent((ArtifactAuction.Auction a) -> a.doNotAddBidder());
+        this.view.game.mechanics.auction.getAuction().ifPresent((Auction a) -> a.doNotAddBidder());
     }
 
     /**
@@ -59,7 +59,6 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
             final Artifact a = this.wanted.get();
             this.player.auctionChips -= a.chips;
             a.claim(this.view, this.player);
-            this.view.game.mechanics.auction.removeArtifact(a);
         }
     }
 

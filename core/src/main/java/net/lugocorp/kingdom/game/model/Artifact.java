@@ -50,6 +50,13 @@ public class Artifact implements EventReceiver, MenuSubject {
     }
 
     /**
+     * Returns true if this Artifact has been claimed by anyone
+     */
+    public boolean isClaimed() {
+        return this.owner.isPresent();
+    }
+
+    /**
      * Returns true if this Artifact has been claimed by the given Entity's leader
      */
     public boolean isClaimedByLeader(Entity e) {
@@ -61,13 +68,6 @@ public class Artifact implements EventReceiver, MenuSubject {
      */
     public boolean isClaimedByPlayer(Player p) {
         return this.owner.map((Player p1) -> p.equals(p1)).orElse(false);
-    }
-
-    /**
-     * Returns true if this Artifact should be included in the Auction popup Menu
-     */
-    public boolean shouldDisplay() {
-        return !this.owner.isPresent();
     }
 
     /** {@inheritdoc} */
@@ -85,7 +85,7 @@ public class Artifact implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        return new ArtifactNode(view.av, this);
+        return new ArtifactNode(view.av, this, Optional.empty());
     }
 
     /** {@inheritdoc} */

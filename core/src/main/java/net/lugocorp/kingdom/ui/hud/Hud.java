@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.ui.views.SettingsView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import java.util.Optional;
 
 /**
  * This class handles rendering the Player's HUD UI
@@ -32,10 +33,9 @@ public class Hud extends Menu {
                 .add(new ButtonNode(view.av, "Minimap", () -> this.toggleMinimap()))
                 .add(new ButtonNode(view.av, "View Fate",
                         () -> view.popups.addNextUnrequired(view.game.mechanics.fates.getPlayerFateMenu(view))))
-                .add(new ButtonNode(view.av, "Your Artifacts",
-                        () -> view.popups.addNextUnrequired(view.game.mechanics.auction.getOwnedArtifactsMenu(view))))
-                .add(new ButtonNode(view.av, "All Artifacts",
-                        () -> view.popups.addNextUnrequired(view.game.mechanics.auction.getAllArtifactsMenu(view))))
+                .add(new ButtonNode(view.av, "Artifacts",
+                        () -> view.popups.addNextUnrequired(
+                                view.game.mechanics.auction.getArtifactsMenu(view, Optional.of(view.game.human)))))
                 .add(new ButtonNode(view.av, "Settings",
                         () -> view.popups.addNextUnrequired(this.getSettingsMenu(view))))
                 .add(new ButtonNode(view.av, "Complete Turn", () -> {

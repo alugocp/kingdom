@@ -44,7 +44,6 @@ public class Game {
     public AllEventHandlers events;
     @FieldSerializer.Optional("generator")
     public Generator generator;
-    public int auctionPoints = 0;
 
     public Game(AllEventHandlers events, OffsetTime startTime) {
         this.events = events;

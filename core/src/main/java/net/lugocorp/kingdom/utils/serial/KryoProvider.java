@@ -29,7 +29,7 @@ class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.events.SignalBooster.class);
         kryo.register(net.lugocorp.kingdom.game.mechanics.Mechanics.class);
         kryo.register(net.lugocorp.kingdom.game.mechanics.ArtifactAuction.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.ArtifactAuction.Auction.class);
+        kryo.register(net.lugocorp.kingdom.game.mechanics.Auction.class);
         kryo.register(net.lugocorp.kingdom.game.mechanics.DayNight.class);
         kryo.register(net.lugocorp.kingdom.game.mechanics.DayNight.State.class);
         kryo.register(net.lugocorp.kingdom.game.mechanics.Fates.class);
