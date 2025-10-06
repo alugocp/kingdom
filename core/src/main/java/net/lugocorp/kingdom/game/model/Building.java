@@ -31,8 +31,8 @@ import java.util.function.Supplier;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends Entity implements MenuSubject, Spawnable {
-    private final CoordUserData userData = new CoordUserData();
     private final Supplier<Tile> getTile;
+    private final CoordUserData userData;
     private Optional<Color> minimapColor = Optional.empty();
     private BuildingType type = BuildingType.PASSIVE;
     private boolean obstacle = false;
@@ -41,6 +41,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     Building(String name, int x, int y, Supplier<Tile> getTile) {
         super(name, x, y);
         this.getTile = getTile;
+        this.userData = new CoordUserData(() -> !this.getTile.get().isVisible());
         this.userData.point.x = x;
         this.userData.point.y = y;
     }
@@ -50,6 +51,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
      */
     public Building() {
         super(null, 0, 0);
+        this.userData = null;
         this.getTile = null;
     }
 

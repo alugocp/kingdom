@@ -38,6 +38,7 @@ varying vec3 v_normal;
 const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
+float selection_coeff = 0.3 * min(float(u_selection), 2.0);
 
 vec4 normalsTexSample(float x, float y) {
     return texture2D(u_normalsTexture, vec2(x / 1280.0, y / 960.0));
@@ -88,10 +89,9 @@ void main() {
 
         // Allow for tile selection to be visible beneath fog of war
         if (u_selection > 0) {
-            float coeff = 0.3 * min(float(u_selection), 2.0);
-            gl_FragColor.x += coeff;
-            gl_FragColor.y += coeff;
-            gl_FragColor.z += coeff * 0.5;
+            gl_FragColor.x += selection_coeff;
+            gl_FragColor.y += selection_coeff;
+            gl_FragColor.z += selection_coeff * 0.5;
         }
 
         // Allow for distance borders to be visible beneath fog of war
@@ -102,7 +102,7 @@ void main() {
     // Apply the outline color
     if (outline()) {
         if (u_lightOutline) {
-            gl_FragColor = vec4(0.25, 0.25, 0.25, 1.0);
+            gl_FragColor = vec4(1.0, 1.0, 0.5, 0.5);
         } else {
             gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         }
@@ -143,10 +143,9 @@ void main() {
 
     // Tile selection logic
     if (u_selection > 0) {
-        float coeff = 0.4 * float(u_selection);
-        gl_FragColor.x += coeff;
-        gl_FragColor.y += coeff;
-        gl_FragColor.z += coeff * 0.5;
+        gl_FragColor.x += selection_coeff;
+        gl_FragColor.y += selection_coeff;
+        gl_FragColor.z += selection_coeff * 0.5;
     }
 
     // Border rendering logic

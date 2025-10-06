@@ -46,7 +46,7 @@ import java.util.Set;
  * in-game
  */
 public class Unit extends Entity implements MenuSubject, Spawnable {
-    private final CoordUserData userData = new CoordUserData();
+    private final CoordUserData userData = new CoordUserData(() -> false);
     public final Adjacency nextTo = new Adjacency(this);
     public final Leadership leadership = new Leadership(this);
     public final Sleep sleep = new Sleep(this);

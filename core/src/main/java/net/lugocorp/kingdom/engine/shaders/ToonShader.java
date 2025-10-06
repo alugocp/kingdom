@@ -251,6 +251,7 @@ public class ToonShader implements Shader {
             // Make the outline change color if this Unit / Building is being hovered over
             if (renderable.userData != null && renderable.userData instanceof CoordUserData) {
                 final CoordUserData data = (CoordUserData) renderable.userData;
+                this.program.setUniformi(this.u_vision, data.isLowVisibility() ? 1 : 2);
                 this.program.setUniformi(this.u_lightOutline,
                         this.tileSelector.flatMap((TileSelector ts) -> ts.getHovered())
                                 .map((Point p) -> p.equals(data.point)).orElse(false) ? 1 : 0);

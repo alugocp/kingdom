@@ -292,6 +292,14 @@ public class GameView implements View {
         }
 
         /**
+         * Replaces the currently open Menu with another unrequired one
+         */
+        public void replaceUnrequired(Menu menu) {
+            this.complete();
+            this.addNextUnrequired(menu);
+        }
+
+        /**
          * Removes a popup Menu from the queue
          */
         public void complete() {

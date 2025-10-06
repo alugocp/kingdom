@@ -210,7 +210,7 @@ public class ArtifactAuction {
                 .add(new RowNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.complete()))
                         .add(new HeaderNode(view.av, owner.isPresent() ? "Your Artifacts" : "All Artifacts"))
                         .add(new ButtonNode(view.av, owner.isPresent() ? "Show all artifacts" : "Show your artifacts",
-                                () -> view.popups.addNextUnrequired(this.getArtifactsMenu(view,
+                                () -> view.popups.replaceUnrequired(this.getArtifactsMenu(view,
                                         owner.isPresent() ? Optional.empty() : Optional.of(view.game.human))))));
         if (artifacts.size() == 0) {
             node.add(new TextNode(view.av, "There are no artifacts to display"));
