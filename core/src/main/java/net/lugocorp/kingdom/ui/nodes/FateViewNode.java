@@ -26,8 +26,10 @@ public class FateViewNode extends RowNode {
         this.fate.setFate(av, fate);
         this.desc.clear();
         this.desc.add(new HeaderNode(av, fate.name));
+        boolean first = true;
         for (String s : fate.desc) {
-            this.desc.add(new TextNode(av, s));
+            this.desc.add(first ? new SubheaderNode(av, s) : new TextNode(av, s));
+            first = false;
         }
         if (this.width > 0) {
             this.pack(this.menu, this.width);
