@@ -29,6 +29,13 @@ public class Item implements EventReceiver {
         this.name = null;
     }
 
+    /**
+     * Returns true if this Item can be consumed
+     */
+    public boolean isConsumable(GameView view) {
+        return view.game.events.item.hasEventHandler(this.getStratifier(), "ItemConsumedEvent");
+    }
+
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {

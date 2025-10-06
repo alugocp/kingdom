@@ -1,14 +1,18 @@
 package net.lugocorp.kingdom.game.properties;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.MenuSubject;
 import net.lugocorp.kingdom.ui.nodes.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Represents a list of items with a max size
@@ -134,6 +138,24 @@ public class Inventory implements MenuSubject, Iterable<Item> {
             sum += i.gold;
         }
         return sum;
+    }
+
+    /**
+     * Returns the subset of Items in this Inventory that the given Unit can eat
+     */
+    public Set<Item> getEdibleItems(GameView view, Unit u) {
+        final Set<Item> edible = new HashSet<>();
+        for (Item i : this.items) {
+            if (!i.isConsumable(view)) {
+                continue;
+            }
+            final Events.CanEatEvent e = new Events.CanEatEvent(u, i);
+            u.handleEvent(view, e);
+            if (e.edible) {
+                edible.add(i);
+            }
+        }
+        return edible;
     }
 
     /** {@inheritdoc} */

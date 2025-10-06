@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.properties.Species;
 import net.lugocorp.kingdom.game.unit.Abilities;
+import net.lugocorp.kingdom.game.unit.Adjacency;
 import net.lugocorp.kingdom.game.unit.Hunger;
 import net.lugocorp.kingdom.game.unit.Leadership;
 import net.lugocorp.kingdom.game.unit.Loyalty;
@@ -38,6 +39,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A single controllable character (or NPC) that the player can interact with
@@ -45,6 +47,7 @@ import java.util.Optional;
  */
 public class Unit extends Entity implements MenuSubject, Spawnable {
     private final CoordUserData userData = new CoordUserData();
+    public final Adjacency nextTo = new Adjacency(this);
     public final Leadership leadership = new Leadership(this);
     public final Sleep sleep = new Sleep(this);
     public final Loyalty loyalty = new Loyalty(this);
@@ -163,22 +166,27 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             }
 
             // Deposit Items
-            if (true /** Check for adjacent vaults here */
-            ) {
+            if (this.nextTo.vault(view.game)) {
                 node.add(new ActionNode(view, "Deposit", Optional.of("Gives all stored items to an adjacent vault"),
                         () -> view.selector.deposit(this)));
             }
 
-            if (true /** Check for adjacent units who can eat stored items here */
-            ) {
+            // Feed Unit
+            final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
+            if (this.haul.hasItems() && unitsToFeed.size() > 0) {
                 node.add(new ActionNode(view, "Feed",
-                        Optional.of("This unit uses one of its stored items to feed an adjacent hungry unit"), () -> {
-                            // TODO implement this
-                        }));
+                        Optional.of("This unit uses one of its stored items to feed an adjacent hungry unit"),
+                        () -> this.getLeader().get()
+                                .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
+                                    final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
+                                    final Set<Item> food = this.haul.getEdibleItems(view, u);
+                                    u.haul.remove(food.iterator().next());
+                                    return () -> u.hunger.eat(view.game);
+                                }).execute()));
             }
 
             // Skip turn until haul Inventory is full
-            if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
+            if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
                 node.add(new ActionNode(view, "Store items",
                         Optional.of("This unit won't ask for commands until it runs out of stored item space"), () -> {
                             view.logger.log(String.format("%s will wait where they are", this.name));
