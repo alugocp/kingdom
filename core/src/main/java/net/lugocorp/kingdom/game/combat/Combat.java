@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.List;
@@ -92,7 +93,8 @@ public class Combat {
         if (this.bearer.getEntityType() == EntityType.UNIT) {
             effects.add(() -> view.animations.add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
         }
-        effects.add(() -> view.overlays.add(String.format("-%d", dmg.total()), 0xff0000, this.bearer.getPoint()));
+        effects.add(() -> view.overlays
+                .add(new EntityRisingOverlay(view, this.bearer, 0xff0000, String.format("-%d", dmg.total()))));
         return SideEffect.all(effects);
     }
 
@@ -130,7 +132,7 @@ public class Combat {
         this.bearer.handleEvent(view, heal);
         return () -> {
             target.combat.health.set(target.combat.health.get() + heal.amount);
-            view.overlays.add(String.format("+%d", heal.amount), 0x00ff00, target.getPoint());
+            view.overlays.add(new EntityRisingOverlay(view, target, 0x00ff00, String.format("+%d", heal.amount)));
         };
     }
 

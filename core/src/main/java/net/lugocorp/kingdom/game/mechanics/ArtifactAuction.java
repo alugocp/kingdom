@@ -229,6 +229,7 @@ public class ArtifactAuction {
                     b++;
                 }
                 node.add(row);
+                node.add(new SpacerNode(false));
             }
         }
         return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, node);

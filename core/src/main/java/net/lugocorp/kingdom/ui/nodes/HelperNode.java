@@ -19,6 +19,7 @@ public class HelperNode extends NakedButtonNode {
         });
         this.disableNoise();
         this.desc = new TextNode(av, desc);
+        this.center();
     }
 
     /** {@inheritdoc} */

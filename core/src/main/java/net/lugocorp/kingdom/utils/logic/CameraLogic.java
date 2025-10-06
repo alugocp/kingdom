@@ -12,11 +12,19 @@ import com.badlogic.gdx.math.collision.Ray;
 public class CameraLogic {
 
     /**
+     * Returns the screen coordinates for the given Point in the World with some
+     * offset vector
+     */
+    public static float[] getScreenPointFromTileOffset(Camera camera, Point p, Vector3 offset) {
+        final Vector3 v = camera.project(Coords.grid.vector(p.x, p.y).add(offset));
+        return new float[]{v.x, v.y};
+    }
+
+    /**
      * Returns the screen coordinates for the given Point in the World
      */
     public static float[] getScreenPointFromTile(Camera camera, Point p) {
-        final Vector3 v = camera.project(Coords.grid.vector(p.x, p.y));
-        return new float[]{v.x, v.y};
+        return CameraLogic.getScreenPointFromTileOffset(camera, p, new Vector3());
     }
 
     /**
