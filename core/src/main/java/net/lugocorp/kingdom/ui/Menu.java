@@ -15,7 +15,8 @@ public class Menu {
     private static final int MINI_MENU_WIDTH = 250;
     private static final int MARGIN = 15;
     private final boolean tall;
-    private final int width;
+    private int width;
+    private Optional<Menu> submenu = Optional.empty();
     private Optional<Point> prev = Optional.empty();
     private Optional<Point> curr = Optional.empty();
     private Optional<Menu> mini = Optional.empty();
@@ -46,20 +47,46 @@ public class Menu {
      * Packs this Menu's constituent MenuNodes
      */
     public void pack() {
-        this.root.pack(this, width - (Menu.MARGIN * 3));
+        this.root.pack(this, this.width - (Menu.MARGIN * 3));
+    }
+
+    /**
+     * Changes this Menu's width and re-packs the node tree
+     */
+    public void setWidth(int width) {
+        this.width = width;
+        this.pack();
+    }
+
+    /**
+     * Registers a submenu on this Menu (a nested Menu that should receive
+     * non-MenuNode signals)
+     */
+    public void setSubmenu(Menu m) {
+        if (this.submenu.isPresent()) {
+            throw new RuntimeException("Cannot set more than one submenu on the same Menu");
+        }
+        this.submenu = Optional.of(m);
     }
 
     /**
      * Returns true if this Menu should allow for scrolling
      */
     public boolean shouldScroll() {
-        return this.root.getHeight() > this.getHeight();
+        return this.submenu.map((Menu m) -> m.shouldScroll()).orElse(this.root.getHeight() > this.getHeight());
     }
 
     /**
      * Scrolls this Menu by some set amount
      */
     public void scroll(int dy) {
+        // Submenu support
+        if (this.submenu.isPresent()) {
+            this.submenu.get().scroll(dy);
+            return;
+        }
+
+        // Original implementation
         if (this.shouldScroll()) {
             this.offset = Math.max(0, Math.min(this.root.getHeight() - this.getHeight(), this.offset + dy));
         }
@@ -69,15 +96,23 @@ public class Menu {
      * Returns the bounds of this Menu's scroll gutter
      */
     public Optional<Rect> getGutterBounds() {
-        return this.shouldScroll()
-                ? Optional.of(new Rect(this.x + this.width - Menu.MARGIN, this.y, Menu.MARGIN, this.getHeight()))
-                : Optional.empty();
+        return this.submenu.map((Menu m) -> m.getGutterBounds())
+                .orElse(this.shouldScroll()
+                        ? Optional
+                                .of(new Rect(this.x + this.width - Menu.MARGIN, this.y, Menu.MARGIN, this.getHeight()))
+                        : Optional.empty());
     }
 
     /**
      * Returns the bounds of this Menu's scroll bar
      */
     public Optional<Rect> getScrollBarBounds() {
+        // Submenu support
+        if (this.submenu.isPresent()) {
+            return this.submenu.get().getScrollBarBounds();
+        }
+
+        // Original implementation
         final int h = this.getHeight();
         final int rh = this.root.getHeight();
         return this.shouldScroll()
@@ -91,6 +126,13 @@ public class Menu {
      */
     public void setX(int x) {
         this.x = x;
+    }
+
+    /**
+     * Sets this Menu's y position
+     */
+    public void setY(int y) {
+        this.y = y;
     }
 
     /**
@@ -208,7 +250,7 @@ public class Menu {
     public boolean mouseMoved(Point p) {
         final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), this.root.getHeight());
-        Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
+        final Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
                 p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
         this.prev = curr;
         this.curr = Optional.of(p1);

@@ -11,8 +11,10 @@ import net.lugocorp.kingdom.ui.nodes.FateNode;
 import net.lugocorp.kingdom.ui.nodes.FateViewNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
+import net.lugocorp.kingdom.ui.nodes.MenuMenuNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.SpacerNode;
+import net.lugocorp.kingdom.ui.nodes.SubheaderNode;
 import net.lugocorp.kingdom.ui.nodes.TextEntryNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -152,18 +154,22 @@ class GameCreationView implements View {
      */
     private Menu getFateSelectionMenu(GameView view) {
         view.game.human.setFate(view.game.mechanics.fates.getFirstFate());
-        ListNode options = new ListNode();
-        FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
-        ListNode root = new ListNode()
+        final ListNode options = new ListNode();
+        final MenuMenuNode wrapper = new MenuMenuNode(options);
+        final FateViewNode display = new FateViewNode(view.av, view.game.mechanics.fates.getFirstFate());
+        final ListNode root = new ListNode()
                 .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
                         .add(new HeaderNode(view.av, "Select a Fate").center())
                         .add(new ButtonNode(view.av, "Start Game", () -> this.startGame())))
-                .add(display).add(options);
+                .add(new SpacerNode())
+                .add(new RowNode()
+                        .add(new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate")).add(display))
+                        .add(wrapper));
 
         // Set up RowNodes of FateNodes
         int a = 0;
-        final int columns = (int) Math.floor(Coords.SIZE.x / FateNode.WIDTH) - 1;
-        List<Fate> fates = view.game.mechanics.fates.getFates();
+        final int columns = (int) Math.floor((Coords.SIZE.x / 2) / FateNode.WIDTH) - 1;
+        final List<Fate> fates = view.game.mechanics.fates.getFates();
         while (a < fates.size()) {
             RowNode row = new RowNode().setColumns(columns);
             for (int b = 0; b < columns && a < fates.size();) {
@@ -176,7 +182,6 @@ class GameCreationView implements View {
                 a++;
                 b++;
             }
-            options.add(new SpacerNode());
             options.add(row);
         }
         return new Menu(0, 0, Coords.SIZE.x, true, root);
