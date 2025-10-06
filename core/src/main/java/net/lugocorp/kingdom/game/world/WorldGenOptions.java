@@ -15,7 +15,7 @@ public class WorldGenOptions {
      * Represents the possible size values for World generation
      */
     public static enum WorldSize {
-        SMALL("Small", 50, 50), MEDIUM("Medium", 150, 150), LARGE("Large", 250, 250);
+        SMALL("Small", 50, 50); // , MEDIUM("Medium", 150, 150), LARGE("Large", 250, 250);
         public final String label;
         public final int w;
         public final int h;

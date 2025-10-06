@@ -42,11 +42,11 @@ public class GameView implements View {
     private PerspectiveCamera camera;
     private Environment environment;
     public final AnimationQueue animations = new AnimationQueue();
-    public final Popups popups = new Popups();
     public final OverlayLayer overlays;
     public final TileSelector selector;
     public final AudioVideo av;
     public final TileMenu menu;
+    public final Popups popups;
     public final Logger logger;
     public final Game game;
     public final Hud hud;
@@ -62,6 +62,7 @@ public class GameView implements View {
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
         this.menu = new TileMenu(this);
+        this.popups = new Popups(this.menu);
         this.av.getToonShader().setTileSelector(this.selector);
     }
 
@@ -244,7 +245,12 @@ public class GameView implements View {
     public static class Popups {
         private final List<Boolean> required = new ArrayList<>();
         private final List<Menu> queue = new ArrayList<>();
+        private final TileMenu tileMenu;
         private boolean display = false;
+
+        private Popups(TileMenu tileMenu) {
+            this.tileMenu = tileMenu;
+        }
 
         /**
          * Retrieves the first popup Menu in the queue, if any
@@ -277,6 +283,7 @@ public class GameView implements View {
          * Adds an unrequired popup Menu to the state (at the front of the list)
          */
         public void addNextUnrequired(Menu menu) {
+            this.tileMenu.close();
             this.required.add(0, false);
             this.queue.add(0, menu);
             this.display = true;

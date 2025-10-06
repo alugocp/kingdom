@@ -10,7 +10,6 @@ import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.FateNode;
 import net.lugocorp.kingdom.ui.nodes.FateViewNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
-import net.lugocorp.kingdom.ui.nodes.OptionsNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextEntryNode;
@@ -46,6 +45,7 @@ class GameCreationView implements View {
         this.view = new GameView(params, this.game);
         this.game.generator = new Generator(this.view);
         this.game.mechanics.init(this.game);
+        this.setWorldSize(0);
 
         // Initialize GameCreationView UI components
         this.worldSelection = this.getWorldSelectionMenu(this.view);
@@ -123,22 +123,27 @@ class GameCreationView implements View {
      * generation algorithm
      */
     private Menu getWorldSelectionMenu(GameView view) {
-        final OptionsNode worldSizeOptions = new OptionsNode(view.av, (Integer i) -> this.setWorldSize(i.intValue()));
-        for (WorldGenOptions.WorldSize size : WorldGenOptions.WorldSize.values()) {
-            worldSizeOptions.add(size.label);
-        }
-        return new Menu(0, 0, Coords.SIZE.x, true, new ListNode()
-                .add(new RowNode()
-                        .add(new ButtonNode(view.av, "Back",
-                                () -> this.navigate.accept(new StartMenuView(this.params))))
-                        .add(new TextNode(view.av, "World Generation").center())
-                        .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
-                .add(new SpacerNode())
-                .add(new RowNode().add(new TextNode(view.av, "World Seed"))
-                        .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
-                                (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
-                .add(new SpacerNode(false))
-                .add(new RowNode().add(new TextNode(view.av, "Map Size")).add(worldSizeOptions)));
+        /*
+         * final OptionsNode worldSizeOptions = new OptionsNode(view.av, (Integer i) ->
+         * this.setWorldSize(i.intValue())); for (WorldGenOptions.WorldSize size :
+         * WorldGenOptions.WorldSize.values()) { worldSizeOptions.add(size.label); }
+         */
+        return new Menu(0, 0, Coords.SIZE.x, true,
+                new ListNode()
+                        .add(new RowNode()
+                                .add(new ButtonNode(view.av, "Back",
+                                        () -> this.navigate.accept(new StartMenuView(this.params))))
+                                .add(new TextNode(view.av, "World Generation").center())
+                                .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
+                        .add(new SpacerNode())
+                        .add(new RowNode().add(new TextNode(view.av, "World Seed"))
+                                .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
+                                        (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
+        /*
+         * .add(new SpacerNode(false)) .add( new RowNode().add(new TextNode(view.av,
+         * "Map Size")) .add(worldSizeOptions) )
+         */
+        );
     }
 
     /**

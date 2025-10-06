@@ -29,7 +29,8 @@ class StartMenuView implements View {
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
                 .add(new HeaderNode(params.av, "Main Menu").center())
                 .add(new ButtonNode(params.av, "New game", () -> this.navigate.accept(new GameCreationView(params))))
-                .add(new ButtonNode(params.av, "Load game", () -> this.navigate.accept(new LoadGameView(params))))
+                // .add(new ButtonNode(params.av, "Load game", () -> this.navigate.accept(new
+                // LoadGameView(params))))
                 .add(new ButtonNode(params.av, "Settings", () -> this.navigate.accept(new SettingsView(params))))
                 .add(new ButtonNode(params.av, "Credits", () -> this.navigate.accept(new CreditsView(params))))
                 .add(new ButtonNode(params.av, "Mods", () -> this.navigate.accept(new ActiveModsView(params)))));

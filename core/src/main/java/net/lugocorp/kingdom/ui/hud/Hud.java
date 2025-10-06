@@ -67,15 +67,14 @@ public class Hud extends Menu {
                         .addSettingsMenuNodes(view.av,
                                 new ListNode()
                                         .add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false))))
-                        .add(new SpacerNode()).add(new ButtonNode(view.av, "Save game", () -> {
-                            try {
-                                view.getSerial().saveGame(view.game);
-                                view.logger.log("Game has been saved");
-                            } catch (Exception e) {
-                                view.logger.error("Could not save game");
-                                e.printStackTrace();
-                            }
-                        })));
+                        .add(new SpacerNode()).add(new ButtonNode(view.av, "Exit Game", () -> view.close()))
+        /*
+         * .add(new ButtonNode(view.av, "Save game", () -> { try {
+         * view.getSerial().saveGame(view.game); view.logger.log("Game has been saved");
+         * } catch (Exception e) { view.logger.error("Could not save game");
+         * e.printStackTrace(); } }))
+         */
+        );
     }
 
     /**
