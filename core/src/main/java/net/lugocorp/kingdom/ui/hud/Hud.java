@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
@@ -13,6 +14,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.SettingsView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
 
@@ -41,15 +43,34 @@ public class Hud extends Menu {
                         () -> view.popups.addNextUnrequired(this.getSettingsMenu(view))))
                 .add(new ButtonNode(view.av, "Complete Turn", () -> {
                     if (view.popups.get().isPresent()) {
+                        view.av.loaders.sounds.play("sfx/error");
                         view.popups.setDisplay(true);
-                    } else if (!view.game.actions.goToNextUnit(view)) {
+                    } else if (view.game.actions.goToNextUnit(view)) {
+                        view.av.loaders.sounds.play("sfx/error");
+                    } else {
                         view.av.loaders.sounds.play("sfx/end-turn");
                         view.logger.log("You have ended your turn", true);
                         view.game.mechanics.turns.iterateTurnPlayer(view);
                         view.menu.refresh(true);
                     }
-                }).setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise()));
+                }) {
+                    /** {@inheritdoc} */
+                    @Override
+                    protected Color getColor() {
+                        if (!this.isEnabled()) {
+                            return ColorScheme.DISABLE;
+                        }
+                        return this.isHovered() ? ColorScheme.SPECIAL_HOVER : ColorScheme.SPECIAL_BUTTON;
+                    }
+                }.setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise()));
         this.pack();
+    }
+
+    /**
+     * Updates the Hud info so we can get an accurate height value
+     */
+    public void init(Game g) {
+        this.info.updateInfo(g);
     }
 
     /**

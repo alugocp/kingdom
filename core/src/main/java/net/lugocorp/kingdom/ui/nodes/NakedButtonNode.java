@@ -16,7 +16,6 @@ public class NakedButtonNode extends TextNode {
     private Optional<String> ping = Optional.of("sfx/arrow");
     private Point size = new Point(0, 0);
     private boolean hovered = false;
-    // TODO calculate inner bounds in the pack() method
 
     public NakedButtonNode(AudioVideo av, String message, Runnable action) {
         super(av, message);

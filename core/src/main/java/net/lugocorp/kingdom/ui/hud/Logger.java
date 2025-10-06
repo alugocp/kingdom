@@ -115,9 +115,9 @@ public class Logger {
 
         // Draw the text
         this.view.av.sprites.begin();
-        BitmapFont font = this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.ERROR);
+        final BitmapFont font = this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT);
         for (int a = 0; a < rows; a++) {
-            LogMessage lm = this.messages.get(a);
+            final LogMessage lm = this.messages.get(a);
             font.setColor(lm.color.r, lm.color.g, lm.color.b, alphas[a]);
             font.draw(this.view.av.sprites, lm.message, rects[a].x, rects[a].y + lm.h + Logger.MARGIN);
         }

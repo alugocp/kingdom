@@ -119,8 +119,12 @@ public class TextNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
-        BitmapFont font = this.getFont();
-        int y = Coords.SIZE.y - bounds.y - this.getMargin();
+        // The y coordinate in LibGDX defines the bottom-left point of the text (and the
+        // bottom-left of the screen is the origin)
+        final BitmapFont font = this.getFont();
+        int y = this.centered
+                ? (Coords.SIZE.y - bounds.y - this.getMargin() - ((bounds.h - this.getHeight()) / 2))
+                : (Coords.SIZE.y - bounds.y - this.getMargin());
         av.sprites.begin();
         for (int a = 0; a < this.lines.size(); a++) {
             int x = bounds.x + (this.centered ? (bounds.w - this.lines.get(a).width) / 2 : 0);

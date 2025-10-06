@@ -68,7 +68,9 @@ public abstract class ThreadedTaskView implements View {
             this.navigate.accept(this.getNextView());
         }
         this.av.sprites.begin();
-        this.font.draw(this.av.sprites, this.getLoadingText(), Coords.SIZE.y / 3, Coords.SIZE.y / 2);
+        final String text = this.getLoadingText();
+        this.font.draw(this.av.sprites, text, (Coords.SIZE.x - (text.length() * 8)) / 2,
+                (Coords.SIZE.y - this.font.getLineHeight()) / 2);
         this.av.sprites.end();
     }
 
