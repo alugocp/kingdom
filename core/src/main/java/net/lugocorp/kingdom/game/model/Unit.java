@@ -166,25 +166,29 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
         // Actions section
         if (this.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()) {
-            node.add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
+            node.add(new SubheaderNode(view.av, "Actions"))
+                    .add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
 
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
-                node.add(new ActionNode(view, "Move", Optional.of("Moves this unit to the target tile"),
+                node.add(new ActionNode(view, "Move",
+                        Optional.of("Moves this unit to the target tile (may exhaust this unit's actions)"),
                         () -> view.selector.move(this)));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
-                node.add(new ActionNode(view, "Deposit", Optional.of("Gives all stored items to an adjacent vault"),
+                node.add(new ActionNode(view, "Deposit",
+                        Optional.of(
+                                "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)"),
                         () -> view.selector.deposit(this)));
             }
 
             // Feed Unit
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
-                node.add(new ActionNode(view, "Feed",
-                        Optional.of("This unit uses one of its stored items to feed an adjacent hungry unit"),
+                node.add(new ActionNode(view, "Feed", Optional.of(
+                        "This unit uses one of its stored items to feed an adjacent hungry unit (does not exhaust this unit's actions)"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
@@ -196,11 +200,13 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                node.add(new ActionNode(view, "Store items",
-                        Optional.of("This unit won't ask for commands until it runs out of stored item space"), () -> {
+                node.add(new ActionNode(view, "Store items", Optional.of(
+                        "This unit won't ask for commands until it runs out of stored item space (does not exhaust this unit's actions)"),
+                        () -> {
                             view.logger.log(String.format("%s will wait where they are", this.name));
                             view.game.actions.unitHasActed(view, this, new SkipAction(
-                                    "This unit is waiting for maximum stored items", () -> this.haul.isFull()));
+                                    "This unit is waiting for maximum stored items, but you can give it a different command",
+                                    () -> this.haul.isFull()));
                             view.menu.refresh(true);
                             view.game.actions.goToNextUnit(view);
                         }));
@@ -208,10 +214,14 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                node.add(new ActionNode(view, "Skip turn", Optional.of("This unit won't ask for commands this turn"),
+                node.add(new ActionNode(view, "Skip turn",
+                        Optional.of(
+                                "This unit won't ask for commands this turn (does not exhaust this unit's actions)"),
                         () -> {
                             view.game.actions.unitHasActed(view, this,
-                                    new SkipAction("This unit is skipping its turn", () -> true));
+                                    new SkipAction(
+                                            "This unit is skipping its turn, but you can give it a different command",
+                                            () -> true));
                             view.menu.refresh(true);
                             view.game.actions.goToNextUnit(view);
                         }));

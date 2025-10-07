@@ -32,6 +32,6 @@ public class ActivateAction implements Action {
     /** {@inheritdoc} */
     @Override
     public String getDescription() {
-        return "This unit has cast a spell this turn";
+        return "This unit has cast a spell and has exhausted its actions this turn";
     }
 }

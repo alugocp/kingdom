@@ -116,10 +116,11 @@ public class MoveAction implements Action {
     @Override
     public String getDescription() {
         if (this.path.size() > 0) {
-            return String.format("This unit still wants to move %d more tile(s)", this.path.size());
+            return String.format("This unit plans to move %d more tile(s), but you can give it a different command",
+                    this.path.size());
         }
         return this.distance == this.max
-                ? "This unit has moved its maximum distance this turn"
-                : "This unit has moved this turn";
+                ? "This unit has moved its maximum distance and has exhausted its actions this turn"
+                : "This unit has moved this turn but can still go further";
     }
 }
