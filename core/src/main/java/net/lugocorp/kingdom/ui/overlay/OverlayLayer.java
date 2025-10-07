@@ -27,7 +27,7 @@ public class OverlayLayer {
      */
     public void render(int dt) {
         for (Overlay o : this.overlays) {
-            final float progress = o.update(dt);
+            o.update(dt);
             if (o.isDone()) {
                 this.dropList.add(o);
                 continue;

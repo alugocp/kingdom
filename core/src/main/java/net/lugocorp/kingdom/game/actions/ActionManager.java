@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.actions;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.ui.overlay.ActionOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Set;
  * Contains all logic for a Unit's Action(s) taken each turn
  */
 public class ActionManager {
+    private final Map<Unit, ActionOverlay> overlays = new HashMap<>();
     private final Map<Unit, Action> actions = new HashMap<>();
 
     /**
@@ -22,8 +24,15 @@ public class ActionManager {
         final Set<Unit> acted = new HashSet<>();
         acted.addAll(this.actions.keySet());
         for (Unit u : acted) {
-            if (u.leadership.belongsToPlayer(p) && !this.actions.get(u).endOfTurn()) {
-                this.actions.remove(u);
+            if (u.leadership.belongsToPlayer(p)) {
+                final ActionOverlay o = this.overlays.get(u);
+                if (this.actions.get(u).endOfTurn()) {
+                    o.setChar(this.getActionOverlayChar(u));
+                } else {
+                    this.actions.remove(u);
+                    this.overlays.remove(u);
+                    o.dispel();
+                }
             }
         }
     }
@@ -76,14 +85,30 @@ public class ActionManager {
      */
     public void unitHasActed(GameView view, Unit u, Action a) {
         if (this.actions.containsKey(u)) {
+            // The Unit is acting a second (or further) time this turn
             this.actions.put(u, this.actions.get(u).followedBy(a));
+            this.overlays.get(u).setChar(this.getActionOverlayChar(u));
         } else {
+            // The Unit is taking its first action this turn
             this.actions.put(u, a);
             a.addedFirst();
             if (u.leadership.belongsToHuman()) {
                 this.goToNextUnit(view);
             }
+
+            // Add Action state Overlay
+            final ActionOverlay o = new ActionOverlay(view, u, this.getActionOverlayChar(u));
+            this.overlays.put(u, o);
+            view.overlays.add(o);
         }
+
+    }
+
+    /**
+     * Returns a character to display in the given Unit's ActionOverlay
+     */
+    private char getActionOverlayChar(Unit u) {
+        return this.canUnitDoThis(u, ActionType.MOVE) ? '.' : 'z';
     }
 
     /**

@@ -38,9 +38,8 @@ public class RisingOverlay extends Overlay {
 
     /** {@inheritdoc} */
     @Override
-    public float update(int dt) {
+    public void update(int dt) {
         this.progress = Math.min(1f, this.progress + (dt / RisingOverlay.DURATION));
-        return this.progress;
     }
 
     /** {@inheritdoc} */

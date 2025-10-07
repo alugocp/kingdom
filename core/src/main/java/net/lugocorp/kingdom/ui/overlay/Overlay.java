@@ -24,7 +24,7 @@ public abstract class Overlay {
     /**
      * Updates this Overlay's progress through its animation
      */
-    public abstract float update(int dt);
+    public abstract void update(int dt);
 
     /**
      * Renders this Overlay onto the Game World
