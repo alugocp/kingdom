@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
+import net.lugocorp.kingdom.ui.overlay.HealthChangeOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.List;
@@ -46,8 +47,8 @@ public class Combat {
             if (b.isActive() && !b.getLeader().equals(destroyer)) {
                 effects.add(() -> {
                     view.logger.log(String.format("You claimed the %s", b.name));
-                    // TODO play a noise here
-                    view.av.loaders.sounds.play("sfx/select-unit");
+                    view.overlays.add(new EntityRisingOverlay(view, b, 0x000000, "Building changed allegiance"));
+                    // TODO find some sound to play here
                     this.health.set(this.health.getMax());
                     view.game.world.getTile(b.getPoint())
                             .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));
@@ -93,6 +94,8 @@ public class Combat {
         if (this.bearer.getEntityType() == EntityType.UNIT) {
             effects.add(() -> view.animations.add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
         }
+        effects.add(() -> view.overlays.add(new HealthChangeOverlay(view, this.bearer, this.health.getMax(),
+                this.health.get(), this.health.get() - damageEvent.dmg.total())));
         effects.add(() -> view.overlays
                 .add(new EntityRisingOverlay(view, this.bearer, 0xff0000, String.format("-%d", dmg.total()))));
         return SideEffect.all(effects);
@@ -132,6 +135,8 @@ public class Combat {
         this.bearer.handleEvent(view, heal);
         return () -> {
             target.combat.health.set(target.combat.health.get() + heal.amount);
+            view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
+                    target.combat.health.get(), target.combat.health.get() + heal.amount));
             view.overlays.add(new EntityRisingOverlay(view, target, 0x00ff00, String.format("+%d", heal.amount)));
         };
     }

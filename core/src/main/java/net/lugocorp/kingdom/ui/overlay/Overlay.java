@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector3;
  * Represents a 2D asset rising over the GameView in 3D space
  */
 public abstract class Overlay {
-    protected final Vector3 offset;
+    private final Vector3 offset;
     private final Point origin;
 
     public Overlay(Point origin, Vector3 offset) {
