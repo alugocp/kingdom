@@ -16,6 +16,9 @@ public class TileMenu {
     private final GameView view;
     private Optional<Menu> menu = Optional.empty();
     private Point menuCoords = new Point(0, 0);
+    // TODO the hovered and selected tiles have full visibility bightness (even in
+    // low visiiblity), and tile selection options should pulsate brightness like
+    // how waves rock back and forth
 
     public TileMenu(GameView view) {
         this.view = view;

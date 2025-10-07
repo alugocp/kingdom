@@ -1,7 +1,9 @@
 package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.Set;
 
 /**
  * This class handles a Unit's hunger
@@ -12,6 +14,20 @@ public class Hunger {
 
     public Hunger(Unit unit) {
         this.unit = unit;
+    }
+
+    /**
+     * Tells this instance to find an edible hauled Item and eat it. If there is no
+     * such Item then hunger begins to strike the Unit.
+     */
+    public void gotHungry(GameView view) {
+        final Set<Item> food = this.unit.haul.getEdibleItems(view, this.unit);
+        if (food.size() > 0) {
+            this.unit.haul.remove(food.iterator().next());
+            this.eat(view.game);
+            return;
+        }
+        view.game.future.addFutureTick("HungerStrikes", this.unit, 1, true);
     }
 
     /**

@@ -183,8 +183,8 @@ public class KingdomMod implements GameMod {
         });
 
         // GetsHungry
-        events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver,
-                Event event) -> () -> view.game.future.addFutureTick("HungerStrikes", receiver, 1, true));
+        events.unit.setDefaultHandler("GetsHungry",
+                (GameView view, Unit receiver, Event event) -> () -> receiver.hunger.gotHungry(view));
 
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
