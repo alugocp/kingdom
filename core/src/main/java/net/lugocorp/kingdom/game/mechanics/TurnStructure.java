@@ -55,10 +55,12 @@ public class TurnStructure {
         view.game.actions.endOfTurn(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = view.game.comps.get(0);
+            view.hud.notHumanPlayerTurn();
         } else {
             int index = view.game.comps.indexOf(this.turnPlayer);
             if (index == view.game.comps.size() - 1) {
                 this.turnPlayer = view.game.human;
+                view.hud.humanPlayerTurn();
                 this.turn++;
                 view.game.future.checkFutureTicks(view);
                 this.startNewTurnGroup(view);

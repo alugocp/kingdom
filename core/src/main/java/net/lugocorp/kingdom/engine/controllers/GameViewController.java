@@ -104,23 +104,30 @@ public class GameViewController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
-        // Turn off controls during Animations
-        if (this.view.animations.inProgress()) {
-            return true;
-        }
+        // Turn off MenuController pushdown during animations
+        final boolean animating = this.view.animations.inProgress();
 
         // Menu logic
         if (this.popupMenu.touchDown(x, y, pointer, button) || this.view.popups.isDisplayed()) {
+            if (animating) {
+                this.popupMenu.cancel();
+            }
             return true;
         }
         if (this.menu.touchDown(x, y, pointer, button)) {
+            if (animating) {
+                this.menu.cancel();
+            }
+            return true;
+        }
+        if (this.hudMenu.touchDown(x, y, pointer, button)) {
+            if (animating) {
+                this.hudMenu.cancel();
+            }
             return true;
         }
 
-        // Handle HUD UI and game interface
-        if (this.hudMenu.touchDown(x, y, pointer, button)) {
-            return true;
-        }
+        // Game World logic
         this.touch.start(new Point(x, y));
         return true;
     }
@@ -128,11 +135,6 @@ public class GameViewController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
-        // Turn off controls during Animations
-        if (this.view.animations.inProgress()) {
-            return true;
-        }
-
         // Menu logic
         if (this.popupMenu.touchUp(x, y, pointer, button)) {
             return true;
@@ -149,7 +151,7 @@ public class GameViewController implements InputProcessor {
             return true;
         }
         if (this.touch.isActive()) {
-            if (!this.touch.isDragging()) {
+            if (!this.touch.isDragging() && !this.view.animations.inProgress()) {
                 this.view.selector.click();
             }
             this.touch.reset();
@@ -160,11 +162,6 @@ public class GameViewController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
-        // Turn off controls during Animations
-        if (this.view.animations.inProgress()) {
-            return true;
-        }
-
         // Menu logic
         if (this.popupMenu.touchDragged(x, y, pointer) || this.view.popups.isDisplayed()) {
             return true;

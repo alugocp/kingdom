@@ -20,6 +20,13 @@ public class MenuController implements InputProcessor {
     }
 
     /**
+     * Cancels an active TouchState in the controller
+     */
+    void cancel() {
+        this.touch.reset();
+    }
+
+    /**
      * Resets the mouse position and triggers mouseMove logic
      */
     public void reset() {

@@ -22,6 +22,7 @@ import java.util.Optional;
  * This class handles rendering the Player's HUD UI
  */
 public class Hud extends Menu {
+    private final ButtonNode completeTurnButton;
     private final HudInfoNode info;
     private final GameView view;
     private boolean minimapActive = true;
@@ -31,6 +32,28 @@ public class Hud extends Menu {
         super(0, 0, Coords.SIZE.x, false, new ListNode());
         this.info = new HudInfoNode(view.av);
         this.view = view;
+        this.completeTurnButton = (ButtonNode) (new ButtonNode(view.av, "Complete Turn", () -> {
+            if (view.popups.get().isPresent()) {
+                view.av.loaders.sounds.play("sfx/error");
+                view.popups.setDisplay(true);
+            } else if (view.game.actions.goToNextUnit(view)) {
+                view.av.loaders.sounds.play("sfx/error");
+            } else {
+                view.av.loaders.sounds.play("sfx/end-turn");
+                view.logger.log("You have ended your turn", true);
+                view.game.mechanics.turns.iterateTurnPlayer(view);
+                view.menu.refresh(true);
+            }
+        }) {
+            /** {@inheritdoc} */
+            @Override
+            protected Color getColor() {
+                if (!this.isEnabled()) {
+                    return ColorScheme.DISABLE;
+                }
+                return this.isHovered() ? ColorScheme.SPECIAL_HOVER : ColorScheme.SPECIAL_BUTTON;
+            }
+        }.setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise());
         ((ListNode) this.root).add(this.info).add(new RowNode()
                 .add(new ButtonNode(view.av, "Minimap", () -> this.toggleMinimap()))
                 .add(new ButtonNode(view.av, "Fates",
@@ -41,28 +64,7 @@ public class Hud extends Menu {
                                 view.game.mechanics.auction.getArtifactsMenu(view, Optional.of(view.game.human)))))
                 .add(new ButtonNode(view.av, "Settings",
                         () -> view.popups.addNextUnrequired(this.getSettingsMenu(view))))
-                .add(new ButtonNode(view.av, "Complete Turn", () -> {
-                    if (view.popups.get().isPresent()) {
-                        view.av.loaders.sounds.play("sfx/error");
-                        view.popups.setDisplay(true);
-                    } else if (view.game.actions.goToNextUnit(view)) {
-                        view.av.loaders.sounds.play("sfx/error");
-                    } else {
-                        view.av.loaders.sounds.play("sfx/end-turn");
-                        view.logger.log("You have ended your turn", true);
-                        view.game.mechanics.turns.iterateTurnPlayer(view);
-                        view.menu.refresh(true);
-                    }
-                }) {
-                    /** {@inheritdoc} */
-                    @Override
-                    protected Color getColor() {
-                        if (!this.isEnabled()) {
-                            return ColorScheme.DISABLE;
-                        }
-                        return this.isHovered() ? ColorScheme.SPECIAL_HOVER : ColorScheme.SPECIAL_BUTTON;
-                    }
-                }.setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise()));
+                .add(this.completeTurnButton));
         this.pack();
     }
 
@@ -71,6 +73,20 @@ public class Hud extends Menu {
      */
     public void init(Game g) {
         this.info.updateInfo(g);
+    }
+
+    /**
+     * Enables the "Complete Turn" button while it is the human Player's turn
+     */
+    public void humanPlayerTurn() {
+        this.completeTurnButton.enable(true).setText("Complete Turn");
+    }
+
+    /**
+     * Disables the "Complete Turn" button while it's not the human Player's turn
+     */
+    public void notHumanPlayerTurn() {
+        this.completeTurnButton.enable(false).setText("Waiting...");
     }
 
     /**
