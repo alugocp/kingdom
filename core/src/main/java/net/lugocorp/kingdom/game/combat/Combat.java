@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.overlay.HealthChangeOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -47,7 +48,8 @@ public class Combat {
             if (b.isActive() && !b.getLeader().equals(destroyer)) {
                 effects.add(() -> {
                     view.logger.log(String.format("You claimed the %s", b.name));
-                    view.overlays.add(new EntityRisingOverlay(view, b, 0x000000, "Building changed allegiance"));
+                    view.overlays.add(
+                            new EntityRisingOverlay(view, b, ColorScheme.BLACK.hex, "Building changed allegiance"));
                     // TODO find some sound to play here
                     this.health.set(this.health.getMax());
                     view.game.world.getTile(b.getPoint())
@@ -96,8 +98,8 @@ public class Combat {
         }
         effects.add(() -> view.overlays.add(new HealthChangeOverlay(view, this.bearer, this.health.getMax(),
                 this.health.get(), this.health.get() - damageEvent.dmg.total())));
-        effects.add(() -> view.overlays
-                .add(new EntityRisingOverlay(view, this.bearer, 0xff0000, String.format("-%d", dmg.total()))));
+        effects.add(() -> view.overlays.add(
+                new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
         return SideEffect.all(effects);
     }
 
@@ -137,7 +139,8 @@ public class Combat {
             target.combat.health.set(target.combat.health.get() + heal.amount);
             view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
                     target.combat.health.get(), target.combat.health.get() + heal.amount));
-            view.overlays.add(new EntityRisingOverlay(view, target, 0x00ff00, String.format("+%d", heal.amount)));
+            view.overlays.add(
+                    new EntityRisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
         };
     }
 

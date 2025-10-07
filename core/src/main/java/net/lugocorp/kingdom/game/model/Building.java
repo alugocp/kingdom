@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.BuildingType;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.MenuSubject;
 import net.lugocorp.kingdom.ui.nodes.BadgeNode;
@@ -176,7 +177,8 @@ public class Building extends Entity implements MenuSubject, Spawnable {
                 .flatMap((Tile t) -> t.leader);
         ListNode node = new ListNode().add(new HeaderNode(view.av, this.name));
         if (leader.isPresent()) {
-            node.add(new BadgeNode(view.av, Colors.asInt(leader.get().color), 0xffffff, leader.get().name));
+            node.add(
+                    new BadgeNode(view.av, Colors.asInt(leader.get().color), ColorScheme.WHITE.hex, leader.get().name));
         }
         node.add(new TextNode(view.av, this.desc));
         node.add(new ResourceBarsNode(view.av,
@@ -184,7 +186,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
         if (this.items.isPresent()) {
             node.add(new TextNode(view.av, "Items"));
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-                node.add(new BadgeNode(view.av, 0xb5b31f, 0xffffff,
+                node.add(new BadgeNode(view.av, 0xb5b31f, ColorScheme.WHITE.hex,
                         String.format("%d gold", this.items.get().getTotalGold())));
                 node.add(this.items.get().getMenuContent(view, p));
             } else {

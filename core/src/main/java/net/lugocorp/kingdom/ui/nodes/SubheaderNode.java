@@ -20,6 +20,6 @@ public class SubheaderNode extends TextNode {
 
     /** {@inheritdoc} */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(FontService.BOLD, 22, ColorScheme.TEXT);
+        return this.av.fonts.getFont(FontService.BOLD, 22, ColorScheme.TEXT.color);
     }
 }

@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.ui.nodes;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
+import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.MenuPopup;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -12,20 +13,25 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
  */
 public class HelperNode extends NakedButtonNode {
     private final MenuPopup popup = new MenuPopup();
-    private final TextNode desc;
+    private final MenuNode desc;
 
-    public HelperNode(AudioVideo av, String desc) {
+    public HelperNode(AudioVideo av, MenuNode desc) {
         super(av, "Help", () -> {
         });
+        this.desc = desc;
         this.disableNoise();
-        this.desc = new TextNode(av, desc);
         this.center();
+    }
+
+    public HelperNode(AudioVideo av, String desc) {
+        this(av, new TextNode(av, desc));
     }
 
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, this.isHovered() ? ColorScheme.SPECIAL_HOVER : ColorScheme.SPECIAL_BUTTON);
+        return this.av.fonts.getFont(24,
+                this.isHovered() ? ColorScheme.SPECIAL_HOVER.color : ColorScheme.SPECIAL_BUTTON.color);
     }
 
     /** {@inheritdoc} */

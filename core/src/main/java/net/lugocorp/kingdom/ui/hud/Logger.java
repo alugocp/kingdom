@@ -45,7 +45,7 @@ public class Logger {
         }
 
         // Add this message to the log
-        layout.setText(this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT), message);
+        layout.setText(this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT.color), message);
         messages.add(0, new LogMessage(message, color, layout.width, layout.height));
         if (this.messages.size() > Logger.MAX_ROWS) {
             messages.remove(messages.size() - 1);
@@ -54,17 +54,17 @@ public class Logger {
     }
 
     /**
-     * Calls into log() with color = ColorScheme.TEXT
+     * Calls into log() with color = ColorScheme.TEXT.color
      */
     public void log(String message, boolean dispel) {
-        this.log(message, dispel, ColorScheme.TEXT);
+        this.log(message, dispel, ColorScheme.TEXT.color);
     }
 
     /**
-     * Calls into log() with dispel = false and color = ColorScheme.TEXT
+     * Calls into log() with dispel = false and color = ColorScheme.TEXT.color
      */
     public void log(String message) {
-        this.log(message, false, ColorScheme.TEXT);
+        this.log(message, false, ColorScheme.TEXT.color);
     }
 
     /**
@@ -72,7 +72,7 @@ public class Logger {
      */
     public void error(String message, boolean dispel) {
         this.view.av.loaders.sounds.play("sfx/error");
-        this.log(message, dispel, ColorScheme.ERROR);
+        this.log(message, dispel, ColorScheme.ERROR.color);
     }
 
     /**
@@ -106,7 +106,8 @@ public class Logger {
             alphas[a] = (a == 0 && this.timer > Logger.MAX_TIMER - Logger.FADE_OUT)
                     ? (float) (Logger.MAX_TIMER - this.timer) / Logger.FADE_OUT
                     : 1f;
-            this.view.av.shapes.setColor(ColorScheme.MENU.r, ColorScheme.MENU.g, ColorScheme.MENU.b, alphas[a]);
+            this.view.av.shapes.setColor(ColorScheme.MENU.color.r, ColorScheme.MENU.color.g, ColorScheme.MENU.color.b,
+                    alphas[a]);
             this.view.av.shapes.rect(rects[a].x - Logger.MARGIN, rects[a].y, rects[a].w + (Logger.MARGIN * 2),
                     rects[a].h);
             y += lm.h + Logger.MARGIN;
@@ -115,13 +116,13 @@ public class Logger {
 
         // Draw the text
         this.view.av.sprites.begin();
-        final BitmapFont font = this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT);
+        final BitmapFont font = this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT.color);
         for (int a = 0; a < rows; a++) {
             final LogMessage lm = this.messages.get(a);
             font.setColor(lm.color.r, lm.color.g, lm.color.b, alphas[a]);
             font.draw(this.view.av.sprites, lm.message, rects[a].x, rects[a].y + lm.h + Logger.MARGIN);
         }
-        font.setColor(ColorScheme.TEXT);
+        font.setColor(ColorScheme.TEXT.color);
         this.view.av.sprites.end();
 
         // Remove a message when the timer runs out

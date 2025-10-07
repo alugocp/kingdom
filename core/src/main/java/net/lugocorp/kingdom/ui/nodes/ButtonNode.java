@@ -28,15 +28,15 @@ public class ButtonNode extends NakedButtonNode {
      */
     protected Color getColor() {
         if (this.disabled) {
-            return ColorScheme.DISABLE;
+            return ColorScheme.DISABLE.color;
         }
-        return this.isHovered() ? ColorScheme.HOVER : ColorScheme.BUTTON;
+        return this.isHovered() ? ColorScheme.HOVER.color : ColorScheme.BUTTON.color;
     }
 
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, ColorScheme.TEXT);
+        return this.av.fonts.getFont(24, ColorScheme.TEXT.color);
     }
 
     /**

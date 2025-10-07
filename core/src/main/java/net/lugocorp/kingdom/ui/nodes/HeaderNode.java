@@ -19,6 +19,6 @@ public class HeaderNode extends TextNode {
 
     /** {@inheritdoc} */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(36, ColorScheme.TEXT);
+        return this.av.fonts.getFont(36, ColorScheme.TEXT.color);
     }
 }

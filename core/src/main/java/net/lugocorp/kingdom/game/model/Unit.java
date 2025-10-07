@@ -19,11 +19,13 @@ import net.lugocorp.kingdom.game.unit.Leadership;
 import net.lugocorp.kingdom.game.unit.Loyalty;
 import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.MenuSubject;
 import net.lugocorp.kingdom.ui.nodes.ActionNode;
 import net.lugocorp.kingdom.ui.nodes.BadgeNode;
 import net.lugocorp.kingdom.ui.nodes.GlyphIconsNode;
+import net.lugocorp.kingdom.ui.nodes.HelperNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
 import net.lugocorp.kingdom.ui.nodes.ResourceBarsNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
@@ -143,10 +145,10 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         // Unit stats section
         final MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
         final int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
-        node.add(new BadgeNode(view.av, this.species.color, 0xffffff, this.species.toString()));
+        node.add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString()));
         node.add(this.getLeader().isPresent()
                 ? new RowNode().add(glyphsNode)
-                        .add(new BadgeNode(view.av, Colors.asInt(this.getLeader().get().color), 0xffffff,
+                        .add(new BadgeNode(view.av, Colors.asInt(this.getLeader().get().color), ColorScheme.WHITE.hex,
                                 this.getLeader().get().name))
                 : glyphsNode);
         node.add(new TextNode(view.av, this.desc));
@@ -154,6 +156,13 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
                 new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
                 new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.hunger.getTurnsBeforeHunger())));
+        node.add(new HelperNode(view.av, new ListNode().add(new SubheaderNode(view.av, "Health"))
+                .add(new TextNode(view.av, "If a unit's health bar hits zero then they disappear off the map."))
+                .add(new SubheaderNode(view.av, "Loyalty"))
+                .add(new TextNode(view.av,
+                        "If a unit's loyalty bar hits zero then it will abandon you and become independent. You can recruit an independent unit by giving it an item."))
+                .add(new SubheaderNode(view.av, "Hunger")).add(new TextNode(view.av,
+                        "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming an edible item."))));
 
         // Actions section
         if (this.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()) {

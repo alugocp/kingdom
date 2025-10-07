@@ -49,9 +49,9 @@ public class TabsNode implements MenuNode {
             @Override
             protected Color getColor() {
                 if (tabs.selected == index) {
-                    return this.isHovered() ? ColorScheme.HOVER : ColorScheme.BUTTON;
+                    return this.isHovered() ? ColorScheme.HOVER.color : ColorScheme.BUTTON.color;
                 }
-                return this.isHovered() ? ColorScheme.DISABLE : ColorScheme.GUTTER;
+                return this.isHovered() ? ColorScheme.DISABLE.color : ColorScheme.GUTTER.color;
             }
 
             /** {@inheritdoc} */

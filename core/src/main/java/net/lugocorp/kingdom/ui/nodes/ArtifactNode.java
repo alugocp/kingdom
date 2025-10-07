@@ -45,14 +45,14 @@ public class ArtifactNode implements MenuNode {
         this.hoveredMask = new Drawable(av.loaders.sprites, "artifact-hovered-mask");
         this.mask = new Drawable(av.loaders.sprites, "artifact-mask");
         if (artifact.isClaimed()) {
-            this.ownership = Optional.of(new BadgeNode(av, Colors.asInt(this.artifact.getOwner().get().color), 0xffffff,
-                    this.artifact.getOwner().get().name));
+            this.ownership = Optional.of(new BadgeNode(av, Colors.asInt(this.artifact.getOwner().get().color),
+                    ColorScheme.WHITE.hex, this.artifact.getOwner().get().name));
         }
         this.name = new TextNode(av, artifact.name) {
             /** {@inheritdoc} */
             @Override
             protected BitmapFont getFont() {
-                return this.av.fonts.getFont(20, ColorScheme.TEXT);
+                return this.av.fonts.getFont(20, ColorScheme.TEXT.color);
             }
         };
     }

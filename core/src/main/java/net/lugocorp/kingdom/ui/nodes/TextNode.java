@@ -39,7 +39,7 @@ public class TextNode implements MenuNode {
      * Returns the font to be used for this TextNode
      */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(ColorScheme.TEXT);
+        return this.av.fonts.getFont(ColorScheme.TEXT.color);
     }
 
     /**

@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.HelperNode;
@@ -35,7 +36,7 @@ public class Patron extends Building {
     Patron(String name, int x, int y) {
         super(name, x, y, null);
         this.combat.health.invulnerable();
-        super.setMinimapColor(0x000000);
+        super.setMinimapColor(ColorScheme.BLACK.hex);
     }
 
     /**

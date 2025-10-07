@@ -18,7 +18,7 @@ public abstract class ThreadedTaskView implements View {
 
     ThreadedTaskView(AudioVideo av) {
         this.av = av;
-        this.font = av.fonts.getFont(ColorScheme.TEXT);
+        this.font = av.fonts.getFont(ColorScheme.TEXT.color);
     }
 
     /**

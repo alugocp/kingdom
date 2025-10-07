@@ -25,7 +25,7 @@ public class NakedButtonNode extends TextNode {
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, this.hovered ? ColorScheme.HOVER : ColorScheme.BUTTON);
+        return this.av.fonts.getFont(24, this.hovered ? ColorScheme.HOVER.color : ColorScheme.BUTTON.color);
     }
 
     /**

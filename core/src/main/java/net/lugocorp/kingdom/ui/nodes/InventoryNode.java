@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -100,7 +101,7 @@ public class InventoryNode implements MenuNode {
         // Set mini menu for the selected item
         final Item item = this.items.get(i);
         ListNode root = new ListNode().add(new HeaderNode(this.view.av, item.name))
-                .add(new BadgeNode(this.view.av, item.rarity.color, 0xffffff, item.rarity.toString()))
+                .add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex, item.rarity.toString()))
                 .add(new TextNode(this.view.av, item.desc));
 
         // Equip / pick up / drop options (only if the human Player occupies this space)

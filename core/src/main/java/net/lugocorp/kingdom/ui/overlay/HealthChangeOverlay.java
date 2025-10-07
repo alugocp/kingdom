@@ -47,15 +47,15 @@ public class HealthChangeOverlay extends Overlay {
 
         // Draw the bar
         view.av.shapes.begin(ShapeType.Filled);
-        view.av.shapes.setColor(ColorScheme.GUTTER);
+        view.av.shapes.setColor(ColorScheme.GUTTER.color);
         view.av.shapes.rect(x, pos[1], w, HealthChangeOverlay.HEIGHT);
-        view.av.shapes.setColor(ColorScheme.SPECIAL_BUTTON);
+        view.av.shapes.setColor(ColorScheme.SPECIAL_BUTTON.color);
         view.av.shapes.rect(x, pos[1], w * value / this.max, HealthChangeOverlay.HEIGHT);
         view.av.shapes.end();
 
         // Draw the outline
         view.av.shapes.begin(ShapeType.Line);
-        view.av.shapes.setColor(ColorScheme.TEXT);
+        view.av.shapes.setColor(ColorScheme.TEXT.color);
         view.av.shapes.rect(x, pos[1], w, HealthChangeOverlay.HEIGHT);
         view.av.shapes.end();
     }

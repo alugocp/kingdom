@@ -188,7 +188,7 @@ public class Menu {
 
         // Draw black background
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(ColorScheme.MENU);
+        av.shapes.setColor(ColorScheme.MENU.color);
         av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
         av.shapes.end();
 
@@ -204,9 +204,9 @@ public class Menu {
             final Rect gutter = Coords.screen.flip(this.getGutterBounds().get());
             final Rect scrollbar = Coords.screen.flip(this.getScrollBarBounds().get());
             av.shapes.begin(ShapeType.Filled);
-            av.shapes.setColor(ColorScheme.GUTTER);
+            av.shapes.setColor(ColorScheme.GUTTER.color);
             av.shapes.rect(gutter.x, gutter.y, gutter.w, gutter.h);
-            av.shapes.setColor(this.scrollBarHighlighted ? ColorScheme.HOVER : ColorScheme.BUTTON);
+            av.shapes.setColor(this.scrollBarHighlighted ? ColorScheme.HOVER.color : ColorScheme.BUTTON.color);
             av.shapes.rect(scrollbar.x, scrollbar.y, scrollbar.w, scrollbar.h);
             av.shapes.end();
         }
@@ -214,7 +214,7 @@ public class Menu {
         // Draw Menu outline
         if (this.outlined) {
             av.shapes.begin(ShapeType.Line);
-            av.shapes.setColor(ColorScheme.OUTLINE);
+            av.shapes.setColor(ColorScheme.OUTLINE.color);
             av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
             av.shapes.end();
         }

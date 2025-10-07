@@ -90,7 +90,7 @@ public class Minimap {
     void draw(AudioVideo av, Point crosshair) {
         // Draw black background
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(ColorScheme.MENU);
+        av.shapes.setColor(ColorScheme.MENU.color);
         av.shapes.rect(this.pos.x, Coords.SIZE.y - this.pos.y - this.h, this.w, this.h);
 
         // Draw relevant pixels on the grid
@@ -114,7 +114,7 @@ public class Minimap {
 
         // Draw crosshairs
         final int scale3 = this.scale * 3;
-        av.shapes.setColor(ColorScheme.OUTLINE);
+        av.shapes.setColor(ColorScheme.OUTLINE.color);
         av.shapes.rect(this.pos.x + ((cx - 1) * this.scale),
                 Coords.SIZE.y - (this.pos.y + (cy * this.scale)) - this.scale, scale3, this.scale);
         av.shapes.rect(this.pos.x + (cx * this.scale), Coords.SIZE.y - (this.pos.y + ((cy - 1) * this.scale)) - scale3,
@@ -123,7 +123,7 @@ public class Minimap {
 
         // Draw white borders
         av.shapes.begin(ShapeType.Line);
-        av.shapes.setColor(ColorScheme.OUTLINE);
+        av.shapes.setColor(ColorScheme.OUTLINE.color);
         av.shapes.rect(this.pos.x, Coords.SIZE.y - this.pos.y - this.h, this.w, this.h);
         av.shapes.end();
     }

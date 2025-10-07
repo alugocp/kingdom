@@ -82,7 +82,7 @@ public class BadgeNode extends TextNode {
 
         // Draw a gap over any slashes
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(ColorScheme.MENU);
+        av.shapes.setColor(ColorScheme.MENU.color);
         for (Point slash : this.slashes) {
             int sy = yInitial - (lineHeight * slash.y);
             int sx = bounds.x + slash.x;

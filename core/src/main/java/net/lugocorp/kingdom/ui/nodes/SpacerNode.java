@@ -35,7 +35,7 @@ public class SpacerNode implements MenuNode {
         }
         int y = Coords.SIZE.y - bounds.y - SpacerNode.MARGIN - 1;
         av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(ColorScheme.OUTLINE);
+        av.shapes.setColor(ColorScheme.OUTLINE.color);
         av.shapes.rect(bounds.x, y, bounds.w, 1);
         av.shapes.end();
     }

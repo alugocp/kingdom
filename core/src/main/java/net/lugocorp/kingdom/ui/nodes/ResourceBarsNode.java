@@ -21,7 +21,7 @@ public class ResourceBarsNode implements MenuNode {
     private int textWidth = 0;
 
     public ResourceBarsNode(AudioVideo av, ResourceBarsNode.Bar... bars) {
-        this.font = av.fonts.getFont(20, ColorScheme.TEXT);
+        this.font = av.fonts.getFont(20, ColorScheme.TEXT.color);
         this.bars = bars;
         this.av = av;
     }
@@ -71,7 +71,7 @@ public class ResourceBarsNode implements MenuNode {
 
         // Draw white outline on the resource bars
         av.shapes.begin(ShapeType.Line);
-        av.shapes.setColor(ColorScheme.OUTLINE);
+        av.shapes.setColor(ColorScheme.OUTLINE.color);
         for (int a = 0; a < this.bars.length; a++) {
             final int y = yInitial - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
             av.shapes.rect(barX, y, barWidth, this.font.getLineHeight());

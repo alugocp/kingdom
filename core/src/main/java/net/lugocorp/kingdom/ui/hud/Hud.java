@@ -49,9 +49,9 @@ public class Hud extends Menu {
             @Override
             protected Color getColor() {
                 if (!this.isEnabled()) {
-                    return ColorScheme.DISABLE;
+                    return ColorScheme.DISABLE.color;
                 }
-                return this.isHovered() ? ColorScheme.SPECIAL_HOVER : ColorScheme.SPECIAL_BUTTON;
+                return this.isHovered() ? ColorScheme.SPECIAL_HOVER.color : ColorScheme.SPECIAL_BUTTON.color;
             }
         }.setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise());
         ((ListNode) this.root).add(this.info).add(new RowNode()
@@ -132,7 +132,7 @@ public class Hud extends Menu {
 
         // Draw a white bar at the bottom of the HUD
         av.shapes.begin(ShapeType.Line);
-        av.shapes.setColor(ColorScheme.OUTLINE);
+        av.shapes.setColor(ColorScheme.OUTLINE.color);
         av.shapes.rect(0, Coords.SIZE.y - this.getHeight(), Coords.SIZE.x, 1);
         av.shapes.end();
 

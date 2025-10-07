@@ -18,16 +18,16 @@ public class HudInfoNode extends RowNode {
 
     public HudInfoNode(AudioVideo av) {
         this.unitPoints = new ResourceBarsNode(av,
-                new ResourceBarsNode.Bar("Unit Points", 0x00FF00, 0, NewUnit.MAX_UNIT_POINTS));
-        this.auctionPoints = new ResourceBarsNode(av,
-                new ResourceBarsNode.Bar("Auction Points", 0xAAAA44, 0, ArtifactAuction.MAX_AUCTION_POINTS));
+                new ResourceBarsNode.Bar("Unit Points", ColorScheme.GREEN.hex, 0, NewUnit.MAX_UNIT_POINTS));
+        this.auctionPoints = new ResourceBarsNode(av, new ResourceBarsNode.Bar("Auction Points", ColorScheme.GOLD.hex,
+                0, ArtifactAuction.MAX_AUCTION_POINTS));
         this.auctionChips = new TextNode(av, "");
         this.artifacts = new TextNode(av, "");
         this.gold = new TextNode(av, "") {
             /** {@inheritdoc} */
             @Override
             protected BitmapFont getFont() {
-                return this.av.fonts.getFont(ColorScheme.GOLD);
+                return this.av.fonts.getFont(ColorScheme.GOLD.color);
             }
         };
         this.add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips).add(this.artifacts).add(this.gold);

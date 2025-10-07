@@ -72,7 +72,7 @@ public class ListNode implements MenuNode {
         if (this.border) {
             Rect flip = Coords.screen.flip(bounds.x, bounds.y, bounds.w, bounds.h - 1);
             av.shapes.begin(ShapeType.Line);
-            av.shapes.setColor(ColorScheme.OUTLINE);
+            av.shapes.setColor(ColorScheme.OUTLINE.color);
             av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
             av.shapes.end();
         }

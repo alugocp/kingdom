@@ -1,20 +1,28 @@
 package net.lugocorp.kingdom.ui;
-import net.lugocorp.kingdom.utils.logic.Colors;
-import com.badlogic.gdx.graphics.Color;
+
+// TODO move this, ColorPoint, and Colors (rename to ColorUtils) to utils/color
 
 /**
  * This class contains commonly used UI color values
  */
 public class ColorScheme {
-    public static final Color MENU = Colors.fromHex(0x010101);
-    public static final Color OUTLINE = Colors.fromHex(0xEFEFEF);
-    public static final Color GUTTER = Colors.fromHex(0x444444);
-    public static final Color TEXT = Colors.fromHex(0xEFEFEF);
-    public static final Color BUTTON = Colors.fromHex(0x4FB0DC);
-    public static final Color HOVER = Colors.fromHex(0x7DC2E2);
-    public static final Color ERROR = Colors.fromHex(0xDD3333);
-    public static final Color DISABLE = Colors.fromHex(0xBBBBBB);
-    public static final Color SPECIAL_BUTTON = Colors.fromHex(0x2f8729);
-    public static final Color SPECIAL_HOVER = Colors.fromHex(0x59b65a);
-    public static final Color GOLD = Colors.fromHex(0xFFFF99);
+    // UI colors
+    public static final ColorPoint MENU = new ColorPoint(0x010101);
+    public static final ColorPoint OUTLINE = new ColorPoint(0xEFEFEF);
+    public static final ColorPoint GUTTER = new ColorPoint(0x444444);
+    public static final ColorPoint TEXT = new ColorPoint(0xEFEFEF);
+    public static final ColorPoint BUTTON = new ColorPoint(0x4FB0DC);
+    public static final ColorPoint HOVER = new ColorPoint(0x7DC2E2);
+    public static final ColorPoint ERROR = new ColorPoint(0xDD3333);
+    public static final ColorPoint DISABLE = new ColorPoint(0xBBBBBB);
+    public static final ColorPoint SPECIAL_BUTTON = new ColorPoint(0x2f8729);
+    public static final ColorPoint SPECIAL_HOVER = new ColorPoint(0x59b65a);
+
+    // Basic colors
+    public static final ColorPoint GOLD = new ColorPoint(0xAAAA44);
+    public static final ColorPoint RED = new ColorPoint(0xFF0000);
+    public static final ColorPoint GREEN = new ColorPoint(0x00FF00);
+    public static final ColorPoint BLUE = new ColorPoint(0x0000FF);
+    public static final ColorPoint BLACK = new ColorPoint(0x000000);
+    public static final ColorPoint WHITE = new ColorPoint(0xffffff);
 }
