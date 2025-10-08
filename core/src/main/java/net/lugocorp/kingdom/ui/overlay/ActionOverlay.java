@@ -56,15 +56,14 @@ public class ActionOverlay extends Overlay {
     public void render(GameView view) {
         final BitmapFont font = view.av.fonts.getFont(30, ColorScheme.BUTTON.color);
         final float[] pos = this.getPosition(view);
-        final int y = (int) (pos[1] + font.getLineHeight());
         final float diff = (float) Math.PI / 2f;
         view.av.sprites.begin();
         font.draw(view.av.sprites, this.single, (int) (pos[0] - ActionOverlay.DIFF),
-                y + (int) (Math.sin(this.x) * ActionOverlay.AMPLITUDE));
+                (int) (pos[1] + (Math.sin(this.x) * ActionOverlay.AMPLITUDE)));
         font.draw(view.av.sprites, this.single, (int) pos[0],
-                y + (int) (Math.sin(this.x + diff) * ActionOverlay.AMPLITUDE));
+                (int) (pos[1] + (Math.sin(this.x + diff) * ActionOverlay.AMPLITUDE)));
         font.draw(view.av.sprites, this.single, (int) (pos[0] + ActionOverlay.DIFF),
-                y + (int) (Math.sin(this.x + diff + diff) * ActionOverlay.AMPLITUDE));
+                (int) (pos[1] + (Math.sin(this.x + diff + diff) * ActionOverlay.AMPLITUDE)));
         view.av.sprites.end();
     }
 }
