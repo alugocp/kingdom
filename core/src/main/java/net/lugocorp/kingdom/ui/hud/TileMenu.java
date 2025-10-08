@@ -42,8 +42,8 @@ public class TileMenu {
      * Handles click logic on a Tile (open a Menu for said Tile)
      */
     public void open(Point p) {
-        this.menu.ifPresent((Menu _m) -> this.view.game.world.getTile(this.menuCoords).get().decrementSelection());
-        this.view.game.world.getTile(p).ifPresent((Tile t) -> t.incrementSelection());
+        this.menu.ifPresent((Menu _m) -> this.view.game.world.getTile(this.menuCoords).get().changeHovered(false));
+        this.view.game.world.getTile(p).ifPresent((Tile t) -> t.changeHovered(true));
         this.menuCoords = p;
         this.refresh(false);
     }
@@ -74,7 +74,7 @@ public class TileMenu {
      */
     public void close() {
         this.menu.ifPresent((Menu m) -> {
-            this.view.game.world.getTile(this.menuCoords).get().decrementSelection();
+            this.view.game.world.getTile(this.menuCoords).get().changeHovered(false);
             this.view.animations.add(new CloseTileMenuAnimation(m, () -> {
                 this.menu = Optional.empty();
             }));

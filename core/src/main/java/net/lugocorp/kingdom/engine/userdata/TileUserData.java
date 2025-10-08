@@ -28,8 +28,11 @@ public class TileUserData {
     public boolean hasBeenSeen = false;
     public int vision = 0;
 
-    // Renders the Tile selector
-    public int selection = 0;
+    // Renders the Tile hover selector
+    public int hovered = 0;
+
+    // Renders the Tile option selector
+    public boolean option = false;
 
     /**
      * Returns an integer for the shader vision input

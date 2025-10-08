@@ -64,7 +64,8 @@ public class ToonShader implements Shader {
     private int u_opacity;
     private int u_resolution;
     private int u_nighttime;
-    private int u_selection;
+    private int u_hovered;
+    private int u_option;
     private int u_vision;
     private int u_lightOutline;
     private int u_domainBorder;
@@ -101,7 +102,8 @@ public class ToonShader implements Shader {
         this.u_opacity = this.program.getUniformLocation("u_opacity");
         this.u_resolution = this.program.getUniformLocation("u_resolution");
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
-        this.u_selection = this.program.getUniformLocation("u_selection");
+        this.u_hovered = this.program.getUniformLocation("u_hovered");
+        this.u_option = this.program.getUniformLocation("u_option");
         this.u_vision = this.program.getUniformLocation("u_vision");
         this.u_lightOutline = this.program.getUniformLocation("u_lightOutline");
         this.u_domainBorder = this.program.getUniformLocation("u_domainBorder");
@@ -187,7 +189,8 @@ public class ToonShader implements Shader {
         if (renderable.userData != null && renderable.userData instanceof TileUserData) {
             TileUserData data = (TileUserData) renderable.userData;
             this.program.setUniformi(this.u_vision, data.collapseVision());
-            this.program.setUniformi(this.u_selection, Math.min(data.selection, 3));
+            this.program.setUniformi(this.u_hovered, data.hovered);
+            this.program.setUniformi(this.u_option, data.option ? 1 : 0);
             this.program.setUniformf(this.u_borderColor, data.borderColor);
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
@@ -241,7 +244,8 @@ public class ToonShader implements Shader {
             }
         } else {
             this.program.setUniformi(this.u_wave, 0);
-            this.program.setUniformi(this.u_selection, 0);
+            this.program.setUniformi(this.u_option, 0);
+            this.program.setUniformi(this.u_hovered, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_distanceBorder, 0);

@@ -140,17 +140,17 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
-     * Adds a level of selection
+     * Sets the option render state
      */
-    public void incrementSelection() {
-        this.userData.selection++;
+    public void setOption(boolean option) {
+        this.userData.option = option;
     }
 
     /**
-     * Removes a level of selection
+     * Sets the hovered render state
      */
-    public void decrementSelection() {
-        this.userData.selection--;
+    public void changeHovered(boolean add) {
+        this.userData.hovered += add ? 1 : -1;
     }
 
     /**

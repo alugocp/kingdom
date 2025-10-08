@@ -28,7 +28,8 @@ uniform int u_vision;
 uniform int u_distanceBorder;
 uniform int u_domainBorder;
 uniform int u_tileBorder;
-uniform int u_selection;
+uniform int u_hovered;
+uniform int u_option;
 uniform bool u_lightOutline;
 uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
@@ -38,7 +39,6 @@ varying vec3 v_normal;
 const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
-float selection_coeff = 0.3 * min(float(u_selection), 2.0);
 
 vec4 normalsTexSample(float x, float y) {
     return texture2D(u_normalsTexture, vec2(x / 1280.0, y / 960.0));
@@ -88,10 +88,15 @@ void main() {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
         // Allow for tile selection to be visible beneath fog of war
-        if (u_selection > 0) {
-            gl_FragColor.x += selection_coeff;
-            gl_FragColor.y += selection_coeff;
-            gl_FragColor.z += selection_coeff * 0.5;
+        if (u_hovered > 0) {
+            gl_FragColor.x += 0.5;
+            gl_FragColor.y += 0.5;
+            gl_FragColor.z += 0.2;
+        } else if (u_option > 0) {
+            float coeff = (abs(mod(u_timer, 2000.0) - 1000.0) / 1000.0 * 0.35) + 0.4;
+            gl_FragColor.x += coeff;
+            gl_FragColor.y += coeff;
+            gl_FragColor.z += coeff * 0.5;
         }
 
         // Allow for distance borders to be visible beneath fog of war
@@ -142,10 +147,15 @@ void main() {
     }
 
     // Tile selection logic
-    if (u_selection > 0) {
-        gl_FragColor.x += selection_coeff;
-        gl_FragColor.y += selection_coeff;
-        gl_FragColor.z += selection_coeff * 0.5;
+    if (u_hovered > 0) {
+        gl_FragColor.x += 0.5;
+        gl_FragColor.y += 0.5;
+        gl_FragColor.z += 0.2;
+    } else if (u_option > 0) {
+        float coeff = (abs(mod(u_timer, 2000.0) - 1000.0) / 1000.0 * 0.35) + 0.4;
+        gl_FragColor.x += coeff;
+        gl_FragColor.y += coeff;
+        gl_FragColor.z += coeff * 0.5;
     }
 
     // Border rendering logic

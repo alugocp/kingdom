@@ -21,7 +21,7 @@ class TileSetSelectMode extends TileSelectMode {
     @Override
     final void init(GameView view) {
         for (Point p : this.points) {
-            view.game.world.getTile(p).ifPresent((Tile t) -> t.incrementSelection());
+            view.game.world.getTile(p).ifPresent((Tile t) -> t.setOption(true));
         }
         view.menu.close();
     }
@@ -49,7 +49,7 @@ class TileSetSelectMode extends TileSelectMode {
     @Override
     final void dispel(GameView view) {
         for (Point p : this.points) {
-            view.game.world.getTile(p).ifPresent((Tile t) -> t.decrementSelection());
+            view.game.world.getTile(p).ifPresent((Tile t) -> t.setOption(false));
         }
     }
 }
