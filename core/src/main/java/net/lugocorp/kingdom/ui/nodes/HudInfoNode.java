@@ -15,6 +15,7 @@ public class HudInfoNode extends RowNode {
     private final TextNode auctionChips;
     private final TextNode artifacts;
     private final TextNode gold;
+    private final TextNode dayNight;
 
     public HudInfoNode(AudioVideo av) {
         this.unitPoints = new ResourceBarsNode(av,
@@ -30,7 +31,9 @@ public class HudInfoNode extends RowNode {
                 return this.av.fonts.getFont(ColorScheme.GOLD.color);
             }
         };
-        this.add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips).add(this.artifacts).add(this.gold);
+        this.dayNight = new TextNode(av, "");
+        this.add(this.unitPoints).add(this.auctionPoints).add(this.auctionChips).add(this.artifacts).add(this.gold)
+                .add(this.dayNight);
     }
 
     /**
@@ -42,6 +45,7 @@ public class HudInfoNode extends RowNode {
         this.auctionPoints.setValue(0, game.mechanics.auction.points);
         this.auctionChips.setText(this.plural("Auction Chip", game.human.auctionChips));
         this.artifacts.setText(this.plural("Artifact", game.human.artifacts.size()));
+        this.dayNight.setText(game.mechanics.dayNight.isDay() ? "Daytime" : "Nighttime");
     }
 
     /**

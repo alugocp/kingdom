@@ -60,10 +60,11 @@ public class TurnStructure {
             int index = view.game.comps.indexOf(this.turnPlayer);
             if (index == view.game.comps.size() - 1) {
                 this.turnPlayer = view.game.human;
-                view.hud.humanPlayerTurn();
                 this.turn++;
                 view.game.future.checkFutureTicks(view);
                 this.startNewTurnGroup(view);
+                view.hud.humanPlayerTurn();
+                view.hud.update(view.game);
             } else {
                 this.turnPlayer = view.game.comps.get(index + 1);
             }

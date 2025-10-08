@@ -71,7 +71,7 @@ public class Hud extends Menu {
     /**
      * Updates the Hud info so we can get an accurate height value
      */
-    public void init(Game g) {
+    public void update(Game g) {
         this.info.updateInfo(g);
     }
 
@@ -125,8 +125,6 @@ public class Hud extends Menu {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av) {
-        // TODO only call updateInfo() and setPoint() once per turn
-        this.info.updateInfo(this.view.game);
         this.minimap.setPoint(0, this.getHeight());
         super.draw(av);
 

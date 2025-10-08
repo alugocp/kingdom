@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class DayNight {
     private static final int DURATION = 8;
-    private DayNight.State state = DayNight.State.DAY;
+    private DayNightState state = DayNightState.DAY;
     private int countdown = DayNight.DURATION;
 
     /**
@@ -16,7 +16,7 @@ public class DayNight {
     void tick(GameView view) {
         if (--this.countdown == 0) {
             this.countdown = DayNight.DURATION;
-            this.state = this.isDay() ? DayNight.State.NIGHT : DayNight.State.DAY;
+            this.state = this.isDay() ? DayNightState.NIGHT : DayNightState.DAY;
             view.logger.log(this.isDay() ? "The sun has risen once more" : "Night has fallen");
             // TODO trigger an event here
         }
@@ -33,26 +33,13 @@ public class DayNight {
      * Returns true if it is day
      */
     public boolean isDay() {
-        return this.state == DayNight.State.DAY;
+        return this.state == DayNightState.DAY;
     }
 
     /**
      * Returns true if it is night
      */
     public boolean isNight() {
-        return this.state == DayNight.State.NIGHT;
+        return this.state == DayNightState.NIGHT;
     }
-
-    /**
-     * This nested class represents the day/night state dichotomy
-     */
-    public static enum State {
-        DAY(new Color(0.8f, 1.0f, 1.0f, 1f)), NIGHT(new Color(0.1f, 0.1f, 0.5f, 1f));
-
-        private final Color color;
-
-        private State(Color color) {
-            this.color = color;
-        }
-    };
 }

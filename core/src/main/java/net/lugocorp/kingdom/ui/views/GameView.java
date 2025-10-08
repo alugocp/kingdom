@@ -150,7 +150,7 @@ public class GameView implements View {
         this.logger.log(b.isPresent()
                 ? String.format("%s joined your ranks on the %s", u.name, b.get().name)
                 : String.format("%s joined your ranks", u.name));
-        this.hud.init(this.game);
+        this.hud.update(this.game);
         this.centerOnPoint(u.getPoint(), true);
         this.menu.open(u.getPoint());
     }

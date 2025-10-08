@@ -160,16 +160,22 @@ void main() {
         applyBorder(u_distanceBorder, vec4(0.0, 0.0, 0.0, 1.0), u_borderTexture3, u_borderTexture4);
     }
 
-    // Make the color darker if it's night time or half vision
-    if (u_nighttime > 0.0 || u_vision == HALF_VISIBILITY) {
-        float coeff = 0.6;
-        if (u_nighttime > 0.0 && u_vision == HALF_VISIBILITY) {
-            coeff = 0.3;
-        }
+    // Make the color bluer if it's nighttime
+    if (u_nighttime > 0.0) {
+        mat4 bluer;
+        bluer[0] = vec4(0.7, 0.0, 0.0, 0.0);
+        bluer[1] = vec4(0.0, 0.7, 0.0, 0.0);
+        bluer[2] = vec4(0.0, 0.0, 1.0, 0.0);
+        bluer[3] = vec4(0.0, 0.0, 0.0, 1.0);
+        gl_FragColor = bluer * gl_FragColor;
+    }
+
+    // Make the color darker if it's half vision
+    if (u_vision == HALF_VISIBILITY) {
         mat4 darker;
-        darker[0] = vec4(coeff, 0.0, 0.0, 0.0);
-        darker[1] = vec4(0.0, coeff, 0.0, 0.0);
-        darker[2] = vec4(0.0, 0.0, coeff, 0.0);
+        darker[0] = vec4(0.6, 0.0, 0.0, 0.0);
+        darker[1] = vec4(0.0, 0.6, 0.0, 0.0);
+        darker[2] = vec4(0.0, 0.0, 0.6, 0.0);
         darker[3] = vec4(0.0, 0.0, 0.0, 1.0);
         gl_FragColor = darker * gl_FragColor;
     }
