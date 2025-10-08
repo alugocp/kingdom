@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  * This MenuNode separates different sections of a Menu
  */
 public class SpacerNode implements MenuNode {
-    private static int MARGIN = 25;
     private final boolean visibleLine;
+    private int margin = 25;
 
     public SpacerNode(boolean visibleLine) {
         this.visibleLine = visibleLine;
@@ -21,10 +21,18 @@ public class SpacerNode implements MenuNode {
         this(true);
     }
 
+    /**
+     * Cuts this SpacerNode in half vertically
+     */
+    public SpacerNode half() {
+        this.margin = 12;
+        return this;
+    }
+
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
-        return (SpacerNode.MARGIN * 2) + 1;
+        return (this.margin * 2) + 1;
     }
 
     /** {@inheritdoc} */
@@ -33,7 +41,7 @@ public class SpacerNode implements MenuNode {
         if (!this.visibleLine) {
             return;
         }
-        int y = Coords.SIZE.y - bounds.y - SpacerNode.MARGIN - 1;
+        int y = Coords.SIZE.y - bounds.y - this.margin - 1;
         av.shapes.begin(ShapeType.Filled);
         av.shapes.setColor(ColorScheme.OUTLINE.color);
         av.shapes.rect(bounds.x, y, bounds.w, 1);

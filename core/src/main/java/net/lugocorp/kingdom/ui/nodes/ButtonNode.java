@@ -36,7 +36,7 @@ public class ButtonNode extends NakedButtonNode {
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, ColorScheme.TEXT.color);
+        return this.av.fonts.getFont(24, this.disabled ? ColorScheme.GUTTER.color : ColorScheme.TEXT.color);
     }
 
     /**

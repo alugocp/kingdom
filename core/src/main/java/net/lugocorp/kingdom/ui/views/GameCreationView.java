@@ -142,9 +142,11 @@ class GameCreationView implements View {
                                 .add(new HeaderNode(view.av, "World Generation").center())
                                 .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
                         .add(new SpacerNode())
-                        .add(new RowNode().add(new TextNode(view.av, "World Seed"))
+                        .add(new RowNode().add(new SubheaderNode(view.av, "World Seed"))
                                 .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
                                         (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
+                        .add(new SpacerNode(false).half()).add(new TextNode(view.av,
+                                "The world seed determines random values in world generation. Write down previous world seeds from games you enjoyed to replay on the exact same map."))
         /*
          * .add(new SpacerNode(false)) .add( new RowNode().add(new TextNode(view.av,
          * "Map Size")) .add(worldSizeOptions) )
@@ -164,10 +166,14 @@ class GameCreationView implements View {
                 .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
                         .add(new HeaderNode(view.av, "Select a Fate").center())
                         .add(new ButtonNode(view.av, "Start Game", () -> this.startGame())))
-                .add(new SpacerNode())
-                .add(new RowNode()
-                        .add(new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate")).add(display))
-                        .add(wrapper));
+                .add(new SpacerNode()).add(
+                        new RowNode().add(
+                                new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate")).add(display)).add(
+                                        new ListNode()
+                                                .add(new SubheaderNode(view.av,
+                                                        String.format("%d Fates",
+                                                                view.game.mechanics.fates.getFates().size())))
+                                                .add(wrapper)));
 
         // Set up RowNodes of FateNodes
         int a = 0;

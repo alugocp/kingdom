@@ -201,7 +201,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
                 node.add(new ActionNode(view, "Store items", Optional.of(
-                        "This unit won't ask for commands until it runs out of stored item space (does not exhaust this unit's actions)"),
+                        "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
                         () -> {
                             view.logger.log(String.format("%s will wait where they are", this.name));
                             view.game.actions.unitHasActed(view, this, new SkipAction(
