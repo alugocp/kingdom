@@ -136,9 +136,12 @@ public class Combat {
         Events.HealEntityEvent heal = new Events.HealEntityEvent(this.bearer, target, amount);
         this.bearer.handleEvent(view, heal);
         return () -> {
+            final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
             target.combat.health.set(target.combat.health.get() + heal.amount);
-            view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
-                    target.combat.health.get(), target.combat.health.get() + heal.amount));
+            if (needsHealing) {
+                view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
+                        target.combat.health.get(), target.combat.health.get() + heal.amount));
+            }
             view.overlays.add(
                     new EntityRisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
         };
