@@ -50,7 +50,7 @@ public class RisingOverlay extends Overlay {
         final Color c = font.getColor();
         view.av.sprites.begin();
         font.setColor(c.r, c.g, c.b, this.getOpacity());
-        font.draw(view.av.sprites, this.label, pos[0], pos[1] + (progress * 50f));
+        font.draw(view.av.sprites, this.label, pos[0], pos[1] + (int) font.getLineHeight() + (progress * 50f));
         font.setColor(c);
         view.av.sprites.end();
     }
