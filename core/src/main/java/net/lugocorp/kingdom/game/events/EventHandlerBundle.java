@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.events;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.code.SideEffect;
@@ -60,9 +61,15 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * Returns true if the EventReceiver with the given stratifier has an
      * EventHandler that listens on the given channel
      */
-    public <E extends Event> boolean hasEventHandler(String stratifier, Class<E> eventClass) {
-        final String channel = eventClass.getSimpleName();
+    public <E extends Event> boolean hasEventHandler(String stratifier, String channel) {
         return this.handlers.containsKey(this.getKey(stratifier, channel)) || this.defaults.containsKey(channel);
+    }
+
+    /**
+     * Calls into hasEventHandler() with an Event class
+     */
+    public <E extends Event> boolean hasEventHandler(String stratifier, Class<E> eventClass) {
+        return this.hasEventHandler(stratifier, eventClass.getSimpleName());
     }
 
     /**
@@ -83,6 +90,15 @@ public class EventHandlerBundle<T extends EventReceiver> {
             SingleEventHandler<T, E> handler) {
         this.addEventHandler(stratifier, eventClass.getSimpleName(),
                 (GameView view, T receiver, Event event) -> handler.handle(view, receiver, (E) event));
+    }
+
+    /**
+     * Calls into this.addEventHandler() using an Event class
+     */
+    public void addEventHandler(String stratifier, String channel,
+            SingleEventHandler<T, Events.RepeatedEvent> handler) {
+        this.addEventHandler(stratifier, channel, (GameView view, T receiver, Event event) -> handler.handle(view,
+                receiver, (Events.RepeatedEvent) event));
     }
 
     /**

@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.unit;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class Hunger {
         final Set<Item> food = this.unit.haul.getEdibleItems(view, this.unit);
         if (food.size() > 0) {
             this.unit.haul.remove(food.iterator().next());
-            this.eat(view.game);
+            this.eat(view, true);
             return;
         }
         view.game.future.addFutureTick("HungerStrikes", this.unit, 1, true);
@@ -52,9 +52,12 @@ public class Hunger {
     /**
      * Resets this instance's hunger
      */
-    public void eat(Game game) {
-        game.future.removeFutureEvents(this.unit, "GetsHungry");
-        game.future.removeFutureEvents(this.unit, "HungerStrikes");
-        game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false);
+    public void eat(GameView view, boolean visible) {
+        if (visible) {
+            view.overlays.add(new EntityRisingOverlay(view, this.unit, 0x7d4513, "Hunger reset"));
+        }
+        view.game.future.removeFutureEvents(this.unit, "GetsHungry");
+        view.game.future.removeFutureEvents(this.unit, "HungerStrikes");
+        view.game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false);
     }
 }

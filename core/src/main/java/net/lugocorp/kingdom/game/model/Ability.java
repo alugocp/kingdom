@@ -54,6 +54,13 @@ public class Ability implements EventReceiver, MenuSubject {
         return view.game.events.ability.hasEventHandler(this.getStratifier(), eventClass);
     }
 
+    /**
+     * Returns true if this Ability handles the Tick channel
+     */
+    public boolean hasTickHandler(GameView view) {
+        return view.game.events.ability.hasEventHandler(this.getStratifier(), "Tick");
+    }
+
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.utils.logic;
+import net.lugocorp.kingdom.utils.code.Tuple;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -59,5 +60,14 @@ public class CameraLogic {
             }
         }
         return closestPoint;
+    }
+
+    /**
+     * Returns two World Points (top-left and bottom-right) which correspond to the
+     * given screen bounds
+     */
+    public static Tuple<Point, Point> getGridCoordsFromScreenBounds(Camera camera, int x, int y, int w, int h) {
+        return new Tuple<Point, Point>(CameraLogic.getCoordUnderScreenPoint(camera, x, y),
+                CameraLogic.getCoordUnderScreenPoint(camera, x + w, y + h));
     }
 }

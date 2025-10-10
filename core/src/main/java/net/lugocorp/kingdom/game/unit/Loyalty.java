@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class Loyalty {
      * This instance loses loyalty and may abandon the cause
      */
     public void decrease(GameView view, int points) {
+        view.overlays.add(new EntityRisingOverlay(view, this.unit, 0x203fab, String.format("-%d loyalty", points)));
         this.loyalty = Math.max(0, this.loyalty - points);
         if (this.loyalty == 0) {
             view.game.future.removeFutureEvents(this.unit, "HungerStrikes");

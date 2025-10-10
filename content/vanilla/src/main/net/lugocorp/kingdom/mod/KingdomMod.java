@@ -374,11 +374,11 @@ public class KingdomMod implements GameMod {
                     e.blob.setActive();
                     return SideEffect.none;
                 });
-        events.building.addEventHandler(Labels.ability_edible, Events.SpawnEvent.class,
-                (GameView view, Building receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 1, true));
-        events.building.addEventHandler(Labels.ability_edible, Events.TickEvent.class,
-                (GameView view, Building receiver, Events.TickEvent e) -> {
+        events.building.addEventHandler(Labels.building_healing_fountain, Events.SpawnEvent.class,
+                (GameView view, Building receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true));
+        events.building.addEventHandler(Labels.building_healing_fountain, "Tick",
+                (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
                     return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : SideEffect.none;
                 });
@@ -437,10 +437,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.patron.addEventHandler(Labels.patron_shining_eyes, Events.SpawnEvent.class,
-                (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 1, true));
-        events.patron.addEventHandler(Labels.patron_shining_eyes, Events.TickEvent.class,
-                (GameView view, Patron receiver, Events.TickEvent e) -> {
+                (GameView view, Patron receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true));
+        events.patron.addEventHandler(Labels.patron_shining_eyes, "Tick",
+                (GameView view, Patron receiver, Events.RepeatedEvent e) -> {
                     final List<SideEffect> effects = SideEffect.list();
                     final Optional<Player> favorite = receiver.getFavoritePlayer();
                     favorite.ifPresent((Player p) -> {
@@ -615,14 +615,14 @@ public class KingdomMod implements GameMod {
                 });
         events.artifact.addEventHandler(Labels.artifact_shadas_flute, Events.ArtifactClaimedEvent.class,
                 (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                    view.game.future.addFutureTick(Events.TickEvent.class, receiver, 1, true);
+                    view.game.future.addFutureTick("Tick", receiver, 1, true);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Labels.artifact_shadas_flute, Events.TickEvent.class,
-                (GameView view, Artifact receiver, Events.TickEvent e) -> {
+        events.artifact.addEventHandler(Labels.artifact_shadas_flute, "Tick",
+                (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
                     for (Patron patron : view.game.mechanics.patronage) {
                         if (receiver.getOwner().equals(patron.getFavoritePlayer())) {
-                            receiver.getOwner().get().unitPoints += 5;
+                            receiver.getOwner().get().addUnitPoints(5);
                         }
                     }
                     return SideEffect.none;
@@ -808,12 +808,12 @@ public class KingdomMod implements GameMod {
                 });
         events.artifact.addEventHandler(Labels.artifact_gaias_effigy, Events.ArtifactClaimedEvent.class,
                 (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                    view.game.future.addFutureTick(Events.TickEvent.class, receiver, 1, true);
+                    view.game.future.addFutureTick("Tick", receiver, 1, true);
                     return SideEffect.none;
                 });
-        events.artifact.addEventHandler(Labels.artifact_gaias_effigy, Events.TickEvent.class,
-                (GameView view, Artifact receiver, Events.TickEvent e) -> {
-                    receiver.getOwner().get().unitPoints += 10;
+        events.artifact.addEventHandler(Labels.artifact_gaias_effigy, "Tick",
+                (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
+                    receiver.getOwner().get().addUnitPoints(10);
                     return SideEffect.none;
                 });
 
@@ -955,7 +955,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Labels.fate_merchant, Events.EndOfTurnEvent.class,
                 (GameView view, Fate receiver, Events.EndOfTurnEvent e) -> {
                     for (Point p : view.game.getVaultBuildings(receiver.getPlayer())) {
-                        receiver.getPlayer().unitPoints += 5;
+                        receiver.getPlayer().addUnitPoints(view, p, 5);
                     }
                     return SideEffect.none;
                 });
@@ -990,7 +990,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Labels.fate_veteran, Events.RecruitNewUnitEvent.class,
                 (GameView view, Fate receiver, Events.RecruitNewUnitEvent e) -> {
                     if (e.unit.glyphs.has(Glyph.BATTLE)) {
-                        receiver.getPlayer().unitPoints += 20;
+                        receiver.getPlayer().addUnitPoints(view, e.unit.getPoint(), 20);
                     }
                     return SideEffect.none;
                 });
@@ -1014,7 +1014,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Fate receiver, Events.EndOfTurnEvent e) -> {
                     for (Patron p : view.game.mechanics.patronage) {
                         if (p.getFavoritePlayer().map((Player p1) -> receiver.getPlayer().equals(p1)).orElse(false)) {
-                            receiver.getPlayer().unitPoints += 10;
+                            receiver.getPlayer().addUnitPoints(view, p.getPoint(), 10);
                         }
                     }
                     return SideEffect.none;
@@ -1067,7 +1067,7 @@ public class KingdomMod implements GameMod {
         events.fate.addEventHandler(Labels.fate_sentinel, Events.RecruitNewUnitEvent.class,
                 (GameView view, Fate receiver, Events.RecruitNewUnitEvent e) -> {
                     if (e.unit.glyphs.has(Glyph.DEFENSE)) {
-                        receiver.getPlayer().unitPoints += 25;
+                        receiver.getPlayer().addUnitPoints(view, e.unit.getPoint(), 25);
                     }
                     return SideEffect.none;
                 });
@@ -1095,7 +1095,7 @@ public class KingdomMod implements GameMod {
                 });
         events.fate.addEventHandler(Labels.fate_usurper, Events.LostAuctionEvent.class,
                 (GameView view, Fate receiver, Events.LostAuctionEvent e) -> {
-                    e.player.unitPoints += 25;
+                    e.player.addUnitPoints(25);
                     return SideEffect.none;
                 });
 
@@ -1606,11 +1606,10 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = String.format("Generates food");
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Labels.ability_edible, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_edible, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromTile(view,
+        events.ability.addEventHandler(Labels.ability_edible, Events.SpawnEvent.class, (GameView view, Ability receiver,
+                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_edible, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                         receiver.wielder, Labels.item_apple, (Tile t) -> true));
 
         // Fire Cannon
@@ -1712,10 +1711,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_hunt_fish, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_hunt_fish, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromTile(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_hunt_fish, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                         receiver.wielder, Labels.item_fish, (Tile t) -> t.name.equals(Labels.tile_water)));
 
         // Hurl Rock
@@ -1740,11 +1739,11 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_life_aura, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 1, true));
-        events.ability.addEventHandler(Labels.ability_life_aura, Events.TickEvent.class, (GameView view,
-                Ability receiver,
-                Events.TickEvent e) -> () -> receiver.wielder.getLeader().ifPresent((Player p) -> p.unitPoints += 4));
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true));
+        events.ability.addEventHandler(Labels.ability_life_aura, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> () -> receiver.wielder.getLeader()
+                        .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 4)));
 
         // Liquifying Presence
         events.ability.addEventHandler(Labels.ability_liquifying_presence, Events.GenerateAbilityEvent.class,
@@ -1753,10 +1752,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_liquifying_presence, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 1, true));
-        events.ability.addEventHandler(Labels.ability_liquifying_presence, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> {
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true));
+        events.ability.addEventHandler(Labels.ability_liquifying_presence, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
                     return b.map((Building b1) -> !b1.isActive()).orElse(false)
@@ -1800,10 +1799,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_market_indicator, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 1, true));
-        events.ability.addEventHandler(Labels.ability_market_indicator, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.doWhenAdjacent(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true));
+        events.ability.addEventHandler(Labels.ability_market_indicator, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(view,
                         receiver.wielder,
                         (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false),
                         () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 1)));
@@ -1815,10 +1814,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_mine_gems, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_mine_gems, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromBuilding(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_mine_gems, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(view,
                         receiver.wielder, Labels.item_emerald, (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Mine Gold
@@ -1828,10 +1827,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_mine_gold, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_mine_gold, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromBuilding(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_mine_gold, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(view,
                         receiver.wielder, Labels.item_gold_coin, (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Mountain Strider
@@ -1867,10 +1866,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_pick_apples, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_pick_apples, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromBuilding(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_pick_apples, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(view,
                         receiver.wielder, Labels.item_apple, (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Pick Flowers
@@ -1880,10 +1879,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_pick_flowers, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_pick_flowers, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromBuilding(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_pick_flowers, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(view,
                         receiver.wielder, Labels.item_flower, (Building b) -> b.name.equals(Labels.building_meadow)));
 
         // Plant Forest
@@ -1922,10 +1921,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_regeneration, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 1, true));
-        events.ability.addEventHandler(Labels.ability_regeneration, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> receiver.wielder.combat.heal(view, 1));
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true));
+        events.ability.addEventHandler(Labels.ability_regeneration, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> receiver.wielder.combat.heal(view, 1));
 
         // Revenge of the Forest
         events.ability.addEventHandler(Labels.ability_revenge_of_the_forest, Events.GenerateAbilityEvent.class,
@@ -1977,10 +1976,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_sacred_seeds, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_sacred_seeds, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromBuilding(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_sacred_seeds, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(view,
                         receiver.wielder, Labels.item_sacred_seed,
                         (Building b) -> b.name.equals(Labels.building_meadow)));
 
@@ -2034,10 +2033,10 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_subterranean_potions, Events.SpawnEvent.class,
-                (GameView view, Ability receiver, Events.SpawnEvent e) -> () -> view.game.future
-                        .addFutureTick(Events.TickEvent.class, receiver, 4, true));
-        events.ability.addEventHandler(Labels.ability_subterranean_potions, Events.TickEvent.class,
-                (GameView view, Ability receiver, Events.TickEvent e) -> AbilityLogic.harvestFromBuilding(view,
+                (GameView view, Ability receiver,
+                        Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true));
+        events.ability.addEventHandler(Labels.ability_subterranean_potions, "Tick",
+                (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(view,
                         receiver.wielder, Labels.item_health_potion,
                         (Building b) -> b.name.equals(Labels.building_mine)));
 
@@ -2078,11 +2077,11 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.status_effect_stunned, Events.StatusEffectAddedEvent.class,
                 (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                    view.game.future.addFutureTick(Events.TickEvent.class, receiver, 1, true);
+                    view.game.future.addFutureTick("Tick", receiver, 1, true);
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Labels.status_effect_stunned, Events.TickEvent.class, (GameView view,
-                Ability receiver, Events.TickEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(receiver));
+        events.ability.addEventHandler(Labels.status_effect_stunned, "Tick", (GameView view, Ability receiver,
+                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(receiver));
         events.ability.addEventHandler(Labels.status_effect_stunned, Events.IsStunnedEvent.class,
                 (GameView view, Ability receiver, Events.IsStunnedEvent e) -> {
                     e.isStunned = true;
@@ -2110,11 +2109,11 @@ public class KingdomMod implements GameMod {
                 });
         events.ability.addEventHandler(Labels.status_effect_proud_builder, Events.StatusEffectAddedEvent.class,
                 (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                    view.game.future.addFutureTick(Events.TickEvent.class, receiver, 2, true);
+                    view.game.future.addFutureTick("Tick", receiver, 2, true);
                     return SideEffect.none;
                 });
-        events.ability.addEventHandler(Labels.status_effect_proud_builder, Events.TickEvent.class, (GameView view,
-                Ability receiver, Events.TickEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(receiver));
+        events.ability.addEventHandler(Labels.status_effect_proud_builder, "Tick", (GameView view, Ability receiver,
+                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(receiver));
         events.ability.addEventHandler(Labels.status_effect_proud_builder, Events.GenerateFavorEvent.class,
                 (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
                     e.favor += 5;

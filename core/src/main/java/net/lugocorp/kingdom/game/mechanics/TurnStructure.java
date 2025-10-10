@@ -126,7 +126,7 @@ public class TurnStructure {
         }
         // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
         // confused
-        this.turnPlayer.unitPoints += view.game.mechanics.newUnits.getUnitPointsYield(this.turnPlayer);
+        view.game.mechanics.newUnits.giveUnitPointsYield(view, this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             view.hud.minimap.refresh(view.game.world);
             view.logger.log("It is your turn again", true);
@@ -146,13 +146,11 @@ public class TurnStructure {
             }
 
             // Choose a new Unit at the maximum unit points
-            for (int a = 0; a < Math.floor(this.turnPlayer.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
+            for (int a = 0; a < Math.floor(this.turnPlayer.getUnitPoints() / NewUnit.MAX_UNIT_POINTS); a++) {
                 view.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
             }
             // Start a new ArtifactAuction at the maximum auction points
-            if (view.game.mechanics.auction.points >= ArtifactAuction.MAX_AUCTION_POINTS
-                    && !view.game.mechanics.auction.getAuction().isPresent()) {
-                view.game.mechanics.auction.points -= ArtifactAuction.MAX_AUCTION_POINTS;
+            if (view.game.mechanics.auction.readyForNewAuction()) {
                 view.game.mechanics.auction.openNewAuction(view.game,
                         () -> view.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view)));
             }
@@ -168,7 +166,7 @@ public class TurnStructure {
             }
         } else {
             CompPlayer comp = (CompPlayer) this.turnPlayer;
-            comp.stats.unitPoints.add(comp.unitPoints);
+            comp.stats.unitPoints.add(comp.getUnitPoints());
 
             // Handle AI player ArtifactAuction logic
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
@@ -180,7 +178,7 @@ public class TurnStructure {
             }
 
             // Handle CompPlayer Unit recruitment logic
-            for (int a = 0; a < Math.floor(comp.unitPoints / NewUnit.MAX_UNIT_POINTS); a++) {
+            for (int a = 0; a < Math.floor(comp.getUnitPoints() / NewUnit.MAX_UNIT_POINTS); a++) {
                 Optional<Glyph> glyph = comp.wishlist.glyphs.getDesiredOptions().getMostWanted();
                 if (glyph.isPresent()) {
                     Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(comp, glyph.get());

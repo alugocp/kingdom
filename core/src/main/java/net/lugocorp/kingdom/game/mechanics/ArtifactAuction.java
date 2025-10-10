@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.nodes.ArtifactNode;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
@@ -14,6 +15,7 @@ import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
+import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -34,7 +36,7 @@ public class ArtifactAuction {
     private final Random random = new Random();
     private final List<Artifact> artifacts = new ArrayList<>();
     private Optional<Auction> auction = Optional.empty();
-    public int points = 0;
+    private int points = 0;
 
     /**
      * Generates all registered Artifacts at the start of the Game
@@ -86,10 +88,33 @@ public class ArtifactAuction {
      * Opens a new Auction
      */
     public void openNewAuction(Game g, Runnable runnable) {
+        this.points -= ArtifactAuction.MAX_AUCTION_POINTS;
         if (this.numberUnclaimedArtifacts() > 0) {
             this.auction = Optional.of(new Auction(g));
             runnable.run();
         }
+    }
+
+    /**
+     * Returns true if we should open a new Auction
+     */
+    public boolean readyForNewAuction() {
+        return this.points >= ArtifactAuction.MAX_AUCTION_POINTS && !this.getAuction().isPresent();
+    }
+
+    /**
+     * Returns the current amount of Auction points
+     */
+    public int getPoints() {
+        return this.points;
+    }
+
+    /**
+     * Increases the number of Auction points
+     */
+    public void addPoints(GameView view, Point p, int amount) {
+        view.overlays.add(new ResourceOverlay(view, p, 0.2f, ColorScheme.GOLD.hex, amount));
+        this.points += amount;
     }
 
     /**

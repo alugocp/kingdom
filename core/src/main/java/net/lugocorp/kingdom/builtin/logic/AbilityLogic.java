@@ -11,6 +11,8 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.ui.ColorScheme;
+import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Hexagons;
@@ -235,6 +237,7 @@ public class AbilityLogic {
             effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
             effects.add(() -> {
                 caster.haul.add(i);
+                view.overlays.add(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
                 if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
                     CompPlayer comp = (CompPlayer) caster.getLeader().get();
                     if (i.tags.has("natural")) {
@@ -263,6 +266,6 @@ public class AbilityLogic {
     public static SideEffect generateAuctionPoints(GameView view, Unit caster, int points) {
         Events.GenerateAuctionPointsEvent event = new Events.GenerateAuctionPointsEvent(caster, points);
         caster.handleEvent(view, event);
-        return () -> view.game.mechanics.auction.points += event.points;
+        return () -> view.game.mechanics.auction.addPoints(view, caster.getPoint(), event.points);
     }
 }

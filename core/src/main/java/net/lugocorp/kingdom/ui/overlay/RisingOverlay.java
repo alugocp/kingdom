@@ -48,6 +48,7 @@ public class RisingOverlay extends Overlay {
         final BitmapFont font = view.av.fonts.getFont(24, Colors.fromHex(this.color));
         final float[] pos = this.getPosition(view);
         final Color c = font.getColor();
+        // TODO add an outline to the text
         view.av.sprites.begin();
         font.setColor(c.r, c.g, c.b, this.getOpacity());
         font.draw(view.av.sprites, this.label, pos[0], pos[1] + (int) font.getLineHeight() + (progress * 50f));

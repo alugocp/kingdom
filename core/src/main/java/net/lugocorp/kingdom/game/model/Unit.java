@@ -77,7 +77,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     public void spawn(GameView view) {
         this.movement.setPosition(view, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this)).execute();
-        this.hunger.eat(view.game);
+        this.hunger.eat(view, false);
         view.game.units.add(this);
     }
 
@@ -194,7 +194,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
                                     final Set<Item> food = this.haul.getEdibleItems(view, u);
                                     u.haul.remove(food.iterator().next());
-                                    return () -> u.hunger.eat(view.game);
+                                    return () -> u.hunger.eat(view, true);
                                 }).execute()));
             }
 

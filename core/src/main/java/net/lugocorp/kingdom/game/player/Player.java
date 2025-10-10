@@ -4,6 +4,8 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.ColorScheme;
+import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -19,6 +21,7 @@ import java.util.function.Function;
  */
 public abstract class Player {
     public static final int INITIAL_GOLD = 100;
+    private int unitPoints = 0;
     private Fate fate;
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
@@ -28,7 +31,6 @@ public abstract class Player {
     public int gold = Player.INITIAL_GOLD;
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
-    public int unitPoints = 0;
     public int tiles = 0;
 
     Player(String name, Fate fate, Color color) {
@@ -78,6 +80,28 @@ public abstract class Player {
     public void setFate(Fate fate) {
         this.fate = fate;
         fate.setPlayer(this);
+    }
+
+    /**
+     * Returns this Player's current amount of unit points
+     */
+    public int getUnitPoints() {
+        return this.unitPoints;
+    }
+
+    /**
+     * Changes this Player's current amount of unit points
+     */
+    public void addUnitPoints(int amount) {
+        this.unitPoints += amount;
+    }
+
+    /**
+     * Changes this Player's current amount of unit points and adds an Overlay
+     */
+    public void addUnitPoints(GameView view, Point p, int amount) {
+        view.overlays.add(new ResourceOverlay(view, p, 0.2f, ColorScheme.GREEN.hex, amount)
+                .then(() -> this.addUnitPoints(amount)));
     }
 
     /** {@inheritdoc} */

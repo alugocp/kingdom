@@ -520,12 +520,4 @@ public class Events {
      */
     public static class EndOfTurnEvent extends Event {
     }
-
-    /**
-     * Triggers when a periodic action is processed
-     */
-    public static class TickEvent extends Event {
-        // TODO delete this and replace Events.TickEvent.class with just "Tick"
-        // also, add "channel" to the common mod labels
-    }
 }

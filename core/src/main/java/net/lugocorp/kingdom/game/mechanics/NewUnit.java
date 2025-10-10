@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.GlyphBadgeNode;
@@ -16,12 +17,15 @@ import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.RowNode;
 import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
+import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Tuple;
 import net.lugocorp.kingdom.utils.logic.CameraLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.utils.math.Rect;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,10 +37,46 @@ public class NewUnit {
     public static final int MAX_UNIT_POINTS = 100;
 
     /**
-     * Returns the number of unit points that a Player should get each turn
+     * Assigns unit points to the given Player
      */
-    public int getUnitPointsYield(Player p) {
-        return (int) Math.floor(20f * p.getBareTiles() / p.tiles);
+
+    public void giveUnitPointsYield(GameView view, Player player) {
+        final int points = (int) Math.floor(20f * player.getBareTiles() / player.tiles);
+        if (!player.isHumanPlayer()) {
+            player.addUnitPoints(points);
+        }
+
+        // Find out which empty Tiles owned by the Player are on screen
+        final Tuple<Point, Point> bounds = CameraLogic.getGridCoordsFromScreenBounds(view.getCamera(), 0,
+                view.hud.getHeight(), Coords.SIZE.x, Coords.SIZE.y - view.hud.getHeight());
+        final Rect r = new Rect(bounds.a.x, bounds.a.y, bounds.b.x - bounds.a.x, bounds.b.y - bounds.a.y);
+        final Set<Point> candidates = new HashSet<>();
+        for (int a = r.x; a < r.x + r.w; a++) {
+            for (int b = r.y; b < r.y + r.h; b++) {
+                if (view.game.world.getTile(a, b).map((Tile t) -> !t.building.isPresent() && t.leader.equals(player))
+                        .orElse(false)) {
+                    candidates.add(new Point(a, b));
+                }
+            }
+        }
+
+        // No fancy Overlays if we don't have any candidates on screen :(
+        if (candidates.size() == 0) {
+            player.addUnitPoints(points);
+            return;
+        }
+
+        // Split up the unit point yield amongst the candidates
+        final int leftover = points % candidates.size();
+        final int base = points / candidates.size();
+        int a = 0;
+        for (Point p : candidates) {
+            view.overlays
+                    .add(new ResourceOverlay(view, p, 0.2f, ColorScheme.GREEN.hex, base + (a++ < leftover ? 1 : 0)));
+            if (base == 0 && a == leftover) {
+                break;
+            }
+        }
     }
 
     /**
@@ -159,7 +199,7 @@ public class NewUnit {
                 throw new RuntimeException("Cannot recruit onto an occupied tile");
             }
             t.setGlyph(Optional.empty());
-            p.unitPoints -= NewUnit.MAX_UNIT_POINTS;
+            p.addUnitPoints(-NewUnit.MAX_UNIT_POINTS);
             view.game.setLeader(view, u, p);
             u.spawn(view);
             p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u)).execute();

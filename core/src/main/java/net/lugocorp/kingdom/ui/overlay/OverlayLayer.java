@@ -29,6 +29,7 @@ public class OverlayLayer {
         for (Overlay o : this.overlays) {
             o.update(dt);
             if (o.isDone()) {
+                o.runCallback();
                 this.dropList.add(o);
                 continue;
             }
