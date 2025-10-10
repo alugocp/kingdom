@@ -13,7 +13,8 @@ public class ResourceOverlay extends Overlay {
     private final String label;
     private final int color;
     private final int dest;
-    private final Point p;
+    private int x;
+    private int y;
 
     public ResourceOverlay(GameView view, Point p, float coeff, int color, int amount) {
         super(p, new Vector3());
@@ -23,24 +24,26 @@ public class ResourceOverlay extends Overlay {
 
         // Set the origin point
         final float[] origin = this.getPosition(view);
-        this.p = new Point((int) origin[0], (int) origin[1]);
+        this.x = (int) origin[0];
+        this.y = (int) origin[1];
     }
 
     /** {@inheritdoc} */
     @Override
     public boolean isDone() {
-        return this.p.y >= Coords.SIZE.y;
+        return this.y >= Coords.SIZE.y;
     }
 
     /** {@inheritdoc} */
     @Override
     public void update(int dt) {
-        if (this.p.x == this.dest) {
-            this.p.set(this.p.x, this.p.y + 12);
+        if (this.x == this.dest) {
+            this.y += 24;
         } else {
-            final int diff = dest - this.p.x;
-            final int dx = Math.min(Math.abs(diff), 9) * (diff < 0 ? -1 : 1);
-            this.p.set(this.p.x + dx, this.p.y + 6);
+            final int diff = dest - this.x;
+            final int dx = Math.min(Math.abs(diff), 18) * (diff < 0 ? -1 : 1);
+            this.x += dx;
+            this.y += 12;
         }
     }
 
@@ -50,7 +53,7 @@ public class ResourceOverlay extends Overlay {
         final BitmapFont font = view.av.fonts.getFont(24, Colors.fromHex(this.color));
         // TODO add an outline to the text
         view.av.sprites.begin();
-        font.draw(view.av.sprites, this.label, this.p.x, this.p.y);
+        font.draw(view.av.sprites, this.label, this.x, this.y);
         view.av.sprites.end();
     }
 }

@@ -622,7 +622,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
                     for (Patron patron : view.game.mechanics.patronage) {
                         if (receiver.getOwner().equals(patron.getFavoritePlayer())) {
-                            receiver.getOwner().get().addUnitPoints(5);
+                            receiver.getOwner().get().addUnitPoints(view, 5);
                         }
                     }
                     return SideEffect.none;
@@ -813,7 +813,7 @@ public class KingdomMod implements GameMod {
                 });
         events.artifact.addEventHandler(Labels.artifact_gaias_effigy, "Tick",
                 (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
-                    receiver.getOwner().get().addUnitPoints(10);
+                    receiver.getOwner().get().addUnitPoints(view, 10);
                     return SideEffect.none;
                 });
 
@@ -1095,7 +1095,7 @@ public class KingdomMod implements GameMod {
                 });
         events.fate.addEventHandler(Labels.fate_usurper, Events.LostAuctionEvent.class,
                 (GameView view, Fate receiver, Events.LostAuctionEvent e) -> {
-                    e.player.addUnitPoints(25);
+                    e.player.addUnitPoints(view, 25);
                     return SideEffect.none;
                 });
 
