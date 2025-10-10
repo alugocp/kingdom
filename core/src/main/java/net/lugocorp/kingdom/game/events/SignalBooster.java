@@ -43,6 +43,13 @@ public class SignalBooster {
     }
 
     /**
+     * Calls into addListener() with an Event class
+     */
+    public <E extends Event> void addListener(Class<E> channel, EventReceiver r) {
+        this.addListener(channel.getSimpleName(), r);
+    }
+
+    /**
      * Removes an EventReceiver from the channel listener group
      */
     public void removeListener(String channel, EventReceiver r) {

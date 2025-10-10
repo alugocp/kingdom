@@ -152,7 +152,7 @@ public class InventoryNode implements MenuNode {
      * Returns true if the given Item has an effect when consumed
      */
     public boolean itemIsConsumed(GameView view, Item item) {
-        return view.game.events.item.hasEventHandler(item.getStratifier(), "ItemConsumedEvent");
+        return view.game.events.item.hasEventHandler(item.getStratifier(), Events.ItemConsumedEvent.class);
     }
 
     /**
@@ -204,7 +204,7 @@ public class InventoryNode implements MenuNode {
     private boolean canUnitConsumeItem(Item item) {
         Optional<Unit> unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
         return unit.isPresent()
-                && this.view.game.events.item.hasEventHandler(item.getStratifier(), "ItemConsumedEvent");
+                && this.view.game.events.item.hasEventHandler(item.getStratifier(), Events.ItemConsumedEvent.class);
     }
 
     /**

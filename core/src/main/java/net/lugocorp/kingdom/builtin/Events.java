@@ -118,6 +118,10 @@ public class Events {
             this.interval = interval;
             this.repeat = repeat;
         }
+
+        public <E extends Event> RepeatedEvent(Class<E> channel, int interval, boolean repeat) {
+            this(channel.getSimpleName(), interval, repeat);
+        }
     }
 
     /**
@@ -515,5 +519,13 @@ public class Events {
      * Triggers when a Player's turn ends
      */
     public static class EndOfTurnEvent extends Event {
+    }
+
+    /**
+     * Triggers when a periodic action is processed
+     */
+    public static class TickEvent extends Event {
+        // TODO delete this and replace Events.TickEvent.class with just "Tick"
+        // also, add "channel" to the common mod labels
     }
 }

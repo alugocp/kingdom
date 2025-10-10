@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.future;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
@@ -34,6 +35,14 @@ public class FutureEventManager {
             this.futures.put(turn, new ArrayList<FutureTick>());
         }
         this.futures.get(turn).add(new FutureTick(receiver, channel, turn, interval, repeat));
+    }
+
+    /**
+     * Calls into addFutureTick() with an Event class
+     */
+    public <E extends Event> void addFutureTick(Class<E> channel, EventReceiver receiver, int interval,
+            boolean repeat) {
+        this.addFutureTick(channel.getSimpleName(), receiver, interval, repeat);
     }
 
     /**

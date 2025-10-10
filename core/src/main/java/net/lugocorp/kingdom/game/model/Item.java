@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.model;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.properties.Rarity;
@@ -33,7 +34,7 @@ public class Item implements EventReceiver {
      * Returns true if this Item can be consumed
      */
     public boolean isConsumable(GameView view) {
-        return view.game.events.item.hasEventHandler(this.getStratifier(), "ItemConsumedEvent");
+        return view.game.events.item.hasEventHandler(this.getStratifier(), Events.ItemConsumedEvent.class);
     }
 
     /** {@inheritdoc} */

@@ -46,13 +46,13 @@ public class HarvestFood extends Goal {
         Building b = view.game.generator.building(cell.flatMap((MemoryCell c) -> c.getBuilding()).get(), 0, 0);
         CapturedEvents.instance.setFakePoint(dest);
         for (Ability ability : root.unit.abilities.getPassives()) {
-            if (!ability.hasEventHandler(view, "TickEvent")) {
+            if (!ability.hasEventHandler(view, Events.TickEvent.class)) {
                 continue;
             }
 
             // Trigger TickEvent on the passive Ability and capture resulting Events
             CapturedEvents.instance.on();
-            Events.RepeatedEvent e = new Events.RepeatedEvent("TickEvent", 1, false);
+            Events.RepeatedEvent e = new Events.RepeatedEvent(Events.TickEvent.class, 1, false);
             ability.handleEvent(view, e);
             EventLog log = CapturedEvents.instance.off();
 
@@ -60,7 +60,7 @@ public class HarvestFood extends Goal {
             // resulting Events
             for (Path p : log.getTargetPaths()) {
                 for (Event event : log.getEvents(p)) {
-                    if (!event.channel.equals("GenerateItemEvent")) {
+                    if (!event.channel.equals(Events.GenerateItemEvent.class)) {
                         continue;
                     }
                     Events.GenerateItemEvent event1 = (Events.GenerateItemEvent) event;

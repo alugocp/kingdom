@@ -43,14 +43,15 @@ public class Ability implements EventReceiver, MenuSubject {
      * Returns true fi this Ability can be activated
      */
     public boolean isActive(GameView view) {
-        return this.hasEventHandler(view, "AbilityActivatedEvent");
+        return this.hasEventHandler(view, Events.AbilityActivatedEvent.class);
     }
 
     /**
      * Returns true if this Ability has an EventHandler for the given channel
      */
-    public boolean hasEventHandler(GameView view, String channel) {
-        return view.game.events.ability.hasEventHandler(this.getStratifier(), channel);
+    public <E extends Event> boolean hasEventHandler(GameView view, Class<E> eventClass) {
+        // TODO wrap uses in other methods
+        return view.game.events.ability.hasEventHandler(this.getStratifier(), eventClass);
     }
 
     /** {@inheritdoc} */

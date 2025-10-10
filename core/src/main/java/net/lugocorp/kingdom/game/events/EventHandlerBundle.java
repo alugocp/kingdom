@@ -60,7 +60,8 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * Returns true if the EventReceiver with the given stratifier has an
      * EventHandler that listens on the given channel
      */
-    public boolean hasEventHandler(String stratifier, String channel) {
+    public <E extends Event> boolean hasEventHandler(String stratifier, Class<E> eventClass) {
+        final String channel = eventClass.getSimpleName();
         return this.handlers.containsKey(this.getKey(stratifier, channel)) || this.defaults.containsKey(channel);
     }
 
@@ -89,6 +90,14 @@ public class EventHandlerBundle<T extends EventReceiver> {
      */
     public void setDefaultHandler(String channel, EventHandler<T> handler) {
         this.defaults.put(channel, handler);
+    }
+
+    /**
+     * Calls into setDefaultHandler() with an Event class
+     */
+    public <E extends Event> void setDefaultHandler(Class<E> channel, SingleEventHandler<T, E> handler) {
+        this.setDefaultHandler(channel.getSimpleName(),
+                (GameView view, T receiver, Event event) -> handler.handle(view, receiver, (E) event));
     }
 
     /**
