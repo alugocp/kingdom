@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.hud;
+package net.lugocorp.kingdom.ui.logger;
 import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
