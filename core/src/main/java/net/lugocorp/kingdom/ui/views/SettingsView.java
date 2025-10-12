@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
+import net.lugocorp.kingdom.ui.nodes.OptionsNode;
 import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.VolumeNode;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -37,7 +38,10 @@ public class SettingsView implements View {
                 .add(new HeaderNode(av, "Sound Effect Volume"))
                 .add(new VolumeNode(av, av.settings.getSoundVolume(), (Float v) -> av.settings.setSoundVolume(v)))
                 .add(new SpacerNode()).add(new HeaderNode(av, "Music Volume"))
-                .add(new VolumeNode(av, av.settings.getMusicVolume(), (Float v) -> av.settings.setMusicVolume(v)));
+                .add(new VolumeNode(av, av.settings.getMusicVolume(), (Float v) -> av.settings.setMusicVolume(v)))
+                .add(new SpacerNode()).add(new HeaderNode(av, "Scroll Direction"))
+                .add(new OptionsNode(av, (Integer index) -> av.settings.setReversedScrollDirection(index == 1))
+                        .add("Regular").add("Reversed"));
     }
 
     /** {@inheritdoc} */
@@ -50,7 +54,7 @@ public class SettingsView implements View {
     @Override
     public void start(Consumer<View> navigate) {
         this.navigate = navigate;
-        MenuController menuController = new MenuController(() -> Optional.of(this.menu));
+        MenuController menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         menuController.reset();
     }

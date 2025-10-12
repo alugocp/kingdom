@@ -96,7 +96,7 @@ class GameCreationView implements View {
     @Override
     public void start(Consumer<View> navigate) {
         this.navigate = navigate;
-        this.menuController = new MenuController(() -> Optional.of(this.menu));
+        this.menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         this.menuController.reset();
     }

@@ -6,6 +6,7 @@ package net.lugocorp.kingdom.engine;
 public class Settings {
     private float soundVolume = 1.0f;
     private float musicVolume = 1.0f;
+    private boolean reverse = false;
 
     /**
      * Gets the soundVolume field
@@ -22,6 +23,13 @@ public class Settings {
     }
 
     /**
+     * Returns true if the scroll direction should be reversed
+     */
+    public boolean getReversedScrollDirection() {
+        return this.reverse;
+    }
+
+    /**
      * Sets the soundVolume field
      */
     public void setSoundVolume(float soundVolume) {
@@ -33,5 +41,12 @@ public class Settings {
      */
     public void setMusicVolume(float musicVolume) {
         this.musicVolume = musicVolume;
+    }
+
+    /**
+     * Sets whether or not we reverse the scroll direction
+     */
+    public void setReversedScrollDirection(boolean reverse) {
+        this.reverse = reverse;
     }
 }

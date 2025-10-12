@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine.controllers;
+import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.logic.CameraLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -27,12 +28,12 @@ public class GameViewController implements InputProcessor {
     private float currentZoom = 0.0f;
     public final KeyState keys = new KeyState();
 
-    public GameViewController(GameView view, MenuController menu, Camera camera) {
-        this.popupMenu = new MenuController(
+    public GameViewController(GameView view, Settings settings, MenuController menu, Camera camera) {
+        this.popupMenu = new MenuController(settings,
                 () -> view.game.mechanics.turns.canHumanPlayerAct() && view.popups.isDisplayed()
                         ? view.popups.get()
                         : Optional.empty());
-        this.hudMenu = new MenuController(() -> Optional.of(view.hud));
+        this.hudMenu = new MenuController(settings, () -> Optional.of(view.hud));
         this.camera = camera;
         this.menu = menu;
         this.view = view;

@@ -44,7 +44,7 @@ class CreditsView implements View {
     @Override
     public void start(Consumer<View> navigate) {
         this.navigate = navigate;
-        MenuController menuController = new MenuController(() -> Optional.of(this.menu));
+        MenuController menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         menuController.reset();
     }

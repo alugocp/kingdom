@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine.controllers;
+import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -14,8 +15,10 @@ public class MenuController implements InputProcessor {
     private static final int SCROLL_SPEED = 20;
     private final TouchState touch = new TouchState();
     private final Supplier<Optional<Menu>> getMenu;
+    private final Settings settings;
 
-    public MenuController(Supplier<Optional<Menu>> getMenu) {
+    public MenuController(Settings settings, Supplier<Optional<Menu>> getMenu) {
+        this.settings = settings;
         this.getMenu = getMenu;
     }
 
@@ -110,7 +113,8 @@ public class MenuController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean scrolled​(float dx, float dy) {
-        this.scroll((dy > 0 ? -1 : 1) * MenuController.SCROLL_SPEED);
+        this.scroll((dy > 0 ? -1 : 1) * (this.settings.getReversedScrollDirection() ? -1 : 1)
+                * MenuController.SCROLL_SPEED);
         return false;
     }
 
