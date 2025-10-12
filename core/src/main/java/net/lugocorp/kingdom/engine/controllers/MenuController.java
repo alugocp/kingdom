@@ -62,6 +62,7 @@ public class MenuController implements InputProcessor {
      */
     private void scroll(int dy) {
         this.getMenu.get().ifPresent((Menu m) -> m.scroll(dy));
+        this.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
     }
 
     /** {@inheritdoc} */

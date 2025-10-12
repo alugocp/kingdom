@@ -112,12 +112,11 @@ public class ArtifactNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
-        final boolean prevIn = bounds.contains(prev);
         final boolean currIn = bounds.contains(curr);
-        if (!prevIn && currIn) {
+        if (currIn && !this.hovered) {
             this.hovered = true;
         }
-        if (prevIn && !currIn) {
+        if (!currIn && this.hovered) {
             this.hovered = false;
         }
     }

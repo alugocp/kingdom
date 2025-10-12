@@ -100,15 +100,13 @@ public class RowNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
-        if (bounds.contains(prev) || bounds.contains(curr)) {
-            final int h = this.getHeight();
-            final int w = bounds.w / this.getColumns();
-            int x = bounds.x;
-            for (MenuNode child : this.children) {
-                final Rect r = new Rect(x, bounds.y, w, h);
-                child.mouseMoved(r, prev, curr);
-                x += w;
-            }
+        final int h = this.getHeight();
+        final int w = bounds.w / this.getColumns();
+        int x = bounds.x;
+        for (MenuNode child : this.children) {
+            final Rect r = new Rect(x, bounds.y, w, h);
+            child.mouseMoved(r, prev, curr);
+            x += w;
         }
     }
 

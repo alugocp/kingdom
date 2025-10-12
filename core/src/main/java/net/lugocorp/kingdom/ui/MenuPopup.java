@@ -8,6 +8,7 @@ import java.util.Optional;
  */
 public class MenuPopup {
     private Optional<Menu> menu = Optional.empty();
+    private boolean hovered = false;
 
     public void setMenu(Menu m) {
         this.menu = Optional.of(m);
@@ -20,12 +21,14 @@ public class MenuPopup {
         if (!this.menu.isPresent()) {
             return;
         }
-        final boolean prevIn = bounds.contains(prev);
         final boolean currIn = bounds.contains(curr);
-        if (currIn) {
+        if (currIn && !this.hovered) {
             this.menu.get().setMiniMenu(root, curr.x + 25, curr.y + 15);
-        } else if (prevIn && this.menu.get().getMiniMenuRoot().map((MenuNode n) -> n == root).orElse(false)) {
+            this.hovered = true;
+        }
+        if (!currIn && this.hovered && this.menu.get().getMiniMenuRoot().map((MenuNode n) -> n == root).orElse(false)) {
             this.menu.get().closeMiniMenu();
+            this.hovered = false;
         }
     }
 }

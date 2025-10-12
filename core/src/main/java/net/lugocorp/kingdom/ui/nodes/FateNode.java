@@ -68,13 +68,12 @@ public class FateNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
-        Rect r = new Rect(bounds.x, bounds.y, FateNode.WIDTH, bounds.h);
-        final boolean prevIn = r.contains(prev);
+        final Rect r = new Rect(bounds.x, bounds.y, FateNode.WIDTH, bounds.h);
         final boolean currIn = r.contains(curr);
-        if (!prevIn && currIn) {
+        if (currIn && !this.hovered) {
             this.hovered = true;
         }
-        if (prevIn && !currIn) {
+        if (!currIn && this.hovered) {
             this.hovered = false;
         }
     }

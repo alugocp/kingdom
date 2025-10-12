@@ -92,12 +92,11 @@ public class NakedButtonNode extends TextNode {
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         final Rect inner = this.getInnerBounds(bounds);
-        final boolean prevIn = inner.contains(prev);
         final boolean currIn = inner.contains(curr);
-        if (!prevIn && currIn) {
+        if (currIn && !this.hovered) {
             this.hovered = true;
         }
-        if (prevIn && !currIn) {
+        if (!currIn && this.hovered) {
             this.hovered = false;
         }
     }

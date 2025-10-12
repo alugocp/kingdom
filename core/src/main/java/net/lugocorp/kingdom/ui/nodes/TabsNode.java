@@ -128,14 +128,10 @@ public class TabsNode implements MenuNode {
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         final int h = this.tabs.getHeight();
         final Rect r1 = new Rect(bounds.x, bounds.y, bounds.w, h);
-        if (r1.contains(prev) || r1.contains(curr)) {
-            this.tabs.mouseMoved(r1, prev, curr);
-        }
+        this.tabs.mouseMoved(r1, prev, curr);
 
         final Rect r2 = new Rect(bounds.x, bounds.y + h, bounds.w, this.getHeight() - h);
-        if (r2.contains(prev) || r2.contains(curr)) {
-            this.content().mouseMoved(r2, prev, curr);
-        }
+        this.content().mouseMoved(r2, prev, curr);
     }
 
     /** {@inheritdoc} */

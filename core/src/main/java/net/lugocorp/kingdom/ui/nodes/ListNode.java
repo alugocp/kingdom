@@ -104,13 +104,11 @@ public class ListNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
-        if (bounds.contains(prev) || bounds.contains(curr)) {
-            int y = bounds.y + this.margin;
-            for (MenuNode child : this.children) {
-                final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
-                child.mouseMoved(r, prev, curr);
-                y += r.h;
-            }
+        int y = bounds.y + this.margin;
+        for (MenuNode child : this.children) {
+            final Rect r = new Rect(bounds.x + this.margin, y, bounds.w - (this.margin * 2), child.getHeight());
+            child.mouseMoved(r, prev, curr);
+            y += r.h;
         }
     }
 
