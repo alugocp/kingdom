@@ -87,7 +87,8 @@ public class MenuController implements InputProcessor {
         final Point p = new Point(x, y);
         final Point prev = this.touch.update(p);
         if (this.touch.isDragging()) {
-            this.scroll((y - prev.y) * (this.startedInScrollGutter() ? 1 : -1));
+            this.scroll((int) ((y - prev.y)
+                    * (this.startedInScrollGutter() ? this.getMenu.get().get().getScrollBarRatio() : -1f)));
         }
         return true;
     }

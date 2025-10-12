@@ -93,6 +93,14 @@ public class Menu {
     }
 
     /**
+     * Returns the ratio of menu content height to scroll gutter height
+     */
+    public float getScrollBarRatio() {
+        return this.submenu.map((Menu m) -> m.getScrollBarRatio())
+                .orElse(this.root.getHeight() / (float) this.getHeight());
+    }
+
+    /**
      * Returns the bounds of this Menu's scroll gutter
      */
     public Optional<Rect> getGutterBounds() {
