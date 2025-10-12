@@ -4,7 +4,6 @@ import net.lugocorp.kingdom.game.combat.Combat;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
-import net.lugocorp.kingdom.game.properties.Tags;
 import net.lugocorp.kingdom.game.properties.Vision;
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ import java.util.Optional;
  */
 public abstract class Entity extends DynamicModellable implements EventReceiver {
     public final Vision vision = new Vision();
-    public final Tags tags = new Tags();
     public final Combat combat;
     public final String name;
     public String desc = "";

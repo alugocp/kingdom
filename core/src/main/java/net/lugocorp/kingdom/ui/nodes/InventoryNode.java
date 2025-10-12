@@ -18,6 +18,7 @@ import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -100,8 +101,15 @@ public class InventoryNode implements MenuNode {
 
         // Set mini menu for the selected item
         final Item item = this.items.get(i);
-        ListNode root = new ListNode().add(new HeaderNode(this.view.av, item.name))
-                .add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex, item.rarity.toString()))
+        ListNode root = new ListNode().add(new SubheaderNode(this.view.av, item.name));
+        item.getTag().ifPresent((String tag) -> root.add(new TextNode(this.view.av, String.format("%s item", tag)) {
+            /** {@inheritdoc} */
+            @Override
+            protected BitmapFont getFont() {
+                return this.av.fonts.getFont(ColorScheme.GOLD.color);
+            }
+        }));
+        root.add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex, item.rarity.toString()))
                 .add(new TextNode(this.view.av, item.desc));
 
         // Equip / pick up / drop options (only if the human Player occupies this space)

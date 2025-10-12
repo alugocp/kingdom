@@ -198,7 +198,7 @@ public class KingdomMod implements GameMod {
         // CanEatEvent
         events.unit.setDefaultHandler(Events.CanEatEvent.class,
                 (GameView view, Unit receiver, Events.CanEatEvent e) -> {
-                    e.edible = e.item.tags.has(Labels.tag_fruit);
+                    e.edible = e.item.hasTag(Labels.tag_fruit);
                     return SideEffect.none;
                 });
 
@@ -2197,8 +2197,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
-                    e.blob.tags.add(Labels.tag_natural).add(Labels.tag_fruit);
-                    // TODO eating the apple is broken (does not reset hunger bar)
+                    e.blob.setTag(Labels.tag_fruit);
                     return SideEffect.none;
                 });
         events.item.addEventHandler(Labels.item_apple, Events.ItemConsumedEvent.class,

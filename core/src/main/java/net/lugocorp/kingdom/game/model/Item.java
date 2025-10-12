@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.properties.Rarity;
-import net.lugocorp.kingdom.game.properties.Tags;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import java.util.Optional;
@@ -12,8 +11,8 @@ import java.util.Optional;
  * An in-game pickup to be used by Units
  */
 public class Item implements EventReceiver {
+    private Optional<String> tag = Optional.empty();
     public final String name;
-    public final Tags tags = new Tags();
     public Optional<String> icon = Optional.empty();
     public Rarity rarity = Rarity.COMMON;
     public String desc = "";
@@ -28,6 +27,27 @@ public class Item implements EventReceiver {
      */
     public Item() {
         this.name = null;
+    }
+
+    /**
+     * Returns this Item's tag (if it has one)
+     */
+    public Optional<String> getTag() {
+        return this.tag;
+    }
+
+    /**
+     * Sets this Item's tag
+     */
+    public void setTag(String tag) {
+        this.tag = Optional.of(tag);
+    }
+
+    /**
+     * Returns true if this Item has the given tag
+     */
+    public boolean hasTag(String tag) {
+        return this.tag.map((String t) -> tag.equals(t)).orElse(false);
     }
 
     /**

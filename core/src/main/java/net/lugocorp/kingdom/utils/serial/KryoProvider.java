@@ -50,7 +50,6 @@ class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.model.Item.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.GlyphCategory.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.UnitGlyphs.class);
-        kryo.register(net.lugocorp.kingdom.game.properties.Tags.class);
         kryo.register(net.lugocorp.kingdom.game.combat.HitPoints.class);
         kryo.register(net.lugocorp.kingdom.game.world.World.class);
         kryo.register(net.lugocorp.kingdom.game.Game.class);
