@@ -15,7 +15,10 @@ uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
 uniform sampler2D u_borderTexture3;
+uniform sampler2D u_borderTextureExt3;
 uniform sampler2D u_borderTexture4;
+uniform sampler2D u_borderTextureExt4;
+uniform sampler2D u_borderTextureExt42;
 uniform sampler2D u_normalsTexture;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
@@ -26,7 +29,9 @@ uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_vision;
 uniform int u_distanceBorder;
+uniform int u_distanceBorderExtension;
 uniform int u_domainBorder;
+uniform int u_domainBorderExtension;
 uniform int u_tileBorder;
 uniform int u_hovered;
 uniform int u_option;
@@ -82,6 +87,28 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     border -= checkBorderColor(border, color, texture1, 1, bx, 1.0 - by); // Left
 }
 
+// Extends smaller borders so that they connect aross tiles
+void applyBorderExtensions(int extension, vec4 color) {
+    if (extension == 0) {
+        return;
+    }
+    float bx = v_diffuseUV.x * 64.0 / 19.0;
+    float by = v_diffuseUV.y * 64.0 / 18.0;
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 2048, bx, 1.0 - by); // Top left CCW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 1024, 1.0 - bx, 1.0 - by); // Bot left CW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 512, bx, by); // Top right CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 256, 1.0 - bx, by); // Bot right CW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 128, bx, by); // Right CCW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 64, 1.0 - bx, by); // Right CW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 32, 1.0 - bx, by); // Bot right CCW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 16, bx, by); // Top right CW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 8, 1.0 - bx, 1.0 - by); // Bot left CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 4, bx, 1.0 - by); // Top left CW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 2, 1.0 - bx, 1.0 - by); // Left CCW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 1, bx, 1.0 - by); // Left CW ()
+}
+
+// Main shader function
 void main() {
     // Return black color for fog of war
     if (u_vision == NO_VISIBILITY) {
@@ -100,7 +127,9 @@ void main() {
         }
 
         // Allow for distance borders to be visible beneath fog of war
-        applyBorder(u_distanceBorder, vec4(1.0, 1.0, 1.0, 1.0), u_borderTexture3, u_borderTexture4);
+        vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+        applyBorder(u_distanceBorder, white, u_borderTexture3, u_borderTexture4);
+        applyBorderExtensions(u_distanceBorderExtension, white);
         return;
     }
 
@@ -165,9 +194,13 @@ void main() {
         float by = v_diffuseUV.y * 64.0 / 18.0;
 
         // Player, domain, and distance borders
+        vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
+        vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
         applyBorder(u_tileBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
-        applyBorder(u_domainBorder, vec4(1.0, 1.0, 1.0, 1.0), u_borderTexture3, u_borderTexture4);
-        applyBorder(u_distanceBorder, vec4(0.0, 0.0, 0.0, 1.0), u_borderTexture3, u_borderTexture4);
+        applyBorder(u_domainBorder, white, u_borderTexture3, u_borderTexture4);
+        applyBorderExtensions(u_domainBorderExtension, white);
+        applyBorder(u_distanceBorder, black, u_borderTexture3, u_borderTexture4);
+        applyBorderExtensions(u_distanceBorderExtension, black);
     }
 
     // Make the color bluer if it's nighttime

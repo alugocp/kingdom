@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Represents a local spirit that Players can compete for favor with
@@ -33,8 +34,8 @@ public class Patron extends Building {
     private Optional<Player> favorite = Optional.empty();
     public String preference = "";
 
-    Patron(String name, int x, int y) {
-        super(name, x, y, null);
+    Patron(String name, int x, int y, Supplier<Tile> getTile) {
+        super(name, x, y, getTile);
         this.combat.health.invulnerable();
         super.setMinimapColor(ColorScheme.BLACK.hex);
     }
@@ -50,6 +51,12 @@ public class Patron extends Building {
     @Override
     public EntityType getEntityType() {
         return EntityType.PATRON;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Optional<Player> getLeader() {
+        return Optional.empty();
     }
 
     /** {@inheritdoc} */

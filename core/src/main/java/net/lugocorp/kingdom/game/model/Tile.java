@@ -188,6 +188,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public void addDomainBorder(int border) {
         this.userData.domainBorders |= border;
+        this.userData.domainExtensionBorders = Hexagons.getBorderExtensionInteger(this.userData.domainBorders);
     }
 
     /**
@@ -195,6 +196,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public void setDistanceBorder(int border) {
         this.userData.distanceBorders = border;
+        this.userData.distanceExtensionBorders = Hexagons.getBorderExtensionInteger(border);
     }
 
     /** {@inheritdoc} */

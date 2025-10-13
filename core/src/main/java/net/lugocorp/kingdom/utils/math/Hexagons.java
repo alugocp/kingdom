@@ -105,6 +105,26 @@ public class Hexagons {
     }
 
     /**
+     * Returns a two-byte integer that represents which borders should be extended
+     */
+    public static int getBorderExtensionInteger(int borders) {
+        final boolean left = (borders & HexSide.LEFT.value) > 0;
+        final boolean topLeft = (borders & HexSide.TOP_LEFT.value) > 0;
+        final boolean topRight = (borders & HexSide.TOP_RIGHT.value) > 0;
+        final boolean right = (borders & HexSide.RIGHT.value) > 0;
+        final boolean botRight = (borders & HexSide.BOT_RIGHT.value) > 0;
+        final boolean botLeft = (borders & HexSide.BOT_LEFT.value) > 0;
+
+        // Clockwise bits
+        return (left && !topLeft ? 1 : 0) + (topLeft && !topRight ? 4 : 0) + (topRight && !right ? 16 : 0)
+                + (right && !botRight ? 64 : 0) + (botRight && !botLeft ? 256 : 0) + (botLeft && !left ? 1024 : 0) +
+
+                // Counter-clockwise bits
+                (left && !botLeft ? 2 : 0) + (botLeft && !botRight ? 8 : 0) + (botRight && !right ? 32 : 0)
+                + (right && !topRight ? 128 : 0) + (topRight && !topLeft ? 512 : 0) + (topLeft && !left ? 2048 : 0);
+    }
+
+    /**
      * Returns the side of p1 that touches p2 (if p1 and p2 are adjacent)
      */
     public static Optional<HexSide> getDirection(Point p1, Point p2) {

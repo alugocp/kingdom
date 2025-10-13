@@ -57,6 +57,9 @@ public class ToonShader implements Shader {
     private int u_borderTexture2;
     private int u_borderTexture3;
     private int u_borderTexture4;
+    private int u_borderTextureExt3;
+    private int u_borderTextureExt4;
+    private int u_borderTextureExt42;
     private int u_glyphTexture;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
@@ -69,7 +72,9 @@ public class ToonShader implements Shader {
     private int u_vision;
     private int u_lightOutline;
     private int u_domainBorder;
+    private int u_domainBorderExtension;
     private int u_distanceBorder;
+    private int u_distanceBorderExtension;
     private int u_borderColor;
     private int u_tileBorder;
     private int u_timer;
@@ -94,7 +99,10 @@ public class ToonShader implements Shader {
         this.u_borderTexture1 = this.program.getUniformLocation("u_borderTexture1");
         this.u_borderTexture2 = this.program.getUniformLocation("u_borderTexture2");
         this.u_borderTexture3 = this.program.getUniformLocation("u_borderTexture3");
+        this.u_borderTextureExt3 = this.program.getUniformLocation("u_borderTextureExt3");
         this.u_borderTexture4 = this.program.getUniformLocation("u_borderTexture4");
+        this.u_borderTextureExt4 = this.program.getUniformLocation("u_borderTextureExt4");
+        this.u_borderTextureExt42 = this.program.getUniformLocation("u_borderTextureExt42");
         this.u_glyphTexture = this.program.getUniformLocation("u_glyphTexture");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
@@ -107,7 +115,9 @@ public class ToonShader implements Shader {
         this.u_vision = this.program.getUniformLocation("u_vision");
         this.u_lightOutline = this.program.getUniformLocation("u_lightOutline");
         this.u_domainBorder = this.program.getUniformLocation("u_domainBorder");
+        this.u_domainBorderExtension = this.program.getUniformLocation("u_domainBorderExtension");
         this.u_distanceBorder = this.program.getUniformLocation("u_distanceBorder");
+        this.u_distanceBorderExtension = this.program.getUniformLocation("u_distanceBorderExtension");
         this.u_borderColor = this.program.getUniformLocation("u_borderColor");
         this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
         this.u_timer = this.program.getUniformLocation("u_timer");
@@ -194,7 +204,9 @@ public class ToonShader implements Shader {
             this.program.setUniformf(this.u_borderColor, data.borderColor);
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
+            this.program.setUniformi(this.u_distanceBorderExtension, 0);
             this.program.setUniformi(this.u_distanceBorder, 0);
+            this.program.setUniformi(this.u_domainBorderExtension, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
 
@@ -220,25 +232,34 @@ public class ToonShader implements Shader {
                     }
                 }
 
-                // Domain borders
-                if (data.domainBorders > 0) {
-                    Optional<TextureDescriptor> tdesc3 = this.textures.get().getTextureDescriptor("game/border3");
-                    Optional<TextureDescriptor> tdesc4 = this.textures.get().getTextureDescriptor("game/border4");
-                    if (tdesc3.isPresent() && tdesc4.isPresent()) {
+                // Domain and distance borders
+                if (data.domainBorders > 0 || data.distanceBorders > 0) {
+                    final Optional<TextureDescriptor> tdesc3 = this.textures.get().getTextureDescriptor("game/border3");
+                    final Optional<TextureDescriptor> tdesc4 = this.textures.get().getTextureDescriptor("game/border4");
+                    final Optional<TextureDescriptor> tdescExt3 = this.textures.get()
+                            .getTextureDescriptor("game/border3-extend");
+                    final Optional<TextureDescriptor> tdescExt4 = this.textures.get()
+                            .getTextureDescriptor("game/border4-extend");
+                    final Optional<TextureDescriptor> tdescExt42 = this.textures.get()
+                            .getTextureDescriptor("game/border4-extend2");
+                    if (tdesc3.isPresent() && tdesc4.isPresent() && tdescExt3.isPresent() && tdescExt4.isPresent()
+                            && tdescExt42.isPresent()) {
                         this.program.setUniformi(this.u_borderTexture3, this.context.textureBinder.bind(tdesc3.get()));
                         this.program.setUniformi(this.u_borderTexture4, this.context.textureBinder.bind(tdesc4.get()));
-                        this.program.setUniformi(this.u_domainBorder, data.domainBorders);
-                    }
-                }
-
-                // Distance borders
-                if (data.distanceBorders > 0) {
-                    Optional<TextureDescriptor> tdesc3 = this.textures.get().getTextureDescriptor("game/border3");
-                    Optional<TextureDescriptor> tdesc4 = this.textures.get().getTextureDescriptor("game/border4");
-                    if (tdesc3.isPresent() && tdesc4.isPresent()) {
-                        this.program.setUniformi(this.u_borderTexture3, this.context.textureBinder.bind(tdesc3.get()));
-                        this.program.setUniformi(this.u_borderTexture4, this.context.textureBinder.bind(tdesc4.get()));
-                        this.program.setUniformi(this.u_distanceBorder, data.distanceBorders);
+                        this.program.setUniformi(this.u_borderTextureExt3,
+                                this.context.textureBinder.bind(tdescExt3.get()));
+                        this.program.setUniformi(this.u_borderTextureExt4,
+                                this.context.textureBinder.bind(tdescExt4.get()));
+                        this.program.setUniformi(this.u_borderTextureExt42,
+                                this.context.textureBinder.bind(tdescExt42.get()));
+                        if (data.domainBorders > 0) {
+                            this.program.setUniformi(this.u_domainBorder, data.domainBorders);
+                            this.program.setUniformi(this.u_domainBorderExtension, data.domainExtensionBorders);
+                        }
+                        if (data.distanceBorders > 0) {
+                            this.program.setUniformi(this.u_distanceBorder, data.distanceBorders);
+                            this.program.setUniformi(this.u_distanceBorderExtension, data.distanceExtensionBorders);
+                        }
                     }
                 }
             }
@@ -248,7 +269,9 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_hovered, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
+            this.program.setUniformi(this.u_domainBorderExtension, 0);
             this.program.setUniformi(this.u_distanceBorder, 0);
+            this.program.setUniformi(this.u_distanceBorderExtension, 0);
             this.program.setUniformi(this.u_vision, 2);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
 

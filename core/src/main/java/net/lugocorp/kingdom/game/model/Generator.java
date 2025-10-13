@@ -18,7 +18,7 @@ public class Generator {
      * Generates a new Tile
      */
     public Tile tile(String name, int x, int y) {
-        Events.GenerateTileEvent e = new Events.GenerateTileEvent(new Tile(name, x, y));
+        final Events.GenerateTileEvent e = new Events.GenerateTileEvent(new Tile(name, x, y));
         this.view.game.events.tile.handle(this.view, e.blob, e);
         return e.blob;
     }
@@ -37,7 +37,7 @@ public class Generator {
      * passed in every time.
      */
     public Unit unitOptimal(Unit u) {
-        Events.GenerateUnitEvent e = new Events.GenerateUnitEvent(u);
+        final Events.GenerateUnitEvent e = new Events.GenerateUnitEvent(u);
         this.view.game.events.unit.handle(this.view, e.blob, e);
         return u;
     }
@@ -47,7 +47,7 @@ public class Generator {
      */
     public Building building(String name, int x, int y) {
         final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
-        Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(new Building(name, x, y, getTile));
+        final Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(new Building(name, x, y, getTile));
         this.view.game.events.building.handle(this.view, e.blob, e);
         return e.blob;
     }
@@ -56,7 +56,8 @@ public class Generator {
      * Generates a new Patron
      */
     public Patron patron(String name, int x, int y) {
-        Events.GeneratePatronEvent e = new Events.GeneratePatronEvent(new Patron(name, x, y));
+        final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
+        final Events.GeneratePatronEvent e = new Events.GeneratePatronEvent(new Patron(name, x, y, getTile));
         this.view.game.events.patron.handle(this.view, e.blob, e);
         this.view.game.mechanics.patronage.addPatron(e.blob);
         return e.blob;
@@ -66,7 +67,7 @@ public class Generator {
      * Generates a new Item
      */
     public Item item(String name) {
-        Events.GenerateItemEvent e = new Events.GenerateItemEvent(new Item(name));
+        final Events.GenerateItemEvent e = new Events.GenerateItemEvent(new Item(name));
         this.view.game.events.item.handle(this.view, e.blob, e);
         return e.blob;
     }
@@ -75,7 +76,7 @@ public class Generator {
      * Generates a new Ability
      */
     public Ability ability(Unit wielder, String name) {
-        Events.GenerateAbilityEvent e = new Events.GenerateAbilityEvent(new Ability(wielder, name));
+        final Events.GenerateAbilityEvent e = new Events.GenerateAbilityEvent(new Ability(wielder, name));
         this.view.game.events.ability.handle(this.view, e.blob, e);
         return e.blob;
     }
@@ -84,7 +85,7 @@ public class Generator {
      * Generates a new Artifact
      */
     public Artifact artifact(String name) {
-        Events.GenerateArtifactEvent e = new Events.GenerateArtifactEvent(new Artifact(name));
+        final Events.GenerateArtifactEvent e = new Events.GenerateArtifactEvent(new Artifact(name));
         this.view.game.events.artifact.handle(this.view, e.blob, e);
         return e.blob;
     }
@@ -93,7 +94,7 @@ public class Generator {
      * Generates a new Fate
      */
     public Fate fate(String name) {
-        Events.GenerateFateEvent e = new Events.GenerateFateEvent(new Fate(name));
+        final Events.GenerateFateEvent e = new Events.GenerateFateEvent(new Fate(name));
         this.view.game.events.fate.handle(this.view, e.blob, e);
         return e.blob;
     }
