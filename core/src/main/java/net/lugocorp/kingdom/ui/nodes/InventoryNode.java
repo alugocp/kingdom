@@ -12,7 +12,9 @@ import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.MenuNode;
+import net.lugocorp.kingdom.ui.MenuPopup;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.code.Tuple;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -29,10 +31,13 @@ import java.util.Set;
 public class InventoryNode implements MenuNode {
     private static final int MARGIN = 2;
     public static final int SIDE = 50;
+    private final MenuPopup popup = new MenuPopup();
     private final Inventory items;
     private final GameView view;
     private final int x;
     private final int y;
+    private Optional<Tuple<Item, MenuNode>> cachedHoverMenu = Optional.empty();
+    private boolean controlsActive = false;
     private Menu menu = null;
     private int cols;
     private int rows;
@@ -42,118 +47,6 @@ public class InventoryNode implements MenuNode {
         this.view = view;
         this.x = x;
         this.y = y;
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public int getHeight() {
-        return this.rows * (InventoryNode.SIDE + InventoryNode.MARGIN);
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public void pack(Menu menu, int width) {
-        this.cols = (int) (width / (InventoryNode.SIDE + InventoryNode.MARGIN));
-        this.rows = this.items.getMax() == 0 ? 0 : (int) Math.ceil(this.items.getMax() / (float) this.cols);
-        this.menu = menu;
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public void draw(AudioVideo av, Rect bounds) {
-        if (this.items.getMax() == 0) {
-            return;
-        }
-        av.sprites.begin();
-        av.sprites.setColor(Color.WHITE);
-        for (int a = 0; a < this.rows; a++) {
-            Rect flip = Coords.screen.flip(bounds.x, bounds.y + a * (InventoryNode.SIDE + InventoryNode.MARGIN),
-                    bounds.w, InventoryNode.SIDE + InventoryNode.MARGIN);
-            for (int b = 0; b < this.cols; b++) {
-                int index = (a * this.cols) + b;
-                if (index >= this.items.getMax()) {
-                    break;
-                }
-                Drawable icon = new Drawable(av.loaders.sprites, "placeholder");
-                if (index < this.items.getSize()) {
-                    Item item = this.items.get(index);
-                    if (item.icon.isPresent()) {
-                        icon.setSprite(item.icon.get());
-                    }
-                }
-                icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
-            }
-        }
-        av.sprites.end();
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public void click(Rect bounds, Point p) {
-        int x = (p.x - bounds.x) / InventoryNode.SIDE;
-        int y = (p.y - bounds.y) / InventoryNode.SIDE;
-        int i = (cols * y) + x;
-
-        // No item in particular was clicked, nothing to do here
-        if (i >= this.items.getSize()) {
-            return;
-        }
-
-        // Set mini menu for the selected item
-        final Item item = this.items.get(i);
-        ListNode root = new ListNode().add(new SubheaderNode(this.view.av, item.name));
-        item.getTag().ifPresent((String tag) -> root.add(new TextNode(this.view.av, String.format("%s item", tag)) {
-            /** {@inheritdoc} */
-            @Override
-            protected BitmapFont getFont() {
-                return this.av.fonts.getFont(ColorScheme.GOLD.color);
-            }
-        }));
-        root.add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex, item.rarity.toString()))
-                .add(new TextNode(this.view.av, item.desc));
-
-        // Equip / pick up / drop options (only if the human Player occupies this space)
-        boolean actions = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t1) -> t1.unit)
-                .flatMap((Unit u1) -> u1.getLeader())
-                .map((Player p1) -> p1.isHumanPlayer() && this.view.game.mechanics.turns.canHumanPlayerAct())
-                .orElse(false);
-        if (actions) {
-            if (this.items.type == InventoryType.BUILDING) {
-                // Building actions for this Item
-                if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
-                        && !this.itemIsConsumed(this.view, item)) {
-                    root.add(new ButtonNode(this.view.av, "Equip onto unit",
-                            () -> this.unitTakesItem(InventoryType.EQUIP, item)).setNoise("sfx/item-exchange"));
-                }
-                if (this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
-                    root.add(new ButtonNode(this.view.av, "Give to unit",
-                            () -> this.unitTakesItem(InventoryType.HAUL, item)).setNoise("sfx/item-exchange"));
-                }
-            } else {
-                // Unit actions for this Item
-                if (this.items.type == InventoryType.HAUL && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
-                        && !this.itemIsConsumed(this.view, item)) {
-                    root.add(new ButtonNode(this.view.av, "Equip", () -> this.unitTakesItem(InventoryType.EQUIP, item))
-                            .setNoise("sfx/item-check"));
-                }
-                if (this.canUnitConsumeItem(item)) {
-                    root.add(new ButtonNode(this.view.av, "Consume", () -> this.unitConsumesItem(item))
-                            .setNoise("sfx/item-check"));
-                }
-                if (this.items.type == InventoryType.HAUL) {
-                    root.add(new ButtonNode(this.view.av, "Give",
-                            () -> this.view.selector.select(this.getGiftRecipients(),
-                                    "No nearby units can receive this gift",
-                                    (Point p1) -> this.giftItemToUnit(p1, item)))
-                            .setNoise("sfx/item-exchange"));
-                }
-                if (this.items.type == InventoryType.HAUL && this.canBuildingTakeItem()) {
-                    root.add(new ButtonNode(this.view.av, "Put in vault", () -> this.buildingTakesItem(item))
-                            .setNoise("sfx/item-check"));
-                }
-            }
-        }
-        this.menu.setMiniMenu(root, p.x, p.y);
     }
 
     /**
@@ -277,5 +170,176 @@ public class InventoryNode implements MenuNode {
         Building building = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.building).get();
         this.items.transfer(building.items.get(), item);
         this.view.menu.refresh(false);
+    }
+
+    /**
+     * Returns the index of the Item that Point p is hovering over
+     */
+    private int getHoveredItemIndex(Rect bounds, Point p) {
+        if (p.x < bounds.x || p.y < bounds.y) {
+            return -1;
+        }
+        final int x = (p.x - bounds.x) / InventoryNode.SIDE;
+        final int y = (p.y - bounds.y) / InventoryNode.SIDE;
+        return (this.cols * y) + x;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public int getHeight() {
+        return this.rows * (InventoryNode.SIDE + InventoryNode.MARGIN);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void pack(Menu menu, int width) {
+        this.cols = (int) (width / (InventoryNode.SIDE + InventoryNode.MARGIN));
+        this.rows = this.items.getMax() == 0 ? 0 : (int) Math.ceil(this.items.getMax() / (float) this.cols);
+        this.popup.setMenu(menu);
+        this.menu = menu;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void draw(AudioVideo av, Rect bounds) {
+        if (this.items.getMax() == 0) {
+            return;
+        }
+        av.sprites.begin();
+        av.sprites.setColor(Color.WHITE);
+        for (int a = 0; a < this.rows; a++) {
+            Rect flip = Coords.screen.flip(bounds.x, bounds.y + a * (InventoryNode.SIDE + InventoryNode.MARGIN),
+                    bounds.w, InventoryNode.SIDE + InventoryNode.MARGIN);
+            for (int b = 0; b < this.cols; b++) {
+                int index = (a * this.cols) + b;
+                if (index >= this.items.getMax()) {
+                    break;
+                }
+                Drawable icon = new Drawable(av.loaders.sprites, "placeholder");
+                if (index < this.items.getSize()) {
+                    Item item = this.items.get(index);
+                    if (item.icon.isPresent()) {
+                        icon.setSprite(item.icon.get());
+                    }
+                }
+                icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
+            }
+        }
+        av.sprites.end();
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void click(Rect bounds, Point p) {
+        final int i = this.getHoveredItemIndex(bounds, p);
+
+        // Return early if no Item was really clicked
+        if (i < 0 || i >= this.items.getSize()) {
+            this.controlsActive = false;
+            return;
+        }
+        this.controlsActive = true;
+        this.popup.close();
+
+        // Set up the controls menu
+        final Item item = this.items.get(i);
+        final ListNode root = new ListNode().add(new SubheaderNode(this.view.av, item.name))
+                .add(new TextNode(this.view.av, item.desc));
+        boolean hasActions = false;
+
+        // Equip / pick up / drop options (only if the human Player occupies this space)
+        final boolean actions = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t1) -> t1.unit)
+                .flatMap((Unit u1) -> u1.getLeader())
+                .map((Player p1) -> p1.isHumanPlayer() && this.view.game.mechanics.turns.canHumanPlayerAct())
+                .orElse(false);
+        if (actions) {
+            if (this.items.type == InventoryType.BUILDING) {
+                // Building actions for this Item
+                if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
+                        && !this.itemIsConsumed(this.view, item)) {
+                    root.add(new ButtonNode(this.view.av, "Equip onto unit",
+                            () -> this.unitTakesItem(InventoryType.EQUIP, item)).setNoise("sfx/item-exchange"));
+                    hasActions = true;
+                }
+                if (this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
+                    root.add(new ButtonNode(this.view.av, "Give to unit",
+                            () -> this.unitTakesItem(InventoryType.HAUL, item)).setNoise("sfx/item-exchange"));
+                    hasActions = true;
+                }
+            } else {
+                // Unit actions for this Item
+                if (this.items.type == InventoryType.HAUL && this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
+                        && !this.itemIsConsumed(this.view, item)) {
+                    root.add(new ButtonNode(this.view.av, "Equip", () -> this.unitTakesItem(InventoryType.EQUIP, item))
+                            .setNoise("sfx/item-check"));
+                    hasActions = true;
+                }
+                if (this.canUnitConsumeItem(item)) {
+                    root.add(new ButtonNode(this.view.av, "Consume", () -> this.unitConsumesItem(item))
+                            .setNoise("sfx/item-check"));
+                    hasActions = true;
+                }
+                if (this.items.type == InventoryType.HAUL) {
+                    root.add(new ButtonNode(this.view.av, "Give",
+                            () -> this.view.selector.select(this.getGiftRecipients(),
+                                    "No nearby units can receive this gift",
+                                    (Point p1) -> this.giftItemToUnit(p1, item)))
+                            .setNoise("sfx/item-exchange"));
+                    hasActions = true;
+                }
+                if (this.items.type == InventoryType.HAUL && this.canBuildingTakeItem()) {
+                    root.add(new ButtonNode(this.view.av, "Put in vault", () -> this.buildingTakesItem(item))
+                            .setNoise("sfx/item-check"));
+                    hasActions = true;
+                }
+            }
+        }
+        if (!hasActions) {
+            root.add(new TextNode(this.view.av, "No actions available"));
+        }
+        this.menu.setMiniMenu(root, p.x, p.y);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void unclick() {
+        if (this.controlsActive) {
+            this.controlsActive = false;
+            this.menu.closeMiniMenu();
+        }
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void mouseMoved(Rect bounds, Point prev, Point curr) {
+        // Disable the mouse hover logic if the controls mini menu is active
+        if (this.controlsActive) {
+            return;
+        }
+
+        // Set mini menu for the selected item
+        final int i = this.getHoveredItemIndex(bounds, curr);
+        if (i >= 0 && i < this.items.getSize()) {
+            final Item item = this.items.get(i);
+
+            // Only reconstruct the mini Menu root if it's not already cached
+            if (this.cachedHoverMenu.map((Tuple<Item, MenuNode> tuple) -> tuple.a != item).orElse(true)) {
+                final ListNode root = new ListNode().add(new SubheaderNode(this.view.av, item.name));
+                item.getTag()
+                        .ifPresent((String tag) -> root.add(new TextNode(this.view.av, String.format("%s item", tag)) {
+                            /** {@inheritdoc} */
+                            @Override
+                            protected BitmapFont getFont() {
+                                return this.av.fonts.getFont(ColorScheme.GOLD.color);
+                            }
+                        }));
+                root.add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex, item.rarity.toString()))
+                        .add(new TextNode(this.view.av, String.format("%s (click for options)", item.desc)));
+                this.cachedHoverMenu = Optional.of(new Tuple<Item, MenuNode>(item, root));
+            }
+            this.popup.update(bounds, curr, this.cachedHoverMenu.get().b);
+        } else {
+            this.popup.close();
+        }
     }
 }

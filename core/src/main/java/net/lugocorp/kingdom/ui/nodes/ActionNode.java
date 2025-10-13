@@ -32,6 +32,6 @@ public class ActionNode extends ButtonNode {
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         super.mouseMoved(bounds, prev, curr);
-        this.desc.ifPresent((MenuNode n) -> this.popup.update(bounds, prev, curr, n));
+        this.desc.ifPresent((MenuNode n) -> this.popup.update(bounds, curr, n));
     }
 }

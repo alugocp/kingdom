@@ -61,7 +61,7 @@ public class GlyphIconsNode implements MenuNode {
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         final int w = GlyphIconsNode.SIDE + GlyphIconsNode.MARGIN;
         for (int a = 0; a < this.labels.length; a++) {
-            this.popup.update(new Rect(bounds.x + (w * a), bounds.y, w, bounds.h), prev, curr, this.labels[a]);
+            this.popup.update(new Rect(bounds.x + (w * a), bounds.y, w, bounds.h), curr, this.labels[a]);
         }
     }
 }

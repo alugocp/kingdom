@@ -45,6 +45,6 @@ public class HelperNode extends NakedButtonNode {
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         super.mouseMoved(bounds, prev, curr);
-        this.popup.update(bounds, prev, curr, this.desc);
+        this.popup.update(bounds, curr, this.desc);
     }
 }

@@ -58,7 +58,7 @@ public class TabsNode implements MenuNode {
             @Override
             public void mouseMoved(Rect bounds, Point prev, Point curr) {
                 super.mouseMoved(bounds, prev, curr);
-                popupNode.ifPresent((TextNode n) -> this.popup.update(bounds, prev, curr, n));
+                popupNode.ifPresent((TextNode n) -> this.popup.update(bounds, curr, n));
             }
         });
         return this;
