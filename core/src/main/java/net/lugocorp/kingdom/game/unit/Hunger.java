@@ -11,9 +11,44 @@ import java.util.Set;
 public class Hunger {
     private final Unit unit;
     private int turnsToGetHungry = 20;
+    private String preferred = "fruit";
 
     public Hunger(Unit unit) {
         this.unit = unit;
+    }
+
+    /**
+     * Returns this instance's preferred food
+     */
+    public String getPreferredFood() {
+        return this.preferred;
+    }
+
+    /**
+     * Sets this instance's preferred food
+     */
+    public void setPreferredFood(String preferred) {
+        this.preferred = preferred;
+    }
+
+    /**
+     * Returns true if this instance's Unit can eat the given Item
+     */
+    public boolean canEat(Item i) {
+        return i.getTag().map((String t) -> t.equals(this.preferred)).orElse(false);
+    }
+
+    /**
+     * Checks if this instance's Unit can auto eat, and returns true if they can
+     */
+    public boolean autoEatCheck(GameView view) {
+        final Set<Item> food = this.unit.haul.getEdibleItems(view, this.unit);
+        if (food.size() > 0) {
+            this.unit.haul.remove(food.iterator().next());
+            this.eat(view, true);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -21,13 +56,9 @@ public class Hunger {
      * such Item then hunger begins to strike the Unit.
      */
     public void gotHungry(GameView view) {
-        final Set<Item> food = this.unit.haul.getEdibleItems(view, this.unit);
-        if (food.size() > 0) {
-            this.unit.haul.remove(food.iterator().next());
-            this.eat(view, true);
-            return;
+        if (!this.autoEatCheck(view)) {
+            view.game.future.addFutureTick("HungerStrikes", this.unit, 1, true);
         }
-        view.game.future.addFutureTick("HungerStrikes", this.unit, 1, true);
     }
 
     /**

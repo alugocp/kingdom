@@ -151,7 +151,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         .add(new BadgeNode(view.av, Colors.asInt(this.getLeader().get().color), ColorScheme.WHITE.hex,
                                 this.getLeader().get().name))
                 : glyphsNode);
-        node.add(new TextNode(view.av, this.desc));
+        node.add(new TextNode(view.av, this.desc))
+                .add(new TextNode(view.av, String.format("This unit eats %s items", this.hunger.getPreferredFood())));
         node.add(new ResourceBarsNode(view.av,
                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
                 new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
@@ -184,17 +185,16 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         () -> view.selector.deposit(this)));
             }
 
-            // Feed Unit
+            // Give Food
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
-                node.add(new ActionNode(view, "Feed", Optional.of(
-                        "This unit uses one of its stored items to feed an adjacent hungry unit (does not exhaust this unit's actions)"),
+                node.add(new ActionNode(view, "Give Food", Optional.of(
+                        "This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
                                     final Set<Item> food = this.haul.getEdibleItems(view, u);
-                                    u.haul.remove(food.iterator().next());
-                                    return () -> u.hunger.eat(view, true);
+                                    return () -> this.haul.transfer(u.haul, food.iterator().next());
                                 }).execute()));
             }
 

@@ -360,22 +360,6 @@ public class Events {
     }
 
     /**
-     * Triggered when we need to check if a Unit can eat the given Item to stave off
-     * hunger
-     */
-    public static class CanEatEvent extends Event {
-        public final Unit unit;
-        public final Item item;
-        public boolean edible = false;
-
-        public CanEatEvent(Unit unit, Item item) {
-            super();
-            this.unit = unit;
-            this.item = item;
-        }
-    }
-
-    /**
      * Triggered when we need to check if the Unit is stunned (they cannot act in
      * such a case)
      */

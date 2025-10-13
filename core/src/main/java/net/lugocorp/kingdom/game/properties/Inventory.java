@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game.properties;
-import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.MenuNode;
@@ -149,9 +148,7 @@ public class Inventory implements MenuSubject, Iterable<Item> {
             if (!i.isConsumable(view)) {
                 continue;
             }
-            final Events.CanEatEvent e = new Events.CanEatEvent(u, i);
-            u.handleEvent(view, e);
-            if (e.edible) {
+            if (u.hunger.canEat(i)) {
                 edible.add(i);
             }
         }

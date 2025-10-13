@@ -37,9 +37,7 @@ public class ItemLogic {
      */
     public static SideEffect food(GameView view, Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        Events.CanEatEvent e1 = new Events.CanEatEvent(e.consumer, e.item);
-        e.consumer.handleEvent(view, e1);
-        if (e1.edible) {
+        if (e.consumer.hunger.canEat(e.item)) {
             return () -> e.consumer.hunger.eat(view, true);
         }
         e.consumed = false;

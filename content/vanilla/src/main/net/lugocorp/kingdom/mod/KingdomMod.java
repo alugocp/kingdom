@@ -188,19 +188,12 @@ public class KingdomMod implements GameMod {
 
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
-            if (receiver.getLeader().isPresent()) {
+            if (receiver.getLeader().isPresent() && !receiver.hunger.autoEatCheck(view)) {
                 return () -> receiver.loyalty.decrease(view, 1);
             }
             ((Events.RepeatedEvent) event).repeat = false;
             return SideEffect.none;
         });
-
-        // CanEatEvent
-        events.unit.setDefaultHandler(Events.CanEatEvent.class,
-                (GameView view, Unit receiver, Events.CanEatEvent e) -> {
-                    e.edible = e.item.hasTag(Labels.tag_fruit);
-                    return SideEffect.none;
-                });
 
         // UnitMoveDistanceEvent
         events.unit.setDefaultHandler(Events.UnitMoveDistanceEvent.class,

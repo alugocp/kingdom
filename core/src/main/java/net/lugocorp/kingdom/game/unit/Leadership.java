@@ -73,8 +73,8 @@ public class Leadership {
         if (!this.isFreeRadical()) {
             throw new RuntimeException("Cannot recruit another player's unit");
         }
-        view.game.future.addFutureTick("HungerStrikes", this.unit, 1, true);
         view.game.setLeader(view, this.unit, player);
-        this.unit.loyalty.reset();
+        this.unit.hunger.eat(view, true);
+        this.unit.loyalty.reset(view);
     }
 }

@@ -38,7 +38,8 @@ public class Loyalty {
     /**
      * Resets this instance's loyalty
      */
-    public void reset() {
+    public void reset(GameView view) {
+        view.overlays.add(new EntityRisingOverlay(view, this.unit, 0x203fab, "Loyalty reset"));
         this.loyalty = Loyalty.MAX_LOYALTY;
     }
 }

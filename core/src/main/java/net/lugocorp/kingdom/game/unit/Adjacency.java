@@ -41,7 +41,7 @@ public class Adjacency {
         final Set<Point> units = new HashSet<>();
         for (Point p : Hexagons.getAdjacents(this.unit.getPoint())) {
             view.game.world.getTile(p).flatMap((Tile t) -> t.unit).ifPresent((Unit u) -> {
-                if ((u.leadership.sameLeader(this.unit) || u.leadership.isFreeRadical())
+                if ((u.leadership.sameLeader(this.unit) || u.leadership.isFreeRadical()) && !u.haul.isFull()
                         && this.unit.haul.getEdibleItems(view, u).size() > 0) {
                     units.add(u.getPoint());
                 }
