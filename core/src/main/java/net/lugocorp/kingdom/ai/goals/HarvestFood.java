@@ -38,7 +38,7 @@ public class HarvestFood extends Goal {
         final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
         final Point dest = ((MoveNode) root).dest;
         final Optional<MemoryCell> cell = memory.getCell(dest);
-        if (cell.map((MemoryCell c) -> !c.getBuilding().isPresent()).orElse(false)) {
+        if (cell.map((MemoryCell c) -> !c.getBuilding().isPresent()).orElse(true)) {
             return 0f;
         }
 

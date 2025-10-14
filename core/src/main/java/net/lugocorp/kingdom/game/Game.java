@@ -44,6 +44,8 @@ public class Game {
     public AllEventHandlers events;
     @FieldSerializer.Optional("generator")
     public Generator generator;
+    // TODO when a unit is despawned, remove their stuff form the action manager and
+    // future event queue
 
     public Game(AllEventHandlers events, OffsetTime startTime) {
         this.events = events;

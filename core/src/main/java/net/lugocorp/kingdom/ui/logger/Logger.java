@@ -48,7 +48,7 @@ public class Logger {
         if (this.n < Logger.MAX_ROWS) {
             this.n++;
         }
-        for (int a = this.n; a > 0; a--) {
+        for (int a = Math.min(this.n, Logger.MAX_ROWS - 1); a > 0; a--) {
             this.messages[a] = this.messages[a - 1];
         }
         layout.setText(this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT.color), message);

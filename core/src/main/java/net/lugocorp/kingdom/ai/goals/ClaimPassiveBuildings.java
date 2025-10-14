@@ -33,7 +33,7 @@ public class ClaimPassiveBuildings extends Goal {
         final Point dest = ((MoveNode) root).dest;
         final Optional<MemoryCell> cell = memory.getCell(dest);
         if (cell.map((MemoryCell c) -> !c.getBuilding().isPresent() || c.getOwner().equals(root.unit.getLeader()))
-                .orElse(false)) {
+                .orElse(true)) {
             return 0f;
         }
         final Building b = view.game.generator.building(cell.flatMap((MemoryCell c) -> c.getBuilding()).get(), 0, 0);
