@@ -34,6 +34,13 @@ public class ListNode implements MenuNode {
     }
 
     /**
+     * Removes the last child in this ListNode
+     */
+    public void pop() {
+        this.children.remove(this.children.size() - 1);
+    }
+
+    /**
      * Adds a border (and some margin) to this ListNode
      */
     public ListNode addBorder() {

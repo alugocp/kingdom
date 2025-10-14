@@ -32,7 +32,9 @@ public class MenuMenuNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void pack(Menu menu, int width) {
-        menu.setSubmenu(this.menu);
+        if (!menu.hasSubmenu()) {
+            menu.setSubmenu(this.menu);
+        }
         this.menu.setWidth(width);
     }
 

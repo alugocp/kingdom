@@ -21,37 +21,25 @@ import java.util.Set;
  * This utility class handles logic surrounding the Fates system
  */
 public class Fates {
-    private final List<Fate> fates = new ArrayList<>();
-
-    /**
-     * Generates all registered Fates at the start of the Game
-     */
-    public void init(Game g) {
-        Set<String> stratifiers = g.events.fate.getStratifiers();
-        for (String name : stratifiers) {
-            this.fates.add(g.generator.fate(name));
-        }
-    }
 
     /**
      * Returns a List of all Fates in the Game
      */
-    public List<Fate> getFates() {
-        return this.fates;
-    }
-
-    /**
-     * Returns the first registered Fate
-     */
-    public Fate getFirstFate() {
-        return this.fates.get(0);
+    public List<Fate> getFates(Game g) {
+        final Set<String> stratifiers = g.events.fate.getStratifiers();
+        final List<Fate> fates = new ArrayList<>();
+        for (String name : stratifiers) {
+            fates.add(g.generator.fate(name));
+        }
+        return fates;
     }
 
     /**
      * Returns a random Fate
      */
-    public Fate chooseRandomFate() {
-        return this.fates.get((int) Math.floor(Math.random() * this.fates.size()));
+    public Fate chooseRandomFate(Game g) {
+        final List<Fate> fates = this.getFates(g);
+        return fates.get((int) Math.floor(Math.random() * fates.size()));
     }
 
     /**

@@ -120,8 +120,8 @@ public class WorldGenerator {
             buildingPoints.remove(p);
 
             // Place Players with priority
-            if (playersSpawned < worldGenOpts.numPlayers) {
-                final Player player = playersSpawned == 0 ? g.human : g.addComputerPlayer(view, playersSpawned);
+            if (playersSpawned < g.getAllPlayers().size()) {
+                final Player player = playersSpawned == 0 ? g.human : g.comps.get(playersSpawned - 1);
                 final Building b = g.generator.building("Vault", p.x, p.y);
                 for (int a = 0; a < 5; a++) {
                     b.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));

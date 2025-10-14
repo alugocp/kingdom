@@ -59,6 +59,13 @@ public class Menu {
     }
 
     /**
+     * Returns true if this Menu has a submenu
+     */
+    public boolean hasSubmenu() {
+        return this.submenu.isPresent();
+    }
+
+    /**
      * Registers a submenu on this Menu (a nested Menu that should receive
      * non-MenuNode signals)
      */

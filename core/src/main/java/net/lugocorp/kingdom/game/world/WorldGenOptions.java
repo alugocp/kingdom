@@ -5,7 +5,6 @@ package net.lugocorp.kingdom.game.world;
  */
 public class WorldGenOptions {
     public WorldSize size = WorldSize.values()[0];
-    public int numPlayers = 2;
     public long seed;
 
     public WorldGenOptions(long seed) {

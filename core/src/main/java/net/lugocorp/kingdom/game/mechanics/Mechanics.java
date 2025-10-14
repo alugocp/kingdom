@@ -31,7 +31,6 @@ public class Mechanics {
      */
     public void init(Game game) {
         this.auction.init(game);
-        this.fates.init(game);
         this.pools.init(game);
         this.loot.init(game);
     }
