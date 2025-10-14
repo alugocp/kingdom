@@ -23,6 +23,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
+import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.mod.common.Defs;
 import net.lugocorp.kingdom.mod.common.Labels;
 import net.lugocorp.kingdom.mods.GameMod;
@@ -2127,7 +2128,7 @@ public class KingdomMod implements GameMod {
          * SECTION Items
          */
 
-        // Seeds
+        // Sacred seed
         events.item.addEventHandler(Labels.item_sacred_seed, Events.GenerateItemEvent.class,
                 (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to generate extra favor";
@@ -2209,7 +2210,30 @@ public class KingdomMod implements GameMod {
 
         // Incense
         // Sack of Gold
+        events.item.addEventHandler(Labels.item_sack_of_gold, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to generate 10 gold";
+                    e.blob.icon = Optional.of(Labels.asset_pouch);
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_sack_of_gold, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> () -> {
+                    e.consumer.getLeader().ifPresent((Player p) -> p.gold += 10);
+                    view.hud.update(view.game);
+                });
+
         // Capital
+        events.item.addEventHandler(Labels.item_capital, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to generate 10 auction points";
+                    e.blob.icon = Optional.of(Labels.asset_paper);
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_capital, Events.ItemConsumedEvent.class, (GameView view, Item receiver,
+                Events.ItemConsumedEvent e) -> AbilityLogic.generateAuctionPoints(view, e.consumer, 10));
+
         // Shellcap Armor
         // Stones
         // Sword
@@ -2259,6 +2283,18 @@ public class KingdomMod implements GameMod {
         // Phoenix Blossom
         // Sling and Stone
         // Life-Giving Elixir
+        events.item.addEventHandler(Labels.item_life_giving_elixir, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to generate 10 unit points";
+                    e.blob.icon = Optional.of(Labels.asset_potion);
+                    e.blob.rarity = Rarity.UNCOMMON;
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_life_giving_elixir, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> () -> e.consumer.getLeader()
+                        .ifPresent((Player p) -> p.addUnitPoints(view, e.consumer.getPoint(), 10)));
+
         // Blood-Thirsty Blade
         // Blood-Soaked Mail
         // Leather Armor
@@ -2309,12 +2345,84 @@ public class KingdomMod implements GameMod {
         // Cyclical Rune
         // Mercenary's Blade
         // Wizard's Staff
-        // Floral seeds
-        // Arboreal seeds
-        // Arctic seeds
-        // Cactus seeds
-        // Pioneering seeds
+        // Floral Seeds
+        events.item.addEventHandler(Labels.item_floral_seeds, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to plant a meadow on a grass tile";
+                    e.blob.icon = Optional.of(Labels.asset_seeds);
+                    e.blob.rarity = Rarity.RARE;
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_floral_seeds, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view, e.consumer,
+                        Labels.building_meadow, (Tile t) -> t.name.equals(Labels.tile_grass)));
+
+        // Arboreal Seeds
+        events.item.addEventHandler(Labels.item_arboreal_seeds, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to plant a forest on a grass tile";
+                    e.blob.icon = Optional.of(Labels.asset_seeds);
+                    e.blob.rarity = Rarity.RARE;
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_arboreal_seeds, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view, e.consumer,
+                        Labels.building_forest, (Tile t) -> t.name.equals(Labels.tile_grass)));
+
+        // Arctic Seeds
+        events.item.addEventHandler(Labels.item_arctic_seeds, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to plant a taiga on a snow tile";
+                    e.blob.icon = Optional.of(Labels.asset_seeds);
+                    e.blob.rarity = Rarity.RARE;
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_arctic_seeds, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view, e.consumer,
+                        Labels.building_taiga, (Tile t) -> t.name.equals(Labels.tile_snow)));
+
+        // Cactus Seeds
+        events.item.addEventHandler(Labels.item_cactus_seeds, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to plant a shrubland on a sand tile";
+                    e.blob.icon = Optional.of(Labels.asset_seeds);
+                    e.blob.rarity = Rarity.RARE;
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_cactus_seeds, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view, e.consumer,
+                        Labels.building_shrubland, (Tile t) -> t.name.equals(Labels.tile_sand)));
+
+        // Pioneering Seeds
+        events.item.addEventHandler(Labels.item_pioneering_seeds, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to plant an oasis on a sand tile";
+                    e.blob.icon = Optional.of(Labels.asset_seeds);
+                    e.blob.rarity = Rarity.RARE;
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_pioneering_seeds, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view, e.consumer,
+                        Labels.building_oasis, (Tile t) -> t.name.equals(Labels.tile_sand)));
+
         // Digging Kit
+        events.item.addEventHandler(Labels.item_digging_kit, Events.GenerateItemEvent.class,
+                (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to dig a mine";
+                    e.blob.icon = Optional.of(Labels.asset_shovel);
+                    e.blob.rarity = Rarity.RARE;
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                });
+        events.item.addEventHandler(Labels.item_digging_kit, Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view, e.consumer,
+                        Labels.building_mine, (Tile t) -> true));
+
         // Telescope
         // Ornate Boots
         // Satchel

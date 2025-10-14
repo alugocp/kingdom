@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.builtin.animation.AttackAnimation;
 import net.lugocorp.kingdom.builtin.animation.DamagedAnimation;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
@@ -115,8 +116,8 @@ public class Combat {
         }
 
         // Trigger conjugate Events for an Entity attacking and another Entity being
-        // attacked,
-        // then calculate the outcomes of the battle (damage taken, death triggers, etc)
+        // attacked, then calculate the outcomes of the battle (damage taken, death
+        // triggers, etc)
         return SideEffect.all(this.bearer.handleEvent(view, new Events.AttackEvent(this.bearer, target, dmg)),
                 target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)),
                 target.combat.takeDamage(view, dmg, this.bearer), () -> {
@@ -124,7 +125,14 @@ public class Combat {
                         view.av.loaders.sounds.play("sfx/attack-enemy");
                     }
                     if (this.bearer.getEntityType() == EntityType.UNIT) {
-                        view.animations.add(new AttackAnimation((Unit) this.bearer, target.getPoint()));
+                        final Unit u = (Unit) this.bearer;
+                        view.animations.add(new AttackAnimation(u, target.getPoint()));
+                        if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead() && !u.haul.isFull()) {
+                            final Item item = view.game.mechanics.loot.drop(view.game);
+                            view.overlays
+                                    .add(new EntityRisingOverlay(view, this.bearer, ColorScheme.WHITE.hex, item.name));
+                            u.haul.add(item);
+                        }
                     }
                 });
     }

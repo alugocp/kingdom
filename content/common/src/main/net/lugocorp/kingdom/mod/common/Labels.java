@@ -255,4 +255,13 @@ public class Labels {
     public static final String item_emerald = "Emerald";
     public static final String item_apple = "Apple";
     public static final String item_health_potion = "Health Potion";
+    public static final String item_sack_of_gold = "Sack of Gold";
+    public static final String item_capital = "Capital";
+    public static final String item_life_giving_elixir = "Life-Giving Elixir";
+    public static final String item_floral_seeds = "Floral Seeds";
+    public static final String item_arboreal_seeds = "Arboreal Seeds";
+    public static final String item_arctic_seeds = "Arctic Seeds";
+    public static final String item_cactus_seeds = "Cactus Seeds";
+    public static final String item_pioneering_seeds = "Pioneering Seeds";
+    public static final String item_digging_kit = "Digging Kit";
 }

@@ -29,7 +29,7 @@ public class ItemLogic {
      */
     public static SideEffect potion(GameView view, Event event, int points) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        return () -> e.consumer.combat.heal(view, points);
+        return e.consumer.combat.heal(view, points);
     }
 
     /**

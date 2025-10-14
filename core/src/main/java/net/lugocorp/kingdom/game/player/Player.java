@@ -28,7 +28,7 @@ public abstract class Player {
     public final Set<Unit> units = new HashSet<>();
     public final String name;
     public final Color color;
-    public int gold = Player.INITIAL_GOLD;
+    public int gold = Player.INITIAL_GOLD; // TODO make private, add Overlay on increase
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
     public int tiles = 0;

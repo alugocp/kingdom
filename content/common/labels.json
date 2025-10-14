@@ -269,7 +269,16 @@
             "Gold Coin",
             "Emerald",
             "Apple",
-            "Health Potion"
+            "Health Potion",
+            "Sack of Gold",
+            "Capital",
+            "Life-Giving Elixir",
+            "Floral Seeds",
+            "Arboreal Seeds",
+            "Arctic Seeds",
+            "Cactus Seeds",
+            "Pioneering Seeds",
+            "Digging Kit"
         ]
     }
 ]}
