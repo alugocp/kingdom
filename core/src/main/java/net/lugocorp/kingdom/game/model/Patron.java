@@ -101,15 +101,16 @@ public class Patron extends Building {
 
         // Allow for Player-level favor modifiers
         for (Player p : view.game.getAllPlayers()) {
-            Events.CalculateFavorEvent event = new Events.CalculateFavorEvent(this, p, this.favor.getOrDefault(p, 0));
+            final Events.CalculateFavorEvent event = new Events.CalculateFavorEvent(this, p,
+                    this.favor.getOrDefault(p, 0));
             this.handleEvent(view, event);
             this.favor.put(p, event.favor);
         }
 
         // The Unit with the most favor is the favorite
         for (Player p : this.favor.keySet()) {
-            int favor = this.favor.get(p);
-            if (!this.favorite.isPresent() || favor > this.favor.get(this.favorite.get())) {
+            final int favor = this.favor.get(p);
+            if (favor > this.favorite.map((Player f) -> this.favor.get(f)).orElse(0)) {
                 this.favorite = Optional.of(p);
             }
         }
