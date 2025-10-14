@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.world.WorldGenOptions;
+import net.lugocorp.kingdom.game.world.WorldSize;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.nodes.ButtonNode;
@@ -83,7 +84,7 @@ class GameCreationView implements View {
      * Internal syntactic sugar
      */
     private void setWorldSize(int worldSize) {
-        this.worldGenOpts.size = WorldGenOptions.WorldSize.fromIndex(worldSize);
+        this.worldGenOpts.size = WorldSize.fromIndex(worldSize);
     }
 
     /** {@inheritdoc} */
@@ -129,10 +130,11 @@ class GameCreationView implements View {
      * generation algorithm
      */
     private Menu getWorldSelectionMenu(GameView view) {
+        // TODO uncomment when we're ready for different WorldSizes
         /*
          * final OptionsNode worldSizeOptions = new OptionsNode(view.av, (Integer i) ->
-         * this.setWorldSize(i.intValue())); for (WorldGenOptions.WorldSize size :
-         * WorldGenOptions.WorldSize.values()) { worldSizeOptions.add(size.label); }
+         * this.setWorldSize(i.intValue())); for (WorldSize size : WorldSize.values()) {
+         * worldSizeOptions.add(size.label); }
          */
         return new Menu(0, 0, Coords.SIZE.x, true,
                 new ListNode()

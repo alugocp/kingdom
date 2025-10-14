@@ -16,7 +16,7 @@ public class World {
     private int w = 0;
     private int h = 0;
 
-    public void init(WorldGenOptions.WorldSize size) {
+    public void init(WorldSize size) {
         this.w = size.w;
         this.h = size.h;
 

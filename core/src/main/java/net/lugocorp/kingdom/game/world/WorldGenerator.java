@@ -2,15 +2,13 @@ package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Building;
-import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.Lambda;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -21,15 +19,14 @@ import java.util.function.Consumer;
  * This class handles world generation logic
  */
 public class WorldGenerator {
-    private static final int BIOME_UNIT_SIZE = 10;
-    private static final int NUM_PLAYERS = 2;
+    private static final int BIOME_UNIT_SIZE = 5;
 
     /**
      * The main function that initiates world generation
      */
     public void generateWorld(GameView view, WorldGenOptions worldGenOpts, Consumer<Integer> progress) {
-        Random r = new Random(worldGenOpts.seed);
-        Game g = view.game;
+        final Random r = new Random(worldGenOpts.seed);
+        final Game g = view.game;
 
         // Set up coasts (if any)
         final boolean coastTop = r.nextBoolean();
@@ -53,7 +50,7 @@ public class WorldGenerator {
         final Point[][] biomeSeedOffsets = new Point[biomeSeedsW][biomeSeedsH];
         final Biome[][] biomeSeeds = new Biome[biomeSeedsW][biomeSeedsH];
         for (int b = 0; b < biomeSeedsH; b++) {
-            boolean isHorizontalCoast = (coastTop && b == 0) || (coastBot && b == biomeSeedsH - 1);
+            final boolean isHorizontalCoast = (coastTop && b == 0) || (coastBot && b == biomeSeedsH - 1);
             for (int a = 0; a < biomeSeedsW; a++) {
                 biomeSeedOffsets[a][b] = new Point(r.nextInt(WorldGenerator.BIOME_UNIT_SIZE),
                         r.nextInt(WorldGenerator.BIOME_UNIT_SIZE));
@@ -66,7 +63,7 @@ public class WorldGenerator {
 
                 // Non-coastal Biome seeds
                 final float biomeDecision = r.nextFloat();
-                if (biomeDecision < 0.15) {
+                if (biomeDecision < 0.05) {
                     biomeSeeds[a][b] = this.randomValue(r, otherBiomes);
                 } else if (biomeDecision < 0.4) {
                     final Biome prev = (a == 0) ? mainBiome : biomeSeeds[a - 1][b];
@@ -79,14 +76,11 @@ public class WorldGenerator {
         progress.accept(10);
 
         // Fill out Tiles in the World
-        Rect biomeSeedGrid = new Rect(0, 0, biomeSeedsW, biomeSeedsH);
-        List<List<Point>> startingPoints = new ArrayList<List<Point>>();
-        for (int a = 0; a < 4; a++) {
-            startingPoints.add(new ArrayList<Point>());
-        }
+        final Set<Point> buildingPoints = new HashSet<>();
         for (int a = 0; a < worldGenOpts.size.w; a++) {
             for (int b = 0; b < worldGenOpts.size.h; b++) {
-                Point focalSeed = new Point(a / WorldGenerator.BIOME_UNIT_SIZE, b / WorldGenerator.BIOME_UNIT_SIZE);
+                final Point focalSeed = new Point(a / WorldGenerator.BIOME_UNIT_SIZE,
+                        b / WorldGenerator.BIOME_UNIT_SIZE);
                 float closestSeedDistance = 1000f;
                 Biome closestSeed = mainBiome;
 
@@ -110,124 +104,108 @@ public class WorldGenerator {
                 // add it to the starting point candidates if it's not water
                 g.generator.tile(closestSeed.terrain, a, b).spawn(view);
                 if (closestSeed.terrain != Biome.WATER.terrain) {
-                    startingPoints.get(this.getStartingPointRegion(worldGenOpts, a, b)).add(new Point(a, b));
+                    buildingPoints.add(new Point(a, b));
                 }
             }
         }
         progress.accept(60);
 
-        // Randomly place feature patches around the World
-        String[] oneOffFeatures = {"Vault", "Mine"};
-        for (int a = 0; a < 50; a++) {
-            Point p = new Point(r.nextInt(worldGenOpts.size.w), r.nextInt(worldGenOpts.size.h));
-            String terrain = g.world.getTile(p.x, p.y).get().name;
-            Optional<String> building = Optional.empty();
-            int radiusRange = 0;
+        // Place content (Players, Buildings, Patrons, and Glyphs) around the World
+        int playersSpawned = 0;
+        final int maxBuildings = buildingPoints.size();
+        final Set<String> patrons = g.events.patron.getStratifiers();
+        while (buildingPoints.size() > 0) {
+            // Choose a Point to spawn the content
+            final Point p = this.randomValue(r, buildingPoints);
+            buildingPoints.remove(p);
 
-            // Determine the appropriate feature
-            if (r.nextFloat() < 0.8) {
-                if (terrain.equals(Biome.GRASS.terrain)) {
-                    building = Optional.of(r.nextBoolean() ? "Forest" : "Meadow");
-                    radiusRange = 5;
+            // Place Players with priority
+            if (playersSpawned < worldGenOpts.numPlayers) {
+                final Player player = playersSpawned == 0 ? g.human : g.addComputerPlayer(view, playersSpawned);
+                final Building b = g.generator.building("Vault", p.x, p.y);
+                for (int a = 0; a < 5; a++) {
+                    b.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
                 }
-                if (terrain.equals(Biome.SAND.terrain)) {
-                    if (r.nextBoolean()) {
-                        building = Optional.of("Shrubland");
-                        radiusRange = 3;
-                    } else {
-                        building = Optional.of("Oasis");
-                        radiusRange = 1;
-                    }
-                }
-                if (terrain.equals(Biome.SNOW.terrain)) {
-                    building = Optional.of("Taiga");
-                    radiusRange = 3;
-                }
-                if (terrain.equals(Biome.ROCK.terrain)) {
-                    building = Optional.of("Mountain");
-                    radiusRange = 1;
-                }
+                b.spawn(view);
+                g.getInitialUnit(view, player, p.x, p.y).spawn(view);
+                playersSpawned++;
             } else {
-                building = terrain.equals(Biome.WATER.terrain)
-                        ? Optional.empty()
-                        : Optional.of(this.randomValue(r, oneOffFeatures));
-            }
+                // Spawn non-Player content
+                final int percent = r.nextInt(1000);
+                if (percent <= 50 && patrons.size() > 0) {
+                    // Spawn a Patron (5% chance)
+                    final String patron = this.randomValue(r, patrons);
+                    g.generator.patron(patron, p.x, p.y).spawn(view);
+                    patrons.remove(patron);
+                } else if (percent <= 450) {
+                    // Spawn a Glyph (40% chance)
+                    g.world.getTile(p).get().setGlyph(Optional.of(this.randomValue(r, GlyphCategory.values())));
+                } else if (percent <= 453) {
+                    // Spawn a Vault (0.3% chance)
+                    g.generator.building("Vault", p.x, p.y).spawn(view);
+                } else if (percent <= 456) {
+                    // Spawn a Mine (0.3% chance)
+                    g.generator.building("Mine", p.x, p.y).spawn(view);
+                } else if (percent <= 458) {
+                    // Spawn a Healing Fountain (0.2% chance)
+                    g.generator.building("Healing Fountain", p.x, p.y).spawn(view);
+                } else if (percent <= 508) {
+                    // Spawn a Building (5% chance)
+                    final String terrain = g.world.getTile(p.x, p.y).get().name;
+                    Optional<String> building = Optional.empty();
+                    int radiusRange = 1;
 
-            // Place the feature in a given radius
-            if (building.isPresent()) {
+                    // Forests/Meadows on Grass Tiles
+                    if (terrain.equals(Biome.GRASS.terrain)) {
+                        building = Optional.of(r.nextBoolean() ? "Forest" : "Meadow");
+                        radiusRange = 3;
+                    }
 
-                // If we're setting Buildings in a ring (and the center of our Oasis doesn't
-                // already have a building)
-                if (radiusRange > 0
-                        && !(building.get().equals("Oasis") && g.world.getTile(p).get().building.isPresent())) {
-                    Set<Point> area = Hexagons.getNeighbors(p, r.nextInt(radiusRange) + 1);
-                    for (Point p1 : area) {
-                        Optional<Tile> t = g.world.getTile(p1);
-                        // If the Tile is of the intended terrain and there is no building
-                        if (t.isPresent() && t.get().name.equals(terrain) && !t.get().building.isPresent()) {
-                            startingPoints.get(this.getStartingPointRegion(worldGenOpts, p1.x, p1.y)).remove(p1);
-                            g.generator.building(building.get(), p1.x, p1.y).spawn(view);
+                    // Oasis/Shrubland on Sand Tiles
+                    if (terrain.equals(Biome.SAND.terrain)) {
+                        if (r.nextBoolean()) {
+                            building = Optional.of("Shrubland");
+                            radiusRange = 2;
+                        } else {
+                            building = Optional.of("Oasis");
+                        }
+                    }
+
+                    // Taiga on Snow Tiles
+                    if (terrain.equals(Biome.SNOW.terrain)) {
+                        building = Optional.of("Taiga");
+                    }
+
+                    // Mountains on Rock Tiles
+                    if (terrain.equals(Biome.ROCK.terrain)) {
+                        building = Optional.of("Mountain");
+                    }
+
+                    // Actually spawn the Buildings if one was selected
+                    if (building.isPresent()) {
+                        final Set<Point> area = Hexagons.getNeighbors(p, r.nextInt(radiusRange) + 1);
+                        for (Point p1 : area) {
+                            // If the Tile exists, has the intended terrain, and there is no building yet
+                            if (buildingPoints.contains(p1) && g.world.getTile(p1).get().name.equals(terrain)) {
+                                g.generator.building(building.get(), p1.x, p1.y).spawn(view);
+                                buildingPoints.remove(p1);
+                            }
+                        }
+
+                        // Spawn the central Building (or water if the Building is an Oasis)
+                        if (building.get().equals("Oasis")) {
+                            g.generator.tile("Water", p.x, p.y).spawn(view);
+                        } else {
+                            g.generator.building(building.get(), p.x, p.y).spawn(view);
                         }
                     }
                 }
-                if (!g.world.getTile(p).get().building.isPresent()) {
-                    // Make the center Tile Water if we're generating an Oasis
-                    if (building.get().equals("Oasis")) {
-                        g.generator.tile("Water", p.x, p.y).spawn(view);
-                    } else {
-                        startingPoints.get(this.getStartingPointRegion(worldGenOpts, p.x, p.y)).remove(p);
-                        g.generator.building(building.get(), p.x, p.y).spawn(view);
-                    }
-                }
-            }
-        }
-        progress.accept(90);
-
-        // Set Players in the World
-        int startingPointIndex = 0;
-        for (int a = 0; a < WorldGenerator.NUM_PLAYERS; a++) {
-            // Skip over quadrants that have no starting point candidates
-            while (startingPointIndex < startingPoints.size() && startingPoints.get(startingPointIndex).size() == 0) {
-                startingPointIndex++;
-            }
-            if (startingPointIndex == startingPoints.size()) {
-                // throw new Exception("No space for all the players to spawn");
-                System.err.println("No space for all the players to spawn");
-                System.exit(1);
             }
 
-            // Pick a starting point from the available candidates and spawn a Vault
-            final Point p = this.randomValue(r, startingPoints.get(startingPointIndex));
-            final Player player = a == 0 ? g.human : g.addComputerPlayer(view, a);
-            // TODO figure out how we can avoid using hard-coded labels here (what if the
-            // mods define other values?)
-            final Building b = g.generator.building("Vault", p.x, p.y);
-            for (int c = 0; c < 5; c++) {
-                b.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
-            }
-            b.spawn(view);
-            g.getInitialUnit(view, player, p.x, p.y).spawn(view);
-            startingPoints.get(startingPointIndex++).remove(p);
-        }
-        progress.accept(95);
-
-        // Set Glyphs in the World
-        for (List<Point> quadrant : startingPoints) {
-            for (Point p : quadrant) {
-                if (r.nextBoolean()) {
-                    g.world.getTile(p).get().setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
-                }
-            }
+            // Update progress as we generate content
+            progress.accept(60 + (int) Math.floor(40 * (maxBuildings - buildingPoints.size()) / (float) maxBuildings));
         }
         progress.accept(100);
-    }
-
-    /**
-     * Returns an integer corresponding to which area of the map a Player can spawn
-     * in
-     */
-    private int getStartingPointRegion(WorldGenOptions w, int x, int y) {
-        return (x > w.size.w / 2 ? 1 : 0) + (y > w.size.h / 2 ? 1 : 0);
     }
 
     /**
@@ -252,6 +230,18 @@ public class WorldGenerator {
     }
 
     /**
+     * Return a random element from the given Set
+     */
+    private <T> T randomValue(Random r, Set<T> s) {
+        final int index = r.nextInt(s.size());
+        final Iterator<T> iterator = s.iterator();
+        for (int a = 0; a < index; a++) {
+            iterator.next();
+        }
+        return iterator.next();
+    }
+
+    /**
      * Returns all Biomes that aren't the given Biome
      */
     private Biome[] getDifferentBiomes(Biome b) {
@@ -263,17 +253,5 @@ public class WorldGenerator {
             }
         }
         return others;
-    }
-
-    /**
-     * Enum for different terrain types
-     */
-    private static enum Biome {
-        GRASS("Grass"), WATER("Water"), SAND("Sand"), ROCK("Rock"), SNOW("Snow");
-        private final String terrain;
-
-        private Biome(String terrain) {
-            this.terrain = terrain;
-        }
     }
 }

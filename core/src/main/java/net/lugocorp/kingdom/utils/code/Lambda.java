@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.utils.code;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -120,6 +121,18 @@ public class Lambda {
      */
     public static <T> T random(List<T> ls) {
         return ls.get((int) Math.floor(Math.random() * ls.size()));
+    }
+
+    /**
+     * Returns a random element from the given Set
+     */
+    public static <T> T random(Set<T> s) {
+        final int index = (int) Math.floor(Math.random() * s.size());
+        final Iterator<T> iterator = s.iterator();
+        for (int a = 0; a < index; a++) {
+            iterator.next();
+        }
+        return iterator.next();
     }
 
     /**
