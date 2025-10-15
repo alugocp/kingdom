@@ -208,6 +208,7 @@ public class Menu {
         av.shapes.end();
 
         // Draw Menu content
+        // TODO RESIZE we should translate the scissor box to match the viewport
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glScissor(bg.x, bg.y, bg.w, bg.h);
         this.root.draw(av, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
@@ -249,10 +250,8 @@ public class Menu {
         this.closeMiniMenu();
         final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), this.root.getHeight());
-        Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
-                p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
-        if (bounds.contains(p1)) {
-            this.root.click(bounds, p1);
+        if (bounds.contains(p)) {
+            this.root.click(bounds, p);
             return true;
         }
         this.root.unclick();
@@ -265,11 +264,9 @@ public class Menu {
     public boolean mouseMoved(Point p) {
         final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), this.root.getHeight());
-        final Point p1 = new Point(p.x * Coords.SIZE.x / Gdx.graphics.getWidth(),
-                p.y * Coords.SIZE.y / Gdx.graphics.getHeight());
         this.prev = curr;
-        this.curr = Optional.of(p1);
-        this.scrollBarHighlighted = this.getScrollBarBounds().map((Rect r) -> r.contains(p1)).orElse(false);
+        this.curr = Optional.of(p);
+        this.scrollBarHighlighted = this.getScrollBarBounds().map((Rect r) -> r.contains(p)).orElse(false);
         if (this.prev.isPresent()) {
             this.root.mouseMoved(bounds, this.prev.get(), this.curr.get());
             if (bounds.contains(this.prev.get()) || bounds.contains(this.curr.get())) {

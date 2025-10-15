@@ -27,6 +27,8 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +43,7 @@ public class GameView implements View {
     private GameViewController controller;
     private PerspectiveCamera camera;
     private Environment environment;
+    private FitViewport viewport;
     public final AnimationQueue animations = new AnimationQueue();
     public final OverlayLayer overlays;
     public final TileSelector selector;
@@ -157,6 +160,12 @@ public class GameView implements View {
 
     /** {@inheritdoc} */
     @Override
+    public Viewport getViewport() {
+        return this.viewport;
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public Color getBackgroundColor() {
         return this.game.mechanics.dayNight.getSkyboxColor();
     }
@@ -175,6 +184,7 @@ public class GameView implements View {
         // Camera and input
         final MenuController menuController = new MenuController(this.params.av.settings, () -> this.menu.get());
         this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
+        this.viewport = new FitViewport(Coords.SIZE.x, Coords.SIZE.y, this.camera);
         this.controller = new GameViewController(this, this.params.av.settings, menuController, this.camera);
         Gdx.input.setInputProcessor(this.controller);
         this.camera.position.set(0f, 5f, 5f);
@@ -195,12 +205,12 @@ public class GameView implements View {
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
         this.controller.keys.performActions();
-        // this.camera.update();
 
         // Update Animations
         this.animations.update(this, dt);
 
         // Render normals to a FrameBuffer
+        // TODO RESIZE we need to translate this by the viewport screen x / screen y
         this.av.frameBuffer.begin();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -209,6 +219,9 @@ public class GameView implements View {
         this.av.outlines.end();
         this.setFrameBufferMappedPoint();
         this.av.frameBuffer.end();
+
+        // Reapply the or it won't work
+        this.viewport.apply();
 
         // Draw all 3D models with the ToonShader
         this.av.models.begin(this.camera);
@@ -228,8 +241,6 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void resize(int w, int h) {
-        this.camera.viewportWidth = w;
-        this.camera.viewportHeight = h;
         this.camera.update();
     }
 

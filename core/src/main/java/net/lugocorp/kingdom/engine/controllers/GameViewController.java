@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine.controllers;
+import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.logic.CameraLogic;
@@ -129,7 +130,7 @@ public class GameViewController implements InputProcessor {
         }
 
         // Game World logic
-        this.touch.start(new Point(x, y));
+        this.touch.start(Main.unproject(x, y));
         return true;
     }
 
@@ -176,7 +177,7 @@ public class GameViewController implements InputProcessor {
             return true;
         }
         if (this.touch.isActive()) {
-            final Point p = new Point(x, y);
+            final Point p = Main.unproject(x, y);
             final Point prev = this.touch.update(p);
             if (this.touch.isDragging()) {
                 this.moveCamera((float) (prev.x - p.x) / 100, (float) (prev.y - p.y) / 100);
@@ -226,12 +227,15 @@ public class GameViewController implements InputProcessor {
         }
 
         // Unit/Building/Tile mouse over logic
-        final Point p = this.view.getFrameBufferMappedPoint();
-        if (!(p.x == -1 && p.y == -1)) {
-            this.view.selector.hover(new Point(p.x, p.y));
+        final Point b = this.view.getFrameBufferMappedPoint();
+        if (!(b.x == -1 && b.y == -1)) {
+            this.view.selector.hover(new Point(b.x, b.y));
             return true;
         }
-        final Point closestPoint = CameraLogic.getCoordUnderScreenPoint(this.camera, x, y);
+        final Point p = Main.unproject(x, y);
+        // TODO RESIZE we don't get Camera point conversions for free :( so this is
+        // broken
+        final Point closestPoint = CameraLogic.getCoordUnderScreenPoint(this.camera, p.x, p.y);
         this.view.selector.hover(closestPoint);
         return true;
     }

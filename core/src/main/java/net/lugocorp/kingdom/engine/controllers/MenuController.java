@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine.controllers;
+import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -34,7 +35,8 @@ public class MenuController implements InputProcessor {
      */
     public void reset() {
         this.mouseMoved(-1, -1);
-        this.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+        final Point p = Main.unproject(Gdx.input.getX(), Gdx.input.getY());
+        this.mouseMoved(p.x, p.y);
     }
 
     /**
@@ -65,7 +67,8 @@ public class MenuController implements InputProcessor {
      */
     private void scroll(int dy) {
         this.getMenu.get().ifPresent((Menu m) -> m.scroll(dy));
-        this.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+        final Point p = Main.unproject(Gdx.input.getX(), Gdx.input.getY());
+        this.mouseMoved(p.x, p.y);
     }
 
     /** {@inheritdoc} */
@@ -74,7 +77,7 @@ public class MenuController implements InputProcessor {
         if (!this.isRelevant()) {
             return false;
         }
-        final Point p = new Point(x, y);
+        final Point p = Main.unproject(x, y);
         if (this.isInMenu(p)) {
             this.touch.start(p);
             return true;
@@ -88,10 +91,10 @@ public class MenuController implements InputProcessor {
         if (!this.isRelevant() || !this.touch.isActive()) {
             return false;
         }
-        final Point p = new Point(x, y);
+        final Point p = Main.unproject(x, y);
         final Point prev = this.touch.update(p);
         if (this.touch.isDragging()) {
-            this.scroll((int) ((y - prev.y)
+            this.scroll((int) ((p.y - prev.y)
                     * (this.startedInScrollGutter() ? this.getMenu.get().get().getScrollBarRatio() : -1f)));
         }
         return true;
@@ -104,7 +107,7 @@ public class MenuController implements InputProcessor {
             return false;
         }
         if (!this.touch.isDragging()) {
-            this.getMenu.get().get().click(new Point(x, y));
+            this.getMenu.get().get().click(Main.unproject(x, y));
         }
         this.touch.reset();
         return true;
@@ -129,7 +132,7 @@ public class MenuController implements InputProcessor {
     public boolean mouseMoved​(int x, int y) {
         final Optional<Menu> menu = this.getMenu.get();
         if (menu.isPresent()) {
-            return menu.get().mouseMoved(new Point(x, y));
+            return menu.get().mouseMoved(Main.unproject(x, y));
         }
         return false;
     }
