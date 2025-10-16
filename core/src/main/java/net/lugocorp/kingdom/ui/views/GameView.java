@@ -21,12 +21,12 @@ import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -131,7 +131,7 @@ public class GameView implements View {
      * Returns the Point in the World that the Camera is currently centered on
      */
     public Point getCenteredPoint() {
-        return CameraLogic.getCoordUnderScreenPoint(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        return CameraLogic.getCoordUnderScreenPoint(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
     }
 
     /**
@@ -163,12 +163,6 @@ public class GameView implements View {
     @Override
     public Viewport getViewport() {
         return this.viewport;
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return this.game.mechanics.dayNight.getSkyboxColor();
     }
 
     /** {@inheritdoc} */
@@ -223,8 +217,14 @@ public class GameView implements View {
         this.setFrameBufferMappedPoint();
         this.av.frameBuffer.end();
 
-        // Reapply the or it won't work
+        // Reapply the Viewport or it won't work
         this.viewport.apply();
+
+        // Draw the skybox background color
+        this.av.shapes.begin(ShapeType.Filled);
+        this.av.shapes.setColor(this.game.mechanics.dayNight.getSkyboxColor());
+        this.av.shapes.rect(0, 0, Coords.SIZE.x, Coords.SIZE.y);
+        this.av.shapes.end();
 
         // Draw all 3D models with the ToonShader
         this.av.models.begin(this.camera);

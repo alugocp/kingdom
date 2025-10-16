@@ -4,7 +4,8 @@ import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
- *
+ * This class handles the logic for switching between Viewports and translating
+ * coordinates
  */
 public class ViewportLogic {
     private static Viewport viewport = null;

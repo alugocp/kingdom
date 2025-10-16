@@ -4,7 +4,6 @@ import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.utils.code.Semver;
 import net.lugocorp.kingdom.utils.logic.ViewportLogic;
-import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -34,7 +33,7 @@ public class Main implements ApplicationListener {
 
         // Set up the new viewport
         final Viewport vp = v.getViewport();
-        vp.update(Coords.SIZE.x, Coords.SIZE.y);
+        vp.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         vp.apply();
         ViewportLogic.setViewport(vp);
     }

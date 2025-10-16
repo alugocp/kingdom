@@ -47,8 +47,7 @@ public class NewUnit {
 
         // Find out which empty Tiles owned by the Player are on screen
         final Set<Point> candidates = new HashSet<>();
-        final Point center = CameraLogic.getCoordUnderScreenPoint(view.getCamera(), Coords.SIZE.x / 2,
-                Coords.SIZE.y / 2);
+        final Point center = CameraLogic.getCoordUnderScreenPoint(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
         for (Point p : Hexagons.getNeighbors(center, 6)) {
             if (view.game.world.getTile(p).map(
                     (Tile t) -> !t.building.isPresent() && t.leader.map((Player p1) -> p1.equals(player)).orElse(false))
@@ -207,7 +206,7 @@ public class NewUnit {
      * Scrolls the Game camera to the nearest possible recruitment Tile
      */
     private void scrollToNearestCandidate(GameView view, Set<Point> tiles) {
-        final Point p = CameraLogic.getCoordUnderScreenPoint(view.getCamera(), Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        final Point p = CameraLogic.getCoordUnderScreenPoint(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
         Optional<Tuple<Point, Float>> best = Optional.empty();
         for (Point p1 : tiles) {
             final float distance = Coords.grid.distance(p, p1);

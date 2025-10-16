@@ -12,7 +12,6 @@ import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -34,12 +33,6 @@ class LoadGameView implements View {
                         .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
                         .add(new HeaderNode(params.av, "Load Games")).add(new SpacerNode())
                         .add(this.content.add(new TextNode(params.av, "Loading..."))));
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return new Color(0f, 0f, 0f, 1f);
     }
 
     /** {@inheritdoc} */

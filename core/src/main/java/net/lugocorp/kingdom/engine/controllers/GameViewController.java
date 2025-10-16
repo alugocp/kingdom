@@ -45,7 +45,7 @@ public class GameViewController implements InputProcessor {
      */
     public void centerCameraOn(Point p) {
         Vector3 vec = Coords.grid.vector(p.x, p.y);
-        Vector3 endpoint = CameraLogic.getScreenPointOnSurface(this.camera, Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        Vector3 endpoint = CameraLogic.getScreenPointOnSurface(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
         this.moveCamera(vec.x - endpoint.x, vec.z - endpoint.z);
     }
 
@@ -54,9 +54,9 @@ public class GameViewController implements InputProcessor {
      */
     private void moveCamera(float dx, float dz) {
         // Check bottom-left Camera bounds
-        Vector3 p1 = CameraLogic.getScreenPointOnSurface(this.camera, 0, Coords.SIZE.y)
+        final Vector3 p1 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(0, Coords.SIZE.y))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight());
+        final Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight());
         if (p1.x < botLeft.x) {
             dx += botLeft.x - p1.x;
         }
@@ -65,17 +65,17 @@ public class GameViewController implements InputProcessor {
         }
 
         // Check bottom-right Camera bounds
-        Vector3 p2 = CameraLogic.getScreenPointOnSurface(this.camera, Coords.SIZE.x, Coords.SIZE.y)
+        final Vector3 p2 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(Coords.SIZE.x, Coords.SIZE.y))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(), this.view.game.world.getHeight());
+        final Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(), this.view.game.world.getHeight());
         if (p2.x > botRight.x) {
             dx += botRight.x - p2.x;
         }
 
         // Check top-left Camera bounds
-        Vector3 p3 = CameraLogic.getScreenPointOnSurface(this.camera, 0, this.view.hud.getHeight())
+        final Vector3 p3 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(0, this.view.hud.getHeight()))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        Vector3 topLeft = Coords.grid.vector(0, -8);
+        final Vector3 topLeft = Coords.grid.vector(0, -8);
         if (p3.z < topLeft.z) {
             dz += topLeft.z - p3.z;
         }
@@ -232,7 +232,7 @@ public class GameViewController implements InputProcessor {
             this.view.selector.hover(new Point(b.x, b.y));
             return true;
         }
-        final Point closestPoint = CameraLogic.getCoordUnderScreenPoint(this.camera, x, y);
+        final Point closestPoint = CameraLogic.getCoordUnderScreenPoint(x, y);
         this.view.selector.hover(closestPoint);
         return true;
     }

@@ -54,6 +54,6 @@ public abstract class Overlay {
      * Returns the current position of the Overlay
      */
     protected float[] getPosition(GameView view) {
-        return CameraLogic.getScreenPointFromTileOffset(view.getCamera(), this.origin, this.offset);
+        return CameraLogic.getScreenPointFromTileOffset(this.origin, this.offset);
     }
 }

@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.utils.math.Coords;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.function.Consumer;
 
@@ -35,12 +34,6 @@ public abstract class ThreadedTaskView implements View {
      * View to display after the task is performed
      */
     protected abstract View getNextView();
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return new Color(0f, 0f, 0f, 1f);
-    }
 
     /** {@inheritdoc} */
     @Override

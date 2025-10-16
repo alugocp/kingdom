@@ -11,7 +11,6 @@ import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.VolumeNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -42,12 +41,6 @@ public class SettingsView implements View {
                 .add(new SpacerNode()).add(new HeaderNode(av, "Scroll Direction"))
                 .add(new OptionsNode(av, (Integer index) -> av.settings.setReversedScrollDirection(index == 1))
                         .add("Regular").add("Reversed"));
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return new Color(0f, 0f, 0f, 1f);
     }
 
     /** {@inheritdoc} */

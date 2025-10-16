@@ -11,7 +11,6 @@ import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -41,12 +40,6 @@ class ActiveModsView implements View {
         }
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, node);
         this.params = params;
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return new Color(0f, 0f, 0f, 1f);
     }
 
     /** {@inheritdoc} */

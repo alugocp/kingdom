@@ -25,7 +25,6 @@ import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.utils.code.Tuple;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.time.OffsetTime;
 import java.util.ArrayList;
@@ -92,12 +91,6 @@ class GameCreationView implements View {
      */
     private void setWorldSize(int worldSize) {
         this.worldGenOpts.size = WorldSize.fromIndex(worldSize);
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return new Color(0f, 0f, 0f, 1f);
     }
 
     /** {@inheritdoc} */

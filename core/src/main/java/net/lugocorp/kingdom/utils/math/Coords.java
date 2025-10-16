@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3;
  * Conversion logic between coordinate systems
  */
 public class Coords {
-    public static final Point SIZE = new Point(1280, 960);
+    public static final Point SIZE = new Point(1600, 960);
     public static ScreenCoords screen = new ScreenCoords();
     public static GridCoords grid = new GridCoords();
     public static RawCoords raw = new RawCoords();

@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.utils.logic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
@@ -15,7 +14,8 @@ public class CameraLogic {
      * Returns the screen coordinates for the given Point in the World with some
      * offset vector
      */
-    public static float[] getScreenPointFromTileOffset(Camera camera, Point p, Vector3 offset) {
+    public static float[] getScreenPointFromTileOffset(Point p, Vector3 offset) {
+        // TODO RESIZE this is offset still
         final Vector3 v = ViewportLogic.getViewport().project(Coords.grid.vector(p.x, p.y).add(offset));
         return new float[]{v.x, v.y};
     }
@@ -24,20 +24,27 @@ public class CameraLogic {
      * Calculates the point on the surface of the World that corresponds to a point
      * on the viewing area (the plane where the mouse lives)
      */
-    public static Vector3 getScreenPointOnSurface(Camera camera, int x, int y) {
+    public static Vector3 getScreenPointOnSurface(int x, int y) {
         final Ray ray = ViewportLogic.getViewport().getPickRay(x, y);
         final float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
         return ray.getEndPoint(new Vector3(), distance);
     }
 
     /**
+     * Calls into getScreenPointOnSurface() from a Point
+     */
+    public static Vector3 getScreenPointOnSurface(Point p) {
+        return CameraLogic.getScreenPointOnSurface(p.x, p.y);
+    }
+
+    /**
      * Returns the Tile coordinate in the World that lives under the given Point on
      * the screen
      */
-    public static Point getCoordUnderScreenPoint(Camera camera, int x, int y) {
+    public static Point getCoordUnderScreenPoint(int x, int y) {
         // Cast out a ray from the mouseover point and find its point along the Y = 0
         // plane. Then find which hexagon that point falls in on the world grid.
-        final Vector3 endpoint = CameraLogic.getScreenPointOnSurface(camera, x, y);
+        final Vector3 endpoint = CameraLogic.getScreenPointOnSurface(x, y);
         final int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
         float lowestDist2 = Integer.MAX_VALUE;
         Point closestPoint = null;

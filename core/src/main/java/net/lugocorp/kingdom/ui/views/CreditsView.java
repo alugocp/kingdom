@@ -9,7 +9,6 @@ import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -32,12 +31,6 @@ class CreditsView implements View {
                         .add(new HeaderNode(params.av, "3D Modelling")).add(new TextNode(params.av, "Alex Lugo"))
                         .add(new SpacerNode()).add(new HeaderNode(params.av, "Character Design"))
                         .add(new TextNode(params.av, "Alex Lugo")));
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return new Color(0f, 0f, 0f, 1f);
     }
 
     /** {@inheritdoc} */

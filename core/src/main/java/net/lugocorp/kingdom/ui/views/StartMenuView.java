@@ -12,7 +12,6 @@ import net.lugocorp.kingdom.ui.nodes.SpacerNode;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,12 +37,6 @@ class StartMenuView implements View {
                 .add(new ButtonNode(params.av, "Credits", () -> this.navigate.accept(new CreditsView(params))))
                 .add(new SpacerNode(false).half())
                 .add(new ButtonNode(params.av, "Mods", () -> this.navigate.accept(new ActiveModsView(params)))));
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    public Color getBackgroundColor() {
-        return new Color(0f, 0f, 0f, 1f);
     }
 
     /** {@inheritdoc} */
