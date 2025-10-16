@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui;
-import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.utils.logic.ViewportLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -209,8 +209,8 @@ public class Menu {
         av.shapes.end();
 
         // Draw Menu content
-        final Point s1 = Main.project(bg.x, bg.y);
-        final Point s2 = Main.project(bg.x + bg.w, bg.y + bg.h);
+        final Point s1 = ViewportLogic.project(bg.x, bg.y);
+        final Point s2 = ViewportLogic.project(bg.x + bg.w, bg.y + bg.h);
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glScissor(s1.x, s1.y, s2.x - s1.x, s2.y - s1.y);
         this.root.draw(av, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,

@@ -16,7 +16,7 @@ public class CameraLogic {
      * offset vector
      */
     public static float[] getScreenPointFromTileOffset(Camera camera, Point p, Vector3 offset) {
-        final Vector3 v = camera.project(Coords.grid.vector(p.x, p.y).add(offset));
+        final Vector3 v = ViewportLogic.getViewport().project(Coords.grid.vector(p.x, p.y).add(offset));
         return new float[]{v.x, v.y};
     }
 
@@ -25,8 +25,8 @@ public class CameraLogic {
      * on the viewing area (the plane where the mouse lives)
      */
     public static Vector3 getScreenPointOnSurface(Camera camera, int x, int y) {
-        Ray ray = camera.getPickRay(x, y);
-        float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
+        final Ray ray = ViewportLogic.getViewport().getPickRay(x, y);
+        final float distance = (Hexagons.HEIGHT - ray.origin.y) / ray.direction.y;
         return ray.getEndPoint(new Vector3(), distance);
     }
 
@@ -37,14 +37,14 @@ public class CameraLogic {
     public static Point getCoordUnderScreenPoint(Camera camera, int x, int y) {
         // Cast out a ray from the mouseover point and find its point along the Y = 0
         // plane. Then find which hexagon that point falls in on the world grid.
-        Vector3 endpoint = CameraLogic.getScreenPointOnSurface(camera, x, y);
-        int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
+        final Vector3 endpoint = CameraLogic.getScreenPointOnSurface(camera, x, y);
+        final int minZ = (int) Math.floor(endpoint.z / (Hexagons.DEPTH - Hexagons.DEPTH_DIFF));
         float lowestDist2 = Integer.MAX_VALUE;
         Point closestPoint = null;
         for (int a = 0; a < 2; a++) {
-            int minX = (int) Math.floor((endpoint.x / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
+            final int minX = (int) Math.floor((endpoint.x / Hexagons.WIDTH) - (minZ % 2 == 0 ? 0 : 0.5));
             for (int b = 0; b < 2; b++) {
-                float dist = Coords.grid.vector(minX + b, minZ + a).dst2(endpoint);
+                final float dist = Coords.grid.vector(minX + b, minZ + a).dst2(endpoint);
                 if (dist < lowestDist2) {
                     lowestDist2 = dist;
                     closestPoint = new Point(minX + b, minZ + a);

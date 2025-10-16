@@ -3,8 +3,8 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.utils.code.Semver;
+import net.lugocorp.kingdom.utils.logic.ViewportLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,30 +16,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class Main implements ApplicationListener {
     public static final Semver VERSION = new Semver(1, 0, 0);
-    private static Viewport viewport = null;
+    public static Viewport viewport = null;
     private long prevTime = System.currentTimeMillis();
     private View view = null;
     private AudioVideo av;
-
-    /**
-     * Returns the given screen coordinate in "world units" (a LibGDX term)
-     */
-    public static Point unproject(int x, int y) {
-        final Viewport v = Main.viewport;
-        final float scaleX = Coords.SIZE.x / (float) v.getScreenWidth();
-        final float scaleY = Coords.SIZE.y / (float) v.getScreenHeight();
-        return new Point((int) ((x - v.getScreenX()) * scaleX), (int) ((y - v.getScreenY()) * scaleY));
-    }
-
-    /**
-     * Returns the given "world units" (a LibGDX term) in screen coordinates
-     */
-    public static Point project(int x, int y) {
-        final Viewport v = Main.viewport;
-        final float scaleX = v.getScreenWidth() / (float) Coords.SIZE.x;
-        final float scaleY = v.getScreenHeight() / (float) Coords.SIZE.y;
-        return new Point((int) (x * scaleX) + v.getScreenX(), (int) (y * scaleY) + v.getScreenY());
-    }
 
     /**
      * Causes the application to swap out its current View
@@ -56,7 +36,7 @@ public class Main implements ApplicationListener {
         final Viewport vp = v.getViewport();
         vp.update(Coords.SIZE.x, Coords.SIZE.y);
         vp.apply();
-        Main.viewport = vp;
+        ViewportLogic.setViewport(vp);
     }
 
     /** {@inheritdoc} */
@@ -94,7 +74,7 @@ public class Main implements ApplicationListener {
     /** {@inheritdoc} */
     @Override
     public void resize(int w, int h) {
-        Main.viewport.update(w, h);
+        ViewportLogic.getViewport().update(w, h);
         this.view.resize(w, h);
     }
 

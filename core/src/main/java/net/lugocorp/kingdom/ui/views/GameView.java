@@ -16,6 +16,7 @@ import net.lugocorp.kingdom.ui.logger.Logger;
 import net.lugocorp.kingdom.ui.overlay.OverlayLayer;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
 import net.lugocorp.kingdom.utils.logic.CameraLogic;
+import net.lugocorp.kingdom.utils.logic.ViewportLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
@@ -181,7 +182,7 @@ public class GameView implements View {
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         this.environment.add(new DirectionalLight().set(0f, 0f, 0f, 0f, -0.4f, -0.6f));
 
-        // Camera and input
+        // Camera, viewport and input
         final MenuController menuController = new MenuController(this.params.av.settings, () -> this.menu.get());
         this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
         this.viewport = new FitViewport(Coords.SIZE.x, Coords.SIZE.y, this.camera);
@@ -192,6 +193,8 @@ public class GameView implements View {
         this.camera.near = 1f;
         this.camera.far = 300f;
         this.camera.update();
+        this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        ViewportLogic.setViewport(this.viewport);
 
         // Kick off the Player's turn
         this.game.mechanics.turns.kickOffTurn(this);
