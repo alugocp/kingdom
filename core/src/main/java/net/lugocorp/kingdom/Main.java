@@ -26,9 +26,19 @@ public class Main implements ApplicationListener {
      */
     public static Point unproject(int x, int y) {
         final Viewport v = Main.viewport;
-        final float scaleX = Coords.SIZE.x / (float) (v.getScreenWidth());
-        final float scaleY = Coords.SIZE.y / (float) (v.getScreenHeight());
-        return new Point((int) ((x - v.getLeftGutterWidth()) * scaleX), (int) ((y - v.getTopGutterHeight()) * scaleY));
+        final float scaleX = Coords.SIZE.x / (float) v.getScreenWidth();
+        final float scaleY = Coords.SIZE.y / (float) v.getScreenHeight();
+        return new Point((int) ((x - v.getScreenX()) * scaleX), (int) ((y - v.getScreenY()) * scaleY));
+    }
+
+    /**
+     * Returns the given "world units" (a LibGDX term) in screen coordinates
+     */
+    public static Point project(int x, int y) {
+        final Viewport v = Main.viewport;
+        final float scaleX = v.getScreenWidth() / (float) Coords.SIZE.x;
+        final float scaleY = v.getScreenHeight() / (float) Coords.SIZE.y;
+        return new Point((int) (x * scaleX) + v.getScreenX(), (int) (y * scaleY) + v.getScreenY());
     }
 
     /**

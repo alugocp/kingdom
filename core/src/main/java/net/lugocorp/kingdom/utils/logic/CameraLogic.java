@@ -21,13 +21,6 @@ public class CameraLogic {
     }
 
     /**
-     * Returns the screen coordinates for the given Point in the World
-     */
-    public static float[] getScreenPointFromTile(Camera camera, Point p) {
-        return CameraLogic.getScreenPointFromTileOffset(camera, p, new Vector3());
-    }
-
-    /**
      * Calculates the point on the surface of the World that corresponds to a point
      * on the viewing area (the plane where the mouse lives)
      */

@@ -210,8 +210,8 @@ public class GameView implements View {
         this.animations.update(this, dt);
 
         // Render normals to a FrameBuffer
-        // TODO RESIZE we need to translate this by the viewport screen x / screen y
         this.av.frameBuffer.begin();
+        this.viewport.apply();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         this.av.outlines.begin(this.camera);

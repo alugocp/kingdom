@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui;
+import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
@@ -208,9 +209,10 @@ public class Menu {
         av.shapes.end();
 
         // Draw Menu content
-        // TODO RESIZE we should translate the scissor box to match the viewport
+        final Point s1 = Main.project(bg.x, bg.y);
+        final Point s2 = Main.project(bg.x + bg.w, bg.y + bg.h);
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-        Gdx.gl.glScissor(bg.x, bg.y, bg.w, bg.h);
+        Gdx.gl.glScissor(s1.x, s1.y, s2.x - s1.x, s2.y - s1.y);
         this.root.draw(av, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
                 this.width - (Menu.MARGIN * 3), h - (Menu.MARGIN * 2)));
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
