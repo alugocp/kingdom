@@ -127,7 +127,7 @@ public class ActionManager {
             final Point p = next.get().getPoint();
             view.centerOnPoint(p, false);
             view.selector.hover(p);
-            view.menu.open(p);
+            view.menu.set(p);
             return true;
         }
         return false;

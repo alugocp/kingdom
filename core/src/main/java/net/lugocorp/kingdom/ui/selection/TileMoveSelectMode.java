@@ -28,7 +28,6 @@ class TileMoveSelectMode extends TileSelectMode {
             view.game.world.getTile(p).ifPresent((Tile t) -> t.setDistanceBorder(
                     Hexagons.getBorderInteger(p, (Point p1) -> !this.singleTurnTargets.contains(p1))));
         }
-        view.menu.close();
     }
 
     /** {@inheritdoc} */

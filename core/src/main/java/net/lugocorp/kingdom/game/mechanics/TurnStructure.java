@@ -197,7 +197,7 @@ public class TurnStructure {
         if (!this.turnPlayer.isHumanPlayer()) {
             CompPlayer player = (CompPlayer) this.turnPlayer;
             player.makeDecisions(view);
-            view.menu.refresh(true);
+            view.menu.refresh();
             this.iterateTurnPlayer(view);
             player.stats.commit();
         }

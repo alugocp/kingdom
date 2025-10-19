@@ -26,7 +26,7 @@ public class Menu {
     private int offset = 0;
     private int x;
     private int y;
-    protected final MenuNode root;
+    protected MenuNode root;
 
     public Menu(int x, int y, int width, boolean tall, MenuNode root) {
         this.width = width;
@@ -40,8 +40,9 @@ public class Menu {
     /**
      * Adds an outline to this Menu
      */
-    public void outline() {
+    public Menu outline() {
         this.outlined = true;
+        return this;
     }
 
     /**
@@ -49,6 +50,14 @@ public class Menu {
      */
     public void pack() {
         this.root.pack(this, this.width - (Menu.MARGIN * 3));
+    }
+
+    /**
+     * Changes this Menu's root MenuNode
+     */
+    public void setRoot(MenuNode root) {
+        this.root = root;
+        this.pack();
     }
 
     /**

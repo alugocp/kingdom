@@ -203,9 +203,12 @@ public class GameViewController implements InputProcessor {
         if (this.menu.scrolled(0, dy)) {
             return true;
         }
-        if (this.view.menu.get().isPresent() || this.view.popups.isDisplayed()) {
-            return true;
-        }
+        // TODO UI only scroll Menus if the mouse is inside their bounds, otherwise zoom
+        // the Game world
+        /*
+         * if (this.view.menu.get().isPresent() || this.view.popups.isDisplayed()) {
+         * return true; }
+         */
 
         // Handle game interface
         this.zoomCamera((dy > 0 ? -1 : 1) * GameViewController.ZOOM_SPEED);

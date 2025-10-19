@@ -23,7 +23,6 @@ class TileSetSelectMode extends TileSelectMode {
         for (Point p : this.points) {
             view.game.world.getTile(p).ifPresent((Tile t) -> t.setOption(true));
         }
-        view.menu.close();
     }
 
     /** {@inheritdoc} */

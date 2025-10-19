@@ -24,14 +24,13 @@ class TileMenuSelectMode extends TileSelectMode {
     @Override
     final void clickedValidPoint(GameView view, Point p) {
         view.av.loaders.sounds.play("sfx/select-unit");
-        view.menu.open(p);
+        view.menu.set(p);
     }
 
     /** {@inheritdoc} */
     @Override
     final void clickedInvalidPoint(GameView view) {
         view.logger.error("Cannot view tile under fog of war");
-        view.menu.close();
     }
 
     /** {@inheritdoc} */

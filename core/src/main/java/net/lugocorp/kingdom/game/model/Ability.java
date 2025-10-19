@@ -82,7 +82,7 @@ public class Ability implements EventReceiver, MenuSubject {
                 canUnitDoThis ? "" : " (unit has exhausted their actions this turn)");
         return new ActionNode(view, this.name, Optional.of(popup), () -> {
             this.activate(view).execute();
-            view.menu.refresh(true);
+            view.menu.refresh();
         }).enable(this.wielder.leadership.belongsToHuman() && this.isActive(view)
                 && view.game.mechanics.turns.canHumanPlayerAct() && canUnitDoThis);
     }

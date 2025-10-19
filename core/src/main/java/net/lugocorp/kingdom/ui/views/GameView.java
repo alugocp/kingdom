@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.hud.Hud;
+import net.lugocorp.kingdom.ui.hud.Popups;
 import net.lugocorp.kingdom.ui.hud.TileMenu;
 import net.lugocorp.kingdom.ui.logger.Logger;
 import net.lugocorp.kingdom.ui.overlay.OverlayLayer;
@@ -30,8 +31,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -66,7 +65,7 @@ public class GameView implements View {
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
         this.menu = new TileMenu(this);
-        this.popups = new Popups(this.menu);
+        this.popups = new Popups();
         this.av.getToonShader().setTileSelector(this.selector);
     }
 
@@ -156,7 +155,7 @@ public class GameView implements View {
                 : String.format("%s joined your ranks", u.name));
         this.hud.update(this.game);
         this.centerOnPoint(u.getPoint(), true);
-        this.menu.open(u.getPoint());
+        this.menu.set(u.getPoint());
     }
 
     /** {@inheritdoc} */
@@ -177,7 +176,8 @@ public class GameView implements View {
         this.environment.add(new DirectionalLight().set(0f, 0f, 0f, 0f, -0.4f, -0.6f));
 
         // Camera, viewport and input
-        final MenuController menuController = new MenuController(this.params.av.settings, () -> this.menu.get());
+        final MenuController menuController = new MenuController(this.params.av.settings,
+                () -> Optional.of(this.menu.get()));
         this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
         this.viewport = new FitViewport(Coords.SIZE.x, Coords.SIZE.y, this.camera);
         this.controller = new GameViewController(this, this.params.av.settings, menuController, this.camera);
@@ -233,9 +233,9 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.overlays.render(dt);
-        this.menu.get().ifPresent((Menu m) -> m.draw(this.av));
+        this.menu.get().draw(this.av);
         if (this.popups.isDisplayed()) {
-            this.popups.queue.get(0).draw(this.av);
+            this.popups.get().ifPresent((Menu m) -> m.draw(this.av));
         }
         this.logger.render(dt);
         this.hud.draw(this.av);
@@ -250,93 +250,5 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void dispose() {
-    }
-
-    /**
-     * This nested class handles popup Menu logic
-     */
-    public static class Popups {
-        private final List<Boolean> required = new ArrayList<>();
-        private final List<Menu> queue = new ArrayList<>();
-        private final TileMenu tileMenu;
-        private boolean display = false;
-
-        private Popups(TileMenu tileMenu) {
-            this.tileMenu = tileMenu;
-        }
-
-        /**
-         * Retrieves the first popup Menu in the queue, if any
-         */
-        public Optional<Menu> get() {
-            return this.queue.isEmpty() ? Optional.empty() : Optional.of(this.queue.get(0));
-        }
-
-        /**
-         * Adds a popup Menu to the state (at the end of the list)
-         */
-        public void add(Menu menu) {
-            this.required.add(0, true);
-            this.queue.add(menu);
-            this.display = true;
-            menu.outline();
-        }
-
-        /**
-         * Adds a popup Menu to the state (at the front of the list)
-         */
-        public void addNext(Menu menu) {
-            this.required.add(0, true);
-            this.queue.add(0, menu);
-            this.display = true;
-            menu.outline();
-        }
-
-        /**
-         * Adds an unrequired popup Menu to the state (at the front of the list)
-         */
-        public void addNextUnrequired(Menu menu) {
-            this.tileMenu.close();
-            this.required.add(0, false);
-            this.queue.add(0, menu);
-            this.display = true;
-            menu.outline();
-        }
-
-        /**
-         * Replaces the currently open Menu with another unrequired one
-         */
-        public void replaceUnrequired(Menu menu) {
-            this.complete();
-            this.addNextUnrequired(menu);
-        }
-
-        /**
-         * Removes a popup Menu from the queue
-         */
-        public void complete() {
-            this.queue.remove(0);
-            this.required.remove(0);
-            if (this.queue.isEmpty()) {
-                this.display = false;
-            }
-        }
-
-        /**
-         * Shows or hides popup Menus
-         */
-        public void setDisplay(boolean display) {
-            while (!display && this.required.size() > 0 && !this.required.get(0)) {
-                this.complete();
-            }
-            this.display = display && !this.queue.isEmpty();
-        }
-
-        /**
-         * Returns true if popup Menus are on screen
-         */
-        public boolean isDisplayed() {
-            return this.display && !this.queue.isEmpty();
-        }
     }
 }

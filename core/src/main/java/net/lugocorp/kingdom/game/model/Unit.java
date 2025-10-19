@@ -207,7 +207,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                             view.game.actions.unitHasActed(view, this, new SkipAction(
                                     "This unit is waiting for maximum stored items, but you can give it a different command",
                                     () -> this.haul.isFull()));
-                            view.menu.refresh(true);
+                            view.menu.refresh();
                             view.game.actions.goToNextUnit(view);
                         }));
             }
@@ -222,7 +222,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                     new SkipAction(
                                             "This unit is skipping its turn, but you can give it a different command",
                                             () -> true));
-                            view.menu.refresh(true);
+                            view.menu.refresh();
                             view.game.actions.goToNextUnit(view);
                         }));
             }

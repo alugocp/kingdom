@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  * Displays a Minimap of the Game World
  */
 public class Minimap {
+    // TODO convert this into a MenuNode and put it into the TileMenu
     private static final int MAX_W = 250;
     private static final int MAX_H = 250;
     private final Point pos = new Point();

@@ -42,7 +42,7 @@ public class Hud extends Menu {
                 view.av.loaders.sounds.play("sfx/end-turn");
                 view.logger.log("You have ended your turn");
                 view.game.mechanics.turns.iterateTurnPlayer(view);
-                view.menu.refresh(true);
+                view.menu.refresh();
             }
         }) {
             /** {@inheritdoc} */

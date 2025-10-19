@@ -13,7 +13,6 @@ import net.lugocorp.kingdom.ui.MenuSubject;
 import net.lugocorp.kingdom.ui.nodes.GlyphIconsNode;
 import net.lugocorp.kingdom.ui.nodes.HeaderNode;
 import net.lugocorp.kingdom.ui.nodes.ListNode;
-import net.lugocorp.kingdom.ui.nodes.NakedButtonNode;
 import net.lugocorp.kingdom.ui.nodes.TabsNode;
 import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -237,7 +236,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
             throw new RuntimeException("Cannot display unspawned tiles");
         }
         final ListNode node = new ListNode();
-        node.add(new NakedButtonNode(view.av, "x", () -> view.menu.close()));
 
         // Instantiate the Tile MenuNodes
         final List<MenuNode> tileNodes = new ArrayList<>();
