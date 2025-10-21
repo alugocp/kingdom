@@ -17,7 +17,7 @@ public class DayNight {
         if (--this.countdown == 0) {
             this.countdown = DayNight.DURATION;
             this.state = this.isDay() ? DayNightState.NIGHT : DayNightState.DAY;
-            view.logger.log(this.isDay() ? "The sun has risen once more" : "Night has fallen");
+            view.hud.logger.log(this.isDay() ? "The sun has risen once more" : "Night has fallen");
             // TODO trigger an event here
         }
     }

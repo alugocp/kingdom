@@ -23,7 +23,7 @@ public class TurnButton extends Menu {
                 view.av.loaders.sounds.play("sfx/error");
             } else {
                 view.av.loaders.sounds.play("sfx/end-turn");
-                view.logger.log("You have ended your turn");
+                view.hud.logger.log("You have ended your turn");
                 view.game.mechanics.turns.iterateTurnPlayer(view);
                 view.hud.bot.tileMenu.refresh();
             }
@@ -38,6 +38,7 @@ public class TurnButton extends Menu {
             }
         }.setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise());
         this.setRoot(this.button);
+        this.setMargin(0);
     }
 
     /**

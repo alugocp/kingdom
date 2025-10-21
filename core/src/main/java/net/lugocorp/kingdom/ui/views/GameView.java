@@ -9,7 +9,6 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.hud.Hud;
-import net.lugocorp.kingdom.ui.logger.Logger;
 import net.lugocorp.kingdom.ui.overlay.OverlayLayer;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
 import net.lugocorp.kingdom.utils.logic.CameraLogic;
@@ -44,7 +43,6 @@ public class GameView implements View {
     public final OverlayLayer overlays;
     public final TileSelector selector;
     public final AudioVideo av;
-    public final Logger logger;
     public final Game game;
     public final Hud hud;
     private Consumer<View> navigate = (View v) -> {
@@ -55,7 +53,6 @@ public class GameView implements View {
         this.av = params.av;
         this.params = params;
         this.hud = new Hud(this);
-        this.logger = new Logger(this);
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
         this.av.getToonShader().setTileSelector(this.selector);
@@ -142,7 +139,7 @@ public class GameView implements View {
     private void initHudMessages() {
         final Unit u = this.game.human.units.iterator().next();
         final Optional<Building> b = this.game.world.getTile(u.getPoint()).flatMap((Tile t) -> t.building);
-        this.logger.log(b.isPresent()
+        this.hud.logger.log(b.isPresent()
                 ? String.format("%s joined your ranks on the %s", u.name, b.get().name)
                 : String.format("%s joined your ranks", u.name));
         this.hud.top.update(this.game);
@@ -223,8 +220,7 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.overlays.render(dt);
-        this.logger.render(dt);
-        this.hud.draw(this);
+        this.hud.draw(this, dt);
     }
 
     /** {@inheritdoc} */

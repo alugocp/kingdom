@@ -176,7 +176,7 @@ public class AbilityLogic {
             Tile t = view.game.world.getTile(p).get();
 
             if (t.building.isPresent()) {
-                return () -> view.logger.error("Cannot place another building here");
+                return () -> view.hud.logger.error("Cannot place another building here");
             }
             if (criteria.apply(t)) {
                 Building b = view.game.generator.building(building, p.x, p.y);
@@ -185,7 +185,7 @@ public class AbilityLogic {
                     view.game.actions.unitHasActed(view, caster, new ActivateAction());
                 };
             }
-            return () -> view.logger.error("Invalid tile for this ability");
+            return () -> view.hud.logger.error("Invalid tile for this ability");
         }
         return SideEffect.none;
     }

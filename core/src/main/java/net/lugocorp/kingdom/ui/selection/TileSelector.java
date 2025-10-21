@@ -43,7 +43,7 @@ public class TileSelector {
      */
     public final void select(Set<Point> points, String error, Consumer<Point> action) {
         if (points.size() == 0) {
-            this.view.logger.error(error);
+            this.view.hud.logger.error(error);
             return;
         }
         this.setMode(new TileSetSelectMode(points, action));

@@ -203,7 +203,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                 node.add(new ActionNode(view, "Store items", Optional.of(
                         "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
                         () -> {
-                            view.logger.log(String.format("%s will wait where they are", this.name));
+                            view.hud.logger.log(String.format("%s will wait where they are", this.name));
                             view.game.actions.unitHasActed(view, this, new SkipAction(
                                     "This unit is waiting for maximum stored items, but you can give it a different command",
                                     () -> this.haul.isFull()));

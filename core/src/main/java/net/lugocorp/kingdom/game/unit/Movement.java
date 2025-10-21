@@ -67,13 +67,13 @@ public class Movement {
                 throw new RuntimeException("A* found too short a path, this should not happen");
             }
             return this.unit.leadership.belongsToHuman()
-                    ? () -> view.logger.error("Unit cannot move there")
+                    ? () -> view.hud.logger.error("Unit cannot move there")
                     : SideEffect.none;
         }
         final int targetIndex = Math.min(max, view.game.actions.getRemainingMoveDistance(view, this.unit)) - 1;
         if (targetIndex < 0) {
             return this.unit.leadership.belongsToHuman()
-                    ? () -> view.logger.error("The unit cannot move anymore this turn")
+                    ? () -> view.hud.logger.error("The unit cannot move anymore this turn")
                     : SideEffect.none;
         }
         return SideEffect.all(

@@ -30,7 +30,7 @@ class TileMenuSelectMode extends TileSelectMode {
     /** {@inheritdoc} */
     @Override
     final void clickedInvalidPoint(GameView view) {
-        view.logger.error("Cannot view tile under fog of war");
+        view.hud.logger.error("Cannot view tile under fog of war");
     }
 
     /** {@inheritdoc} */

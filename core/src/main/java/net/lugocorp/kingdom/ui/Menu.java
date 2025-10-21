@@ -14,16 +14,17 @@ import java.util.Optional;
  */
 public class Menu {
     private static final int MINI_MENU_WIDTH = 250;
-    private static final int MARGIN = 15;
+    private static final int SCROLLBAR = 15;
     private final boolean tall;
-    private int width;
     private Optional<Menu> submenu = Optional.empty();
     private Optional<Point> prev = Optional.empty();
     private Optional<Point> curr = Optional.empty();
     private Optional<Menu> mini = Optional.empty();
     private boolean scrollBarHighlighted = false;
     private boolean outlined = false;
+    private int margin = 15;
     private int offset = 0;
+    private int width;
     private int x;
     private int y;
     protected MenuNode root;
@@ -46,10 +47,19 @@ public class Menu {
     }
 
     /**
+     * Sets the margins for this Menu
+     */
+    public Menu setMargin(int margin) {
+        this.margin = margin;
+        this.pack();
+        return this;
+    }
+
+    /**
      * Packs this Menu's constituent MenuNodes
      */
     public void pack() {
-        this.root.pack(this, this.width - (Menu.MARGIN * 3));
+        this.root.pack(this, this.width - (this.margin * 2) - Menu.SCROLLBAR);
     }
 
     /**
@@ -87,6 +97,13 @@ public class Menu {
     }
 
     /**
+     * Resets this Menu's vertical offset value
+     */
+    public void resetOffset() {
+        this.offset = 0;
+    }
+
+    /**
      * Returns true if this Menu should allow for scrolling
      */
     public boolean shouldScroll() {
@@ -121,11 +138,9 @@ public class Menu {
      * Returns the bounds of this Menu's scroll gutter
      */
     public Optional<Rect> getGutterBounds() {
-        return this.submenu.map((Menu m) -> m.getGutterBounds())
-                .orElse(this.shouldScroll()
-                        ? Optional
-                                .of(new Rect(this.x + this.width - Menu.MARGIN, this.y, Menu.MARGIN, this.getHeight()))
-                        : Optional.empty());
+        return this.submenu.map((Menu m) -> m.getGutterBounds()).orElse(this.shouldScroll()
+                ? Optional.of(new Rect(this.x + this.width - Menu.SCROLLBAR, this.y, Menu.SCROLLBAR, this.getHeight()))
+                : Optional.empty());
     }
 
     /**
@@ -141,8 +156,8 @@ public class Menu {
         final int h = this.getHeight();
         final int rh = this.root.getHeight();
         return this.shouldScroll()
-                ? Optional.of(new Rect(this.x + this.width - Menu.MARGIN, this.y + (this.offset * h / rh), Menu.MARGIN,
-                        (h * h) / rh))
+                ? Optional.of(new Rect(this.x + this.width - Menu.SCROLLBAR, this.y + (this.offset * h / rh),
+                        Menu.SCROLLBAR, (h * h) / rh))
                 : Optional.empty();
     }
 
@@ -193,7 +208,7 @@ public class Menu {
             menu.outlined = true;
             this.mini = Optional.of(menu);
         }
-        this.mini.get().y = Math.min(Coords.SIZE.y - (this.mini.get().root.getHeight() + (Menu.MARGIN * 2)), y);
+        this.mini.get().y = Math.min(Coords.SIZE.y - this.mini.get().getHeight(), y);
     }
 
     /**
@@ -208,7 +223,7 @@ public class Menu {
      */
     public int getHeight() {
         int max = Coords.SIZE.y - this.y;
-        return this.tall ? max : Math.min(max, this.root.getHeight() + (Menu.MARGIN * 2));
+        return this.tall ? max : Math.min(max, this.root.getHeight() + (this.margin * 2));
     }
 
     /**
@@ -229,8 +244,8 @@ public class Menu {
         final Point s2 = ViewportLogic.project(bg.x + bg.w, bg.y + bg.h);
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glScissor(s1.x, s1.y, s2.x - s1.x, s2.y - s1.y);
-        this.root.draw(av, new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
-                this.width - (Menu.MARGIN * 3), h - (Menu.MARGIN * 2)));
+        this.root.draw(av, new Rect(this.x + this.margin, this.y + this.margin - this.offset,
+                this.width - (this.margin * 2) - Menu.SCROLLBAR, h - (this.margin * 2)));
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
         // Draw scrollbar
@@ -266,8 +281,8 @@ public class Menu {
             return true;
         }
         this.closeMiniMenu();
-        final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
-                this.width - (Menu.MARGIN * 3), this.root.getHeight());
+        final Rect bounds = new Rect(this.x + this.margin, this.y + this.margin - this.offset,
+                this.width - (this.margin * 2) - Menu.SCROLLBAR, this.root.getHeight());
         if (bounds.contains(p)) {
             this.root.click(bounds, p);
             return true;
@@ -280,8 +295,11 @@ public class Menu {
      * Propagates a signal to activate some mouse moved logic
      */
     public boolean mouseMoved(Point p) {
-        final Rect bounds = new Rect(this.x + Menu.MARGIN, this.y + Menu.MARGIN - this.offset,
-                this.width - (Menu.MARGIN * 3), this.root.getHeight());
+        if (!this.getBoundingRect().contains(p)) {
+            return false;
+        }
+        final Rect bounds = new Rect(this.x + this.margin, this.y + this.margin - this.offset,
+                this.width - (this.margin * 2) - Menu.SCROLLBAR, this.root.getHeight());
         this.prev = curr;
         this.curr = Optional.of(p);
         this.scrollBarHighlighted = this.getScrollBarBounds().map((Rect r) -> r.contains(p)).orElse(false);

@@ -41,7 +41,7 @@ class TileSetSelectMode extends TileSelectMode {
     /** {@inheritdoc} */
     @Override
     final void clickedInvalidPoint(GameView view) {
-        view.logger.error("Invalid tile selection");
+        view.hud.logger.error("Invalid tile selection");
     }
 
     /** {@inheritdoc} */

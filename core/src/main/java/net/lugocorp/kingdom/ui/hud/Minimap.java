@@ -44,20 +44,6 @@ public class Minimap {
     }
 
     /**
-     * Returns how many pixels this object takes up on the screen horizontally
-     */
-    public int getWidth() {
-        return this.w;
-    }
-
-    /**
-     * Returns how many pixels this object takes up on the screen vertically
-     */
-    public int getHeight() {
-        return this.h;
-    }
-
-    /**
      * Handles a click on this Minimap
      */
     boolean click(GameView view, Point p) {

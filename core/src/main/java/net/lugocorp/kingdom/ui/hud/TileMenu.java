@@ -28,6 +28,7 @@ public class TileMenu extends Menu {
         this.view.game.world.getTile(this.menuCoords).get().changeHovered(false);
         this.view.game.world.getTile(p).ifPresent((Tile t) -> t.changeHovered(true));
         this.menuCoords.set(p.x, p.y);
+        this.resetOffset();
         this.refresh();
     }
 

@@ -48,7 +48,7 @@ public class Combat {
             Optional<Player> destroyer = attacker.getLeader();
             if (b.isActive() && !b.getLeader().equals(destroyer)) {
                 effects.add(() -> {
-                    view.logger.log(String.format("You claimed the %s", b.name));
+                    view.hud.logger.log(String.format("You claimed the %s", b.name));
                     view.overlays.add(
                             new EntityRisingOverlay(view, b, ColorScheme.BLACK.hex, "Building changed allegiance"));
                     // TODO find some sound to play here

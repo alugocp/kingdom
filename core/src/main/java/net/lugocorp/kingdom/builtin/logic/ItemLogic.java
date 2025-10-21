@@ -41,6 +41,6 @@ public class ItemLogic {
             return () -> e.consumer.hunger.eat(view, true);
         }
         e.consumed = false;
-        return () -> view.logger.error("Item is not edible for this unit");
+        return () -> view.hud.logger.error("Item is not edible for this unit");
     }
 }

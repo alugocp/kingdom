@@ -85,12 +85,12 @@ public class NewUnit {
                     String error = "You have no space to recruit a new unit";
                     Set<Point> tiles = view.game.getRecruitmentTiles(view.game.human);
                     if (tiles.size() == 0) {
-                        view.logger.error(error);
+                        view.hud.logger.error(error);
                         view.hud.popups.complete();
                         return;
                     }
                     view.hud.popups.setDisplay(false);
-                    view.logger.log("Please select a tile to recruit your new unit");
+                    view.hud.logger.log("Please select a tile to recruit your new unit");
                     this.scrollToNearestCandidate(view, tiles);
                     view.selector.select(tiles, error, (Point p) -> {
                         view.hud.popups.complete();
@@ -198,7 +198,7 @@ public class NewUnit {
             view.game.setLeader(view, u, p);
             u.spawn(view);
             p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u)).execute();
-            view.logger.log(String.format("You recruited %s", u.name));
+            view.hud.logger.log(String.format("You recruited %s", u.name));
         });
     }
 
