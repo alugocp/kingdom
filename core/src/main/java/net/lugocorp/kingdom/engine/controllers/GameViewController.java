@@ -5,11 +5,12 @@ import net.lugocorp.kingdom.utils.logic.CameraLogic;
 import net.lugocorp.kingdom.utils.logic.ViewportLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-import java.util.Optional;
+import java.util.List;
 
 /**
  * Handles all user control input for the GameView
@@ -21,22 +22,15 @@ public class GameViewController implements InputProcessor {
     private static final float MIN_ZOOM = -2.0f;
     private final TouchState touch = new TouchState();
     private final Vector3 vector = new Vector3();
-    private final MenuController popupMenu;
-    private final MenuController hudMenu;
-    private final MenuController menu;
+    private final List<MenuController> menus;
     private final GameView view;
     private final Camera camera;
     private float currentZoom = 0.0f;
     public final KeyState keys = new KeyState();
 
-    public GameViewController(GameView view, Settings settings, MenuController menu, Camera camera) {
-        this.popupMenu = new MenuController(settings,
-                () -> view.game.mechanics.turns.canHumanPlayerAct() && view.popups.isDisplayed()
-                        ? view.popups.get()
-                        : Optional.empty());
-        this.hudMenu = new MenuController(settings, () -> Optional.of(view.hud));
+    public GameViewController(GameView view, Settings settings, Camera camera) {
+        this.menus = view.hud.getControllers(view, settings);
         this.camera = camera;
-        this.menu = menu;
         this.view = view;
     }
 
@@ -44,8 +38,8 @@ public class GameViewController implements InputProcessor {
      * Centers the Camera on a given Point in the World
      */
     public void centerCameraOn(Point p) {
-        Vector3 vec = Coords.grid.vector(p.x, p.y);
-        Vector3 endpoint = CameraLogic.getScreenPointOnSurface(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
+        final Vector3 vec = Coords.grid.vector(p.x, p.y);
+        final Vector3 endpoint = CameraLogic.getScreenPointOnSurface(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
         this.moveCamera(vec.x - endpoint.x, vec.z - endpoint.z);
     }
 
@@ -73,7 +67,7 @@ public class GameViewController implements InputProcessor {
         }
 
         // Check top-left Camera bounds
-        final Vector3 p3 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(0, this.view.hud.getHeight()))
+        final Vector3 p3 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(0, this.view.hud.top.getHeight()))
                 .add(Coords.raw.vector(dx, 0f, dz));
         final Vector3 topLeft = Coords.grid.vector(0, -8);
         if (p3.z < topLeft.z) {
@@ -110,23 +104,13 @@ public class GameViewController implements InputProcessor {
         final boolean animating = this.view.animations.inProgress();
 
         // Menu logic
-        if (this.popupMenu.touchDown(x, y, pointer, button) || this.view.popups.isDisplayed()) {
-            if (animating) {
-                this.popupMenu.cancel();
+        for (MenuController m : this.menus) {
+            if (m.touchDown(x, y, pointer, button)) {
+                if (animating) {
+                    m.cancel();
+                }
+                return true;
             }
-            return true;
-        }
-        if (this.menu.touchDown(x, y, pointer, button)) {
-            if (animating) {
-                this.menu.cancel();
-            }
-            return true;
-        }
-        if (this.hudMenu.touchDown(x, y, pointer, button)) {
-            if (animating) {
-                this.hudMenu.cancel();
-            }
-            return true;
         }
 
         // Game World logic
@@ -138,20 +122,13 @@ public class GameViewController implements InputProcessor {
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         // Menu logic
-        if (this.popupMenu.touchUp(x, y, pointer, button)) {
-            return true;
-        } else if (this.view.popups.isDisplayed()) {
-            this.view.popups.setDisplay(false);
-            return true;
-        }
-        if (this.menu.touchUp(x, y, pointer, button)) {
-            return true;
+        for (MenuController m : this.menus) {
+            if (m.touchUp(x, y, pointer, button)) {
+                return true;
+            }
         }
 
-        // Handle HUD UI and game interface
-        if (this.hudMenu.touchUp(x, y, pointer, button)) {
-            return true;
-        }
+        // Game World logic
         if (this.touch.isActive()) {
             if (!this.touch.isDragging() && !this.view.animations.inProgress()) {
                 this.view.selector.click();
@@ -165,17 +142,13 @@ public class GameViewController implements InputProcessor {
     @Override
     public boolean touchDragged​(int x, int y, int pointer) {
         // Menu logic
-        if (this.popupMenu.touchDragged(x, y, pointer) || this.view.popups.isDisplayed()) {
-            return true;
-        }
-        if (this.menu.touchDragged(x, y, pointer)) {
-            return true;
+        for (MenuController m : this.menus) {
+            if (m.touchDragged(x, y, pointer)) {
+                return true;
+            }
         }
 
-        // Handle HUD UI and game interface
-        if (this.hudMenu.touchDragged(x, y, pointer)) {
-            return true;
-        }
+        // Game World logic
         if (this.touch.isActive()) {
             final Point p = ViewportLogic.unproject(x, y);
             final Point prev = this.touch.update(p);
@@ -197,18 +170,12 @@ public class GameViewController implements InputProcessor {
     @Override
     public boolean scrolled(float dx, float dy) {
         // Menu logic
-        if (this.popupMenu.scrolled(0, dy)) {
-            return true;
+        for (MenuController m : this.menus) {
+            if (m.isInMenu(ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()))) {
+                m.scrolled(0, dy);
+                return true;
+            }
         }
-        if (this.menu.scrolled(0, dy)) {
-            return true;
-        }
-        // TODO UI only scroll Menus if the mouse is inside their bounds, otherwise zoom
-        // the Game world
-        /*
-         * if (this.view.menu.get().isPresent() || this.view.popups.isDisplayed()) {
-         * return true; }
-         */
 
         // Handle game interface
         this.zoomCamera((dy > 0 ? -1 : 1) * GameViewController.ZOOM_SPEED);
@@ -218,15 +185,11 @@ public class GameViewController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean mouseMoved​(int x, int y) {
-        // Menu mouse logic
-        if (this.popupMenu.mouseMoved(x, y)) {
-            return true;
-        }
-        if (this.hudMenu.mouseMoved(x, y)) {
-            return true;
-        }
-        if (this.menu.mouseMoved(x, y)) {
-            return true;
+        // Menu logic
+        for (MenuController m : this.menus) {
+            if (m.mouseMoved(x, y)) {
+                return true;
+            }
         }
 
         // Unit/Building/Tile mouse over logic

@@ -51,13 +51,13 @@ public class Fates {
         final Player next = p.isHumanPlayer()
                 ? comps.get(0)
                 : (p == comps.get(comps.size() - 1) ? view.game.human : comps.get(comps.indexOf(p) + 1));
-        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, new ListNode()
-                .add(new RowNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.complete()))
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), width, false, new ListNode()
+                .add(new RowNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.complete()))
                         .add(new HeaderNode(view.av,
                                 p.isHumanPlayer() ? "Your fate" : String.format("%s's fate", p.name)))
                         .add(new ButtonNode(view.av,
                                 next.isHumanPlayer() ? "View your fate" : String.format("View %s's fate", next.name),
-                                () -> view.popups.replaceUnrequired(this.getViewFatesMenu(view, next)))))
+                                () -> view.hud.popups.replaceUnrequired(this.getViewFatesMenu(view, next)))))
                 .add(new SpacerNode()).add(new FateViewNode(view.av, p.getFate(), false)));
     }
 }

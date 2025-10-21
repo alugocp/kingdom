@@ -37,6 +37,6 @@ public interface EventReceiver {
     public default void deactivate(GameView view) {
         view.game.future.removeFutureTicks(this);
         view.game.events.signals.deactivateListener(this);
-        view.menu.refresh();
+        view.hud.bot.tileMenu.refresh();
     }
 }

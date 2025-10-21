@@ -65,7 +65,7 @@ public class Logger {
         this.timer = (int) Math.min(Logger.MAX_TIMER, this.timer + dt);
 
         // Draw the text
-        float y = Coords.SIZE.y - this.view.hud.getHeight() - Logger.MARGIN;
+        float y = Coords.SIZE.y - this.view.hud.top.getHeight() - Logger.MARGIN;
         this.view.av.sprites.begin();
         final BitmapFont font = this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT.color);
         for (int a = 0; a < this.n; a++) {

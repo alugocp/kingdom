@@ -115,7 +115,7 @@ public class ArtifactAuction {
     public void addPoints(GameView view, Point p, int amount) {
         view.overlays.add(new ResourceOverlay(view, p, 0.24f, ColorScheme.GOLD.hex, amount).then(() -> {
             this.points += amount;
-            view.hud.update(view.game);
+            view.hud.top.update(view.game);
         }));
     }
 
@@ -137,7 +137,8 @@ public class ArtifactAuction {
      */
     public Menu getAuctionBuyInMenu(GameView view) {
         final int price = this.getBuyInCost(view.game.human.gold);
-        final ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+        final ListNode node = new ListNode()
+                .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Artifact Auction"))
                 .add(new TextNode(view.av, String.format("Pay %d gold to participate in the auction?", price)))
                 .add(new RowNode().add(new ButtonNode(view.av, "Yes", () -> {
@@ -146,22 +147,22 @@ public class ArtifactAuction {
                     if (vaults.size() == 0) {
                         this.auction.get().doNotAddBidder();
                         view.logger.error(error);
-                        view.popups.complete();
+                        view.hud.popups.complete();
                         return;
                     }
-                    view.popups.setDisplay(false);
+                    view.hud.popups.setDisplay(false);
                     view.logger.log("Please select a vault with items to bid");
                     view.selector.select(vaults, error, (Point p) -> {
                         this.auction.get().addBidder(view.game.human, p);
                         view.game.human.gold -= price;
-                        view.popups.complete();
+                        view.hud.popups.complete();
                     });
                 })).add(new ButtonNode(view.av, "No", () -> {
                     this.auction.get().doNotAddBidder();
-                    view.popups.complete();
+                    view.hud.popups.complete();
                 })));
-        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
+                false, node);
     }
 
     /**
@@ -183,14 +184,14 @@ public class ArtifactAuction {
                 view.game.human.auctionChips++;
             } else {
                 winner.ifPresent((Player p) -> ((CompPlayer) p).wishlist.artifacts.doAfterAuction());
-                return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
+                return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+                        new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                                 .add(new TextNode(view.av,
                                         winner.isPresent()
                                                 ? "You did not win the auction"
                                                 : "Nobody bid in this auction"))
-                                .add(new ButtonNode(view.av, "Okay", () -> view.popups.complete())));
+                                .add(new ButtonNode(view.av, "Okay", () -> view.hud.popups.complete())));
             }
         }
 
@@ -199,10 +200,11 @@ public class ArtifactAuction {
         int a = 0;
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
-        final ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+        final ListNode node = new ListNode()
+                .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                 .add(new TextNode(view.av,
                         "You outbid the other players and won the auction! You may click on an Artifact to buy with your auction chips or wait until the next time you win an auction."))
-                .add(new ButtonNode(view.av, "Buy an artifact next time", () -> view.popups.complete()));
+                .add(new ButtonNode(view.av, "Buy an artifact next time", () -> view.hud.popups.complete()));
         while (a < artifacts.size()) {
             final RowNode row = new RowNode().setColumns(columns);
             for (int b = 0; b < columns && a < this.artifacts.size();) {
@@ -211,9 +213,9 @@ public class ArtifactAuction {
                     if (view.game.human.auctionChips >= artifact.chips) {
                         view.game.human.auctionChips -= artifact.chips;
                         artifact.claim(view, view.game.human);
-                        view.popups.complete();
+                        view.hud.popups.complete();
                         if (view.game.human.auctionChips > 0) {
-                            view.popups.add(this.getFollowUpMenu(view, false));
+                            view.hud.popups.add(this.getFollowUpMenu(view, false));
                         }
                     } else {
                         view.logger.error("You need more auction chips");
@@ -224,7 +226,7 @@ public class ArtifactAuction {
             }
             node.add(row);
         }
-        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), width, false, node);
     }
 
     /**
@@ -236,12 +238,12 @@ public class ArtifactAuction {
         final int columns = 3;
         final int width = Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2);
         final ListNode node = new ListNode().add(new RowNode()
-                .add(new NakedButtonNode(view.av, "x", () -> view.popups.complete()))
+                .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.complete()))
                 .add(new HeaderNode(view.av, owner.isPresent() ? "Your Artifacts" : "All Artifacts"))
                 .add(new HelperNode(view.av,
                         "Artifacts are powerful abilities that you can unlock in auctions. An auction occurs every time the auction points bar fills up. If you win an auction then you can either claim an artifact right away or save up auction chips to buy more powerful artifacts later."))
                 .add(new ButtonNode(view.av, owner.isPresent() ? "Show all artifacts" : "Show your artifacts",
-                        () -> view.popups.replaceUnrequired(this.getArtifactsMenu(view,
+                        () -> view.hud.popups.replaceUnrequired(this.getArtifactsMenu(view,
                                 owner.isPresent() ? Optional.empty() : Optional.of(view.game.human))))))
                 .add(new SpacerNode());
         if (artifacts.size() == 0) {
@@ -259,6 +261,6 @@ public class ArtifactAuction {
                 node.add(new SpacerNode(false));
             }
         }
-        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), width, false, node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), width, false, node);
     }
 }

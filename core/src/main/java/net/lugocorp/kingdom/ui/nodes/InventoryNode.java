@@ -96,7 +96,7 @@ public class InventoryNode implements MenuNode {
         if (type == InventoryType.HAUL) {
             this.items.transfer(unit.haul, item);
         }
-        this.view.menu.refresh();
+        this.view.hud.bot.tileMenu.refresh();
     }
 
     /**
@@ -118,7 +118,7 @@ public class InventoryNode implements MenuNode {
         if (event.consumed) {
             this.items.remove(item);
         }
-        this.view.menu.refresh();
+        this.view.hud.bot.tileMenu.refresh();
     }
 
     /**
@@ -149,7 +149,7 @@ public class InventoryNode implements MenuNode {
         if (unit.leadership.isFreeRadical()) {
             unit.leadership.recruit(this.view, leader);
         }
-        this.view.menu.refresh();
+        this.view.hud.bot.tileMenu.refresh();
     }
 
     /**
@@ -169,7 +169,7 @@ public class InventoryNode implements MenuNode {
     private void buildingTakesItem(Item item) {
         Building building = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.building).get();
         this.items.transfer(building.items.get(), item);
-        this.view.menu.refresh();
+        this.view.hud.bot.tileMenu.refresh();
     }
 
     /**

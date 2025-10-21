@@ -55,7 +55,7 @@ public class TurnStructure {
         view.game.actions.endOfTurn(this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = view.game.comps.get(0);
-            view.hud.notHumanPlayerTurn();
+            view.hud.bot.turnButton.update(false);
         } else {
             int index = view.game.comps.indexOf(this.turnPlayer);
             if (index == view.game.comps.size() - 1) {
@@ -63,8 +63,8 @@ public class TurnStructure {
                 this.turn++;
                 view.game.future.checkFutureTicks(view);
                 this.startNewTurnGroup(view);
-                view.hud.humanPlayerTurn();
-                view.hud.update(view.game);
+                view.hud.bot.turnButton.update(true);
+                view.hud.top.update(view.game);
             } else {
                 this.turnPlayer = view.game.comps.get(index + 1);
             }
@@ -128,18 +128,18 @@ public class TurnStructure {
         // confused
         view.game.mechanics.newUnits.giveUnitPointsYield(view, this.turnPlayer);
         if (this.turnPlayer.isHumanPlayer()) {
-            view.menu.minimap.refresh(view.game.world);
+            view.hud.bot.minimap.refresh(view.game.world);
             view.logger.log("It is your turn again");
 
             // Check human Player win/lose state
             if (view.game.hasHumanPlayerLost()) {
-                view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
+                view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                         new ListNode().add(new TextNode(view.av, "You have lost"))
                                 .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
             }
             if (view.game.hasHumanPlayerWon()) {
-                view.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(),
+                view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                         new ListNode().add(new TextNode(view.av, "You win!"))
                                 .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
@@ -147,18 +147,18 @@ public class TurnStructure {
 
             // Choose a new Unit at the maximum unit points
             for (int a = 0; a < Math.floor(this.turnPlayer.getUnitPoints() / NewUnit.MAX_UNIT_POINTS); a++) {
-                view.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
+                view.hud.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
             }
             // Start a new ArtifactAuction at the maximum auction points
             if (view.game.mechanics.auction.readyForNewAuction()) {
                 view.game.mechanics.auction.openNewAuction(view.game,
-                        () -> view.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view)));
+                        () -> view.hud.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view)));
             }
             // Show the aftermath of any active ArtifactAuction
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
                     .orElse(false)) {
                 if (view.game.mechanics.auction.getAuction().get().notEveryoneHasSeenResults(view.game)) {
-                    view.popups.add(view.game.mechanics.auction.getFollowUpMenu(view, true));
+                    view.hud.popups.add(view.game.mechanics.auction.getFollowUpMenu(view, true));
                     view.game.mechanics.auction.getAuction().get().hasSeenResults();
                 } else {
                     view.game.mechanics.auction.closeAuction();
@@ -197,7 +197,7 @@ public class TurnStructure {
         if (!this.turnPlayer.isHumanPlayer()) {
             CompPlayer player = (CompPlayer) this.turnPlayer;
             player.makeDecisions(view);
-            view.menu.refresh();
+            view.hud.bot.tileMenu.refresh();
             this.iterateTurnPlayer(view);
             player.stats.commit();
         }

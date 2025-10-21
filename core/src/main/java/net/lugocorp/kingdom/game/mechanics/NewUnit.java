@@ -78,7 +78,7 @@ public class NewUnit {
      * Returns the Menu to handle new Unit placement
      */
     public Menu getNewUnitMenu(GameView view) {
-        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)));
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)));
         node.add(new HeaderNode(view.av, "Recruit New Unit"))
                 .add(new TextNode(view.av, "Select a tile to recruit your new unit?"))
                 .add(new RowNode().add(new ButtonNode(view.av, "Yes", () -> {
@@ -86,19 +86,19 @@ public class NewUnit {
                     Set<Point> tiles = view.game.getRecruitmentTiles(view.game.human);
                     if (tiles.size() == 0) {
                         view.logger.error(error);
-                        view.popups.complete();
+                        view.hud.popups.complete();
                         return;
                     }
-                    view.popups.setDisplay(false);
+                    view.hud.popups.setDisplay(false);
                     view.logger.log("Please select a tile to recruit your new unit");
                     this.scrollToNearestCandidate(view, tiles);
                     view.selector.select(tiles, error, (Point p) -> {
-                        view.popups.complete();
-                        view.popups.addNext(this.getUnitSelectionMenu(view, p));
+                        view.hud.popups.complete();
+                        view.hud.popups.addNext(this.getUnitSelectionMenu(view, p));
                     });
-                })).add(new ButtonNode(view.av, "No", () -> view.popups.complete())));
-        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                node);
+                })).add(new ButtonNode(view.av, "No", () -> view.hud.popups.complete())));
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
+                false, node);
     }
 
     /**
@@ -115,11 +115,11 @@ public class NewUnit {
 
         // Create the Menu content for Glyph selection
         ListNode node = new ListNode().add(new RowNode()
-                .add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+                .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit").center())
                 .add(new HelperNode(view.av,
                         "Glyphs are general categories that units fall under. They help narrow down your search when recruiting a new unit. A unit can have either one or two glyphs. Tiles also have glyphs - the tile you selected determines the glyphs that appear in this screen. The sword (combat glyphs) means battle, defense, and healing. The hammer (worker glyphs) means nature, mining and trade."))
-                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete())))
+                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.hud.popups.complete())))
                 .add(new SpacerNode());
         RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
         RowNode badges = new RowNode().setColumns(category.get().glyphs.length);
@@ -131,16 +131,16 @@ public class NewUnit {
             badges.add(new GlyphBadgeNode(view.av, glyph));
             descs.add(new TextNode(view.av, this.getGlyphDescription(glyph)));
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
-                view.popups.complete();
-                view.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
+                view.hud.popups.complete();
+                view.hud.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
             }).enable(view.game.mechanics.pools.remaining(glyph) > 0));
         }
         node.add(glyphs);
         node.add(badges);
         node.add(descs);
         node.add(buttons);
-        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
+                false, node);
     }
 
     /**
@@ -148,9 +148,9 @@ public class NewUnit {
      */
     private Menu getGlyphUnitSelectionMenu(GameView view, Glyph glyph, Point p) {
         List<Unit> options = this.getRecruitmentOptions(view, glyph, p, view.game.human.numRecruitmentOptions);
-        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.popups.setDisplay(false)))
+        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit"))
-                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.popups.complete()));
+                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.hud.popups.complete()));
         RowNode previews = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
@@ -158,15 +158,15 @@ public class NewUnit {
             previews.add(new ModelNode(view.av, view.getCamera(), view.getEnvironment(), u.getModelName()));
             units.add(u.getMenuContent(view, Optional.empty()));
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
-                view.popups.complete();
+                view.hud.popups.complete();
                 this.choose(view, view.game.human, u);
             }));
         }
         node.add(previews);
         node.add(units);
         node.add(buttons);
-        return new Menu(Mechanics.MENU_MARGIN, view.hud.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                node);
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
+                false, node);
     }
 
     /**

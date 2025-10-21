@@ -42,7 +42,7 @@ public class MenuController implements InputProcessor {
     /**
      * Returns true if the given Point falls within the current Menu
      */
-    private boolean isInMenu(Point p) {
+    public boolean isInMenu(Point p) {
         final Optional<Menu> menu = this.getMenu.get();
         return menu.isPresent() && menu.get().getBoundingRect().contains(p);
     }

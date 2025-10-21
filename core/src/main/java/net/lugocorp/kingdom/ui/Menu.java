@@ -197,6 +197,13 @@ public class Menu {
     }
 
     /**
+     * Returns the root node's height
+     */
+    public int getContentHeight() {
+        return this.root.getHeight();
+    }
+
+    /**
      * Returns the height of the Menu UI
      */
     public int getHeight() {

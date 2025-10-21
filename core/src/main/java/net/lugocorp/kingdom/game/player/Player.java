@@ -94,7 +94,7 @@ public abstract class Player {
      */
     public void addUnitPoints(GameView view, int amount) {
         this.unitPoints += amount;
-        view.hud.update(view.game);
+        view.hud.top.update(view.game);
     }
 
     /**

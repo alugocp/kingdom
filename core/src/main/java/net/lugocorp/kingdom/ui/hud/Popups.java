@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * This nested class handles popup Menu logic
+ * This class handles popup Menu logic within the HUD UI
  */
 public class Popups {
     private final List<Boolean> required = new ArrayList<>();

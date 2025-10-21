@@ -3,16 +3,12 @@ import net.lugocorp.kingdom.builtin.animation.CameraMoveAnimation;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.animation.AnimationQueue;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
-import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.hud.Hud;
-import net.lugocorp.kingdom.ui.hud.Popups;
-import net.lugocorp.kingdom.ui.hud.TileMenu;
 import net.lugocorp.kingdom.ui.logger.Logger;
 import net.lugocorp.kingdom.ui.overlay.OverlayLayer;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
@@ -48,8 +44,6 @@ public class GameView implements View {
     public final OverlayLayer overlays;
     public final TileSelector selector;
     public final AudioVideo av;
-    public final TileMenu menu;
-    public final Popups popups;
     public final Logger logger;
     public final Game game;
     public final Hud hud;
@@ -64,8 +58,6 @@ public class GameView implements View {
         this.logger = new Logger(this);
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
-        this.menu = new TileMenu(this);
-        this.popups = new Popups();
         this.av.getToonShader().setTileSelector(this.selector);
     }
 
@@ -153,9 +145,9 @@ public class GameView implements View {
         this.logger.log(b.isPresent()
                 ? String.format("%s joined your ranks on the %s", u.name, b.get().name)
                 : String.format("%s joined your ranks", u.name));
-        this.hud.update(this.game);
+        this.hud.top.update(this.game);
         this.centerOnPoint(u.getPoint(), true);
-        this.menu.set(u.getPoint());
+        this.hud.bot.tileMenu.set(u.getPoint());
     }
 
     /** {@inheritdoc} */
@@ -167,7 +159,7 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void start(Consumer<View> navigate) {
-        this.menu.init(this.game.world);
+        this.hud.bot.init(this.game.world);
         this.navigate = navigate;
 
         // 3D setup
@@ -176,11 +168,9 @@ public class GameView implements View {
         this.environment.add(new DirectionalLight().set(0f, 0f, 0f, 0f, -0.4f, -0.6f));
 
         // Camera, viewport and input
-        final MenuController menuController = new MenuController(this.params.av.settings,
-                () -> Optional.of(this.menu.get()));
         this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
         this.viewport = new FitViewport(Coords.SIZE.x, Coords.SIZE.y, this.camera);
-        this.controller = new GameViewController(this, this.params.av.settings, menuController, this.camera);
+        this.controller = new GameViewController(this, this.params.av.settings, this.camera);
         Gdx.input.setInputProcessor(this.controller);
         this.camera.position.set(0f, 5f, 5f);
         this.camera.lookAt(0, 0, 0);
@@ -233,12 +223,8 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.overlays.render(dt);
-        this.menu.draw(this.av);
-        if (this.popups.isDisplayed()) {
-            this.popups.get().ifPresent((Menu m) -> m.draw(this.av));
-        }
         this.logger.render(dt);
-        this.hud.draw(this.av);
+        this.hud.draw(this);
     }
 
     /** {@inheritdoc} */

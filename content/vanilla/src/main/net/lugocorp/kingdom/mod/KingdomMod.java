@@ -2220,7 +2220,7 @@ public class KingdomMod implements GameMod {
         events.item.addEventHandler(Labels.item_sack_of_gold, Events.ItemConsumedEvent.class,
                 (GameView view, Item receiver, Events.ItemConsumedEvent e) -> () -> {
                     e.consumer.getLeader().ifPresent((Player p) -> p.gold += 10);
-                    view.hud.update(view.game);
+                    view.hud.top.update(view.game);
                 });
 
         // Capital
