@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.hud;
-import net.lugocorp.kingdom.ui.Menu;
+import net.lugocorp.kingdom.menu.Menu;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

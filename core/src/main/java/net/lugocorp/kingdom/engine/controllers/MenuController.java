@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine.controllers;
 import net.lugocorp.kingdom.engine.Settings;
-import net.lugocorp.kingdom.ui.Menu;
+import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.utils.logic.ViewportLogic;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;

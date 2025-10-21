@@ -19,18 +19,18 @@ import net.lugocorp.kingdom.game.unit.Leadership;
 import net.lugocorp.kingdom.game.unit.Loyalty;
 import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
+import net.lugocorp.kingdom.menu.MenuNode;
+import net.lugocorp.kingdom.menu.MenuSubject;
+import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
+import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
+import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.structure.RowNode;
+import net.lugocorp.kingdom.menu.text.ActionNode;
+import net.lugocorp.kingdom.menu.text.BadgeNode;
+import net.lugocorp.kingdom.menu.text.HelperNode;
+import net.lugocorp.kingdom.menu.text.SubheaderNode;
+import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.ColorScheme;
-import net.lugocorp.kingdom.ui.MenuNode;
-import net.lugocorp.kingdom.ui.MenuSubject;
-import net.lugocorp.kingdom.ui.nodes.ActionNode;
-import net.lugocorp.kingdom.ui.nodes.BadgeNode;
-import net.lugocorp.kingdom.ui.nodes.GlyphIconsNode;
-import net.lugocorp.kingdom.ui.nodes.HelperNode;
-import net.lugocorp.kingdom.ui.nodes.ListNode;
-import net.lugocorp.kingdom.ui.nodes.ResourceBarsNode;
-import net.lugocorp.kingdom.ui.nodes.RowNode;
-import net.lugocorp.kingdom.ui.nodes.SubheaderNode;
-import net.lugocorp.kingdom.ui.nodes.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
 import net.lugocorp.kingdom.utils.logic.Colors;
@@ -172,14 +172,14 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
-                node.add(new ActionNode(view, "Move",
+                node.add(new ActionNode(view.av, "Move",
                         Optional.of("Moves this unit to the target tile (may exhaust this unit's actions)"),
                         () -> view.selector.move(this)));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
-                node.add(new ActionNode(view, "Deposit",
+                node.add(new ActionNode(view.av, "Deposit",
                         Optional.of(
                                 "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)"),
                         () -> view.selector.deposit(this)));
@@ -188,7 +188,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Give Food
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
-                node.add(new ActionNode(view, "Give Food", Optional.of(
+                node.add(new ActionNode(view.av, "Give Food", Optional.of(
                         "This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
@@ -200,7 +200,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                node.add(new ActionNode(view, "Store items", Optional.of(
+                node.add(new ActionNode(view.av, "Store items", Optional.of(
                         "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
                         () -> {
                             view.hud.logger.log(String.format("%s will wait where they are", this.name));
@@ -214,7 +214,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                node.add(new ActionNode(view, "Skip turn",
+                node.add(new ActionNode(view.av, "Skip turn",
                         Optional.of(
                                 "This unit won't ask for commands this turn (does not exhaust this unit's actions)"),
                         () -> {

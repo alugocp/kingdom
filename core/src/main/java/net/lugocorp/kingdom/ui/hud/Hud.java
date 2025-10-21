@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
+import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.ui.ColorScheme;
-import net.lugocorp.kingdom.ui.Menu;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
@@ -46,7 +46,7 @@ public class Hud {
      */
     public void draw(GameView view, int dt) {
         // Fill in the space behind the Minimap
-        final Rect r = this.bot.tileMenu.getBoundingRect();
+        final Rect r = Coords.screen.flip(this.bot.tileMenu.getBoundingRect());
         view.av.shapes.begin(ShapeType.Filled);
         view.av.shapes.setColor(ColorScheme.MENU.color);
         view.av.shapes.rect(r.w, r.y, Coords.SIZE.x - r.w, r.h);

@@ -1,13 +1,13 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.menu.game.ArtifactNode;
+import net.lugocorp.kingdom.menu.game.FateNode;
+import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
+import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.ui.View;
-import net.lugocorp.kingdom.ui.nodes.ArtifactNode;
-import net.lugocorp.kingdom.ui.nodes.FateNode;
-import net.lugocorp.kingdom.ui.nodes.GlyphBadgeNode;
-import net.lugocorp.kingdom.ui.nodes.GlyphIconsNode;
 import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import java.util.ArrayList;
 import java.util.List;
