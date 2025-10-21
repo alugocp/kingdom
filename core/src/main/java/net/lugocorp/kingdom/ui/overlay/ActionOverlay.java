@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.overlay;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector3;

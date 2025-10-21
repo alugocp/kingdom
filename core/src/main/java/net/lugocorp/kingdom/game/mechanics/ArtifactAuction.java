@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.player.CompPlayer;
@@ -14,7 +15,6 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.HelperNode;
 import net.lugocorp.kingdom.menu.text.NakedButtonNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;

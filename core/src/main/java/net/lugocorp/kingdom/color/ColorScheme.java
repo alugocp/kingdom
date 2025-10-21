@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui;
+package net.lugocorp.kingdom.color;
 
 // TODO move this, ColorPoint, and Colors (rename to ColorUtils) to utils/color
 

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
-import net.lugocorp.kingdom.utils.logic.Colors;
+import net.lugocorp.kingdom.color.Colors;
 import com.badlogic.gdx.graphics.Color;
 
 /**

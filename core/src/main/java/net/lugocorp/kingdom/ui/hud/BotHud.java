@@ -17,10 +17,17 @@ public class BotHud {
     }
 
     /**
+     * Returns the total vertical space allotted to the bottom half of the HUD UI
+     */
+    public int getHeight() {
+        return Minimap.MAX_H + this.turnButton.getContentHeight();
+    }
+
+    /**
      * Sets up the layout of the UI
      */
     public void init(World world) {
-        final int y = Coords.SIZE.y - Minimap.MAX_H - this.turnButton.getContentHeight();
+        final int y = Coords.SIZE.y - this.getHeight();
         this.turnButton.setY(Coords.SIZE.y - this.turnButton.getContentHeight());
         this.minimap.init(world, Coords.SIZE.x - Minimap.MAX_W, y);
         this.tileMenu.setY(y);

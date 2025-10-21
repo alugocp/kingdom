@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorPool;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.actions.ActionManager;
@@ -14,7 +15,6 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.HumanPlayer;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.game.player.PlayerColors;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
@@ -33,7 +33,7 @@ import java.util.Set;
 public class Game {
     public final FutureEventManager future = new FutureEventManager(this);
     public final ActionManager actions = new ActionManager();
-    public final PlayerColors colorPool = new PlayerColors();
+    public final ColorPool colorPool = new ColorPool();
     public final List<CompPlayer> comps = new ArrayList<>();
     public final Set<Unit> units = new HashSet<>();
     public final World world = new World();

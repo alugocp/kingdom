@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.menu.structure;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;

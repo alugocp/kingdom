@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.menu.game;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**

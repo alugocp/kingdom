@@ -113,8 +113,14 @@ public class GameViewController implements InputProcessor {
             }
         }
 
+        // Do not click on the World if we've clicked on the Minimap
+        final Point p = ViewportLogic.unproject(x, y);
+        if (p.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()) {
+            return true;
+        }
+
         // Game World logic
-        this.touch.start(ViewportLogic.unproject(x, y));
+        this.touch.start(p);
         return true;
     }
 
@@ -192,12 +198,20 @@ public class GameViewController implements InputProcessor {
             }
         }
 
-        // Unit/Building/Tile mouse over logic
+        // Do not check the World if we're hovering over the Minimap
+        final Point p = ViewportLogic.unproject(x, y);
+        if (p.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()) {
+            return true;
+        }
+
+        // Unit/Building mouse over logic
         final Point b = this.view.getFrameBufferMappedPoint();
         if (!(b.x == -1 && b.y == -1)) {
             this.view.selector.hover(new Point(b.x, b.y));
             return true;
         }
+
+        // Tile mouse over logic
         final Point closestPoint = CameraLogic.getCoordUnderScreenPoint(x, y);
         this.view.selector.hover(closestPoint);
         return true;

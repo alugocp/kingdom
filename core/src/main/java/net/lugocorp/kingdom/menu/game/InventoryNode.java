@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.model.Building;
@@ -17,7 +18,6 @@ import net.lugocorp.kingdom.menu.text.BadgeNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Tuple;
 import net.lugocorp.kingdom.utils.math.Coords;

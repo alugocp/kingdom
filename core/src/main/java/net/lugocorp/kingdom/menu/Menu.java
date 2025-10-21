@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.menu;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.utils.logic.ViewportLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;

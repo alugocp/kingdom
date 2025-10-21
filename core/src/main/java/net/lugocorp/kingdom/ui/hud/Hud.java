@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.hud;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.menu.Menu;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Rect;

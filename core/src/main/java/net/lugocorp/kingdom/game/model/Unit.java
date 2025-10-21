@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.actions.ActionType;
 import net.lugocorp.kingdom.game.actions.SkipAction;
@@ -30,10 +32,8 @@ import net.lugocorp.kingdom.menu.text.BadgeNode;
 import net.lugocorp.kingdom.menu.text.HelperNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;
-import net.lugocorp.kingdom.utils.logic.Colors;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;

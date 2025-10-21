@@ -1,5 +1,4 @@
-package net.lugocorp.kingdom.game.player;
-import net.lugocorp.kingdom.utils.logic.Colors;
+package net.lugocorp.kingdom.color;
 import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +6,10 @@ import java.util.List;
 /**
  * This class contains all the possible Player colors
  */
-public class PlayerColors {
+public class ColorPool {
     private final List<Color> pool = new ArrayList<>();
 
-    public PlayerColors() {
+    public ColorPool() {
         this.pool.add(Colors.fromHex(0x00ff00)); // Green
         this.pool.add(Colors.fromHex(0xff0000)); // Red
         this.pool.add(Colors.fromHex(0x0000ff)); // Blue

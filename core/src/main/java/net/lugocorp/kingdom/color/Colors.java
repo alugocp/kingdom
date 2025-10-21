@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.logic;
+package net.lugocorp.kingdom.color;
 import com.badlogic.gdx.graphics.Color;
 import java.util.HashMap;
 import java.util.Map;

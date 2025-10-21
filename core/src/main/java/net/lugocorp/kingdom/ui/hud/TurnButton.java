@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.hud;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.graphics.Color;

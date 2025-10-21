@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.actions.ActivateAction;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.Event;
@@ -11,7 +12,6 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.SideEffect;

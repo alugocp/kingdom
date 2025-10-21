@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.menu.text;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.menu.Menu;
-import net.lugocorp.kingdom.ui.ColorScheme;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
