@@ -13,9 +13,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  * Displays a Minimap of the Game World
  */
 public class Minimap {
-    // TODO convert this into a MenuNode and put it into the TileMenu
-    private static final int MAX_W = 250;
-    private static final int MAX_H = 250;
+    static final int MAX_W = 250;
+    static final int MAX_H = 250;
     private final Point pos = new Point();
     private int tilesPerPixelInOneDimension;
     private Color[][] thumbprint;
@@ -28,7 +27,7 @@ public class Minimap {
     /**
      * Initializes values in this object
      */
-    public void init(World world) {
+    public void init(World world, int x, int y) {
         float ratio = world.getHeight() > world.getWidth()
                 ? ((float) Minimap.MAX_H / (float) world.getHeight())
                 : ((float) Minimap.MAX_W / (float) world.getWidth());
@@ -39,22 +38,23 @@ public class Minimap {
         this.thumbprint = new Color[this.gridw][this.gridh];
         this.h = (int) (this.gridh * this.scale);
         this.w = (int) (this.gridw * this.scale);
+        this.pos.x = x;
+        this.pos.y = y;
         this.refresh(world);
+    }
+
+    /**
+     * Returns how many pixels this object takes up on the screen horizontally
+     */
+    public int getWidth() {
+        return this.w;
     }
 
     /**
      * Returns how many pixels this object takes up on the screen vertically
      */
     public int getHeight() {
-        return this.gridh * this.scale;
-    }
-
-    /**
-     * Sets this Minimap's location
-     */
-    void setPoint(int x, int y) {
-        this.pos.x = x;
-        this.pos.y = y;
+        return this.h;
     }
 
     /**

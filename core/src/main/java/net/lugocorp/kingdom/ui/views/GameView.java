@@ -167,7 +167,7 @@ public class GameView implements View {
     /** {@inheritdoc} */
     @Override
     public void start(Consumer<View> navigate) {
-        this.hud.minimap.init(this.game.world);
+        this.menu.init(this.game.world);
         this.navigate = navigate;
 
         // 3D setup
@@ -233,7 +233,7 @@ public class GameView implements View {
 
         // Draw 2D assets
         this.overlays.render(dt);
-        this.menu.get().draw(this.av);
+        this.menu.draw(this.av);
         if (this.popups.isDisplayed()) {
             this.popups.get().ifPresent((Menu m) -> m.draw(this.av));
         }
