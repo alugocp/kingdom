@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
@@ -172,26 +173,29 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        // TODO add something about active vs passive buildings here
-        Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
+        final Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
                 .flatMap((Tile t) -> t.leader);
-        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name));
+        final RowNode node = new RowNode();
+        final ListNode col1 = new ListNode().add(new HeaderNode(view.av, this.name));
         if (leader.isPresent()) {
-            node.add(
+            col1.add(
                     new BadgeNode(view.av, Colors.asInt(leader.get().color), ColorScheme.WHITE.hex, leader.get().name));
         }
-        node.add(new TextNode(view.av, this.desc));
-        node.add(new ResourceBarsNode(view.av,
-                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax())));
+        col1.add(new BadgeNode(view.av, ColorScheme.BLUE.hex, ColorScheme.WHITE.hex,
+                this.isActive() ? "Active" : "Passive")).add(new TextNode(view.av, this.desc))
+                .add(new ResourceBarsNode(view.av, new ResourceBarsNode.Bar("Health", 0x3d9e33,
+                        this.combat.health.get(), this.combat.health.getMax())));
+        node.add(col1);
         if (this.items.isPresent()) {
-            node.add(new TextNode(view.av, "Items"));
+            final ListNode col2 = new ListNode().add(new TextNode(view.av, "Items"));
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-                node.add(new BadgeNode(view.av, 0xb5b31f, ColorScheme.WHITE.hex,
-                        String.format("%d gold", this.items.get().getTotalGold())));
-                node.add(this.items.get().getMenuContent(view, p));
+                col2.add(new BadgeNode(view.av, 0xb5b31f, ColorScheme.WHITE.hex,
+                        String.format("%d gold", this.items.get().getTotalGold())))
+                        .add(this.items.get().getMenuContent(view, p));
             } else {
-                node.add(new TextNode(view.av, String.format("Can store %d items", this.items.get().getMax())));
+                col2.add(new TextNode(view.av, String.format("Can store %d items", this.items.get().getMax())));
             }
+            node.add(col2);
         }
         return node;
     }

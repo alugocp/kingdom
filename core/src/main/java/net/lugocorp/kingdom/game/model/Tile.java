@@ -24,8 +24,6 @@ import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -235,11 +233,9 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         if (!p.isPresent()) {
             throw new RuntimeException("Cannot display unspawned tiles");
         }
-        final ListNode node = new ListNode();
 
         // Instantiate the Tile MenuNodes
-        final List<MenuNode> tileNodes = new ArrayList<>();
-        tileNodes.add(new HeaderNode(view.av, this.name));
+        final ListNode tileNodes = new ListNode().add(new HeaderNode(view.av, this.name));
         if (this.glyph.isPresent()) {
             tileNodes.add(new GlyphIconsNode(view.av, this.glyph.get()));
         }
@@ -252,19 +248,9 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
             this.unit.ifPresent((Unit u) -> tabs.add("Unit", Optional.of(u.name), u.getMenuContent(view, p)));
             this.building.ifPresent(
                     (Building b) -> tabs.add(b.getMenuTabLabel(), Optional.of(b.name), b.getMenuContent(view, p)));
-
-            // Tile tab
-            final ListNode tileTab = new ListNode();
-            for (MenuNode n : tileNodes) {
-                tileTab.add(n);
-            }
-            tabs.add("Tile", Optional.of(this.name), tileTab);
-            node.add(tabs);
-        } else {
-            for (MenuNode n : tileNodes) {
-                node.add(n);
-            }
+            tabs.add("Tile", Optional.of(this.name), tileNodes);
+            return tabs;
         }
-        return node;
+        return tileNodes;
     }
 }

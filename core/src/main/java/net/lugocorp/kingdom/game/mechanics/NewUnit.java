@@ -156,7 +156,7 @@ public class NewUnit {
         RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         for (Unit u : options) {
             previews.add(new ModelNode(view.av, view.getCamera(), view.getEnvironment(), u.getModelName()));
-            units.add(u.getMenuContent(view, Optional.empty()));
+            units.add(((RowNode) u.getMenuContent(view, Optional.empty())).toListNode());
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
                 view.hud.popups.complete();
                 this.choose(view, view.game.human, u);

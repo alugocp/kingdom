@@ -38,6 +38,17 @@ public class RowNode implements MenuNode {
         return this.columns.map((Integer i) -> i).orElse(this.children.size());
     }
 
+    /**
+     * Returns a version of this RowNode as a ListNode
+     */
+    public ListNode toListNode() {
+        final ListNode ls = new ListNode();
+        for (MenuNode n : this.children) {
+            ls.add(n);
+        }
+        return ls;
+    }
+
     /** {@inheritdoc} */
     @Override
     public int getHeight() {

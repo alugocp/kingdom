@@ -140,24 +140,25 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        final ListNode node = new ListNode().add(new SubheaderNode(view.av, this.name));
+        final RowNode node = new RowNode();
 
         // Unit stats section
+        final ListNode col1 = new ListNode().add(new SubheaderNode(view.av, this.name));
         final MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
         final int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
-        node.add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString()));
-        node.add(this.getLeader().isPresent()
+        col1.add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString()));
+        col1.add(this.getLeader().isPresent()
                 ? new RowNode().add(glyphsNode)
                         .add(new BadgeNode(view.av, Colors.asInt(this.getLeader().get().color), ColorScheme.WHITE.hex,
                                 this.getLeader().get().name))
                 : glyphsNode);
-        node.add(new TextNode(view.av, this.desc))
+        col1.add(new TextNode(view.av, this.desc))
                 .add(new TextNode(view.av, String.format("This unit eats %s items", this.hunger.getPreferredFood())));
-        node.add(new ResourceBarsNode(view.av,
+        col1.add(new ResourceBarsNode(view.av,
                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
                 new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
                 new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.hunger.getTurnsBeforeHunger())));
-        node.add(new HelperNode(view.av, new ListNode().add(new SubheaderNode(view.av, "Health"))
+        col1.add(new HelperNode(view.av, new ListNode().add(new SubheaderNode(view.av, "Health"))
                 .add(new TextNode(view.av, "If a unit's health bar hits zero then they disappear off the map."))
                 .add(new SubheaderNode(view.av, "Loyalty"))
                 .add(new TextNode(view.av,
@@ -165,21 +166,21 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                 .add(new SubheaderNode(view.av, "Hunger")).add(new TextNode(view.av,
                         "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming an edible item."))));
 
-        // Actions section
+        // Actions / spells section
+        final ListNode col2 = new ListNode().add(new SubheaderNode(view.av, "Spells"))
+                .add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
         if (this.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()) {
-            node.add(new SubheaderNode(view.av, "Actions"))
-                    .add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
 
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
-                node.add(new ActionNode(view.av, "Move",
+                col2.add(new ActionNode(view.av, "Move",
                         Optional.of("Moves this unit to the target tile (may exhaust this unit's actions)"),
                         () -> view.selector.move(this)));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
-                node.add(new ActionNode(view.av, "Deposit",
+                col2.add(new ActionNode(view.av, "Deposit",
                         Optional.of(
                                 "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)"),
                         () -> view.selector.deposit(this)));
@@ -188,7 +189,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Give Food
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
-                node.add(new ActionNode(view.av, "Give Food", Optional.of(
+                col2.add(new ActionNode(view.av, "Give Food", Optional.of(
                         "This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
@@ -200,7 +201,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                node.add(new ActionNode(view.av, "Store items", Optional.of(
+                col2.add(new ActionNode(view.av, "Store items", Optional.of(
                         "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
                         () -> {
                             view.hud.logger.log(String.format("%s will wait where they are", this.name));
@@ -214,7 +215,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                node.add(new ActionNode(view.av, "Skip turn",
+                col2.add(new ActionNode(view.av, "Skip turn",
                         Optional.of(
                                 "This unit won't ask for commands this turn (does not exhaust this unit's actions)"),
                         () -> {
@@ -227,27 +228,25 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         }));
             }
         }
-
-        // Spells section
-        node.add(new SubheaderNode(view.av, "Spells"));
         for (Ability a : this.abilities.getActives()) {
-            node.add(a.getMenuContent(view, p));
+            col2.add(a.getMenuContent(view, p));
         }
         for (Ability a : this.abilities.getPassives()) {
-            node.add(a.getMenuContent(view, p));
+            col2.add(a.getMenuContent(view, p));
         }
 
         // Items section
+        final ListNode col3 = new ListNode();
         if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-            node.add(new SubheaderNode(view.av, "Equipped Items"));
-            node.add(this.equipped.getMenuContent(view, p));
-            node.add(new SubheaderNode(view.av, "Stored Items"));
-            node.add(this.haul.getMenuContent(view, p));
+            col3.add(new SubheaderNode(view.av, "Equipped Items"));
+            col3.add(this.equipped.getMenuContent(view, p));
+            col3.add(new SubheaderNode(view.av, "Stored Items"));
+            col3.add(this.haul.getMenuContent(view, p));
         } else {
-            node.add(new SubheaderNode(view.av, "Inventory"));
-            node.add(new TextNode(view.av, String.format("Can equip up to %d items", this.equipped.getMax())));
-            node.add(new TextNode(view.av, String.format("Can store up to %d items", this.haul.getMax())));
+            col3.add(new SubheaderNode(view.av, "Inventory"));
+            col3.add(new TextNode(view.av, String.format("Can equip up to %d items", this.equipped.getMax())));
+            col3.add(new TextNode(view.av, String.format("Can store up to %d items", this.haul.getMax())));
         }
-        return node;
+        return node.add(col1).add(col2).add(col3);
     }
 }
