@@ -113,7 +113,7 @@ public class ArtifactAuction {
      * Increases the number of Auction points
      */
     public void addPoints(GameView view, Point p, int amount) {
-        view.overlays.add(new ResourceOverlay(view, p, 0.24f, ColorScheme.GOLD.hex, amount).then(() -> {
+        view.overlays.add(new ResourceOverlay(view, p, 0.14f, ColorScheme.GOLD.hex, amount).then(() -> {
             this.points += amount;
             view.hud.top.update(view.game);
         }));

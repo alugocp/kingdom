@@ -209,7 +209,7 @@ public class Menu {
             menu.outlined = true;
             this.mini = Optional.of(menu);
         }
-        this.mini.get().y = Math.min(Coords.SIZE.y - this.mini.get().getHeight(), y);
+        this.mini.get().y = Math.min(Coords.SIZE.y - this.mini.get().getContentHeight(), y);
     }
 
     /**
@@ -296,12 +296,18 @@ public class Menu {
      * Propagates a signal to activate some mouse moved logic
      */
     public boolean mouseMoved(Point p) {
-        if (!this.getBoundingRect().contains(p)) {
-            return false;
-        }
+        final Rect visualBounds = this.getBoundingRect();
         final Rect bounds = new Rect(this.x + this.margin, this.y + this.margin - this.offset,
                 this.width - (this.margin * 2) - Menu.SCROLLBAR, this.root.getHeight());
-        this.prev = curr;
+        if (!visualBounds.contains(p)) {
+            if (this.curr.map((Point p1) -> visualBounds.contains(p1)).orElse(false)) {
+                this.prev = this.curr;
+                this.curr = Optional.of(p);
+                this.root.mouseMoved(bounds, this.prev.get(), this.curr.get());
+            }
+            return false;
+        }
+        this.prev = this.curr;
         this.curr = Optional.of(p);
         this.scrollBarHighlighted = this.getScrollBarBounds().map((Rect r) -> r.contains(p)).orElse(false);
         if (this.prev.isPresent()) {
