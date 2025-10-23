@@ -2,24 +2,26 @@ package net.lugocorp.kingdom.game.actions;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.math.Point;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This Action represents a Unit moving
  */
 public class MoveAction implements Action {
+    private final List<Point> path = new ArrayList<>();
     private final GameView view;
     private final Unit unit;
-    private List<Point> path;
     private int distance;
     private int max;
+    // TODO remove this action if the path gets intersected or otherwise invalid
 
     public MoveAction(GameView view, Unit unit, List<Point> path, int distance) {
         this.max = unit.movement.getMaxDistance(view);
         this.distance = distance;
-        this.path = path;
         this.view = view;
         this.unit = unit;
+        this.path.addAll(path);
     }
 
     /**
@@ -65,7 +67,8 @@ public class MoveAction implements Action {
                 return a;
             case MOVE : {
                 final MoveAction ma = (MoveAction) a;
-                this.path = ma.path;
+                this.path.clear();
+                this.path.addAll(ma.path);
                 this.unshift(ma.distance);
                 this.distance += ma.distance;
                 return this;

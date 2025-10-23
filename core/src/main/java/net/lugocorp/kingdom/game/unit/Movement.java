@@ -39,16 +39,15 @@ public class Movement {
         }
 
         // Do the actual movements
-        System.out.println(path);
         return () -> {
-            view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, distance));
-            AnimationChain chain = new AnimationChain();
+            final AnimationChain chain = new AnimationChain();
             Point prev = this.unit.getPoint();
             for (int a = 0; a < distance; a++) {
                 chain.add(new MoveAnimation(this.unit, prev, path.get(a)));
                 prev = path.get(a);
             }
             view.animations.add(chain.get());
+            view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, distance));
         };
     }
 

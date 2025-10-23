@@ -29,7 +29,7 @@ class PathData {
      * Returns true if the given Point exists within this data
      */
     final boolean hasAlreadySeenPoint(Point p) {
-        return this.gScore.containsKey(p);
+        return this.cameFrom.containsKey(p) || p.equals(this.origin);
     }
 
     /**
@@ -57,6 +57,13 @@ class PathData {
         final List<Point> path = new ArrayList<>();
         Point p = dest;
         path.add(p);
+
+        // Return early if we're already at the origin
+        if (p.equals(this.origin)) {
+            return path;
+        }
+
+        // Go back through the cameFrom map to build the path
         while (!this.cameFrom.get(p).equals(this.origin)) {
             p = this.cameFrom.get(p);
             path.add(0, p);
