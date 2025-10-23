@@ -49,6 +49,7 @@ class TileMoveSelectMode extends TileSelectMode {
         view.av.loaders.sounds.play("sfx/footstep");
         this.unit.movement.move(view, this.previousPath.get()).execute();
         view.hud.bot.minimap.refresh(view.game.world);
+        view.hud.bot.tileMenu.refresh();
     }
 
     /** {@inheritdoc} */
