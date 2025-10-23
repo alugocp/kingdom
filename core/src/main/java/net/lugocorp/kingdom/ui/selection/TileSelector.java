@@ -79,7 +79,10 @@ public class TileSelector {
         this.hovered
                 .ifPresent((Point h) -> this.view.game.world.getTile(h).ifPresent((Tile t) -> t.changeHovered(false)));
         if (this.view.game.world.isInBounds(p)) {
-            this.view.game.world.getTile(p).ifPresent((Tile t) -> t.changeHovered(true));
+            this.view.game.world.getTile(p).ifPresent((Tile t) -> {
+                this.mode.hoverTile(this.view, p);
+                t.changeHovered(true);
+            });
             this.hovered = Optional.of(p);
         } else {
             this.hovered = Optional.empty();

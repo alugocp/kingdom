@@ -8,9 +8,9 @@ import java.util.List;
  * This Action represents a Unit moving
  */
 public class MoveAction implements Action {
-    private final List<Point> path;
     private final GameView view;
     private final Unit unit;
+    private List<Point> path;
     private int distance;
     private int max;
 
@@ -36,21 +36,6 @@ public class MoveAction implements Action {
         for (int a = 0; a < n; a++) {
             this.path.remove(0);
         }
-    }
-
-    /**
-     * Returns true if the given MoveAction's path follows this MoveAction's path
-     */
-    private boolean pathFollowsThisPath(MoveAction ma) {
-        if (ma.path.size() > this.path.size()) {
-            return false;
-        }
-        for (int a = 0; a < ma.path.size(); a++) {
-            if (!ma.path.get(a).equals(this.path.get(a))) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /** {@inheritdoc} */
@@ -80,15 +65,10 @@ public class MoveAction implements Action {
                 return a;
             case MOVE : {
                 final MoveAction ma = (MoveAction) a;
-                if (this.pathFollowsThisPath(ma)) {
-                    this.distance += ma.distance;
-                    this.unshift(ma.distance);
-                    return this;
-                } else {
-                    ma.unshift(ma.distance);
-                    ma.distance += this.distance;
-                    return ma;
-                }
+                this.path = ma.path;
+                this.unshift(ma.distance);
+                this.distance += ma.distance;
+                return this;
             }
         }
         throw new RuntimeException("Following actions should never get here");
@@ -97,19 +77,18 @@ public class MoveAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean endOfTurn() {
-        final boolean remain = this.path.size() > 0;
+        // Recalculate the max distance we can travel this turn
         this.max = this.unit.movement.getMaxDistance(this.view);
 
         // If there's more path to move on and we haven't hit max
         // distance yet this turn then do that now
-        if (remain && this.distance < this.max) {
-            final Point dest = this.path.get(Math.min(this.max - this.distance, this.path.size()) - 1);
-            this.unit.movement.move(this.view, dest).execute();
+        if (this.path.size() > 0 && this.distance < this.max) {
+            this.unit.movement.move(this.view, this.path).execute();
         }
 
         // Reset distance moved for the next turn
         this.distance = 0;
-        return remain;
+        return this.path.size() > 0;
     }
 
     /** {@inheritdoc} */

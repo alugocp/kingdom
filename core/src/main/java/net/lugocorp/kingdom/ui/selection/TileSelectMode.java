@@ -31,4 +31,11 @@ abstract class TileSelectMode {
      * Do something when this TileSelector is no longer needed
      */
     abstract void dispel(GameView view);
+
+    /**
+     * Do something when we've changed our hovered Point
+     */
+    void hoverTile(GameView view, Point p) {
+        // No-op by default
+    }
 }
