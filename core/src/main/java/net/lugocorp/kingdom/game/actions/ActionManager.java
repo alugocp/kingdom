@@ -59,7 +59,7 @@ public class ActionManager {
      */
     public int getRemainingMoveDistance(GameView view, Unit u) {
         final int max = u.movement.getMaxDistance(view);
-        if (!this.hasUnitActed(u)) {
+        if (!this.unitHasAssignedAction(u)) {
             return max;
         }
         final int moved = this.unitMovedDistance(u);
@@ -67,9 +67,9 @@ public class ActionManager {
     }
 
     /**
-     * Returns true if the given Unit has acted yet this turn
+     * Returns true if the given Unit has an assigned action for this turn
      */
-    public boolean hasUnitActed(Unit u) {
+    public boolean unitHasAssignedAction(Unit u) {
         return this.actions.containsKey(u);
     }
 
@@ -77,7 +77,7 @@ public class ActionManager {
      * Returns true if thie given Unit can make an Action of the following type
      */
     public boolean canUnitDoThis(Unit u, ActionType type) {
-        return !this.hasUnitActed(u) || this.actions.get(u).canBeFollowedBy(type);
+        return !this.unitHasAssignedAction(u) || this.actions.get(u).canBeFollowedBy(type);
     }
 
     /**
@@ -139,7 +139,7 @@ public class ActionManager {
     private Optional<Unit> getNextUnitToAct(Player player) {
         // TODO optimize this
         for (Unit u : player.units) {
-            if (!this.hasUnitActed(u) && !u.sleep.isSleeping()) {
+            if (!this.unitHasAssignedAction(u) && !u.sleep.isSleeping()) {
                 return Optional.of(u);
             }
         }

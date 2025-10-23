@@ -87,6 +87,13 @@ public class Actor {
      */
     public void executeUnitPlans(GameView view) {
         for (Map.Entry<Unit, PlanNode> entry : this.plans.entrySet()) {
+            // If the given Unit has an entry in the ActionManager then let that ride before
+            // executing the next PlanNode
+            if (view.game.actions.unitHasAssignedAction(entry.getKey())) {
+                continue;
+            }
+
+            // Kick off the next PlanNode in the Unit's Plan
             PlanNode n = entry.getValue();
             ActionResult result = ActionResult.RIDE;
             while (result == ActionResult.RIDE) {
@@ -97,6 +104,7 @@ public class Actor {
                         this.plans.put(entry.getKey(), n);
                     } else {
                         this.plans.remove(entry.getKey());
+                        break;
                     }
                 }
                 if (result == ActionResult.POP_ALL) {
@@ -107,11 +115,12 @@ public class Actor {
     }
 
     /**
-     * Ensures that all Units in the Set have an assigned plan
+     * Ensures that all Units in the Set have an assigned plan (or are currently
+     * performing an Action)
      */
     public void assignUnitPlans(GameView view, Set<Unit> units) {
         for (Unit u : units) {
-            if (!this.plans.containsKey(u)) {
+            if (!this.plans.containsKey(u) && !view.game.actions.unitHasAssignedAction(u)) {
                 Optional<PlanNode> plan = this.determinePlanNode(view, u);
                 plan.ifPresent((PlanNode n) -> this.plans.put(u, n));
             }

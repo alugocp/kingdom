@@ -86,22 +86,6 @@ public class Movement {
     }
 
     /**
-     * Returns the list of Points that this Unit can move to
-     */
-    /*
-     * public Set<Point> getTargets(GameView view, int max) { return
-     * this.getPotentialMoveGraph(view, max).keySet(); }
-     */
-
-    /**
-     * Returns the list of Points that this Unit can move to
-     */
-    /*
-     * public Set<Point> getTargets(GameView view) { return
-     * this.getPotentialMoveGraph(view, this.getMaxDistance(view)).keySet(); }
-     */
-
-    /**
      * Returns true if the given Unit can move to the given Point
      */
     public boolean canMoveToPoint(GameView view, Point p) {
@@ -121,47 +105,4 @@ public class Movement {
         this.unit.handleEvent(view, event);
         return event.possible();
     }
-
-    /**
-     * Returns a list of Points to take you from one to another
-     */
-    /*
-     * private List<Point> getMovePath(GameView view, Map<Point, Point> graph, Point
-     * dest) { if (!graph.containsKey(dest)) { throw new
-     * RuntimeException(String.format("Invalid destination %s", dest.toString())); }
-     *
-     * List<Point> path = new ArrayList<>(); path.add(dest); while
-     * (!Hexagons.areNeighbors(path.get(0), this.unit.getPoint())) { path.add(0,
-     * graph.get(path.get(0))); } return path; }
-     */
-
-    /**
-     * Returns a map where each key is a potential move target and each value is the
-     * Point we arrive there from
-     */
-    /*
-     * private Map<Point, Point> getPotentialMoveGraph(GameView view, int max) { //
-     * Returns nothing if this Unit cannot move if (max == 0) { return new
-     * HashMap<Point, Point>(); }
-     *
-     * // Set up the algorithm's variables final Point origin = new
-     * Point(this.unit.getX(), this.unit.getY()); final Map<Point, Integer> distance
-     * = new HashMap<>(); final Map<Point, Point> graph = new HashMap<>();
-     * distance.put(origin, 0);
-     *
-     * // Iterate for each distance up to the max for (int a = 0; a < max; a++) { //
-     * Do this for each Point with the current distance value final int steps = a;
-     * final Set<Point> outside = Lambda.filter((Point p) -> distance.get(p) ==
-     * steps, distance.keySet()); for (Point p : outside) { // Do this for each of
-     * the current Point's adjacents, // unless if they've already been processed
-     * final Set<Point> adjs = Hexagons.getAdjacents(p); for (Point p1 : adjs) { //
-     * Skip this adjacent Point if we've already processed it if
-     * (distance.containsKey(p1)) { continue; }
-     *
-     * // Check if we can move to this adjacent Point if (!this.canMoveToPoint(view,
-     * p1)) { continue; }
-     *
-     * // If we can move to this adjacent Point then record it in the graph
-     * distance.put(p1, a + 1); graph.put(p1, p); } } } return graph; }
-     */
 }

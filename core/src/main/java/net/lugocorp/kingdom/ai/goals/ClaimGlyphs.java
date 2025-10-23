@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.code.Lambda;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class ClaimGlyphs extends Goal {
     /** {@inheritdoc} */
     @Override
     public Optional<Plan> suggestPlan(GameView view, Unit u) {
-        Set<Point> targets = u.movement.getTargets(view);
+        final Set<Point> targets = Hexagons.getNeighbors(u.getPoint(), 4);
         return this.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
     }
 
