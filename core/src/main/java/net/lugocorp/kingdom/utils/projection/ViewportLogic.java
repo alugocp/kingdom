@@ -27,11 +27,11 @@ public class ViewportLogic {
     /**
      * Returns the given "world units" (a LibGDX term) in screen coordinates
      */
-    public static Point project(int x, int y) {
+    public static int[] project(int x, int y) {
         final float scaleX = ViewportLogic.viewport.getScreenWidth() / (float) Coords.SIZE.x;
         final float scaleY = ViewportLogic.viewport.getScreenHeight() / (float) Coords.SIZE.y;
-        return new Point((int) (x * scaleX) + ViewportLogic.viewport.getScreenX(),
-                (int) (y * scaleY) + ViewportLogic.viewport.getScreenY());
+        return new int[]{(int) ((x * scaleX) + ViewportLogic.viewport.getScreenX()),
+                (int) ((y * scaleY) + ViewportLogic.viewport.getScreenY())};
     }
 
     /**

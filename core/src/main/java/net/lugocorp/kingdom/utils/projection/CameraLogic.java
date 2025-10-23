@@ -33,8 +33,8 @@ public class CameraLogic {
     /**
      * Calls into getScreenPointOnSurface() from a Point
      */
-    public static Vector3 getScreenPointOnSurface(Point p) {
-        return CameraLogic.getScreenPointOnSurface(p.x, p.y);
+    public static Vector3 getScreenPointOnSurface(int[] point) {
+        return CameraLogic.getScreenPointOnSurface(point[0], point[1]);
     }
 
     /**
