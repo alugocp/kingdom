@@ -3,7 +3,7 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.utils.code.Semver;
-import net.lugocorp.kingdom.utils.logic.ViewportLogic;
+import net.lugocorp.kingdom.utils.projection.ViewportLogic;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;

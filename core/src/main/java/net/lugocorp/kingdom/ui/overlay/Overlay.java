@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.ui.overlay;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.logic.CameraLogic;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.utils.projection.CameraLogic;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
 
