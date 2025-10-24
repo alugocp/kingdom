@@ -191,8 +191,9 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Sets the movement path visible on this Tile
      */
-    public void setMovePath(int path) {
+    public void setMovePath(int path, int label) {
         this.userData.movePath = path;
+        this.userData.pathLabel = label;
     }
 
     /** {@inheritdoc} */

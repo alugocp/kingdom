@@ -14,6 +14,7 @@ uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_pathTexture1;
 uniform sampler2D u_pathTexture2;
+uniform sampler2D u_pathDotTexture;
 uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
 uniform sampler2D u_borderTexture3;
@@ -31,6 +32,7 @@ uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_vision;
 uniform int u_movePath;
+uniform int u_pathLabel;
 uniform int u_domainBorder;
 uniform int u_domainBorderExtension;
 uniform int u_tileBorder;
@@ -88,6 +90,19 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     border -= checkBorderColor(border, color, texture1, 1, bx, 1.0 - by); // Left
 }
 
+// Handles all path-related logic
+void applyPath(vec4 color) {
+    applyBorder(u_movePath, color, u_pathTexture1, u_pathTexture2);
+    if (u_pathLabel > 0) {
+        float x = v_diffuseUV.x * 64.0 / 19.0;
+        float y = v_diffuseUV.y * 64.0 / 18.0;
+        vec4 value = texture2D(u_pathDotTexture, vec2(x, y));
+        if (value.x > 0.0) {
+            gl_FragColor = color;
+        }
+    }
+}
+
 // Extends smaller borders so that they connect aross tiles
 void applyBorderExtensions(int extension, vec4 color) {
     if (extension == 0) {
@@ -129,7 +144,7 @@ void main() {
 
         // Allow for move paths to be visible beneath fog of war
         vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-        applyBorder(u_movePath, white, u_pathTexture1, u_pathTexture2);
+        applyPath(white);
         return;
     }
 
@@ -196,7 +211,7 @@ void main() {
         // Player, domain, and distance borders
         vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
         vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-        applyBorder(u_movePath, black, u_pathTexture1, u_pathTexture2);
+        applyPath(black);
         applyBorder(u_tileBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
         applyBorder(u_domainBorder, white, u_borderTexture3, u_borderTexture4);
         applyBorderExtensions(u_domainBorderExtension, white);

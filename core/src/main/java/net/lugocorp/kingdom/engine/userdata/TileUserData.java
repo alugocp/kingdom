@@ -14,7 +14,7 @@ public class TileUserData {
     // Adds a wave effect to the top face texture
     public boolean wave = false;
 
-    // This int tracks which sides should display a border
+    // Renders Player borders
     public Color borderColor = Color.BLACK;
     public int borders = 0;
 
@@ -24,8 +24,9 @@ public class TileUserData {
     // This int tracks which sides of the domain border should be extended
     public int domainExtensionBorders = 0;
 
-    // This int tracks a Unit's projected movement path
+    // Renders a Unit's projected movement path
     public int movePath = 0;
+    public int pathLabel = 0;
 
     // Fog of war system
     public boolean hasBeenSeen = false;

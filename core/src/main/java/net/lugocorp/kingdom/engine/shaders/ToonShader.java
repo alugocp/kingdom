@@ -55,6 +55,7 @@ public class ToonShader implements Shader {
     private int u_includeGlyphTexture;
     private int u_pathTexture1;
     private int u_pathTexture2;
+    private int u_pathDotTexture;
     private int u_borderTexture1;
     private int u_borderTexture2;
     private int u_borderTexture3;
@@ -76,6 +77,7 @@ public class ToonShader implements Shader {
     private int u_domainBorder;
     private int u_domainBorderExtension;
     private int u_movePath;
+    private int u_pathLabel;
     private int u_borderColor;
     private int u_tileBorder;
     private int u_timer;
@@ -101,6 +103,7 @@ public class ToonShader implements Shader {
         this.u_borderTexture2 = this.program.getUniformLocation("u_borderTexture2");
         this.u_pathTexture1 = this.program.getUniformLocation("u_pathTexture1");
         this.u_pathTexture2 = this.program.getUniformLocation("u_pathTexture2");
+        this.u_pathDotTexture = this.program.getUniformLocation("u_pathDotTexture");
         this.u_borderTexture3 = this.program.getUniformLocation("u_borderTexture3");
         this.u_borderTextureExt3 = this.program.getUniformLocation("u_borderTextureExt3");
         this.u_borderTexture4 = this.program.getUniformLocation("u_borderTexture4");
@@ -120,6 +123,7 @@ public class ToonShader implements Shader {
         this.u_domainBorder = this.program.getUniformLocation("u_domainBorder");
         this.u_domainBorderExtension = this.program.getUniformLocation("u_domainBorderExtension");
         this.u_movePath = this.program.getUniformLocation("u_movePath");
+        this.u_pathLabel = this.program.getUniformLocation("u_pathLabel");
         this.u_borderColor = this.program.getUniformLocation("u_borderColor");
         this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
         this.u_timer = this.program.getUniformLocation("u_timer");
@@ -207,6 +211,7 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
             this.program.setUniformi(this.u_movePath, 0);
+            this.program.setUniformi(this.u_pathLabel, 0);
             this.program.setUniformi(this.u_domainBorderExtension, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
@@ -266,9 +271,13 @@ public class ToonShader implements Shader {
                             .getTextureDescriptor("textures/path1");
                     final Optional<TextureDescriptor> tdesc2 = this.textures.get()
                             .getTextureDescriptor("textures/path2");
-                    if (tdesc1.isPresent() && tdesc2.isPresent()) {
+                    final Optional<TextureDescriptor> tdesc3 = this.textures.get()
+                            .getTextureDescriptor("textures/path-dot");
+                    if (tdesc1.isPresent() && tdesc2.isPresent() && tdesc3.isPresent()) {
                         this.program.setUniformi(this.u_pathTexture1, this.context.textureBinder.bind(tdesc1.get()));
                         this.program.setUniformi(this.u_pathTexture2, this.context.textureBinder.bind(tdesc2.get()));
+                        this.program.setUniformi(this.u_pathDotTexture, this.context.textureBinder.bind(tdesc3.get()));
+                        this.program.setUniformi(this.u_pathLabel, data.pathLabel);
                         this.program.setUniformi(this.u_movePath, data.movePath);
                     }
                 }
@@ -281,6 +290,7 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_domainBorderExtension, 0);
             this.program.setUniformi(this.u_movePath, 0);
+            this.program.setUniformi(this.u_pathLabel, 0);
             this.program.setUniformi(this.u_vision, 2);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
 
