@@ -266,7 +266,7 @@ public class ToonShader implements Shader {
                 }
 
                 // Move paths
-                if (data.movePath > 0) {
+                if (data.movePath > 0 || data.pathLabel > 0) {
                     final Optional<TextureDescriptor> tdesc1 = this.textures.get()
                             .getTextureDescriptor("textures/path1");
                     final Optional<TextureDescriptor> tdesc2 = this.textures.get()

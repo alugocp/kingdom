@@ -80,6 +80,7 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     if (border == 0) {
         return;
     }
+    // (64.0 / 19.0) and (64.0 / 18.0) are special ratios based on the top face texture for tiles
     float bx = v_diffuseUV.x * 64.0 / 19.0;
     float by = v_diffuseUV.y * 64.0 / 18.0;
     border -= checkBorderColor(border, color, texture2, 32, 1.0 - bx, by); // Bot right
@@ -88,19 +89,6 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     border -= checkBorderColor(border, color, texture2, 4, bx, 1.0 - by); // Top left
     border -= checkBorderColor(border, color, texture1, 2, bx, by); // Right
     border -= checkBorderColor(border, color, texture1, 1, bx, 1.0 - by); // Left
-}
-
-// Handles all path-related logic
-void applyPath(vec4 color) {
-    applyBorder(u_movePath, color, u_pathTexture1, u_pathTexture2);
-    if (u_pathLabel > 0) {
-        float x = v_diffuseUV.x * 64.0 / 19.0;
-        float y = v_diffuseUV.y * 64.0 / 18.0;
-        vec4 value = texture2D(u_pathDotTexture, vec2(x, y));
-        if (value.x > 0.0) {
-            gl_FragColor = color;
-        }
-    }
 }
 
 // Extends smaller borders so that they connect aross tiles
@@ -122,6 +110,19 @@ void applyBorderExtensions(int extension, vec4 color) {
     extension -= checkBorderColor(extension, color, u_borderTextureExt42, 4, bx, 1.0 - by); // Top left CW
     extension -= checkBorderColor(extension, color, u_borderTextureExt3, 2, 1.0 - bx, 1.0 - by); // Left CCW ()
     extension -= checkBorderColor(extension, color, u_borderTextureExt3, 1, bx, 1.0 - by); // Left CW ()
+}
+
+// Handles all path-related logic
+void applyPath(vec4 color) {
+    applyBorder(u_movePath, color, u_pathTexture1, u_pathTexture2);
+    if (u_pathLabel > 0) {
+        float x = v_diffuseUV.x * 64.0 / 19.0;
+        float y = v_diffuseUV.y * 64.0 / 18.0;
+        vec4 value = texture2D(u_pathDotTexture, vec2(x, y));
+        if (value.x > 0.0) {
+            gl_FragColor = color;
+        }
+    }
 }
 
 // Main shader function
@@ -203,12 +204,7 @@ void main() {
     }
 
     // Border and path rendering logic
-    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0 || u_movePath > 0)) {
-        // (64.0 / 19.0) and (64.0 / 18.0) are special ratios based on the top face texture for tiles
-        float bx = v_diffuseUV.x * 64.0 / 19.0;
-        float by = v_diffuseUV.y * 64.0 / 18.0;
-
-        // Player, domain, and distance borders
+    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0 || u_movePath > 0 || u_pathLabel > 0)) {
         vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
         vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
         applyPath(black);
