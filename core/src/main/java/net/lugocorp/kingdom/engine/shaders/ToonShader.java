@@ -224,8 +224,8 @@ public class ToonShader implements Shader {
             if (this.textures.isPresent()) {
                 // Player borders
                 if (data.borders > 0) {
-                    Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("game/border1");
-                    Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("game/border2");
+                    Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("textures/border1");
+                    Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("textures/border2");
                     if (tdesc1.isPresent() && tdesc2.isPresent()) {
                         this.program.setUniformi(this.u_borderTexture1, this.context.textureBinder.bind(tdesc1.get()));
                         this.program.setUniformi(this.u_borderTexture2, this.context.textureBinder.bind(tdesc2.get()));
@@ -235,14 +235,16 @@ public class ToonShader implements Shader {
 
                 // Domain borders
                 if (data.domainBorders > 0) {
-                    final Optional<TextureDescriptor> tdesc3 = this.textures.get().getTextureDescriptor("game/border3");
-                    final Optional<TextureDescriptor> tdesc4 = this.textures.get().getTextureDescriptor("game/border4");
+                    final Optional<TextureDescriptor> tdesc3 = this.textures.get()
+                            .getTextureDescriptor("textures/border3");
+                    final Optional<TextureDescriptor> tdesc4 = this.textures.get()
+                            .getTextureDescriptor("textures/border4");
                     final Optional<TextureDescriptor> tdescExt3 = this.textures.get()
-                            .getTextureDescriptor("game/border3-extend");
+                            .getTextureDescriptor("textures/border3-extend");
                     final Optional<TextureDescriptor> tdescExt4 = this.textures.get()
-                            .getTextureDescriptor("game/border4-extend");
+                            .getTextureDescriptor("textures/border4-extend");
                     final Optional<TextureDescriptor> tdescExt42 = this.textures.get()
-                            .getTextureDescriptor("game/border4-extend2");
+                            .getTextureDescriptor("textures/border4-extend2");
                     if (tdesc3.isPresent() && tdesc4.isPresent() && tdescExt3.isPresent() && tdescExt4.isPresent()
                             && tdescExt42.isPresent()) {
                         this.program.setUniformi(this.u_borderTexture3, this.context.textureBinder.bind(tdesc3.get()));
@@ -260,8 +262,10 @@ public class ToonShader implements Shader {
 
                 // Move paths
                 if (data.movePath > 0) {
-                    final Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("game/path1");
-                    final Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("game/path2");
+                    final Optional<TextureDescriptor> tdesc1 = this.textures.get()
+                            .getTextureDescriptor("textures/path1");
+                    final Optional<TextureDescriptor> tdesc2 = this.textures.get()
+                            .getTextureDescriptor("textures/path2");
                     if (tdesc1.isPresent() && tdesc2.isPresent()) {
                         this.program.setUniformi(this.u_pathTexture1, this.context.textureBinder.bind(tdesc1.get()));
                         this.program.setUniformi(this.u_pathTexture2, this.context.textureBinder.bind(tdesc2.get()));
