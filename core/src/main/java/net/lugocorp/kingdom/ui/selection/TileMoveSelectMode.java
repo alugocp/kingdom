@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.ui.selection;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.math.Hexagons;
 import net.lugocorp.kingdom.utils.math.Point;
 import net.lugocorp.kingdom.utils.pathfinding.Pathfinder;
 import java.util.List;
@@ -26,7 +27,7 @@ class TileMoveSelectMode extends TileSelectMode {
     private final void removeShaderData(GameView view) {
         this.previousPath.ifPresent((List<Point> path) -> {
             for (Point p : path) {
-                view.game.world.getTile(p).ifPresent((Tile t) -> t.setDistanceBorder(0));
+                view.game.world.getTile(p).ifPresent((Tile t) -> t.setMovePath(0));
             }
         });
     }
@@ -70,8 +71,12 @@ class TileMoveSelectMode extends TileSelectMode {
         final List<Point> path = this.pathfinder.getPath(view, p);
         this.removeShaderData(view);
         this.previousPath = Optional.of(path);
-        for (Point p1 : path) {
-            view.game.world.getTile(p1).ifPresent((Tile t) -> t.setDistanceBorder(63));
+        for (int a = 0; a < path.size(); a++) {
+            final int a1 = a;
+            final Point p1 = path.get(a);
+            final int movePath = Hexagons.getBorderInteger(p1, (Point p2) -> (a1 > 0 && p2.equals(path.get(a1 - 1)))
+                    || (a1 < path.size() - 1 && p2.equals(path.get(a1 + 1))));
+            view.game.world.getTile(p1).ifPresent((Tile t) -> t.setMovePath(movePath));
         }
     }
 }

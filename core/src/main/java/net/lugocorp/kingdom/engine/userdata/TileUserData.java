@@ -24,11 +24,8 @@ public class TileUserData {
     // This int tracks which sides of the domain border should be extended
     public int domainExtensionBorders = 0;
 
-    // This int tracks how far a Unit can move (used in the move Action UI)
-    public int distanceBorders = 0;
-
-    // This int tracks which sides of the distance border should be extended
-    public int distanceExtensionBorders = 0;
+    // This int tracks a Unit's projected movement path
+    public int movePath = 0;
 
     // Fog of war system
     public boolean hasBeenSeen = false;

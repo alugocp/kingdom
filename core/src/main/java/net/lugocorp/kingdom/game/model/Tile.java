@@ -189,11 +189,10 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
-     * Sets this Tile's border integer for distance borders
+     * Sets the movement path visible on this Tile
      */
-    public void setDistanceBorder(int border) {
-        this.userData.distanceBorders = border;
-        this.userData.distanceExtensionBorders = Hexagons.getBorderExtensionInteger(border);
+    public void setMovePath(int path) {
+        this.userData.movePath = path;
     }
 
     /** {@inheritdoc} */

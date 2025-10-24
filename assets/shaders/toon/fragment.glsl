@@ -12,6 +12,8 @@ precision mediump float;
 uniform bool u_includeGlyphTexture;
 uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
+uniform sampler2D u_pathTexture1;
+uniform sampler2D u_pathTexture2;
 uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
 uniform sampler2D u_borderTexture3;
@@ -28,8 +30,7 @@ uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_vision;
-uniform int u_distanceBorder;
-uniform int u_distanceBorderExtension;
+uniform int u_movePath;
 uniform int u_domainBorder;
 uniform int u_domainBorderExtension;
 uniform int u_tileBorder;
@@ -126,10 +127,9 @@ void main() {
             gl_FragColor.z += coeff * 0.5;
         }
 
-        // Allow for distance borders to be visible beneath fog of war
+        // Allow for move paths to be visible beneath fog of war
         vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-        applyBorder(u_distanceBorder, white, u_borderTexture3, u_borderTexture4);
-        applyBorderExtensions(u_distanceBorderExtension, white);
+        applyBorder(u_movePath, white, u_pathTexture1, u_pathTexture2);
         return;
     }
 
@@ -187,8 +187,8 @@ void main() {
         gl_FragColor.z += coeff * 0.5;
     }
 
-    // Border rendering logic
-    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0 || u_distanceBorder > 0)) {
+    // Border and path rendering logic
+    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0 || u_movePath > 0)) {
         // (64.0 / 19.0) and (64.0 / 18.0) are special ratios based on the top face texture for tiles
         float bx = v_diffuseUV.x * 64.0 / 19.0;
         float by = v_diffuseUV.y * 64.0 / 18.0;
@@ -196,11 +196,10 @@ void main() {
         // Player, domain, and distance borders
         vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
         vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+        applyBorder(u_movePath, black, u_pathTexture1, u_pathTexture2);
         applyBorder(u_tileBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
         applyBorder(u_domainBorder, white, u_borderTexture3, u_borderTexture4);
         applyBorderExtensions(u_domainBorderExtension, white);
-        applyBorder(u_distanceBorder, black, u_borderTexture3, u_borderTexture4);
-        applyBorderExtensions(u_distanceBorderExtension, black);
     }
 
     // Make the color bluer if it's nighttime
