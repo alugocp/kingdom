@@ -147,6 +147,7 @@ void applyPath(vec4 color) {
         float top = 30.0;
         float x = v_diffuseUV.y * 72.0 * 72.0 / 18.0;
         float y = v_diffuseUV.x * 76.0 * 76.0 / 19.0;
+        // TODO fix the glyph bounds, rotate the textures, and make this code prettier
         for (int a = 0; a < w; a++) {
             float left = 38.0 - (float(w) * 6.0) + (float(a) * 12.0);
             if (x >= left && x < left + 12.0 && y >= top && y < top + 12.0) {
@@ -156,13 +157,13 @@ void applyPath(vec4 color) {
                     if (a == 0) {
                         glyph = 10;
                     } else {
-                        glyph = 0;
+                        glyph = 9;
                     }
                 } else if (w == 2) {
                     if (a == 0) {
-                        glyph = u_pathLabel / 10;
-                    } else {
                         glyph = int(mod(float(u_pathLabel), 10.0));
+                    } else {
+                        glyph = u_pathLabel / 10;
                     }
                 } else {
                     glyph = u_pathLabel;

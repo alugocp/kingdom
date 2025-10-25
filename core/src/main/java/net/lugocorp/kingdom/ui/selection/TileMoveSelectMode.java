@@ -97,7 +97,7 @@ class TileMoveSelectMode extends TileSelectMode {
                 moveLabel = 1;
             } else if (a >= remainingDistance && (a + 1 - remainingDistance) % maxDistance == 0) {
                 // This is the final node you can access on any given future turn
-                moveLabel = (int) Math.floor((a + 1 - remainingDistance) / (float) maxDistance);
+                moveLabel = (int) Math.floor((a + 1 - remainingDistance) / (float) maxDistance) + 1;
             }
 
             // Set the actual render data
