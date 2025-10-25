@@ -28,6 +28,14 @@ public interface Action {
     public Action followedBy(Action a);
 
     /**
+     * Runs this method at the start of the turn (returns true if this Action should
+     * remain active)
+     */
+    public default boolean startOfTurn() {
+        return true;
+    }
+
+    /**
      * Runs this method at the end of the turn (returns true if this Action should
      * remain active)
      */

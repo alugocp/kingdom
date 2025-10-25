@@ -14,7 +14,6 @@ public class MoveAction implements Action {
     private final Unit unit;
     private int distance;
     private int max;
-    // TODO remove this action if the path gets intersected or otherwise invalid
 
     public MoveAction(GameView view, Unit unit, List<Point> path, int distance) {
         this.max = unit.movement.getMaxDistance(view);
@@ -75,6 +74,18 @@ public class MoveAction implements Action {
             }
         }
         throw new RuntimeException("Following actions should never get here");
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean startOfTurn() {
+        // Drop this Action if any Point becomes inaccessible to the Unit
+        for (Point p : this.path) {
+            if (!this.unit.movement.canMoveToPoint(this.view, p)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** {@inheritdoc} */

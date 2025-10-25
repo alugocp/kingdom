@@ -52,7 +52,7 @@ public class TurnStructure {
      */
     public void iterateTurnPlayer(GameView view) {
         this.turnPlayer.getFate().handleEvent(view, new Events.EndOfTurnEvent()).execute();
-        view.game.actions.endOfTurn(this.turnPlayer);
+        final Player prev = this.turnPlayer;
         if (this.turnPlayer.isHumanPlayer()) {
             this.turnPlayer = view.game.comps.get(0);
             view.hud.bot.turnButton.update(false);
@@ -69,6 +69,7 @@ public class TurnStructure {
                 this.turnPlayer = view.game.comps.get(index + 1);
             }
         }
+        view.game.actions.turnTransition(prev, this.turnPlayer);
         this.kickOffTurn(view);
     }
 

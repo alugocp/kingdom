@@ -20,13 +20,15 @@ public class ActionManager {
     /**
      * Run this function at the end of the turn (purges stale Actions)
      */
-    public void endOfTurn(Player p) {
+    public void turnTransition(Player ending, Player starting) {
         final Set<Unit> acted = new HashSet<>();
         acted.addAll(this.actions.keySet());
         for (Unit u : acted) {
-            if (u.leadership.belongsToPlayer(p)) {
+            final boolean atEnd = u.leadership.belongsToPlayer(ending);
+            final boolean atStart = u.leadership.belongsToPlayer(starting);
+            if (atEnd || atStart) {
                 final ActionOverlay o = this.overlays.get(u);
-                if (this.actions.get(u).endOfTurn()) {
+                if ((atStart && this.actions.get(u).startOfTurn()) || (atEnd && this.actions.get(u).endOfTurn())) {
                     o.setChar(this.getActionOverlayChar(u));
                 } else {
                     this.actions.remove(u);

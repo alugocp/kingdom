@@ -14,7 +14,7 @@ import java.util.Optional;
 class TileMoveSelectMode extends TileSelectMode {
     private final Pathfinder pathfinder;
     private final Unit unit;
-    private Optional<List<Point>> previousPath = Optional.empty();
+    private Optional<List<Point>> existingPath = Optional.empty();
 
     TileMoveSelectMode(Unit unit) {
         this.pathfinder = new Pathfinder(unit);
@@ -25,7 +25,7 @@ class TileMoveSelectMode extends TileSelectMode {
      * Removes all shader decoration from the previously marked path (if one exists)
      */
     private final void removeShaderData(GameView view) {
-        this.previousPath.ifPresent((List<Point> path) -> {
+        this.existingPath.ifPresent((List<Point> path) -> {
             for (Point p : path) {
                 view.game.world.getTile(p).ifPresent((Tile t) -> t.setMovePath(0, 0));
             }
@@ -48,7 +48,7 @@ class TileMoveSelectMode extends TileSelectMode {
     @Override
     final void clickedValidPoint(GameView view, Point p) {
         view.av.loaders.sounds.play("sfx/footstep");
-        this.unit.movement.move(view, this.previousPath.get()).execute();
+        this.unit.movement.move(view, this.existingPath.get()).execute();
         view.hud.bot.minimap.refresh(view.game.world);
         view.hud.bot.tileMenu.refresh();
     }
@@ -75,7 +75,7 @@ class TileMoveSelectMode extends TileSelectMode {
 
         // Sets up Tile user data for the render pipeline
         this.removeShaderData(view);
-        this.previousPath = Optional.of(path);
+        this.existingPath = Optional.of(path);
         for (int a = 0; a < path.size(); a++) {
             final int a1 = a;
             final Point p1 = path.get(a);
