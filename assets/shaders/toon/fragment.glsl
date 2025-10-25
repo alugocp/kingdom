@@ -15,6 +15,7 @@ uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_pathTexture1;
 uniform sampler2D u_pathTexture2;
 uniform sampler2D u_pathDotTexture;
+uniform sampler2D u_pathLabelsTexture;
 uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
 uniform sampler2D u_borderTexture3;
@@ -48,6 +49,12 @@ const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
 
+// (64.0 / 19.0) and (64.0 / 18.0) are special ratios based on the top face texture for tiles
+const float TEX_RATIO_X = 64.0 / 19.0;
+const float TEX_RATIO_Y = 64.0 / 18.0;
+float bx = v_diffuseUV.x * TEX_RATIO_X;
+float by = v_diffuseUV.y * TEX_RATIO_Y;
+
 vec4 normalsTexSample(float x, float y) {
     return texture2D(u_normalsTexture, vec2(x / 1600.0, y / 960.0));
 }
@@ -80,9 +87,6 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     if (border == 0) {
         return;
     }
-    // (64.0 / 19.0) and (64.0 / 18.0) are special ratios based on the top face texture for tiles
-    float bx = v_diffuseUV.x * 64.0 / 19.0;
-    float by = v_diffuseUV.y * 64.0 / 18.0;
     border -= checkBorderColor(border, color, texture2, 32, 1.0 - bx, by); // Bot right
     border -= checkBorderColor(border, color, texture2, 16, 1.0 - bx, 1.0 - by); // Bot left
     border -= checkBorderColor(border, color, texture2, 8, bx, by); // Top right
@@ -96,8 +100,6 @@ void applyBorderExtensions(int extension, vec4 color) {
     if (extension == 0) {
         return;
     }
-    float bx = v_diffuseUV.x * 64.0 / 19.0;
-    float by = v_diffuseUV.y * 64.0 / 18.0;
     extension -= checkBorderColor(extension, color, u_borderTextureExt4, 2048, bx, 1.0 - by); // Top left CCW ()
     extension -= checkBorderColor(extension, color, u_borderTextureExt4, 1024, 1.0 - bx, 1.0 - by); // Bot left CW ()
     extension -= checkBorderColor(extension, color, u_borderTextureExt42, 512, bx, by); // Top right CCW
@@ -112,15 +114,67 @@ void applyBorderExtensions(int extension, vec4 color) {
     extension -= checkBorderColor(extension, color, u_borderTextureExt3, 1, bx, 1.0 - by); // Left CW ()
 }
 
+vec2 getPathLabelOffset(int n) {
+    float x = 4.0;
+    float y = 1.0;
+    if (n >= 0 && n <= 9) {
+        x = mod(float(n), 6.0);
+        y = float(n / 6);
+    }
+    return vec2(x * 12.0, y * 12.0);
+}
+
 // Handles all path-related logic
 void applyPath(vec4 color) {
     applyBorder(u_movePath, color, u_pathTexture1, u_pathTexture2);
     if (u_pathLabel > 0) {
-        float x = v_diffuseUV.x * 64.0 / 19.0;
-        float y = v_diffuseUV.y * 64.0 / 18.0;
-        vec4 value = texture2D(u_pathDotTexture, vec2(x, y));
+        // Render the dot texture
+        vec4 value = texture2D(u_pathDotTexture, vec2(bx, by));
         if (value.x > 0.0) {
             gl_FragColor = color;
+        }
+
+        // Find the width of the path label over the dot
+        int w = 1;
+        if (u_pathLabel > 9) {
+            w = 2;
+        }
+        if (u_pathLabel > 99) {
+            w = 3;
+        }
+
+        // Check if the diffuse UV is within the borders for rendering a path label glyph
+        float top = 30.0;
+        float x = v_diffuseUV.y * 72.0 * 72.0 / 18.0;
+        float y = v_diffuseUV.x * 76.0 * 76.0 / 19.0;
+        for (int a = 0; a < w; a++) {
+            float left = 38.0 - (float(w) * 6.0) + (float(a) * 12.0);
+            if (x >= left && x < left + 12.0 && y >= top && y < top + 12.0) {
+                // Determine which glyph from the label we will render here
+                int glyph = 10;
+                if (w == 3) {
+                    if (a == 0) {
+                        glyph = 10;
+                    } else {
+                        glyph = 0;
+                    }
+                } else if (w == 2) {
+                    if (a == 0) {
+                        glyph = u_pathLabel / 10;
+                    } else {
+                        glyph = int(mod(float(u_pathLabel), 10.0));
+                    }
+                } else {
+                    glyph = u_pathLabel;
+                }
+
+                // Render the selected glyph
+                vec2 offset = getPathLabelOffset(glyph);
+                vec4 value = texture2D(u_pathLabelsTexture, vec2((12.0 - x + left + offset.x) / 72.0, (y - top + offset.y) / 76.0));
+                if (value.a > 0.0) {
+                    gl_FragColor = value;
+                }
+            }
         }
     }
 }

@@ -56,6 +56,7 @@ public class ToonShader implements Shader {
     private int u_pathTexture1;
     private int u_pathTexture2;
     private int u_pathDotTexture;
+    private int u_pathLabelsTexture;
     private int u_borderTexture1;
     private int u_borderTexture2;
     private int u_borderTexture3;
@@ -104,6 +105,7 @@ public class ToonShader implements Shader {
         this.u_pathTexture1 = this.program.getUniformLocation("u_pathTexture1");
         this.u_pathTexture2 = this.program.getUniformLocation("u_pathTexture2");
         this.u_pathDotTexture = this.program.getUniformLocation("u_pathDotTexture");
+        this.u_pathLabelsTexture = this.program.getUniformLocation("u_pathLabelsTexture");
         this.u_borderTexture3 = this.program.getUniformLocation("u_borderTexture3");
         this.u_borderTextureExt3 = this.program.getUniformLocation("u_borderTextureExt3");
         this.u_borderTexture4 = this.program.getUniformLocation("u_borderTexture4");
@@ -273,10 +275,14 @@ public class ToonShader implements Shader {
                             .getTextureDescriptor("textures/path2");
                     final Optional<TextureDescriptor> tdesc3 = this.textures.get()
                             .getTextureDescriptor("textures/path-dot");
-                    if (tdesc1.isPresent() && tdesc2.isPresent() && tdesc3.isPresent()) {
+                    final Optional<TextureDescriptor> tdesc4 = this.textures.get()
+                            .getTextureDescriptor("textures/path-labels");
+                    if (tdesc1.isPresent() && tdesc2.isPresent() && tdesc3.isPresent() && tdesc4.isPresent()) {
                         this.program.setUniformi(this.u_pathTexture1, this.context.textureBinder.bind(tdesc1.get()));
                         this.program.setUniformi(this.u_pathTexture2, this.context.textureBinder.bind(tdesc2.get()));
                         this.program.setUniformi(this.u_pathDotTexture, this.context.textureBinder.bind(tdesc3.get()));
+                        this.program.setUniformi(this.u_pathLabelsTexture,
+                                this.context.textureBinder.bind(tdesc4.get()));
                         this.program.setUniformi(this.u_pathLabel, data.pathLabel);
                         this.program.setUniformi(this.u_movePath, data.movePath);
                     }
