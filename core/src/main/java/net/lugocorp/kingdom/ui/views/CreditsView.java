@@ -2,9 +2,11 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.utils.math.Coords;
@@ -22,15 +24,29 @@ class CreditsView implements View {
 
     CreditsView(StartMenuView.Params params) {
         this.params = params;
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
+        this.menu = new Menu((Coords.SIZE.x / 2) - 600, 0, 1200, false,
                 new ListNode()
-                        .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
-                        .add(new HeaderNode(params.av, "Game Design")).add(new TextNode(params.av, "Alex Lugo"))
-                        .add(new SpacerNode()).add(new HeaderNode(params.av, "Programming"))
-                        .add(new TextNode(params.av, "Alex Lugo")).add(new SpacerNode())
-                        .add(new HeaderNode(params.av, "3D Modelling")).add(new TextNode(params.av, "Alex Lugo"))
-                        .add(new SpacerNode()).add(new HeaderNode(params.av, "Character Design"))
-                        .add(new TextNode(params.av, "Alex Lugo")));
+                        .add(new RowNode().add(new ButtonNode(params.av, "Back",
+                                () -> this.navigate.accept(new StartMenuView(params)))).add(
+                                        new HeaderNode(params.av, "Credits").center()))
+                        .add(new SpacerNode())
+                        .add(new RowNode()
+                                .add(new ListNode().add(new SubheaderNode(params.av, "Game Design"))
+                                        .add(new TextNode(params.av, "Alex Lugo")))
+                                .add(new ListNode().add(new SubheaderNode(params.av, "Programming"))
+                                        .add(new TextNode(params.av, "Alex Lugo")))
+                                .add(new ListNode().add(new SubheaderNode(params.av, "3D Modelling"))
+                                        .add(new TextNode(params.av, "Alex Lugo")))
+                                .add(new ListNode().add(new SubheaderNode(params.av, "Character Design"))
+                                        .add(new TextNode(params.av, "Alex Lugo"))))
+                        .add(new SpacerNode()).add(new SubheaderNode(params.av, "Game Testers"))
+                        .add(new RowNode()
+                                .add(new ListNode().add(new TextNode(params.av, "IT"))
+                                        .add(new TextNode(params.av, "JAG")).add(new TextNode(params.av, "Elliott S"))
+                                        .add(new TextNode(params.av, "Ken Possible")))
+                                .add(new ListNode().add(new TextNode(params.av, "Swol Stefan"))
+                                        .add(new TextNode(params.av, "Rhys"))
+                                        .add(new TextNode(params.av, "Alec Lisy")))));
     }
 
     /** {@inheritdoc} */
