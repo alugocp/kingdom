@@ -11,6 +11,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Handles all user control input for the GameView
@@ -50,7 +51,7 @@ public class GameViewController implements InputProcessor {
         // Check bottom-left Camera bounds
         final Vector3 p1 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(0, Coords.SIZE.y))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        final Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight());
+        final Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight() + 4);
         if (p1.x < botLeft.x) {
             dx += botLeft.x - p1.x;
         }
@@ -61,7 +62,8 @@ public class GameViewController implements InputProcessor {
         // Check bottom-right Camera bounds
         final Vector3 p2 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(Coords.SIZE.x, Coords.SIZE.y))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        final Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(), this.view.game.world.getHeight());
+        final Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(),
+                this.view.game.world.getHeight() + 4);
         if (p2.x > botRight.x) {
             dx += botRight.x - p2.x;
         }
@@ -114,8 +116,8 @@ public class GameViewController implements InputProcessor {
         }
 
         // Do not click on the World if we've clicked on the Minimap
-        final Point p = ViewportLogic.unproject(x, y);
-        if (p.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()) {
+        final Optional<Point> p = ViewportLogic.unproject(x, y);
+        if (p.map((Point p1) -> p1.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()).orElse(true)) {
             return true;
         }
         // TODO when we hit complete turn it still selects some tile at the same time.
@@ -123,7 +125,7 @@ public class GameViewController implements InputProcessor {
         // remove these)
 
         // Game World logic
-        this.touch.start(p);
+        this.touch.start(p.get());
         return true;
     }
 
@@ -159,11 +161,13 @@ public class GameViewController implements InputProcessor {
 
         // Game World logic
         if (this.touch.isActive()) {
-            final Point p = ViewportLogic.unproject(x, y);
-            final Point prev = this.touch.update(p);
-            if (this.touch.isDragging()) {
-                this.moveCamera((float) (prev.x - p.x) / 100, (float) (prev.y - p.y) / 100);
-                return true;
+            final Optional<Point> p = ViewportLogic.unproject(x, y);
+            if (p.isPresent()) {
+                final Point prev = this.touch.update(p.get());
+                if (this.touch.isDragging()) {
+                    this.moveCamera((float) (prev.x - p.get().x) / 100, (float) (prev.y - p.get().y) / 100);
+                    return true;
+                }
             }
         }
         return false;
@@ -180,7 +184,8 @@ public class GameViewController implements InputProcessor {
     public boolean scrolled(float dx, float dy) {
         // Menu logic
         for (MenuController m : this.menus) {
-            if (m.isInMenu(ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()))) {
+            if (ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()).map((Point p) -> m.isInMenu(p))
+                    .orElse(false)) {
                 m.scrolled(0, dy);
                 return true;
             }
@@ -202,8 +207,8 @@ public class GameViewController implements InputProcessor {
         }
 
         // Do not check the World if we're hovering over the Minimap
-        final Point p = ViewportLogic.unproject(x, y);
-        if (p.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()) {
+        final Optional<Point> p = ViewportLogic.unproject(x, y);
+        if (p.map((Point p1) -> p1.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()).orElse(true)) {
             return true;
         }
 

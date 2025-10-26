@@ -35,7 +35,7 @@ public class MenuController implements InputProcessor {
      */
     public void reset() {
         this.mouseMoved(-1, -1);
-        final Point p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY());
+        final Point p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()).orElse(new Point(-1, -1));
         this.mouseMoved(p.x, p.y);
     }
 
@@ -67,7 +67,7 @@ public class MenuController implements InputProcessor {
      */
     private void scroll(int dy) {
         this.getMenu.get().ifPresent((Menu m) -> m.scroll(dy));
-        final Point p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY());
+        final Point p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()).orElse(new Point(-1, -1));
         this.mouseMoved(p.x, p.y);
     }
 
@@ -77,7 +77,7 @@ public class MenuController implements InputProcessor {
         if (!this.isRelevant()) {
             return false;
         }
-        final Point p = ViewportLogic.unproject(x, y);
+        final Point p = ViewportLogic.unproject(x, y).orElse(new Point(-1, -1));
         if (this.isInMenu(p)) {
             this.touch.start(p);
             return true;
@@ -91,13 +91,16 @@ public class MenuController implements InputProcessor {
         if (!this.isRelevant() || !this.touch.isActive()) {
             return false;
         }
-        final Point p = ViewportLogic.unproject(x, y);
-        final Point prev = this.touch.update(p);
-        if (this.touch.isDragging()) {
-            this.scroll((int) ((p.y - prev.y)
-                    * (this.startedInScrollGutter() ? this.getMenu.get().get().getScrollBarRatio() : -1f)));
+        final Optional<Point> p = ViewportLogic.unproject(x, y);
+        if (p.isPresent()) {
+            final Point prev = this.touch.update(p.get());
+            if (this.touch.isDragging()) {
+                this.scroll((int) ((p.get().y - prev.y)
+                        * (this.startedInScrollGutter() ? this.getMenu.get().get().getScrollBarRatio() : -1f)));
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     /** {@inheritdoc} */
@@ -107,7 +110,7 @@ public class MenuController implements InputProcessor {
             return false;
         }
         if (!this.touch.isDragging()) {
-            this.getMenu.get().get().click(ViewportLogic.unproject(x, y));
+            this.getMenu.get().get().click(ViewportLogic.unproject(x, y).orElse(new Point(-1, -1)));
         }
         this.touch.reset();
         return true;
@@ -132,7 +135,7 @@ public class MenuController implements InputProcessor {
     public boolean mouseMoved​(int x, int y) {
         final Optional<Menu> menu = this.getMenu.get();
         if (menu.isPresent()) {
-            return menu.get().mouseMoved(ViewportLogic.unproject(x, y));
+            return menu.get().mouseMoved(ViewportLogic.unproject(x, y).orElse(new Point(-1, -1)));
         }
         return false;
     }

@@ -16,7 +16,7 @@ public class CameraLogic {
      */
     public static float[] getScreenPointFromTileOffset(Point p, Vector3 offset) {
         final Vector3 v = ViewportLogic.getViewport().project(Coords.grid.vector(p.x, p.y).add(offset));
-        Point unprojected = ViewportLogic.unproject((int) v.x, (int) v.y);
+        Point unprojected = ViewportLogic.unproject((int) v.x, (int) v.y).orElse(new Point(-10, -10));
         return new float[]{unprojected.x, unprojected.y};
     }
 

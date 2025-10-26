@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.utils.projection;
 import net.lugocorp.kingdom.utils.math.Coords;
 import net.lugocorp.kingdom.utils.math.Point;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.Optional;
 
 /**
  * This class handles the logic for switching between Viewports and translating
@@ -37,10 +38,14 @@ public class ViewportLogic {
     /**
      * Returns the given screen coordinate in "world units" (a LibGDX term)
      */
-    public static Point unproject(int x, int y) {
+    public static Optional<Point> unproject(int x, int y) {
         final float scaleX = Coords.SIZE.x / (float) ViewportLogic.viewport.getScreenWidth();
         final float scaleY = Coords.SIZE.y / (float) ViewportLogic.viewport.getScreenHeight();
-        return new Point((int) ((x - ViewportLogic.viewport.getScreenX()) * scaleX),
-                (int) ((y - ViewportLogic.viewport.getScreenY()) * scaleY));
+        final float sx = (x - ViewportLogic.viewport.getScreenX()) * scaleX;
+        final float sy = (y - ViewportLogic.viewport.getScreenY()) * scaleY;
+        if (sx < 0 || sy < 0 || sx > Coords.SIZE.x || sy > Coords.SIZE.y) {
+            return Optional.empty();
+        }
+        return Optional.of(new Point((int) sx, (int) sy));
     }
 }
