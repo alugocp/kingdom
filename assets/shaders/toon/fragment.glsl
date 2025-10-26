@@ -49,9 +49,9 @@ const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
 
-// (64.0 / 19.0) and (64.0 / 18.0) are special ratios based on the top face texture for tiles
-const float TEX_RATIO_X = 64.0 / 19.0;
-const float TEX_RATIO_Y = 64.0 / 18.0;
+// (64.0 / 18.0) and (64.0 / 19.0) are special ratios based on the top face texture for tiles
+const float TEX_RATIO_X = 64.0 / 18.0;
+const float TEX_RATIO_Y = 64.0 / 19.0;
 float bx = v_diffuseUV.x * TEX_RATIO_X;
 float by = v_diffuseUV.y * TEX_RATIO_Y;
 
@@ -74,7 +74,7 @@ bool outline() {
 int checkBorderColor(int border, vec4 color, sampler2D tex, int thresh, float x, float y) {
     if (border >= thresh) {
         vec4 value = texture2D(tex, vec2(x, y));
-        if (value.x > 0.0) {
+        if (value.a > 0.0) {
             gl_FragColor = color;
         }
         return thresh;
@@ -88,11 +88,11 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
         return;
     }
     border -= checkBorderColor(border, color, texture2, 32, 1.0 - bx, by); // Bot right
-    border -= checkBorderColor(border, color, texture2, 16, 1.0 - bx, 1.0 - by); // Bot left
-    border -= checkBorderColor(border, color, texture2, 8, bx, by); // Top right
+    border -= checkBorderColor(border, color, texture2, 16, bx, by); // Bot left
+    border -= checkBorderColor(border, color, texture2, 8, 1.0 - bx, 1.0 - by); // Top right
     border -= checkBorderColor(border, color, texture2, 4, bx, 1.0 - by); // Top left
-    border -= checkBorderColor(border, color, texture1, 2, bx, by); // Right
-    border -= checkBorderColor(border, color, texture1, 1, bx, 1.0 - by); // Left
+    border -= checkBorderColor(border, color, texture1, 2, 1.0 - bx, by); // Right
+    border -= checkBorderColor(border, color, texture1, 1, bx, by); // Left
 }
 
 // Extends smaller borders so that they connect aross tiles
@@ -100,18 +100,18 @@ void applyBorderExtensions(int extension, vec4 color) {
     if (extension == 0) {
         return;
     }
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 2048, bx, 1.0 - by); // Top left CCW ()
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 1024, 1.0 - bx, 1.0 - by); // Bot left CW ()
-    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 512, bx, by); // Top right CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 2048, bx, 1.0 - by); // Top left CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 1024, bx, by); // Bot left CW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 512, 1.0 - bx, 1.0 - by); // Top right CCW
     extension -= checkBorderColor(extension, color, u_borderTextureExt42, 256, 1.0 - bx, by); // Bot right CW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 128, bx, by); // Right CCW ()
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 64, 1.0 - bx, by); // Right CW ()
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 32, 1.0 - bx, by); // Bot right CCW ()
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 16, bx, by); // Top right CW ()
-    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 8, 1.0 - bx, 1.0 - by); // Bot left CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 128, 1.0 - bx, 1.0 - by); // Right CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 64, 1.0 - bx, by); // Right CW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 32, 1.0 - bx, by); // Bot right CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 16, 1.0 - bx, 1.0 - by); // Top right CW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 8, bx, by); // Bot left CCW
     extension -= checkBorderColor(extension, color, u_borderTextureExt42, 4, bx, 1.0 - by); // Top left CW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 2, 1.0 - bx, 1.0 - by); // Left CCW ()
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 1, bx, 1.0 - by); // Left CW ()
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 2, bx, by); // Left CCW
+    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 1, bx, 1.0 - by); // Left CW
 }
 
 vec2 getPathLabelOffset(int n) {
@@ -130,7 +130,7 @@ void applyPath(vec4 color) {
     if (u_pathLabel > 0) {
         // Render the dot texture
         vec4 value = texture2D(u_pathDotTexture, vec2(bx, by));
-        if (value.x > 0.0) {
+        if (value.a > 0.0) {
             gl_FragColor = color;
         }
 
@@ -144,12 +144,12 @@ void applyPath(vec4 color) {
         }
 
         // Check if the diffuse UV is within the borders for rendering a path label glyph
-        float top = 30.0;
-        float x = v_diffuseUV.y * 72.0 * 72.0 / 18.0;
-        float y = v_diffuseUV.x * 76.0 * 76.0 / 19.0;
-        // TODO fix the glyph bounds, rotate the textures, and make this code prettier
+        float top = 38.0;
+        float x = v_diffuseUV.x * 72.0 * 72.0 / 18.0;
+        float y = v_diffuseUV.y * 76.0 * 76.0 / 19.0;
+        // TODO fix the glyph bounds, and make this code prettier
         for (int a = 0; a < w; a++) {
-            float left = 38.0 - (float(w) * 6.0) + (float(a) * 12.0);
+            float left = 36.0 - (float(w) * 6.0) + (float(a) * 12.0) + 6.0;
             if (x >= left && x < left + 12.0 && y >= top && y < top + 12.0) {
                 // Determine which glyph from the label we will render here
                 int glyph = 10;
@@ -161,9 +161,9 @@ void applyPath(vec4 color) {
                     }
                 } else if (w == 2) {
                     if (a == 0) {
-                        glyph = int(mod(float(u_pathLabel), 10.0));
-                    } else {
                         glyph = u_pathLabel / 10;
+                    } else {
+                        glyph = int(mod(float(u_pathLabel), 10.0));
                     }
                 } else {
                     glyph = u_pathLabel;
@@ -171,7 +171,7 @@ void applyPath(vec4 color) {
 
                 // Render the selected glyph
                 vec2 offset = getPathLabelOffset(glyph);
-                vec4 value = texture2D(u_pathLabelsTexture, vec2((12.0 - x + left + offset.x) / 72.0, (y - top + offset.y) / 76.0));
+                vec4 value = texture2D(u_pathLabelsTexture, vec2((x - left + offset.x) / 72.0, (y - top + offset.y) / 76.0));
                 if (value.a > 0.0) {
                     gl_FragColor = value;
                 }
@@ -228,7 +228,7 @@ void main() {
     vec2 texCoords = v_diffuseUV;
     if (u_wave && isTopFace) {
         // Wave Tiles should oscillate slightly
-        texCoords.x += u_diffuseUVTransform.z * 0.0075 * ((2.0 * abs(mod(u_timer, 6000.0) - 3000.0) / 3000.0) - 1.0);
+        texCoords.y += u_diffuseUVTransform.z * 0.0075 * ((2.0 * abs(mod(u_timer, 6000.0) - 3000.0) / 3000.0) - 1.0);
     }
     gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
     gl_FragColor.a *= u_opacity;
