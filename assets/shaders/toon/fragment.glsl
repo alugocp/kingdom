@@ -115,17 +115,20 @@ void applyBorderExtensions(int extension, vec4 color) {
 }
 
 vec2 getPathLabelOffset(int n) {
-    float x = 4.0;
-    float y = 1.0;
+    float x = 2.0;
+    float y = 2.0;
     if (n >= 0 && n <= 9) {
-        x = mod(float(n), 6.0);
-        y = float(n / 6);
+        x = mod(float(n), 4.0);
+        y = float(n / 4);
     }
-    return vec2(x * 12.0, y * 12.0);
+    return vec2(x * 18.0, y * 18.0);
 }
 
 // Handles all path-related logic
 void applyPath(vec4 color) {
+    const float TEX_W = 72.0;
+    const float TEX_H = 76.0;
+    const float GLYPH = 18.0;
     applyBorder(u_movePath, color, u_pathTexture1, u_pathTexture2);
     if (u_pathLabel > 0) {
         // Render the dot texture
@@ -144,13 +147,12 @@ void applyPath(vec4 color) {
         }
 
         // Check if the diffuse UV is within the borders for rendering a path label glyph
-        float top = 38.0;
-        float x = v_diffuseUV.x * 72.0 * 72.0 / 18.0;
-        float y = v_diffuseUV.y * 76.0 * 76.0 / 19.0;
-        // TODO fix the glyph bounds, and make this code prettier
+        float top = TEX_H / 2.0;
+        float x = v_diffuseUV.x * TEX_W * TEX_W / 18.0;
+        float y = v_diffuseUV.y * TEX_H * TEX_H / 19.0;
         for (int a = 0; a < w; a++) {
-            float left = 36.0 - (float(w) * 6.0) + (float(a) * 12.0) + 6.0;
-            if (x >= left && x < left + 12.0 && y >= top && y < top + 12.0) {
+            float left = (TEX_W / 2.0) - (float(w) * GLYPH / 2.0) + (float(a) * GLYPH) + (GLYPH / 2.0);
+            if (x >= left && x < left + GLYPH && y >= top && y < top + GLYPH) {
                 // Determine which glyph from the label we will render here
                 int glyph = 10;
                 if (w == 3) {
@@ -171,10 +173,7 @@ void applyPath(vec4 color) {
 
                 // Render the selected glyph
                 vec2 offset = getPathLabelOffset(glyph);
-                vec4 value = texture2D(u_pathLabelsTexture, vec2((x - left + offset.x) / 72.0, (y - top + offset.y) / 76.0));
-                if (value.a > 0.0) {
-                    gl_FragColor = value;
-                }
+                gl_FragColor = texture2D(u_pathLabelsTexture, vec2((x - left + offset.x) / TEX_W, (y - top + offset.y) / TEX_H));
             }
         }
     }
