@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.selection;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Point;
 
 /**
  * This class allows us to select a Tile using different modes

@@ -4,7 +4,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.SideEffect;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.Optional;
 
 /**

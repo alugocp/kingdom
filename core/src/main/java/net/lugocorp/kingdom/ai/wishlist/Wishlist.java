@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ai.wishlist;
 import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.action.Goal;
-import net.lugocorp.kingdom.utils.code.Tuple;
+import net.lugocorp.kingdom.utils.Tuple;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

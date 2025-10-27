@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ai.memory;
 import net.lugocorp.kingdom.game.model.Tile;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Point;
 import java.util.Optional;
 
 /**

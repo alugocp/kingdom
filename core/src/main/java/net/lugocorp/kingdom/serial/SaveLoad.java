@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.serial;
+package net.lugocorp.kingdom.serial;
 import net.lugocorp.kingdom.game.Game;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryo.Kryo;

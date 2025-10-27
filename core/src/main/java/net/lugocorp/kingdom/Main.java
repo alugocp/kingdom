@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.projection.ViewportLogic;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
-import net.lugocorp.kingdom.utils.code.Semver;
-import net.lugocorp.kingdom.utils.projection.ViewportLogic;
+import net.lugocorp.kingdom.utils.Semver;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;

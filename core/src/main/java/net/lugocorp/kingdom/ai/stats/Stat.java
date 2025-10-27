@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ai.stats;
-import net.lugocorp.kingdom.utils.code.Lambda;
+import net.lugocorp.kingdom.utils.Lambda;
 import java.util.ArrayList;
 import java.util.List;
 

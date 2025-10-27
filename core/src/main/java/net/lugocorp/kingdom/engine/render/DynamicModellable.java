@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine.render;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 

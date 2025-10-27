@@ -8,9 +8,9 @@ import net.lugocorp.kingdom.game.actions.MoveAction;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.SideEffect;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.List;
 import java.util.Optional;
 

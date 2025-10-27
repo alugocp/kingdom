@@ -1,6 +1,6 @@
-package net.lugocorp.kingdom.utils.pathfinding;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
+package net.lugocorp.kingdom.pathfinding;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.HashMap;

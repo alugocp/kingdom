@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ai.prediction;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.utils.math.Path;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Path;
+import net.lugocorp.kingdom.math.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

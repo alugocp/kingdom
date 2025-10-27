@@ -4,7 +4,7 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.SideEffect;
+import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
  * This class contains utility functions for writing new Item effects

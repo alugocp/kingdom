@@ -2,9 +2,9 @@ package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Hexagons;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.HashSet;
 import java.util.Set;
 

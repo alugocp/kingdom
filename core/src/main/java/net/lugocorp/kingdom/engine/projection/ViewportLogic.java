@@ -1,6 +1,6 @@
-package net.lugocorp.kingdom.utils.projection;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
+package net.lugocorp.kingdom.engine.projection;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Optional;
 

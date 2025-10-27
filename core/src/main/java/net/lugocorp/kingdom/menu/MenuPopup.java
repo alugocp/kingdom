@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.menu;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import java.util.Optional;
 
 /**

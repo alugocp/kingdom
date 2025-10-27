@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.mods;
-import net.lugocorp.kingdom.utils.code.Semver;
+import net.lugocorp.kingdom.utils.Semver;
 
 /**
  * This class contains all information describing a given mod

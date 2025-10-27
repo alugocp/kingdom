@@ -3,13 +3,13 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuPopup;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
 
 /**
  * This MenuNode displays small Glyph icon(s)

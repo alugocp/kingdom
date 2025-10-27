@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.math;
+package net.lugocorp.kingdom.math;
 
 /**
  * Represents a rectangle in 2D space

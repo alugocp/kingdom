@@ -14,7 +14,7 @@ import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.overlay.HealthChangeOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.SideEffect;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.List;
 import java.util.Optional;
 

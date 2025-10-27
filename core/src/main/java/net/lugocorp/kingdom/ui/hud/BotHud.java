@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Coords;
 
 /**
  * Represents the bottom half of the HUD UI

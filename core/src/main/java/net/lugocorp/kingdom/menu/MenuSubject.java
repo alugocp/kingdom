@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.menu;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**

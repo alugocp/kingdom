@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.menu.structure;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
 
 /**
  * A MenuNode that wraps another Menu

@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.menu;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 
 /**
  * Interface representing anything visible in a Menu

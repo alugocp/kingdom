@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.code;
+package net.lugocorp.kingdom.utils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

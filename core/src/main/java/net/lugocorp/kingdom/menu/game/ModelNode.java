@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Rect;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.math.Matrix4;

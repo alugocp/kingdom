@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
@@ -9,7 +10,6 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.View;
-import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
 import java.util.function.Consumer;

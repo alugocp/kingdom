@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.code;
+package net.lugocorp.kingdom.utils;
 
 /**
  * Represents a semantic versioning value

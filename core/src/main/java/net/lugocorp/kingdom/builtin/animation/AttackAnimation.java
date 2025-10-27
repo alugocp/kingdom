@@ -2,10 +2,10 @@ package net.lugocorp.kingdom.builtin.animation;
 import net.lugocorp.kingdom.engine.animation.Animation;
 import net.lugocorp.kingdom.engine.animation.Tween;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Hexagons;
-import net.lugocorp.kingdom.utils.math.Point;
 
 /**
  * Animation that plays when a Unit makes an attack

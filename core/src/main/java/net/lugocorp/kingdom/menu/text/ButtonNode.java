@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.menu.text;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;

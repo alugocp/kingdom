@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.ui.selection;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Hexagons;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.pathfinding.Pathfinder;
 import java.util.List;
 import java.util.Optional;
 

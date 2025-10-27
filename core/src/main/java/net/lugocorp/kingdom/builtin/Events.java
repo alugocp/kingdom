@@ -13,7 +13,7 @@ import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Point;
 import java.util.Optional;
 
 /**

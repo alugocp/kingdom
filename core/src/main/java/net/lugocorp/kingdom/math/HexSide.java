@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.math;
+package net.lugocorp.kingdom.math;
 
 /**
  * Represents each side in a hexagon

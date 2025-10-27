@@ -4,7 +4,7 @@ import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.SideEffect;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

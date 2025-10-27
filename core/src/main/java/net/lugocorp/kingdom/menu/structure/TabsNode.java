@@ -1,14 +1,14 @@
 package net.lugocorp.kingdom.menu.structure;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuPopup;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.utils.code.Tuple;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
+import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ai.prediction;
 import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Point;
 import java.util.Optional;
 import java.util.function.Consumer;
 

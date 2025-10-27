@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.builtin.animation;
 import net.lugocorp.kingdom.engine.animation.Animation;
 import net.lugocorp.kingdom.engine.animation.Tween;
 import net.lugocorp.kingdom.engine.controllers.GameViewController;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Point;
 
 /**
  * Animation that pans the Camera

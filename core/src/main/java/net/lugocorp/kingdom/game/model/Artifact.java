@@ -4,12 +4,12 @@ import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.SideEffect;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.Optional;
 
 /**

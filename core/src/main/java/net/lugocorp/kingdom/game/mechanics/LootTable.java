@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.properties.Rarity;
-import net.lugocorp.kingdom.utils.code.Lambda;
+import net.lugocorp.kingdom.utils.Lambda;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

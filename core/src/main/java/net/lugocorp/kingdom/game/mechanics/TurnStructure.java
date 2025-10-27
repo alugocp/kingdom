@@ -6,13 +6,13 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**

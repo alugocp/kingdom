@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.engine.animation;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.BatchCounter;
+import net.lugocorp.kingdom.utils.BatchCounter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -3,7 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.SideEffect;
+import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
  * This class contains logic to help generate Units in a mod

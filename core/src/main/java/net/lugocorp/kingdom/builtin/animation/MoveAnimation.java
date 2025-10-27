@@ -3,11 +3,11 @@ import net.lugocorp.kingdom.engine.animation.Animation;
 import net.lugocorp.kingdom.engine.animation.Tween;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.HexSide;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.HexSide;
-import net.lugocorp.kingdom.utils.math.Hexagons;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**

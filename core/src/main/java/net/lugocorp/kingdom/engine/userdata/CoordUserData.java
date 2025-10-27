@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine.userdata;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Point;
 import java.util.function.Supplier;
 
 /**

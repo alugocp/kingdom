@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ai.wishlist;
-import net.lugocorp.kingdom.utils.code.Tuple;
+import net.lugocorp.kingdom.utils.Tuple;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;

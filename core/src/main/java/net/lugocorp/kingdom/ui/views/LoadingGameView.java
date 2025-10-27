@@ -7,8 +7,8 @@ import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
+import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
-import net.lugocorp.kingdom.utils.serial.SaveLoad;
 import java.util.ArrayList;
 import java.util.List;
 

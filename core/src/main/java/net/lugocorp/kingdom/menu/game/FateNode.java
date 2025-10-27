@@ -2,10 +2,10 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.model.Fate;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
-import net.lugocorp.kingdom.utils.math.Rect;
 
 /**
  * A node that displays some Fate as an option

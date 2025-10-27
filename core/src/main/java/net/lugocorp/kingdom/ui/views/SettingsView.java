@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.input.OptionsNode;
 import net.lugocorp.kingdom.menu.input.VolumeNode;
@@ -9,7 +10,6 @@ import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.ui.View;
-import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
 import java.util.function.Consumer;

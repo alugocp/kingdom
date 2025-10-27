@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.ui.View;
-import net.lugocorp.kingdom.utils.math.Coords;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.function.Consumer;
 

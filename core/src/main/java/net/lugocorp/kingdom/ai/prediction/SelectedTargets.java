@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ai.prediction;
-import net.lugocorp.kingdom.utils.math.Path;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Path;
+import net.lugocorp.kingdom.math.Point;
 
 /**
  * A utility class that communicates between our AI prediction system and

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.engine.controllers;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Point;
 import java.util.Optional;
 
 /**

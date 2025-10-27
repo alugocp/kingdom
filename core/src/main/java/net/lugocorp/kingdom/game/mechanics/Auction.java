@@ -5,7 +5,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.math.Point;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

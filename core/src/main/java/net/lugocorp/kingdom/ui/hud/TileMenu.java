@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Optional;
 
 /**

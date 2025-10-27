@@ -7,10 +7,10 @@ import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.plans.MoveNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.Lambda;
-import net.lugocorp.kingdom.utils.math.Hexagons;
-import net.lugocorp.kingdom.utils.math.Point;
+import net.lugocorp.kingdom.utils.Lambda;
 import java.util.Optional;
 import java.util.Set;
 

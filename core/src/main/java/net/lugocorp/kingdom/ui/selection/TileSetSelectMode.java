@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.selection;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.Set;
 import java.util.function.Consumer;
 

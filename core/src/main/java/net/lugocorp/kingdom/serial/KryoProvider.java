@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.utils.serial;
+package net.lugocorp.kingdom.serial;
 import com.esotericsoftware.kryo.Kryo;
 
 /**
@@ -53,7 +53,7 @@ class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.combat.HitPoints.class);
         kryo.register(net.lugocorp.kingdom.game.world.World.class);
         kryo.register(net.lugocorp.kingdom.game.Game.class);
-        kryo.register(net.lugocorp.kingdom.utils.math.Point.class);
+        kryo.register(net.lugocorp.kingdom.math.Point.class);
         return kryo;
     }
 }

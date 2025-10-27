@@ -1,7 +1,7 @@
-package net.lugocorp.kingdom.utils.projection;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Hexagons;
-import net.lugocorp.kingdom.utils.math.Point;
+package net.lugocorp.kingdom.engine.projection;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.Point;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 

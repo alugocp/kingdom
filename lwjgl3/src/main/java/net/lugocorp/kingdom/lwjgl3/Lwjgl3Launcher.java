@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.lwjgl3;
 import net.lugocorp.kingdom.Main;
-import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.math.Coords;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 

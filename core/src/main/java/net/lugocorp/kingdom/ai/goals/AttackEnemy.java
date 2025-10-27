@@ -10,10 +10,10 @@ import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.code.Lambda;
-import net.lugocorp.kingdom.utils.code.Tuple;
-import net.lugocorp.kingdom.utils.math.Path;
+import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.Tuple;
 import java.util.List;
 import java.util.Optional;
 

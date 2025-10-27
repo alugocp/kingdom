@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.actions;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui;
-import net.lugocorp.kingdom.utils.math.Coords;
+import net.lugocorp.kingdom.math.Coords;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;

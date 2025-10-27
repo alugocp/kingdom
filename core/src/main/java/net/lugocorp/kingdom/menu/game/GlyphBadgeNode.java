@@ -2,9 +2,9 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.glyph.Glyph;
+import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
-import net.lugocorp.kingdom.utils.math.Coords;
-import net.lugocorp.kingdom.utils.math.Rect;
 
 /**
  * This MenuNode displays a large Glyph badge

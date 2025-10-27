@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.game.properties;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.game.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.math.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
