@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
@@ -21,7 +22,7 @@ public class ResourceBarsNode implements MenuNode {
     private int textWidth = 0;
 
     public ResourceBarsNode(AudioVideo av, ResourceBarsNode.Bar... bars) {
-        this.font = av.fonts.getFont(20, ColorScheme.TEXT.color);
+        this.font = av.fonts.getFont(new FontParam().setSize(20).setColor(ColorScheme.TEXT.color));
         this.bars = bars;
         this.av = av;
     }

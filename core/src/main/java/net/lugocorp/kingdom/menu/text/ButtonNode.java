@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.text;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
@@ -36,7 +37,8 @@ public class ButtonNode extends NakedButtonNode {
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, this.disabled ? ColorScheme.GUTTER.color : ColorScheme.TEXT.color);
+        return this.av.fonts.getFont(new FontParam().setSize(24)
+                .setColor(this.disabled ? ColorScheme.GUTTER.color : ColorScheme.TEXT.color));
     }
 
     /**

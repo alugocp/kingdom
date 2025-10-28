@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
@@ -335,7 +336,7 @@ public class InventoryNode implements MenuNode {
                             /** {@inheritdoc} */
                             @Override
                             protected BitmapFont getFont() {
-                                return this.av.fonts.getFont(ColorScheme.GOLD.color);
+                                return this.av.fonts.getFont(new FontParam().setColor(ColorScheme.GOLD.color));
                             }
                         }));
                 root.add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex, item.rarity.toString()))

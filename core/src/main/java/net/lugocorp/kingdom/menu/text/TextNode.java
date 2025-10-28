@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.text;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
@@ -39,7 +40,7 @@ public class TextNode implements MenuNode {
      * Returns the font to be used for this TextNode
      */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(ColorScheme.TEXT.color);
+        return this.av.fonts.getFont(new FontParam().setColor(ColorScheme.TEXT.color));
     }
 
     /**

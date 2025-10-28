@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.input;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
@@ -30,7 +31,7 @@ public class TextEntryNode implements MenuNode {
 
     public TextEntryNode(AudioVideo av, String initial, Consumer<String> entered) {
         this.builder = new StringBuilder(initial);
-        this.font = av.fonts.getFont(ColorScheme.TEXT.color);
+        this.font = av.fonts.getFont(new FontParam().setColor(ColorScheme.TEXT.color));
         this.entered = entered;
         this.av = av;
 

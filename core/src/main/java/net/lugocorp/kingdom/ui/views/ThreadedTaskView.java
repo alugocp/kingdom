@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,7 +18,7 @@ public abstract class ThreadedTaskView implements View {
 
     ThreadedTaskView(AudioVideo av) {
         this.av = av;
-        this.font = av.fonts.getFont(ColorScheme.TEXT.color);
+        this.font = av.fonts.getFont(new FontParam().setColor(ColorScheme.TEXT.color));
     }
 
     /**

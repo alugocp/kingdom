@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.overlay;
 import net.lugocorp.kingdom.color.Colors;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.Color;
@@ -45,7 +46,7 @@ public class RisingOverlay extends Overlay {
     /** {@inheritdoc} */
     @Override
     public void render(GameView view) {
-        final BitmapFont font = view.av.fonts.getFont(24, Colors.fromHex(this.color));
+        final BitmapFont font = view.av.fonts.getFont(new FontParam().setSize(24).setColor(Colors.fromHex(this.color)));
         final float[] pos = this.getPosition(view);
         final Color c = font.getColor();
         // TODO add an outline to the text

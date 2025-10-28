@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.menu.text;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.engine.assets.FontService;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
@@ -20,6 +20,7 @@ public class SubheaderNode extends TextNode {
 
     /** {@inheritdoc} */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(FontService.BOLD, 22, ColorScheme.TEXT.color);
+        return this.av.fonts
+                .getFont(new FontParam().setFont("DejaVuSans-Bold").setSize(22).setColor(ColorScheme.TEXT.color));
     }
 }

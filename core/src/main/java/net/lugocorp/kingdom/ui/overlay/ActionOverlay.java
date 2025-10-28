@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.overlay;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -54,7 +55,7 @@ public class ActionOverlay extends Overlay {
     /** {@inheritdoc} */
     @Override
     public void render(GameView view) {
-        final BitmapFont font = view.av.fonts.getFont(30, ColorScheme.BUTTON.color);
+        final BitmapFont font = view.av.fonts.getFont(new FontParam().setSize(30).setColor(ColorScheme.BUTTON.color));
         final float[] pos = this.getPosition(view);
         final int y = (int) (pos[1] + font.getLineHeight());
         final float diff = (float) Math.PI / 2f;

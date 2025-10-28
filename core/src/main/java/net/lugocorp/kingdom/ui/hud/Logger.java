@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.Color;
@@ -51,7 +52,9 @@ public class Logger {
         for (int a = Math.min(this.n, Logger.MAX_ROWS - 1); a > 0; a--) {
             this.messages[a] = this.messages[a - 1];
         }
-        layout.setText(this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT.color), message);
+        layout.setText(
+                this.view.av.fonts.getFont(new FontParam().setSize(Logger.FONT_SIZE).setColor(ColorScheme.TEXT.color)),
+                message);
         this.messages[0] = new LogMessage(message, color, layout.width, layout.height);
     }
 
@@ -67,7 +70,8 @@ public class Logger {
         // Draw the text
         float y = Coords.SIZE.y - this.view.hud.top.getHeight() - Logger.MARGIN;
         this.view.av.sprites.begin();
-        final BitmapFont font = this.view.av.fonts.getFont(Logger.FONT_SIZE, ColorScheme.TEXT.color);
+        final BitmapFont font = this.view.av.fonts
+                .getFont(new FontParam().setSize(Logger.FONT_SIZE).setColor(ColorScheme.TEXT.color));
         for (int a = 0; a < this.n; a++) {
             final LogMessage lm = this.messages[a];
             final int x = (Coords.SIZE.x - (int) lm.w) / 2;

@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.game.mechanics.Mechanics;
@@ -44,7 +45,7 @@ public class TopHud extends Menu {
             /** {@inheritdoc} */
             @Override
             protected BitmapFont getFont() {
-                return view.av.fonts.getFont(ColorScheme.GOLD.color);
+                return view.av.fonts.getFont(new FontParam().setColor(ColorScheme.GOLD.color));
             }
         }.center();
         this.dayNight = new DayNightNode(view.av);

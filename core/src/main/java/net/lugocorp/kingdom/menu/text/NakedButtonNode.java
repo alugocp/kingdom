@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.text;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
@@ -25,7 +26,8 @@ public class NakedButtonNode extends TextNode {
     /** {@inheritdoc} */
     @Override
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24, this.hovered ? ColorScheme.HOVER.color : ColorScheme.BUTTON.color);
+        return this.av.fonts.getFont(new FontParam().setSize(24)
+                .setColor(this.hovered ? ColorScheme.HOVER.color : ColorScheme.BUTTON.color));
     }
 
     /**

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.assets.FontService;
+import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Fate;
@@ -244,7 +244,8 @@ class GameCreationView implements View {
                     /** {@inheritdoc} */
                     @Override
                     protected BitmapFont getFont() {
-                        return this.av.fonts.getFont(FontService.BOLD, 22, comp.color);
+                        return this.av.fonts
+                                .getFont(new FontParam().setFont("DejaVuSans-Bold").setSize(22).setColor(comp.color));
                     }
                 }).add(options));
         for (Fate fate : fates) {
