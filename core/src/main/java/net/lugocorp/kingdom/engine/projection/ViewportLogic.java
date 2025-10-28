@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.engine.projection;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Optional;
 
@@ -39,13 +40,13 @@ public class ViewportLogic {
      * Returns the given screen coordinate in "world units" (a LibGDX term)
      */
     public static Optional<Point> unproject(int x, int y) {
+        if (x < 0 || y < 0 || x > Gdx.graphics.getWidth() || y > Gdx.graphics.getHeight()) {
+            return Optional.empty();
+        }
         final float scaleX = Coords.SIZE.x / (float) ViewportLogic.viewport.getScreenWidth();
         final float scaleY = Coords.SIZE.y / (float) ViewportLogic.viewport.getScreenHeight();
         final float sx = (x - ViewportLogic.viewport.getScreenX()) * scaleX;
         final float sy = (y - ViewportLogic.viewport.getScreenY()) * scaleY;
-        if (sx < 0 || sy < 0 || sx > Coords.SIZE.x || sy > Coords.SIZE.y) {
-            return Optional.empty();
-        }
         return Optional.of(new Point((int) sx, (int) sy));
     }
 }
