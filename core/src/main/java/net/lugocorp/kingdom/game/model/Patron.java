@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.HelperNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
@@ -192,22 +193,25 @@ public class Patron extends Building {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        ListNode node = new ListNode().add(new HeaderNode(view.av, this.name)).add(new TextNode(view.av, this.desc))
+        final ListNode favors = new ListNode();
+        final RowNode node = new RowNode().add(new ListNode().add(new HeaderNode(view.av, this.name))
+                .add(new TextNode(view.av, this.desc))
                 .add(new TextNode(view.av, String.format("Preferred units: %s", this.preference)))
                 .add(new HelperNode(view.av,
-                        "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn."));
+                        "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn.")))
+                .add(favors);
         if (this.favor.size() > 0) {
             for (Player k : this.favor.keySet()) {
                 final String label = String.format("%s: %d", k.name, this.favor.get(k));
                 final boolean fav = this.favorite.map((Player f) -> k == f).orElse(false);
                 if (fav) {
-                    node.add(new SubheaderNode(view.av, String.format("%s (FAVORITE)", label)));
+                    favors.add(new SubheaderNode(view.av, String.format("%s (FAVORITE)", label)));
                 } else {
-                    node.add(new TextNode(view.av, label));
+                    favors.add(new TextNode(view.av, label));
                 }
             }
         } else {
-            node.add(new TextNode(view.av, "No players are competing for this patron right now"));
+            favors.add(new TextNode(view.av, "No players are competing for this patron right now"));
         }
         return node;
     }
