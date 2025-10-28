@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.game.mechanics.Mechanics;
 import net.lugocorp.kingdom.game.mechanics.NewUnit;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.menu.game.DayNightNode;
 import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
@@ -26,10 +27,10 @@ import java.util.Optional;
 public class TopHud extends Menu {
     private final ResourceBarsNode unitPoints;
     private final ResourceBarsNode auctionPoints;
+    private final DayNightNode dayNight;
     private final TextNode auctionChips;
     private final TextNode artifacts;
     private final TextNode gold;
-    private final TextNode dayNight;
 
     public TopHud(GameView view) {
         super(0, 0, Coords.SIZE.x, false, new ListNode());
@@ -46,7 +47,7 @@ public class TopHud extends Menu {
                 return view.av.fonts.getFont(ColorScheme.GOLD.color);
             }
         }.center();
-        this.dayNight = new TextNode(view.av, "").center();
+        this.dayNight = new DayNightNode(view.av);
 
         // Populate the root MenuNode and repack
         ((ListNode) this.root)
@@ -74,7 +75,7 @@ public class TopHud extends Menu {
         this.auctionPoints.setValue(0, g.mechanics.auction.getPoints());
         this.auctionChips.setText(this.plural("Auction Chip", g.human.auctionChips));
         this.artifacts.setText(this.plural("Artifact", g.human.artifacts.size()));
-        this.dayNight.setText(g.mechanics.dayNight.isDay() ? "Daytime" : "Nighttime");
+        this.dayNight.set(g.mechanics.dayNight);
     }
 
     /**

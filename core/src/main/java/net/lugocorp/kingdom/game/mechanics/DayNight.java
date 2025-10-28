@@ -23,6 +23,13 @@ public class DayNight {
     }
 
     /**
+     * Returns the turns remaining before the day/night cycle flips
+     */
+    public int getRemainingTurns() {
+        return this.countdown;
+    }
+
+    /**
      * Returns the appropriate sky color for this time of day
      */
     public Color getSkyboxColor() {
