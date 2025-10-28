@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.builtin.logic.ItemLogic;
 import net.lugocorp.kingdom.builtin.logic.UnitLogic;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.actions.ActionType;
+import net.lugocorp.kingdom.game.actions.ActivateAction;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
@@ -1642,6 +1643,11 @@ public class KingdomMod implements GameMod {
                                     view.game.world.getTile(p1).flatMap((Tile t) -> t.unit)
                                             .ifPresent((Unit u) -> effects
                                                     .add(receiver.wielder.combat.attack(view, u, new Damage(4))));
+                                }
+                                effects.add(() -> view.game.actions.unitHasActed(view, receiver.wielder,
+                                        new ActivateAction()));
+                                if (receiver.wielder.leadership.belongsToHuman()) {
+                                    effects.add(() -> view.hud.bot.tileMenu.refresh());
                                 }
                                 return SideEffect.all(effects);
                             });
