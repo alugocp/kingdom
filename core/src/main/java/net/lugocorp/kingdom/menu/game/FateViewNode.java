@@ -2,10 +2,10 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.menu.misc.HelperNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
-import net.lugocorp.kingdom.menu.text.HelperNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 

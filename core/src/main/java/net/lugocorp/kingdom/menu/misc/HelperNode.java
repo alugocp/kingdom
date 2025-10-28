@@ -1,26 +1,26 @@
-package net.lugocorp.kingdom.menu.text;
-import net.lugocorp.kingdom.color.ColorScheme;
+package net.lugocorp.kingdom.menu.misc;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.render.Drawable;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuPopup;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import net.lugocorp.kingdom.menu.text.TextNode;
 
 /**
  * A friendly popup that explains the more advanced mechanics to players
  */
-public class HelperNode extends NakedButtonNode {
+public class HelperNode implements MenuNode {
+    public static int SIDE = 35;
     private final MenuPopup popup = new MenuPopup();
     private final MenuNode desc;
+    private final Drawable icon;
 
     public HelperNode(AudioVideo av, MenuNode desc) {
-        super(av, "Help", () -> {
-        });
+        this.icon = new Drawable(av.loaders.sprites, "help-icon");
         this.desc = desc;
-        this.disableNoise();
-        this.center();
     }
 
     public HelperNode(AudioVideo av, String desc) {
@@ -29,22 +29,28 @@ public class HelperNode extends NakedButtonNode {
 
     /** {@inheritdoc} */
     @Override
-    protected BitmapFont getFont() {
-        return this.av.fonts.getFont(24,
-                this.isHovered() ? ColorScheme.SPECIAL_HOVER.color : ColorScheme.SPECIAL_BUTTON.color);
+    public int getHeight() {
+        return HelperNode.SIDE;
     }
 
     /** {@inheritdoc} */
     @Override
     public void pack(Menu menu, int width) {
-        super.pack(menu, width);
         this.popup.setMenu(menu);
     }
 
     /** {@inheritdoc} */
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
-        super.mouseMoved(bounds, prev, curr);
-        this.popup.update(bounds, curr, this.desc);
+        this.popup.update(new Rect(bounds.x, bounds.y, HelperNode.SIDE, HelperNode.SIDE), curr, this.desc);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void draw(AudioVideo av, Rect bounds) {
+        final Rect flip = Coords.screen.flip(bounds);
+        av.sprites.begin();
+        this.icon.render(av.sprites, flip.x, flip.y);
+        av.sprites.end();
     }
 }
