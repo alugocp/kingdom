@@ -46,13 +46,13 @@ public class Minimap {
     /**
      * Handles a click on this Minimap
      */
-    boolean click(GameView view, Point p) {
-        Rect r = new Rect(this.pos.x, this.pos.y, this.w, this.h);
+    public boolean click(GameView view, Point p) {
+        final Rect r = new Rect(this.pos.x, this.pos.y, this.w, this.h);
         if (!r.contains(p)) {
             return false;
         }
 
-        Point clicked = new Point((int) ((p.x - r.x) * this.tilesPerPixelInOneDimension / this.scale),
+        final Point clicked = new Point((int) ((p.x - r.x) * this.tilesPerPixelInOneDimension / this.scale),
                 (int) ((p.y - r.y) * this.tilesPerPixelInOneDimension / this.scale));
         view.centerOnPoint(clicked, true);
         return true;

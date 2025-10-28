@@ -139,6 +139,14 @@ public class GameViewController implements InputProcessor {
             }
         }
 
+        // Minimap logic
+        if (!this.touch.isActive()) {
+            final Optional<Point> p = ViewportLogic.unproject(x, y);
+            if (p.map((Point p1) -> !this.view.hud.bot.minimap.click(this.view, p1)).orElse(false)) {
+                return true;
+            }
+        }
+
         // Game World logic
         if (this.touch.isActive()) {
             if (!this.touch.isDragging() && !this.view.animations.inProgress()) {
