@@ -101,8 +101,9 @@ public abstract class Player {
      * Changes this Player's current amount of unit points and adds an Overlay
      */
     public void addUnitPoints(GameView view, Point p, int amount) {
+        this.unitPoints += amount;
         view.overlays.add(new ResourceOverlay(view, p, 0.14f, ColorScheme.GREEN.hex, amount)
-                .then(() -> this.addUnitPoints(view, amount)));
+                .then(() -> view.hud.top.update(view.game)));
     }
 
     /** {@inheritdoc} */

@@ -61,7 +61,7 @@ public class TurnStructure {
         }
         // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
         // confused
-        final int unitPoints = view.game.mechanics.newUnits.giveUnitPointsYield(view, this.turn.getPlayer());
+        view.game.mechanics.newUnits.giveUnitPointsYield(view, this.turn.getPlayer());
         if (this.turn.getPlayer().isHumanPlayer()) {
             view.hud.bot.minimap.refresh(view.game.world);
             view.hud.logger.log("It is your turn again");
@@ -81,8 +81,7 @@ public class TurnStructure {
             }
 
             // Choose a new Unit at the maximum unit points
-            for (int a = 0; a < Math
-                    .floor((this.turn.getPlayer().getUnitPoints() + unitPoints) / NewUnit.MAX_UNIT_POINTS); a++) {
+            for (int a = 0; a < Math.floor((this.turn.getPlayer().getUnitPoints()) / NewUnit.MAX_UNIT_POINTS); a++) {
                 view.hud.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
             }
 

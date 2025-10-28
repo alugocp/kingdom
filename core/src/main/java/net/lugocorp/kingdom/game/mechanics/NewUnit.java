@@ -37,11 +37,11 @@ public class NewUnit {
     /**
      * Assigns unit points to the given Player and returns that value
      */
-    public int giveUnitPointsYield(GameView view, Player player) {
+    public void giveUnitPointsYield(GameView view, Player player) {
         final int points = (int) Math.floor(20f * player.getBareTiles() / player.tiles);
         if (!player.isHumanPlayer()) {
             player.addUnitPoints(view, points);
-            return points;
+            return;
         }
 
         // Find out which empty Tiles owned by the Player are on screen
@@ -58,7 +58,7 @@ public class NewUnit {
         // No fancy Overlays if we don't have any candidates on screen :(
         if (candidates.size() == 0) {
             player.addUnitPoints(view, points);
-            return points;
+            return;
         }
 
         // Split up the unit point yield amongst the candidates
@@ -71,7 +71,6 @@ public class NewUnit {
                 break;
             }
         }
-        return points;
     }
 
     /**
