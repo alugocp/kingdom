@@ -28,6 +28,20 @@ public class BatchCounter<T> {
     }
 
     /**
+     * Returns true if the next batch is the last one in this iteration of the data
+     */
+    public boolean isLastBatch() {
+        return this.index + this.getBatchSize() == this.data.size();
+    }
+
+    /**
+     * Returns the size of the next batch
+     */
+    private int getBatchSize() {
+        return Math.min(this.data.size() - this.index, this.max);
+    }
+
+    /**
      * Registers that an element(s) was removed from the underlying list
      */
     public void removed(int n) {
@@ -37,11 +51,30 @@ public class BatchCounter<T> {
     }
 
     /**
+     * Registers that an element at the given index was removed (decrements the
+     * index if necessary)
+     */
+    public void processRemoval(int i) {
+        if (i < this.index) {
+            this.index--;
+        } else if (this.index == this.data.size()) {
+            this.index = 0;
+        }
+    }
+
+    /**
+     * Calls into processRemoval()
+     */
+    public void processRemoval(T element) {
+        this.processRemoval(this.data.indexOf(element));
+    }
+
+    /**
      * Returns a subset of the underlying list (no larger than the specified max
      * length)
      */
     public Iterable<T> getBatch() {
-        final int n = Math.min(this.data.size() - this.index, this.max);
+        final int n = this.getBatchSize();
         final BatchCounter<T> that = this;
         return new Iterable<T>() {
             /** {@inheritdoc} */

@@ -177,8 +177,8 @@ public class GameView implements View {
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         ViewportLogic.setViewport(this.viewport);
 
-        // Kick off the Player's turn
-        this.game.mechanics.turns.kickOffTurn(this);
+        // Kick off the TurnStructure
+        this.game.mechanics.turns.startOfTurn(this);
         this.initHudMessages();
     }
 
@@ -190,8 +190,9 @@ public class GameView implements View {
         Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
         this.controller.keys.performActions();
 
-        // Update Animations
+        // Update Animations and other Game state
         this.animations.update(this, dt);
+        this.game.mechanics.turns.processTurnByFrame(this);
 
         // Render normals to a FrameBuffer
         this.av.frameBuffer.begin();

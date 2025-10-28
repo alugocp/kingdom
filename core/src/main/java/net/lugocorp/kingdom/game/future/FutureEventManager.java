@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.BatchCounter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Optional;
  */
 public class FutureEventManager {
     // TODO optimize the futures field with a different data structure
-    private final Map<Integer, List<FutureTick>> futures = new HashMap<>();
+    private final Map<Integer, BatchCounter<FutureTick>> futures = new HashMap<>();
     private final Game game;
 
     public FutureEventManager(Game game) {
@@ -30,11 +31,11 @@ public class FutureEventManager {
         if (interval < 1) {
             throw new RuntimeException("You cannot set up a tick for the current or any past turns");
         }
-        final int turn = this.game.mechanics.turns.getTurn() + interval;
+        final int turn = this.game.mechanics.turns.getTurn().getCounter() + interval;
         if (!this.futures.containsKey(turn)) {
-            this.futures.put(turn, new ArrayList<FutureTick>());
+            this.futures.put(turn, new BatchCounter<FutureTick>(20));
         }
-        this.futures.get(turn).add(new FutureTick(receiver, channel, turn, interval, repeat));
+        this.futures.get(turn).list().add(new FutureTick(receiver, channel, turn, interval, repeat));
     }
 
     /**
@@ -50,8 +51,8 @@ public class FutureEventManager {
      */
     private List<FutureTick> getFutureTicks(EventReceiver receiver, Optional<String> channel) {
         List<FutureTick> lst = new ArrayList<>();
-        for (List<FutureTick> ticks : this.futures.values()) {
-            for (FutureTick ft : ticks) {
+        for (BatchCounter<FutureTick> ticks : this.futures.values()) {
+            for (FutureTick ft : ticks.list()) {
                 if (ft.receiver == receiver && channel.map((String ch) -> ch == ft.channel).orElse(true)) {
                     lst.add(ft);
                 }
@@ -64,11 +65,12 @@ public class FutureEventManager {
      * Removes all upcoming FutureTicks associated with the given EventReceiver
      */
     public void removeFutureTicks(EventReceiver receiver) {
-        for (List<FutureTick> ticks : this.futures.values()) {
+        for (BatchCounter<FutureTick> ticks : this.futures.values()) {
             int a = 0;
-            while (a < ticks.size()) {
-                if (ticks.get(a).receiver == receiver) {
-                    ticks.remove(a);
+            while (a < ticks.list().size()) {
+                if (ticks.list().get(a).receiver == receiver) {
+                    ticks.processRemoval(a);
+                    ticks.list().remove(a);
                 } else {
                     a++;
                 }
@@ -81,12 +83,13 @@ public class FutureEventManager {
      * channel
      */
     public void removeFutureEvents(EventReceiver receiver, String channel) {
-        for (List<FutureTick> ticks : this.futures.values()) {
+        for (BatchCounter<FutureTick> ticks : this.futures.values()) {
             int a = 0;
-            while (a < ticks.size()) {
-                FutureTick ft = ticks.get(a);
+            while (a < ticks.list().size()) {
+                FutureTick ft = ticks.list().get(a);
                 if (ft.receiver == receiver && ft.channel.equals(channel)) {
-                    ticks.remove(a);
+                    ticks.processRemoval(a);
+                    ticks.list().remove(a);
                 } else {
                     a++;
                 }
@@ -102,7 +105,7 @@ public class FutureEventManager {
         if (ticks.size() == 0) {
             return -1;
         }
-        final int turn = this.game.mechanics.turns.getTurn();
+        final int turn = this.game.mechanics.turns.getTurn().getCounter();
         return ticks.get(0).turn - turn;
     }
 
@@ -110,7 +113,7 @@ public class FutureEventManager {
      * Removes a FutureTick from the queue and processes it
      */
     private void processFutureTick(GameView view, FutureTick ft) {
-        this.futures.get(ft.turn).remove(ft);
+        this.futures.get(ft.turn).list().remove(ft);
         Events.RepeatedEvent e = new Events.RepeatedEvent(ft.channel, ft.interval, ft.repeat);
         ft.receiver.handleEvent(view, e).execute();
         if (e.repeat) {
@@ -119,17 +122,24 @@ public class FutureEventManager {
     }
 
     /**
-     * Triggers an Event for every FutureTick that has reached its time
+     * Triggers an Event for every FutureTick that has reached its time (only a
+     * certain amount per turn), and returns true if all FutureTicks for this turn
+     * have been processed
      */
-    public void checkFutureTicks(GameView view) {
-        final int turn = this.game.mechanics.turns.getTurn();
+    public boolean checkFutureTicks(GameView view) {
+        final int turn = this.game.mechanics.turns.getTurn().getCounter();
         if (this.futures.containsKey(turn)) {
-            final List<FutureTick> ls = new ArrayList<>();
-            ls.addAll(this.futures.get(turn));
-            for (FutureTick ft : ls) {
+            final BatchCounter<FutureTick> counter = this.futures.get(turn);
+            final boolean isLast = counter.isLastBatch();
+            for (FutureTick ft : counter.getBatch()) {
                 this.processFutureTick(view, ft);
+                counter.removed(1);
+            }
+            if (!isLast) {
+                return false;
             }
         }
+        return true;
     }
 
     /**

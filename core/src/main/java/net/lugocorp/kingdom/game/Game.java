@@ -34,11 +34,11 @@ public class Game {
     public final FutureEventManager future = new FutureEventManager(this);
     public final ActionManager actions = new ActionManager();
     public final ColorPool colorPool = new ColorPool();
+    public final Mechanics mechanics = new Mechanics();
     public final List<CompPlayer> comps = new ArrayList<>();
     public final Set<Unit> units = new HashSet<>();
     public final World world = new World();
     public final OffsetTime startTime;
-    public final Mechanics mechanics;
     public final HumanPlayer human;
     @FieldSerializer.Optional("events")
     public AllEventHandlers events;
@@ -51,7 +51,6 @@ public class Game {
         this.events = events;
         this.startTime = startTime;
         this.human = new HumanPlayer(this.colorPool.getFromPool());
-        this.mechanics = new Mechanics(this);
     }
 
     /**
@@ -59,7 +58,6 @@ public class Game {
      */
     public Game() {
         this.startTime = null;
-        this.mechanics = null;
         this.human = null;
     }
 

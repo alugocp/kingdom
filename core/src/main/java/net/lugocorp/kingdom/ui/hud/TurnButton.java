@@ -15,7 +15,7 @@ public class TurnButton extends Menu {
 
     public TurnButton(GameView view) {
         super(Coords.SIZE.x - Minimap.MAX_W, Coords.SIZE.y, Minimap.MAX_W, true, new ListNode());
-        this.button = (ButtonNode) (new ButtonNode(view.av, "Complete Turn", () -> {
+        this.button = (ButtonNode) (new ButtonNode(view.av, "Waiting...", () -> {
             if (view.hud.popups.get().isPresent()) {
                 view.av.loaders.sounds.play("sfx/error");
                 view.hud.popups.setDisplay(true);
@@ -24,7 +24,7 @@ public class TurnButton extends Menu {
             } else {
                 view.av.loaders.sounds.play("sfx/end-turn");
                 view.hud.logger.log("You have ended your turn");
-                view.game.mechanics.turns.iterateTurnPlayer(view);
+                view.game.mechanics.turns.nextTurn(view);
                 view.hud.bot.tileMenu.refresh();
             }
         }) {
@@ -36,7 +36,7 @@ public class TurnButton extends Menu {
                 }
                 return this.isHovered() ? ColorScheme.SPECIAL_HOVER.color : ColorScheme.SPECIAL_BUTTON.color;
             }
-        }.setEnabledCriteria(() -> view.game.mechanics.turns.canHumanPlayerAct()).disableNoise());
+        }.enable(false).disableNoise());
         this.setRoot(this.button);
         this.setMargin(0);
     }

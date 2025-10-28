@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -19,24 +18,12 @@ import java.util.Optional;
  * This class handles human and AI Players taking turns during the Game
  */
 public class TurnStructure {
-    private boolean canPlayerAct = false;
-    private Player turnPlayer;
-    private int turn = 1;
-
-    public TurnStructure(Game game) {
-        this.turnPlayer = game.human;
-    }
+    private final Turn turn = new Turn();
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
+     * Returns the current Turn
      */
-    public TurnStructure() {
-    }
-
-    /**
-     * Returns the current turn number
-     */
-    public int getTurn() {
+    public Turn getTurn() {
         return this.turn;
     }
 
@@ -44,39 +31,118 @@ public class TurnStructure {
      * Returns true when the turn Player is the human
      */
     public boolean canHumanPlayerAct() {
-        return this.turnPlayer.isHumanPlayer() && this.canPlayerAct;
+        return this.turn.getPlayer().isHumanPlayer() && this.turn.getState() == TurnState.ACTIVE;
     }
 
     /**
-     * Sets up the next turn Player
+     * Iterates the Turn Player and kicks off a new Turn
      */
-    public void iterateTurnPlayer(GameView view) {
-        this.turnPlayer.getFate().handleEvent(view, new Events.EndOfTurnEvent()).execute();
-        final Player prev = this.turnPlayer;
-        if (this.turnPlayer.isHumanPlayer()) {
-            this.turnPlayer = view.game.comps.get(0);
+    public void nextTurn(GameView view) {
+        final Player prev = this.turn.getPlayer();
+        prev.getFate().handleEvent(view, new Events.EndOfTurnEvent()).execute();
+        if (prev.isHumanPlayer()) {
             view.hud.bot.turnButton.update(false);
+        }
+        this.turn.next();
+        view.game.actions.turnTransition(prev, this.turn.getPlayer());
+        this.startOfTurn(view);
+    }
+
+    /**
+     * Kicks off a new Turn
+     */
+    public void startOfTurn(GameView view) {
+        if (this.turn.isFirstTurnPlayer()) {
+            this.startOfTurnGroup(view);
+        }
+        view.hud.top.update(view.game);
+        for (Unit u : this.turn.getPlayer().units) {
+            u.sleep.wakeUpCheck(view);
+        }
+        // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
+        // confused
+        final int unitPoints = view.game.mechanics.newUnits.giveUnitPointsYield(view, this.turn.getPlayer());
+        if (this.turn.getPlayer().isHumanPlayer()) {
+            view.hud.bot.minimap.refresh(view.game.world);
+            view.hud.logger.log("It is your turn again");
+
+            // Check human Player win/lose state
+            if (view.game.hasHumanPlayerLost()) {
+                view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
+                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                        new ListNode().add(new TextNode(view.av, "You have lost"))
+                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
+            }
+            if (view.game.hasHumanPlayerWon()) {
+                view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
+                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
+                        new ListNode().add(new TextNode(view.av, "You win!"))
+                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
+            }
+
+            // Choose a new Unit at the maximum unit points
+            for (int a = 0; a < Math
+                    .floor((this.turn.getPlayer().getUnitPoints() + unitPoints) / NewUnit.MAX_UNIT_POINTS); a++) {
+                view.hud.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
+            }
+
+            // Start a new ArtifactAuction at the maximum auction points
+            if (view.game.mechanics.auction.readyForNewAuction()) {
+                view.game.mechanics.auction.openNewAuction(view.game,
+                        () -> view.hud.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view)));
+            }
+
+            // Show the aftermath of any active ArtifactAuction
+            if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
+                    .orElse(false)) {
+                if (view.game.mechanics.auction.getAuction().get().notEveryoneHasSeenResults(view.game)) {
+                    view.hud.popups.add(view.game.mechanics.auction.getFollowUpMenu(view, true));
+                    view.game.mechanics.auction.getAuction().get().hasSeenResults();
+                } else {
+                    view.game.mechanics.auction.closeAuction();
+                }
+            }
         } else {
-            int index = view.game.comps.indexOf(this.turnPlayer);
-            if (index == view.game.comps.size() - 1) {
-                this.turnPlayer = view.game.human;
-                this.turn++;
-                view.game.future.checkFutureTicks(view);
-                this.startNewTurnGroup(view);
-                view.hud.bot.turnButton.update(true);
-                view.hud.top.update(view.game);
-            } else {
-                this.turnPlayer = view.game.comps.get(index + 1);
+            final CompPlayer comp = (CompPlayer) this.turn.getPlayer();
+            comp.stats.unitPoints.add(comp.getUnitPoints());
+            view.hud.logger.log(String.format("%s's turn", comp.name));
+
+            // Handle AI player ArtifactAuction logic
+            if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
+                    .orElse(false)) {
+                view.game.mechanics.auction.getAuction().get().hasSeenResults();
+            } else if (view.game.mechanics.auction.getAuction().isPresent()) {
+                // The CompPlayer decides whether or not it will enter the Auction
+                comp.wishlist.artifacts.decideOnAuctionEntry();
+            }
+
+            // Handle CompPlayer Unit recruitment logic
+            for (int a = 0; a < Math.floor(comp.getUnitPoints() / NewUnit.MAX_UNIT_POINTS); a++) {
+                Optional<Glyph> glyph = comp.wishlist.glyphs.getDesiredOptions().getMostWanted();
+                if (glyph.isPresent()) {
+                    Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(comp, glyph.get());
+                    if (spawnPoint.isPresent()) {
+                        comp.wishlist.units.setOptions(view.game.mechanics.newUnits.getRecruitmentOptions(view,
+                                glyph.get(), spawnPoint.get(), 1));
+                        comp.wishlist.units.getDesiredOptions().getMostWanted()
+                                .ifPresent((Unit u) -> view.game.mechanics.newUnits.choose(view, comp, u));
+                    }
+                }
             }
         }
-        view.game.actions.turnTransition(prev, this.turnPlayer);
-        this.kickOffTurn(view);
     }
 
     /**
      * This function handles logic whenever every player has had a turn
      */
-    private void startNewTurnGroup(GameView view) {
+    private void startOfTurnGroup(GameView view) {
+        // Very first turn setup
+        if (this.turn.getCounter() == 1) {
+            for (Player p : view.game.getAllPlayers()) {
+                p.getFate().handleEvent(view, new Events.GameStartEvent(p)).execute();
+            }
+        }
+
         // Iterate day/night logic
         DayNight dayNight = view.game.mechanics.dayNight;
         boolean isDayBeforeTick = dayNight.isDay();
@@ -102,104 +168,23 @@ public class TurnStructure {
     }
 
     /**
-     * Perform these actions when the Game starts
+     * Performs some action each frame to keep the TurnStructure flowing
      */
-    private void initializeGame(GameView view) {
-        for (Player p : view.game.getAllPlayers()) {
-            p.getFate().handleEvent(view, new Events.GameStartEvent(p)).execute();
-        }
-    }
-
-    /**
-     * Runs the per-turn logic and then allows the turn Player to act
-     */
-    public void kickOffTurn(GameView view) {
-        if (this.turn == 1 && this.turnPlayer.isHumanPlayer()) {
-            this.initializeGame(view);
-        }
-
-        // Run per-turn calculations for the turn Player
-        this.canPlayerAct = false;
-        // TODO make this entire function more readable
-        // TODO run this logic in another thread for optimization
-        for (Unit u : this.turnPlayer.units) {
-            u.sleep.wakeUpCheck(view);
-        }
-        // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
-        // confused
-        view.game.mechanics.newUnits.giveUnitPointsYield(view, this.turnPlayer);
-        if (this.turnPlayer.isHumanPlayer()) {
-            view.hud.bot.minimap.refresh(view.game.world);
-            view.hud.logger.log("It is your turn again");
-
-            // Check human Player win/lose state
-            if (view.game.hasHumanPlayerLost()) {
-                view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
-                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(view.av, "You have lost"))
-                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
-            }
-            if (view.game.hasHumanPlayerWon()) {
-                view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
-                        Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(view.av, "You win!"))
-                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
-            }
-
-            // Choose a new Unit at the maximum unit points
-            for (int a = 0; a < Math.floor(this.turnPlayer.getUnitPoints() / NewUnit.MAX_UNIT_POINTS); a++) {
-                view.hud.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
-            }
-            // Start a new ArtifactAuction at the maximum auction points
-            if (view.game.mechanics.auction.readyForNewAuction()) {
-                view.game.mechanics.auction.openNewAuction(view.game,
-                        () -> view.hud.popups.add(view.game.mechanics.auction.getAuctionBuyInMenu(view)));
-            }
-            // Show the aftermath of any active ArtifactAuction
-            if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
-                    .orElse(false)) {
-                if (view.game.mechanics.auction.getAuction().get().notEveryoneHasSeenResults(view.game)) {
-                    view.hud.popups.add(view.game.mechanics.auction.getFollowUpMenu(view, true));
-                    view.game.mechanics.auction.getAuction().get().hasSeenResults();
-                } else {
-                    view.game.mechanics.auction.closeAuction();
+    public void processTurnByFrame(GameView view) {
+        if (this.turn.getState() == TurnState.TRANSITION) {
+            if (view.game.future.checkFutureTicks(view)) {
+                this.turn.activate();
+                view.hud.bot.tileMenu.refresh();
+                if (this.turn.getPlayer().isHumanPlayer()) {
+                    view.hud.bot.turnButton.update(true);
                 }
             }
-        } else {
-            CompPlayer comp = (CompPlayer) this.turnPlayer;
-            comp.stats.unitPoints.add(comp.getUnitPoints());
-
-            // Handle AI player ArtifactAuction logic
-            if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
-                    .orElse(false)) {
-                view.game.mechanics.auction.getAuction().get().hasSeenResults();
-            } else if (view.game.mechanics.auction.getAuction().isPresent()) {
-                // The CompPlayer decides whether or not it will enter the Auction
-                comp.wishlist.artifacts.decideOnAuctionEntry();
-            }
-
-            // Handle CompPlayer Unit recruitment logic
-            for (int a = 0; a < Math.floor(comp.getUnitPoints() / NewUnit.MAX_UNIT_POINTS); a++) {
-                Optional<Glyph> glyph = comp.wishlist.glyphs.getDesiredOptions().getMostWanted();
-                if (glyph.isPresent()) {
-                    Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(comp, glyph.get());
-                    if (spawnPoint.isPresent()) {
-                        comp.wishlist.units.setOptions(view.game.mechanics.newUnits.getRecruitmentOptions(view,
-                                glyph.get(), spawnPoint.get(), 1));
-                        comp.wishlist.units.getDesiredOptions().getMostWanted()
-                                .ifPresent((Unit u) -> view.game.mechanics.newUnits.choose(view, comp, u));
-                    }
-                }
-            }
-        }
-
-        // Allow the turn Player to act
-        this.canPlayerAct = true;
-        if (!this.turnPlayer.isHumanPlayer()) {
-            CompPlayer player = (CompPlayer) this.turnPlayer;
+        } else if (!this.turn.getPlayer().isHumanPlayer()) {
+            // TODO decision making should last multiple frames
+            final CompPlayer player = (CompPlayer) this.turn.getPlayer();
             player.makeDecisions(view);
             view.hud.bot.tileMenu.refresh();
-            this.iterateTurnPlayer(view);
+            this.nextTurn(view);
             player.stats.commit();
         }
     }

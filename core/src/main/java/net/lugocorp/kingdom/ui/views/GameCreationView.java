@@ -122,6 +122,7 @@ class GameCreationView implements View {
      * Exits this menu and starts loading the new Game
      */
     private void startGame() {
+        this.view.game.mechanics.turns.getTurn().setPlayers(this.view.game.getAllPlayers());
         this.navigate.accept(new GenerateWorldView(this.view, this.worldGenOpts));
     }
 
