@@ -245,7 +245,7 @@ class GameCreationView implements View {
                     @Override
                     protected BitmapFont getFont() {
                         return this.av.fonts
-                                .getFont(new FontParam().setFont("DejaVuSans-Bold").setSize(22).setColor(comp.color));
+                                .getFont(new FontParam().setFont("Fontin-Regular").setSize(22).setColor(comp.color));
                     }
                 }).add(options));
         for (Fate fate : fates) {

@@ -8,7 +8,7 @@ import java.util.Optional;
 public class FontParam {
     private static final int DEFAULT_SIZE = 18;
     private Optional<Color> border = Optional.empty();
-    private String font = "DejaVuSans";
+    private String font = "Arvo-Regular";
     private Color color = Color.WHITE;
     private int size = 18;
 

@@ -20,6 +20,7 @@ public class HeaderNode extends TextNode {
 
     /** {@inheritdoc} */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(new FontParam().setSize(36).setColor(ColorScheme.TEXT.color));
+        return this.av.fonts
+                .getFont(new FontParam().setFont("Fontin-Bold").setSize(36).setColor(ColorScheme.TEXT.color));
     }
 }
