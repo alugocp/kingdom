@@ -33,6 +33,7 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.ActionNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
+import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -143,7 +144,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         final RowNode node = new RowNode();
 
         // Unit stats section
-        final ListNode col1 = new ListNode().add(new SubheaderNode(view.av, this.name));
+        final ListNode col1 = new ListNode().add(new HeaderNode(view.av, this.name));
         final MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
         final int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
         col1.add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString()));
@@ -167,10 +168,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming an edible item."))));
 
         // Actions / spells section
-        final ListNode col2 = new ListNode().add(new SubheaderNode(view.av, "Spells"))
-                .add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
+        final ListNode col2 = new ListNode().add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)));
         if (this.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()) {
-
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
                 col2.add(new ActionNode(view.av, "Move",

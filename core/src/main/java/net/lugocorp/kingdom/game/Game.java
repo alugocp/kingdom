@@ -94,8 +94,8 @@ public class Game {
      */
     public Set<Player> getAllPlayers() {
         final Set<Player> players = new HashSet<>();
-        players.addAll(this.comps);
         players.add(this.human);
+        players.addAll(this.comps);
         return players;
     }
 
