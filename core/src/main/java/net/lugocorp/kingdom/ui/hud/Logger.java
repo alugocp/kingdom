@@ -12,8 +12,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
  */
 public class Logger {
     private static final int FONT_SIZE = 22;
-    private static final int MAX_TIMER = 3500;
-    private static final int FADE_OUT = 500;
+    private static final int MAX_TIMER = 3000;
     private static final int MAX_ROWS = 6;
     private static final int MARGIN = 5;
     private final GlyphLayout layout = new GlyphLayout();
@@ -52,9 +51,7 @@ public class Logger {
         for (int a = Math.min(this.n, Logger.MAX_ROWS - 1); a > 0; a--) {
             this.messages[a] = this.messages[a - 1];
         }
-        layout.setText(
-                this.view.av.fonts.getFont(new FontParam().setSize(Logger.FONT_SIZE).setColor(ColorScheme.TEXT.color)),
-                message);
+        layout.setText(this.view.av.fonts.getFont(new FontParam().setSize(Logger.FONT_SIZE)), message);
         this.messages[0] = new LogMessage(message, color, layout.width, layout.height);
     }
 
@@ -68,21 +65,16 @@ public class Logger {
         this.timer = (int) Math.min(Logger.MAX_TIMER, this.timer + dt);
 
         // Draw the text
+        final FontParam param = new FontParam().setSize(Logger.FONT_SIZE).setBorder(ColorScheme.BLACK.color);
         float y = Coords.SIZE.y - this.view.hud.top.getHeight() - Logger.MARGIN;
         this.view.av.sprites.begin();
-        final BitmapFont font = this.view.av.fonts
-                .getFont(new FontParam().setSize(Logger.FONT_SIZE).setColor(ColorScheme.TEXT.color));
         for (int a = 0; a < this.n; a++) {
             final LogMessage lm = this.messages[a];
             final int x = (Coords.SIZE.x - (int) lm.w) / 2;
-            final float fade = (this.timer - (Logger.MAX_TIMER - Logger.FADE_OUT)) / (float) Logger.FADE_OUT;
-            final float alpha = 1f - (0.05f * a);
-            font.setColor(lm.color.r, lm.color.g, lm.color.b,
-                    (a == this.n - 1 && fade > 0f) ? (1f - fade) * alpha : alpha);
+            final BitmapFont font = this.view.av.fonts.getFont(param.setColor(lm.color));
             font.draw(this.view.av.sprites, lm.message, x, y);
             y -= lm.h + Logger.MARGIN;
         }
-        font.setColor(ColorScheme.TEXT.color);
         this.view.av.sprites.end();
 
         // Remove a message when the timer runs out

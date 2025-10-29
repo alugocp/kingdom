@@ -1,11 +1,13 @@
 package net.lugocorp.kingdom.engine.assets;
 import com.badlogic.gdx.graphics.Color;
+import java.util.Optional;
 
 /**
  * This class contains several information to describe a requested font
  */
 public class FontParam {
     private static final int DEFAULT_SIZE = 18;
+    private Optional<Color> border = Optional.empty();
     private String font = "DejaVuSans";
     private Color color = Color.WHITE;
     private int size = 18;
@@ -23,6 +25,14 @@ public class FontParam {
      */
     public FontParam setColor(Color color) {
         this.color = color;
+        return this;
+    }
+
+    /**
+     * Sets this FontParam's border
+     */
+    public FontParam setBorder(Color border) {
+        this.border = Optional.of(border);
         return this;
     }
 
@@ -46,6 +56,13 @@ public class FontParam {
      */
     public Color getColor() {
         return this.color;
+    }
+
+    /**
+     * Gets this FontParam's border
+     */
+    public Optional<Color> getBorder() {
+        return this.border;
     }
 
     /**

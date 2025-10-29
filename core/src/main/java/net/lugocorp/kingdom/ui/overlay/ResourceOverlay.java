@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.overlay;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.math.Coords;
@@ -51,8 +52,8 @@ public class ResourceOverlay extends Overlay {
     /** {@inheritdoc} */
     @Override
     public void render(GameView view) {
-        final BitmapFont font = view.av.fonts.getFont(new FontParam().setSize(24).setColor(Colors.fromHex(this.color)));
-        // TODO add an outline to the text
+        final BitmapFont font = view.av.fonts.getFont(
+                new FontParam().setSize(24).setColor(Colors.fromHex(this.color)).setBorder(ColorScheme.BLACK.color));
         view.av.sprites.begin();
         font.draw(view.av.sprites, this.label, this.x, this.y);
         view.av.sprites.end();

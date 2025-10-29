@@ -55,7 +55,8 @@ public class ActionOverlay extends Overlay {
     /** {@inheritdoc} */
     @Override
     public void render(GameView view) {
-        final BitmapFont font = view.av.fonts.getFont(new FontParam().setSize(30).setColor(ColorScheme.BUTTON.color));
+        final BitmapFont font = view.av.fonts.getFont(
+                new FontParam().setSize(30).setColor(ColorScheme.BUTTON.color).setBorder(ColorScheme.BLACK.color));
         final float[] pos = this.getPosition(view);
         final int y = (int) (pos[1] + font.getLineHeight());
         final float diff = (float) Math.PI / 2f;

@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.engine.assets;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -24,6 +25,8 @@ public class FontService {
         }
         final String hash = f.toString();
         if (!this.generated.containsKey(hash)) {
+            this.params.borderWidth = f.getBorder().isPresent() ? 2f : 0f;
+            this.params.borderColor = f.getBorder().orElse(Color.BLACK);
             this.params.color = f.getColor();
             this.params.size = f.getSize();
             final BitmapFont font = this.generators.get(f.getFont()).generateFont(this.params);
