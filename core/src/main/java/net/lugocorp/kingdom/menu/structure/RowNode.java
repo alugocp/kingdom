@@ -12,15 +12,71 @@ import java.util.Optional;
  * MenuNode item containing many child nodes
  */
 public class RowNode implements MenuNode {
-    private final List<MenuNode> children = new ArrayList<>();
+    private final List<Column> children = new ArrayList<>();
     private Optional<Integer> columns = Optional.empty();
 
     /**
-     * Adds a child MenuNode to this RowNode
+     * Adds a child to this RowNode with ColumnType.EQUAL
      */
     public RowNode add(MenuNode child) {
-        this.children.add(child);
+        this.children.add(this.columns.map((Integer n) -> new Column(ColumnType.RATIO, 100 / n, child))
+                .orElse(new Column(ColumnType.EQUAL, 0, child)));
         return this;
+    }
+
+    /**
+     * Adds a child to this RowNode with ColumnType.EXACT
+     */
+    public RowNode addExact(int value, MenuNode child) {
+        if (this.columns.isPresent()) {
+            throw new RuntimeException("Cannot use fine-grained RowNode controls where auto ratio is set");
+        }
+        this.children.add(new Column(ColumnType.EXACT, value, child));
+        return this;
+    }
+
+    /**
+     * Adds a child to this RowNode with ColumnType.RATIO
+     */
+    public RowNode addRatio(int value, MenuNode child) {
+        if (this.columns.isPresent()) {
+            throw new RuntimeException("Cannot use fine-grained RowNode controls where auto ratio is set");
+        }
+        this.children.add(new Column(ColumnType.RATIO, value, child));
+        return this;
+    }
+
+    /**
+     * Calculates the width of the given Column
+     */
+    private int getWidth(Column child, int total) {
+        int remaining = total;
+        int totalEquals = 0;
+        int totalRatio = 0;
+
+        // ColumnType.EXACT is easy
+        if (child.getType() == ColumnType.EXACT) {
+            return child.getValue();
+        }
+
+        // ColumnType.RATIO must get the remaining width
+        for (Column n : this.children) {
+            if (n.getType() == ColumnType.EXACT) {
+                remaining -= n.getValue();
+            }
+            if (n.getType() == ColumnType.RATIO) {
+                totalRatio += n.getValue();
+            }
+            if (n.getType() == ColumnType.EQUAL) {
+                totalEquals++;
+            }
+        }
+        if (child.getType() == ColumnType.RATIO) {
+            return remaining * child.getValue() / 100;
+        }
+
+        // ColumnType.EQUAL must get the remainder of the remaining width
+        return remaining * ((100 - totalRatio) / 100) / totalEquals;
     }
 
     /**
@@ -32,19 +88,12 @@ public class RowNode implements MenuNode {
     }
 
     /**
-     * Returns the number of columns to render in this RowNode
-     */
-    private int getColumns() {
-        return this.columns.map((Integer i) -> i).orElse(this.children.size());
-    }
-
-    /**
      * Returns a version of this RowNode as a ListNode
      */
     public ListNode toListNode() {
         final ListNode ls = new ListNode();
-        for (MenuNode n : this.children) {
-            ls.add(n);
+        for (Column n : this.children) {
+            ls.add(n.getNode());
         }
         return ls;
     }
@@ -53,8 +102,8 @@ public class RowNode implements MenuNode {
     @Override
     public int getHeight() {
         int h = 0;
-        for (MenuNode child : this.children) {
-            h = Math.max(h, child.getHeight());
+        for (Column n : this.children) {
+            h = Math.max(h, n.getNode().getHeight());
         }
         return h;
     }
@@ -62,11 +111,8 @@ public class RowNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void pack(Menu menu, int width) {
-        if (this.getColumns() < this.children.size()) {
-            throw new RuntimeException("Not enough columns set for this RowNode");
-        }
-        for (MenuNode child : this.children) {
-            child.pack(menu, width / this.getColumns());
+        for (Column n : this.children) {
+            n.getNode().pack(menu, this.getWidth(n, width));
         }
     }
 
@@ -74,11 +120,11 @@ public class RowNode implements MenuNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         final int h = this.getHeight();
-        final int w = bounds.w / this.getColumns();
         int x = bounds.x;
-        for (MenuNode child : this.children) {
+        for (Column n : this.children) {
+            final int w = this.getWidth(n, bounds.w);
             final Rect r = new Rect(x, bounds.y, w, h);
-            child.draw(av, r);
+            n.getNode().draw(av, r);
             x += w;
         }
     }
@@ -87,14 +133,14 @@ public class RowNode implements MenuNode {
     @Override
     public void click(Rect bounds, Point p) {
         final int h = this.getHeight();
-        final int w = bounds.w / this.getColumns();
         int x = bounds.x;
-        for (MenuNode child : this.children) {
+        for (Column n : this.children) {
+            final int w = this.getWidth(n, bounds.w);
             final Rect r = new Rect(x, bounds.y, w, h);
             if (r.contains(p)) {
-                child.click(r, p);
+                n.getNode().click(r, p);
             } else {
-                child.unclick();
+                n.getNode().unclick();
             }
             x += w;
         }
@@ -103,8 +149,8 @@ public class RowNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void unclick() {
-        for (MenuNode n : this.children) {
-            n.unclick();
+        for (Column n : this.children) {
+            n.getNode().unclick();
         }
     }
 
@@ -112,11 +158,11 @@ public class RowNode implements MenuNode {
     @Override
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         final int h = this.getHeight();
-        final int w = bounds.w / this.getColumns();
         int x = bounds.x;
-        for (MenuNode child : this.children) {
+        for (Column n : this.children) {
+            final int w = this.getWidth(n, bounds.w);
             final Rect r = new Rect(x, bounds.y, w, h);
-            child.mouseMoved(r, prev, curr);
+            n.getNode().mouseMoved(r, prev, curr);
             x += w;
         }
     }
@@ -124,8 +170,8 @@ public class RowNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void keyPressed(int keycode) {
-        for (MenuNode n : this.children) {
-            n.keyPressed(keycode);
+        for (Column n : this.children) {
+            n.getNode().keyPressed(keycode);
         }
     }
 }
