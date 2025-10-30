@@ -76,7 +76,7 @@ public class RowNode implements MenuNode {
         }
 
         // ColumnType.EQUAL must get the remainder of the remaining width
-        return remaining * ((100 - totalRatio) / 100) / totalEquals;
+        return remaining * (100 - totalRatio) / (100 * totalEquals);
     }
 
     /**

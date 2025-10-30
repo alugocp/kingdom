@@ -53,15 +53,18 @@ public class TopHud extends Menu {
         // Populate the root MenuNode and repack
         ((ListNode) this.root)
                 // Global details
-                .add(new RowNode().add(this.auctionPoints).add(this.dayNight)
-                        .add(new ButtonNode(view.av, "Fates",
-                                () -> view.hud.popups.addNextUnrequired(
-                                        view.game.mechanics.fates.getViewFatesMenu(view, view.game.human))))
-                        .add(new ButtonNode(view.av, "Artifacts",
-                                () -> view.hud.popups.addNextUnrequired(view.game.mechanics.auction
-                                        .getArtifactsMenu(view, Optional.of(view.game.human)))))
-                        .add(new ButtonNode(view.av, "Settings",
-                                () -> view.hud.popups.addNextUnrequired(this.getSettingsMenu(view)))))
+                .add(new RowNode().add(this.auctionPoints).addExact(45, this.dayNight)
+                        .addRatio(15,
+                                new ButtonNode(view.av, "Fates",
+                                        () -> view.hud.popups.addNextUnrequired(
+                                                view.game.mechanics.fates.getViewFatesMenu(view, view.game.human))))
+                        .addRatio(15,
+                                new ButtonNode(view.av, "Artifacts",
+                                        () -> view.hud.popups.addNextUnrequired(view.game.mechanics.auction
+                                                .getArtifactsMenu(view, Optional.of(view.game.human)))))
+                        .addRatio(15,
+                                new ButtonNode(view.av, "Settings",
+                                        () -> view.hud.popups.addNextUnrequired(this.getSettingsMenu(view)))))
                 // Human player details
                 .add(new RowNode().add(this.unitPoints).add(this.gold).add(this.artifacts).add(this.auctionChips));
         this.pack();

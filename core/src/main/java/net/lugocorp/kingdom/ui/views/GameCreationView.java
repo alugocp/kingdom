@@ -140,12 +140,13 @@ class GameCreationView implements View {
         return new Menu(0, 0, Coords.SIZE.x, true,
                 new ListNode()
                         .add(new RowNode()
-                                .add(new ButtonNode(view.av, "Back",
-                                        () -> this.navigate.accept(new StartMenuView(this.params))))
+                                .addRatio(20,
+                                        new ButtonNode(view.av, "Back",
+                                                () -> this.navigate.accept(new StartMenuView(this.params))))
                                 .add(new HeaderNode(view.av, "World Generation").center())
-                                .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
+                                .addRatio(20, new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
                         .add(new SpacerNode())
-                        .add(new RowNode().add(new SubheaderNode(view.av, "World Seed"))
+                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "World Seed"))
                                 .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
                                         (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
                         .add(new SpacerNode(false).half()).add(new TextNode(view.av,
@@ -166,18 +167,23 @@ class GameCreationView implements View {
         final MenuMenuNode wrapper = new MenuMenuNode(options);
         final FateViewNode display = new FateViewNode(view.av, fates.get(0), true);
         final ListNode root = new ListNode()
-                .add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
-                        .add(new HeaderNode(view.av, "Select a Fate").center())
-                        .add(new ButtonNode(view.av, "Next", () -> this.setMenu(this.playerSelection))))
-                .add(new SpacerNode())
                 .add(new RowNode()
-                        .add(new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate")).add(display))
-                        .add(new ListNode().add(new SubheaderNode(view.av, String.format("%d Fates", fates.size())))
-                                .add(wrapper)));
+                        .addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection))).add(
+                                new HeaderNode(view.av, "Select a Fate").center())
+                        .addRatio(20, new ButtonNode(view.av, "Next", () -> this.setMenu(this.playerSelection))))
+                .add(new SpacerNode()).add(
+                        new RowNode()
+                                .addRatio(40,
+                                        new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate"))
+                                                .add(display))
+                                .addRatio(60,
+                                        new ListNode().add(
+                                                new SubheaderNode(view.av, String.format("%d Fates", fates.size())))
+                                                .add(wrapper)));
 
         // Set up RowNodes of FateNodes
         int a = 0;
-        final int columns = (int) Math.floor((Coords.SIZE.x / 2) / FateNode.WIDTH) - 1;
+        final int columns = (int) Math.floor((Coords.SIZE.x * 0.6f) / FateNode.WIDTH) - 1;
         while (a < fates.size()) {
             RowNode row = new RowNode().setColumns(columns);
             for (int b = 0; b < columns && a < fates.size();) {
@@ -207,9 +213,9 @@ class GameCreationView implements View {
                 .add(new TextNode(view.av, view.game.human.getFate().name))).add(firstComp.b);
         final ListNode root = new ListNode();
         final Menu menu = new Menu(0, 0, Coords.SIZE.x, true, root);
-        root.add(new RowNode().add(new ButtonNode(view.av, "Back", () -> this.setMenu(this.fateSelection)))
+        root.add(new RowNode().addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.fateSelection)))
                 .add(new HeaderNode(view.av, "Customize Players").center())
-                .add(new ButtonNode(view.av, "Start Game", () -> {
+                .addRatio(20, new ButtonNode(view.av, "Start Game", () -> {
                     view.game.comps.addAll(comps);
                     this.startGame();
                 }))).add(new SpacerNode()).add(new RowNode().add(new ButtonNode(view.av, "Drop Player", () -> {
