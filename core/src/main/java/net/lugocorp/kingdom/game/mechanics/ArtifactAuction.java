@@ -9,7 +9,7 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
-import net.lugocorp.kingdom.menu.misc.HelperNode;
+import net.lugocorp.kingdom.menu.icon.HelperNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;

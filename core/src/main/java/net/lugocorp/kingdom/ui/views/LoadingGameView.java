@@ -2,11 +2,10 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
-import net.lugocorp.kingdom.menu.game.DayNightNode;
 import net.lugocorp.kingdom.menu.game.FateNode;
 import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
-import net.lugocorp.kingdom.menu.misc.HelperNode;
+import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.serial.SaveLoad;
@@ -56,9 +55,9 @@ public class LoadingGameView extends ThreadedTaskView {
                 1, 1);
         av.loaders.sprites.register("glyph-badge-trade", "game/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
                 2, 1);
-        av.loaders.sprites.register("sun-icon", "game/daynight", DayNightNode.SIDE, DayNightNode.SIDE, 0, 0);
-        av.loaders.sprites.register("moon-icon", "game/daynight", DayNightNode.SIDE, DayNightNode.SIDE, 1, 0);
-        av.loaders.sprites.register("help-icon", "ui/help", HelperNode.SIDE, HelperNode.SIDE, 0, 0);
+        av.loaders.sprites.register("sun-icon", "game/daynight", IconNode.SIDE, IconNode.SIDE, 0, 0);
+        av.loaders.sprites.register("moon-icon", "game/daynight", IconNode.SIDE, IconNode.SIDE, 1, 0);
+        av.loaders.sprites.register("help-icon", "ui/help", IconNode.SIDE, IconNode.SIDE, 0, 0);
     }
 
     /** {@inheritdoc} */
