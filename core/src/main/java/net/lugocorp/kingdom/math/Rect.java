@@ -20,7 +20,7 @@ public class Rect {
      * Returns true if the given Point falls within this Rect
      */
     public boolean contains(Point p) {
-        return p.x >= this.x && p.x <= this.x + this.w && p.y >= this.y && p.y <= this.y + this.h;
+        return p.x >= this.x && p.x < this.x + this.w && p.y >= this.y && p.y < this.y + this.h;
     }
 
     /** {@inheritdoc} */

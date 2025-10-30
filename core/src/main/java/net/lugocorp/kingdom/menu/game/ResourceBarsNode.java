@@ -86,7 +86,7 @@ public class ResourceBarsNode implements MenuNode {
             final int y = yInitial + (int) this.font.getLineHeight() - ResourceBarsNode.PADDING
                     - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
             this.font.draw(this.av.sprites, bar.label, bounds.x, y);
-            this.font.draw(this.av.sprites, bar.numbers, bounds.x + this.textWidth + ResourceBarsNode.PADDING, y);
+            this.font.draw(this.av.sprites, bar.numbers, bounds.x + this.textWidth + ResourceBarsNode.PADDING + 5, y);
         }
         av.sprites.end();
     }

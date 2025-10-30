@@ -15,6 +15,11 @@ public class FontService {
     private final Map<String, FreeTypeFontGenerator> generators = new HashMap<>();
     private final Map<String, BitmapFont> generated = new HashMap<>();
 
+    public FontService() {
+        // This allows us to use the bullet character (U+2022)
+        this.params.characters = String.format("%s\u2022", FreeTypeFontGenerator.DEFAULT_CHARS);
+    }
+
     /**
      * Returns a new BitmapFont with the given parameters
      */

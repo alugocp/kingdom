@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.overlay;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,9 @@ public class OverlayLayer {
      * Adds a new Overlay to this instance
      */
     public void add(Overlay o) {
-        this.overlays.add(o);
+        if (view.game.world.getTile(o.getOrigin()).map((Tile t) -> t.isVisible()).orElse(false)) {
+            this.overlays.add(o);
+        }
     }
 
     /**

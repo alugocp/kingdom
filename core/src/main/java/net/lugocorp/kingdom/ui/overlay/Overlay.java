@@ -51,6 +51,13 @@ public abstract class Overlay {
     }
 
     /**
+     * Returns this Overlay's origin Point
+     */
+    Point getOrigin() {
+        return this.origin;
+    }
+
+    /**
      * Returns the current position of the Overlay
      */
     protected float[] getPosition(GameView view) {
