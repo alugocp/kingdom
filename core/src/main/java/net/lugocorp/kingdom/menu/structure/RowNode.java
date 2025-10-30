@@ -16,6 +16,30 @@ public class RowNode implements MenuNode {
     private Optional<Integer> columns = Optional.empty();
 
     /**
+     * Organizes a set of MenuNodes into a grid with specified max columns
+     */
+    public static ListNode packIntoRows(int cols, List<MenuNode> nodes) {
+        final ListNode rows = new ListNode();
+        final int fullRows = nodes.size() / cols;
+        final int finalRow = nodes.size() % cols;
+        for (int a = 0; a < fullRows; a++) {
+            final RowNode row = new RowNode().setColumns(cols);
+            for (int b = 0; b < cols; b++) {
+                row.add(nodes.get((a * cols) + b));
+            }
+            rows.add(row);
+        }
+        if (finalRow > 0) {
+            final RowNode row = new RowNode().setColumns(cols);
+            for (int a = 0; a < finalRow; a++) {
+                row.add(nodes.get((fullRows * cols) + a));
+            }
+            rows.add(row);
+        }
+        return rows;
+    }
+
+    /**
      * Adds a child to this RowNode with ColumnType.EQUAL
      */
     public RowNode add(MenuNode child) {

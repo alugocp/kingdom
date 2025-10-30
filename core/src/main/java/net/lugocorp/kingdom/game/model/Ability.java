@@ -6,7 +6,7 @@ import net.lugocorp.kingdom.game.events.EventReceiver;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
-import net.lugocorp.kingdom.menu.text.ActionNode;
+import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.Optional;
@@ -80,7 +80,7 @@ public class Ability implements EventReceiver, MenuSubject {
         final String popup = String.format("%s (%s)%s", this.desc,
                 this.isActive(view) ? "click to activate" : "passive ability",
                 canUnitDoThis ? "" : " (unit has exhausted their actions this turn)");
-        return new ActionNode(view.av, this.name, Optional.of(popup), () -> {
+        return new ActionNode(view.av, this.name, "apple", Optional.of(popup), () -> {
             this.activate(view).execute();
             view.hud.bot.tileMenu.refresh();
         }).enable(this.wielder.leadership.belongsToHuman() && this.isActive(view)
