@@ -79,11 +79,15 @@ public class Ability implements EventReceiver, MenuSubject {
         final boolean canUnitDoThis = view.game.actions.canUnitDoThis(this.wielder, ActionType.ACTIVATE);
         final String popup = String.format("%s (%s)%s", this.desc,
                 this.isActive(view) ? "click to activate" : "passive ability",
-                canUnitDoThis ? "" : " (unit has exhausted their actions this turn)");
+                !this.isActive(view) || canUnitDoThis ? "" : " (unit has exhausted their actions this turn)");
+        int mode = ActionNode.MODE_NOTHING;
+        if (this.isActive(view)) {
+            mode = (this.wielder.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()
+                    && canUnitDoThis) ? ActionNode.MODE_ACTIVE : ActionNode.MODE_DISABLED;
+        }
         return new ActionNode(view.av, this.name, "apple", Optional.of(popup), () -> {
             this.activate(view).execute();
             view.hud.bot.tileMenu.refresh();
-        }).enable(this.wielder.leadership.belongsToHuman() && this.isActive(view)
-                && view.game.mechanics.turns.canHumanPlayerAct() && canUnitDoThis);
+        }).setMode(mode);
     }
 }

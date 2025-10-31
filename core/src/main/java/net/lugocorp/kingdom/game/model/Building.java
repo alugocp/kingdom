@@ -20,6 +20,7 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.menu.text.PlayerBadgeNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -175,11 +176,10 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         final Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
                 .flatMap((Tile t) -> t.leader);
-        final RowNode node = new RowNode();
+        final RowNode node = new RowNode().setColumns(2);
         final ListNode col1 = new ListNode().add(new HeaderNode(view.av, this.name));
         if (leader.isPresent()) {
-            col1.add(
-                    new BadgeNode(view.av, Colors.asInt(leader.get().color), ColorScheme.WHITE.hex, leader.get().name));
+            col1.add(new PlayerBadgeNode(view.av, leader.get()));
         }
         col1.add(new BadgeNode(view.av, ColorScheme.BLUE.hex, ColorScheme.WHITE.hex,
                 this.isActive() ? "Active" : "Passive")).add(new TextNode(view.av, this.desc))
@@ -187,11 +187,10 @@ public class Building extends Entity implements MenuSubject, Spawnable {
                         this.combat.health.get(), this.combat.health.getMax())));
         node.add(col1);
         if (this.items.isPresent()) {
-            final ListNode col2 = new ListNode().add(new TextNode(view.av, "Items"));
+            final ListNode col2 = new ListNode();
             if (leader.map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-                col2.add(new BadgeNode(view.av, 0xb5b31f, ColorScheme.WHITE.hex,
-                        String.format("%d gold", this.items.get().getTotalGold())))
-                        .add(this.items.get().getMenuContent(view, p));
+                col2.add(this.items.get().getMenuContent(view, p)).add(new BadgeNode(view.av, 0xb5b31f,
+                        ColorScheme.WHITE.hex, String.format("%d gold", this.items.get().getTotalGold())));
             } else {
                 col2.add(new TextNode(view.av, String.format("Can store %d items", this.items.get().getMax())));
             }

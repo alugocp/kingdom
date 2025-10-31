@@ -30,6 +30,7 @@ public class TopHud extends Menu {
     private final ResourceBarsNode auctionPoints;
     private final DayNightNode dayNight;
     private final TextNode auctionChips;
+    private final TextNode turnCounter;
     private final TextNode artifacts;
     private final TextNode gold;
 
@@ -40,6 +41,7 @@ public class TopHud extends Menu {
         this.auctionPoints = new ResourceBarsNode(view.av, new ResourceBarsNode.Bar("Auction Points",
                 ColorScheme.GOLD.hex, 0, ArtifactAuction.MAX_AUCTION_POINTS));
         this.auctionChips = new TextNode(view.av, "").center();
+        this.turnCounter = new TextNode(view.av, "").center();
         this.artifacts = new TextNode(view.av, "").center();
         this.gold = new TextNode(view.av, "") {
             /** {@inheritdoc} */
@@ -53,16 +55,16 @@ public class TopHud extends Menu {
         // Populate the root MenuNode and repack
         ((ListNode) this.root)
                 // Global details
-                .add(new RowNode().add(this.auctionPoints).addExact(45, this.dayNight)
-                        .addRatio(15,
+                .add(new RowNode().add(this.auctionPoints).addExact(45, this.dayNight).addRatio(12, this.turnCounter)
+                        .addRatio(12,
                                 new ButtonNode(view.av, "Fates",
                                         () -> view.hud.popups.addNextUnrequired(
                                                 view.game.mechanics.fates.getViewFatesMenu(view, view.game.human))))
-                        .addRatio(15,
+                        .addRatio(12,
                                 new ButtonNode(view.av, "Artifacts",
                                         () -> view.hud.popups.addNextUnrequired(view.game.mechanics.auction
                                                 .getArtifactsMenu(view, Optional.of(view.game.human)))))
-                        .addRatio(15,
+                        .addRatio(12,
                                 new ButtonNode(view.av, "Settings",
                                         () -> view.hud.popups.addNextUnrequired(this.getSettingsMenu(view)))))
                 // Human player details
@@ -79,6 +81,7 @@ public class TopHud extends Menu {
         this.auctionPoints.setValue(0, g.mechanics.auction.getPoints());
         this.auctionChips.setText(this.plural("Auction Chip", g.human.auctionChips));
         this.artifacts.setText(this.plural("Artifact", g.human.artifacts.size()));
+        this.turnCounter.setText(String.format("Turn %d", g.mechanics.turns.getTurn().getCounter()));
         this.dayNight.set(g.mechanics.dayNight);
     }
 

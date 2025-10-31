@@ -118,7 +118,7 @@ public class NewUnit {
                 .add(new HeaderNode(view.av, "Recruit New Unit").center())
                 .add(new HelperNode(view.av,
                         "Glyphs are general categories that units fall under. They help narrow down your search when recruiting a new unit. A unit can have either one or two glyphs. Tiles also have glyphs - the tile you selected determines the glyphs that appear in this screen. The sword (combat glyphs) means battle, defense, and healing. The hammer (worker glyphs) means nature, mining and trade."))
-                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.hud.popups.complete())))
+                .add(new ButtonNode(view.av, "Recruit a unit next turn instead", () -> view.hud.popups.complete())))
                 .add(new SpacerNode());
         RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
         RowNode badges = new RowNode().setColumns(category.get().glyphs.length);
@@ -149,7 +149,7 @@ public class NewUnit {
         List<Unit> options = this.getRecruitmentOptions(view, glyph, p, view.game.human.numRecruitmentOptions);
         ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit"))
-                .add(new ButtonNode(view.av, "Do not recruit any unit", () -> view.hud.popups.complete()));
+                .add(new ButtonNode(view.av, "Recruit a unit next turn instead", () -> view.hud.popups.complete()));
         RowNode previews = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
         RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);

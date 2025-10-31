@@ -12,6 +12,7 @@ import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.game.FateNode;
 import net.lugocorp.kingdom.menu.game.FateViewNode;
+import net.lugocorp.kingdom.menu.icon.HelperNode;
 import net.lugocorp.kingdom.menu.input.OptionsNode;
 import net.lugocorp.kingdom.menu.input.TextEntryNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
@@ -168,18 +169,18 @@ class GameCreationView implements View {
         final FateViewNode display = new FateViewNode(view.av, fates.get(0), true);
         final ListNode root = new ListNode()
                 .add(new RowNode()
-                        .addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection))).add(
-                                new HeaderNode(view.av, "Select a Fate").center())
+                        .addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
+                        .add(new HeaderNode(view.av, "Select a Fate").center())
                         .addRatio(20, new ButtonNode(view.av, "Next", () -> this.setMenu(this.playerSelection))))
-                .add(new SpacerNode()).add(
-                        new RowNode()
-                                .addRatio(40,
-                                        new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate"))
-                                                .add(display))
-                                .addRatio(60,
-                                        new ListNode().add(
-                                                new SubheaderNode(view.av, String.format("%d Fates", fates.size())))
-                                                .add(wrapper)));
+                .add(new SpacerNode())
+                .add(new RowNode()
+                        .addRatio(40,
+                                new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate")).add(display)
+                                        .add(new HelperNode(view.av,
+                                                "Glyphs are categories of related units that have similar abilities")))
+                        .addRatio(60,
+                                new ListNode().add(new SubheaderNode(view.av, String.format("%d Fates", fates.size())))
+                                        .add(wrapper)));
 
         // Set up RowNodes of FateNodes
         int a = 0;

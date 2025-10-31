@@ -278,7 +278,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_mine, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "mine");
-                    e.blob.desc = "Mines provide valuables like gold coins";
+                    e.blob.desc = "Units with mining abilities can generate gold or items when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x555555);
                     e.blob.setActive();
@@ -289,7 +289,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_vault, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "vault");
-                    e.blob.desc = "Vaults can store excess items and be used in auctions";
+                    e.blob.desc = "This building can store items and its contents be wagered in auctions";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.combat.health.setMaxAndValue(40);
                     e.blob.setMinimapColor(0x000000);
@@ -301,7 +301,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_forest, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "forest");
-                    e.blob.desc = "Don't miss the forest for the trees";
+                    e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x257d53);
                     return SideEffect.none;
@@ -311,7 +311,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_taiga, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "forest");
-                    e.blob.desc = "The trees are pretty this time of year";
+                    e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0xb4c3c7);
                     e.blob.setMaterial(Labels.asset_taiga);
@@ -322,7 +322,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_meadow, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "meadow");
-                    e.blob.desc = "Stay a while and smell the roses";
+                    e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x4dd349);
                     return SideEffect.none;
@@ -332,7 +332,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_oasis, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "oasis");
-                    e.blob.desc = "Moments of respite from the overbearing sun";
+                    e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x2c9965);
                     return SideEffect.none;
@@ -342,7 +342,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_shrubland, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "shrubland");
-                    e.blob.desc = "Meadows in the middle of the desert";
+                    e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x4dd349);
                     return SideEffect.none;
@@ -352,7 +352,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_mountain, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "mountain");
-                    e.blob.desc = "An immovable object";
+                    e.blob.desc = "Most units cannot traverse mountains";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setObstacle(true);
@@ -363,7 +363,7 @@ public class KingdomMod implements GameMod {
         events.building.addEventHandler(Labels.building_healing_fountain, Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "fountain");
-                    e.blob.desc = "Heals an occupying unit each turn";
+                    e.blob.desc = "A unit that occupies this building gets healed a little each turn";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setActive();

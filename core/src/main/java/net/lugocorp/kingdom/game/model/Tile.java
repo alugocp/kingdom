@@ -18,6 +18,7 @@ import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.TabsNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.menu.text.PlayerBadgeNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -238,6 +239,9 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         final ListNode tileNodes = new ListNode().add(new HeaderNode(view.av, this.name));
         if (this.glyph.isPresent()) {
             tileNodes.add(new GlyphIconsNode(view.av, this.glyph.get()));
+        }
+        if (this.leader.isPresent()) {
+            tileNodes.add(new PlayerBadgeNode(view.av, this.leader.get()));
         }
         tileNodes.add(new TextNode(view.av, this.desc));
 

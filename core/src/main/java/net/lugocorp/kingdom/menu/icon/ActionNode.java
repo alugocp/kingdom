@@ -14,10 +14,13 @@ import java.util.Optional;
  */
 public class ActionNode extends IconNode {
     public static final int SIDE = 50;
+    public static final int MODE_NOTHING = 0;
+    public static final int MODE_DISABLED = 1;
+    public static final int MODE_ACTIVE = 2;
     private final Runnable action;
     private final AudioVideo av;
     private final ListNode node;
-    private boolean active = true;
+    private int mode = ActionNode.MODE_ACTIVE;
 
     public ActionNode(AudioVideo av, String name, String icon, Optional<String> desc, Runnable action) {
         super(av, icon, ActionNode.SIDE);
@@ -30,8 +33,8 @@ public class ActionNode extends IconNode {
     /**
      * Sets whether this ActionNode is active or not
      */
-    public ActionNode enable(boolean active) {
-        this.active = active;
+    public ActionNode setMode(int mode) {
+        this.mode = mode;
         return this;
     }
 
@@ -42,7 +45,7 @@ public class ActionNode extends IconNode {
     }
 
     protected int getElementShaderMode() {
-        if (!this.active) {
+        if (this.mode == ActionNode.MODE_DISABLED) {
             return ElementShader.GRAY_MODE;
         }
         return this.popup.isHovered() ? ElementShader.BRIGHT_MODE : ElementShader.DEFAULT_MODE;
@@ -51,7 +54,7 @@ public class ActionNode extends IconNode {
     /** {@inheritdoc} */
     @Override
     public void click(Rect bounds, Point p) {
-        if (this.active && bounds.contains(p)) {
+        if (this.mode == ActionNode.MODE_ACTIVE && bounds.contains(p)) {
             this.av.loaders.sounds.play("sfx/arrow");
             this.action.run();
         }

@@ -31,7 +31,8 @@ public class BadgeNode extends TextNode {
 
     /** {@inheritdoc} */
     protected BitmapFont getFont() {
-        return this.av.fonts.getFont(new FontParam().setSize(18).setColor(this.foreground));
+        return this.av.fonts
+                .getFont(new FontParam().setSize(18).setColor(this.foreground).setBorder(ColorScheme.BLACK.color));
     }
 
     /** {@inheritdoc} */

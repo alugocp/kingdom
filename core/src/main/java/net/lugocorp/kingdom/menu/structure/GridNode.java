@@ -31,6 +31,13 @@ public class GridNode implements MenuNode {
     }
 
     /**
+     * Returns true if this GridNode has child nodes
+     */
+    public boolean hasChildren() {
+        return this.nodes.size() > 0;
+    }
+
+    /**
      * Returns the position of an element at the given grid coordinates
      */
     protected Rect getNodePos(Rect bounds, int x, int y) {
