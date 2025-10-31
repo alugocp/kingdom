@@ -94,14 +94,19 @@ public class ActionManager {
             // The Unit is taking its first action this turn
             this.actions.put(u, a);
             a.addedFirst();
-            if (u.leadership.belongsToHuman() && !this.goToNextUnit(view)) {
-                view.hud.bot.turnButton.update(true, true);
-            }
 
             // Add Action state Overlay
             final ActionOverlay o = new ActionOverlay(view, u, this.getActionOverlayChar(u));
             this.overlays.put(u, o);
             view.overlays.add(o);
+
+            // Handle UI / pan to next Unit / auto complete
+            if (u.leadership.belongsToHuman() && !this.goToNextUnit(view)) {
+                view.hud.bot.turnButton.update(true, true);
+                if (view.av.settings.getAutoComplete()) {
+                    view.hud.bot.turnButton.finishTurn(view, false);
+                }
+            }
         }
 
     }

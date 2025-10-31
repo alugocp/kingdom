@@ -20,19 +20,7 @@ public class TurnButton extends Menu {
     public TurnButton(GameView view) {
         super(Coords.SIZE.x - Minimap.MAX_W, Coords.SIZE.y, Minimap.MAX_W, true, new ListNode());
         final TurnButton that = this;
-        this.button = (ButtonNode) (new ButtonNode(view.av, "Waiting...", () -> {
-            if (view.hud.popups.get().isPresent()) {
-                view.av.loaders.sounds.play("sfx/error");
-                view.hud.popups.setDisplay(true);
-            } else if (view.game.actions.goToNextUnit(view)) {
-                view.av.loaders.sounds.play("sfx/error");
-            } else {
-                view.av.loaders.sounds.play("sfx/end-turn");
-                view.hud.logger.log("You have ended your turn");
-                view.game.mechanics.turns.nextTurn(view);
-                view.hud.bot.tileMenu.refresh();
-            }
-        }) {
+        this.button = (ButtonNode) (new ButtonNode(view.av, "Waiting...", () -> that.finishTurn(view, true)) {
             private float timer = 0f;
 
             /** {@inheritdoc} */
@@ -72,5 +60,26 @@ public class TurnButton extends Menu {
             this.button.enable(false).setText("Waiting...");
         }
         this.pulsate = isHumanPlayer && isComplete;
+    }
+
+    /**
+     * Attempts to end the current turn
+     */
+    public void finishTurn(GameView view, boolean clicked) {
+        if (view.hud.popups.get().isPresent()) {
+            if (clicked) {
+                view.av.loaders.sounds.play("sfx/error");
+            }
+            view.hud.popups.setDisplay(true);
+        } else if (view.game.actions.goToNextUnit(view)) {
+            if (clicked) {
+                view.av.loaders.sounds.play("sfx/error");
+            }
+        } else {
+            view.av.loaders.sounds.play("sfx/end-turn");
+            view.hud.logger.log("You have ended your turn");
+            view.game.mechanics.turns.nextTurn(view);
+            view.hud.bot.tileMenu.refresh();
+        }
     }
 }

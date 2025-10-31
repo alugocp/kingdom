@@ -6,9 +6,11 @@ import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.input.OptionsNode;
 import net.lugocorp.kingdom.menu.input.VolumeNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
@@ -33,14 +35,24 @@ public class SettingsView implements View {
      * Adds the settings view MenuNodes to the given ListNode
      */
     public static ListNode addSettingsMenuNodes(AudioVideo av, ListNode node) {
-        return node.add(new HeaderNode(av, "Settings")).add(new SpacerNode())
-                .add(new HeaderNode(av, "Sound Effect Volume"))
-                .add(new VolumeNode(av, av.settings.getSoundVolume(), (Float v) -> av.settings.setSoundVolume(v)))
-                .add(new SpacerNode()).add(new HeaderNode(av, "Music Volume"))
-                .add(new VolumeNode(av, av.settings.getMusicVolume(), (Float v) -> av.settings.setMusicVolume(v)))
-                .add(new SpacerNode()).add(new HeaderNode(av, "Scroll Direction"))
-                .add(new OptionsNode(av, (Integer index) -> av.settings.setReversedScrollDirection(index == 1))
-                        .add("Regular").add("Reversed"));
+        return node.add(new HeaderNode(av, "Settings")).add(new SpacerNode()).add(new HeaderNode(av, "Volume"))
+                .add(new RowNode()
+                        .add(new ListNode().add(new SubheaderNode(av, "SFX"))
+                                .add(new VolumeNode(av, av.settings.getSoundVolume(),
+                                        (Float v) -> av.settings.setSoundVolume(v))))
+                        .add(new ListNode().add(new SubheaderNode(av, "Music"))
+                                .add(new VolumeNode(av, av.settings.getMusicVolume(),
+                                        (Float v) -> av.settings.setMusicVolume(v)))))
+                .add(new SpacerNode()).add(
+                        new HeaderNode(av, "Controls"))
+                .add(new RowNode()
+                        .add(new ListNode().add(new SubheaderNode(av, "Scroll Direction"))
+                                .add(new OptionsNode(av,
+                                        (Integer index) -> av.settings.setReversedScrollDirection(index == 1))
+                                        .add("Regular").add("Reversed")))
+                        .add(new ListNode().add(new SubheaderNode(av, "Auto Complete Turns"))
+                                .add(new OptionsNode(av, (Integer index) -> av.settings.setAutoComplete(index == 1))
+                                        .add("Off").add("On"))));
     }
 
     /** {@inheritdoc} */
