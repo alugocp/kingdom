@@ -94,8 +94,8 @@ public class ActionManager {
             // The Unit is taking its first action this turn
             this.actions.put(u, a);
             a.addedFirst();
-            if (u.leadership.belongsToHuman()) {
-                this.goToNextUnit(view);
+            if (u.leadership.belongsToHuman() && !this.goToNextUnit(view)) {
+                view.hud.bot.turnButton.update(true, true);
             }
 
             // Add Action state Overlay
@@ -121,7 +121,8 @@ public class ActionManager {
     }
 
     /**
-     * Opens a TileMenu on the next Unit who must act this turn
+     * Opens a TileMenu on the next Unit who must act this turn (returns false if
+     * there is no next Unit)
      */
     public boolean goToNextUnit(GameView view) {
         Optional<Unit> next = this.getNextUnitToAct(view.game.human);

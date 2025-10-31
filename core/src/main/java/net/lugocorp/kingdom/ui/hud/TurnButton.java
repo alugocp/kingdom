@@ -1,6 +1,9 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.color.Colors;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
@@ -12,9 +15,11 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class TurnButton extends Menu {
     private final ButtonNode button;
+    private boolean pulsate = false;
 
     public TurnButton(GameView view) {
         super(Coords.SIZE.x - Minimap.MAX_W, Coords.SIZE.y, Minimap.MAX_W, true, new ListNode());
+        final TurnButton that = this;
         this.button = (ButtonNode) (new ButtonNode(view.av, "Waiting...", () -> {
             if (view.hud.popups.get().isPresent()) {
                 view.av.loaders.sounds.play("sfx/error");
@@ -28,13 +33,29 @@ public class TurnButton extends Menu {
                 view.hud.bot.tileMenu.refresh();
             }
         }) {
+            private float timer = 0f;
+
             /** {@inheritdoc} */
             @Override
             protected Color getColor() {
                 if (!this.isEnabled()) {
                     return ColorScheme.DISABLE.color;
                 }
-                return this.isHovered() ? ColorScheme.SPECIAL_HOVER.color : ColorScheme.SPECIAL_BUTTON.color;
+                if (this.isHovered()) {
+                    return ColorScheme.SPECIAL_HOVER.color;
+                }
+                if (!that.pulsate) {
+                    return ColorScheme.SPECIAL_BUTTON.color;
+                }
+                return Colors.interpolate(ColorScheme.SPECIAL_BUTTON.hex, ColorScheme.SPECIAL_HOVER.hex,
+                        1f - Math.abs(this.timer - 1f));
+            }
+
+            /** {@inheritdoc} */
+            @Override
+            public void draw(AudioVideo av, Rect bounds) {
+                this.timer = (this.timer + 0.05f) % 2f;
+                super.draw(av, bounds);
             }
         }.enable(false).disableNoise());
         this.setRoot(this.button);
@@ -44,11 +65,12 @@ public class TurnButton extends Menu {
     /**
      * Modifies the button based on the current Player's turn
      */
-    public void update(boolean isHumanPlayer) {
+    public void update(boolean isHumanPlayer, boolean isComplete) {
         if (isHumanPlayer) {
-            this.button.enable(true).setText("Complete Turn");
+            this.button.enable(true).setText(isComplete ? "Finish Turn" : "Continue");
         } else {
             this.button.enable(false).setText("Waiting...");
         }
+        this.pulsate = isHumanPlayer && isComplete;
     }
 }

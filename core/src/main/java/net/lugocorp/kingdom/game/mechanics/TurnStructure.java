@@ -41,7 +41,7 @@ public class TurnStructure {
         final Player prev = this.turn.getPlayer();
         prev.getFate().handleEvent(view, new Events.EndOfTurnEvent()).execute();
         if (prev.isHumanPlayer()) {
-            view.hud.bot.turnButton.update(false);
+            view.hud.bot.turnButton.update(false, true);
         }
         this.turn.next();
         view.game.actions.turnTransition(prev, this.turn.getPlayer());
@@ -175,7 +175,7 @@ public class TurnStructure {
                 this.turn.activate();
                 view.hud.bot.tileMenu.refresh();
                 if (this.turn.getPlayer().isHumanPlayer()) {
-                    view.hud.bot.turnButton.update(true);
+                    view.hud.bot.turnButton.update(true, false);
                 }
             }
         } else if (!this.turn.getPlayer().isHumanPlayer()) {

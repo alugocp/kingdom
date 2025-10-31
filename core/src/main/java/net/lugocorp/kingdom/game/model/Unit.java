@@ -213,7 +213,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                     "This unit is waiting for maximum stored items, but you can give it a different command",
                                     () -> this.haul.isFull()));
                             view.hud.bot.tileMenu.refresh();
-                            view.game.actions.goToNextUnit(view);
                         }));
             }
 
@@ -228,7 +227,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                             "This unit is skipping its turn, but you can give it a different command",
                                             () -> true));
                             view.hud.bot.tileMenu.refresh();
-                            view.game.actions.goToNextUnit(view);
                         }));
             }
         }
