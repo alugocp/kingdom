@@ -147,7 +147,7 @@ public class TurnStructure {
         boolean isDayBeforeTick = dayNight.isDay();
         dayNight.tick(view);
         boolean isDayAfterTick = dayNight.isDay();
-        view.av.getToonShader().setNighttime(dayNight.isNight());
+        view.av.shaders.toon.setNighttime(dayNight.isNight());
 
         // Recalculate favorite Players for Patrons
         view.game.mechanics.patronage.recalculateFavor(view);

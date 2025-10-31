@@ -55,7 +55,7 @@ public class GameView implements View {
         this.hud = new Hud(this);
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
-        this.av.getToonShader().setTileSelector(this.selector);
+        this.av.shaders.toon.setTileSelector(this.selector);
     }
 
     /**
@@ -195,7 +195,7 @@ public class GameView implements View {
         this.game.mechanics.turns.processTurnByFrame(this);
 
         // Render normals to a FrameBuffer
-        this.av.frameBuffer.begin();
+        this.av.shaders.toon.frameBuffer.begin();
         this.viewport.apply();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -203,7 +203,7 @@ public class GameView implements View {
         this.av.outlines.render(this.game.world.getModelInstances(false), this.environment);
         this.av.outlines.end();
         this.setFrameBufferMappedPoint();
-        this.av.frameBuffer.end();
+        this.av.shaders.toon.frameBuffer.end();
 
         // Reapply the Viewport or it won't work
         this.viewport.apply();

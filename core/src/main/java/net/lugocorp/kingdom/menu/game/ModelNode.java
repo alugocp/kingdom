@@ -73,7 +73,7 @@ public class ModelNode implements MenuNode {
                 -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, -1.0f);
 
         // Render the model preview
-        av.getPreviewShader().setProjViewMatrix(this.transform);
+        av.shaders.preview.setProjViewMatrix(this.transform);
         av.previews.begin(this.camera);
         this.model.render(av.previews, this.environment);
         av.previews.end();

@@ -5,18 +5,12 @@ import net.lugocorp.kingdom.engine.assets.MusicLoader;
 import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
-import net.lugocorp.kingdom.engine.shaders.OutlineShader;
-import net.lugocorp.kingdom.engine.shaders.PreviewShader;
-import net.lugocorp.kingdom.engine.shaders.ToonShader;
-import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.mods.ModAssetsMap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -24,10 +18,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * application
  */
 public class AudioVideo {
-    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x, Coords.SIZE.y, true);
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
     public final FontService fonts = new FontService();
+    public final ShaderZoo shaders = new ShaderZoo();
     public final Settings settings = new Settings();
     public final ModelBatch outlines;
     public final ModelBatch previews;
@@ -35,16 +29,16 @@ public class AudioVideo {
     public final Loaders loaders;
 
     public AudioVideo() {
-        this.models = new ModelBatch(new BasicShaderProvider(new ToonShader(this.frameBuffer)));
-        this.outlines = new ModelBatch(new BasicShaderProvider(new OutlineShader()));
-        this.previews = new ModelBatch(new BasicShaderProvider(new PreviewShader()));
+        this.outlines = new ModelBatch(new BasicShaderProvider(this.shaders.outline));
+        this.previews = new ModelBatch(new BasicShaderProvider(this.shaders.preview));
+        this.models = new ModelBatch(new BasicShaderProvider(this.shaders.toon));
         this.loaders = new Loaders(this.settings);
 
         // Initialize shader programs
-        this.getToonShader().setTextureLoader(this.loaders.textures);
-        this.getPreviewShader().init();
-        this.getOutlineShader().init();
-        this.getToonShader().init();
+        this.shaders.toon.setTextureLoader(this.loaders.textures);
+        this.shaders.outline.init();
+        this.shaders.preview.init();
+        this.shaders.toon.init();
     }
 
     /**
@@ -60,27 +54,6 @@ public class AudioVideo {
         this.loaders.models.dispose();
         this.loaders.sounds.dispose();
         this.fonts.dispose();
-    }
-
-    /**
-     * Returns the ToonShader associated with this object
-     */
-    public ToonShader getToonShader() {
-        return (ToonShader) (((BasicShaderProvider) (this.models.getShaderProvider())).shader);
-    }
-
-    /**
-     * Returns the OutlineShader associated with this object
-     */
-    public OutlineShader getOutlineShader() {
-        return (OutlineShader) (((BasicShaderProvider) (this.outlines.getShaderProvider())).shader);
-    }
-
-    /**
-     * Returns the PreviewShader associated with this object
-     */
-    public PreviewShader getPreviewShader() {
-        return (PreviewShader) (((BasicShaderProvider) (this.previews.getShaderProvider())).shader);
     }
 
     /**
@@ -106,7 +79,7 @@ public class AudioVideo {
     /**
      * Internal class to provide the given Shader
      */
-    public static class BasicShaderProvider implements ShaderProvider {
+    private static class BasicShaderProvider implements ShaderProvider {
         private final Shader shader;
 
         private BasicShaderProvider(Shader shader) {

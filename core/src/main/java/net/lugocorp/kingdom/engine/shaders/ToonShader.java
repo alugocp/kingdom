@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.ui.selection.TileSelector;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -33,17 +34,13 @@ import java.util.Optional;
  */
 public class ToonShader implements Shader {
     private static final int TIMER_MAX = 12000;
-    private final FrameBuffer frameBuffer;
+    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x, Coords.SIZE.y, true);
     private Optional<TileSelector> tileSelector = Optional.empty();
     private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
     private Camera camera;
     private boolean nighttime = false;
-
-    public ToonShader(FrameBuffer frameBuffer) {
-        this.frameBuffer = frameBuffer;
-    }
 
     // Shader uniforms
     private int u_normalsTexture;
