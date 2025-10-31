@@ -157,7 +157,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         col1.add(new ResourceBarsNode(view.av,
                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
                 new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
-                new ResourceBarsNode.Bar("Hunger", 0x7d4513, turnsUntilHungry, this.hunger.getTurnsBeforeHunger())));
+                new ResourceBarsNode.Bar("Hunger", 0x7d4513, this.hunger.getTurnsBeforeHunger() - turnsUntilHungry,
+                        this.hunger.getTurnsBeforeHunger())));
         col1.add(new HelperNode(view.av, new ListNode().add(new SubheaderNode(view.av, "Health"))
                 .add(new TextNode(view.av, "If a unit's health bar hits zero then they disappear off the map."))
                 .add(new SubheaderNode(view.av, "Loyalty"))
