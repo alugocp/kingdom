@@ -30,6 +30,7 @@ import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.icon.HelperNode;
+import net.lugocorp.kingdom.menu.structure.GridNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
@@ -40,7 +41,6 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -169,7 +169,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming an edible item."))));
 
         // Actions / spells section
-        final List<MenuNode> actions = new ArrayList<>();
+        final GridNode actions = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
         for (Ability a : this.abilities.getActives()) {
             actions.add(a.getMenuContent(view, p));
         }
@@ -235,7 +235,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             actions.add(a.getMenuContent(view, p));
         }
         final ListNode col2 = new ListNode().add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)))
-                .add(RowNode.packIntoRows(4, actions));
+                .add(actions);
 
         // Items section
         final ListNode col3 = new ListNode();

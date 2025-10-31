@@ -204,28 +204,20 @@ public class ArtifactAuction {
                 .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                 .add(new TextNode(view.av,
                         "You outbid the other players and won the auction! You may click on an Artifact to buy with your auction chips or wait until the next time you win an auction."))
-                .add(new ButtonNode(view.av, "Buy an artifact next time", () -> view.hud.popups.complete()));
-        while (a < artifacts.size()) {
-            final RowNode row = new RowNode().setColumns(columns);
-            for (int b = 0; b < columns && a < this.artifacts.size();) {
-                final Artifact artifact = this.artifacts.get(a);
-                row.add(new ArtifactNode(view.av, artifact, Optional.of(() -> {
-                    if (view.game.human.auctionChips >= artifact.chips) {
-                        view.game.human.auctionChips -= artifact.chips;
-                        artifact.claim(view, view.game.human);
-                        view.hud.popups.complete();
-                        if (view.game.human.auctionChips > 0) {
-                            view.hud.popups.add(this.getFollowUpMenu(view, false));
-                        }
-                    } else {
-                        view.hud.logger.error("You need more auction chips");
-                    }
-                })));
-                a++;
-                b++;
-            }
-            node.add(row);
-        }
+                .add(new ButtonNode(view.av, "Buy an artifact next time", () -> view.hud.popups.complete()))
+                .add(RowNode.packIntoRows(columns,
+                        Lambda.map((Artifact artifact) -> new ArtifactNode(view.av, artifact, Optional.of(() -> {
+                            if (view.game.human.auctionChips >= artifact.chips) {
+                                view.game.human.auctionChips -= artifact.chips;
+                                artifact.claim(view, view.game.human);
+                                view.hud.popups.complete();
+                                if (view.game.human.auctionChips > 0) {
+                                    view.hud.popups.add(this.getFollowUpMenu(view, false));
+                                }
+                            } else {
+                                view.hud.logger.error("You need more auction chips");
+                            }
+                        })), this.artifacts)));
         return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), width, false, node);
     }
 
@@ -249,17 +241,8 @@ public class ArtifactAuction {
         if (artifacts.size() == 0) {
             node.add(new TextNode(view.av, "There are no artifacts to display"));
         } else {
-            while (a < artifacts.size()) {
-                final RowNode row = new RowNode().setColumns(columns);
-                for (int b = 0; b < columns && a < artifacts.size();) {
-                    final Artifact artifact = artifacts.get(a);
-                    row.add(new ArtifactNode(view.av, artifact, Optional.empty()));
-                    a++;
-                    b++;
-                }
-                node.add(row);
-                node.add(new SpacerNode(false));
-            }
+            node.add(RowNode.packIntoRows(columns, Lambda
+                    .map((Artifact artifact) -> new ArtifactNode(view.av, artifact, Optional.empty()), artifacts)));
         }
         return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), width, false, node);
     }

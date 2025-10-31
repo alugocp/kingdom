@@ -14,18 +14,18 @@ import java.util.Optional;
 public class ActionNode extends IconNode {
     public static final int SIDE = 50;
     private final Runnable action;
+    private final AudioVideo av;
     private final ListNode node;
     private boolean active = true;
-    // TODO some visual change on hover (do for all IconNodes?), make noise on
-    // click, visually distinguish between enabled/disabled/passive state
-    // TODO implement a GridNode that can arrange elements in a dynamically wide
-    // grid (put to use in InventoryNode as well)
+    // TODO some visual change on hover (do for all IconNodes?), visually
+    // distinguish between enabled/disabled/passive state
 
     public ActionNode(AudioVideo av, String name, String icon, Optional<String> desc, Runnable action) {
         super(av, icon, ActionNode.SIDE);
         this.node = new ListNode().add(new SubheaderNode(av, name));
         desc.ifPresent((String s) -> this.node.add(new TextNode(av, s)));
         this.action = action;
+        this.av = av;
     }
 
     /**
@@ -40,6 +40,7 @@ public class ActionNode extends IconNode {
     @Override
     public void click(Rect bounds, Point p) {
         if (this.active && bounds.contains(p)) {
+            this.av.loaders.sounds.play("sfx/arrow");
             this.action.run();
         }
     }
