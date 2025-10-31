@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.icon;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
+import net.lugocorp.kingdom.engine.shaders.ElementShader;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
@@ -13,8 +14,8 @@ import net.lugocorp.kingdom.menu.MenuPopup;
  */
 public abstract class IconNode implements MenuNode {
     public static final int SIDE = 35;
-    private final MenuPopup popup = new MenuPopup();
     private final int side;
+    protected final MenuPopup popup = new MenuPopup();
     private Drawable icon;
 
     public IconNode(AudioVideo av, String icon, int side) {
@@ -43,6 +44,13 @@ public abstract class IconNode implements MenuNode {
      */
     public void setIcon(Drawable icon) {
         this.icon = icon;
+    }
+
+    /**
+     * Returns the appropriate mode for the ElementShader
+     */
+    protected int getElementShaderMode() {
+        return this.popup.isHovered() ? ElementShader.BRIGHT_MODE : ElementShader.DEFAULT_MODE;
     }
 
     /**
@@ -75,8 +83,9 @@ public abstract class IconNode implements MenuNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         final Rect flip = Coords.screen.flip(this.getBounds(bounds));
-        av.sprites.begin();
-        this.icon.render(av.sprites, flip.x, flip.y);
-        av.sprites.end();
+        av.special.begin();
+        av.shaders.element.setMode(this.getElementShaderMode());
+        this.icon.render(av.special, flip.x, flip.y);
+        av.special.end();
     }
 }

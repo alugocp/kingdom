@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.engine.assets.MusicLoader;
 import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
+import net.lugocorp.kingdom.engine.shaders.ShaderZoo;
 import net.lugocorp.kingdom.mods.ModAssetsMap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class AudioVideo {
     public final ShapeRenderer shapes = new ShapeRenderer();
     public final SpriteBatch sprites = new SpriteBatch();
+    public final SpriteBatch special = new SpriteBatch();
     public final FontService fonts = new FontService();
     public final ShaderZoo shaders = new ShaderZoo();
     public final Settings settings = new Settings();
@@ -35,6 +37,7 @@ public class AudioVideo {
         this.loaders = new Loaders(this.settings);
 
         // Initialize shader programs
+        this.special.setShader(this.shaders.element);
         this.shaders.toon.setTextureLoader(this.loaders.textures);
         this.shaders.outline.init();
         this.shaders.preview.init();
@@ -45,6 +48,7 @@ public class AudioVideo {
      * Calls the resources' dispose() methods
      */
     public void dispose() {
+        this.special.dispose();
         this.sprites.dispose();
         this.shapes.dispose();
         this.models.dispose();

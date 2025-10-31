@@ -169,21 +169,22 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming an edible item."))));
 
         // Actions / spells section
-        final GridNode actions = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
+        final GridNode actives = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
+        final GridNode passives = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
         for (Ability a : this.abilities.getActives()) {
-            actions.add(a.getMenuContent(view, p));
+            actives.add(a.getMenuContent(view, p));
         }
         if (this.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()) {
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
-                actions.add(new ActionNode(view.av, "Move", "apple",
+                actives.add(new ActionNode(view.av, "Move", "apple",
                         Optional.of("Moves this unit to the target tile (may exhaust this unit's actions)"),
                         () -> view.selector.move(this)));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
-                actions.add(new ActionNode(view.av, "Deposit", "apple",
+                actives.add(new ActionNode(view.av, "Deposit", "apple",
                         Optional.of(
                                 "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)"),
                         () -> view.selector.deposit(this)));
@@ -192,7 +193,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Give Food
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
-                actions.add(new ActionNode(view.av, "Give Food", "apple", Optional.of(
+                actives.add(new ActionNode(view.av, "Give Food", "apple", Optional.of(
                         "This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
@@ -204,7 +205,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                actions.add(new ActionNode(view.av, "Store items", "apple", Optional.of(
+                actives.add(new ActionNode(view.av, "Store items", "apple", Optional.of(
                         "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
                         () -> {
                             view.hud.logger.log(String.format("%s will wait where they are", this.name));
@@ -218,7 +219,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                actions.add(new ActionNode(view.av, "Skip turn", "apple",
+                actives.add(new ActionNode(view.av, "Skip turn", "apple",
                         Optional.of(
                                 "This unit won't ask for commands this turn (does not exhaust this unit's actions)"),
                         () -> {
@@ -232,10 +233,10 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             }
         }
         for (Ability a : this.abilities.getPassives()) {
-            actions.add(a.getMenuContent(view, p));
+            passives.add(a.getMenuContent(view, p));
         }
         final ListNode col2 = new ListNode().add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)))
-                .add(actions);
+                .add(actives).add(passives);
 
         // Items section
         final ListNode col3 = new ListNode();

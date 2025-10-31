@@ -18,6 +18,13 @@ public class MenuPopup {
     }
 
     /**
+     * Returns true if this instance is actively being hovered
+     */
+    public boolean isHovered() {
+        return this.hovered;
+    }
+
+    /**
      * Tells this MenuPopup to set hovered to false and close its mini menu
      */
     public void close() {
@@ -39,8 +46,10 @@ public class MenuPopup {
             this.menu.get().setMiniMenu(root, curr.x + 25, curr.y + 15);
             this.hovered = true;
         }
-        if (!currIn && this.hovered && this.menu.get().getMiniMenuRoot().map((MenuNode n) -> n == root).orElse(false)) {
-            this.menu.get().closeMiniMenu();
+        if (!currIn && this.hovered) {
+            if (this.menu.get().getMiniMenuRoot().map((MenuNode n) -> n == root).orElse(false)) {
+                this.menu.get().closeMiniMenu();
+            }
             this.hovered = false;
         }
     }

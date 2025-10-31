@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.menu.icon;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.shaders.ElementShader;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
@@ -17,8 +18,6 @@ public class ActionNode extends IconNode {
     private final AudioVideo av;
     private final ListNode node;
     private boolean active = true;
-    // TODO some visual change on hover (do for all IconNodes?), visually
-    // distinguish between enabled/disabled/passive state
 
     public ActionNode(AudioVideo av, String name, String icon, Optional<String> desc, Runnable action) {
         super(av, icon, ActionNode.SIDE);
@@ -38,16 +37,23 @@ public class ActionNode extends IconNode {
 
     /** {@inheritdoc} */
     @Override
+    protected MenuNode getPopupNode() {
+        return this.node;
+    }
+
+    protected int getElementShaderMode() {
+        if (!this.active) {
+            return ElementShader.GRAY_MODE;
+        }
+        return this.popup.isHovered() ? ElementShader.BRIGHT_MODE : ElementShader.DEFAULT_MODE;
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public void click(Rect bounds, Point p) {
         if (this.active && bounds.contains(p)) {
             this.av.loaders.sounds.play("sfx/arrow");
             this.action.run();
         }
-    }
-
-    /** {@inheritdoc} */
-    @Override
-    protected MenuNode getPopupNode() {
-        return this.node;
     }
 }
