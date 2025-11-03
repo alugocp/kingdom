@@ -31,8 +31,10 @@ public class WorldGenerator {
         // Set up coasts (if any)
         final boolean coastTop = r.nextBoolean();
         final boolean coastBot = r.nextBoolean();
-        final boolean coastLeft = r.nextBoolean();
-        final boolean coastRight = r.nextBoolean();
+        final boolean coastLeft = (worldGenOpts.size.getArea() >= WorldSize.MEDIUM.getArea() || !(coastTop && coastBot))
+                && r.nextBoolean();
+        final boolean coastRight = (worldGenOpts.size.getArea() >= WorldSize.MEDIUM.getArea()
+                || !((coastTop ? 1 : 0) + (coastBot ? 1 : 0) + (coastLeft ? 1 : 0) == 2)) && r.nextBoolean();
 
         // Set default biome
         Biome mainBiome = Biome.GRASS;

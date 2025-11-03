@@ -132,12 +132,10 @@ class GameCreationView implements View {
      * generation algorithm
      */
     private Menu getWorldSelectionMenu(GameView view) {
-        // TODO uncomment when we're ready for different WorldSizes
-        /*
-         * final OptionsNode worldSizeOptions = new OptionsNode(view.av, (Integer i) ->
-         * this.setWorldSize(i.intValue())); for (WorldSize size : WorldSize.values()) {
-         * worldSizeOptions.add(size.label); }
-         */
+        final OptionsNode worldSizeOptions = new OptionsNode(view.av, (Integer i) -> this.setWorldSize(i.intValue()));
+        for (WorldSize size : WorldSize.values()) {
+            worldSizeOptions.add(String.format("%s (%d x %d tiles)", size.label, size.w, size.h));
+        }
         return new Menu(0, 0, Coords.SIZE.x, true,
                 new ListNode()
                         .add(new RowNode()
@@ -150,13 +148,14 @@ class GameCreationView implements View {
                         .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "World Seed"))
                                 .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
                                         (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
-                        .add(new SpacerNode(false).half()).add(new TextNode(view.av,
+                        .add(new SpacerNode(false).half())
+                        .add(new TextNode(
+                                view.av,
                                 "The world seed determines random values in world generation. Write down previous world seeds from games you enjoyed to replay on the exact same map."))
-        /*
-         * .add(new SpacerNode(false)) .add( new RowNode().add(new TextNode(view.av,
-         * "Map Size")) .add(worldSizeOptions) )
-         */
-        );
+                        .add(new SpacerNode(false))
+                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Map Size")).add(worldSizeOptions))
+                        .add(new SpacerNode(false).half()).add(new TextNode(view.av,
+                                "There are multiple options for world size that you can generate. These options will determine the number of tiles present in the game world.")));
     }
 
     /**
