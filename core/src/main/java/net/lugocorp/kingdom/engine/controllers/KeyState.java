@@ -9,6 +9,15 @@ public class KeyState {
     private final Map<Integer, Runnable> keyActions = new HashMap<>();
 
     /**
+     * Runs some action when a key is typed
+     */
+    void check(int typed, int key, Runnable action) {
+        if (typed == key) {
+            action.run();
+        }
+    }
+
+    /**
      * Adds a new key-based action to this instance
      */
     void down(int held, int key, Runnable action) {

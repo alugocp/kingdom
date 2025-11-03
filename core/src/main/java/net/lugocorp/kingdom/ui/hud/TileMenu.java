@@ -22,6 +22,13 @@ public class TileMenu extends Menu {
     }
 
     /**
+     * Returns this TileMenu's currently targeted Point
+     */
+    public Point get() {
+        return this.menuCoords;
+    }
+
+    /**
      * Sets the Menu content for the given Tile
      */
     public void set(Point p) {

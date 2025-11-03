@@ -2,9 +2,12 @@ package net.lugocorp.kingdom.engine.controllers;
 import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.engine.projection.CameraLogic;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -97,6 +100,21 @@ public class GameViewController implements InputProcessor {
             // This moveCamera() call keeps the Camera within World bounds after zooming
             this.moveCamera(0f, 0f);
         }
+    }
+
+    /**
+     * Selects (and moves to) a new Unit in the World
+     */
+    private void cycleUnits() {
+        final Point point = this.view.hud.bot.tileMenu.get();
+        final Optional<Unit> unit = this.view.game.world.getTile(point).flatMap((Tile t) -> t.unit);
+        final List<Unit> units = Lambda.toList(this.view.game.human.units);
+        final int i = unit.map((Unit u) -> u.leadership.belongsToHuman()).orElse(false)
+                ? (units.indexOf(unit.get()) + 1) % units.size()
+                : 0;
+        final Point p = units.get(i).getPoint();
+        this.view.hud.bot.tileMenu.set(p);
+        this.view.centerOnPoint(p, false);
     }
 
     /** {@inheritdoc} */
@@ -256,12 +274,16 @@ public class GameViewController implements InputProcessor {
     @Override
     public boolean keyUp​(int keycode) {
         this.keys.up(keycode);
+
+        // Unit selection
+        this.keys.check(keycode, Keys.ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
+        this.keys.check(keycode, Keys.TAB, () -> this.cycleUnits());
         return false;
     }
 
     /** {@inheritdoc} */
     @Override
-    public boolean keyTyped​(char character) {
+    public boolean keyTyped​(char keycode) {
         return false;
     }
 }

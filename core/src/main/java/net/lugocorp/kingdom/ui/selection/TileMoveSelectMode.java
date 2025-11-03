@@ -50,6 +50,7 @@ class TileMoveSelectMode extends TileSelectMode {
         view.av.loaders.sounds.play("sfx/footstep");
         this.unit.movement.move(view, this.existingPath.get()).execute();
         view.hud.bot.minimap.refresh(view.game.world);
+        // TODO this needs to refresh on the Unit's updated coordinates
         view.hud.bot.tileMenu.refresh();
     }
 
