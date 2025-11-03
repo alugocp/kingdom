@@ -181,28 +181,6 @@ void applyPath(vec4 color) {
 
 // Main shader function
 void main() {
-    // Return black color for fog of war
-    if (u_vision == NO_VISIBILITY) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-
-        // Allow for tile selection to be visible beneath fog of war
-        if (u_hovered > 0) {
-            gl_FragColor.x += 0.5;
-            gl_FragColor.y += 0.5;
-            gl_FragColor.z += 0.2;
-        } else if (u_option > 0) {
-            float coeff = (abs(mod(u_timer, 2000.0) - 1000.0) / 1000.0 * 0.35) + 0.4;
-            gl_FragColor.x += coeff;
-            gl_FragColor.y += coeff;
-            gl_FragColor.z += coeff * 0.5;
-        }
-
-        // Allow for move paths to be visible beneath fog of war
-        vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-        applyPath(white);
-        return;
-    }
-
     // Apply the outline color
     if (outline()) {
         if (u_lightOutline) {
@@ -225,7 +203,7 @@ void main() {
 
     // Grab texture color at coordinate
     vec2 texCoords = v_diffuseUV;
-    if (u_wave && isTopFace) {
+    if (u_vision > NO_VISIBILITY && u_wave && isTopFace) {
         // Wave Tiles should oscillate slightly
         texCoords.y += u_diffuseUVTransform.z * 0.0075 * ((2.0 * abs(mod(u_timer, 6000.0) - 3000.0) / 3000.0) - 1.0);
     }
@@ -233,7 +211,7 @@ void main() {
     gl_FragColor.a *= u_opacity;
 
     // Glyph texture logic
-    if (isTopFace && u_includeGlyphTexture) {
+    if (u_vision > NO_VISIBILITY && isTopFace && u_includeGlyphTexture) {
         float diff = 0.0;
         float beat = 0.07 * abs(mod(u_timer, 3000.0) - 1500.0) / 1500.0;
         vec4 glyph = texture2D(u_glyphTexture, v_diffuseUV);
@@ -260,11 +238,15 @@ void main() {
     // Border and path rendering logic
     if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0 || u_movePath > 0 || u_pathLabel > 0)) {
         vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
-        vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
         applyPath(black);
-        applyBorder(u_tileBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
-        applyBorder(u_domainBorder, white, u_borderTexture3, u_borderTexture4);
-        applyBorderExtensions(u_domainBorderExtension, white);
+
+        // These should not render on unseen tiles
+        if (u_vision > NO_VISIBILITY) {
+            vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+            applyBorder(u_tileBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
+            applyBorder(u_domainBorder, white, u_borderTexture3, u_borderTexture4);
+            applyBorderExtensions(u_domainBorderExtension, white);
+        }
     }
 
     // Make the color bluer if it's nighttime
@@ -278,7 +260,7 @@ void main() {
     }
 
     // Make the color darker if it's half vision
-    if (u_vision == HALF_VISIBILITY) {
+    if (u_vision <= HALF_VISIBILITY) {
         mat4 darker;
         darker[0] = vec4(0.6, 0.0, 0.0, 0.0);
         darker[1] = vec4(0.0, 0.6, 0.0, 0.0);

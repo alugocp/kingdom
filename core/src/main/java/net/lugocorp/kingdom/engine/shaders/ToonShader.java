@@ -215,6 +215,14 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
 
+            // Place in the placeholder texture for unseen tiles
+            if (!data.hasBeenSeen) {
+                final Optional<TextureDescriptor> desc = this.textures.get().getTextureDescriptor("game/unknown-tile");
+                if (desc.isPresent()) {
+                    this.program.setUniformi(this.u_diffuseTexture, this.context.textureBinder.bind(desc.get()));
+                }
+            }
+
             // Glyph texture
             if (this.textures.isPresent() && data.glyph.isPresent()) {
                 Optional<TextureDescriptor> tdesc = this.textures.get().getTextureDescriptor(data.glyph.get().icon);
