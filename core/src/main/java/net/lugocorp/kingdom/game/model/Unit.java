@@ -180,22 +180,23 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
                 actives.add(new ActionNode(view.av, "Move", "apple", Optional.of(new Shortcut("M", Keys.M)),
-                        "Moves this unit to the target tile (may exhaust this unit's actions)",
+                        Optional.of("Moves this unit to the target tile (may exhaust this unit's actions)"),
                         () -> view.selector.move(this)));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
                 frees.add(new ActionNode(view.av, "Deposit", "apple", Optional.of(new Shortcut("E", Keys.E)),
-                        "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)",
+                        Optional.of(
+                                "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)"),
                         () -> view.selector.deposit(this)));
             }
 
             // Give Food
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
-                frees.add(new ActionNode(view.av, "Give Food", "apple", Optional.of(new Shortcut("G", Keys.G)),
-                        "This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)",
+                frees.add(new ActionNode(view.av, "Give Food", "apple", Optional.of(new Shortcut("G", Keys.G)), Optional
+                        .of("This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
@@ -207,7 +208,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
                 frees.add(new ActionNode(view.av, "Store items", "apple", Optional.of(new Shortcut("I", Keys.I)),
-                        "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)",
+                        Optional.of(
+                                "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
                         () -> {
                             view.hud.logger.log(String.format("%s will wait where they are", this.name));
                             view.game.actions.unitHasActed(view, this, new SkipAction(
@@ -220,7 +222,9 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
                 frees.add(new ActionNode(view.av, "Skip turn", "apple", Optional.of(new Shortcut("T", Keys.T)),
-                        "This unit won't ask for commands this turn (does not exhaust this unit's actions)", () -> {
+                        Optional.of(
+                                "This unit won't ask for commands this turn (does not exhaust this unit's actions)"),
+                        () -> {
                             view.game.actions.unitHasActed(view, this,
                                     new SkipAction(
                                             "This unit is skipping its turn, but you can give it a different command",

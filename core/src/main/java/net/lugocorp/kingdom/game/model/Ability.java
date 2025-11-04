@@ -94,7 +94,7 @@ public class Ability implements EventReceiver, MenuSubject {
             mode = (this.wielder.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()
                     && canUnitDoThis) ? ActionNode.MODE_ACTIVE : ActionNode.MODE_DISABLED;
         }
-        return new ActionNode(view.av, this.name, "apple", this.shortcut, popup, () -> {
+        return new ActionNode(view.av, this.name, "apple", this.shortcut, Optional.of(popup), () -> {
             this.activate(view).execute();
             view.hud.bot.tileMenu.refresh();
         }).setMode(mode);
