@@ -20,7 +20,7 @@ import java.util.Optional;
  * Handles all user control input for the GameView
  */
 public class GameViewController implements InputProcessor {
-    private static final float SCROLL_SPEED = 3f;
+    private static final float SCROLL_SPEED = 2f;
     private static final float ZOOM_SPEED = 1f;
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;

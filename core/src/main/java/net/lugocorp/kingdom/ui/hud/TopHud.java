@@ -10,11 +10,14 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.game.DayNightNode;
 import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
+import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
+import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.NakedButtonNode;
+import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.SettingsView;
@@ -64,8 +67,11 @@ public class TopHud extends Menu {
                                 new ButtonNode(view.av, "Artifacts",
                                         () -> view.hud.popups.addNextUnrequired(view.game.mechanics.auction
                                                 .getArtifactsMenu(view, Optional.of(view.game.human)))))
-                        .addRatio(12,
-                                new ButtonNode(view.av, "Settings",
+                        .addRatio(6,
+                                new ActionNode(view.av, "Keybindings", "guide-icon", Optional.empty(), "",
+                                        () -> view.hud.popups.addNextUnrequired(this.getKeybindMenu(view))))
+                        .addRatio(6,
+                                new ActionNode(view.av, "Settings", "settings-icon", Optional.empty(), "",
                                         () -> view.hud.popups.addNextUnrequired(this.getSettingsMenu(view)))))
                 // Human player details
                 .add(new RowNode().add(this.unitPoints).add(this.gold).add(this.artifacts).add(this.auctionChips));
@@ -120,6 +126,26 @@ public class TopHud extends Menu {
          * view.hud.logger.error("Could not save game"); e.printStackTrace(); } }))
          */
         );
+    }
+
+    /**
+     * Returns a Menu that tells the player about keybind options
+     */
+    private Menu getKeybindMenu(GameView view) {
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
+                false,
+                new ListNode()
+                        .add(new RowNode()
+                                .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
+                                .add(new HeaderNode(view.av, "Keybindings")).setColumns(3))
+                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "WASD"))
+                                .add(new TextNode(view.av, "The W/A/S/D keys pan the camera over the game world")))
+                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Arrow keys"))
+                                .add(new TextNode(view.av, "The arrow keys also pan the camera over the game world")))
+                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Tab"))
+                                .add(new TextNode(view.av, "Jumps between your units")))
+                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Enter"))
+                                .add(new TextNode(view.av, "Clicks the Continue / Finish Turn button"))));
     }
 
     /** {@inheritdoc} */

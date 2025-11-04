@@ -55,9 +55,11 @@ public class LoadingGameView extends ThreadedTaskView {
                 1, 1);
         av.loaders.sprites.register("glyph-badge-trade", "game/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
                 2, 1);
-        av.loaders.sprites.register("sun-icon", "game/daynight", IconNode.SIDE, IconNode.SIDE, 0, 0);
-        av.loaders.sprites.register("moon-icon", "game/daynight", IconNode.SIDE, IconNode.SIDE, 1, 0);
-        av.loaders.sprites.register("help-icon", "ui/help", IconNode.SIDE, IconNode.SIDE, 0, 0);
+        av.loaders.sprites.register("help-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 0, 0);
+        av.loaders.sprites.register("settings-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 1, 0);
+        av.loaders.sprites.register("guide-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 2, 0);
+        av.loaders.sprites.register("sun-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 3, 0);
+        av.loaders.sprites.register("moon-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 4, 0);
     }
 
     /** {@inheritdoc} */
