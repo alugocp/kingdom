@@ -153,12 +153,13 @@ public class TopHud extends Menu {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av) {
-        super.draw(av);
-
         // Draw a white bar at the bottom of the HUD
         av.shapes.begin(ShapeType.Line);
         av.shapes.setColor(ColorScheme.OUTLINE.color);
-        av.shapes.rect(0, Coords.SIZE.y - this.getHeight(), Coords.SIZE.x, 1);
+        av.shapes.rect(0, Coords.SIZE.y - this.getHeight() - 1, Coords.SIZE.x, 1);
         av.shapes.end();
+
+        // Draw the Menu content
+        super.draw(av);
     }
 }
