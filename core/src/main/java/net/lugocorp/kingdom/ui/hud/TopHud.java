@@ -145,7 +145,9 @@ public class TopHud extends Menu {
                         .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Tab"))
                                 .add(new TextNode(view.av, "Jumps between your units")))
                         .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Enter"))
-                                .add(new TextNode(view.av, "Clicks the Continue / Finish Turn button"))));
+                                .add(new TextNode(view.av, "Clicks the Continue / Finish Turn button")))
+                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Esc"))
+                                .add(new TextNode(view.av, "Cancels the current action or closes a menu"))));
     }
 
     /** {@inheritdoc} */

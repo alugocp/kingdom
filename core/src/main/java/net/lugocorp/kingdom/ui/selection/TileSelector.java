@@ -39,6 +39,15 @@ public class TileSelector {
     }
 
     /**
+     * Resets the TileSelectMode back to default
+     */
+    public void resetMode() {
+        if (!(this.mode instanceof TileMenuSelectMode)) {
+            this.setMode(new TileMenuSelectMode());
+        }
+    }
+
+    /**
      * Sets TileSetSelectMode mode
      */
     public final void select(Set<Point> points, String error, Consumer<Point> action) {
@@ -99,14 +108,15 @@ public class TileSelector {
                 this.mode.clickedValidPoint(this.view, this.hovered.get());
             } else {
                 this.mode.clickedInvalidPoint(this.view);
+                return;
             }
         }
 
         // Do not go back to TileMenuSelectMode if we've changed
         // modes already. This enables Abilities or Actions that
         // involve multiple selections.
-        if (this.mode == m && !(m instanceof TileMenuSelectMode)) {
-            this.setMode(new TileMenuSelectMode());
+        if (this.mode == m) {
+            this.resetMode();
         }
     }
 }

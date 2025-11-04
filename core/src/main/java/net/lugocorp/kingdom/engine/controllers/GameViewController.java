@@ -279,6 +279,13 @@ public class GameViewController implements InputProcessor {
         this.keys.check(keycode, Keys.NUMPAD_ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
         this.keys.check(keycode, Keys.ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
         this.keys.check(keycode, Keys.TAB, () -> this.cycleUnits());
+        this.keys.check(keycode, Keys.ESCAPE, () -> {
+            if (this.view.hud.popups.isDisplayed()) {
+                this.view.hud.popups.setDisplay(false);
+            } else {
+                this.view.selector.resetMode();
+            }
+        });
 
         // Menu logic
         for (MenuController m : this.menus) {

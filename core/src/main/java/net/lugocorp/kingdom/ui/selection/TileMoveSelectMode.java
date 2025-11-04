@@ -35,7 +35,7 @@ class TileMoveSelectMode extends TileSelectMode {
     /** {@inheritdoc} */
     @Override
     final void init(GameView view) {
-        // No-op
+        // TODO call hover if we're over a Tile
     }
 
     /** {@inheritdoc} */
