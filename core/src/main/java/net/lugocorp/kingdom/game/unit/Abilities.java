@@ -1,10 +1,12 @@
 package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import com.badlogic.gdx.Input.Keys;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,8 @@ public class Abilities {
     public void setActive(Generator g, String a1, String a2) {
         this.active1 = Optional.of(g.ability(this.unit, a1));
         this.active2 = Optional.of(g.ability(this.unit, a2));
+        this.active1.get().setShortcut(new Shortcut("1", Keys.NUM_1, Keys.NUMPAD_1));
+        this.active2.get().setShortcut(new Shortcut("2", Keys.NUM_2, Keys.NUMPAD_2));
     }
 
     /**
@@ -36,6 +40,7 @@ public class Abilities {
     public void setActive(Generator g, String a) {
         this.active1 = Optional.of(g.ability(this.unit, a));
         this.active2 = Optional.empty();
+        this.active1.get().setShortcut(new Shortcut("1", Keys.NUM_1, Keys.NUMPAD_1));
     }
 
     /**

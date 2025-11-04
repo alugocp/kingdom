@@ -276,6 +276,7 @@ public class GameViewController implements InputProcessor {
         this.keys.up(keycode);
 
         // Unit selection
+        this.keys.check(keycode, Keys.NUMPAD_ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
         this.keys.check(keycode, Keys.ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
         this.keys.check(keycode, Keys.TAB, () -> this.cycleUnits());
         return false;

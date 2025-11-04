@@ -56,7 +56,7 @@ public abstract class IconNode implements MenuNode {
     /**
      * Returns the bounds associated with this IconNode's visible element
      */
-    private Rect getBounds(Rect bounds) {
+    protected Rect getBounds(Rect bounds) {
         return new Rect(bounds.x + ((bounds.w - this.side) / 2), bounds.y + ((bounds.h - this.side) / 2), this.side,
                 this.side);
     }

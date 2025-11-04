@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.actions.ActionType;
 import net.lugocorp.kingdom.game.actions.SkipAction;
@@ -39,6 +40,7 @@ import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.List;
@@ -177,14 +179,14 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         if (this.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()) {
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
-                actives.add(new ActionNode(view.av, "Move", "apple",
+                actives.add(new ActionNode(view.av, "Move", "apple", Optional.of(new Shortcut("M", Keys.M)),
                         Optional.of("Moves this unit to the target tile (may exhaust this unit's actions)"),
                         () -> view.selector.move(this)));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
-                frees.add(new ActionNode(view.av, "Deposit", "apple",
+                frees.add(new ActionNode(view.av, "Deposit", "apple", Optional.of(new Shortcut("D", Keys.D)),
                         Optional.of(
                                 "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)"),
                         () -> view.selector.deposit(this)));
@@ -193,8 +195,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Give Food
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
-                frees.add(new ActionNode(view.av, "Give Food", "apple", Optional.of(
-                        "This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
+                frees.add(new ActionNode(view.av, "Give Food", "apple", Optional.of(new Shortcut("G", Keys.G)), Optional
+                        .of("This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
@@ -205,8 +207,9 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                frees.add(new ActionNode(view.av, "Store items", "apple", Optional.of(
-                        "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
+                frees.add(new ActionNode(view.av, "Store items", "apple", Optional.of(new Shortcut("I", Keys.I)),
+                        Optional.of(
+                                "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
                         () -> {
                             view.hud.logger.log(String.format("%s will wait where they are", this.name));
                             view.game.actions.unitHasActed(view, this, new SkipAction(
@@ -218,7 +221,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                frees.add(new ActionNode(view.av, "Skip turn", "apple",
+                frees.add(new ActionNode(view.av, "Skip turn", "apple", Optional.of(new Shortcut("S", Keys.S)),
                         Optional.of(
                                 "This unit won't ask for commands this turn (does not exhaust this unit's actions)"),
                         () -> {

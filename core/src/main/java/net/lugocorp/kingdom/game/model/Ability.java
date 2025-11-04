@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.game.actions.ActionType;
 import net.lugocorp.kingdom.game.events.Event;
 import net.lugocorp.kingdom.game.events.EventReceiver;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * A passive or active effect that Units, Buildings and Tiles can use
  */
 public class Ability implements EventReceiver, MenuSubject {
+    private Optional<Shortcut> shortcut = Optional.empty();
     public final Unit wielder;
     public final String name;
     public String desc = "";
@@ -30,6 +32,13 @@ public class Ability implements EventReceiver, MenuSubject {
     public Ability() {
         this.wielder = null;
         this.name = null;
+    }
+
+    /**
+     * Sets the Shortcut associated with this Ability
+     */
+    public void setShortcut(Shortcut shortcut) {
+        this.shortcut = Optional.of(shortcut);
     }
 
     /**
@@ -85,7 +94,7 @@ public class Ability implements EventReceiver, MenuSubject {
             mode = (this.wielder.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()
                     && canUnitDoThis) ? ActionNode.MODE_ACTIVE : ActionNode.MODE_DISABLED;
         }
-        return new ActionNode(view.av, this.name, "apple", Optional.of(popup), () -> {
+        return new ActionNode(view.av, this.name, "apple", this.shortcut, Optional.of(popup), () -> {
             this.activate(view).execute();
             view.hud.bot.tileMenu.refresh();
         }).setMode(mode);

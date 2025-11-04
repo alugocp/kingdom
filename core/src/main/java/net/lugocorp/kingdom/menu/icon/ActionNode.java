@@ -1,12 +1,17 @@
 package net.lugocorp.kingdom.menu.icon;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.assets.FontParam;
+import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.engine.shaders.ElementShader;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.Optional;
 
 /**
@@ -17,15 +22,21 @@ public class ActionNode extends IconNode {
     public static final int MODE_NOTHING = 0;
     public static final int MODE_DISABLED = 1;
     public static final int MODE_ACTIVE = 2;
+    private final Optional<Shortcut> shortcut;
     private final Runnable action;
     private final AudioVideo av;
     private final ListNode node;
+    private final BitmapFont font;
     private int mode = ActionNode.MODE_ACTIVE;
 
-    public ActionNode(AudioVideo av, String name, String icon, Optional<String> desc, Runnable action) {
+    public ActionNode(AudioVideo av, String name, String icon, Optional<Shortcut> shortcut, Optional<String> desc,
+            Runnable action) {
         super(av, icon, ActionNode.SIDE);
         this.node = new ListNode().add(new SubheaderNode(av, name));
         desc.ifPresent((String s) -> this.node.add(new TextNode(av, s)));
+        this.font = av.fonts
+                .getFont(new FontParam().setColor(ColorScheme.TEXT.color).setBorder(ColorScheme.BLACK.color));
+        this.shortcut = shortcut;
         this.action = action;
         this.av = av;
     }
@@ -58,5 +69,17 @@ public class ActionNode extends IconNode {
             this.av.loaders.sounds.play("sfx/arrow");
             this.action.run();
         }
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void draw(AudioVideo av, Rect bounds) {
+        super.draw(av, bounds);
+        this.shortcut.ifPresent((Shortcut s) -> {
+            final Rect flip = Coords.screen.flip(this.getBounds(bounds));
+            av.sprites.begin();
+            font.draw(av.sprites, s.label, flip.x, flip.y + flip.h);
+            av.sprites.end();
+        });
     }
 }
