@@ -134,6 +134,16 @@ public class GameView implements View {
     }
 
     /**
+     * Returns true if the given given Point isn't hovering over a permanent HUD
+     * element
+     */
+    public boolean isHoveringOverGameWorld(int x, int y) {
+        final Optional<Point> point = ViewportLogic.unproject(x, y);
+        return point.map((Point p) -> p.y > this.hud.top.getHeight() && p.y < Coords.SIZE.y - this.hud.bot.getHeight())
+                .orElse(false);
+    }
+
+    /**
      * Sets up HUD state at the beginning of the Game to help guide new Players
      */
     private void initHudMessages() {

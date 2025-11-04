@@ -232,9 +232,8 @@ public class GameViewController implements InputProcessor {
             }
         }
 
-        // Do not check the World if we're hovering over the Minimap
-        final Optional<Point> p = ViewportLogic.unproject(x, y);
-        if (p.map((Point p1) -> p1.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()).orElse(true)) {
+        // Do not check the World if we're hovering over a permanent HUD element
+        if (!this.view.isHoveringOverGameWorld(x, y)) {
             return true;
         }
 

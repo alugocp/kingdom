@@ -1,10 +1,13 @@
 package net.lugocorp.kingdom.ui.selection;
+import net.lugocorp.kingdom.engine.projection.CameraLogic;
+import net.lugocorp.kingdom.engine.projection.ViewportLogic;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.Gdx;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +38,13 @@ class TileMoveSelectMode extends TileSelectMode {
     /** {@inheritdoc} */
     @Override
     final void init(GameView view) {
-        // TODO call hover if we're over a Tile
+        final int x = Gdx.input.getX();
+        final int y = Gdx.input.getY();
+        if (view.isHoveringOverGameWorld(x, y)) {
+            final Point u = ViewportLogic.unproject(x, y).get();
+            final Point p = CameraLogic.getCoordUnderScreenPoint(u.x, u.y);
+            this.hoverTile(view, p);
+        }
     }
 
     /** {@inheritdoc} */
