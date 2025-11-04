@@ -29,11 +29,10 @@ public class ActionNode extends IconNode {
     private final BitmapFont font;
     private int mode = ActionNode.MODE_ACTIVE;
 
-    public ActionNode(AudioVideo av, String name, String icon, Optional<Shortcut> shortcut, Optional<String> desc,
+    public ActionNode(AudioVideo av, String name, String icon, Optional<Shortcut> shortcut, String desc,
             Runnable action) {
         super(av, icon, ActionNode.SIDE);
-        this.node = new ListNode().add(new SubheaderNode(av, name));
-        desc.ifPresent((String s) -> this.node.add(new TextNode(av, s)));
+        this.node = new ListNode().add(new SubheaderNode(av, name)).add(new TextNode(av, desc));
         this.font = av.fonts
                 .getFont(new FontParam().setColor(ColorScheme.TEXT.color).setBorder(ColorScheme.BLACK.color));
         this.shortcut = shortcut;
