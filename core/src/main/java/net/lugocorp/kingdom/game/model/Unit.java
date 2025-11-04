@@ -186,7 +186,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
-                frees.add(new ActionNode(view.av, "Deposit", "apple", Optional.of(new Shortcut("D", Keys.D)),
+                frees.add(new ActionNode(view.av, "Deposit", "apple", Optional.of(new Shortcut("E", Keys.E)),
                         "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)",
                         () -> view.selector.deposit(this)));
             }
@@ -219,7 +219,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
-                frees.add(new ActionNode(view.av, "Skip turn", "apple", Optional.of(new Shortcut("S", Keys.S)),
+                frees.add(new ActionNode(view.av, "Skip turn", "apple", Optional.of(new Shortcut("T", Keys.T)),
                         "This unit won't ask for commands this turn (does not exhaust this unit's actions)", () -> {
                             view.game.actions.unitHasActed(view, this,
                                     new SkipAction(

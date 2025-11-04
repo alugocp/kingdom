@@ -139,9 +139,6 @@ public class TabsNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void keyPressed(int keycode) {
-        this.tabs.keyPressed(keycode);
-        for (Tuple<String, MenuNode> tab : this.data) {
-            tab.b.keyPressed(keycode);
-        }
+        this.content().keyPressed(keycode);
     }
 }

@@ -54,6 +54,8 @@ public class ActionNode extends IconNode {
         return this.node;
     }
 
+    /** {@inheritdoc} */
+    @Override
     protected int getElementShaderMode() {
         if (this.mode == ActionNode.MODE_DISABLED) {
             return ElementShader.GRAY_MODE;
@@ -61,12 +63,21 @@ public class ActionNode extends IconNode {
         return this.popup.isHovered() ? ElementShader.BRIGHT_MODE : ElementShader.DEFAULT_MODE;
     }
 
+    /**
+     * Do something when this ActionNode is clicked or otherwise activated
+     */
+    private void clickLogic() {
+        if (this.mode == ActionNode.MODE_ACTIVE) {
+            this.av.loaders.sounds.play("sfx/arrow");
+            this.action.run();
+        }
+    }
+
     /** {@inheritdoc} */
     @Override
     public void click(Rect bounds, Point p) {
-        if (this.mode == ActionNode.MODE_ACTIVE && bounds.contains(p)) {
-            this.av.loaders.sounds.play("sfx/arrow");
-            this.action.run();
+        if (bounds.contains(p)) {
+            this.clickLogic();
         }
     }
 
@@ -80,5 +91,11 @@ public class ActionNode extends IconNode {
             font.draw(av.sprites, s.label, flip.x, flip.y + flip.h);
             av.sprites.end();
         });
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void keyPressed(int keycode) {
+        this.shortcut.ifPresent((Shortcut s) -> s.matches(keycode, () -> this.clickLogic()));
     }
 }

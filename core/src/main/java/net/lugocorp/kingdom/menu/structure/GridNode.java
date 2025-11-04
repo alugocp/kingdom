@@ -119,4 +119,12 @@ public class GridNode implements MenuNode {
             }
         }
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public void keyPressed(int keycode) {
+        for (MenuNode n : this.nodes) {
+            n.keyPressed(keycode);
+        }
+    }
 }
