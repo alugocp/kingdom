@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
+import net.lugocorp.kingdom.engine.shaders.ElementShader;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
@@ -24,8 +25,6 @@ public class ArtifactNode implements MenuNode {
     private final Optional<Runnable> click;
     private final Artifact artifact;
     private final Drawable image;
-    private final Drawable claimedMask;
-    private final Drawable hoveredMask;
     private final Drawable mask;
     private final TextNode name;
     private final TextNode desc;
@@ -43,8 +42,6 @@ public class ArtifactNode implements MenuNode {
         // TODO make the sprites loader (or some other layer above it) generate/cache
         // Drawables for optimization
         this.image = new Drawable(av.loaders.sprites, artifact.image.orElse("placeholder"));
-        this.claimedMask = new Drawable(av.loaders.sprites, "artifact-claimed-mask");
-        this.hoveredMask = new Drawable(av.loaders.sprites, "artifact-hovered-mask");
         this.mask = new Drawable(av.loaders.sprites, "artifact-mask");
         if (artifact.isClaimed()) {
             this.ownership = Optional.of(new BadgeNode(av, Colors.asInt(this.artifact.getOwner().get().color),
@@ -73,15 +70,16 @@ public class ArtifactNode implements MenuNode {
     public void draw(AudioVideo av, Rect bounds) {
         // Draw background image and any necessary masks
         Rect flip = Coords.screen.flip(bounds);
-        av.sprites.begin();
-        this.image.render(av.sprites, flip.x, flip.y);
-        this.mask.render(av.sprites, flip.x, flip.y);
+        av.special.begin();
         if (this.artifact.isClaimed()) {
-            this.claimedMask.render(av.sprites, flip.x, flip.y);
+            av.shaders.element.setMode(ElementShader.GRAY_MODE);
         } else if (this.hovered) {
-            this.hoveredMask.render(av.sprites, flip.x, flip.y);
+            av.shaders.element.setMode(ElementShader.BRIGHT_MODE);
         }
-        av.sprites.end();
+        this.image.render(av.special, flip.x, flip.y);
+        this.mask.render(av.special, flip.x, flip.y);
+        av.shaders.element.setMode(ElementShader.DEFAULT_MODE);
+        av.special.end();
 
         // Draw foreground text
         final int h1 = this.desc.getHeight();

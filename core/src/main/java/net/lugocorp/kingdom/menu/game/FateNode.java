@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
+import net.lugocorp.kingdom.engine.shaders.ElementShader;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
@@ -15,14 +16,12 @@ public class FateNode implements MenuNode {
     public static final int WIDTH = 300;
     private final Runnable onClick;
     private final Drawable image;
-    private final Drawable mask;
     private boolean hovered = false;
     private Fate fate;
 
     public FateNode(AudioVideo av, Fate fate, Runnable onClick) {
         this.onClick = onClick;
         this.image = new Drawable(av.loaders.sprites);
-        this.mask = new Drawable(av.loaders.sprites, "fate-highlight");
         this.setFate(av, fate);
     }
 
@@ -51,12 +50,13 @@ public class FateNode implements MenuNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         Rect flip = Coords.screen.flip(bounds);
-        av.sprites.begin();
-        this.image.render(av.sprites, flip.x, flip.y);
+        av.special.begin();
         if (this.hovered) {
-            this.mask.render(av.sprites, flip.x, flip.y);
+            av.shaders.element.setMode(ElementShader.BRIGHT_MODE);
         }
-        av.sprites.end();
+        this.image.render(av.special, flip.x, flip.y);
+        av.special.end();
+        av.shaders.element.setMode(ElementShader.DEFAULT_MODE);
     }
 
     /** {@inheritdoc} */

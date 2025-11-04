@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
-import net.lugocorp.kingdom.menu.game.FateNode;
 import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
@@ -26,11 +25,6 @@ public class LoadingGameView extends ThreadedTaskView {
         // Load built-in sprites
         av.loaders.sprites.register("artifact-mask", "game/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
                 0);
-        av.loaders.sprites.register("artifact-claimed-mask", "game/artifact-claimed-mask", ArtifactNode.WIDTH,
-                ArtifactNode.HEIGHT, 0, 0);
-        av.loaders.sprites.register("artifact-hovered-mask", "game/artifact-hovered-mask", ArtifactNode.WIDTH,
-                ArtifactNode.HEIGHT, 0, 0);
-        av.loaders.sprites.register("fate-highlight", "game/fate-highlight", FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
         av.loaders.sprites.register("glyph-icon-battle", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 0, 0);
         av.loaders.sprites.register("glyph-icon-defense", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,

@@ -79,6 +79,9 @@ public class MoveAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean startOfTurn() {
+        // Recalculate the max distance we can travel this turn
+        this.max = this.unit.movement.getMaxDistance(this.view);
+
         // Drop this Action if any Point becomes inaccessible to the Unit
         for (Point p : this.path) {
             if (!this.unit.movement.canMoveToPoint(this.view, p)) {
@@ -91,9 +94,6 @@ public class MoveAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean endOfTurn() {
-        // Recalculate the max distance we can travel this turn
-        this.max = this.unit.movement.getMaxDistance(this.view);
-
         // If there's more path to move on and we haven't hit max
         // distance yet this turn then do that now
         if (this.path.size() > 0 && this.distance < this.max) {
