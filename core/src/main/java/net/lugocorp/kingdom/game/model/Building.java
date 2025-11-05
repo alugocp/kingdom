@@ -138,7 +138,10 @@ public class Building extends Entity implements MenuSubject, Spawnable {
             if (t.unit.isPresent()) {
                 this.setAlpha(0.5f);
             }
-            view.game.buildingSpawned(this);
+            t.leader.ifPresent((Player p) -> {
+                this.vision.set(view, p, this, this.getPoint());
+                p.buildings.add(this);
+            });
         });
         this.handleEvent(view, new Events.SpawnEvent<Building>(this)).execute();
         this.getMinimapColor().ifPresent((Color c) -> view.hud.bot.minimap.refresh(view.game.world));
@@ -166,7 +169,11 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     @Override
     public void deactivate(GameView view) {
         super.deactivate(view);
-        view.game.removeBuilding(this);
+        this.getLeader().ifPresent((Player l) -> {
+            this.vision.remove(l, view.game.world);
+            l.buildings.remove(this);
+        });
+        view.game.world.getTile(this.getPoint()).get().building = Optional.empty();
         this.getMinimapColor().ifPresent((Color c) -> view.hud.bot.minimap.refresh(view.game.world));
         this.dispose();
     }

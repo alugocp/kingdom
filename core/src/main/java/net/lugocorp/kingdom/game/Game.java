@@ -127,24 +127,6 @@ public class Game {
     }
 
     /**
-     * Call this when a Building is spawned into the World. It may need to be
-     * tracked as part of a Player's Buildings.
-     */
-    public void buildingSpawned(Building b) {
-        Tile t = this.world.getTile(b.getPoint()).get();
-        t.leader.ifPresent((Player p) -> p.buildings.add(b));
-    }
-
-    /**
-     * Removes a Building from the World and from cached Game data
-     */
-    public void removeBuilding(Building b) {
-        Tile t = this.world.getTile(b.getPoint()).get();
-        t.building = Optional.empty();
-        t.leader.ifPresent((Player p) -> p.buildings.remove(b));
-    }
-
-    /**
      * Calls into the other setLeader()
      */
     public void setLeader(GameView view, Unit u, Player p) {

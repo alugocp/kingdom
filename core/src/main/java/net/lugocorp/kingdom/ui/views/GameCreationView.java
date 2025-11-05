@@ -40,6 +40,7 @@ class GameCreationView implements View {
     private static final int MAX_PLAYERS = 6;
     private final WorldGenOptions worldGenOpts = new WorldGenOptions(GameCreationView.getRandomSeed());
     private final StartMenuView.Params params;
+    private final TextNode humanFateNameNode;
     private final Menu worldSelection;
     private final Menu fateSelection;
     private final Menu playerSelection;
@@ -59,6 +60,7 @@ class GameCreationView implements View {
         this.setWorldSize(0);
 
         // Initialize GameCreationView UI components
+        this.humanFateNameNode = new TextNode(this.view.av, "");
         this.worldSelection = this.getWorldSelectionMenu(this.view);
         this.fateSelection = this.getFateSelectionMenu(this.view);
         this.playerSelection = this.getPlayerSelectionMenu(this.view);
@@ -189,6 +191,7 @@ class GameCreationView implements View {
             for (int b = 0; b < columns && a < fates.size();) {
                 final Fate fate = fates.get(a);
                 row.add(new FateNode(view.av, fate, () -> {
+                    this.humanFateNameNode.setText(fate.name);
                     view.av.loaders.sounds.play("sfx/card-flick");
                     view.game.human.setFate(fate);
                     display.setFate(view.av, fate);
@@ -199,6 +202,7 @@ class GameCreationView implements View {
             options.add(row);
             options.add(new SpacerNode(false));
         }
+        this.humanFateNameNode.setText(fates.get(0).name);
         view.game.human.setFate(fates.get(0));
         return new Menu(0, 0, Coords.SIZE.x, true, root);
     }
@@ -209,8 +213,9 @@ class GameCreationView implements View {
     private Menu getPlayerSelectionMenu(GameView view) {
         final List<CompPlayer> comps = new ArrayList();
         final Tuple<CompPlayer, MenuNode> firstComp = this.addPlayerCustomizationNode(view, 1);
-        final ListNode nodes = new ListNode().add(new RowNode().add(new SubheaderNode(view.av, view.game.human.name))
-                .add(new TextNode(view.av, view.game.human.getFate().name))).add(firstComp.b);
+        final ListNode nodes = new ListNode()
+                .add(new RowNode().add(new SubheaderNode(view.av, view.game.human.name)).add(this.humanFateNameNode))
+                .add(firstComp.b);
         final ListNode root = new ListNode();
         final Menu menu = new Menu(0, 0, Coords.SIZE.x, true, root);
         root.add(new RowNode().addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.fateSelection)))

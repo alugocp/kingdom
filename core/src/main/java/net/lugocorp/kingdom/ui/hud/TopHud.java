@@ -118,7 +118,8 @@ public class TopHud extends Menu {
                         .addSettingsMenuNodes(view.av,
                                 new ListNode().add(
                                         new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false))))
-                        .add(new SpacerNode()).add(new ButtonNode(view.av, "Exit Game", () -> view.close()))
+                        .add(new SpacerNode()).add(new ButtonNode(view.av, "Exit Game",
+                                () -> view.hud.popups.addNextUnrequired(this.getExitMenu(view))))
         /*
          * .add(new ButtonNode(view.av, "Save game", () -> { try {
          * view.getSerial().saveGame(view.game);
@@ -126,6 +127,17 @@ public class TopHud extends Menu {
          * view.hud.logger.error("Could not save game"); e.printStackTrace(); } }))
          */
         );
+    }
+
+    private Menu getExitMenu(GameView view) {
+        return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
+                false,
+                new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
+                        .add(new SpacerNode()).add(new HeaderNode(view.av, "Exit Game?"))
+                        .add(new RowNode()
+                                .add(new ButtonNode(view.av, "No, take me back",
+                                        () -> view.hud.popups.setDisplay(false)))
+                                .add(new ButtonNode(view.av, "Yes, exit the game", () -> view.close()))));
     }
 
     /**
