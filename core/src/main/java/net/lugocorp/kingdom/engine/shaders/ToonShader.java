@@ -78,6 +78,7 @@ public class ToonShader implements Shader {
     private int u_pathLabel;
     private int u_borderColor;
     private int u_tileBorder;
+    private int u_blackout;
     private int u_timer;
     private int u_wave;
 
@@ -125,6 +126,7 @@ public class ToonShader implements Shader {
         this.u_pathLabel = this.program.getUniformLocation("u_pathLabel");
         this.u_borderColor = this.program.getUniformLocation("u_borderColor");
         this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
+        this.u_blackout = this.program.getUniformLocation("u_blackout");
         this.u_timer = this.program.getUniformLocation("u_timer");
         this.u_wave = this.program.getUniformLocation("u_wave");
     }
@@ -214,12 +216,15 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_domainBorderExtension, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
             this.program.setUniformi(this.u_tileBorder, 0);
+            this.program.setUniformi(this.u_blackout, 0);
 
             // Place in the placeholder texture for unseen tiles
             if (!data.hasBeenSeen) {
                 final Optional<TextureDescriptor> desc = this.textures.get().getTextureDescriptor("game/unknown-tile");
                 if (desc.isPresent()) {
                     this.program.setUniformi(this.u_diffuseTexture, this.context.textureBinder.bind(desc.get()));
+                } else {
+                    this.program.setUniformi(this.u_blackout, 1);
                 }
             }
 
@@ -304,6 +309,7 @@ public class ToonShader implements Shader {
             this.program.setUniformi(this.u_pathLabel, 0);
             this.program.setUniformi(this.u_vision, 2);
             this.program.setUniformi(this.u_includeGlyphTexture, 0);
+            this.program.setUniformi(this.u_blackout, 0);
 
             // Make the outline change color if this Unit / Building is being hovered over
             if (renderable.userData != null && renderable.userData instanceof CoordUserData) {

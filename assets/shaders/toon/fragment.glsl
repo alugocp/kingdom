@@ -37,6 +37,7 @@ uniform int u_pathLabel;
 uniform int u_domainBorder;
 uniform int u_domainBorderExtension;
 uniform int u_tileBorder;
+uniform int u_blackout;
 uniform int u_hovered;
 uniform int u_option;
 uniform bool u_lightOutline;
@@ -207,7 +208,11 @@ void main() {
         // Wave Tiles should oscillate slightly
         texCoords.y += u_diffuseUVTransform.z * 0.0075 * ((2.0 * abs(mod(u_timer, 6000.0) - 3000.0) / 3000.0) - 1.0);
     }
-    gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
+    if (u_blackout == 0) {
+        gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
+    } else {
+        gl_FragColor = vec4(0.25, 0.25, 0.25, 1.0);
+    }
     gl_FragColor.a *= u_opacity;
 
     // Glyph texture logic
