@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,12 +30,15 @@ public class ModLoader {
      * Returns a list of mods to load
      */
     public List<String> getMods() {
-        List<String> mods = new ArrayList<>();
-        for (File f : new File("../mods").listFiles()) {
-            if (f.isDirectory()) {
-                continue;
+        final List<String> mods = new ArrayList<>();
+        final FileHandle root = Gdx.files.local("mods");
+        if (root.exists()) {
+            for (FileHandle f : root.list()) {
+                if (f.isDirectory()) {
+                    continue;
+                }
+                mods.add(f.path());
             }
-            mods.add(f.getPath());
         }
         return mods;
     }
@@ -53,6 +57,7 @@ public class ModLoader {
         ModProfile profile = mod.getProfile();
 
         // Check for mod legality
+        // TODO add fonts, game, sfx, and textures?
         if (profile.key.equals("shaders") || profile.key.equals("ui")) {
             throw new RuntimeException(String.format("Illegal mod key '%s'", profile.key));
         }
@@ -73,10 +78,18 @@ public class ModLoader {
     }
 
     /**
+     * Copies the vanilla mod out from the game's assets folder into the filesystem
+     */
+    public void createDefaultMod() {
+        final byte[] data = Gdx.files.internal("DEFAULT.jar").readBytes();
+        Gdx.files.local("mods/vanilla.jar").writeBytes(data, false);
+    }
+
+    /**
      * Sets up the mod unzip site
      */
     public void resetModAssetsLocation() throws Exception {
-        File site = Gdx.files.external(ModLoader.ASSETS_BASE).file();
+        final FileHandle site = Gdx.files.external(ModLoader.ASSETS_BASE);
         if (site.exists()) {
             this.recursiveFileDelete(site);
         }
@@ -86,10 +99,10 @@ public class ModLoader {
     /**
      * Recursively deletes a folder and all its contents from the filesystem
      */
-    private void recursiveFileDelete(File f) {
+    private void recursiveFileDelete(FileHandle f) {
         if (f.isDirectory()) {
-            for (String s : f.list()) {
-                this.recursiveFileDelete(new File(f.getPath(), s));
+            for (FileHandle f1 : f.list()) {
+                this.recursiveFileDelete(f1);
             }
         }
         f.delete();

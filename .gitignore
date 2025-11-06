@@ -164,8 +164,12 @@ Thumbs.db
 ## You should delete or comment out the next line if you have configuration in a different resource-config.json .
 **/resource-config.json
 
-## Kingdom game:
+# LibGDX's `gradle run` acts in the /assets directory, so we generate files there by default during development.
+# We should ignore those files so they don't get committed.
 /assets/settings.json
+/assets/DEFAULT.jar
+/assets/mods
+
+## Kingdom game:
 /content/build
-/mods/*.jar
 *.g3db

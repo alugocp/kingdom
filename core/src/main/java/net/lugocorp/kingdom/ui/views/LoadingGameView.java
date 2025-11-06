@@ -59,13 +59,19 @@ public class LoadingGameView extends ThreadedTaskView {
     /** {@inheritdoc} */
     @Override
     protected void performTask() {
-        ModLoader modLoader = new ModLoader();
+        final ModLoader modLoader = new ModLoader();
         try {
             modLoader.resetModAssetsLocation();
         } catch (Exception e) {
-            System.err.println("Could not load any mod data");
+            System.err.println("Could not clear the mod asset unzip directory");
             e.printStackTrace();
             return;
+        }
+
+        // Check for mods and if none are found then create the default mod
+        if (modLoader.getMods().size() == 0) {
+            System.out.println("No mods found - unpacking vanilla mod");
+            modLoader.createDefaultMod();
         }
 
         for (String filepath : modLoader.getMods()) {
@@ -73,7 +79,7 @@ public class LoadingGameView extends ThreadedTaskView {
 
             // Load mod code
             try {
-                GameMod m = modLoader.loadMod(filepath, this.events, this.av.loaders.sprites,
+                final GameMod m = modLoader.loadMod(filepath, this.events, this.av.loaders.sprites,
                         this.av.loaders.models.getModAssetsMap());
                 this.mods.add(m);
             } catch (Exception e) {

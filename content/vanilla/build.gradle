@@ -15,9 +15,19 @@ dependencies {
 }
 
 jar {
-    destinationDirectory = file("../../mods")
-    archiveBaseName = "vanilla"
+    destinationDirectory = file("../../assets/mods")
+    archiveFileName = "vanilla.jar"
     manifest {
         attributes 'Main-Class': 'net.lugocorp.kingdom.mod.KingdomMod'
     }
 }
+
+// This task copies our output JAR to the assets folder
+task copyToDefault(type: Copy) {
+    from('../../assets/mods/vanilla.jar') {
+        rename 'vanilla.jar', 'DEFAULT.jar'
+    }
+    into '../../assets'
+}
+
+build.finalizedBy(copyToDefault)
