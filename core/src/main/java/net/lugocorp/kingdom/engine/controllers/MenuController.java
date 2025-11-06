@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.engine.controllers;
-import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.settings.Settings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import java.util.Optional;

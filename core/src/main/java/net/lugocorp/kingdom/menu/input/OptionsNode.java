@@ -25,8 +25,9 @@ public class OptionsNode implements MenuNode {
     private int index = 0;
     protected BitmapFont font;
 
-    public OptionsNode(AudioVideo av, Consumer<Integer> selected) {
+    public OptionsNode(AudioVideo av, int index, Consumer<Integer> selected) {
         this.selected = selected;
+        this.index = index;
         this.av = av;
     }
 

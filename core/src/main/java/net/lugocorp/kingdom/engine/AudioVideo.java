@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.shaders.ShaderZoo;
 import net.lugocorp.kingdom.mods.ModAssetsMap;
+import net.lugocorp.kingdom.settings.Settings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -24,17 +25,18 @@ public class AudioVideo {
     public final SpriteBatch special = new SpriteBatch();
     public final FontService fonts = new FontService();
     public final ShaderZoo shaders = new ShaderZoo();
-    public final Settings settings = new Settings();
+    public final Settings settings;
     public final ModelBatch outlines;
     public final ModelBatch previews;
     public final ModelBatch models;
     public final Loaders loaders;
 
-    public AudioVideo() {
+    public AudioVideo(Settings settings) {
         this.outlines = new ModelBatch(new BasicShaderProvider(this.shaders.outline));
         this.previews = new ModelBatch(new BasicShaderProvider(this.shaders.preview));
         this.models = new ModelBatch(new BasicShaderProvider(this.shaders.toon));
-        this.loaders = new Loaders(this.settings);
+        this.loaders = new Loaders(settings);
+        this.settings = settings;
 
         // Initialize shader programs
         this.special.setShader(this.shaders.element);

@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine;
+package net.lugocorp.kingdom.settings;
 
 /**
  * A number of options that allow for better accessibility

@@ -1,11 +1,11 @@
 package net.lugocorp.kingdom.engine.controllers;
-import net.lugocorp.kingdom.engine.Settings;
 import net.lugocorp.kingdom.engine.projection.CameraLogic;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.settings.Settings;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import com.badlogic.gdx.Gdx;

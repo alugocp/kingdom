@@ -134,7 +134,8 @@ class GameCreationView implements View {
      * generation algorithm
      */
     private Menu getWorldSelectionMenu(GameView view) {
-        final OptionsNode worldSizeOptions = new OptionsNode(view.av, (Integer i) -> this.setWorldSize(i.intValue()));
+        final OptionsNode worldSizeOptions = new OptionsNode(view.av, 0,
+                (Integer i) -> this.setWorldSize(i.intValue()));
         for (WorldSize size : WorldSize.values()) {
             worldSizeOptions.add(String.format("%s (%d x %d tiles)", size.label, size.w, size.h));
         }
@@ -246,7 +247,7 @@ class GameCreationView implements View {
         final List<Fate> fates = view.game.mechanics.fates.getFates(view.game);
         final CompPlayer comp = new CompPlayer(view, number, view.game.world.getSize(),
                 view.game.mechanics.fates.chooseRandomFate(view.game), view.game.colorPool.getFromPool());
-        final OptionsNode options = new OptionsNode(view.av,
+        final OptionsNode options = new OptionsNode(view.av, 0,
                 (Integer index) -> comp.setFate(
                         index == 0 ? view.game.mechanics.fates.chooseRandomFate(view.game) : fates.get(index - 1)))
                 .add("Random");

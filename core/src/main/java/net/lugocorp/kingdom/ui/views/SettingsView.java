@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
+import net.lugocorp.kingdom.settings.SettingsIO;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
@@ -26,9 +27,11 @@ public class SettingsView implements View {
 
     SettingsView(StartMenuView.Params params) {
         this.params = params;
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
-                SettingsView.addSettingsMenuNodes(params.av, new ListNode().add(
-                        new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))));
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, SettingsView.addSettingsMenuNodes(params.av,
+                new ListNode().add(new ButtonNode(params.av, "Back", () -> {
+                    SettingsIO.write(params.av.settings);
+                    this.navigate.accept(new StartMenuView(params));
+                }))));
     }
 
     /**
@@ -47,12 +50,13 @@ public class SettingsView implements View {
                         new HeaderNode(av, "Controls"))
                 .add(new RowNode()
                         .add(new ListNode().add(new SubheaderNode(av, "Scroll Direction"))
-                                .add(new OptionsNode(av,
+                                .add(new OptionsNode(av, av.settings.getReversedScrollDirection() ? 1 : 0,
                                         (Integer index) -> av.settings.setReversedScrollDirection(index == 1))
                                         .add("Regular").add("Reversed")))
                         .add(new ListNode().add(new SubheaderNode(av, "Auto Complete Turns"))
-                                .add(new OptionsNode(av, (Integer index) -> av.settings.setAutoComplete(index == 1))
-                                        .add("Off").add("On"))));
+                                .add(new OptionsNode(av, av.settings.getAutoComplete() ? 1 : 0,
+                                        (Integer index) -> av.settings.setAutoComplete(index == 1)).add("Off")
+                                        .add("On"))));
     }
 
     /** {@inheritdoc} */

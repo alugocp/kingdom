@@ -19,6 +19,7 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.NakedButtonNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.settings.SettingsIO;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.ui.views.SettingsView;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -114,12 +115,13 @@ public class TopHud extends Menu {
     private Menu getSettingsMenu(GameView view) {
         return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
                 false,
-                SettingsView
-                        .addSettingsMenuNodes(view.av,
-                                new ListNode().add(
-                                        new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false))))
-                        .add(new SpacerNode()).add(new ButtonNode(view.av, "Exit Game",
-                                () -> view.hud.popups.addNextUnrequired(this.getExitMenu(view))))
+                SettingsView.addSettingsMenuNodes(view.av, new ListNode().add(new NakedButtonNode(view.av, "x", () -> {
+                    SettingsIO.write(view.av.settings);
+                    view.hud.popups.setDisplay(false);
+                }))).add(new SpacerNode()).add(new ButtonNode(view.av, "Exit Game", () -> {
+                    SettingsIO.write(view.av.settings);
+                    view.hud.popups.addNextUnrequired(this.getExitMenu(view));
+                }))
         /*
          * .add(new ButtonNode(view.av, "Save game", () -> { try {
          * view.getSerial().saveGame(view.game);

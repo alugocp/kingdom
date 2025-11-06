@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
+import net.lugocorp.kingdom.settings.SettingsIO;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.utils.Semver;
@@ -44,7 +45,7 @@ public class Main implements ApplicationListener {
         Gdx.graphics.setResizable(true);
         Gdx.gl.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        this.av = new AudioVideo();
+        this.av = new AudioVideo(SettingsIO.readOrDefault());
         this.navigate(new LoadingGameView(this.av));
     }
 
