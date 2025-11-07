@@ -8,9 +8,10 @@ public class Labels {
     /**
      * SECTION Assets
      */
-    public static final String asset_icons = "icons";
+    public static final String asset_items = "items";
     public static final String asset_artifacts = "artifacts";
     public static final String asset_fates = "fates";
+    public static final String asset_abilities = "abilities";
     public static final String asset_grass = "grass";
     public static final String asset_water = "water";
     public static final String asset_rock = "rock";
@@ -99,6 +100,27 @@ public class Labels {
     public static final String asset_sentinel = "sentinel";
     public static final String asset_usurper = "usurper";
     public static final String asset_forager = "forager";
+    public static final String asset_bite = "bite";
+    public static final String asset_build_healing_fountain = "build healing fountain";
+    public static final String asset_build_vault = "build vault";
+    public static final String asset_collapse_mine = "collapse mine";
+    public static final String asset_combat_loot = "combat loot";
+    public static final String asset_acid_skin = "acid skin";
+    public static final String asset_crystal_skin = "crystal skin";
+    public static final String asset_deposit_seeds = "deposit seeds";
+    public static final String asset_dig_mine = "dig mine";
+    public static final String asset_dungeon_delve = "dungeon delve";
+    public static final String asset_edible = "edible";
+    public static final String asset_fire_cannon = "fire cannon";
+    public static final String asset_fire_laser = "fire laser";
+    public static final String asset_green_fortress = "green fortress";
+    public static final String asset_heal_wounds = "heal wounds";
+    public static final String asset_hug = "hug";
+    public static final String asset_hungry_frog_magic = "hungry frog magic";
+    public static final String asset_hunt_fish = "hunt fish";
+    public static final String asset_life_aura = "life aura";
+    public static final String asset_liquifying_presence = "liquifying presence";
+    public static final String asset_local_defender = "local defender";
 
     /**
      * SECTION Tags

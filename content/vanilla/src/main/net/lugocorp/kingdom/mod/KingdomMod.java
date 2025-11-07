@@ -31,6 +31,7 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
 import net.lugocorp.kingdom.menu.game.FateNode;
 import net.lugocorp.kingdom.menu.game.InventoryNode;
+import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.mod.common.Defs;
 import net.lugocorp.kingdom.mod.common.Labels;
 import net.lugocorp.kingdom.mods.GameMod;
@@ -62,60 +63,86 @@ public class KingdomMod implements GameMod {
     @Override
     public void registerSprites(SpriteLoader sprites) {
         // Item sprites
-        sprites.register(Labels.asset_placeholder, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
-        sprites.register(Labels.asset_potion, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
-        sprites.register(Labels.asset_apple, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
-        sprites.register(Labels.asset_pouch, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
-        sprites.register(Labels.asset_stone, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 0);
-        sprites.register(Labels.asset_staff, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 0);
-        sprites.register(Labels.asset_beads, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 0);
-        sprites.register(Labels.asset_chestplate, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 0);
-        sprites.register(Labels.asset_coin, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
-        sprites.register(Labels.asset_sword, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
-        sprites.register(Labels.asset_shield, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
-        sprites.register(Labels.asset_candle, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
-        sprites.register(Labels.asset_ring, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 1);
-        sprites.register(Labels.asset_robe, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 1);
-        sprites.register(Labels.asset_wizard_hat, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 1);
-        sprites.register(Labels.asset_pendant, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 1);
-        sprites.register(Labels.asset_mushroom, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
-        sprites.register(Labels.asset_crystal, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
-        sprites.register(Labels.asset_bone, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
-        sprites.register(Labels.asset_fish, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
-        sprites.register(Labels.asset_pants, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 2);
-        sprites.register(Labels.asset_boots, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 2);
-        sprites.register(Labels.asset_glove, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 2);
-        sprites.register(Labels.asset_belt, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 2);
-        sprites.register(Labels.asset_flower, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
-        sprites.register(Labels.asset_seeds, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
-        sprites.register(Labels.asset_paper, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 3);
-        sprites.register(Labels.asset_helmet, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 3);
-        sprites.register(Labels.asset_slime, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 3);
-        sprites.register(Labels.asset_feather, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 3);
-        sprites.register(Labels.asset_rattle, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 3);
-        sprites.register(Labels.asset_powder, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 3);
-        sprites.register(Labels.asset_spear, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 4);
-        sprites.register(Labels.asset_hammer, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 4);
-        sprites.register(Labels.asset_doll, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 4);
-        sprites.register(Labels.asset_mace, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 4);
-        sprites.register(Labels.asset_carving, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 4);
-        sprites.register(Labels.asset_slingshot, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 4);
-        sprites.register(Labels.asset_net, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 4);
-        sprites.register(Labels.asset_axe, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 4);
-        sprites.register(Labels.asset_brooch, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 5);
-        sprites.register(Labels.asset_dagger, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 5);
-        sprites.register(Labels.asset_tankard, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 5);
-        sprites.register(Labels.asset_book, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 5);
-        sprites.register(Labels.asset_club, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 5);
-        sprites.register(Labels.asset_vase, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 5);
-        sprites.register(Labels.asset_wand, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 6, 5);
-        sprites.register(Labels.asset_pickaxe, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 7, 5);
-        sprites.register(Labels.asset_bow, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 0, 6);
-        sprites.register(Labels.asset_rune, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 1, 6);
-        sprites.register(Labels.asset_shovel, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 2, 6);
-        sprites.register(Labels.asset_telescope, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 3, 6);
-        sprites.register(Labels.asset_scales, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 4, 6);
-        sprites.register(Labels.asset_eye, Labels.asset_icons, InventoryNode.SIDE, InventoryNode.SIDE, 5, 6);
+        sprites.register(Labels.asset_placeholder, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 0, 0);
+        sprites.register(Labels.asset_potion, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 1, 0);
+        sprites.register(Labels.asset_apple, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 2, 0);
+        sprites.register(Labels.asset_pouch, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 0);
+        sprites.register(Labels.asset_stone, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 0);
+        sprites.register(Labels.asset_staff, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 0);
+        sprites.register(Labels.asset_beads, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 6, 0);
+        sprites.register(Labels.asset_chestplate, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 7, 0);
+        sprites.register(Labels.asset_coin, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 0, 1);
+        sprites.register(Labels.asset_sword, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 1, 1);
+        sprites.register(Labels.asset_shield, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 2, 1);
+        sprites.register(Labels.asset_candle, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 1);
+        sprites.register(Labels.asset_ring, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 1);
+        sprites.register(Labels.asset_robe, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 1);
+        sprites.register(Labels.asset_wizard_hat, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 6, 1);
+        sprites.register(Labels.asset_pendant, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 7, 1);
+        sprites.register(Labels.asset_mushroom, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 0, 2);
+        sprites.register(Labels.asset_crystal, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 1, 2);
+        sprites.register(Labels.asset_bone, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 2, 2);
+        sprites.register(Labels.asset_fish, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 2);
+        sprites.register(Labels.asset_pants, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 2);
+        sprites.register(Labels.asset_boots, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 2);
+        sprites.register(Labels.asset_glove, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 6, 2);
+        sprites.register(Labels.asset_belt, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 7, 2);
+        sprites.register(Labels.asset_flower, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 0, 3);
+        sprites.register(Labels.asset_seeds, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 1, 3);
+        sprites.register(Labels.asset_paper, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 2, 3);
+        sprites.register(Labels.asset_helmet, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 3);
+        sprites.register(Labels.asset_slime, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 3);
+        sprites.register(Labels.asset_feather, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 3);
+        sprites.register(Labels.asset_rattle, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 6, 3);
+        sprites.register(Labels.asset_powder, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 7, 3);
+        sprites.register(Labels.asset_spear, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 0, 4);
+        sprites.register(Labels.asset_hammer, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 1, 4);
+        sprites.register(Labels.asset_doll, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 2, 4);
+        sprites.register(Labels.asset_mace, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 4);
+        sprites.register(Labels.asset_carving, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 4);
+        sprites.register(Labels.asset_slingshot, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 4);
+        sprites.register(Labels.asset_net, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 6, 4);
+        sprites.register(Labels.asset_axe, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 7, 4);
+        sprites.register(Labels.asset_brooch, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 0, 5);
+        sprites.register(Labels.asset_dagger, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 1, 5);
+        sprites.register(Labels.asset_tankard, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 2, 5);
+        sprites.register(Labels.asset_book, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 5);
+        sprites.register(Labels.asset_club, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 5);
+        sprites.register(Labels.asset_vase, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 5);
+        sprites.register(Labels.asset_wand, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 6, 5);
+        sprites.register(Labels.asset_pickaxe, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 7, 5);
+        sprites.register(Labels.asset_bow, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 0, 6);
+        sprites.register(Labels.asset_rune, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 1, 6);
+        sprites.register(Labels.asset_shovel, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 2, 6);
+        sprites.register(Labels.asset_telescope, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 6);
+        sprites.register(Labels.asset_scales, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 6);
+        sprites.register(Labels.asset_eye, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 6);
+
+        // Ability sprites
+        sprites.register(Labels.asset_bite, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 0);
+        sprites.register(Labels.asset_build_healing_fountain, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE,
+                1, 0);
+        sprites.register(Labels.asset_build_vault, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 0);
+        sprites.register(Labels.asset_collapse_mine, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 0);
+        sprites.register(Labels.asset_combat_loot, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 0);
+        sprites.register(Labels.asset_acid_skin, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 0);
+        sprites.register(Labels.asset_crystal_skin, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 0);
+        sprites.register(Labels.asset_deposit_seeds, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 0);
+        sprites.register(Labels.asset_dig_mine, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 1);
+        sprites.register(Labels.asset_dungeon_delve, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 1);
+        sprites.register(Labels.asset_edible, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 1);
+        sprites.register(Labels.asset_fire_cannon, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 1);
+        sprites.register(Labels.asset_fire_laser, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 1);
+        sprites.register(Labels.asset_green_fortress, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 1);
+        sprites.register(Labels.asset_heal_wounds, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 1);
+        sprites.register(Labels.asset_hug, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 1);
+        sprites.register(Labels.asset_hungry_frog_magic, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0,
+                2);
+        sprites.register(Labels.asset_hunt_fish, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 2);
+        sprites.register(Labels.asset_life_aura, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 2);
+        sprites.register(Labels.asset_liquifying_presence, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3,
+                2);
+        sprites.register(Labels.asset_local_defender, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 2);
 
         // Artifact sprites
         sprites.register(Labels.asset_chos_sigil_of_haste, Labels.asset_artifacts, ArtifactNode.WIDTH,
@@ -1454,6 +1481,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_acid_skin, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Adjacent attackers take damage");
+                    e.blob.setIcon(Labels.asset_acid_skin);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_acid_skin, Events.AttackedEvent.class,
@@ -1472,6 +1500,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_bite, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Basic attack";
+                    e.blob.setIcon(Labels.asset_bite);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_bite, Events.AbilityActivatedEvent.class,
@@ -1482,6 +1511,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_build_healing_fountain, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Constructs a healing fountain";
+                    e.blob.setIcon(Labels.asset_build_healing_fountain);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_build_healing_fountain, Events.AbilityActivatedEvent.class,
@@ -1492,6 +1522,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_build_vault, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Builds a vault";
+                    e.blob.setIcon(Labels.asset_build_vault);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_build_vault, Events.AbilityActivatedEvent.class,
@@ -1503,6 +1534,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format(
                             "Target a mine occupied by an enemy unit. The unit, mine, and any adjacent enemy units all take damage.");
+                    e.blob.setIcon(Labels.asset_collapse_mine);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_collapse_mine, Events.AbilityActivatedEvent.class,
@@ -1536,6 +1568,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_combat_loot, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("+2 damage if this unit has a stored item");
+                    e.blob.setIcon(Labels.asset_combat_loot);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_combat_loot, Events.AttackEvent.class,
@@ -1550,6 +1583,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_crystal_skin, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
+                    e.blob.setIcon(Labels.asset_crystal_skin);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_crystal_skin, Events.TakeDamageEvent.class,
@@ -1559,6 +1593,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_deposit_seeds, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Chance to spawn a meadow when this unit moves");
+                    e.blob.setIcon(Labels.asset_deposit_seeds);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_deposit_seeds, Events.UnitMovedEvent.class,
@@ -1574,6 +1609,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_dig_mine, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Digs a mine";
+                    e.blob.setIcon(Labels.asset_dig_mine);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_dig_mine, Events.AbilityActivatedEvent.class,
@@ -1585,6 +1621,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String
                             .format("Deals 5 damage and generates loot if targeting a tile with an active building");
+                    e.blob.setIcon(Labels.asset_dungeon_delve);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_dungeon_delve, Events.AbilityActivatedEvent.class,
@@ -1599,6 +1636,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_edible, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Generates food");
+                    e.blob.setIcon(Labels.asset_edible);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_edible, Events.SpawnEvent.class, (GameView view, Ability receiver,
@@ -1612,6 +1650,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String
                             .format("Deals 8 damage to a building (or 4 damage to a unit) up to 2 tiles away");
+                    e.blob.setIcon(Labels.asset_fire_cannon);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_fire_cannon, Events.AbilityActivatedEvent.class,
@@ -1623,6 +1662,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_fire_laser, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Damage up to 3 units in a line");
+                    e.blob.setIcon(Labels.asset_fire_laser);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_fire_laser, Events.AbilityActivatedEvent.class,
@@ -1657,6 +1697,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_green_fortress, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense on forests");
+                    e.blob.setIcon(Labels.asset_green_fortress);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_green_fortress, Events.TakeDamageEvent.class,
@@ -1671,6 +1712,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_heal_wounds, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Heals 5 damage";
+                    e.blob.setIcon(Labels.asset_heal_wounds);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_heal_wounds, Events.AbilityActivatedEvent.class, (GameView view,
@@ -1680,6 +1722,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_hug, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Heals the target adjacent unit for a few hit points");
+                    e.blob.setIcon(Labels.asset_hug);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_hug, Events.AbilityActivatedEvent.class, (GameView view,
@@ -1689,6 +1732,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_hungry_frog_magic, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Consumes all stored items and heals adjacent friendly units");
+                    e.blob.setIcon(Labels.asset_hungry_frog_magic);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_hungry_frog_magic, Events.AbilityActivatedEvent.class,
@@ -1708,6 +1752,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_hunt_fish, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests fish from water tiles");
+                    e.blob.setIcon(Labels.asset_hunt_fish);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_hunt_fish, Events.SpawnEvent.class,
@@ -1721,6 +1766,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_hurl_rock, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Ranged attack with chance to stun");
+                    e.blob.setIcon(Labels.asset_fire_cannon);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_hurl_rock, Events.AbilityActivatedEvent.class,
@@ -1736,6 +1782,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_life_aura, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Generates 4 unit points per turn");
+                    e.blob.setIcon(Labels.asset_life_aura);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_life_aura, Events.SpawnEvent.class,
@@ -1749,6 +1796,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_liquifying_presence, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 3 damage each turn to an occupied passive building");
+                    e.blob.setIcon(Labels.asset_liquifying_presence);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_liquifying_presence, Events.SpawnEvent.class,
@@ -1767,6 +1815,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_local_defender, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Adjacent buildings have +3 armor");
+                    e.blob.setIcon(Labels.asset_local_defender);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_local_defender, Events.SpawnEvent.class,
@@ -1918,6 +1967,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_regeneration, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit heals a little each turn");
+                    e.blob.setIcon(Labels.asset_heal_wounds);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_regeneration, Events.SpawnEvent.class,
@@ -1973,6 +2023,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_sacred_seeds, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests seeds from meadows that can be consumed to generate favor");
+                    e.blob.setIcon(Labels.asset_deposit_seeds);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_sacred_seeds, Events.SpawnEvent.class,
@@ -1996,6 +2047,7 @@ public class KingdomMod implements GameMod {
         events.ability.addEventHandler(Labels.ability_slime_shot, Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Ranged attack");
+                    e.blob.setIcon(Labels.asset_fire_cannon);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_slime_shot, Events.AbilityActivatedEvent.class,
@@ -2059,6 +2111,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     Damage dmg = new Damage(5);
                     e.blob.desc = String.format("Deals %s", dmg);
+                    e.blob.setIcon(Labels.asset_combat_loot);
                     return SideEffect.none;
                 });
         events.ability.addEventHandler(Labels.ability_sword_slash, Events.AbilityActivatedEvent.class,

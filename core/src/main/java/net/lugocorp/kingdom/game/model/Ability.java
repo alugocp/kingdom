@@ -17,6 +17,7 @@ import java.util.Optional;
  */
 public class Ability implements EventReceiver, MenuSubject {
     private Optional<Shortcut> shortcut = Optional.empty();
+    private String icon = "apple";
     public final Unit wielder;
     public final String name;
     public String desc = "";
@@ -32,6 +33,13 @@ public class Ability implements EventReceiver, MenuSubject {
     public Ability() {
         this.wielder = null;
         this.name = null;
+    }
+
+    /**
+     * Sets this Ability's icon
+     */
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     /**
@@ -94,7 +102,7 @@ public class Ability implements EventReceiver, MenuSubject {
             mode = (this.wielder.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()
                     && canUnitDoThis) ? ActionNode.MODE_ACTIVE : ActionNode.MODE_DISABLED;
         }
-        return new ActionNode(view.av, this.name, "apple", this.shortcut, Optional.of(popup), () -> {
+        return new ActionNode(view.av, this.name, this.icon, this.shortcut, Optional.of(popup), () -> {
             this.activate(view).execute();
             view.hud.bot.tileMenu.refresh();
         }).setMode(mode);
