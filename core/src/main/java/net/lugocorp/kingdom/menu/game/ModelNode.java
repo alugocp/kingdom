@@ -6,7 +6,9 @@ import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
+import java.util.Optional;
 
 /**
  * This MenuNode renders a ModelInstance in a Menu
@@ -34,6 +36,20 @@ public class ModelNode implements MenuNode {
     }
 
     /**
+     * Returns true if the associated model has been fully loaded
+     */
+    public boolean isLoaded() {
+        return this.loaded;
+    }
+
+    /**
+     * Returns the model associated with this MenuNode
+     */
+    public Optional<ModelInstance> getModel() {
+        return this.model.getModelInstance();
+    }
+
+    /**
      * This method runs when the ModelInstance is fully loaded and ready for use
      */
     private final void modelLoaded(AudioVideo av, Rect bounds) {
@@ -57,7 +73,7 @@ public class ModelNode implements MenuNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         if (!this.loaded) {
-            if (this.model.getModelInstance().isPresent()) {
+            if (this.getModel().isPresent()) {
                 this.modelLoaded(av, bounds);
                 this.loaded = true;
             } else {

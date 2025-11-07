@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
+import net.lugocorp.kingdom.utils.Lambda;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,13 @@ import java.util.Optional;
 public class RowNode implements MenuNode {
     private final List<Column> children = new ArrayList<>();
     private Optional<Integer> columns = Optional.empty();
+
+    /**
+     * Returns this RowNode's child nodes
+     */
+    public List<MenuNode> getChildren() {
+        return Lambda.map((Column c) -> c.getNode(), this.children);
+    }
 
     /**
      * Organizes a set of MenuNodes into a grid with specified max columns

@@ -11,7 +11,7 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
-import net.lugocorp.kingdom.menu.game.ModelNode;
+import net.lugocorp.kingdom.menu.game.UnitOptionsNode;
 import net.lugocorp.kingdom.menu.icon.HelperNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
@@ -147,23 +147,15 @@ public class NewUnit {
      */
     private Menu getGlyphUnitSelectionMenu(GameView view, Glyph glyph, Point p) {
         List<Unit> options = this.getRecruitmentOptions(view, glyph, p, view.game.human.numRecruitmentOptions);
-        ListNode node = new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
-                .add(new HeaderNode(view.av, "Recruit New Unit"))
-                .add(new ButtonNode(view.av, "Recruit a unit next turn instead", () -> view.hud.popups.complete()));
-        RowNode previews = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
-        RowNode units = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
-        RowNode buttons = new RowNode().setColumns(view.game.human.numRecruitmentOptions);
-        for (Unit u : options) {
-            previews.add(new ModelNode(view.av, view.getCamera(), view.getEnvironment(), u.getModelName()));
-            units.add(((RowNode) u.getMenuContent(view, Optional.empty())).toListNode());
-            buttons.add(new ButtonNode(view.av, "Choose", () -> {
-                view.hud.popups.complete();
-                this.choose(view, view.game.human, u);
-            }));
-        }
-        node.add(previews);
-        node.add(units);
-        node.add(buttons);
+        final ListNode node = new ListNode()
+                .add(new RowNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
+                        .addRatio(45, new HeaderNode(view.av, "Recruit New Unit").center()).addRatio(45,
+                                new ButtonNode(view.av, "Recruit a unit next turn instead",
+                                        () -> view.hud.popups.complete()).center()))
+                .add(new UnitOptionsNode(view, options, view.game.human.numRecruitmentOptions, (Unit u) -> {
+                    view.hud.popups.complete();
+                    this.choose(view, view.game.human, u);
+                }));
         return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
                 false, node);
     }
