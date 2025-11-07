@@ -59,9 +59,7 @@ public class TurnStructure {
         for (Unit u : this.turn.getPlayer().units) {
             u.sleep.wakeUpCheck(view);
         }
-        // TODO rename newUnits to recruitUnits so the syntax highlighter doesn't get
-        // confused
-        view.game.mechanics.newUnits.giveUnitPointsYield(view, this.turn.getPlayer());
+        view.game.mechanics.recruitUnits.giveUnitPointsYield(view, this.turn.getPlayer());
         if (this.turn.getPlayer().isHumanPlayer()) {
             view.hud.bot.minimap.refresh(view.game.world);
             view.hud.logger.log("It is your turn again");
@@ -82,7 +80,7 @@ public class TurnStructure {
 
             // Choose a new Unit at the maximum unit points
             for (int a = 0; a < Math.floor((this.turn.getPlayer().getUnitPoints()) / NewUnit.MAX_UNIT_POINTS); a++) {
-                view.hud.popups.add(view.game.mechanics.newUnits.getNewUnitMenu(view));
+                view.hud.popups.add(view.game.mechanics.recruitUnits.getNewUnitMenu(view));
             }
 
             // Start a new ArtifactAuction at the maximum auction points
@@ -121,10 +119,10 @@ public class TurnStructure {
                 if (glyph.isPresent()) {
                     Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(comp, glyph.get());
                     if (spawnPoint.isPresent()) {
-                        comp.wishlist.units.setOptions(view.game.mechanics.newUnits.getRecruitmentOptions(view,
+                        comp.wishlist.units.setOptions(view.game.mechanics.recruitUnits.getRecruitmentOptions(view,
                                 glyph.get(), spawnPoint.get(), 1));
                         comp.wishlist.units.getDesiredOptions().getMostWanted()
-                                .ifPresent((Unit u) -> view.game.mechanics.newUnits.choose(view, comp, u));
+                                .ifPresent((Unit u) -> view.game.mechanics.recruitUnits.choose(view, comp, u));
                     }
                 }
             }

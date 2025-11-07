@@ -11,7 +11,7 @@ public class Mechanics {
     public final Patronage patronage = new Patronage();
     public final GlyphPools pools = new GlyphPools();
     public final DayNight dayNight = new DayNight();
-    public final NewUnit newUnits = new NewUnit();
+    public final NewUnit recruitUnits = new NewUnit();
     public final LootTable loot = new LootTable();
     public final Fates fates = new Fates();
 
