@@ -23,7 +23,8 @@ class TileMenuSelectMode extends TileSelectMode {
     /** {@inheritdoc} */
     @Override
     final void clickedValidPoint(GameView view, Point p) {
-        view.av.loaders.sounds.play("sfx/select-unit");
+        final boolean unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit).isPresent();
+        view.av.loaders.sounds.play(unit ? "sfx/select-unit" : "sfx/select-tile");
         view.hud.bot.tileMenu.set(p);
     }
 

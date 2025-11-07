@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.menu.Menu;
+import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,9 +9,14 @@ import java.util.Optional;
  * This class handles popup Menu logic within the HUD UI
  */
 public class Popups {
+    private final GameView view;
     private final List<Boolean> required = new ArrayList<>();
     private final List<Menu> queue = new ArrayList<>();
     private boolean display = false;
+
+    public Popups(GameView view) {
+        this.view = view;
+    }
 
     /**
      * Retrieves the first popup Menu in the queue, if any
@@ -23,6 +29,9 @@ public class Popups {
      * Adds a popup Menu to the state (at the end of the list)
      */
     public void add(Menu menu) {
+        if (!this.display) {
+            this.view.av.loaders.sounds.play("sfx/popup");
+        }
         this.required.add(0, true);
         this.queue.add(menu);
         this.display = true;
@@ -33,6 +42,9 @@ public class Popups {
      * Adds a popup Menu to the state (at the front of the list)
      */
     public void addNext(Menu menu) {
+        if (!this.display) {
+            this.view.av.loaders.sounds.play("sfx/popup");
+        }
         this.required.add(0, true);
         this.queue.add(0, menu);
         this.display = true;
@@ -43,6 +55,9 @@ public class Popups {
      * Adds an unrequired popup Menu to the state (at the front of the list)
      */
     public void addNextUnrequired(Menu menu) {
+        if (!this.display) {
+            this.view.av.loaders.sounds.play("sfx/popup");
+        }
         this.required.add(0, false);
         this.queue.add(0, menu);
         this.display = true;

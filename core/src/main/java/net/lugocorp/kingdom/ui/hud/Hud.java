@@ -15,12 +15,13 @@ import java.util.Optional;
  * This class handles rendering all the HUD UI
  */
 public class Hud {
-    public final Popups popups = new Popups();
+    public final Popups popups;
     public final Logger logger;
     public final TopHud top;
     public final BotHud bot;
 
     public Hud(GameView view) {
+        this.popups = new Popups(view);
         this.logger = new Logger(view);
         this.top = new TopHud(view);
         this.bot = new BotHud(view);

@@ -44,14 +44,15 @@ public class Combat {
         if (this.bearer.isEntityType(EntityType.BUILDING)) {
             // Restore the Building's health and place under the attacking Player's control
             // if it was destroyed by another player
-            Building b = (Building) this.bearer;
-            Optional<Player> destroyer = attacker.getLeader();
+            final Building b = (Building) this.bearer;
+            final Optional<Player> destroyer = attacker.getLeader();
             if (b.isActive() && !b.getLeader().equals(destroyer)) {
                 effects.add(() -> {
-                    view.hud.logger.log(String.format("You claimed the %s", b.name));
-                    view.overlays.add(
-                            new EntityRisingOverlay(view, b, ColorScheme.BLACK.hex, "Building changed allegiance"));
-                    // TODO find some sound to play here
+                    if (destroyer.map((Player d) -> d.isHumanPlayer()).orElse(false)) {
+                        view.hud.logger.log(String.format("You claimed the %s", b.name));
+                        view.av.loaders.sounds.play("sfx/captured");
+                    }
+                    view.overlays.add(new EntityRisingOverlay(view, b, ColorScheme.RED.hex, "Captured"));
                     this.health.set(this.health.getMax());
                     view.game.world.getTile(b.getPoint())
                             .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));
@@ -91,7 +92,8 @@ public class Combat {
         Events.TakeDamageEvent damageEvent = new Events.TakeDamageEvent(this.bearer, dmg);
         effects.add(this.bearer.handleEvent(view, damageEvent));
         effects.add(() -> this.health.set(this.health.get() - damageEvent.dmg.total()));
-        if (this.health.get() <= damageEvent.dmg.total()) {
+        final boolean willDie = this.health.get() <= damageEvent.dmg.total();
+        if (willDie) {
             effects.add(this.onDeath(view, attacker));
         }
         if (this.bearer.getEntityType() == EntityType.UNIT) {
@@ -99,8 +101,10 @@ public class Combat {
         }
         effects.add(() -> view.overlays.add(new HealthChangeOverlay(view, this.bearer, this.health.getMax(),
                 this.health.get(), this.health.get() - damageEvent.dmg.total())));
-        effects.add(() -> view.overlays.add(
-                new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
+        if (!willDie) {
+            effects.add(() -> view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex,
+                    String.format("-%d", dmg.total()))));
+        }
         return SideEffect.all(effects);
     }
 
@@ -121,8 +125,13 @@ public class Combat {
         return SideEffect.all(this.bearer.handleEvent(view, new Events.AttackEvent(this.bearer, target, dmg)),
                 target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)),
                 target.combat.takeDamage(view, dmg, this.bearer), () -> {
-                    if (this.bearer.getLeader().map((Player l) -> l.isHumanPlayer()).orElse(false)) {
+                    final boolean humanAttacker = this.bearer.getLeader().map((Player l) -> l.isHumanPlayer())
+                            .orElse(false);
+                    if (humanAttacker) {
                         view.av.loaders.sounds.play("sfx/attack-enemy");
+                        if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead()) {
+                            view.av.loaders.sounds.play("sfx/unit-death");
+                        }
                     }
                     if (this.bearer.getEntityType() == EntityType.UNIT) {
                         final Unit u = (Unit) this.bearer;
