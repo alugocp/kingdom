@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -14,16 +15,17 @@ import java.util.Optional;
  * This MenuNode renders a ModelInstance in a Menu
  */
 public class ModelNode implements MenuNode {
+    private static final int MAX_H = 200;
     private static final int MARGIN = 10;
     private final Modellable model = new Modellable();
     private final Matrix4 transform = new Matrix4();
+    private final Point size = new Point();
     private final PerspectiveCamera camera;
     private final Environment environment;
     private final String name;
     private boolean loaded = false;
     private float modelHeight = 1f;
     private float modelWidth = 1f;
-    private float scale = 1f;
 
     // TODO figure out how to include the entire unit model in the preview (right
     // now the back part gets cut off, but if we raise the z position then some
@@ -56,17 +58,25 @@ public class ModelNode implements MenuNode {
         this.modelHeight = av.loaders.models.getModelHeight(this.name);
         this.modelWidth = av.loaders.models.getModelWidth(this.name);
 
-        // The dimensions returned from our ModelLoader should be scaled according to
-        // the viewport's width in the range of (0, 1)
-        this.scale = (bounds.w - (ModelNode.MARGIN * 2)) / (Coords.SIZE.x * this.modelWidth);
-        this.transform.scale(this.scale, this.scale, this.scale);
+        // Get target dimensions
+        final float maxw = bounds.w - (ModelNode.MARGIN * 2);
+        final float maxh = ModelNode.MAX_H - (ModelNode.MARGIN * 2);
+        this.size.set((int) maxw, (int) (maxw * this.modelHeight / this.modelWidth));
+        if (this.size.y > maxh) {
+            this.size.set((int) (maxh * this.modelWidth / this.modelHeight), (int) maxh);
+        }
+
+        // Read: (target dimension / half the screen dimension) / model dimension. This
+        // is because OpenGL uses (-1, 1) for the coordinate grid, so we have to half
+        // the screen width. Then we divide by the model width to make it a ratio.
+        this.transform.scale((float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
+                (float) this.size.y * 2f / ((float) Coords.SIZE.y * this.modelHeight), 1f);
     }
 
     /** {@inheritdoc} */
     @Override
     public int getHeight() {
-        final float halfh = Coords.SIZE.y / 2f;
-        return (ModelNode.MARGIN * 2) + (int) (this.modelHeight * this.scale * halfh);
+        return (ModelNode.MARGIN * 2) + this.size.y;
     }
 
     /** {@inheritdoc} */
