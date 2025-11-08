@@ -84,6 +84,7 @@ public class PreviewShader implements Shader {
         for (Attribute attr : renderable.material) {
             final long t = attr.type;
             if ((t & IntAttribute.CullFace) == IntAttribute.CullFace) {
+                // TODO invert gl_front and gl_back values here?
                 cull = ((IntAttribute) attr).value;
             } else if ((t & DepthTestAttribute.Type) == DepthTestAttribute.Type) {
                 DepthTestAttribute test = (DepthTestAttribute) attr;

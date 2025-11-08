@@ -71,6 +71,7 @@ public class ModelNode implements MenuNode {
         // the screen width. Then we divide by the model width to make it a ratio.
         this.transform.scale((float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
                 (float) this.size.y * 2f / ((float) Coords.SIZE.y * this.modelHeight), 1f);
+        this.transform.rotate(0f, 1f, 0f, 180f);
     }
 
     /** {@inheritdoc} */
@@ -97,7 +98,6 @@ public class ModelNode implements MenuNode {
         final float halfh = Coords.SIZE.y / 2f;
         this.transform.setTranslation((bounds.x + (bounds.w / 2) - halfw) / halfw,
                 -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, 0f);
-        this.transform.rotate(0f, 1f, 0f, 0.5f);
 
         // Render the model preview
         av.shaders.preview.setProjViewMatrix(this.transform);
