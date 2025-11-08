@@ -5,7 +5,7 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -20,7 +20,7 @@ public class ModelNode implements MenuNode {
     private final Modellable model = new Modellable();
     private final Matrix4 transform = new Matrix4();
     private final Point size = new Point();
-    private final PerspectiveCamera camera;
+    private final OrthographicCamera camera;
     private final Environment environment;
     private final String name;
     private boolean loaded = false;
@@ -30,7 +30,7 @@ public class ModelNode implements MenuNode {
     // TODO figure out how to include the entire unit model in the preview (right
     // now the back part gets cut off, but if we raise the z position then some
     // front faces are missing)
-    public ModelNode(AudioVideo av, PerspectiveCamera camera, Environment environment, String name) {
+    public ModelNode(AudioVideo av, OrthographicCamera camera, Environment environment, String name) {
         this.model.setModelInstance(av, name);
         this.environment = environment;
         this.camera = camera;
@@ -96,7 +96,8 @@ public class ModelNode implements MenuNode {
         final float halfw = Coords.SIZE.x / 2f;
         final float halfh = Coords.SIZE.y / 2f;
         this.transform.setTranslation((bounds.x + (bounds.w / 2) - halfw) / halfw,
-                -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, -1.0f);
+                -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, 0f);
+        this.transform.rotate(0f, 1f, 0f, 0.5f);
 
         // Render the model preview
         av.shaders.preview.setProjViewMatrix(this.transform);

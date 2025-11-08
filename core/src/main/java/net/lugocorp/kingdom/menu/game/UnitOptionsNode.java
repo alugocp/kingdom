@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
@@ -10,6 +11,7 @@ import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -18,6 +20,7 @@ import java.util.function.Consumer;
  * This is a set of Unit option UI elements for the recruitment Menu
  */
 public class UnitOptionsNode extends ListNode {
+    private final OrthographicCamera camera = new OrthographicCamera(Coords.SIZE.x, Coords.SIZE.y);
     private final long origin = System.currentTimeMillis();
     private final RowNode previews;
     private final RowNode buttons;
@@ -26,11 +29,12 @@ public class UnitOptionsNode extends ListNode {
     private boolean loaded = false;
 
     public UnitOptionsNode(GameView view, List<Unit> units, int n, Consumer<Unit> click) {
+        this.camera.update();
         this.previews = new RowNode().setColumns(n);
         this.buttons = new RowNode().setColumns(n);
         this.units = new RowNode().setColumns(n);
         for (Unit u : units) {
-            this.previews.add(new ModelNode(view.av, view.getCamera(), view.getEnvironment(), u.getModelName()));
+            this.previews.add(new ModelNode(view.av, this.camera, view.getEnvironment(), u.getModelName()));
             this.units.add(((RowNode) u.getMenuContent(view, Optional.empty())).toListNode());
             this.buttons.add(new ButtonNode(view.av, "Choose", () -> click.accept(u)));
         }

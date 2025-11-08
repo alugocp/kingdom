@@ -2,9 +2,12 @@ package net.lugocorp.kingdom.engine.shaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -73,8 +76,29 @@ public class PreviewShader implements Shader {
         }
 
         // Render the preview model
-        this.context.setCullFace(GL20.GL_BACK);
+        int cull = GL20.GL_FRONT;
+        int depth = GL20.GL_LEQUAL;
+        float depthNear = 0f;
+        float depthFar = 1f;
+        boolean depthMask = true;
+        for (Attribute attr : renderable.material) {
+            final long t = attr.type;
+            if ((t & IntAttribute.CullFace) == IntAttribute.CullFace) {
+                cull = ((IntAttribute) attr).value;
+            } else if ((t & DepthTestAttribute.Type) == DepthTestAttribute.Type) {
+                DepthTestAttribute test = (DepthTestAttribute) attr;
+                depth = test.depthFunc;
+                depthNear = test.depthRangeNear;
+                depthFar = test.depthRangeFar;
+                depthMask = test.depthMask;
+            }
+        }
+        this.context.setCullFace(cull);
+        this.context.setDepthTest(depth, depthNear, depthFar);
+        this.context.setDepthMask(depthMask);
         Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
+        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_CLAMP_TO_EDGE);
+        Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_CLAMP_TO_EDGE);
         renderable.meshPart.render(this.program);
     }
 

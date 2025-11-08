@@ -39,7 +39,6 @@ public class ToonShader implements Shader {
     private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
-    private Camera camera;
     private boolean nighttime = false;
 
     // Shader uniforms
@@ -161,7 +160,6 @@ public class ToonShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void begin(Camera camera, RenderContext context) {
-        this.camera = camera;
         this.context = context;
         this.program.bind();
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
