@@ -16,13 +16,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  */
 public class ResourceBarsNode implements MenuNode {
     private static final int PADDING = 5;
+    private final GlyphLayout layout = new GlyphLayout();
     private final ResourceBarsNode.Bar[] bars;
     private final BitmapFont font;
     private final AudioVideo av;
     private int textWidth = 0;
 
     public ResourceBarsNode(AudioVideo av, ResourceBarsNode.Bar... bars) {
-        this.font = av.fonts.getFont(new FontParam().setSize(20).setColor(ColorScheme.TEXT.color));
+        this.font = av.fonts
+                .getFont(new FontParam().setFont("Fontin-Bold").setSize(20).setColor(ColorScheme.TEXT.color));
         this.bars = bars;
         this.av = av;
     }
@@ -44,11 +46,10 @@ public class ResourceBarsNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void pack(Menu menu, int width) {
-        GlyphLayout layout = new GlyphLayout();
         for (ResourceBarsNode.Bar bar : this.bars) {
-            layout.setText(this.font, bar.label);
-            if (layout.width > this.textWidth) {
-                this.textWidth = (int) layout.width + ResourceBarsNode.PADDING;
+            this.layout.setText(this.font, bar.label);
+            if (this.layout.width > this.textWidth) {
+                this.textWidth = (int) this.layout.width + ResourceBarsNode.PADDING;
             }
         }
     }
@@ -63,7 +64,7 @@ public class ResourceBarsNode implements MenuNode {
         // Draw the resource bars
         av.shapes.begin(ShapeType.Filled);
         for (int a = 0; a < this.bars.length; a++) {
-            ResourceBarsNode.Bar bar = this.bars[a];
+            final ResourceBarsNode.Bar bar = this.bars[a];
             final int y = yInitial - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
             av.shapes.setColor(Colors.fromHex(bar.color));
             av.shapes.rect(barX, y, barWidth * Math.min(1f, bar.value / (float) bar.max), this.font.getLineHeight());
@@ -82,11 +83,14 @@ public class ResourceBarsNode implements MenuNode {
         // Draw the text
         av.sprites.begin();
         for (int a = 0; a < this.bars.length; a++) {
-            ResourceBarsNode.Bar bar = this.bars[a];
+            final ResourceBarsNode.Bar bar = this.bars[a];
             final int y = yInitial + (int) this.font.getLineHeight() - ResourceBarsNode.PADDING
                     - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
             this.font.draw(this.av.sprites, bar.label, bounds.x, y);
-            this.font.draw(this.av.sprites, bar.numbers, bounds.x + this.textWidth + ResourceBarsNode.PADDING + 5, y);
+
+            // Draw fraction in the middle of the bar
+            this.layout.setText(this.font, bar.numbers);
+            this.font.draw(this.av.sprites, bar.numbers, barX + ((barWidth - this.layout.width) / 2), y);
         }
         av.sprites.end();
     }

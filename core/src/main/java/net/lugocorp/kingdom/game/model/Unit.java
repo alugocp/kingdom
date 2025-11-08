@@ -29,12 +29,14 @@ import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
+import net.lugocorp.kingdom.menu.icon.HeaderDescNode;
 import net.lugocorp.kingdom.menu.icon.HelperNode;
+import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.GridNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
-import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.menu.text.NameNode;
 import net.lugocorp.kingdom.menu.text.PlayerBadgeNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
@@ -147,27 +149,34 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         final RowNode node = new RowNode();
 
         // Unit stats section
-        final ListNode col1 = new ListNode().add(new HeaderNode(view.av, this.name));
-        final MenuNode glyphsNode = new GlyphIconsNode(view.av, this.glyphs.get());
+        final ListNode col1 = new ListNode().add(new NameNode(view.av, this.name));
         final int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
-        col1.add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString()));
-        col1.add(this.getLeader().isPresent()
-                ? new RowNode().add(glyphsNode).add(new PlayerBadgeNode(view.av, this.getLeader().get()))
-                : glyphsNode);
-        col1.add(new TextNode(view.av, this.desc))
-                .add(new TextNode(view.av, String.format("This unit eats %s items", this.hunger.getPreferredFood())));
-        col1.add(new ResourceBarsNode(view.av,
-                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
-                new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
-                new ResourceBarsNode.Bar("Hunger", 0x7d4513, this.hunger.getTurnsBeforeHunger() - turnsUntilHungry,
-                        this.hunger.getTurnsBeforeHunger())));
-        col1.add(new HelperNode(view.av, new ListNode().add(new SubheaderNode(view.av, "Health"))
-                .add(new TextNode(view.av, "If a unit's health bar hits zero then they disappear off the map."))
-                .add(new SubheaderNode(view.av, "Loyalty"))
-                .add(new TextNode(view.av,
-                        "If a unit's loyalty bar hits zero then it will abandon you and become independent. You can recruit an independent unit by giving it an item."))
-                .add(new SubheaderNode(view.av, "Hunger")).add(new TextNode(view.av,
-                        "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming an edible item."))));
+        final HeaderDescNode desc = new HeaderDescNode(view.av, "guide-icon", "Description", this.desc);
+        col1.add(new RowNode()
+                .addExact(GlyphIconsNode.width(this.glyphs.size()), new GlyphIconsNode(view.av, this.glyphs.get()))
+                .add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString())))
+                .add(this.getLeader().isPresent()
+                        ? new RowNode().add(desc).add(new PlayerBadgeNode(view.av, this.getLeader().get()))
+                        : desc)
+                .add(new RowNode()
+                        .add(new ResourceBarsNode(view.av,
+                                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
+                                        this.combat.health.getMax()),
+                                new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
+                                new ResourceBarsNode.Bar("Hunger", 0x7d4513,
+                                        this.hunger.getTurnsBeforeHunger() - turnsUntilHungry,
+                                        this.hunger.getTurnsBeforeHunger())))
+                        .addExact(IconNode.SIDE, new HelperNode(view.av, new ListNode()
+                                .add(new SubheaderNode(view.av, "Health"))
+                                .add(new TextNode(view.av,
+                                        "If a unit's health bar hits zero then they disappear off the map."))
+                                .add(new SubheaderNode(view.av, "Loyalty"))
+                                .add(new TextNode(view.av,
+                                        "If a unit's loyalty bar hits zero then it will abandon you and become independent. You can recruit an independent unit by giving it an item."))
+                                .add(new SubheaderNode(view.av, "Hunger"))
+                                .add(new TextNode(view.av, String.format(
+                                        "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming %s items.",
+                                        this.hunger.getPreferredFood()))))));
 
         // Actions / spells section
         final GridNode actives = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
@@ -255,6 +264,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             col3.add(new TextNode(view.av, String.format("Can equip up to %d items", this.equipped.getMax())));
             col3.add(new TextNode(view.av, String.format("Can store up to %d items", this.haul.getMax())));
         }
-        return node.add(col1).add(col2).add(col3);
+        return node.add(col1).addRatio(25, col2).add(col3);
     }
 }

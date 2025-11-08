@@ -17,16 +17,18 @@ import net.lugocorp.kingdom.menu.text.TextNode;
 public class GlyphIconsNode implements MenuNode {
     public static final int MARGIN = 5;
     public static final int SIDE = 25;
-    private final MenuPopup popup = new MenuPopup();
+    private final MenuPopup[] popups;
     private final TextNode[] labels;
     private final Drawable[] icons;
 
     public GlyphIconsNode(AudioVideo av, Glyph[] glyphs) {
+        this.popups = new MenuPopup[glyphs.length];
         this.labels = new TextNode[glyphs.length];
         this.icons = new Drawable[glyphs.length];
         for (int a = 0; a < glyphs.length; a++) {
             this.icons[a] = new Drawable(av.loaders.sprites, String.format("glyph-icon-%s", glyphs[a].key));
             this.labels[a] = new TextNode(av, String.format("%s glyph", glyphs[a].toString()));
+            this.popups[a] = new MenuPopup();
         }
     }
 
@@ -34,10 +36,19 @@ public class GlyphIconsNode implements MenuNode {
         this(av, gc.glyphs);
     }
 
+    /**
+     * Returns a GlyphIconsNode's given a certain number of icons
+     */
+    public static int width(int n) {
+        return (GlyphIconsNode.SIDE + GlyphIconsNode.MARGIN) * n;
+    }
+
     /** {@inheritdoc} */
     @Override
     public void pack(Menu menu, int width) {
-        this.popup.setMenu(menu);
+        for (MenuPopup p : this.popups) {
+            p.setMenu(menu);
+        }
     }
 
     /** {@inheritdoc} */
@@ -62,7 +73,7 @@ public class GlyphIconsNode implements MenuNode {
     public void mouseMoved(Rect bounds, Point prev, Point curr) {
         final int w = GlyphIconsNode.SIDE + GlyphIconsNode.MARGIN;
         for (int a = 0; a < this.labels.length; a++) {
-            this.popup.update(new Rect(bounds.x + (w * a), bounds.y, w, bounds.h), curr, this.labels[a]);
+            this.popups[a].update(new Rect(bounds.x + (w * a), bounds.y, w, bounds.h), curr, this.labels[a]);
         }
     }
 }

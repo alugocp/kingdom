@@ -108,7 +108,7 @@ public class Menu {
      * Returns true if this Menu should allow for scrolling
      */
     public boolean shouldScroll() {
-        return this.submenu.map((Menu m) -> m.shouldScroll()).orElse(this.root.getHeight() > this.getHeight());
+        return this.submenu.map((Menu m) -> m.shouldScroll()).orElse(this.getContentHeight() > this.getHeight());
     }
 
     /**
@@ -123,7 +123,7 @@ public class Menu {
 
         // Original implementation
         if (this.shouldScroll()) {
-            this.offset = Math.max(0, Math.min(this.root.getHeight() - this.getHeight(), this.offset + dy));
+            this.offset = Math.max(0, Math.min(this.getContentHeight() - this.getHeight(), this.offset + dy));
         }
     }
 
@@ -132,7 +132,7 @@ public class Menu {
      */
     public float getScrollBarRatio() {
         return this.submenu.map((Menu m) -> m.getScrollBarRatio())
-                .orElse(this.root.getHeight() / (float) this.getHeight());
+                .orElse(this.getContentHeight() / (float) this.getHeight());
     }
 
     /**
@@ -155,7 +155,7 @@ public class Menu {
 
         // Original implementation
         final int h = this.getHeight();
-        final int rh = this.root.getHeight();
+        final int rh = this.getContentHeight();
         return this.shouldScroll()
                 ? Optional.of(new Rect(this.x + this.width - Menu.SCROLLBAR, this.y + (this.offset * h / rh),
                         Menu.SCROLLBAR, (h * h) / rh))
@@ -216,7 +216,7 @@ public class Menu {
      * Returns the root node's height
      */
     public int getContentHeight() {
-        return this.root.getHeight();
+        return this.root.getHeight() + (this.margin * 2);
     }
 
     /**
@@ -224,7 +224,7 @@ public class Menu {
      */
     public int getHeight() {
         int max = Coords.SIZE.y - this.y;
-        return this.tall ? max : Math.min(max, this.root.getHeight() + (this.margin * 2));
+        return this.tall ? max : Math.min(max, this.getContentHeight());
     }
 
     /**

@@ -52,4 +52,11 @@ public class UnitGlyphs {
         }
         return new Glyph[]{this.g1};
     }
+
+    /**
+     * Returns the number of Glyphs associated with this instance
+     */
+    public int size() {
+        return this.g2.isPresent() ? 2 : 1;
+    }
 }

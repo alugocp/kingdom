@@ -185,13 +185,13 @@ public class Building extends Entity implements MenuSubject, Spawnable {
                 .flatMap((Tile t) -> t.leader);
         final RowNode node = new RowNode().setColumns(2);
         final ListNode col1 = new ListNode().add(new HeaderNode(view.av, this.name));
+        final RowNode row = new RowNode().addRatio(30, new BadgeNode(view.av, ColorScheme.BLUE.hex,
+                ColorScheme.WHITE.hex, this.isActive() ? "Active" : "Passive"));
         if (leader.isPresent()) {
-            col1.add(new PlayerBadgeNode(view.av, leader.get()));
+            row.add(new PlayerBadgeNode(view.av, leader.get()));
         }
-        col1.add(new BadgeNode(view.av, ColorScheme.BLUE.hex, ColorScheme.WHITE.hex,
-                this.isActive() ? "Active" : "Passive")).add(new TextNode(view.av, this.desc))
-                .add(new ResourceBarsNode(view.av, new ResourceBarsNode.Bar("Health", 0x3d9e33,
-                        this.combat.health.get(), this.combat.health.getMax())));
+        col1.add(row).add(new TextNode(view.av, this.desc)).add(new ResourceBarsNode(view.av,
+                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax())));
         node.add(col1);
         if (this.items.isPresent()) {
             final ListNode col2 = new ListNode();

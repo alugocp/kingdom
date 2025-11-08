@@ -7,7 +7,7 @@ import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuPopup;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
-import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class TabsNode implements MenuNode {
      * Adds a new tab with a label and content
      */
     public TabsNode add(String label, Optional<String> desc, MenuNode root) {
-        final Optional<TextNode> popupNode = desc.map((String s) -> new TextNode(this.av, s));
+        final Optional<SubheaderNode> popupNode = desc.map((String s) -> new SubheaderNode(this.av, s));
         final int index = this.data.size();
         final TabsNode tabs = this;
         this.data.add(new Tuple<String, MenuNode>(label, root));
@@ -60,7 +60,7 @@ public class TabsNode implements MenuNode {
             @Override
             public void mouseMoved(Rect bounds, Point prev, Point curr) {
                 super.mouseMoved(bounds, prev, curr);
-                popupNode.ifPresent((TextNode n) -> this.popup.update(bounds, curr, n));
+                popupNode.ifPresent((SubheaderNode n) -> this.popup.update(bounds, curr, n));
             }
         });
         return this;

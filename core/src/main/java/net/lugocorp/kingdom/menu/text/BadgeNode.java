@@ -60,6 +60,7 @@ public class BadgeNode extends TextNode {
         final int lineHeight = (int) this.getFont().getLineHeight();
         final int badgeHeight = lineHeight + (BadgeNode.BADGE_MARGIN * 2);
         final int yInitial = Coords.SIZE.y - bounds.y - lineHeight - this.getMargin();
+        final int dx = badgeHeight / 2;
         int y = yInitial;
 
         // Draw the rectangles with rounded corners
@@ -68,19 +69,19 @@ public class BadgeNode extends TextNode {
         for (int a = 0; a < this.lines.size(); a++) {
             final Line l = this.lines.get(a);
             // TODO support centered text
-            av.shapes.rect(bounds.x, y, l.width, badgeHeight);
+            av.shapes.rect(bounds.x + dx, y, l.width, badgeHeight);
             if (a == 0) {
-                av.shapes.ellipse(bounds.x - (badgeHeight / 2), y, badgeHeight, badgeHeight);
+                av.shapes.ellipse(bounds.x, y, badgeHeight, badgeHeight);
             }
             if (a == this.lines.size() - 1) {
-                av.shapes.ellipse(bounds.x + l.width - (badgeHeight / 2), y, badgeHeight, badgeHeight);
+                av.shapes.ellipse(bounds.x + l.width, y, badgeHeight, badgeHeight);
             }
             y -= lineHeight;
         }
         av.shapes.end();
 
         // Call down into TextNode.draw()
-        super.draw(av, bounds);
+        super.draw(av, new Rect(bounds.x + dx, bounds.y, bounds.w, bounds.h));
 
         // Draw a gap over any slashes
         av.shapes.begin(ShapeType.Filled);
@@ -88,7 +89,7 @@ public class BadgeNode extends TextNode {
         for (Point slash : this.slashes) {
             int sy = yInitial - (lineHeight * slash.y);
             int sx = bounds.x + slash.x;
-            av.shapes.rectLine(sx, sy, sx + 4, sy + badgeHeight, 5);
+            av.shapes.rectLine(sx + dx, sy, sx + dx + 6, sy + badgeHeight, 5);
         }
         av.shapes.end();
     }
