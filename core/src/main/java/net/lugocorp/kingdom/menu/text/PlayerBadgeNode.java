@@ -11,4 +11,8 @@ public class PlayerBadgeNode extends BadgeNode {
     public PlayerBadgeNode(AudioVideo av, Player player) {
         super(av, Colors.asInt(player.color), ColorScheme.WHITE.hex, player.name);
     }
+
+    public PlayerBadgeNode(AudioVideo av) {
+        super(av, 0x333333, ColorScheme.WHITE.hex, "Unaligned");
+    }
 }

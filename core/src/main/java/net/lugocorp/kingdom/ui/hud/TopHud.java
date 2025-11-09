@@ -70,9 +70,11 @@ public class TopHud extends Menu {
                                                 .getArtifactsMenu(view, Optional.of(view.game.human)))))
                         .addRatio(6,
                                 new ActionNode(view.av, "Keybindings", "guide-icon", Optional.empty(), Optional.empty(),
+                                        Optional.empty(),
                                         () -> view.hud.popups.addNextUnrequired(this.getKeybindMenu(view))))
                         .addRatio(6,
                                 new ActionNode(view.av, "Settings", "settings-icon", Optional.empty(), Optional.empty(),
+                                        Optional.empty(),
                                         () -> view.hud.popups.addNextUnrequired(this.getSettingsMenu(view)))))
                 // Human player details
                 .add(new RowNode().add(this.unitPoints).add(this.gold).add(this.artifacts).add(this.auctionChips));

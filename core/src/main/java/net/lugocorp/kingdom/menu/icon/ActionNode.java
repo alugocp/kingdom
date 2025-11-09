@@ -29,10 +29,17 @@ public class ActionNode extends IconNode {
     private final BitmapFont font;
     private int mode = ActionNode.MODE_ACTIVE;
 
-    public ActionNode(AudioVideo av, String name, String icon, Optional<Shortcut> shortcut, Optional<String> desc,
-            Runnable action) {
+    public ActionNode(AudioVideo av, String name, String icon, Optional<Shortcut> shortcut, Optional<String> tagline,
+            Optional<String> desc, Runnable action) {
         super(av, icon, ActionNode.SIDE);
         this.node = new ListNode().add(new SubheaderNode(av, name));
+        tagline.ifPresent((String s) -> this.node.add(new TextNode(av, s) {
+            /** {@inheritdoc} */
+            @Override
+            protected BitmapFont getFont() {
+                return this.av.fonts.getFont(new FontParam().setColor(ColorScheme.GOLD.color));
+            }
+        }));
         desc.ifPresent((String s) -> this.node.add(new TextNode(av, s)));
         this.font = av.fonts
                 .getFont(new FontParam().setColor(ColorScheme.TEXT.color).setBorder(ColorScheme.BLACK.color));

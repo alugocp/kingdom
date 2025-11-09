@@ -8,8 +8,10 @@ import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
+import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.icon.HeaderDescNode;
 import net.lugocorp.kingdom.menu.icon.HelperNode;
+import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
@@ -205,11 +207,12 @@ public class Patron extends Building {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         final ListNode favors = new ListNode();
-        final RowNode node = new RowNode().add(new ListNode().add(new HeaderNode(view.av, this.name)).add(new RowNode()
-                .addRatio(20, new HeaderDescNode(view.av, this.effectIcon, "Effect", this.desc))
-                .addRatio(20, new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference))
-                .add(new HelperNode(view.av,
+        final RowNode node = new RowNode().add(new ListNode().add(new HeaderNode(view.av, this.name))
+                .add(new RowNode().addExact(IconNode.SIDE, new HelperNode(view.av,
                         "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn."))))
+                .addExact(ActionNode.SIDE + 10, new HeaderDescNode(view.av, this.effectIcon, "Effect", this.desc))
+                .addExact(ActionNode.SIDE + 10,
+                        new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference))
                 .add(favors);
         if (this.favor.size() > 0) {
             favors.add(new SubheaderNode(view.av, "Players"));

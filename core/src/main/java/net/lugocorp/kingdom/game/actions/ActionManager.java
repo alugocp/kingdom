@@ -155,9 +155,20 @@ public class ActionManager {
     }
 
     /**
-     * Returns a string describing the given Unit's Action for this turn
+     * Returns a string representing the given Unit's action state
      */
     public String getUnitActionLabel(Unit u) {
+        if (this.actions.containsKey(u)) {
+            final char c = this.getActionOverlayChar(u);
+            return String.format("%c%c%c", c, c, c);
+        }
+        return "Ready to act";
+    }
+
+    /**
+     * Returns a string describing the given Unit's Action for this turn
+     */
+    public String getUnitActionDescription(Unit u) {
         if (this.actions.containsKey(u)) {
             return this.actions.get(u).getDescription();
         }

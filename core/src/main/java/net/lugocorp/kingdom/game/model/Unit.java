@@ -36,6 +36,7 @@ import net.lugocorp.kingdom.menu.structure.GridNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
+import net.lugocorp.kingdom.menu.text.HoverTextNode;
 import net.lugocorp.kingdom.menu.text.NameNode;
 import net.lugocorp.kingdom.menu.text.PlayerBadgeNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
@@ -151,13 +152,15 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         // Unit stats section
         final ListNode col1 = new ListNode().add(new NameNode(view.av, this.name));
         final int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
-        final HeaderDescNode desc = new HeaderDescNode(view.av, "guide-icon", "Description", this.desc);
         col1.add(new RowNode()
                 .addExact(GlyphIconsNode.width(this.glyphs.size()), new GlyphIconsNode(view.av, this.glyphs.get()))
                 .add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString())))
-                .add(this.getLeader().isPresent()
-                        ? new RowNode().add(desc).add(new PlayerBadgeNode(view.av, this.getLeader().get()))
-                        : desc)
+                .add(new RowNode().add(new HeaderDescNode(view.av, "guide-icon", "Description", this.desc))
+                        .add(this.getLeader().isPresent()
+                                ? new PlayerBadgeNode(view.av, this.getLeader().get())
+                                : new PlayerBadgeNode(view.av))
+                        .add(new HoverTextNode(view.av, view.game.actions.getUnitActionLabel(this),
+                                new TextNode(view.av, view.game.actions.getUnitActionDescription(this)))))
                 .add(new RowNode()
                         .add(new ResourceBarsNode(view.av,
                                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
@@ -175,7 +178,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                         "If a unit's loyalty bar hits zero then it will abandon you and become independent. You can recruit an independent unit by giving it an item."))
                                 .add(new SubheaderNode(view.av, "Hunger"))
                                 .add(new TextNode(view.av, String.format(
-                                        "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. This unit can refill its hunger bar by consuming %s items.",
+                                        "The hunger bar increases each turn until it's full, then loyalty will decrease each turn. This unit can clear its hunger bar by consuming %s items.",
                                         this.hunger.getPreferredFood()))))));
 
         // Actions / spells section
@@ -189,15 +192,14 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Move unit
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
                 actives.add(new ActionNode(view.av, "Move", "move-action", Optional.of(new Shortcut("M", Keys.M)),
-                        Optional.of("Moves this unit to the target tile (may exhaust this unit's actions)"),
+                        Optional.of("Exhaustive action"), Optional.of("Moves this unit to the target tile"),
                         () -> view.selector.move(this)));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
                 frees.add(new ActionNode(view.av, "Deposit", "deposit-action", Optional.of(new Shortcut("E", Keys.E)),
-                        Optional.of(
-                                "Gives all stored items to an adjacent vault (does not exhaust this unit's actions)"),
+                        Optional.of("Free action"), Optional.of("Gives all stored items to an adjacent vault"),
                         () -> view.selector.deposit(this)));
             }
 
@@ -205,8 +207,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             final Set<Point> unitsToFeed = this.nextTo.unitsToFeed(view);
             if (this.haul.hasItems() && unitsToFeed.size() > 0) {
                 frees.add(new ActionNode(view.av, "Give Food", "give-action", Optional.of(new Shortcut("G", Keys.G)),
-                        Optional.of(
-                                "This unit gives one of its edible stored items to an adjacent unit (does not exhaust this unit's actions)"),
+                        Optional.of("Free action"),
+                        Optional.of("This unit gives one of its edible stored items to an adjacent unit"),
                         () -> this.getLeader().get()
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
@@ -218,9 +220,9 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Skip turn until haul Inventory is full
             if (!this.haul.isFull() && view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
                 frees.add(new ActionNode(view.av, "Store items", "harvest-action",
-                        Optional.of(new Shortcut("I", Keys.I)),
+                        Optional.of(new Shortcut("I", Keys.I)), Optional.of("Free action"),
                         Optional.of(
-                                "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells) (does not exhaust this unit's actions)"),
+                                "This unit won't ask for commands until it runs out of stored item space (this avoids micromanaging units with harvest spells)"),
                         () -> {
                             view.hud.logger.log(String.format("%s will wait where they are", this.name));
                             view.game.actions.unitHasActed(view, this, new SkipAction(
@@ -233,9 +235,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             // Skip turn
             if (view.game.actions.canUnitDoThis(this, ActionType.SKIP)) {
                 frees.add(new ActionNode(view.av, "Skip turn", "skip-action", Optional.of(new Shortcut("T", Keys.T)),
-                        Optional.of(
-                                "This unit won't ask for commands this turn (does not exhaust this unit's actions)"),
-                        () -> {
+                        Optional.of("Free action"), Optional.of("This unit won't ask for commands this turn"), () -> {
                             view.game.actions.unitHasActed(view, this,
                                     new SkipAction(
                                             "This unit is skipping its turn, but you can give it a different command",
@@ -247,8 +247,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         for (Ability a : this.abilities.getPassives()) {
             passives.add(a.getMenuContent(view, p));
         }
-        final ListNode col2 = new ListNode().add(new TextNode(view.av, view.game.actions.getUnitActionLabel(this)))
-                .add(actives);
+        final ListNode col2 = new ListNode().add(actives);
         if (frees.hasChildren()) {
             col2.add(frees);
         }
