@@ -9,8 +9,9 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
-import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 
@@ -68,14 +69,14 @@ public class TurnStructure {
             if (view.game.hasHumanPlayerLost()) {
                 view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(view.av, "You have lost"))
-                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
+                        new ListNode().add(new HeaderNode(view.av, "You have lost").center()).add(new SpacerNode())
+                                .add(new ButtonNode(view.av, "Back to main menu", () -> view.close()))));
             }
             if (view.game.hasHumanPlayerWon()) {
                 view.hud.popups.add(new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
-                        new ListNode().add(new TextNode(view.av, "You win!"))
-                                .add(new ButtonNode(view.av, "Okay", () -> view.close()))));
+                        new ListNode().add(new HeaderNode(view.av, "You win!").center()).add(new SpacerNode())
+                                .add(new ButtonNode(view.av, "Back to main menu", () -> view.close()))));
             }
 
             // Choose a new Unit at the maximum unit points

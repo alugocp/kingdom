@@ -28,7 +28,7 @@ public class LoadingGameView extends ThreadedTaskView {
 
         // Set the custom cursor
         final Pixmap pixmap = new Pixmap(Gdx.files.internal("ui/cursor.png"));
-        final Cursor cursor = Gdx.graphics.newCursor(pixmap, 17, 17);
+        final Cursor cursor = Gdx.graphics.newCursor(pixmap, 0, 0);
         Gdx.graphics.setCursor(cursor);
         pixmap.dispose();
 

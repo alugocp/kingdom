@@ -34,7 +34,7 @@ public class Popups {
         }
         this.required.add(0, true);
         this.queue.add(menu);
-        this.display = true;
+        this.setDisplay(true);
         menu.outline();
     }
 
@@ -47,7 +47,7 @@ public class Popups {
         }
         this.required.add(0, true);
         this.queue.add(0, menu);
-        this.display = true;
+        this.setDisplay(true);
         menu.outline();
     }
 
@@ -60,7 +60,7 @@ public class Popups {
         }
         this.required.add(0, false);
         this.queue.add(0, menu);
-        this.display = true;
+        this.setDisplay(true);
         menu.outline();
     }
 
@@ -89,6 +89,9 @@ public class Popups {
     public void setDisplay(boolean display) {
         while (!display && this.required.size() > 0 && !this.required.get(0)) {
             this.complete();
+        }
+        if (!this.display && display) {
+            this.view.hud.logger.clear();
         }
         this.display = display && !this.queue.isEmpty();
     }

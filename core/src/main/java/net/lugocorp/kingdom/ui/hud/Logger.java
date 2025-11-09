@@ -56,6 +56,14 @@ public class Logger {
     }
 
     /**
+     * Clears the log messages
+     */
+    public void clear() {
+        this.timer = 0;
+        this.n = 0;
+    }
+
+    /**
      * Draws all the log messages the player can see
      */
     public void render(int dt) {

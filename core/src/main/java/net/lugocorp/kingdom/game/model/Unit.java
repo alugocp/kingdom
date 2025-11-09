@@ -175,7 +175,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                         "If a unit's loyalty bar hits zero then it will abandon you and become independent. You can recruit an independent unit by giving it an item."))
                                 .add(new SubheaderNode(view.av, "Hunger"))
                                 .add(new TextNode(view.av, String.format(
-                                        "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. A unit can refill its hunger bar by consuming %s items.",
+                                        "The hunger bar decreases each turn until it's empty, then loyalty will decrease each turn. This unit can refill its hunger bar by consuming %s items.",
                                         this.hunger.getPreferredFood()))))));
 
         // Actions / spells section
