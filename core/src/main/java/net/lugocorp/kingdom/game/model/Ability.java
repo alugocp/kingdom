@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.game.actions.ActionType;
 import net.lugocorp.kingdom.game.events.Event;
@@ -10,6 +11,7 @@ import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import com.badlogic.gdx.math.Matrix4;
 import java.util.Optional;
 
 /**
@@ -17,6 +19,7 @@ import java.util.Optional;
  */
 public class Ability implements EventReceiver, MenuSubject {
     private Optional<Shortcut> shortcut = Optional.empty();
+    private Optional<Matrix4> recolor = Optional.empty();
     private String icon = "apple";
     public final Unit wielder;
     public final String name;
@@ -40,6 +43,14 @@ public class Ability implements EventReceiver, MenuSubject {
      */
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    /**
+     * Sets this Ability's icon and its recolor matrix
+     */
+    public void setIcon(String icon, int hex1, int hex2) {
+        this.recolor = Optional.of(Colors.getRecolorMatrix(Colors.fromHex(hex1), Colors.fromHex(hex2)));
+        this.setIcon(icon);
     }
 
     /**
@@ -105,6 +116,6 @@ public class Ability implements EventReceiver, MenuSubject {
         return new ActionNode(view.av, this.name, this.icon, this.shortcut, Optional.of(popup), () -> {
             this.activate(view).execute();
             view.hud.bot.tileMenu.refresh();
-        }).setMode(mode);
+        }).setMode(mode).setRecolor(this.recolor);
     }
 }

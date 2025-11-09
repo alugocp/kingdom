@@ -1,5 +1,8 @@
 package net.lugocorp.kingdom.color;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,5 +46,18 @@ public class Colors {
         final int g = (int) ((g2 - g1) * progress) + g1;
         final int b = (int) ((b2 - b1) * progress) + b1;
         return Colors.fromHex((r << 16) + (g << 8) + b);
+    }
+
+    /**
+     * Returns a transformation matrix that converts the origin color into the other
+     * one
+     */
+    public static Matrix4 getRecolorMatrix(Color origin, Color dest) {
+        final Quaternion q = new Quaternion().setFromCross(new Vector3(origin.r, origin.g, origin.b).nor(),
+                new Vector3(dest.r, dest.g, dest.b).nor());
+        final Vector3 v1 = new Vector3(origin.r, origin.g, origin.b).mul(q);
+        final Vector3 v2 = new Vector3(dest.r, dest.g, dest.b);
+        final float s = v2.len() / v1.len();
+        return new Matrix4().set(new Vector3(), q, new Vector3(s, s, s));
     }
 }

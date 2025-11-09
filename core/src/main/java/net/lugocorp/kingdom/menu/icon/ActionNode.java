@@ -42,7 +42,7 @@ public class ActionNode extends IconNode {
     }
 
     /**
-     * Sets whether this ActionNode is active or not
+     * Sets this ActionNode's activation mode
      */
     public ActionNode setMode(int mode) {
         this.mode = mode;

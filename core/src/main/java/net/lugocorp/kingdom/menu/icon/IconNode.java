@@ -8,6 +8,8 @@ import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuPopup;
+import com.badlogic.gdx.math.Matrix4;
+import java.util.Optional;
 
 /**
  * An icon that displays something when you hover over it
@@ -16,6 +18,7 @@ public abstract class IconNode implements MenuNode {
     public static final int SIDE = 35;
     private final int side;
     protected final MenuPopup popup = new MenuPopup();
+    private Optional<Matrix4> recolor = Optional.empty();
     private Drawable icon;
 
     public IconNode(AudioVideo av, String icon, int side) {
@@ -44,6 +47,14 @@ public abstract class IconNode implements MenuNode {
      */
     public void setIcon(Drawable icon) {
         this.icon = icon;
+    }
+
+    /**
+     * Sets this ActionNode's recolor matrix
+     */
+    public IconNode setRecolor(Optional<Matrix4> recolor) {
+        this.recolor = recolor;
+        return this;
     }
 
     /**
@@ -85,7 +96,9 @@ public abstract class IconNode implements MenuNode {
         final Rect flip = Coords.screen.flip(this.getBounds(bounds));
         av.special.begin();
         av.shaders.element.setMode(this.getElementShaderMode());
+        this.recolor.ifPresent((Matrix4 m) -> av.shaders.element.recolor(m));
         this.icon.render(av.special, flip.x, flip.y);
         av.special.end();
+        av.shaders.element.originalColor();
     }
 }

@@ -1551,7 +1551,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_crystal_skin).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
-                    e.blob.setIcon(Labels.asset_acid_skin); // TODO tint
+                    e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x318ec0);
                     return SideEffect.none;
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
@@ -1946,7 +1946,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_revenge_of_the_forest).add(
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Attack that deals more damage when on a forest");
-                    e.blob.setIcon(Labels.asset_night_vision); // TODO tint
+                    e.blob.setIcon(Labels.asset_sword_slash, 0xffffff, 0x00ff00);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver,

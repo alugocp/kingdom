@@ -2,13 +2,13 @@
  * References:
  * https://github.com/libgdx/libgdx/blob/d14a3eca/gdx/src/com/badlogic/gdx/graphics/g2d/SpriteBatch.java#L153-L185
  */
-varying vec4 v_color;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
+uniform mat4 u_transform;
 uniform int u_mode;
 
 void main() {
-    vec4 color = v_color * texture2D(u_texture, v_texCoords);
+    vec4 color = u_transform * texture2D(u_texture, v_texCoords);
 
     // Gray mode
     if (u_mode == 1) {
