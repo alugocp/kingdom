@@ -34,6 +34,8 @@ public class Patron extends Building {
     private final Set<Point> domain = new HashSet<>();
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
     private Optional<Player> favorite = Optional.empty();
+    private String preferenceIcon = "apple";
+    private String effectIcon = "apple";
     public String preference = "";
 
     Patron(String name, int x, int y, Supplier<Tile> getTile) {
@@ -65,6 +67,14 @@ public class Patron extends Building {
     @Override
     public String getMenuTabLabel() {
         return "Patron";
+    }
+
+    /**
+     * Sets the effect and preference icons for this Patron
+     */
+    public void setIcons(String effectIcon, String preferenceIcon) {
+        this.preferenceIcon = preferenceIcon;
+        this.effectIcon = effectIcon;
     }
 
     /**
@@ -196,8 +206,8 @@ public class Patron extends Building {
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         final ListNode favors = new ListNode();
         final RowNode node = new RowNode().add(new ListNode().add(new HeaderNode(view.av, this.name)).add(new RowNode()
-                .addRatio(20, new HeaderDescNode(view.av, "apple", "Effect", this.desc))
-                .addRatio(20, new HeaderDescNode(view.av, "apple", "Preferred Units", this.preference))
+                .addRatio(20, new HeaderDescNode(view.av, this.effectIcon, "Effect", this.desc))
+                .addRatio(20, new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference))
                 .add(new HelperNode(view.av,
                         "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn."))))
                 .add(favors);

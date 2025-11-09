@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
 import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
+import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
@@ -65,6 +66,11 @@ public class LoadingGameView extends ThreadedTaskView {
         av.loaders.sprites.register("guide-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 2, 0);
         av.loaders.sprites.register("sun-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 3, 0);
         av.loaders.sprites.register("moon-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 4, 0);
+        av.loaders.sprites.register("move-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 0, 0);
+        av.loaders.sprites.register("deposit-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 1, 0);
+        av.loaders.sprites.register("give-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 2, 0);
+        av.loaders.sprites.register("harvest-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 3, 0);
+        av.loaders.sprites.register("skip-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 4, 0);
     }
 
     /** {@inheritdoc} */

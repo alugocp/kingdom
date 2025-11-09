@@ -139,6 +139,7 @@ public class Labels {
     public static final String asset_subterranean_potions = "subterranean potions";
     public static final String asset_swim = "swim";
     public static final String asset_sword_slash = "sword slash";
+    public static final String asset_drown = "drown";
 
     /**
      * SECTION Tags

@@ -164,6 +164,7 @@ public class KingdomMod implements GameMod {
                 4);
         sprites.register(Labels.asset_swim, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 4);
         sprites.register(Labels.asset_sword_slash, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 4);
+        sprites.register(Labels.asset_drown, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 4);
 
         // Artifact sprites
         sprites.register(Labels.asset_chos_sigil_of_haste, Labels.asset_artifacts, ArtifactNode.WIDTH,
@@ -440,6 +441,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
                     e.blob.preference = "Units that cannot swim";
                     e.blob.isPreferredUnitType = (Unit u) -> !u.abilities.hasPassive(Labels.ability_swim);
+                    e.blob.setIcons(Labels.asset_swim, Labels.asset_drown);
                     return SideEffect.none;
                 }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
                     view.game.events.signals.addListener(Events.CanUnitMoveEvent.class, receiver);
@@ -471,6 +473,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Heals 4 random units of its favorite player each turn";
                     e.blob.preference = "Healing glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
+                    e.blob.setIcons(Labels.asset_heal_wounds, Labels.asset_regeneration);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
