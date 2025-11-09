@@ -106,14 +106,14 @@ public class Labels {
     public static final String asset_collapse_mine = "collapse mine";
     public static final String asset_combat_loot = "combat loot";
     public static final String asset_acid_skin = "acid skin";
-    public static final String asset_crystal_skin = "crystal skin";
+    public static final String asset_green_fortress = "green fortress";
     public static final String asset_deposit_seeds = "deposit seeds";
     public static final String asset_dig_mine = "dig mine";
     public static final String asset_dungeon_delve = "dungeon delve";
     public static final String asset_edible = "edible";
     public static final String asset_fire_cannon = "fire cannon";
     public static final String asset_fire_laser = "fire laser";
-    public static final String asset_green_fortress = "green fortress";
+    public static final String asset_defense = "defense";
     public static final String asset_heal_wounds = "heal wounds";
     public static final String asset_hug = "hug";
     public static final String asset_hungry_frog_magic = "hungry frog magic";
@@ -121,6 +121,24 @@ public class Labels {
     public static final String asset_life_aura = "life aura";
     public static final String asset_liquifying_presence = "liquifying presence";
     public static final String asset_local_defender = "local defender";
+    public static final String asset_market_boom = "market boom";
+    public static final String asset_market_indicator = "market indicator";
+    public static final String asset_mine_gems = "mine gems";
+    public static final String asset_mine_gold = "mine gold";
+    public static final String asset_mountain_strider = "mountain strider";
+    public static final String asset_night_vision = "night vision";
+    public static final String asset_pick_apples = "pick apples";
+    public static final String asset_pick_flowers = "pick flowers";
+    public static final String asset_plant_forest = "plant forest";
+    public static final String asset_plant_meadow = "plant meadow";
+    public static final String asset_regeneration = "regeneration";
+    public static final String asset_running_through_nature = "running through nature";
+    public static final String asset_self_sacrifice = "self sacrifice";
+    public static final String asset_slime_shot = "slime shot";
+    public static final String asset_smash = "smash";
+    public static final String asset_subterranean_potions = "subterranean potions";
+    public static final String asset_swim = "swim";
+    public static final String asset_sword_slash = "sword slash";
 
     /**
      * SECTION Tags

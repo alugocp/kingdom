@@ -127,14 +127,14 @@ public class KingdomMod implements GameMod {
         sprites.register(Labels.asset_collapse_mine, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 0);
         sprites.register(Labels.asset_combat_loot, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 0);
         sprites.register(Labels.asset_acid_skin, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 0);
-        sprites.register(Labels.asset_crystal_skin, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 0);
+        sprites.register(Labels.asset_green_fortress, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 0);
         sprites.register(Labels.asset_deposit_seeds, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 0);
         sprites.register(Labels.asset_dig_mine, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 1);
         sprites.register(Labels.asset_dungeon_delve, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 1);
         sprites.register(Labels.asset_edible, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 1);
         sprites.register(Labels.asset_fire_cannon, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 1);
         sprites.register(Labels.asset_fire_laser, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 1);
-        sprites.register(Labels.asset_green_fortress, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 1);
+        sprites.register(Labels.asset_defense, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 1);
         sprites.register(Labels.asset_heal_wounds, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 1);
         sprites.register(Labels.asset_hug, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 1);
         sprites.register(Labels.asset_hungry_frog_magic, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0,
@@ -144,6 +144,26 @@ public class KingdomMod implements GameMod {
         sprites.register(Labels.asset_liquifying_presence, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3,
                 2);
         sprites.register(Labels.asset_local_defender, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 2);
+        sprites.register(Labels.asset_market_boom, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 2);
+        sprites.register(Labels.asset_market_indicator, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 2);
+        sprites.register(Labels.asset_mine_gems, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 2);
+        sprites.register(Labels.asset_mine_gold, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 3);
+        sprites.register(Labels.asset_mountain_strider, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 3);
+        sprites.register(Labels.asset_night_vision, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 3);
+        sprites.register(Labels.asset_pick_apples, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 3);
+        sprites.register(Labels.asset_pick_flowers, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 3);
+        sprites.register(Labels.asset_plant_forest, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 3);
+        sprites.register(Labels.asset_plant_meadow, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 3);
+        sprites.register(Labels.asset_regeneration, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 3);
+        sprites.register(Labels.asset_running_through_nature, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE,
+                0, 4);
+        sprites.register(Labels.asset_self_sacrifice, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 4);
+        sprites.register(Labels.asset_slime_shot, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 4);
+        sprites.register(Labels.asset_smash, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 4);
+        sprites.register(Labels.asset_subterranean_potions, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4,
+                4);
+        sprites.register(Labels.asset_swim, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 4);
+        sprites.register(Labels.asset_sword_slash, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 4);
 
         // Artifact sprites
         sprites.register(Labels.asset_chos_sigil_of_haste, Labels.asset_artifacts, ArtifactNode.WIDTH,
@@ -1531,7 +1551,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_crystal_skin).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
-                    e.blob.setIcon(Labels.asset_crystal_skin);
+                    e.blob.setIcon(Labels.asset_acid_skin); // TODO tint
                     return SideEffect.none;
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
@@ -1773,6 +1793,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_market_boom).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Attacks generate 5 auction points");
+                    e.blob.setIcon(Labels.asset_market_boom);
                     return SideEffect.none;
                 }).add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> AbilityLogic
                         .generateAuctionPoints(view, receiver.wielder, 5));
@@ -1781,6 +1802,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_market_indicator).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Generates 1 auction point when adjacent to a vault");
+                    e.blob.setIcon(Labels.asset_market_indicator);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
@@ -1795,6 +1817,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests gems from mines");
+                    e.blob.setIcon(Labels.asset_mine_gems);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
@@ -1809,6 +1832,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_mine_gold).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests gold coins from mines every 4 turns";
+                    e.blob.setIcon(Labels.asset_mine_gold);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
@@ -1823,6 +1847,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_mountain_strider).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit can traverse mountains");
+                    e.blob.setIcon(Labels.asset_mountain_strider);
                     return SideEffect.none;
                 }).add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (e.tile.building.map((Building b) -> b.name.equals(Labels.building_mountain)).orElse(false)) {
@@ -1835,6 +1860,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_night_vision).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit can see normally at night");
+                    e.blob.setIcon(Labels.asset_night_vision);
                     return SideEffect.none;
                 }).add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
                     e.canSeeAtNight = true;
@@ -1845,6 +1871,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_pick_apples).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests apples from forests every 4 turns";
+                    e.blob.setIcon(Labels.asset_pick_apples);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
@@ -1859,6 +1886,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_pick_flowers).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests flowers from meadows every 4 turns");
+                    e.blob.setIcon(Labels.asset_pick_flowers);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
@@ -1873,6 +1901,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_plant_forest).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Plants a forest";
+                    e.blob.setIcon(Labels.asset_plant_forest);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
@@ -1883,6 +1912,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_plant_meadow).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Plants a meadow";
+                    e.blob.setIcon(Labels.asset_plant_meadow);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
@@ -1893,6 +1923,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_plate_mail).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
+                    e.blob.setIcon(Labels.asset_defense);
                     return SideEffect.none;
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
@@ -1902,6 +1933,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit heals a little each turn");
                     e.blob.setIcon(Labels.asset_heal_wounds);
+                    e.blob.setIcon(Labels.asset_regeneration);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
@@ -1914,6 +1946,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_revenge_of_the_forest).add(
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Attack that deals more damage when on a forest");
+                    e.blob.setIcon(Labels.asset_night_vision); // TODO tint
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver,
@@ -1927,6 +1960,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_running_through_nature).add(
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit is faster on passive buildings");
+                    e.blob.setIcon(Labels.asset_running_through_nature);
                     return SideEffect.none;
                 }).add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
@@ -1942,6 +1976,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_self_sacrifice).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Transfers all their health but 1 to the target unit");
+                    e.blob.setIcon(Labels.asset_self_sacrifice);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
@@ -1969,6 +2004,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_shell_defense).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
+                    e.blob.setIcon(Labels.asset_defense);
                     return SideEffect.none;
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
@@ -1977,7 +2013,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Ranged attack");
-                    e.blob.setIcon(Labels.asset_fire_cannon);
+                    e.blob.setIcon(Labels.asset_slime_shot);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
@@ -1987,6 +2023,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_smash).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Attack with a chance to stun");
+                    e.blob.setIcon(Labels.asset_smash);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
@@ -2001,6 +2038,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_stone_defense).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
+                    e.blob.setIcon(Labels.asset_defense);
                     return SideEffect.none;
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
@@ -2010,6 +2048,7 @@ public class KingdomMod implements GameMod {
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.desc = String.format("Generates Health Potions from Mines");
+                            e.blob.setIcon(Labels.asset_subterranean_potions);
                             return SideEffect.none;
                         })
                 .add(Events.SpawnEvent.class,
@@ -2024,6 +2063,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_swim).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "This unit can swim on water tiles";
+                    e.blob.setIcon(Labels.asset_swim);
                     return SideEffect.none;
                 }).add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (!e.canWalkOnTile && e.tile.name.equals(Labels.tile_water)) {
@@ -2037,7 +2077,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     Damage dmg = new Damage(5);
                     e.blob.desc = String.format("Deals %s", dmg);
-                    e.blob.setIcon(Labels.asset_combat_loot);
+                    e.blob.setIcon(Labels.asset_sword_slash);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
