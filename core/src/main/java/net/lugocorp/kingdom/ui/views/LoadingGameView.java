@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
 import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
@@ -9,6 +10,9 @@ import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Pixmap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +24,16 @@ public class LoadingGameView extends ThreadedTaskView {
     private final List<GameMod> mods = new ArrayList<>();
 
     public LoadingGameView(AudioVideo av) {
-        super(av);
+        super(av, "Loading");
+
+        // Set the custom cursor
+        final Pixmap pixmap = new Pixmap(Gdx.files.internal("ui/cursor.png"));
+        final Cursor cursor = Gdx.graphics.newCursor(pixmap, 17, 17);
+        Gdx.graphics.setCursor(cursor);
+        pixmap.dispose();
 
         // Load built-in sprites
+        av.loaders.sprites.register("loading-screen", "ui/loading-screen", Coords.SIZE.x, Coords.SIZE.y, 0, 0);
         av.loaders.sprites.register("artifact-mask", "game/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
                 0);
         av.loaders.sprites.register("glyph-icon-battle", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
@@ -67,6 +78,7 @@ public class LoadingGameView extends ThreadedTaskView {
             e.printStackTrace();
             return;
         }
+        this.setProgress(10);
 
         // Check for mods and if none are found then create the default mod
         if (modLoader.getMods().size() == 0) {
@@ -74,6 +86,9 @@ public class LoadingGameView extends ThreadedTaskView {
             modLoader.createDefaultMod();
         }
 
+        // Load all mods
+        int p = 10;
+        final int dx = Math.max(1, 80 / modLoader.getMods().size());
         for (String filepath : modLoader.getMods()) {
             System.out.println(String.format("Loading mod at %s", filepath));
 
@@ -87,13 +102,19 @@ public class LoadingGameView extends ThreadedTaskView {
                 e.printStackTrace();
                 continue;
             }
-        }
-    }
 
-    /** {@inheritdoc} */
-    @Override
-    protected String getLoadingText() {
-        return "Loading...";
+            // Set progress
+            p = Math.min(90, p + dx);
+            this.setProgress(p);
+        }
+
+        // Wait another second because I'm proud of the loading screen
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.setProgress(100);
     }
 
     /** {@inheritdoc} */
