@@ -34,7 +34,8 @@ public class UnitOptionsNode extends ListNode {
         this.buttons = new RowNode().setColumns(n);
         this.units = new RowNode().setColumns(n);
         for (Unit u : units) {
-            this.previews.add(new ModelNode(view.av, this.camera, view.getEnvironment(), u.getModelName()));
+            this.previews
+                    .add(new ModelNode(view.av, this.camera, view.getEnvironment(), u.getModelName(), u.getMaterial()));
             this.units.add(((RowNode) u.getMenuContent(view, Optional.empty())).toListNode());
             this.buttons.add(new ButtonNode(view.av, "Choose", () -> click.accept(u)));
         }

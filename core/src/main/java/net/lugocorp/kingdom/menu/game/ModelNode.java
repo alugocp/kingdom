@@ -27,11 +27,10 @@ public class ModelNode implements MenuNode {
     private float modelHeight = 1f;
     private float modelWidth = 1f;
 
-    // TODO figure out how to include the entire unit model in the preview (right
-    // now the back part gets cut off, but if we raise the z position then some
-    // front faces are missing)
-    public ModelNode(AudioVideo av, OrthographicCamera camera, Environment environment, String name) {
+    public ModelNode(AudioVideo av, OrthographicCamera camera, Environment environment, String name,
+            Optional<String> material) {
         this.model.setModelInstance(av, name);
+        material.ifPresent((String m) -> this.model.setMaterial(m));
         this.environment = environment;
         this.camera = camera;
         this.name = name;

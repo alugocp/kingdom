@@ -47,6 +47,13 @@ public class Modellable {
     }
 
     /**
+     * Returns the name of this instance's texture override
+     */
+    public Optional<String> getMaterial() {
+        return this.textureName;
+    }
+
+    /**
      * Returns the name associated with the current model
      */
     public String getModelName() {
