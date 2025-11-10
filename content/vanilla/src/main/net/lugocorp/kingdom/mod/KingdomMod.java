@@ -1147,6 +1147,19 @@ public class KingdomMod implements GameMod {
         // Equinox
         // Elder Chumsa
         // Gemrock
+        new Stratified<Unit>(events.unit, Labels.unit_gemrock).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.setModelInstance(view.av, "golem-grotto");
+                    e.blob.setMaterial("gemrock");
+                    e.blob.desc = "This craggy golem has priceless gems set into its flesh";
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_stone_defense); // TODO Loose Gems
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
+                    e.blob.combat.health.setMaxAndValue(40);
+                    e.blob.species = Defs.species_golem;
+                    return SideEffect.none;
+                });
+
         // Glittersnout
         // Sir Tlatec
         new Stratified<Unit>(events.unit, Labels.unit_sir_tlatec).add(Events.GenerateUnitEvent.class,
@@ -1409,6 +1422,21 @@ public class KingdomMod implements GameMod {
 
         // Goldtooth
         // The Necromancer
+        new Stratified<Unit>(events.unit, Labels.unit_necromancer).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This fallen creature now terrorizes its once idyllic home";
+                    e.blob.setModelInstance(view.av, "druid");
+                    e.blob.setMaterial("necromancer");
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_necrotic_blast); // TODO Raise Undead
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
+                            Labels.ability_night_vision);
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
+                    e.blob.combat.health.setMaxAndValue(60);
+                    e.blob.hunger.setTimeToHunger(view, 10);
+                    e.blob.species = Defs.species_undead;
+                    return SideEffect.none;
+                });
+
         // Lurch
         // Garulax
         // Patagan
@@ -1445,6 +1473,22 @@ public class KingdomMod implements GameMod {
         // Photali
         //
         // Razma
+        new Stratified<Unit>(events.unit, Labels.unit_razma).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "A wandering mystic and trader";
+                    e.blob.setModelInstance(view.av, "alfikra");
+                    e.blob.setMaterial("razma");
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_fireball);
+                    // e.blob.abilities.setPassive(view.game.generator, ); // TODO Economic Activity
+                    // and Pious
+                    e.blob.glyphs.set(Glyph.HEALING, Glyph.TRADE);
+                    e.blob.combat.health.setMaxAndValue(40);
+                    e.blob.haul.setMax(12);
+                    e.blob.species = Defs.species_human;
+                    UnitLogic.speed(events, e.blob, 3);
+                    return SideEffect.none;
+                });
+
         // Theressa the Rover
         //
         // Illapa
@@ -1612,6 +1656,16 @@ public class KingdomMod implements GameMod {
                                 Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic
                         .harvestFromTile(view, receiver.wielder, Labels.item_apple, (Tile t) -> true));
+
+        // Fireball
+        new Stratified<Ability>(events.ability, Labels.ability_fireball).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Ranged attack");
+                    e.blob.setIcon(Labels.asset_slime_shot); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
+                                receiver.wielder, new Damage(4), 3));
 
         // Fire Cannon
         new Stratified<Ability>(events.ability, Labels.ability_fire_cannon).add(Events.GenerateAbilityEvent.class,
@@ -1858,6 +1912,16 @@ public class KingdomMod implements GameMod {
                     }
                     return SideEffect.none;
                 });
+
+        // Necrotic Blast
+        new Stratified<Ability>(events.ability, Labels.ability_necrotic_blast).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Ranged attack");
+                    e.blob.setIcon(Labels.asset_slime_shot);
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
+                                receiver.wielder, new Damage(4), 3));
 
         // Night Vision
         new Stratified<Ability>(events.ability, Labels.ability_night_vision).add(Events.GenerateAbilityEvent.class,
