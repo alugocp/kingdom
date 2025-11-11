@@ -39,13 +39,16 @@ public class Movement {
                     : SideEffect.none;
         }
 
-        // TODO add an "after movement" event and put Ghastly Thrall on that
         // Do the actual movements
-        return SideEffect.all(this.unit.handleEvent(view, this.getUnitMovedEvent(path, distance)), () -> {
+        final List<Point> previous = this.getPreviousPath(path, distance);
+        final Events.UnitMovedEvent before = new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous);
+        final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous);
+        return SideEffect.all(this.unit.handleEvent(view, before), () -> {
             final AnimationChain chain = new AnimationChain();
             Point prev = this.unit.getPoint();
             for (int a = 0; a < distance; a++) {
-                chain.add(new MoveAnimation(this.unit, prev, path.get(a)));
+                chain.add(new MoveAnimation(this.unit, prev, path.get(a),
+                        a == distance - 1 ? Optional.of(after) : Optional.empty()));
                 prev = path.get(a);
             }
             view.animations.add(chain.get());
@@ -54,15 +57,15 @@ public class Movement {
     }
 
     /**
-     * Sets up a UnitMovedEvent for the given path and distance
+     * Returns the previous Points taken in a Unit's movement
      */
-    private Events.UnitMovedEvent getUnitMovedEvent(List<Point> path, int distance) {
+    private List<Point> getPreviousPath(List<Point> path, int distance) {
         final List<Point> previous = new ArrayList<>();
-        previous.add(this.unit.getPoint());
+        previous.add(new Point(this.unit.getX(), this.unit.getY()));
         for (int a = 0; a < distance - 1; a++) {
             previous.add(path.get(a));
         }
-        return new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous);
+        return previous;
     }
 
     /**

@@ -1779,13 +1779,16 @@ public class KingdomMod implements GameMod {
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
                                 Events.SpawnEvent e) -> () -> view.game.events.signals
-                                        .addListener(Events.UnitMovedEvent.class, receiver))
-                .add(Events.UnitMovedEvent.class, (GameView view, Ability receiver, Events.UnitMovedEvent e) -> {
-                    if (e.unit.name.equals(Labels.unit_necromancer) && e.unit.leadership.sameLeader(receiver.wielder)) {
-                        return receiver.wielder.movement.move(view, e.previous);
-                    }
-                    return SideEffect.none;
-                }).add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
+                                        .addListener(Events.AfterUnitMovedEvent.class, receiver))
+                .add(Events.AfterUnitMovedEvent.class,
+                        (GameView view, Ability receiver, Events.AfterUnitMovedEvent e) -> {
+                            if (e.unit.name.equals(Labels.unit_necromancer)
+                                    && e.unit.leadership.sameLeader(receiver.wielder)) {
+                                return receiver.wielder.movement.move(view, e.previous);
+                            }
+                            return SideEffect.none;
+                        })
+                .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     final Set<Point> radius = Lambda.filter(
                             (Point p) -> view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
                                     .map((Unit u) -> u.name.equals(Labels.unit_necromancer)).orElse(false),

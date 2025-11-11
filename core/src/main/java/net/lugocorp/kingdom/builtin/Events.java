@@ -204,6 +204,15 @@ public class Events {
     }
 
     /**
+     * Triggered after a Unit moves
+     */
+    public static class AfterUnitMovedEvent extends UnitMovedEvent {
+        public AfterUnitMovedEvent(Unit unit, Point current, List<Point> previous) {
+            super(unit, current, previous);
+        }
+    }
+
+    /**
      * Triggered when a Player claims an Artifact
      */
     public static class ArtifactClaimedEvent extends Event {
