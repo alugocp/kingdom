@@ -330,6 +330,7 @@ public class Labels {
     public static final String ability_deposit_seeds = "Deposit Seeds";
     public static final String ability_dig_mine = "Dig Mine";
     public static final String ability_dungeon_delve = "Dungeon Delve";
+    public static final String ability_economic_activity = "Economic Activity";
     public static final String ability_edible = "Edible";
     public static final String ability_fireball = "Fireball";
     public static final String ability_fire_cannon = "Fire Cannon";
@@ -343,6 +344,7 @@ public class Labels {
     public static final String ability_life_aura = "Life Aura";
     public static final String ability_liquifying_presence = "Liquifying Presence";
     public static final String ability_local_defender = "Local Defender";
+    public static final String ability_loose_gems = "Loose Gems";
     public static final String ability_market_boom = "Market Boom";
     public static final String ability_market_indicator = "Market Indicator";
     public static final String ability_mine_gems = "Mine Gems";
@@ -352,9 +354,11 @@ public class Labels {
     public static final String ability_night_vision = "Night Vision";
     public static final String ability_pick_apples = "Pick Apples";
     public static final String ability_pick_flowers = "Pick Flowers";
+    public static final String ability_pious = "Pious";
     public static final String ability_plant_forest = "Plant Forest";
     public static final String ability_plant_meadow = "Plant Meadow";
     public static final String ability_plate_mail = "Plate Mail";
+    public static final String ability_raise_undead = "Raise Undead";
     public static final String ability_regeneration = "Regeneration";
     public static final String ability_revenge_of_the_forest = "Revenge of the Forest";
     public static final String ability_running_through_nature = "Running Through Nature";
