@@ -328,6 +328,7 @@ public class Labels {
     public static final String ability_collapse_mine = "Collapse Mine";
     public static final String ability_combat_loot = "Combat Loot";
     public static final String ability_crystal_skin = "Crystal Skin";
+    public static final String ability_defensive_bloom = "Defensive Bloom";
     public static final String ability_deposit_seeds = "Deposit Seeds";
     public static final String ability_dig_mine = "Dig Mine";
     public static final String ability_dungeon_delve = "Dungeon Delve";
@@ -338,6 +339,7 @@ public class Labels {
     public static final String ability_fire_laser = "Fire Laser";
     public static final String ability_ghastly_thrall = "Ghastly Thrall";
     public static final String ability_green_fortress = "Green Fortress";
+    public static final String ability_harvest_mushrooms = "Harvest Mushrooms";
     public static final String ability_heal_wounds = "Heal Wounds";
     public static final String ability_hug = "Hug";
     public static final String ability_hungry_frog_magic = "Hungry Frog Magic";
@@ -360,6 +362,8 @@ public class Labels {
     public static final String ability_plant_forest = "Plant Forest";
     public static final String ability_plant_meadow = "Plant Meadow";
     public static final String ability_plate_mail = "Plate Mail";
+    public static final String ability_protective_spores = "Protective Spores";
+    public static final String ability_pummel = "Pummel";
     public static final String ability_raise_undead = "Raise Undead";
     public static final String ability_regeneration = "Regeneration";
     public static final String ability_revenge_of_the_forest = "Revenge of the Forest";
@@ -380,10 +384,12 @@ public class Labels {
     public static final String status_effect_stunned = "Stunned";
     public static final String status_effect_more_favor = "More Favor";
     public static final String status_effect_proud_builder = "Proud Builder";
+    public static final String status_effect_extra_defense = "Extra Defense";
 
     /**
      * SECTION Items
      */
+    public static final String item_mushroom = "Mushroom";
     public static final String item_sacred_seed = "Sacred Seed";
     public static final String item_flower = "Flower";
     public static final String item_fish = "Fish";

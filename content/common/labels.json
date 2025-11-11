@@ -339,6 +339,7 @@
             "Collapse Mine",
             "Combat Loot",
             "Crystal Skin",
+            "Defensive Bloom",
             "Deposit Seeds",
             "Dig Mine",
             "Dungeon Delve",
@@ -349,6 +350,7 @@
             "Fire Laser",
             "Ghastly Thrall",
             "Green Fortress",
+            "Harvest Mushrooms",
             "Heal Wounds",
             "Hug",
             "Hungry Frog Magic",
@@ -371,6 +373,8 @@
             "Plant Forest",
             "Plant Meadow",
             "Plate Mail",
+            "Protective Spores",
+            "Pummel",
             "Raise Undead",
             "Regeneration",
             "Revenge of the Forest",
@@ -392,13 +396,15 @@
         "labels": [
             "Stunned",
             "More Favor",
-            "Proud Builder"
+            "Proud Builder",
+            "Extra Defense"
         ]
     },
     {
         "prefix": "item",
         "name": "Items",
         "labels": [
+            "Mushroom",
             "Sacred Seed",
             "Flower",
             "Fish",
