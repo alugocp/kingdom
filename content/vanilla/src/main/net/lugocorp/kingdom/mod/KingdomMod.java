@@ -1450,8 +1450,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "This fallen creature now terrorizes its once idyllic home";
                     e.blob.setModelInstance(view.av, "druid");
                     e.blob.setMaterial("necromancer");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_necrotic_blast); // ,
-                                                                                                    // Labels.ability_raise_undead);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_necrotic_blast,
+                            Labels.ability_raise_undead);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
                             Labels.ability_night_vision);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
@@ -1520,6 +1520,20 @@ public class KingdomMod implements GameMod {
         // Chicao
         // Alaistar and Wurmdel
         // Mi'chalb Lightfoot
+        // Ghastly Thrall
+        new Stratified<Unit>(events.unit, Labels.unit_ghastly_thrall).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.doNotAddToGlyphPool();
+                    e.blob.desc = "A terrifying undead warrior risen by those skilled in the dark arts";
+                    e.blob.setModelInstance(view.av, "skeleton");
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_ghastly_thrall);
+                    e.blob.glyphs.set(Glyph.BATTLE);
+                    e.blob.combat.health.setMaxAndValue(15);
+                    e.blob.species = Defs.species_undead;
+                    UnitLogic.speed(events, e.blob, 5);
+                    return SideEffect.none;
+                });
 
         /**
          * SECTION Abilities
@@ -1753,6 +1767,34 @@ public class KingdomMod implements GameMod {
                                         return SideEffect.all(effects);
                                     });
                         });
+
+        // Ghastly Thrall
+        new Stratified<Ability>(events.ability, Labels.ability_ghastly_thrall).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format(
+                            "This unit can only move to tiles adjacent to The Necromancer, and will follow The Necromancer as it moves");
+                    e.blob.setIcon(Labels.asset_green_fortress); // TODO new asset
+                    return SideEffect.none;
+                })
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver,
+                                Events.SpawnEvent e) -> () -> view.game.events.signals
+                                        .addListener(Events.UnitMovedEvent.class, receiver))
+                .add(Events.UnitMovedEvent.class, (GameView view, Ability receiver, Events.UnitMovedEvent e) -> {
+                    if (e.unit.name.equals(Labels.unit_necromancer) && e.unit.leadership.sameLeader(receiver.wielder)) {
+                        return receiver.wielder.movement.move(view, e.previous);
+                    }
+                    return SideEffect.none;
+                }).add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
+                    final Set<Point> radius = Lambda.filter(
+                            (Point p) -> view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
+                                    .map((Unit u) -> u.name.equals(Labels.unit_necromancer)).orElse(false),
+                            Hexagons.getNeighbors(e.tile.getPoint(), 1));
+                    if (radius.size() == 0) {
+                        e.canWalkOnBuilding = false;
+                    }
+                    return SideEffect.none;
+                });
 
         // Green Fortress
         new Stratified<Ability>(events.ability, Labels.ability_green_fortress).add(Events.GenerateAbilityEvent.class,
@@ -2059,13 +2101,44 @@ public class KingdomMod implements GameMod {
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Raise Undead
-        /*
-         * new Stratified<Ability>(events.ability,
-         * Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class, (GameView
-         * view, Ability receiver, Events.GenerateAbilityEvent e) -> { e.blob.desc =
-         * String.format("Extra defense"); e.blob.setIcon(Labels.asset_defense); // TODO
-         * new asset return SideEffect.none; });
-         */
+        new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "Consumes 20 health to spawn a Ghastly Thrall (max one at a time, remains adjacent to this unit)";
+                    e.blob.setIcon(Labels.asset_defense); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            // Check for any existing Ghastly Thrall
+                            for (Point p : Hexagons.getNeighbors(receiver.wielder.getPoint(), 1)) {
+                                if (view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
+                                        .map((Unit u) -> u.name.equals(Labels.unit_ghastly_thrall)).orElse(false)) {
+                                    if (receiver.wielder.leadership.belongsToHuman()) {
+                                        view.hud.logger.error("You can only raise one Ghastly Thrall at a time");
+                                    }
+                                    return SideEffect.none;
+                                }
+                            }
+
+                            // Select a Tile to spawn the Unit on
+                            final Set<Point> points = Lambda.filter(
+                                    (Point p) -> view.game.world.getTile(p)
+                                            .map((Tile t) -> !t.unit.isPresent()
+                                                    && t.leader.equals(receiver.wielder.getLeader()))
+                                            .orElse(false),
+                                    Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
+                            return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
+                                    (Point p) -> {
+                                        return () -> {
+                                            view.game.actions.unitHasActed(view, receiver.wielder,
+                                                    new ActivateAction());
+                                            receiver.wielder.combat.takeDamage(view, new Damage(20), receiver.wielder);
+                                            final Unit u = view.game.generator.unit(Labels.unit_ghastly_thrall, p.x,
+                                                    p.y);
+                                            view.game.setLeader(view, u, receiver.wielder.getLeader());
+                                            u.spawn(view);
+                                        };
+                                    });
+                        });
 
         // Regeneration
         new Stratified<Ability>(events.ability, Labels.ability_regeneration).add(Events.GenerateAbilityEvent.class,

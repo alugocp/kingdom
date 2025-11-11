@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +39,9 @@ public class Movement {
                     : SideEffect.none;
         }
 
+        // TODO add an "after movement" event and put Ghastly Thrall on that
         // Do the actual movements
-        return () -> {
+        return SideEffect.all(this.unit.handleEvent(view, this.getUnitMovedEvent(path, distance)), () -> {
             final AnimationChain chain = new AnimationChain();
             Point prev = this.unit.getPoint();
             for (int a = 0; a < distance; a++) {
@@ -48,7 +50,19 @@ public class Movement {
             }
             view.animations.add(chain.get());
             view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, distance));
-        };
+        });
+    }
+
+    /**
+     * Sets up a UnitMovedEvent for the given path and distance
+     */
+    private Events.UnitMovedEvent getUnitMovedEvent(List<Point> path, int distance) {
+        final List<Point> previous = new ArrayList<>();
+        previous.add(this.unit.getPoint());
+        for (int a = 0; a < distance - 1; a++) {
+            previous.add(path.get(a));
+        }
+        return new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous);
     }
 
     /**

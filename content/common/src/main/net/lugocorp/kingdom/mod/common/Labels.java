@@ -316,6 +316,7 @@ public class Labels {
     public static final String unit_chicao = "Chicao";
     public static final String unit_alaistar_and_wurmdel = "Alaistar and Wurmdel";
     public static final String unit_michalb_lightfoot = "Mi'chalb Lightfoot";
+    public static final String unit_ghastly_thrall = "Ghastly Thrall";
 
     /**
      * SECTION Abilities
@@ -335,6 +336,7 @@ public class Labels {
     public static final String ability_fireball = "Fireball";
     public static final String ability_fire_cannon = "Fire Cannon";
     public static final String ability_fire_laser = "Fire Laser";
+    public static final String ability_ghastly_thrall = "Ghastly Thrall";
     public static final String ability_green_fortress = "Green Fortress";
     public static final String ability_heal_wounds = "Heal Wounds";
     public static final String ability_hug = "Hug";

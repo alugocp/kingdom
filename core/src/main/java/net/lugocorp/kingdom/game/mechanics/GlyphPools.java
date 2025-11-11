@@ -32,7 +32,9 @@ public class GlyphPools {
             // Run the generation event without instantiating a new Unit object,
             // then add it to the GlyphPool
             g.generator.unitOptimal(u);
-            this.add(name, u.glyphs.get());
+            if (u.shouldAddToGlyphPool()) {
+                this.add(name, u.glyphs.get());
+            }
         }
     }
 

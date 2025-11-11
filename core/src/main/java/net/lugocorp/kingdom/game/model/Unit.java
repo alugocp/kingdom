@@ -67,6 +67,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
     public Species species = Species.UNKNOWN;
+    private boolean unlisted = false;
 
     public Unit(String name, int x, int y) {
         super(name, x, y);
@@ -77,6 +78,20 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
      */
     public Unit() {
         super(null, 0, 0);
+    }
+
+    /**
+     * Returns true if this Unit should be acessible from the recruitment Menu
+     */
+    public boolean shouldAddToGlyphPool() {
+        return !this.unlisted;
+    }
+
+    /**
+     * Keeps this Unit from appearing in the recruitment Menu
+     */
+    public void doNotAddToGlyphPool() {
+        this.unlisted = true;
     }
 
     /** {@inheritdoc} */

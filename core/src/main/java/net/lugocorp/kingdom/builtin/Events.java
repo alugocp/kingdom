@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.math.Point;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -190,14 +191,14 @@ public class Events {
      * Triggered whenever a Unit moves
      */
     public static class UnitMovedEvent extends Event {
-        public final Point previous;
+        public final List<Point> previous;
         public final Point current;
         public final Unit unit;
 
-        public UnitMovedEvent(Unit unit, int px, int py, int cx, int cy) {
+        public UnitMovedEvent(Unit unit, Point current, List<Point> previous) {
             super();
-            this.previous = new Point(px, py);
-            this.current = new Point(cx, cy);
+            this.previous = previous;
+            this.current = current;
             this.unit = unit;
         }
     }
