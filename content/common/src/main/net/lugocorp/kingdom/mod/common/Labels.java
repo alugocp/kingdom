@@ -173,7 +173,15 @@ public class Labels {
     /**
      * SECTION Patrons
      */
+    public static final String patron_joyous_reaper = "Joyous Reaper";
+    public static final String patron_great_corn_woman = "Great Corn Woman";
+    public static final String patron_lord_shui_guardian_of_the_river = "Lord Shui, Guardian of the River";
     public static final String patron_pond_troll = "The Pond Troll";
+    public static final String patron_eternal_guardian = "The Eternal Guardian";
+    public static final String patron_flutterwing = "Flutterwing";
+    public static final String patron_wise_mountain = "Wise Mountain";
+    public static final String patron_wise_oak = "Wise Oak";
+    public static final String patron_ahn_june = "Ahn-Juné";
     public static final String patron_shining_eyes = "The Shining Eyes";
 
     /**

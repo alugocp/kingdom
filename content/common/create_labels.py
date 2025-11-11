@@ -6,7 +6,7 @@ def clean(label: str) -> str:
     if parts[0] == "The":
         parts = parts[1:]
     cleaned = "_".join(parts)
-    return cleaned.lower().replace("'", "").replace("-", "_").replace("é", "e")
+    return cleaned.lower().replace("'", "").replace("-", "_").replace("é", "e").replace(",", "")
 
 
 # Load the definitions JSON file (labels.json)

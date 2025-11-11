@@ -464,7 +464,29 @@ public class KingdomMod implements GameMod {
         // The Eternal Guardian
         // Flutterwing
         // Wise Mountain
+        new Stratified<Patron>(events.patron, Labels.patron_wise_mountain).add(Events.GeneratePatronEvent.class,
+                (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
+                    e.blob.setModelInstance(view.av, "wise-mountain");
+                    e.blob.desc = "Your mining glyph units' harvest abilities have a 20% chance to generate an additional item";
+                    e.blob.preference = "Mining glyph units";
+                    e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.MINING);
+                    // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
+                    // TODO implement effect
+                    return SideEffect.none;
+                });
+
         // Wise Oak
+        new Stratified<Patron>(events.patron, Labels.patron_wise_oak).add(Events.GeneratePatronEvent.class,
+                (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
+                    e.blob.setModelInstance(view.av, "wise-oak");
+                    e.blob.desc = "Your nature glyph units' harvest abilities have a 20% chance to generate an additional item";
+                    e.blob.preference = "Nature glyph units";
+                    e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.NATURE);
+                    // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
+                    // TODO implement effect
+                    return SideEffect.none;
+                });
+
         // Ahn-Juné
         // The Shining Eyes
         new Stratified<Patron>(events.patron, Labels.patron_shining_eyes).add(Events.GeneratePatronEvent.class,

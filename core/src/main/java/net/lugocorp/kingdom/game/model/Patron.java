@@ -207,12 +207,12 @@ public class Patron extends Building {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         final ListNode favors = new ListNode();
-        final RowNode node = new RowNode().add(new ListNode().add(new HeaderNode(view.av, this.name))
-                .add(new RowNode().addExact(IconNode.SIDE, new HelperNode(view.av,
-                        "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn."))))
+        final RowNode node = new RowNode().add(new ListNode().add(new HeaderNode(view.av, this.name)).add(new RowNode()
+                .addExact(IconNode.SIDE, new HelperNode(view.av,
+                        "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn."))
                 .addExact(ActionNode.SIDE + 10, new HeaderDescNode(view.av, this.effectIcon, "Effect", this.desc))
                 .addExact(ActionNode.SIDE + 10,
-                        new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference))
+                        new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference))))
                 .add(favors);
         if (this.favor.size() > 0) {
             favors.add(new SubheaderNode(view.av, "Players"));

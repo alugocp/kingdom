@@ -176,7 +176,15 @@
         "prefix": "patron",
         "name": "Patrons",
         "labels": [
+            "Joyous Reaper",
+            "Great Corn Woman",
+            "Lord Shui, Guardian of the River",
             "The Pond Troll",
+            "The Eternal Guardian",
+            "Flutterwing",
+            "Wise Mountain",
+            "Wise Oak",
+            "Ahn-Juné",
             "The Shining Eyes"
         ]
     },
