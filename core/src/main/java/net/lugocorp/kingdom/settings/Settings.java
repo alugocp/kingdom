@@ -8,6 +8,7 @@ public class Settings {
     private float musicVolume = 1.0f;
     private boolean autoComplete = false;
     private boolean reverse = false;
+    private boolean tutorial = true;
 
     /**
      * Gets the soundVolume field
@@ -49,6 +50,20 @@ public class Settings {
      */
     public void setReversedScrollDirection(boolean reverse) {
         this.reverse = reverse;
+    }
+
+    /**
+     * Returns whether or not the Tutorial is enabled
+     */
+    public boolean isTutorialEnabled() {
+        return this.tutorial;
+    }
+
+    /**
+     * Sets whether or not the Tutorial is enabled
+     */
+    public void setTutorialEnabled(boolean tutorial) {
+        this.tutorial = tutorial;
     }
 
     /**

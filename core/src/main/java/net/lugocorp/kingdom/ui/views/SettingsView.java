@@ -56,6 +56,11 @@ public class SettingsView implements View {
                         .add(new ListNode().add(new SubheaderNode(av, "Auto Complete Turns"))
                                 .add(new OptionsNode(av, av.settings.getAutoComplete() ? 1 : 0,
                                         (Integer index) -> av.settings.setAutoComplete(index == 1)).add("Off")
+                                        .add("On"))))
+                .add(new RowNode().setColumns(2)
+                        .add(new ListNode().add(new SubheaderNode(av, "In-Game Tutorial"))
+                                .add(new OptionsNode(av, av.settings.isTutorialEnabled() ? 1 : 0,
+                                        (Integer index) -> av.settings.setTutorialEnabled(index == 1)).add("Off")
                                         .add("On"))));
     }
 

@@ -15,12 +15,14 @@ import java.util.Optional;
  * This class handles rendering all the HUD UI
  */
 public class Hud {
+    public final Tutorial tutorial;
     public final Popups popups;
     public final Logger logger;
     public final TopHud top;
     public final BotHud bot;
 
     public Hud(GameView view) {
+        this.tutorial = new Tutorial(view);
         this.popups = new Popups(view);
         this.logger = new Logger(view);
         this.top = new TopHud(view);
@@ -32,6 +34,7 @@ public class Hud {
      */
     public List<MenuController> getControllers(GameView view, Settings settings) {
         final List<MenuController> controllers = new ArrayList<>();
+        controllers.add(new MenuController(settings, () -> Optional.of(this.tutorial)));
         controllers.add(new MenuController(settings,
                 () -> view.game.mechanics.turns.canHumanPlayerAct() && view.hud.popups.isDisplayed()
                         ? this.popups.get()
@@ -61,6 +64,7 @@ public class Hud {
         if (this.popups.isDisplayed()) {
             this.popups.get().ifPresent((Menu m) -> m.draw(view.av));
         }
+        this.tutorial.draw(view.av);
         this.logger.render(dt);
     }
 }

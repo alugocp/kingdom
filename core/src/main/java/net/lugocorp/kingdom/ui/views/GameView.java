@@ -187,6 +187,11 @@ public class GameView implements View {
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         ViewportLogic.setViewport(this.viewport);
 
+        // Check if tutorial is active
+        if (this.params.av.settings.isTutorialEnabled()) {
+            this.hud.tutorial.setup();
+        }
+
         // Kick off the TurnStructure
         this.game.mechanics.turns.startOfTurn(this);
         this.initHudMessages();
