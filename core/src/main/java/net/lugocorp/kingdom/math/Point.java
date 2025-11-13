@@ -37,6 +37,13 @@ public class Point {
         this.y += p.y;
     }
 
+    /**
+     * Returns a deep copy of this Point
+     */
+    public Point copy() {
+        return new Point(this.x, this.y);
+    }
+
     /** {@inheritdoc} */
     @Override
     public String toString() {

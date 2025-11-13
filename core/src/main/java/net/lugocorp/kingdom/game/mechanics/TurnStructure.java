@@ -170,7 +170,7 @@ public class TurnStructure {
      */
     public void processTurnByFrame(GameView view) {
         if (this.turn.getState() == TurnState.TRANSITION) {
-            if (view.game.future.checkFutureTicks(view)) {
+            if (view.game.future.checkFutureTicks(view) && !view.animations.inProgress()) {
                 this.turn.activate();
                 view.hud.bot.tileMenu.refresh();
                 if (this.turn.getPlayer().isHumanPlayer()) {

@@ -27,7 +27,7 @@ public class MoveAnimation extends Animation {
         this.angle = Coords.grid.angle(p1, p2) - ((float) Math.PI / 2f);
         this.after = after;
         this.unit = unit;
-        this.dest = p2;
+        this.dest = p2.copy();
     }
 
     /** {@inheritdoc} */
