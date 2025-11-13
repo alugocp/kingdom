@@ -5,10 +5,12 @@ precision mediump float;
 #define MED
 #endif
 uniform sampler2D u_diffuseTexture;
+uniform vec4 u_diffuseColor;
+uniform float u_opacity;
 varying MED vec2 v_diffuseUV;
 varying float v_opacity;
 
 void main() {
-    gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV);
-    gl_FragColor.a *= v_opacity;
+    gl_FragColor = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
+    gl_FragColor.a *= u_opacity;
 }

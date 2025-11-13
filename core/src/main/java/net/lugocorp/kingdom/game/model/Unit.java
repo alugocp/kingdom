@@ -170,7 +170,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         col1.add(new RowNode()
                 .addExact(GlyphIconsNode.width(this.glyphs.size()), new GlyphIconsNode(view.av, this.glyphs.get()))
                 .add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString())))
-                .add(new RowNode().add(new HeaderDescNode(view.av, "guide-icon", "Description", this.desc))
+                .add(new RowNode().addExact(40, new HeaderDescNode(view.av, "guide-icon", "Description", this.desc))
                         .add(this.getLeader().isPresent()
                                 ? new PlayerBadgeNode(view.av, this.getLeader().get())
                                 : new PlayerBadgeNode(view.av))

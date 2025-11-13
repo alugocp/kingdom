@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -24,6 +24,7 @@ public class PreviewShader implements Shader {
     private int u_projViewTrans;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
+    private int u_diffuseColor;
     private int u_opacity;
 
     /** {@inheritdoc} */
@@ -38,6 +39,7 @@ public class PreviewShader implements Shader {
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
+        this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
         this.u_opacity = this.program.getUniformLocation("u_opacity");
     }
 
@@ -69,7 +71,10 @@ public class PreviewShader implements Shader {
         this.program.setUniformi(this.u_diffuseTexture, this.context.textureBinder.bind(diffuse.textureDescription));
         this.program.setUniformf(this.u_diffuseUVTransform, diffuse.offsetU, diffuse.offsetV, diffuse.scaleU,
                 diffuse.scaleV);
+        ColorAttribute color = (ColorAttribute) renderable.material.get(ColorAttribute.Diffuse);
+        this.program.setUniformf(this.u_diffuseColor, color.color);
         BlendingAttribute blend = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
+        this.program.setUniformf(this.u_opacity, 1f);
         if (blend != null) {
             this.context.setBlending(true, blend.sourceFunction, blend.destFunction);
             this.program.setUniformf(this.u_opacity, blend.opacity);
@@ -77,26 +82,13 @@ public class PreviewShader implements Shader {
 
         // Render the preview model
         int cull = GL20.GL_FRONT;
-        int depth = GL20.GL_LEQUAL;
-        float depthNear = 0f;
-        float depthFar = 1f;
-        boolean depthMask = true;
         for (Attribute attr : renderable.material) {
             final long t = attr.type;
             if ((t & IntAttribute.CullFace) == IntAttribute.CullFace) {
-                // TODO invert gl_front and gl_back values here?
                 cull = ((IntAttribute) attr).value;
-            } else if ((t & DepthTestAttribute.Type) == DepthTestAttribute.Type) {
-                DepthTestAttribute test = (DepthTestAttribute) attr;
-                depth = test.depthFunc;
-                depthNear = test.depthRangeNear;
-                depthFar = test.depthRangeFar;
-                depthMask = test.depthMask;
             }
         }
         this.context.setCullFace(cull);
-        this.context.setDepthTest(depth, depthNear, depthFar);
-        this.context.setDepthMask(depthMask);
         Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
         Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_CLAMP_TO_EDGE);
         Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_CLAMP_TO_EDGE);

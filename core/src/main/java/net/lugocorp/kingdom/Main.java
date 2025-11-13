@@ -43,7 +43,6 @@ public class Main implements ApplicationListener {
     @Override
     public void create() {
         Gdx.graphics.setResizable(true);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         this.av = new AudioVideo(SettingsIO.readOrDefault());
         this.navigate(new LoadingGameView(this.av));
     }
