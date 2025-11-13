@@ -1,9 +1,7 @@
 package net.lugocorp.kingdom.game.mechanics;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.utils.Lambda;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class stores information on the current turn
@@ -17,9 +15,9 @@ public class Turn {
     /**
      * Sets the Players that will each take Turns
      */
-    public void setPlayers(Set<Player> players) {
-        this.players = Lambda.toList(players);
-        this.current = this.players.get(0);
+    public void setPlayers(List<Player> players) {
+        this.current = players.get(0);
+        this.players = players;
     }
 
     /**

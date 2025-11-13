@@ -2507,7 +2507,7 @@ public class KingdomMod implements GameMod {
                     e.blob.gold = 1;
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(e));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
 
         // Emerald
         new Stratified<Item>(events.item, Labels.item_emerald)
@@ -2517,7 +2517,7 @@ public class KingdomMod implements GameMod {
                     e.blob.gold = 10;
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(e));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
 
         // Apple
         new Stratified<Item>(events.item, Labels.item_apple)

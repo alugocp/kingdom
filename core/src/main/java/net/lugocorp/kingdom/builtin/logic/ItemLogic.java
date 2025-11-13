@@ -14,13 +14,14 @@ public class ItemLogic {
     /**
      * Item that can be consumed to increase the Player's gold
      */
-    public static SideEffect valuable(Event event) {
+    public static SideEffect valuable(GameView view, Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
         return () -> e.consumer.getLeader().ifPresent((Player p) -> {
             if (p instanceof CompPlayer) {
                 ((CompPlayer) p).stats.income.add(e.item.gold);
             }
             p.gold += e.item.gold;
+            view.hud.top.update(view.game);
         });
     }
 

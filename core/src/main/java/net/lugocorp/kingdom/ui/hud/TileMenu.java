@@ -48,6 +48,7 @@ public class TileMenu extends Menu {
             return;
         }
         final MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords));
+        this.closeMiniMenu();
         this.setRoot(node);
     }
 }

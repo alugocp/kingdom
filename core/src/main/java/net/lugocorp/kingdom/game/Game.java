@@ -92,8 +92,8 @@ public class Game {
     /**
      * Returns all Players in this Game
      */
-    public Set<Player> getAllPlayers() {
-        final Set<Player> players = new HashSet<>();
+    public List<Player> getAllPlayers() {
+        final List<Player> players = new ArrayList<>();
         players.add(this.human);
         players.addAll(this.comps);
         return players;
