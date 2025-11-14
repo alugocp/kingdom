@@ -24,10 +24,26 @@ import java.util.Optional;
 public class Movement {
     private final CoordUserData userData;
     private final Unit unit;
+    private boolean skipPreCheck = false;
 
     public Movement(Unit unit, CoordUserData userData) {
         this.userData = userData;
         this.unit = unit;
+    }
+
+    /**
+     * Skips the move function's pre-check (useful for having Units blindly follow
+     * unorthodox movement logic)
+     */
+    public void turnOffPreCheck() {
+        this.skipPreCheck = true;
+    }
+
+    /**
+     * Unskips the move function's pre-check
+     */
+    public void turnOnPreCheck() {
+        this.skipPreCheck = false;
     }
 
     /**
@@ -47,9 +63,11 @@ public class Movement {
         }
 
         // Make sure we can still take this path
-        for (int a = 0; a < distance; a++) {
-            if (!this.canMoveToPoint(view, path.get(a))) {
-                return SideEffect.none;
+        if (!this.skipPreCheck) {
+            for (int a = 0; a < distance; a++) {
+                if (!this.canMoveToPoint(view, path.get(a))) {
+                    return SideEffect.none;
+                }
             }
         }
 
