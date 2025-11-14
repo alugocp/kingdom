@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.ai.memory.MemoryCell;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.plans.MoveNode;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.math.Hexagons;
@@ -51,5 +52,17 @@ public class ExploreMap extends Goal {
             return cell.get().wasEverVisible() ? 0.5f : 1f;
         }
         return 0f;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean likesGlyph(Glyph glyph) {
+        return glyph == Glyph.TRADE;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean likesEventChannel(String channel) {
+        return channel.equals("GetVisionEvent");
     }
 }

@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ai.prediction.EventLog;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -74,5 +75,11 @@ public class HarvestFood extends Goal {
         }
         CapturedEvents.instance.clearFakePoint();
         return 0f;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean likesGlyph(Glyph glyph) {
+        return glyph == Glyph.NATURE;
     }
 }

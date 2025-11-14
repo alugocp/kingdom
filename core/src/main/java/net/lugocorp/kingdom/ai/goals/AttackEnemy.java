@@ -6,10 +6,10 @@ import net.lugocorp.kingdom.ai.plans.CastSpellNode;
 import net.lugocorp.kingdom.ai.prediction.EventLog;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -52,9 +52,7 @@ public class AttackEnemy extends Goal {
     private int damageDealtToEnemies(Event e, Unit u) {
         if (e instanceof Events.TakeDamageEvent) {
             Events.TakeDamageEvent evt = (Events.TakeDamageEvent) e;
-            if (evt.target.isEntityType(EntityType.UNIT)) {
-                return evt.target.getLeader().equals(u.getLeader()) ? 0 : evt.dmg.total();
-            }
+            return evt.target.getLeader().equals(u.getLeader()) ? 0 : evt.dmg.total();
         }
         return 0;
     }
@@ -96,5 +94,17 @@ public class AttackEnemy extends Goal {
             }
             return best;
         });
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean likesGlyph(Glyph glyph) {
+        return glyph == Glyph.BATTLE;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean likesEventChannel(String channel) {
+        return channel.equals("AttackEvent") || channel.equals("AttackedEvent") || channel.equals("TakeDamageEvent");
     }
 }
