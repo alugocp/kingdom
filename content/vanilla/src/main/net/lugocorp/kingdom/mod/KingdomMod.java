@@ -1807,7 +1807,7 @@ public class KingdomMod implements GameMod {
                         (GameView view, Ability receiver, Events.AfterUnitMovedEvent e) -> {
                             if (e.unit.name.equals(Labels.unit_necromancer)
                                     && e.unit.leadership.sameLeader(receiver.wielder)) {
-                                return receiver.wielder.movement.move(view, e.previous);
+                                return receiver.wielder.movement.move(view, e.previous, e.parallel);
                             }
                             return SideEffect.none;
                         })

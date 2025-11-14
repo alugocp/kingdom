@@ -192,11 +192,13 @@ public class Events {
      */
     public static class UnitMovedEvent extends Event {
         public final List<Point> previous;
+        public final boolean parallel;
         public final Point current;
         public final Unit unit;
 
-        public UnitMovedEvent(Unit unit, Point current, List<Point> previous) {
+        public UnitMovedEvent(Unit unit, Point current, List<Point> previous, boolean parallel) {
             super();
+            this.parallel = parallel;
             this.previous = previous;
             this.current = current;
             this.unit = unit;
@@ -207,8 +209,8 @@ public class Events {
      * Triggered after a Unit moves
      */
     public static class AfterUnitMovedEvent extends UnitMovedEvent {
-        public AfterUnitMovedEvent(Unit unit, Point current, List<Point> previous) {
-            super(unit, current, previous);
+        public AfterUnitMovedEvent(Unit unit, Point current, List<Point> previous, boolean parallel) {
+            super(unit, current, previous, parallel);
         }
     }
 

@@ -97,7 +97,7 @@ public class MoveAction implements Action {
         // If there's more path to move on and we haven't hit max
         // distance yet this turn then do that now
         if (this.path.size() > 0 && this.distance < this.max) {
-            this.unit.movement.move(this.view, this.path).execute();
+            this.unit.movement.move(this.view, this.path, true).execute();
         }
 
         // Reset distance moved for the next turn

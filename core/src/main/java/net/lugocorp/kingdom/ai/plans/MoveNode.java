@@ -31,7 +31,7 @@ public class MoveNode extends PlanNode {
         }
 
         // Set up the move command
-        this.unit.movement.move(view, path).execute();
+        this.unit.movement.move(view, path, true).execute();
         return ActionResult.POP;
     }
 }

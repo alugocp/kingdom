@@ -8,6 +8,9 @@ import net.lugocorp.kingdom.game.actions.MoveAction;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.math.HexSide;
+import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -28,9 +31,13 @@ public class Movement {
     }
 
     /**
-     * Moves this Unit to another Tile in the grid
+     * Moves this Unit to another Tile in the grid. The parallel flag causes this
+     * method to handle game state logic (e.g. vision and tile leadership) instead
+     * of putting it on the AnimationQueue. This is good when the human player isn't
+     * directing individual units' movement (like at the end of the turn or for AI
+     * players)
      */
-    public SideEffect move(GameView view, List<Point> path) {
+    public SideEffect move(GameView view, List<Point> path, boolean parallel) {
         // Check the Unit's remaining move distance for this turn
         final int distance = Math.min(path.size(), view.game.actions.getRemainingMoveDistance(view, this.unit));
         if (distance < 1) {
@@ -39,19 +46,50 @@ public class Movement {
                     : SideEffect.none;
         }
 
+        // Make sure we can still take this path
+        for (int a = 0; a < distance; a++) {
+            if (!this.canMoveToPoint(view, path.get(a))) {
+                return SideEffect.none;
+            }
+        }
+
         // Do the actual movements
         final List<Point> previous = this.getPreviousPath(path, distance);
-        final Events.UnitMovedEvent before = new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous);
-        final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous);
+        final Events.UnitMovedEvent before = new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous,
+                parallel);
+        final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous,
+                parallel);
         return SideEffect.all(this.unit.handleEvent(view, before), () -> {
             final AnimationChain chain = new AnimationChain();
             Point prev = this.unit.getPoint();
             for (int a = 0; a < distance; a++) {
-                chain.add(new MoveAnimation(this.unit, prev, path.get(a),
-                        a == distance - 1 ? Optional.of(after) : Optional.empty()));
-                prev = path.get(a);
+                final Point dest = path.get(a);
+                final boolean isLast = a == distance - 1;
+                final Optional<HexSide> direction = Hexagons.getDirection(prev, dest);
+                if (!direction.isPresent()) {
+                    throw new RuntimeException("Should not be here - cannot find vision offset direction");
+                }
+                // Do some logic after the animation (or right now if we're running parallel
+                // movement between different Units)
+                final Runnable logic = () -> {
+                    this.unit.getLeader()
+                            .ifPresent((Player l) -> this.unit.vision.translate(l, view.game.world, direction.get()));
+                    this.removeFromPosition(view.game);
+                    this.setPosition(view, dest.x, dest.y);
+                    if (isLast) {
+                        this.unit.handleEvent(view, after).execute();
+                    }
+                };
+                if (parallel) {
+                    logic.run();
+                } else {
+                    chain.add(new MoveAnimation(this.unit, prev, dest, logic));
+                }
+                prev = dest;
             }
-            view.animations.add(chain.get());
+            if (!parallel) {
+                view.animations.add(chain.get());
+            }
             view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, distance));
         });
     }
