@@ -1542,7 +1542,7 @@ public class KingdomMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE);
                     e.blob.combat.health.setMaxAndValue(15);
                     e.blob.species = Defs.species_undead;
-                    UnitLogic.speed(events, e.blob, 5);
+                    UnitLogic.speed(events, e.blob, 100);
                     return SideEffect.none;
                 });
 

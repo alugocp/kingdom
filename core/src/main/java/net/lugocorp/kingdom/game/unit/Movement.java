@@ -60,8 +60,10 @@ public class Movement {
         final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous,
                 parallel);
         return SideEffect.all(this.unit.handleEvent(view, before), () -> {
+            final Point start = this.unit.getPoint().copy();
+            final boolean wasOnUnit = view.hud.bot.tileMenu.get().equals(start);
             final AnimationChain chain = new AnimationChain();
-            Point prev = this.unit.getPoint();
+            Point prev = start;
             for (int a = 0; a < distance; a++) {
                 final Point dest = path.get(a);
                 final boolean isLast = a == distance - 1;
@@ -78,6 +80,10 @@ public class Movement {
                     this.setPosition(view, dest.x, dest.y);
                     if (isLast) {
                         this.unit.handleEvent(view, after).execute();
+                        if (wasOnUnit && view.hud.bot.tileMenu.get().equals(start)
+                                && this.unit.leadership.belongsToHuman()) {
+                            view.hud.bot.tileMenu.set(dest);
+                        }
                     }
                 };
                 if (parallel) {
