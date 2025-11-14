@@ -33,22 +33,44 @@ public class Tutorial extends Menu {
     public void setup() {
         final int top = this.view.hud.top.getHeight() + Tutorial.MARGIN + 5;
         final int bot = Coords.SIZE.y - this.view.hud.bot.getHeight() - Tutorial.MARGIN - 5;
-        this.add("Hi lol", TutorialArrow.UP, 200, 15, top);
-        this.add("Okay bye now", TutorialArrow.DOWN, 200, (Coords.SIZE.x - 200) / 2, bot);
+        final int mid = (Coords.SIZE.y + this.view.hud.top.getHeight() - this.view.hud.bot.getHeight()) / 2;
+        final int center = (Coords.SIZE.x / 2) - 150;
+        this.add(
+                "Welcome to Legends of T'ahn! This is a small tutorial for beginners that you can turn off in the settings at the top right.",
+                TutorialArrow.NONE, center, mid);
+        this.add(
+                "This is the unit/building/tile menu. You can click on the tabs below to view details on any unit, building, or tile in the game world.",
+                TutorialArrow.DOWN, center, bot);
+        this.add(
+                "Speaking of which, this is the game world. You can click on any visible tile here to open its details in the menu below.",
+                TutorialArrow.DOWN, center, mid);
+        this.add(
+                "This is the minimap. It gives you an overview of the entire game world. You'll see it change colors as your units explore the map and claim tiles in your name. You can also click on it to instantly move the camera.",
+                TutorialArrow.DOWN, Coords.SIZE.x - 330, bot);
+        this.add(
+                "This is the overhead bar. You can view personal and global stats here, as well as access the settings menu.",
+                TutorialArrow.UP, center, top);
+        this.add(
+                "There are forces conspiring against you elsewhere in the map. Grow your clan as you explore the game world and stop these conspirators!",
+                TutorialArrow.NONE, center, mid);
+        this.add("That's the basics! Click on the red arrow ability below to move your unit, or try another ability.",
+                TutorialArrow.DOWN, (Coords.SIZE.x / 3) - 150, bot);
     }
 
     /**
      * Adds a node to this Tutorial
      */
-    private Tutorial add(String text, TutorialArrow arrow, int width, int x, int y) {
+    private Tutorial add(String text, TutorialArrow arrow, int x, int y) {
         final TextNode node = new TextNode(this.view.av, text);
-        final TextNode click = new TextNode(this.view.av, "(click to continue)") {
+        final TextNode click = new TextNode(this.view.av,
+                String.format("click to continue (%d/7)", this.popups.size() + 1)) {
             /** {@inheritdoc} */
             @Override
             protected BitmapFont getFont() {
                 return this.av.fonts.getFont(new FontParam().setColor(ColorScheme.GOLD.color));
             }
         };
+        final int width = 300;
         node.pack(this, width);
         click.pack(this, width);
         final int height = node.getHeight() + click.getHeight() + (Tutorial.MARGIN * 2);
