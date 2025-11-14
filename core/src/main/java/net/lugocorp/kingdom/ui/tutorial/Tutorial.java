@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ui.hud;
+package net.lugocorp.kingdom.ui.tutorial;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.assets.FontParam;
@@ -19,10 +19,7 @@ import java.util.Queue;
 public class Tutorial extends Menu {
     private static final Rect OFFSCREEN = new Rect(-1, -1, 0, 0);
     private static final int MARGIN = 10;
-    private final Queue<Boolean> directions = new LinkedList<>();
-    private final Queue<TextNode> clicks = new LinkedList<>();
-    private final Queue<TextNode> nodes = new LinkedList<>();
-    private final Queue<Rect> bounds = new LinkedList<>();
+    private final Queue<TutorialPopup> popups = new LinkedList<>();
     private final GameView view;
 
     public Tutorial(GameView view) {
@@ -36,14 +33,14 @@ public class Tutorial extends Menu {
     public void setup() {
         final int top = this.view.hud.top.getHeight() + Tutorial.MARGIN + 5;
         final int bot = Coords.SIZE.y - this.view.hud.bot.getHeight() - Tutorial.MARGIN - 5;
-        this.add("Hi lol", true, 200, 15, top);
-        this.add("Okay bye now", false, 200, (Coords.SIZE.x - 200) / 2, bot);
+        this.add("Hi lol", TutorialArrow.UP, 200, 15, top);
+        this.add("Okay bye now", TutorialArrow.DOWN, 200, (Coords.SIZE.x - 200) / 2, bot);
     }
 
     /**
      * Adds a node to this Tutorial
      */
-    private Tutorial add(String text, boolean up, int width, int x, int y) {
+    private Tutorial add(String text, TutorialArrow arrow, int width, int x, int y) {
         final TextNode node = new TextNode(this.view.av, text);
         final TextNode click = new TextNode(this.view.av, "(click to continue)") {
             /** {@inheritdoc} */
@@ -55,10 +52,8 @@ public class Tutorial extends Menu {
         node.pack(this, width);
         click.pack(this, width);
         final int height = node.getHeight() + click.getHeight() + (Tutorial.MARGIN * 2);
-        this.bounds.add(new Rect(x, y - (up ? 0 : height), width + (Tutorial.MARGIN * 2), height));
-        this.directions.add(up);
-        this.clicks.add(click);
-        this.nodes.add(node);
+        this.popups.add(new TutorialPopup(arrow, node, click,
+                new Rect(x, y + arrow.offset(height), width + (Tutorial.MARGIN * 2), height)));
         return this;
     }
 
@@ -66,16 +61,13 @@ public class Tutorial extends Menu {
      * Swaps to the next node
      */
     private void next() {
-        this.directions.remove();
-        this.bounds.remove();
-        this.clicks.remove();
-        this.nodes.remove();
+        this.popups.remove();
     }
 
     /** {@inheritdoc} */
     @Override
     public Rect getBoundingRect() {
-        return this.bounds.size() > 0 ? this.bounds.peek() : Tutorial.OFFSCREEN;
+        return this.popups.size() > 0 ? this.popups.peek().bounds : Tutorial.OFFSCREEN;
     }
 
     /** {@inheritdoc} */
@@ -93,13 +85,14 @@ public class Tutorial extends Menu {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av) {
-        if (this.nodes.size() == 0) {
+        if (this.popups.size() == 0) {
             return;
         }
 
         // Draw the background
-        final boolean up = this.directions.peek();
-        final Rect bg = this.bounds.peek();
+        final TutorialPopup popup = this.popups.peek();
+        final Rect bg = popup.bounds;
+        final boolean up = popup.direction == TutorialArrow.UP;
         final Point p1 = new Point(bg.x + (bg.w / 2) - (Tutorial.MARGIN / 2),
                 Coords.SIZE.y - (up ? bg.y : bg.y + bg.h));
         final Point p2 = new Point(bg.x + (bg.w / 2),
@@ -119,18 +112,12 @@ public class Tutorial extends Menu {
         final Point c4 = new Point(bg.x, Coords.SIZE.y - bg.y - bg.h); // Bot-left corner
         av.shapes.begin(ShapeType.Line);
         av.shapes.setColor(ColorScheme.OUTLINE.color);
-        if (up) {
-            av.shapes.polyline(new float[]{c1.x, c1.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, c2.x, c2.y, c3.x, c3.y, c4.x,
-                    c4.y, c1.x, c1.y});
-        } else {
-            av.shapes.polyline(new float[]{c1.x, c1.y, c2.x, c2.y, c3.x, c3.y, p3.x, p3.y, p2.x, p2.y, p1.x, p1.y, c4.x,
-                    c4.y, c1.x, c1.y});
-        }
+        av.shapes.polyline(popup.getPolylineInput(c1, c2, c3, c4, p1, p2, p3));
         av.shapes.end();
 
         // Draw the TextNodes
-        final TextNode node = this.nodes.peek();
-        final TextNode click = this.clicks.peek();
+        final TextNode node = this.popups.peek().node;
+        final TextNode click = this.popups.peek().click;
         final int w = bg.w - (Tutorial.MARGIN * 2);
         final int h = bg.h - (Tutorial.MARGIN * 2);
         node.draw(av, new Rect(bg.x + Tutorial.MARGIN, bg.y + Tutorial.MARGIN, w, h));
@@ -140,7 +127,7 @@ public class Tutorial extends Menu {
     /** {@inheritdoc} */
     @Override
     public boolean click(Point p) {
-        if (this.nodes.size() > 0 && this.bounds.peek().contains(p)) {
+        if (this.popups.size() > 0 && this.popups.peek().bounds.contains(p)) {
             this.view.av.loaders.sounds.play("sfx/card-flick");
             this.next();
             return true;
