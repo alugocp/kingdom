@@ -39,8 +39,10 @@ import java.util.function.Consumer;
 class GameCreationView implements View {
     private static final int MAX_PLAYERS = 6;
     private final WorldGenOptions worldGenOpts = new WorldGenOptions(GameCreationView.getRandomSeed());
+    private final List<CompPlayer> comps = new ArrayList();
     private final StartMenuView.Params params;
     private final TextNode humanFateNameNode;
+    private final ButtonNode startButton;
     private final Menu worldSelection;
     private final Menu fateSelection;
     private final Menu playerSelection;
@@ -60,11 +62,23 @@ class GameCreationView implements View {
         this.setWorldSize(0);
 
         // Initialize GameCreationView UI components
+        this.startButton = new ButtonNode(this.view.av, "Start Game", () -> {
+            view.game.comps.addAll(this.comps);
+            this.disableStartbutton();
+            this.startGame();
+        });
         this.humanFateNameNode = new TextNode(this.view.av, "");
         this.worldSelection = this.getWorldSelectionMenu(this.view);
         this.fateSelection = this.getFateSelectionMenu(this.view);
         this.playerSelection = this.getPlayerSelectionMenu(this.view);
         this.menu = this.worldSelection;
+    }
+
+    /**
+     * Disables the start button after clicking it
+     */
+    private void disableStartbutton() {
+        this.startButton.enable(false);
     }
 
     /**
@@ -212,7 +226,7 @@ class GameCreationView implements View {
      * Returns a Menu to that allows the Player to customize their opponents
      */
     private Menu getPlayerSelectionMenu(GameView view) {
-        final List<CompPlayer> comps = new ArrayList();
+        this.comps.clear();
         final Tuple<CompPlayer, MenuNode> firstComp = this.addPlayerCustomizationNode(view, 1);
         final ListNode nodes = new ListNode()
                 .add(new RowNode().add(new SubheaderNode(view.av, view.game.human.name)).add(this.humanFateNameNode))
@@ -220,22 +234,20 @@ class GameCreationView implements View {
         final ListNode root = new ListNode();
         final Menu menu = new Menu(0, 0, Coords.SIZE.x, true, root);
         root.add(new RowNode().addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.fateSelection)))
-                .add(new HeaderNode(view.av, "Customize Players").center())
-                .addRatio(20, new ButtonNode(view.av, "Start Game", () -> {
-                    view.game.comps.addAll(comps);
-                    this.startGame();
-                }))).add(new SpacerNode()).add(new RowNode().add(new ButtonNode(view.av, "Drop Player", () -> {
-                    comps.remove(comps.size() - 1);
+                .add(new HeaderNode(view.av, "Customize Players").center()).addRatio(20, this.startButton))
+                .add(new SpacerNode()).add(new RowNode().add(new ButtonNode(view.av, "Drop Player", () -> {
+                    this.comps.remove(this.comps.size() - 1);
                     nodes.pop();
                     menu.pack();
-                }).setEnabledCriteria(() -> comps.size() > 1)).add(new ButtonNode(view.av, "Add Player", () -> {
-                    final Tuple<CompPlayer, MenuNode> results = this.addPlayerCustomizationNode(view, comps.size() + 1);
-                    comps.add(results.a);
+                }).setEnabledCriteria(() -> this.comps.size() > 1)).add(new ButtonNode(view.av, "Add Player", () -> {
+                    final Tuple<CompPlayer, MenuNode> results = this.addPlayerCustomizationNode(view,
+                            this.comps.size() + 1);
+                    this.comps.add(results.a);
                     nodes.add(results.b);
                     menu.pack();
-                }).setEnabledCriteria(() -> comps.size() + 1 < GameCreationView.MAX_PLAYERS)))
+                }).setEnabledCriteria(() -> this.comps.size() + 1 < GameCreationView.MAX_PLAYERS)))
                 .add(new MenuMenuNode(nodes));
-        comps.add(firstComp.a);
+        this.comps.add(firstComp.a);
         menu.pack();
         return menu;
     }

@@ -16,7 +16,7 @@ public final class SettingsIO {
         final FileHandle f = Gdx.files.local(SettingsIO.filepath);
         final JSONObject data = new JSONObject().put("soundVolume", s.getSoundVolume())
                 .put("musicVolume", s.getMusicVolume()).put("autoComplete", s.getAutoComplete())
-                .put("reverse", s.getReversedScrollDirection());
+                .put("reverse", s.getReversedScrollDirection()).put("tutorial", s.isTutorialEnabled());
         f.writeString(data.toString(), false);
     }
 
@@ -32,6 +32,7 @@ public final class SettingsIO {
             s.setMusicVolume(data.getFloat("musicVolume"));
             s.setAutoComplete(data.getBoolean("autoComplete"));
             s.setReversedScrollDirection(data.getBoolean("reverse"));
+            s.setTutorialEnabled(data.getBoolean("tutorial"));
         }
         return s;
     }

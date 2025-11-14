@@ -48,6 +48,9 @@ public class Tutorial extends Menu {
                 "This is the minimap. It gives you an overview of the entire game world. You'll see it change colors as your units explore the map and claim tiles in your name. You can also click on it to instantly move the camera.",
                 TutorialArrow.DOWN, Coords.SIZE.x - 330, bot);
         this.add(
+                "Below the minimap is the finish turn button. Click this when you're ready to end your turn so the computer players can go.",
+                TutorialArrow.DOWN, Coords.SIZE.x - 330, bot);
+        this.add(
                 "This is the overhead bar. You can view personal and global stats here, as well as access the settings menu.",
                 TutorialArrow.UP, center, top);
         this.add(
@@ -63,7 +66,7 @@ public class Tutorial extends Menu {
     private Tutorial add(String text, TutorialArrow arrow, int x, int y) {
         final TextNode node = new TextNode(this.view.av, text);
         final TextNode click = new TextNode(this.view.av,
-                String.format("click to continue (%d/7)", this.popups.size() + 1)) {
+                String.format("click to continue (%d/8)", this.popups.size() + 1)) {
             /** {@inheritdoc} */
             @Override
             protected BitmapFont getFont() {
