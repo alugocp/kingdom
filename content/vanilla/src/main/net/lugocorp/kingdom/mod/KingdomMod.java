@@ -429,6 +429,25 @@ public class KingdomMod implements GameMod {
                     return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : SideEffect.none;
                 });
 
+        // Market Value Goo
+        new Stratified<Building>(events.building, Labels.building_market_value_goo)
+                .add(Events.GenerateBuildingEvent.class,
+                        (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                            e.blob.setModelInstance(view.av, "fountain"); // TODO new asset
+                            e.blob.desc = "This goo generates auction points but only lasts 2 turns";
+                            e.blob.combat.health.setMaxAndValue(5);
+                            e.blob.setMinimapColor(0x875f9a);
+                            return SideEffect.none;
+                        })
+                .add(Events.SpawnEvent.class, (GameView view, Building receiver, Events.SpawnEvent e) -> () -> {
+                    view.game.future.addFutureTick("Tick", receiver, 1, true);
+                    view.game.future.addFutureTick("Remove", receiver, 2, false);
+                }).add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
+                    return () -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 2);
+                }).add("Remove", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
+                    return receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver);
+                });
+
         /**
          * SECTION Patrons
          */
@@ -1568,6 +1587,16 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
+        // Bash
+        new Stratified<Ability>(events.ability, Labels.ability_bash).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "Basic attack";
+                    e.blob.setIcon(Labels.asset_bite); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
+                                receiver.wielder, new Damage(6), 1));
+
         // Bite
         new Stratified<Ability>(events.ability, Labels.ability_bite).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1643,6 +1672,25 @@ public class KingdomMod implements GameMod {
                     }
                     return SideEffect.none;
                 });
+
+        // Craft Golden Spear
+        new Stratified<Ability>(events.ability, Labels.ability_craft_golden_spear).add(
+                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Gives the target adjacent ally a golden spear (+damage)");
+                    e.blob.setIcon(Labels.asset_acid_skin); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                                    .flatMap((Tile t) -> t.unit)
+                                    .map((Unit u) -> u.leadership.sameLeader(receiver.wielder) && !u.haul.isFull())
+                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
+                            return receiver.wielder.getLeader().get().select(view, targets, "No allies in range",
+                                    (Point p) -> {
+                                        return () -> view.game.world.getUnit(p).ifPresent((Unit u) -> u.haul
+                                                .add(view.game.generator.item(Labels.item_golden_spear)));
+                                    });
+                        });
 
         // Crystal Skin
         new Stratified<Ability>(events.ability, Labels.ability_crystal_skin).add(Events.GenerateAbilityEvent.class,
@@ -1736,6 +1784,18 @@ public class KingdomMod implements GameMod {
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                                 receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_fruit),
                                 (Tile t) -> true));
+
+        // Entrenched
+        new Stratified<Ability>(events.ability, Labels.ability_entrenched).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("+2 armor when on an active building");
+                    e.blob.setIcon(Labels.asset_local_defender);
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
+                    final boolean isOnActiveBuilding = view.game.world.getTile(receiver.wielder.getPoint())
+                            .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false);
+                    return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : SideEffect.none;
+                });
 
         // Fireball
         new Stratified<Ability>(events.ability, Labels.ability_fireball).add(Events.GenerateAbilityEvent.class,
@@ -1835,7 +1895,7 @@ public class KingdomMod implements GameMod {
                         })
                 .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     final Set<Point> radius = Lambda.filter(
-                            (Point p) -> view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
+                            (Point p) -> view.game.world.getUnit(p)
                                     .map((Unit u) -> u.name.equals(Labels.unit_necromancer)).orElse(false),
                             Hexagons.getNeighbors(e.tile.getPoint(), 1));
                     if (radius.size() == 0) {
@@ -1843,6 +1903,23 @@ public class KingdomMod implements GameMod {
                     }
                     return SideEffect.none;
                 });
+
+        // Gilded Strike
+        new Stratified<Ability>(events.ability, Labels.ability_gilded_strike).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Attack that generates gold");
+                    e.blob.setIcon(Labels.asset_green_fortress); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(4), 1, Optional.of((Point p) -> {
+                                    return () -> {
+                                        receiver.wielder.getLeader().ifPresent((Player l) -> {
+                                            l.gold += 10;
+                                        });
+                                        view.hud.top.update(view.game);
+                                    };
+                                })));
 
         // Green Fortress
         new Stratified<Ability>(events.ability, Labels.ability_green_fortress).add(Events.GenerateAbilityEvent.class,
@@ -1903,7 +1980,7 @@ public class KingdomMod implements GameMod {
                             List<SideEffect> effects = SideEffect.list(() -> receiver.wielder.haul.empty());
                             Set<Point> targets = Hexagons.getNeighbors(receiver.wielder.getPoint(), 1);
                             for (Point p : targets) {
-                                Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                                Optional<Unit> u = view.game.world.getUnit(p);
                                 if (u.map((Unit u1) -> u1.isFriendly(receiver.wielder)).orElse(false)) {
                                     effects.add(receiver.wielder.combat.heal(view, u.get(), 10));
                                 }
@@ -1934,9 +2011,24 @@ public class KingdomMod implements GameMod {
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(4), 2, Optional.of((Point p) -> {
-                                    Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                                    Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
+                                            : SideEffect.none;
+                                })));
+
+        // Inject Poison
+        new Stratified<Ability>(events.ability, Labels.ability_inject_poison).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "Melee attack that deals more damage over time";
+                    e.blob.setIcon(Labels.asset_fire_cannon); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(4), 1, Optional.of((Point p) -> {
+                                    final Optional<Unit> u = view.game.world.getUnit(p);
+                                    return u.isPresent()
+                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_poisoned)
                                             : SideEffect.none;
                                 })));
 
@@ -2029,6 +2121,39 @@ public class KingdomMod implements GameMod {
                         (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false),
                         () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 1)));
 
+        // Market Value Goo
+        new Stratified<Ability>(events.ability, Labels.ability_market_value_goo).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "20% chance to spawn goo when this unit moves. This goo generates auction points.";
+                    e.blob.setIcon(Labels.asset_deposit_seeds); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.UnitMovedEvent.class, (GameView view, Ability receiver, Events.UnitMovedEvent e) -> {
+                    final Point p = receiver.wielder.getPoint();
+                    return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
+                            && Lambda.chance(20)
+                                    ? () -> view.game.generator.building(Labels.building_market_value_goo, p.x, p.y)
+                                            .spawn(view)
+                                    : SideEffect.none;
+                });
+
+        // Metabolize
+        new Stratified<Ability>(events.ability, Labels.ability_metabolize).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Consumes 1 random hauled item to move faster for the next 2 turns");
+                    e.blob.setIcon(Labels.asset_market_indicator); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            if (!receiver.wielder.haul.hasItems()) {
+                                if (receiver.wielder.leadership.belongsToHuman()) {
+                                    view.hud.logger.error("No items to metabolize");
+                                }
+                                return SideEffect.none;
+                            }
+                            return SideEffect.all(() -> receiver.wielder.haul.remove(receiver.wielder.haul.random()),
+                                    receiver.wielder.abilities.addStatusEffect(view, Labels.status_effect_swift));
+                        });
+
         // Mine Gems
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -2092,6 +2217,16 @@ public class KingdomMod implements GameMod {
                     e.canSeeAtNight = true;
                     return SideEffect.none;
                 });
+
+        // Pebble Shot
+        new Stratified<Ability>(events.ability, Labels.ability_pebble_shot).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "Weak attack with long range";
+                    e.blob.setIcon(Labels.asset_fire_cannon);
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
+                                receiver.wielder, new Damage(2), 3));
 
         // Pick Apples
         new Stratified<Ability>(events.ability, Labels.ability_pick_apples).add(Events.GenerateAbilityEvent.class,
@@ -2159,13 +2294,11 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Set<Point> points = Lambda.filter(
-                                    (Point p) -> view.game.world.getTile(p).flatMap((Tile t) -> t.unit).isPresent(),
+                            final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getUnit(p).isPresent(),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, points,
                                     "No valid targets for extra defense", (Point p) -> {
-                                        final Unit target = view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
-                                                .get();
+                                        final Unit target = view.game.world.getUnit(p).get();
                                         return SideEffect.all(
                                                 target.abilities.addStatusEffect(view,
                                                         Labels.status_effect_extra_defense),
@@ -2194,7 +2327,7 @@ public class KingdomMod implements GameMod {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             // Check for any existing Ghastly Thrall
                             for (Point p : Hexagons.getNeighbors(receiver.wielder.getPoint(), 1)) {
-                                if (view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
+                                if (view.game.world.getUnit(p)
                                         .map((Unit u) -> u.name.equals(Labels.unit_ghastly_thrall)).orElse(false)) {
                                     if (receiver.wielder.leadership.belongsToHuman()) {
                                         view.hud.logger.error("You can only raise one Ghastly Thrall at a time");
@@ -2228,7 +2361,6 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_regeneration).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit heals a little each turn");
-                    e.blob.setIcon(Labels.asset_heal_wounds);
                     e.blob.setIcon(Labels.asset_regeneration);
                     return SideEffect.none;
                 })
@@ -2237,6 +2369,25 @@ public class KingdomMod implements GameMod {
                                 Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> receiver.wielder.combat
                         .heal(view, 1));
+
+        // Remove Poison
+        new Stratified<Ability>(events.ability, Labels.ability_remove_poison).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Removes a Poisoned effect from the target and heals both units");
+                    e.blob.setIcon(Labels.asset_heal_wounds); // TODO tint this to green
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getUnit(p)
+                                    .map((Unit u) -> u.leadership.sameLeader(receiver.wielder)
+                                            && u.abilities.hasStatusEffect(Labels.status_effect_poisoned))
+                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
+                            return receiver.wielder.getLeader().get().select(view, targets,
+                                    "No poisoned targets in range", (Point p) -> {
+                                        return () -> view.game.world.getUnit(p).ifPresent((Unit u) -> u.abilities
+                                                .removeStatusEffect(Labels.status_effect_poisoned));
+                                    });
+                        });
 
         // Revenge of the Forest
         new Stratified<Ability>(events.ability, Labels.ability_revenge_of_the_forest).add(
@@ -2305,6 +2456,15 @@ public class KingdomMod implements GameMod {
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
+        // Shield Defense
+        new Stratified<Ability>(events.ability, Labels.ability_shield_defense).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Extra defense");
+                    e.blob.setIcon(Labels.asset_defense);
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class,
+                        (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
+
         // Slime Shot
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -2324,7 +2484,22 @@ public class KingdomMod implements GameMod {
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(5), 1, Optional.of((Point p) -> {
-                                    Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                                    Optional<Unit> u = view.game.world.getUnit(p);
+                                    return u.isPresent() && Lambda.chance(15)
+                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
+                                            : SideEffect.none;
+                                })));
+
+        // Stomp
+        new Stratified<Ability>(events.ability, Labels.ability_stomp).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "Attack with a 15% chance to stun";
+                    e.blob.setIcon(Labels.asset_smash); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(5), 1, Optional.of((Point p) -> {
+                                    Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
                                             : SideEffect.none;
@@ -2368,6 +2543,17 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
+        // Swing Axe
+        new Stratified<Ability>(events.ability, Labels.ability_swing_axe).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    Damage dmg = new Damage(6);
+                    e.blob.desc = String.format("Deals %s", dmg);
+                    e.blob.setIcon(Labels.asset_sword_slash); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
+                                receiver.wielder, new Damage(6), 1));
+
         // Sword Slash
         new Stratified<Ability>(events.ability, Labels.ability_sword_slash).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -2378,6 +2564,38 @@ public class KingdomMod implements GameMod {
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(5), 1));
+
+        // Thorny Skin
+        new Stratified<Ability>(events.ability, Labels.ability_thorny_skin).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Adjacent attackers take damage");
+                    e.blob.setIcon(Labels.asset_acid_skin); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
+                    if (e.attacker instanceof Unit) {
+                        Unit target = (Unit) e.target;
+                        Unit attacker = (Unit) e.attacker;
+                        return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
+                                ? attacker.combat.takeDamage(view, new Damage(2), target)
+                                : SideEffect.none;
+                    }
+                    return SideEffect.none;
+                });
+
+        // Trade
+        new Stratified<Ability>(events.ability, Labels.ability_trade).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "Harvests gold coins from vaults every 4 turns";
+                    e.blob.setIcon(Labels.asset_mine_gold); // TODO new asset
+                    return SideEffect.none;
+                })
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver,
+                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
+                                view, receiver.wielder, Labels.item_gold_coin,
+                                (Building b) -> b.name.equals(Labels.building_vault)));
 
         /**
          * SECTION Status Effects
@@ -2392,7 +2610,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 }).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, true);
+                            view.game.future.addFutureTick("Tick", receiver, 1, false);
                             return SideEffect.none;
                         })
                 .add("Tick",
@@ -2425,7 +2643,7 @@ public class KingdomMod implements GameMod {
                         })
                 .add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, true);
+                            view.game.future.addFutureTick("Tick", receiver, 2, false);
                             return SideEffect.none;
                         })
                 .add("Tick",
@@ -2449,7 +2667,7 @@ public class KingdomMod implements GameMod {
                         })
                 .add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, true);
+                            view.game.future.addFutureTick("Tick", receiver, 2, false);
                             return SideEffect.none;
                         })
                 .add("Tick",
@@ -2461,9 +2679,60 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
+        // Poisoned
+        new Stratified<Ability>(events.ability, Labels.status_effect_poisoned).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("The unit takes 2 damage each turn for 4 turns");
+                    return SideEffect.none;
+                }).add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
+                            view.game.future.addFutureTick("Remove", receiver, 4, false);
+                            view.game.future.addFutureTick("Poison", receiver, 1, true);
+                            return SideEffect.none;
+                        })
+                .add("Remove",
+                        (GameView view, Ability receiver,
+                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities
+                                        .removeStatusEffect(receiver))
+                .add("Poison", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                    return () -> receiver.wielder.combat.takeDamage(view, new Damage(2), receiver.wielder);
+                });
+
+        // Swift
+        new Stratified<Ability>(events.ability, Labels.status_effect_swift).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("The unit can move an extra space for the next 2 turns");
+                    return SideEffect.none;
+                }).add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
+                            view.game.future.addFutureTick("Tick", receiver, 2, false);
+                            return SideEffect.none;
+                        })
+                .add("Tick",
+                        (GameView view, Ability receiver,
+                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities
+                                        .removeStatusEffect(receiver))
+                .add(Events.UnitMoveDistanceEvent.class,
+                        (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
+                            e.distance++;
+                            return SideEffect.none;
+                        });
+
         /**
          * SECTION Items
          */
+
+        // Golden Spear
+        new Stratified<Item>(events.item, Labels.item_golden_spear)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+1 damage";
+                    e.blob.icon = Optional.of(Labels.asset_spear);
+                    e.blob.gold = 10;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    e.dmg.base++;
+                    return SideEffect.none;
+                });
 
         // Mushroom
         new Stratified<Item>(events.item, Labels.item_mushroom)

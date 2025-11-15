@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.Input.Keys;
 import java.util.ArrayList;
@@ -83,6 +84,14 @@ public class Abilities {
     }
 
     /**
+     * Returns true if this instance has the given status effect by name
+     */
+    public boolean hasStatusEffect(String status) {
+        // TODO move status effects to their own logic one day
+        return Lambda.some((Ability s) -> s.name.equals(status), this.passives);
+    }
+
+    /**
      * Adds a status effect (Ability under the hood) to this instance. Also triggers
      * a special Event on the Ability so it can kick off tick events
      */
@@ -99,5 +108,20 @@ public class Abilities {
     public void removeStatusEffect(Ability status) {
         // TODO move status effects to their own logic one day
         this.passives.remove(status);
+    }
+
+    /**
+     * Removes a status effect from this instance by the given name
+     */
+    public void removeStatusEffect(String status) {
+        // TODO move status effects to their own logic one day
+        Optional<Ability> remove = Optional.empty();
+        for (Ability s : this.passives) {
+            if (s.name.equals(status)) {
+                remove = Optional.of(s);
+                break;
+            }
+        }
+        remove.ifPresent((Ability s) -> this.removeStatusEffect(s));
     }
 }

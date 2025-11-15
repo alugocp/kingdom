@@ -1,6 +1,8 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.engine.render.Modellable;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
@@ -69,6 +71,20 @@ public class World {
             return Optional.empty();
         }
         return Optional.of(t);
+    }
+
+    /**
+     * Returns the Unit at this point in the World
+     */
+    public Optional<Unit> getUnit(Point p) {
+        return this.getTile(p).flatMap((Tile t) -> t.unit);
+    }
+
+    /**
+     * Returns the Building at this point in the World
+     */
+    public Optional<Building> getBuilding(Point p) {
+        return this.getTile(p).flatMap((Tile t) -> t.building);
     }
 
     /**

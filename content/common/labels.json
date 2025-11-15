@@ -171,7 +171,8 @@
             "Oasis",
             "Shrubland",
             "Mountain",
-            "Healing Fountain"
+            "Healing Fountain",
+            "Market Value Goo"
         ]
     },
     {
@@ -335,11 +336,13 @@
         "name": "Abilities",
         "labels": [
             "Acid Skin",
+            "Bash",
             "Bite",
             "Build Healing Fountain",
             "Build Vault",
             "Collapse Mine",
             "Combat Loot",
+            "Craft Golden Spear",
             "Crystal Skin",
             "Defensive Bloom",
             "Deposit Seeds",
@@ -347,11 +350,13 @@
             "Dungeon Delve",
             "Economic Activity",
             "Edible",
+            "Entrenched",
             "Fireball",
             "Fire Cannon",
             "Fire Laser",
             "Forage in Meadow",
             "Ghastly Thrall",
+            "Gilded Strike",
             "Green Fortress",
             "Harvest Mushrooms",
             "Heal Wounds",
@@ -359,17 +364,21 @@
             "Hungry Frog Magic",
             "Hunt Fish",
             "Hurl Rock",
+            "Inject Poison",
             "Life Aura",
             "Liquifying Presence",
             "Local Defender",
             "Loose Gems",
             "Market Boom",
             "Market Indicator",
+            "Market Value Goo",
+            "Metabolize",
             "Mine Gems",
             "Mine Gold",
             "Mountain Strider",
             "Necrotic Blast",
             "Night Vision",
+            "Pebble Shot",
             "Pick Apples",
             "Pious",
             "Plant Forest",
@@ -379,17 +388,23 @@
             "Pummel",
             "Raise Undead",
             "Regeneration",
+            "Remove Poison",
             "Revenge of the Forest",
             "Running Through Nature",
             "Self Sacrifice",
             "Sacred Seeds",
             "Shell Defense",
+            "Shield Defense",
             "Slime Shot",
             "Smash",
+            "Stomp",
             "Stone Defense",
             "Subterranean Potions",
             "Swim",
-            "Sword Slash"
+            "Swing Axe",
+            "Sword Slash",
+            "Thorny Skin",
+            "Trade"
         ]
     },
     {
@@ -399,13 +414,16 @@
             "Stunned",
             "More Favor",
             "Proud Builder",
-            "Extra Defense"
+            "Extra Defense",
+            "Poisoned",
+            "Swift"
         ]
     },
     {
         "prefix": "item",
         "name": "Items",
         "labels": [
+            "Golden Spear",
             "Mushroom",
             "Sacred Seed",
             "Flower",

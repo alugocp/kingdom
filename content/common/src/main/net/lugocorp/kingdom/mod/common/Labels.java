@@ -171,6 +171,7 @@ public class Labels {
     public static final String building_shrubland = "Shrubland";
     public static final String building_mountain = "Mountain";
     public static final String building_healing_fountain = "Healing Fountain";
+    public static final String building_market_value_goo = "Market Value Goo";
 
     /**
      * SECTION Patrons
@@ -324,11 +325,13 @@ public class Labels {
      * SECTION Abilities
      */
     public static final String ability_acid_skin = "Acid Skin";
+    public static final String ability_bash = "Bash";
     public static final String ability_bite = "Bite";
     public static final String ability_build_healing_fountain = "Build Healing Fountain";
     public static final String ability_build_vault = "Build Vault";
     public static final String ability_collapse_mine = "Collapse Mine";
     public static final String ability_combat_loot = "Combat Loot";
+    public static final String ability_craft_golden_spear = "Craft Golden Spear";
     public static final String ability_crystal_skin = "Crystal Skin";
     public static final String ability_defensive_bloom = "Defensive Bloom";
     public static final String ability_deposit_seeds = "Deposit Seeds";
@@ -336,11 +339,13 @@ public class Labels {
     public static final String ability_dungeon_delve = "Dungeon Delve";
     public static final String ability_economic_activity = "Economic Activity";
     public static final String ability_edible = "Edible";
+    public static final String ability_entrenched = "Entrenched";
     public static final String ability_fireball = "Fireball";
     public static final String ability_fire_cannon = "Fire Cannon";
     public static final String ability_fire_laser = "Fire Laser";
     public static final String ability_forage_in_meadow = "Forage in Meadow";
     public static final String ability_ghastly_thrall = "Ghastly Thrall";
+    public static final String ability_gilded_strike = "Gilded Strike";
     public static final String ability_green_fortress = "Green Fortress";
     public static final String ability_harvest_mushrooms = "Harvest Mushrooms";
     public static final String ability_heal_wounds = "Heal Wounds";
@@ -348,17 +353,21 @@ public class Labels {
     public static final String ability_hungry_frog_magic = "Hungry Frog Magic";
     public static final String ability_hunt_fish = "Hunt Fish";
     public static final String ability_hurl_rock = "Hurl Rock";
+    public static final String ability_inject_poison = "Inject Poison";
     public static final String ability_life_aura = "Life Aura";
     public static final String ability_liquifying_presence = "Liquifying Presence";
     public static final String ability_local_defender = "Local Defender";
     public static final String ability_loose_gems = "Loose Gems";
     public static final String ability_market_boom = "Market Boom";
     public static final String ability_market_indicator = "Market Indicator";
+    public static final String ability_market_value_goo = "Market Value Goo";
+    public static final String ability_metabolize = "Metabolize";
     public static final String ability_mine_gems = "Mine Gems";
     public static final String ability_mine_gold = "Mine Gold";
     public static final String ability_mountain_strider = "Mountain Strider";
     public static final String ability_necrotic_blast = "Necrotic Blast";
     public static final String ability_night_vision = "Night Vision";
+    public static final String ability_pebble_shot = "Pebble Shot";
     public static final String ability_pick_apples = "Pick Apples";
     public static final String ability_pious = "Pious";
     public static final String ability_plant_forest = "Plant Forest";
@@ -368,17 +377,23 @@ public class Labels {
     public static final String ability_pummel = "Pummel";
     public static final String ability_raise_undead = "Raise Undead";
     public static final String ability_regeneration = "Regeneration";
+    public static final String ability_remove_poison = "Remove Poison";
     public static final String ability_revenge_of_the_forest = "Revenge of the Forest";
     public static final String ability_running_through_nature = "Running Through Nature";
     public static final String ability_self_sacrifice = "Self Sacrifice";
     public static final String ability_sacred_seeds = "Sacred Seeds";
     public static final String ability_shell_defense = "Shell Defense";
+    public static final String ability_shield_defense = "Shield Defense";
     public static final String ability_slime_shot = "Slime Shot";
     public static final String ability_smash = "Smash";
+    public static final String ability_stomp = "Stomp";
     public static final String ability_stone_defense = "Stone Defense";
     public static final String ability_subterranean_potions = "Subterranean Potions";
     public static final String ability_swim = "Swim";
+    public static final String ability_swing_axe = "Swing Axe";
     public static final String ability_sword_slash = "Sword Slash";
+    public static final String ability_thorny_skin = "Thorny Skin";
+    public static final String ability_trade = "Trade";
 
     /**
      * SECTION Status Effects
@@ -387,10 +402,13 @@ public class Labels {
     public static final String status_effect_more_favor = "More Favor";
     public static final String status_effect_proud_builder = "Proud Builder";
     public static final String status_effect_extra_defense = "Extra Defense";
+    public static final String status_effect_poisoned = "Poisoned";
+    public static final String status_effect_swift = "Swift";
 
     /**
      * SECTION Items
      */
+    public static final String item_golden_spear = "Golden Spear";
     public static final String item_mushroom = "Mushroom";
     public static final String item_sacred_seed = "Sacred Seed";
     public static final String item_flower = "Flower";

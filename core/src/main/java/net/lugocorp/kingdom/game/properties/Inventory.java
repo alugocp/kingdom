@@ -111,6 +111,13 @@ public class Inventory implements MenuSubject, Iterable<Item> {
     }
 
     /**
+     * Returns a random Item from this Inventory
+     */
+    public Item random() {
+        return this.items.get((int) (Math.random() * this.items.size()));
+    }
+
+    /**
      * Moves the specified Item from this Inventory to another one
      */
     public void transfer(Inventory inventory, Item item) {
