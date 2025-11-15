@@ -240,7 +240,7 @@ public class AbilityLogic {
                 view.overlays.add(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
                 if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
                     CompPlayer comp = (CompPlayer) caster.getLeader().get();
-                    if (i.hasTag("natural") || i.hasTag("fruit")) {
+                    if (i.tags.has("natural")) {
                         comp.stats.naturalHarvest.add(1);
                     } else {
                         comp.stats.otherHarvest.add(1);

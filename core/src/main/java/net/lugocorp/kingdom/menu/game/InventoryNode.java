@@ -330,16 +330,16 @@ public class InventoryNode implements MenuNode {
 
             // Only reconstruct the mini Menu root if it's not already cached
             if (this.cachedHoverMenu.map((Tuple<Item, MenuNode> tuple) -> tuple.a != item).orElse(true)) {
-                final ListNode root = new ListNode().add(new SubheaderNode(this.view.av, item.name));
-                item.getTag()
-                        .ifPresent((String tag) -> root.add(new TextNode(this.view.av, String.format("%s item", tag)) {
+                final ListNode root = new ListNode().add(new SubheaderNode(this.view.av, item.name))
+                        .add(new TextNode(this.view.av, item.tags.pretty("and", "item")) {
                             /** {@inheritdoc} */
                             @Override
                             protected BitmapFont getFont() {
                                 return this.av.fonts.getFont(new FontParam().setColor(ColorScheme.GOLD.color));
                             }
-                        }));
-                root.add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex, item.rarity.toString()))
+                        })
+                        .add(new BadgeNode(this.view.av, item.rarity.color, ColorScheme.WHITE.hex,
+                                item.rarity.toString()))
                         .add(new TextNode(this.view.av, String.format("%s (click for options)", item.desc)));
                 this.cachedHoverMenu = Optional.of(new Tuple<Item, MenuNode>(item, root));
             }

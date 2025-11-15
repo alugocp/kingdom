@@ -2526,7 +2526,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
-                    e.blob.setTag(Labels.tag_fruit);
+                    e.blob.tags.add(Labels.tag_fruit);
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
