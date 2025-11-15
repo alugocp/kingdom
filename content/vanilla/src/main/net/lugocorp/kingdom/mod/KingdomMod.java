@@ -1313,7 +1313,8 @@ public class KingdomMod implements GameMod {
                     e.blob.setModelInstance(view.av, "frog-gnome");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_heal_wounds,
                             Labels.ability_hungry_frog_magic);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_flowers, Labels.ability_swim);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_forage_in_meadow,
+                            Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.HEALING);
                     e.blob.combat.health.setMaxAndValue(40);
                     e.blob.haul.setMax(12);
@@ -1610,7 +1611,7 @@ public class KingdomMod implements GameMod {
                                     .map((Tile t) -> !t.leader.equals(receiver.wielder.getLeader()) && t.building
                                             .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false)
                                             && t.unit.isPresent())
-                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
+                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
                             return receiver.wielder.getLeader().get().select(view, mines, "No mines in range",
                                     (Point p) -> {
                                         Set<Entity> targets = new HashSet<>();
@@ -1660,7 +1661,8 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 }).add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     return !receiver.wielder.haul.isFull() && Lambda.chance(15)
-                            ? () -> receiver.wielder.haul.add(view.game.generator.item(Labels.item_apple))
+                            ? () -> receiver.wielder.haul
+                                    .add(view.game.mechanics.loot.dropByTag(view.game, Labels.tag_natural))
                             : SideEffect.none;
                 });
 
@@ -1730,8 +1732,10 @@ public class KingdomMod implements GameMod {
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
                                 Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic
-                        .harvestFromTile(view, receiver.wielder, Labels.item_apple, (Tile t) -> true));
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
+                                receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_fruit),
+                                (Tile t) -> true));
 
         // Fireball
         new Stratified<Ability>(events.ability, Labels.ability_fireball).add(Events.GenerateAbilityEvent.class,
@@ -1791,6 +1795,21 @@ public class KingdomMod implements GameMod {
                                     });
                         });
 
+        // Forage in Meadow
+        new Stratified<Ability>(events.ability, Labels.ability_forage_in_meadow).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Harvests natural items from meadows every 4 turns");
+                    e.blob.setIcon(Labels.asset_pick_flowers);
+                    return SideEffect.none;
+                })
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver,
+                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
+                                view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_natural),
+                                (Building b) -> b.name.equals(Labels.building_meadow)));
+
         // Ghastly Thrall
         new Stratified<Ability>(events.ability, Labels.ability_ghastly_thrall).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1844,13 +1863,14 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Harvests mushrooms from forests and mines every 4 turns";
                     e.blob.setIcon(Labels.asset_pick_apples); // TODO new asset
                     return SideEffect.none;
+                    // TODO any mushroom item
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
                                 Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_mushroom,
+                                view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_mushroom),
                                 (Building b) -> b.name.equals(Labels.building_forest)
                                         || b.name.equals(Labels.building_mine)));
 
@@ -1908,14 +1928,14 @@ public class KingdomMod implements GameMod {
         // Hurl Rock
         new Stratified<Ability>(events.ability, Labels.ability_hurl_rock).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("Ranged attack with chance to stun");
+                    e.blob.desc = "Ranged attack with 15% chance to stun";
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(4), 2, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
-                                    return u.isPresent()
+                                    return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
                                             : SideEffect.none;
                                 })));
@@ -1980,7 +2000,8 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 }).add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
                     return !receiver.wielder.haul.isFull() && Lambda.chance(15)
-                            ? () -> receiver.wielder.haul.add(view.game.generator.item(Labels.item_emerald))
+                            ? () -> receiver.wielder.haul
+                                    .add(view.game.mechanics.loot.dropByTag(view.game, Labels.tag_gem))
                             : SideEffect.none;
                 });
 
@@ -2020,7 +2041,7 @@ public class KingdomMod implements GameMod {
                                 Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_emerald,
+                                view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_gem),
                                 (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Mine Gold
@@ -2086,21 +2107,6 @@ public class KingdomMod implements GameMod {
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_apple,
                                 (Building b) -> b.name.equals(Labels.building_forest)));
-
-        // Pick Flowers
-        new Stratified<Ability>(events.ability, Labels.ability_pick_flowers).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("Harvests flowers from meadows every 4 turns");
-                    e.blob.setIcon(Labels.asset_pick_flowers);
-                    return SideEffect.none;
-                })
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_flower,
-                                (Building b) -> b.name.equals(Labels.building_meadow)));
 
         // Pious
         new Stratified<Ability>(events.ability, Labels.ability_pious).add(Events.GenerateAbilityEvent.class,
@@ -2312,14 +2318,14 @@ public class KingdomMod implements GameMod {
         // Smash
         new Stratified<Ability>(events.ability, Labels.ability_smash).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("Attack with a chance to stun");
+                    e.blob.desc = "Attack with a 15% chance to stun";
                     e.blob.setIcon(Labels.asset_smash);
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(5), 1, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
-                                    return u.isPresent()
+                                    return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
                                             : SideEffect.none;
                                 })));
@@ -2465,6 +2471,8 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to look at this mushroom";
                     e.blob.icon = Optional.of(Labels.asset_mushroom);
                     e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_mushroom);
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> SideEffect.none);
@@ -2475,6 +2483,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to generate extra favor";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver, Events.ItemConsumedEvent e) -> {
                     return () -> e.consumer.abilities.addStatusEffect(view, Labels.status_effect_more_favor);
@@ -2486,6 +2495,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to smell a sweet flower";
                     e.blob.icon = Optional.of(Labels.asset_flower);
                     e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> SideEffect.none);
@@ -2516,6 +2526,7 @@ public class KingdomMod implements GameMod {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_crystal);
                     e.blob.gold = 10;
+                    e.blob.tags.add(Labels.tag_gem);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
@@ -2683,6 +2694,7 @@ public class KingdomMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
@@ -2695,6 +2707,7 @@ public class KingdomMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
@@ -2707,6 +2720,7 @@ public class KingdomMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
@@ -2719,6 +2733,7 @@ public class KingdomMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
@@ -2731,6 +2746,7 @@ public class KingdomMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
+                    e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,

@@ -146,6 +146,8 @@ public class Labels {
      */
     public static final String tag_natural = "natural";
     public static final String tag_fruit = "fruit";
+    public static final String tag_mushroom = "mushroom";
+    public static final String tag_gem = "gem";
 
     /**
      * SECTION Tiles
@@ -337,6 +339,7 @@ public class Labels {
     public static final String ability_fireball = "Fireball";
     public static final String ability_fire_cannon = "Fire Cannon";
     public static final String ability_fire_laser = "Fire Laser";
+    public static final String ability_forage_in_meadow = "Forage in Meadow";
     public static final String ability_ghastly_thrall = "Ghastly Thrall";
     public static final String ability_green_fortress = "Green Fortress";
     public static final String ability_harvest_mushrooms = "Harvest Mushrooms";
@@ -357,7 +360,6 @@ public class Labels {
     public static final String ability_necrotic_blast = "Necrotic Blast";
     public static final String ability_night_vision = "Night Vision";
     public static final String ability_pick_apples = "Pick Apples";
-    public static final String ability_pick_flowers = "Pick Flowers";
     public static final String ability_pious = "Pious";
     public static final String ability_plant_forest = "Plant Forest";
     public static final String ability_plant_meadow = "Plant Meadow";

@@ -1,11 +1,12 @@
 package net.lugocorp.kingdom.game.properties;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
  * Stores a set of tags associated with an item
  */
-public class Tags {
+public class Tags implements Iterable<String> {
     private final Set<String> labels = new HashSet<>();
 
     /**
@@ -56,5 +57,13 @@ public class Tags {
             a++;
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns an Iterator for this instance's tags
+     */
+    @Override
+    public Iterator<String> iterator() {
+        return this.labels.iterator();
     }
 }

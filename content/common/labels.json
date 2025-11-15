@@ -142,7 +142,9 @@
         "name": "Tags",
         "labels": [
             "natural",
-            "fruit"
+            "fruit",
+            "mushroom",
+            "gem"
         ]
     },
     {
@@ -348,6 +350,7 @@
             "Fireball",
             "Fire Cannon",
             "Fire Laser",
+            "Forage in Meadow",
             "Ghastly Thrall",
             "Green Fortress",
             "Harvest Mushrooms",
@@ -368,7 +371,6 @@
             "Necrotic Blast",
             "Night Vision",
             "Pick Apples",
-            "Pick Flowers",
             "Pious",
             "Plant Forest",
             "Plant Meadow",
