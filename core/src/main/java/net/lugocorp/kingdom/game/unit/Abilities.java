@@ -1,9 +1,11 @@
 package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -98,22 +100,26 @@ public class Abilities {
     public SideEffect addStatusEffect(GameView view, String name) {
         // TODO move status effects to their own logic one day
         final Ability status = view.game.generator.ability(this.unit, name);
-        return SideEffect.all(() -> this.passives.add(status),
+        return SideEffect.all(
+                () -> view.overlays.add(new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, name)),
+                () -> this.passives.add(status),
                 status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this.unit)));
     }
 
     /**
      * Removes a status effect (Ability under the hood) from this instance
      */
-    public void removeStatusEffect(Ability status) {
+    public void removeStatusEffect(GameView view, Ability status) {
         // TODO move status effects to their own logic one day
+        view.overlays.add(
+                new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, String.format("-%s", status.name)));
         this.passives.remove(status);
     }
 
     /**
      * Removes a status effect from this instance by the given name
      */
-    public void removeStatusEffect(String status) {
+    public void removeStatusEffect(GameView view, String status) {
         // TODO move status effects to their own logic one day
         Optional<Ability> remove = Optional.empty();
         for (Ability s : this.passives) {
@@ -122,6 +128,6 @@ public class Abilities {
                 break;
             }
         }
-        remove.ifPresent((Ability s) -> this.removeStatusEffect(s));
+        remove.ifPresent((Ability s) -> this.removeStatusEffect(view, s));
     }
 }

@@ -1172,6 +1172,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 }).add(Events.GameStartEvent.class, (GameView view, Fate receiver, Events.GameStartEvent e) -> {
                     view.game.events.signals.addListener(Events.TakeDamageEvent.class, receiver);
+                    view.game.events.signals.addListener(Events.SpawnEvent.class, receiver);
                     return SideEffect.none;
                 }).add(Events.TakeDamageEvent.class, (GameView view, Fate receiver, Events.TakeDamageEvent e) -> {
                     if (e.target.getEntityType() == EntityType.BUILDING
@@ -1185,7 +1186,7 @@ public class KingdomMod implements GameMod {
                         if (b.getLeader().map((Player p) -> p.equals(receiver.getPlayer())).orElse(false)) {
                             return () -> view.game.world.getTile(b.getPoint()).flatMap((Tile t) -> t.unit)
                                     .ifPresent((Unit u) -> {
-                                        u.abilities.addStatusEffect(view, Labels.status_effect_proud_builder);
+                                        u.abilities.addStatusEffect(view, Labels.status_effect_proud_builder).execute();
                                     });
                         }
                     }
@@ -1489,11 +1490,11 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 });
 
-        //
+        // Slip
         // Ariala the Mage
+        // Therona Rabbitfoot
         //
-        //
-        //
+        // Rezak the Conjurer
         // Halifax
         // Glub Glub
         // Galygos the Juggernaut
@@ -1601,14 +1602,15 @@ public class KingdomMod implements GameMod {
         // Wuraj the Blessed
         // Karina Brightfeather
         // Photali
-        //
+        // Batatita
         // Razma
         new Stratified<Unit>(events.unit, Labels.unit_razma).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A wandering mystic and trader";
                     e.blob.setModelInstance(view.av, "alfikra");
                     e.blob.setMaterial("razma");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_fireball);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_fireball,
+                            Labels.ability_heal_wounds);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_economic_activity,
                             Labels.ability_pious);
                     e.blob.glyphs.set(Glyph.HEALING, Glyph.TRADE);
@@ -2517,7 +2519,7 @@ public class KingdomMod implements GameMod {
                                     "No poisoned targets in range", (Point p) -> {
                                         return () -> {
                                             view.game.world.getUnit(p).ifPresent((Unit u) -> u.abilities
-                                                    .removeStatusEffect(Labels.status_effect_poisoned));
+                                                    .removeStatusEffect(view, Labels.status_effect_poisoned));
                                             view.game.actions.unitHasCastSpell(view, receiver.wielder);
                                         };
                                     });
@@ -2749,8 +2751,8 @@ public class KingdomMod implements GameMod {
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities
-                                        .removeStatusEffect(receiver))
+                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver))
                 .add(Events.IsStunnedEvent.class, (GameView view, Ability receiver, Events.IsStunnedEvent e) -> {
                     e.isStunned = true;
                     return SideEffect.none;
@@ -2763,7 +2765,7 @@ public class KingdomMod implements GameMod {
                     return SideEffect.none;
                 }).add(Events.GenerateFavorEvent.class,
                         (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
-                            receiver.wielder.abilities.removeStatusEffect(receiver);
+                            receiver.wielder.abilities.removeStatusEffect(view, receiver);
                             e.favor += 5;
                             return SideEffect.none;
                         });
@@ -2782,8 +2784,8 @@ public class KingdomMod implements GameMod {
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities
-                                        .removeStatusEffect(receiver))
+                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 3;
                     return SideEffect.none;
@@ -2806,8 +2808,8 @@ public class KingdomMod implements GameMod {
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities
-                                        .removeStatusEffect(receiver))
+                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 2;
                     return SideEffect.none;
@@ -2826,8 +2828,8 @@ public class KingdomMod implements GameMod {
                         })
                 .add("Remove",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities
-                                        .removeStatusEffect(receiver))
+                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver))
                 .add("Poison", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     return () -> receiver.wielder.combat.takeDamage(view, new Damage(2), receiver.wielder);
                 });
@@ -2844,8 +2846,8 @@ public class KingdomMod implements GameMod {
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities
-                                        .removeStatusEffect(receiver))
+                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver))
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             e.distance++;
@@ -2912,7 +2914,7 @@ public class KingdomMod implements GameMod {
                     e.blob.tags.add(Labels.tag_natural);
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver, Events.ItemConsumedEvent e) -> {
-                    return () -> e.consumer.abilities.addStatusEffect(view, Labels.status_effect_more_favor);
+                    return e.consumer.abilities.addStatusEffect(view, Labels.status_effect_more_favor);
                 });
 
         // Flower

@@ -279,7 +279,9 @@ public class Labels {
     public static final String unit_dendra_ivy = "Dendra Ivy";
     public static final String unit_trina_the_ettin = "Trina the Ettin";
     public static final String unit_prismar = "Prismar";
+    public static final String unit_slip = "Slip";
     public static final String unit_ariala_the_mage = "Ariala the Mage";
+    public static final String unit_therona_rabbitfoot = "Therona Rabbitfoot";
     public static final String unit_rezak_the_conjurer = "Rezak the Conjurer";
     public static final String unit_halifax = "Halifax";
     public static final String unit_glub_glub = "Glub Glub";
