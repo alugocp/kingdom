@@ -7,7 +7,6 @@ import net.lugocorp.kingdom.builtin.logic.ItemLogic;
 import net.lugocorp.kingdom.builtin.logic.UnitLogic;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.actions.ActionType;
-import net.lugocorp.kingdom.game.actions.ActivateAction;
 import net.lugocorp.kingdom.game.combat.Damage;
 import net.lugocorp.kingdom.game.events.AllEventHandlers;
 import net.lugocorp.kingdom.game.events.Event;
@@ -1676,7 +1675,7 @@ public class KingdomMod implements GameMod {
         // Craft Golden Spear
         new Stratified<Ability>(events.ability, Labels.ability_craft_golden_spear).add(
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("Gives the target adjacent ally a golden spear (+damage)");
+                    e.blob.desc = String.format("Gives the target adjacent ally a golden spear (+1 damage)");
                     e.blob.setIcon(Labels.asset_acid_skin); // TODO new asset
                     return SideEffect.none;
                 }).add(Events.AbilityActivatedEvent.class,
@@ -1684,11 +1683,42 @@ public class KingdomMod implements GameMod {
                             final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
                                     .flatMap((Tile t) -> t.unit)
                                     .map((Unit u) -> u.leadership.sameLeader(receiver.wielder) && !u.haul.isFull())
+                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
+                            return receiver.wielder.getLeader().get().select(view, targets, "No allies in range",
+                                    (Point p) -> {
+                                        return () -> {
+                                            view.game.world.getUnit(p).ifPresent((Unit u) -> u.haul
+                                                    .add(view.game.generator.item(Labels.item_golden_spear)));
+                                            view.game.actions.unitHasCastSpell(view, receiver.wielder);
+                                        };
+                                    });
+                        });
+
+        // Craft Slime Armor
+        new Stratified<Ability>(events.ability, Labels.ability_craft_slime_armor).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String
+                            .format("Consumes one goo item and gives the target ally slime armor (+1 defense)");
+                    e.blob.setIcon(Labels.asset_acid_skin); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            if (!receiver.wielder.haul.hasItemWithTag(Labels.tag_goo)) {
+                                view.hud.logger.error("Cannot craft slime armor without a goo item");
+                                return SideEffect.none;
+                            }
+                            final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                                    .flatMap((Tile t) -> t.unit)
+                                    .map((Unit u) -> u.leadership.sameLeader(receiver.wielder) && !u.haul.isFull())
                                     .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
                             return receiver.wielder.getLeader().get().select(view, targets, "No allies in range",
                                     (Point p) -> {
-                                        return () -> view.game.world.getUnit(p).ifPresent((Unit u) -> u.haul
-                                                .add(view.game.generator.item(Labels.item_golden_spear)));
+                                        return () -> {
+                                            receiver.wielder.haul.removeItemWithTag(Labels.tag_goo);
+                                            view.game.world.getUnit(p).ifPresent((Unit u) -> u.haul
+                                                    .add(view.game.generator.item(Labels.item_slime_armor)));
+                                            view.game.actions.unitHasCastSpell(view, receiver.wielder);
+                                        };
                                     });
                         });
 
@@ -1785,6 +1815,20 @@ public class KingdomMod implements GameMod {
                                 receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_fruit),
                                 (Tile t) -> true));
 
+        // Efficient Stomach
+        new Stratified<Ability>(events.ability, Labels.ability_efficient_stomach).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("Can cast a second spell below 2 hunger");
+                    e.blob.setIcon(Labels.asset_local_defender); // TODO new asset
+                    return SideEffect.none;
+                }).add(Events.GetMaxActivationsEvent.class,
+                        (GameView view, Ability receiver, Events.GetMaxActivationsEvent e) -> {
+                            if (receiver.wielder.hunger.get(view) < 2) {
+                                e.max++;
+                            }
+                            return SideEffect.none;
+                        });
+
         // Entrenched
         new Stratified<Ability>(events.ability, Labels.ability_entrenched).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1846,8 +1890,7 @@ public class KingdomMod implements GameMod {
                                                     .ifPresent((Unit u) -> effects.add(
                                                             receiver.wielder.combat.attack(view, u, new Damage(4))));
                                         }
-                                        effects.add(() -> view.game.actions.unitHasActed(view, receiver.wielder,
-                                                new ActivateAction()));
+                                        effects.add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                                         if (receiver.wielder.leadership.belongsToHuman()) {
                                             effects.add(() -> view.hud.bot.tileMenu.refresh());
                                         }
@@ -1934,13 +1977,27 @@ public class KingdomMod implements GameMod {
                     return isForest ? AbilityLogic.defense(e, 2) : SideEffect.none;
                 });
 
+        // Harvest Goo
+        new Stratified<Ability>(events.ability, Labels.ability_harvest_goo).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = "Harvests goo from mines every 4 turns";
+                    e.blob.setIcon(Labels.asset_pick_apples); // TODO new asset
+                    return SideEffect.none;
+                })
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver,
+                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
+                                view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_goo),
+                                (Building b) -> b.name.equals(Labels.building_mine)));
+
         // Harvest Mushrooms
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mushrooms).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests mushrooms from forests and mines every 4 turns";
                     e.blob.setIcon(Labels.asset_pick_apples); // TODO new asset
                     return SideEffect.none;
-                    // TODO any mushroom item
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
@@ -2302,8 +2359,7 @@ public class KingdomMod implements GameMod {
                                         return SideEffect.all(
                                                 target.abilities.addStatusEffect(view,
                                                         Labels.status_effect_extra_defense),
-                                                () -> view.game.actions.unitHasActed(view, receiver.wielder,
-                                                        new ActivateAction()));
+                                                () -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                                     });
                         });
 
@@ -2346,8 +2402,7 @@ public class KingdomMod implements GameMod {
                             return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
                                     (Point p) -> {
                                         return () -> {
-                                            view.game.actions.unitHasActed(view, receiver.wielder,
-                                                    new ActivateAction());
+                                            view.game.actions.unitHasCastSpell(view, receiver.wielder);
                                             receiver.wielder.combat.takeDamage(view, new Damage(20), receiver.wielder);
                                             final Unit u = view.game.generator.unit(Labels.unit_ghastly_thrall, p.x,
                                                     p.y);
@@ -2384,8 +2439,11 @@ public class KingdomMod implements GameMod {
                                     .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, targets,
                                     "No poisoned targets in range", (Point p) -> {
-                                        return () -> view.game.world.getUnit(p).ifPresent((Unit u) -> u.abilities
-                                                .removeStatusEffect(Labels.status_effect_poisoned));
+                                        return () -> {
+                                            view.game.world.getUnit(p).ifPresent((Unit u) -> u.abilities
+                                                    .removeStatusEffect(Labels.status_effect_poisoned));
+                                            view.game.actions.unitHasCastSpell(view, receiver.wielder);
+                                        };
                                     });
                         });
 
@@ -2721,6 +2779,29 @@ public class KingdomMod implements GameMod {
         /**
          * SECTION Items
          */
+
+        // Goo
+        new Stratified<Item>(events.item, Labels.item_goo)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to squish the goo";
+                    e.blob.icon = Optional.of(Labels.asset_slime);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_goo);
+                    return SideEffect.none;
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> SideEffect.none);
+
+        // Slime Armor
+        new Stratified<Item>(events.item, Labels.item_slime_armor)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+1 defense";
+                    e.blob.icon = Optional.of(Labels.asset_chestplate);
+                    e.blob.gold = 1;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    e.dmg.base--;
+                    return SideEffect.none;
+                });
 
         // Golden Spear
         new Stratified<Item>(events.item, Labels.item_golden_spear)

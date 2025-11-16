@@ -148,6 +148,7 @@ public class Labels {
     public static final String tag_fruit = "fruit";
     public static final String tag_mushroom = "mushroom";
     public static final String tag_gem = "gem";
+    public static final String tag_goo = "goo";
 
     /**
      * SECTION Tiles
@@ -332,6 +333,7 @@ public class Labels {
     public static final String ability_collapse_mine = "Collapse Mine";
     public static final String ability_combat_loot = "Combat Loot";
     public static final String ability_craft_golden_spear = "Craft Golden Spear";
+    public static final String ability_craft_slime_armor = "Craft Slime Armor";
     public static final String ability_crystal_skin = "Crystal Skin";
     public static final String ability_defensive_bloom = "Defensive Bloom";
     public static final String ability_deposit_seeds = "Deposit Seeds";
@@ -339,6 +341,7 @@ public class Labels {
     public static final String ability_dungeon_delve = "Dungeon Delve";
     public static final String ability_economic_activity = "Economic Activity";
     public static final String ability_edible = "Edible";
+    public static final String ability_efficient_stomach = "Efficient Stomach";
     public static final String ability_entrenched = "Entrenched";
     public static final String ability_fireball = "Fireball";
     public static final String ability_fire_cannon = "Fire Cannon";
@@ -347,6 +350,7 @@ public class Labels {
     public static final String ability_ghastly_thrall = "Ghastly Thrall";
     public static final String ability_gilded_strike = "Gilded Strike";
     public static final String ability_green_fortress = "Green Fortress";
+    public static final String ability_harvest_goo = "Harvest Goo";
     public static final String ability_harvest_mushrooms = "Harvest Mushrooms";
     public static final String ability_heal_wounds = "Heal Wounds";
     public static final String ability_hug = "Hug";
@@ -408,6 +412,8 @@ public class Labels {
     /**
      * SECTION Items
      */
+    public static final String item_goo = "Goo";
+    public static final String item_slime_armor = "Slime Armor";
     public static final String item_golden_spear = "Golden Spear";
     public static final String item_mushroom = "Mushroom";
     public static final String item_sacred_seed = "Sacred Seed";

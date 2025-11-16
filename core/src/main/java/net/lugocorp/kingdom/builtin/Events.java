@@ -516,4 +516,16 @@ public class Events {
      */
     public static class EndOfTurnEvent extends Event {
     }
+
+    /**
+     * Tells us how many spells the given Unit can cast in a turn
+     */
+    public static class GetMaxActivationsEvent extends Event {
+        public final Unit unit;
+        public int max = 1;
+
+        public GetMaxActivationsEvent(Unit unit) {
+            this.unit = unit;
+        }
+    }
 }

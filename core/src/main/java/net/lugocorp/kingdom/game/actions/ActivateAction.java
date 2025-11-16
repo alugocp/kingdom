@@ -1,9 +1,19 @@
 package net.lugocorp.kingdom.game.actions;
+import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * This Action represents an Ability being activated
  */
 public class ActivateAction implements Action {
+    private int remaining;
+
+    public ActivateAction(GameView view, Unit unit) {
+        final Events.GetMaxActivationsEvent e = new Events.GetMaxActivationsEvent(unit);
+        unit.handleEvent(view, e); // Don't need execute() here
+        this.remaining = e.max - 1;
+    }
 
     /** {@inheritdoc} */
     @Override
@@ -14,12 +24,13 @@ public class ActivateAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean canBeFollowedBy(ActionType a) {
-        return false;
+        return this.remaining > 0 && a == ActionType.ACTIVATE;
     }
 
     /** {@inheritdoc} */
     @Override
     public Action followedBy(Action a) {
+        this.remaining--;
         return this;
     }
 
@@ -32,6 +43,8 @@ public class ActivateAction implements Action {
     /** {@inheritdoc} */
     @Override
     public String getDescription() {
-        return "This unit has cast a spell and has exhausted its actions this turn";
+        return this.remaining == 0
+                ? "This unit has cast its max number of spells for this turn"
+                : String.format("This unit can cast %d more spells this turn", this.remaining);
     }
 }

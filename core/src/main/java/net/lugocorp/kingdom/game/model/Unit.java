@@ -166,7 +166,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
         // Unit stats section
         final ListNode col1 = new ListNode().add(new NameNode(view.av, this.name));
-        final int turnsUntilHungry = Math.max(0, view.game.future.getFutureEventRemainingTurns(this, "GetsHungry"));
         col1.add(new RowNode()
                 .addExact(GlyphIconsNode.width(this.glyphs.size()), new GlyphIconsNode(view.av, this.glyphs.get()))
                 .add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString())))
@@ -181,8 +180,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
                                         this.combat.health.getMax()),
                                 new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
-                                new ResourceBarsNode.Bar("Hunger", 0x7d4513,
-                                        this.hunger.getTurnsBeforeHunger() - turnsUntilHungry,
+                                new ResourceBarsNode.Bar("Hunger", 0x7d4513, this.hunger.get(view),
                                         this.hunger.getTurnsBeforeHunger())))
                         .addExact(IconNode.SIDE, new HelperNode(view.av, new ListNode()
                                 .add(new SubheaderNode(view.av, "Health"))

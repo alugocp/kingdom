@@ -112,6 +112,14 @@ public class ActionManager {
     }
 
     /**
+     * Calls down into unitHasActed() when the Unit has cast a spell (syntactic
+     * sugar)
+     */
+    public void unitHasCastSpell(GameView view, Unit u) {
+        this.unitHasActed(view, u, new ActivateAction(view, u));
+    }
+
+    /**
      * Returns a character to display in the given Unit's ActionOverlay
      */
     private char getActionOverlayChar(Unit u) {

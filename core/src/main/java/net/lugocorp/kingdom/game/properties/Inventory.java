@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.game.InventoryNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -160,6 +161,21 @@ public class Inventory implements MenuSubject, Iterable<Item> {
             }
         }
         return edible;
+    }
+
+    /**
+     * Returns true if this instance contains an Item with the given tag
+     */
+    public boolean hasItemWithTag(String tag) {
+        return Lambda.some((Item i) -> i.tags.has(tag), this.items);
+    }
+
+    /**
+     * Removes a random Item with the given tag
+     */
+    public void removeItemWithTag(String tag) {
+        final List<Item> targets = Lambda.filter((Item i) -> i.tags.has(tag), this.items);
+        this.remove(Lambda.random(targets));
     }
 
     /** {@inheritdoc} */

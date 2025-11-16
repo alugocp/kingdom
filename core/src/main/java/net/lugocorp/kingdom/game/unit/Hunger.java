@@ -56,6 +56,13 @@ public class Hunger {
     }
 
     /**
+     * Returns the "hunger" value associated with this instance
+     */
+    public int get(GameView view) {
+        return this.getTurnsBeforeHunger() - Math.max(0, this.getTurnsUntilGetsHungry(view));
+    }
+
+    /**
      * Returns the number of turns before hunger strikes
      */
     public int getTurnsBeforeHunger() {
@@ -63,11 +70,18 @@ public class Hunger {
     }
 
     /**
+     * Returns the number of turns until we trigger GetsHungry
+     */
+    private int getTurnsUntilGetsHungry(GameView view) {
+        return view.game.future.getFutureEventRemainingTurns(this.unit, "GetsHungry");
+    }
+
+    /**
      * Changes how long this instance's Unit takes to get hungry
      */
     public void setTimeToHunger(GameView view, int n) {
         final int diff = n - this.turnsToGetHungry;
-        final int remainingTurns = view.game.future.getFutureEventRemainingTurns(this.unit, "GetsHungry");
+        final int remainingTurns = this.getTurnsUntilGetsHungry(view);
         if (remainingTurns >= 0 && remainingTurns + diff <= 0) {
             view.game.future.handleFutureTicksEarly(view, this.unit, "GetsHungry");
         }

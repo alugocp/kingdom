@@ -144,7 +144,8 @@
             "natural",
             "fruit",
             "mushroom",
-            "gem"
+            "gem",
+            "goo"
         ]
     },
     {
@@ -343,6 +344,7 @@
             "Collapse Mine",
             "Combat Loot",
             "Craft Golden Spear",
+            "Craft Slime Armor",
             "Crystal Skin",
             "Defensive Bloom",
             "Deposit Seeds",
@@ -350,6 +352,7 @@
             "Dungeon Delve",
             "Economic Activity",
             "Edible",
+            "Efficient Stomach",
             "Entrenched",
             "Fireball",
             "Fire Cannon",
@@ -358,6 +361,7 @@
             "Ghastly Thrall",
             "Gilded Strike",
             "Green Fortress",
+            "Harvest Goo",
             "Harvest Mushrooms",
             "Heal Wounds",
             "Hug",
@@ -423,6 +427,8 @@
         "prefix": "item",
         "name": "Items",
         "labels": [
+            "Goo",
+            "Slime Armor",
             "Golden Spear",
             "Mushroom",
             "Sacred Seed",
