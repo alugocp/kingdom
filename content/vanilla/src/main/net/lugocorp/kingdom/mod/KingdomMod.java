@@ -452,6 +452,33 @@ public class KingdomMod implements GameMod {
          */
 
         // Joyous Reaper
+        new Stratified<Patron>(events.patron, Labels.patron_joyous_reaper).add(Events.GeneratePatronEvent.class,
+                (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
+                    e.blob.setModelInstance(view.av, "wise-mountain"); // TODO new asset
+                    e.blob.desc = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit reincarnates.";
+                    e.blob.preference = "Battle glyph units";
+                    e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
+                    // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
+                    // TODO reincarnation
+                    return SideEffect.none;
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    view.game.events.signals.addListener(Events.EntityDiedEvent.class, receiver);
+                    view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
+                }).add(Events.EntityDiedEvent.class, (GameView view, Patron receiver, Events.EntityDiedEvent e) -> {
+                    if (e.target.isEntityType(EntityType.UNIT) && ((Unit) e.target).glyphs.has(Glyph.BATTLE)
+                            && e.target.getLeader().equals(receiver.getFavoritePlayer())) {
+                        return () -> e.target.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                    }
+                    return SideEffect.none;
+                }).add(Events.KilledEntityEvent.class, (GameView view, Patron receiver, Events.KilledEntityEvent e) -> {
+                    if (e.killer.isEntityType(EntityType.UNIT) && ((Unit) e.killer).glyphs.has(Glyph.BATTLE)
+                            && e.killer.getLeader().equals(receiver.getFavoritePlayer())
+                            && e.target.isEntityType(EntityType.UNIT)) {
+                        return () -> e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                    }
+                    return SideEffect.none;
+                });
+
         // Great Corn Woman
         // Lord Shui, Guardian of the River
         // The Pond Troll
@@ -483,6 +510,34 @@ public class KingdomMod implements GameMod {
 
         // The Eternal Guardian
         // Flutterwing
+        new Stratified<Patron>(events.patron, Labels.patron_flutterwing).add(Events.GeneratePatronEvent.class,
+                (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
+                    e.blob.setModelInstance(view.av, "wise-mountain"); // TODO new asset
+                    e.blob.desc = "Your battle glyph units have +20% critical hit chance and generate 5 unit points when they kill another unit";
+                    e.blob.preference = "Battle glyph units";
+                    e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
+                    // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
+                    return SideEffect.none;
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    view.game.events.signals.addListener(Events.CheckCriticalHitEvent.class, receiver);
+                    view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
+                }).add(Events.CheckCriticalHitEvent.class,
+                        (GameView view, Patron receiver, Events.CheckCriticalHitEvent e) -> {
+                            if (e.entity.isEntityType(EntityType.UNIT) && ((Unit) e.entity).glyphs.has(Glyph.BATTLE)
+                                    && e.entity.getLeader().equals(receiver.getFavoritePlayer())) {
+                                e.chance += 10;
+                            }
+                            return SideEffect.none;
+                        })
+                .add(Events.KilledEntityEvent.class, (GameView view, Patron receiver, Events.KilledEntityEvent e) -> {
+                    if (e.killer.isEntityType(EntityType.UNIT) && ((Unit) e.killer).glyphs.has(Glyph.BATTLE)
+                            && e.killer.getLeader().equals(receiver.getFavoritePlayer())
+                            && e.target.isEntityType(EntityType.UNIT)) {
+                        return () -> e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                    }
+                    return SideEffect.none;
+                });
+
         // Wise Mountain
         new Stratified<Patron>(events.patron, Labels.patron_wise_mountain).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
@@ -491,7 +546,14 @@ public class KingdomMod implements GameMod {
                     e.blob.preference = "Mining glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.MINING);
                     // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
-                    // TODO implement effect
+                    return SideEffect.none;
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
+                }).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
+                    if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.MINING)
+                            && !e.unit.haul.isFull() && Lambda.chance(20)) {
+                        return () -> e.unit.haul.add(e.item);
+                    }
                     return SideEffect.none;
                 });
 
@@ -503,8 +565,16 @@ public class KingdomMod implements GameMod {
                     e.blob.preference = "Nature glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.NATURE);
                     // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
-                    // TODO implement effect
                     return SideEffect.none;
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
+                }).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
+                    return () -> {
+                        if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.NATURE)
+                                && !e.unit.haul.isFull() && Lambda.chance(20)) {
+                            e.unit.haul.add(e.item);
+                        }
+                    };
                 });
 
         // Ahn-Juné

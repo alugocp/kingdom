@@ -233,7 +233,6 @@ public class AbilityLogic {
         final List<SideEffect> effects = SideEffect.list();
         if (!caster.haul.isFull()) {
             Item i = view.game.generator.item(item);
-            effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
             effects.add(() -> {
                 caster.haul.add(i);
                 view.overlays.add(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
@@ -246,6 +245,7 @@ public class AbilityLogic {
                     }
                 }
             });
+            effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
         }
         return AbilityLogic.doOnTile(view, caster, criteria, () -> SideEffect.all(effects));
     }
