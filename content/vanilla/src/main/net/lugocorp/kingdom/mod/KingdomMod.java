@@ -455,7 +455,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_joyous_reaper).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "wise-mountain"); // TODO new asset
-                    e.blob.desc = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit reincarnates.";
+                    e.blob.desc = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit is reincarnated (returns as a unit recruitment option).";
                     e.blob.preference = "Battle glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
@@ -467,14 +467,20 @@ public class KingdomMod implements GameMod {
                 }).add(Events.EntityDiedEvent.class, (GameView view, Patron receiver, Events.EntityDiedEvent e) -> {
                     if (e.target.isEntityType(EntityType.UNIT) && ((Unit) e.target).glyphs.has(Glyph.BATTLE)
                             && e.target.getLeader().equals(receiver.getFavoritePlayer())) {
-                        return () -> e.target.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                        return () -> {
+                            e.target.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                            view.game.mechanics.pools.reincarnate((Unit) e.target);
+                        };
                     }
                     return SideEffect.none;
                 }).add(Events.KilledEntityEvent.class, (GameView view, Patron receiver, Events.KilledEntityEvent e) -> {
                     if (e.killer.isEntityType(EntityType.UNIT) && ((Unit) e.killer).glyphs.has(Glyph.BATTLE)
                             && e.killer.getLeader().equals(receiver.getFavoritePlayer())
                             && e.target.isEntityType(EntityType.UNIT)) {
-                        return () -> e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                        return () -> {
+                            e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                            view.game.mechanics.pools.reincarnate((Unit) e.target);
+                        };
                     }
                     return SideEffect.none;
                 });

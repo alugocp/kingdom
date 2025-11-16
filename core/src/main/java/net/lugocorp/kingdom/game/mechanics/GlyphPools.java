@@ -79,15 +79,18 @@ public class GlyphPools {
      * Adds a name to the pools specified by the given Glyphs
      */
     private void add(String name, Glyph[] glyphs) {
-        for (int a = 0; a < glyphs.length; a++) {
-            this.pools.get(glyphs[a]).add(name);
+        for (Glyph g : glyphs) {
+            final List<String> pool = this.pools.get(g);
+            if (!pool.contains(name)) {
+                pool.add(name);
+            }
         }
     }
 
     /**
-     * Adds a Unit to the pools by their Glyph(s)
+     * Re-adds a Unit to the pools by their Glyph(s)
      */
-    public void add(Unit u) {
+    public void reincarnate(Unit u) {
         this.add(u.name, u.glyphs.get());
     }
 
