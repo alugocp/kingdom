@@ -518,7 +518,7 @@ public class KingdomMod implements GameMod {
         // Flutterwing
         new Stratified<Patron>(events.patron, Labels.patron_flutterwing).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "wise-mountain"); // TODO new asset
+                    e.blob.setModelInstance(view.av, "flutterwing");
                     e.blob.desc = "Your battle glyph units have +20% critical hit chance and generate 5 unit points when they kill another unit";
                     e.blob.preference = "Battle glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
