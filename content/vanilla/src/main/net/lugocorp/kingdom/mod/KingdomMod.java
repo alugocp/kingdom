@@ -454,12 +454,11 @@ public class KingdomMod implements GameMod {
         // Joyous Reaper
         new Stratified<Patron>(events.patron, Labels.patron_joyous_reaper).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "wise-mountain"); // TODO new asset
+                    e.blob.setModelInstance(view.av, "joyous-reaper");
                     e.blob.desc = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit is reincarnated (returns as a unit recruitment option).";
                     e.blob.preference = "Battle glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     // e.blob.setIcons(Labels.asset_swim, Labels.asset_drown); // TODO new icons
-                    // TODO reincarnation
                     return SideEffect.none;
                 }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
                     view.game.events.signals.addListener(Events.EntityDiedEvent.class, receiver);
