@@ -11,4 +11,22 @@ public class Tuple<A, B> {
         this.a = a;
         this.b = b;
     }
+
+    /** {@inheritdoc} */
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public boolean equals(Object o) {
+        return this.toString().equals(o.toString());
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public String toString() {
+        return String.format("(%s, %s)", this.a.toString(), this.b.toString());
+    }
 }

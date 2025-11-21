@@ -28,7 +28,7 @@ public class LootTable {
 
         // Populate the Lists with Item names by their Rarity
         for (String s : game.events.item.getStratifiers()) {
-            Item i = game.generator.item(s);
+            final Item i = game.generator.item(s);
             this.itemsByRarity.get(i.rarity).add(s);
             for (String tag : i.tags) {
                 final Tuple<String, Rarity> key = new Tuple<>(tag, i.rarity);
