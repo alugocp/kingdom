@@ -1331,6 +1331,20 @@ public class KingdomMod implements GameMod {
         // Faustus
         // Maekuro the Mighty
         // Garudee
+        new Stratified<Unit>(events.unit, Labels.unit_garudee).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This Garuda artilleryman spits pebbles at invaders";
+                    e.blob.setModelInstance(view.av, "garudee");
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_pebble_shot,
+                            Labels.ability_swing_axe);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_entrenched);
+                    e.blob.glyphs.set(Glyph.DEFENSE);
+                    e.blob.combat.health.setMaxAndValue(80);
+                    e.blob.species = Defs.species_garuda;
+                    UnitLogic.speed(events, e.blob, 1);
+                    return SideEffect.none;
+                });
+
         // Pebbles
         // Magdalena
         // Lost Golem
@@ -1471,6 +1485,7 @@ public class KingdomMod implements GameMod {
                     e.blob.species = Defs.species_plasmoid;
                     return SideEffect.none;
                 });
+
         // Sathra the Flame Caster
         // Dendra Ivy
         // Trina the Ettin
