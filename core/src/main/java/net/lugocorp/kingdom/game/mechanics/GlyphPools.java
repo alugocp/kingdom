@@ -66,6 +66,7 @@ public class GlyphPools {
             throw new RuntimeException("Pool size is lower than number of requested entries");
         }
 
+        // TODO account for remainder Units in the pool
         final int chunkSize = max / n;
         String[] names = new String[n];
         for (int a = 0; a < n; a++) {

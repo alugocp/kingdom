@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.engine.assets;
 import net.lugocorp.kingdom.mods.ModAssetsMap;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class ModelLoader extends AssetsPool<Model> {
         }
         final BoundingBox box = new BoundingBox();
         model.get().calculateBoundingBox(box);
-        this.bounds.put(name, new ModelBounds(box.getDepth(), box.getHeight(), 0f));
+        this.bounds.put(name, new ModelBounds(box.getDepth(), box.getMax(new Vector3()).y, 0f));
         return true;
     }
 

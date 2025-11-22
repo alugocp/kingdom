@@ -75,7 +75,7 @@ public class Modellable {
         if (!this.model.isPresent()) {
             this.model = this.models.createModelInstance(this.modelName);
             this.model.ifPresent((ModelInstance model) -> {
-                this.applyAlpha(model);
+                this.applyAlpha(model, false);
                 this.resetModelPosition();
                 this.setupModelInstance(model);
             });
@@ -115,15 +115,17 @@ public class Modellable {
      */
     public void setAlpha(float alpha) {
         this.alpha = Math.max(0f, Math.min(1f, alpha));
-        this.getModelInstance().ifPresent((ModelInstance model) -> this.applyAlpha(model));
+        this.getModelInstance().ifPresent((ModelInstance model) -> this.applyAlpha(model, true));
     }
 
     /**
      * Applies the given alpha value to our model
      */
-    protected void applyAlpha(ModelInstance model) {
+    private void applyAlpha(ModelInstance model, boolean overwrite) {
         for (Material m : this.model.get().materials) {
-            m.set(new BlendingAttribute(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, this.alpha));
+            if (overwrite || m.get(BlendingAttribute.Type) == null) {
+                m.set(new BlendingAttribute(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, this.alpha));
+            }
         }
     }
 
