@@ -8,31 +8,54 @@ import java.util.Set;
  */
 public class Tags implements Iterable<String> {
     private final Set<String> labels = new HashSet<>();
+    private boolean all = false;
 
     /**
      * Adds a new tag to this instance
      */
     public void add(String label) {
-        this.labels.add(label);
+        if (!this.all) {
+            this.labels.add(label);
+        }
+    }
+
+    /**
+     * Removes the given tag from this instance
+     */
+    public void remove(String label) {
+        if (!this.all) {
+            this.labels.remove(label);
+        }
     }
 
     /**
      * Returns true if this instance has the given tag
      */
     public boolean has(String s) {
-        return this.labels.contains(s);
+        return this.all || this.labels.contains(s);
     }
 
     /**
      * Returns true if this instance and the given instance have any tags in common
      */
     public boolean intersects(Tags t) {
+        if (this.all || t.all) {
+            return true;
+        }
         for (String s : this.labels) {
             if (t.labels.contains(s)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Sets this instance to encompass all tags
+     */
+    public void acceptAll() {
+        this.labels.clear();
+        this.all = true;
     }
 
     /**
@@ -43,6 +66,9 @@ public class Tags implements Iterable<String> {
         final StringBuilder sb = new StringBuilder();
         final int n = this.labels.size();
         int a = 0;
+        if (this.all) {
+            return String.format("all %s", suffix);
+        }
         if (n == 0) {
             return String.format("tagless %s", suffix);
         }

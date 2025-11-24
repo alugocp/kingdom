@@ -1505,6 +1505,22 @@ public class KingdomMod implements GameMod {
                 });
 
         // Slip
+        new Stratified<Unit>(events.unit, Labels.unit_slip).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This Plasmoid stores wares in its gelatinous form and ferries them across trade routes";
+                    e.blob.setModelInstance(view.av, "blob");
+                    e.blob.setMaterial("slip");
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_metabolize);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
+                            Labels.ability_market_value_goo, Labels.ability_economic_activity);
+                    e.blob.glyphs.set(Glyph.TRADE);
+                    e.blob.combat.health.setMaxAndValue(80);
+                    e.blob.haul.setMax(12);
+                    e.blob.hunger.tags.acceptAll();
+                    e.blob.species = Defs.species_plasmoid;
+                    return SideEffect.none;
+                });
+
         // Ariala the Mage
         // Therona Rabbitfoot
         //

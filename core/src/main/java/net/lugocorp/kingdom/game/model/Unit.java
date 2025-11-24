@@ -71,6 +71,9 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
 
     public Unit(String name, int x, int y) {
         super(name, x, y);
+
+        // Set default edible Item tags
+        this.hunger.tags.add("fruit");
     }
 
     /**
