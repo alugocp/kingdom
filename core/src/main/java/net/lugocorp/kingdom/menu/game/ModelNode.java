@@ -5,7 +5,7 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -18,17 +18,15 @@ public class ModelNode implements MenuNode {
     private static final int MAX_H = 200;
     private static final int MARGIN = 10;
     private final Modellable model = new Modellable();
-    private final Matrix4 transform = new Matrix4();
     private final Point size = new Point();
-    private final OrthographicCamera camera;
     private final Environment environment;
+    private final Camera camera;
     private final String name;
     private boolean loaded = false;
     private float modelHeight = 1f;
     private float modelWidth = 1f;
 
-    public ModelNode(AudioVideo av, OrthographicCamera camera, Environment environment, String name,
-            Optional<String> material) {
+    public ModelNode(AudioVideo av, Camera camera, Environment environment, String name, Optional<String> material) {
         this.model.setModelInstance(av, name);
         material.ifPresent((String m) -> this.model.setMaterial(m));
         this.environment = environment;
@@ -54,6 +52,7 @@ public class ModelNode implements MenuNode {
      * This method runs when the ModelInstance is fully loaded and ready for use
      */
     private final void modelLoaded(AudioVideo av, Rect bounds) {
+        final Matrix4 transform = this.getModel().get().transform;
         this.modelHeight = av.loaders.models.getModelHeight(this.name);
         this.modelWidth = av.loaders.models.getModelWidth(this.name);
 
@@ -68,9 +67,9 @@ public class ModelNode implements MenuNode {
         // Read: (target dimension / half the screen dimension) / model dimension. This
         // is because OpenGL uses (-1, 1) for the coordinate grid, so we have to half
         // the screen width. Then we divide by the model width to make it a ratio.
-        this.transform.scale((float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
+        transform.scale((float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
                 (float) this.size.y * 2f / ((float) Coords.SIZE.y * this.modelHeight), 1f);
-        this.transform.rotate(0f, 1f, 0f, 180f);
+        transform.rotate(0f, 1f, 0f, 180f);
     }
 
     /** {@inheritdoc} */
@@ -91,15 +90,18 @@ public class ModelNode implements MenuNode {
             }
         }
 
+        // Just grab this for easy use
+        final Matrix4 transform = this.getModel().get().transform;
+
         // OpenGL represents the viewport as a grid from top-left (-1, 1) to
         // bottom-right (1, -1), so the middle of the screen is at (0, 0)
         final float halfw = Coords.SIZE.x / 2f;
         final float halfh = Coords.SIZE.y / 2f;
-        this.transform.setTranslation((bounds.x + (bounds.w / 2) - halfw) / halfw,
+        transform.setTranslation((bounds.x + (bounds.w / 2) - halfw) / halfw,
                 -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, 0f);
 
         // Render the model preview
-        av.shaders.preview.setProjViewMatrix(this.transform);
+        av.shaders.preview.setProjViewMatrix(transform);
         av.previews.begin(this.camera);
         this.model.render(av.previews, this.environment);
         av.previews.end();

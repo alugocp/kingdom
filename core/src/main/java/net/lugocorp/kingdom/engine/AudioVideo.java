@@ -33,7 +33,7 @@ public class AudioVideo {
 
     public AudioVideo(Settings settings) {
         this.outlines = new ModelBatch(new BasicShaderProvider(this.shaders.outline));
-        this.previews = new ModelBatch(new BasicShaderProvider(this.shaders.preview));
+        this.previews = new ModelBatch(new BasicShaderProvider(this.shaders.preview), new InverseRenderableSorter());
         this.models = new ModelBatch(new BasicShaderProvider(this.shaders.toon));
         this.loaders = new Loaders(settings);
         this.settings = settings;

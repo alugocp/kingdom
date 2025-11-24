@@ -44,7 +44,7 @@ public class UnitOptionsNode extends ListNode {
     }
 
     /**
-     * Checks if all the associated mdoels are loaded and if so then displays them
+     * Checks if all the associated models are loaded and if so then displays them
      */
     private void checkModelsLoaded(int width) {
         // Check if any of the models haven't loaded yet

@@ -81,7 +81,9 @@ public class PreviewShader implements Shader {
             this.program.setUniformf(this.u_opacity, blend.opacity);
         }
 
-        // Render the preview model
+        // Render the preview model. For some reason the face normals are inverted in
+        // the unit preview menu, so we set front face to clockwise here as a
+        // counterweight
         Gdx.gl.glFrontFace(GL20.GL_CW);
         int cull = GL20.GL_BACK;
         int depth = GL20.GL_LEQUAL;

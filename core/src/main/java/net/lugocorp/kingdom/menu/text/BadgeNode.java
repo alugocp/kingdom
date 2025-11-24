@@ -89,7 +89,7 @@ public class BadgeNode extends TextNode {
         for (Point slash : this.slashes) {
             int sy = yInitial - (lineHeight * slash.y);
             int sx = bounds.x + slash.x;
-            av.shapes.rectLine(sx + dx, sy, sx + dx + 6, sy + badgeHeight, 5);
+            av.shapes.rectLine(sx + dx - 1, sy, sx + dx + 7, sy + badgeHeight, 5);
         }
         av.shapes.end();
     }
