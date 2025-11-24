@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
+import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -26,9 +27,10 @@ public class ModelNode implements MenuNode {
     private float modelHeight = 1f;
     private float modelWidth = 1f;
 
-    public ModelNode(AudioVideo av, Camera camera, Environment environment, String name, Optional<String> material) {
+    public ModelNode(AudioVideo av, Camera camera, Environment environment, String name,
+            Optional<Tuple<Integer, String>> material) {
         this.model.setModelInstance(av, name);
-        material.ifPresent((String m) -> this.model.setMaterial(m));
+        material.ifPresent((Tuple<Integer, String> t) -> this.model.setMaterial(t.b, t.a));
         this.environment = environment;
         this.camera = camera;
         this.name = name;

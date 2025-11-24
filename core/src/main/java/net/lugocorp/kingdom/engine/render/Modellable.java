@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.engine.render;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
+import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -23,7 +24,7 @@ public class Modellable {
     @FieldSerializer.Optional("materials")
     private TextureLoader textures;
     private String modelName = "PLACEHOLDER";
-    private Optional<String> textureName = Optional.empty();
+    private Optional<Tuple<Integer, String>> textureName = Optional.empty();
     private float alpha = 1f;
     @FieldSerializer.Optional("model")
     protected Optional<ModelInstance> model = Optional.empty();
@@ -41,15 +42,22 @@ public class Modellable {
     /**
      * Sets the overriding Material associated with this Modellable
      */
-    public void setMaterial(String name) {
-        this.textureName = Optional.of(name);
+    public void setMaterial(String name, int i) {
+        this.textureName = Optional.of(new Tuple<Integer, String>(i, name));
         this.textureOverride = Optional.empty();
+    }
+
+    /**
+     * Calls into setMaterial() with i = 0
+     */
+    public void setMaterial(String name) {
+        this.setMaterial(name, 0);
     }
 
     /**
      * Returns the name of this instance's texture override
      */
-    public Optional<String> getMaterial() {
+    public Optional<Tuple<Integer, String>> getMaterial() {
         return this.textureName;
     }
 
@@ -82,9 +90,10 @@ public class Modellable {
         }
         // Load an override Texture if we've requested one and it's not present
         if (this.model.isPresent() && this.textureName.isPresent() && !this.textureOverride.isPresent()) {
-            this.textureOverride = this.textures.getTexture(this.textureName.get());
+            final Tuple<Integer, String> texture = this.textureName.get();
+            this.textureOverride = this.textures.getTexture(texture.b);
             if (this.textureOverride.isPresent()) {
-                this.model.get().materials.first()
+                this.model.get().materials.get(texture.a)
                         .set(new TextureAttribute(TextureAttribute.Diffuse, this.textureOverride.get()));
             } else {
                 return Optional.empty();
@@ -134,7 +143,7 @@ public class Modellable {
      */
     protected void dispose() {
         this.models.checkForUnload(this.modelName);
-        this.textureName.ifPresent((String s) -> this.textures.checkForUnload(s));
+        this.textureName.ifPresent((Tuple<Integer, String> t) -> this.textures.checkForUnload(t.b));
     }
 
     /**

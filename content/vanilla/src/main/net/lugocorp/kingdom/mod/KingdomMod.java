@@ -1509,7 +1509,7 @@ public class KingdomMod implements GameMod {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Plasmoid stores wares in its gelatinous form and ferries them across trade routes";
                     e.blob.setModelInstance(view.av, "blob");
-                    e.blob.setMaterial("slip");
+                    e.blob.setMaterial("slip", 1);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_metabolize);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
                             Labels.ability_market_value_goo, Labels.ability_economic_activity);

@@ -74,7 +74,7 @@ public abstract class AssetsPool<T> {
     public void checkForUnload(String name) {
         String filename = this.getFilename(name);
         AssetManager assets = this.getAssetManager(name);
-        if (assets.getReferenceCount(filename) == 0) {
+        if (assets.isLoaded(filename) && assets.getReferenceCount(filename) == 0) {
             assets.unload(filename);
         }
     }

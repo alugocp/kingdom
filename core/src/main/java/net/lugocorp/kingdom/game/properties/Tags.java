@@ -67,7 +67,7 @@ public class Tags implements Iterable<String> {
         final int n = this.labels.size();
         int a = 0;
         if (this.all) {
-            return String.format("all %s", suffix);
+            return String.format("any %s", suffix);
         }
         if (n == 0) {
             return String.format("tagless %s", suffix);
@@ -76,9 +76,12 @@ public class Tags implements Iterable<String> {
             if (a == 0) {
                 sb.append(l);
             } else if (a == n - 1) {
-                sb.append(String.format(" %s %s %s", conjunction, l, suffix));
+                sb.append(String.format(" %s %s", conjunction, l, suffix));
             } else {
                 sb.append(String.format(", %s", l));
+            }
+            if (a == n - 1) {
+                sb.append(String.format(" %s", suffix));
             }
             a++;
         }
