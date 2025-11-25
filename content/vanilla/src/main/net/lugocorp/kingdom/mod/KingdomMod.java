@@ -1609,6 +1609,20 @@ public class KingdomMod implements GameMod {
         // Badroch the Pack Grue
         // Guard Captain Sentrina
         // Barbs
+        new Stratified<Unit>(events.unit, Labels.unit_barbs).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This pufferfish woman can inject foes with poison from her many barbs";
+                    e.blob.setModelInstance(view.av, "barbs");
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_inject_poison,
+                            Labels.ability_remove_poison);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_thorny_skin,
+                            Labels.ability_hunt_fish);
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.HEALING);
+                    e.blob.combat.health.setMaxAndValue(80);
+                    e.blob.species = Defs.species_merfolk;
+                    return SideEffect.none;
+                });
+
         // Yalitza
         // Old Man Mosscloak
         //
