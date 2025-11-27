@@ -1259,7 +1259,7 @@ public class KingdomMod implements GameMod {
         // Knuckleheads
         new Stratified<Unit>(events.unit, Labels.unit_knuckleheads).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "knuckleheads");
                     e.blob.desc = "This Ettin roams the Dragonlands and feasts on giant lizard flesh";
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_bash, Labels.ability_stomp);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_shield_defense,
