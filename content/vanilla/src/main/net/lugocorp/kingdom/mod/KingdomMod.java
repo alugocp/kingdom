@@ -1292,7 +1292,7 @@ public class KingdomMod implements GameMod {
         // Glittersnout
         new Stratified<Unit>(events.unit, Labels.unit_glittersnout).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "glittersnout");
                     e.blob.desc = "She's a skilled goldsmith from the high nation of Urqusuyu";
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_gilded_strike,
                             Labels.ability_craft_golden_spear);
