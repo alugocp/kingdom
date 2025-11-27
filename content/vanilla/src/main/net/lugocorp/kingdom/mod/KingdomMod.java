@@ -1356,7 +1356,7 @@ public class KingdomMod implements GameMod {
         // Nebaneba
         new Stratified<Unit>(events.unit, Labels.unit_nebaneba).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "nebaneba");
                     e.blob.desc = "This living goo crafts slime armor for his allies";
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_smash,
                             Labels.ability_craft_slime_armor);
