@@ -1257,6 +1257,20 @@ public class KingdomMod implements GameMod {
          */
 
         // Knuckleheads
+        new Stratified<Unit>(events.unit, Labels.unit_knuckleheads).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.desc = "This Ettin roams the Dragonlands and feasts on giant lizard flesh";
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_bash, Labels.ability_stomp);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_shield_defense,
+                            Labels.ability_efficient_stomach);
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
+                    e.blob.combat.health.setMaxAndValue(40);
+                    e.blob.haul.setMax(2);
+                    e.blob.species = Defs.species_ettin;
+                    return SideEffect.none;
+                });
+
         // Gorax the Dragon Knight
         // Equinox
         // Elder Chumsa
@@ -1276,6 +1290,19 @@ public class KingdomMod implements GameMod {
                 });
 
         // Glittersnout
+        new Stratified<Unit>(events.unit, Labels.unit_glittersnout).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.desc = "She's a skilled goldsmith from the high nation of Urqusuyu";
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_gilded_strike,
+                            Labels.ability_craft_golden_spear);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
+                            Labels.ability_mine_gems, Labels.ability_mine_gold);
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
+                    e.blob.species = Defs.species_brownie;
+                    return SideEffect.none;
+                });
+
         // Sir Tlatec
         new Stratified<Unit>(events.unit, Labels.unit_sir_tlatec).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -1327,6 +1354,20 @@ public class KingdomMod implements GameMod {
         // Roseris Thorn-hoof
         // Nitu Sodfoot
         // Nebaneba
+        new Stratified<Unit>(events.unit, Labels.unit_nebaneba).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.desc = "This living goo crafts slime armor for his allies";
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash,
+                            Labels.ability_craft_slime_armor);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
+                            Labels.ability_harvest_goo);
+                    e.blob.glyphs.set(Glyph.DEFENSE);
+                    e.blob.combat.health.setMaxAndValue(80);
+                    e.blob.species = Defs.species_plasmoid;
+                    return SideEffect.none;
+                });
+
         // Kamiena
         // Faustus
         // Maekuro the Mighty
