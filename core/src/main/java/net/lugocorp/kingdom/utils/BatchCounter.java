@@ -74,7 +74,6 @@ public class BatchCounter<T> {
      * length)
      */
     public Iterable<T> getBatch() {
-        final int n = this.getBatchSize();
         final BatchCounter<T> that = this;
         return new Iterable<T>() {
             /** {@inheritdoc} */
@@ -86,15 +85,16 @@ public class BatchCounter<T> {
                     /** {@inheritdoc} */
                     @Override
                     public boolean hasNext() {
-                        return this.counter < n;
+                        return this.counter > -1 && this.counter < that.getBatchSize();
                     }
 
                     /** {@inheritdoc} */
                     @Override
                     public T next() {
-                        counter++;
+                        this.counter++;
                         final T element = that.data.get(that.index++);
                         if (that.index == that.data.size()) {
+                            this.counter = -1;
                             that.index = 0;
                         }
                         return element;

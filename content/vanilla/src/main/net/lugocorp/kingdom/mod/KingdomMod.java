@@ -444,7 +444,8 @@ public class KingdomMod implements GameMod {
                 }).add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     return () -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 2);
                 }).add("Remove", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
-                    return receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver);
+                    return SideEffect.all(() -> view.game.future.removeFutureEvents(receiver, "Tick"),
+                            receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver));
                 });
 
         /**
@@ -2912,11 +2913,11 @@ public class KingdomMod implements GameMod {
                             return SideEffect.none;
                         })
                 .add("Remove",
-                        (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver))
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> SideEffect.all(
+                                () -> view.game.future.removeFutureEvents(receiver, "Poison"),
+                                () -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add("Poison", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
-                    return () -> receiver.wielder.combat.takeDamage(view, new Damage(2), receiver.wielder);
+                    return receiver.wielder.combat.takeDamage(view, new Damage(2), receiver.wielder);
                 });
 
         // Swift
