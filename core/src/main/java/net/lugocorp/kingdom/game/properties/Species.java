@@ -22,6 +22,13 @@ public class Species {
         this.color = color;
     }
 
+    /**
+     * Returns true if this Species counts as the given Species
+     */
+    public boolean counts(Species s) {
+        return this.equals(s) || this.root.map((Species r) -> r.counts(s)).orElse(false);
+    }
+
     @Override
     public String toString() {
         return this.root.isPresent() ? String.format("%s / %s", this.root.get().toString(), this.label) : this.label;

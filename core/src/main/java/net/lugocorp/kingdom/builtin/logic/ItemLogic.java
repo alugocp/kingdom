@@ -44,4 +44,25 @@ public class ItemLogic {
         e.consumed = false;
         return () -> view.hud.logger.error("Item is not edible for this unit");
     }
+
+    /**
+     * Item boosts damage given the following criteria
+     */
+    public static void boostDamage(Events.AttackEvent e, int boost, boolean criteria) {
+        e.dmg.base += criteria ? boost : 0;
+    }
+
+    /**
+     * Item boosts armor given the following criteria
+     */
+    public static void boostArmor(Events.TakeDamageEvent e, int boost, boolean criteria) {
+        e.dmg.base -= criteria ? boost : 0;
+    }
+
+    /**
+     * Item boosts healing given the following criteria
+     */
+    public static void boostHealing(Events.HealEntityEvent e, int boost, boolean criteria) {
+        e.amount += criteria ? boost : 0;
+    }
 }

@@ -3093,8 +3093,41 @@ public class KingdomMod implements GameMod {
         // Shellcap Armor
         // Stones
         // Sword
+        new Stratified<Item>(events.item, Labels.item_sword)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+1 damage";
+                    e.blob.icon = Optional.of(Labels.asset_sword);
+                    e.blob.gold = 1;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 1, true);
+                    return SideEffect.none;
+                });
+
         // Shield
+        new Stratified<Item>(events.item, Labels.item_shield)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+1 armor";
+                    e.blob.icon = Optional.of(Labels.asset_shield);
+                    e.blob.gold = 1;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 1, true);
+                    return SideEffect.none;
+                });
+
         // Staff
+        new Stratified<Item>(events.item, Labels.item_staff)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+1 healing";
+                    e.blob.icon = Optional.of(Labels.asset_staff);
+                    e.blob.gold = 1;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 1, true);
+                    return SideEffect.none;
+                });
+
         // Prayer Beads
         // Rites of the Merchant
         // Rites of the Vendor
@@ -3111,28 +3144,226 @@ public class KingdomMod implements GameMod {
         // Scion's Beltbuckle
         // Priest's Robes
         // Acidic Solute
+        new Stratified<Item>(events.item, Labels.item_acidic_solute)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Plasmoids";
+                    e.blob.icon = Optional.of(Labels.asset_slime);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_plasmoid));
+                    return SideEffect.none;
+                });
+
         // Binding Solute
+        new Stratified<Item>(events.item, Labels.item_binding_solute)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Plasmoids";
+                    e.blob.icon = Optional.of(Labels.asset_slime);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_plasmoid));
+                    return SideEffect.none;
+                });
+
         // Life-Giving Solute
+        new Stratified<Item>(events.item, Labels.item_life_giving_solute)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Plasmoids";
+                    e.blob.icon = Optional.of(Labels.asset_slime);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_plasmoid));
+                    return SideEffect.none;
+                });
+
         // Blessed Solute
         // Feather of Bravery
+        new Stratified<Item>(events.item, Labels.item_feather_of_bravery)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Garudas";
+                    e.blob.icon = Optional.of(Labels.asset_feather);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_garuda));
+                    return SideEffect.none;
+                });
+
         // Iron Beak Brace
+        new Stratified<Item>(events.item, Labels.item_iron_beak_brace)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Garudas";
+                    e.blob.icon = Optional.of(Labels.asset_helmet);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_garuda));
+                    return SideEffect.none;
+                });
+
         // Hollow Bone Rattle
+        new Stratified<Item>(events.item, Labels.item_hollow_bone_rattle)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Garudas";
+                    e.blob.icon = Optional.of(Labels.asset_rattle);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_garuda));
+                    return SideEffect.none;
+                });
+
         // Bag of Shiny Pebbles
         // Thorny Rose Staff
+        new Stratified<Item>(events.item, Labels.item_thorny_rose_staff)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Sprites";
+                    e.blob.icon = Optional.of(Labels.asset_staff);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_sprite));
+                    return SideEffect.none;
+                });
+
         // Overgrown Shield
+        new Stratified<Item>(events.item, Labels.item_overgrown_shield)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Sprites";
+                    e.blob.icon = Optional.of(Labels.asset_shield);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_sprite));
+                    return SideEffect.none;
+                });
+
         // Sap of Unbreaking
+        new Stratified<Item>(events.item, Labels.item_sap_of_unbreaking)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Sprites";
+                    e.blob.icon = Optional.of(Labels.asset_slime);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_sprite));
+                    return SideEffect.none;
+                });
+
         // Sacred Pollen
         // Advanced Spear
+        new Stratified<Item>(events.item, Labels.item_advanced_spear)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Elves";
+                    e.blob.icon = Optional.of(Labels.asset_spear);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_elf));
+                    return SideEffect.none;
+                });
+
         // Sentinel's Shield
+        new Stratified<Item>(events.item, Labels.item_sentinels_shield)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Elves";
+                    e.blob.icon = Optional.of(Labels.asset_shield);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_elf));
+                    return SideEffect.none;
+                });
+
         // Healing Incantation
+        new Stratified<Item>(events.item, Labels.item_healing_incantation)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Elves";
+                    e.blob.icon = Optional.of(Labels.asset_paper);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_elf));
+                    return SideEffect.none;
+                });
+
         // Devout Incantation
         // Great Hammer
+        new Stratified<Item>(events.item, Labels.item_great_hammer)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Humans";
+                    e.blob.icon = Optional.of(Labels.asset_hammer);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_human));
+                    return SideEffect.none;
+                });
+
         // Battle Armaments
+        new Stratified<Item>(events.item, Labels.item_battle_armaments)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Humans";
+                    e.blob.icon = Optional.of(Labels.asset_chestplate);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_human));
+                    return SideEffect.none;
+                });
+
         // Bandage Kit
+        new Stratified<Item>(events.item, Labels.item_bandage_kit)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Humans";
+                    e.blob.icon = Optional.of(Labels.asset_pouch);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_human));
+                    return SideEffect.none;
+                });
+
         // Dearly Held Idol
         // Stoneshell Mace
+        new Stratified<Item>(events.item, Labels.item_stoneshell_mace)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Tortugans";
+                    e.blob.icon = Optional.of(Labels.asset_mace);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_tortugan));
+                    return SideEffect.none;
+                });
+
         // Shell Salve
+        new Stratified<Item>(events.item, Labels.item_shell_salve)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Tortugans";
+                    e.blob.icon = Optional.of(Labels.asset_potion);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_tortugan));
+                    return SideEffect.none;
+                });
+
         // Shell-Sealing Goo
+        new Stratified<Item>(events.item, Labels.item_shell_sealing_goo)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Tortugans";
+                    e.blob.icon = Optional.of(Labels.asset_slime);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_tortugan));
+                    return SideEffect.none;
+                });
+
         // Sacred Shell Rattle
         // Blessed Charm
         // Bloody Totem
@@ -3293,16 +3524,115 @@ public class KingdomMod implements GameMod {
         // Sanguine Blade
         // Necrotic Tome
         // Thoughtform Sword
+        new Stratified<Item>(events.item, Labels.item_thoughtform_sword)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Tulpas";
+                    e.blob.icon = Optional.of(Labels.asset_sword);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_tulpa));
+                    return SideEffect.none;
+                });
+
         // Shield of the Subconscious
+        new Stratified<Item>(events.item, Labels.item_shield_of_the_subconscious)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Tulpas";
+                    e.blob.icon = Optional.of(Labels.asset_shield);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_tulpa));
+                    return SideEffect.none;
+                });
+
         // Staff of Inner Peace
+        new Stratified<Item>(events.item, Labels.item_staff_of_inner_peace)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Tulpas";
+                    e.blob.icon = Optional.of(Labels.asset_staff);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_tulpa));
+                    return SideEffect.none;
+                });
+
         // Rod of Psychic Devotion
         // Tree Trunk Club
+        new Stratified<Item>(events.item, Labels.item_tree_trunk_club)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Giants";
+                    e.blob.icon = Optional.of(Labels.asset_club);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_giant));
+                    return SideEffect.none;
+                });
+
         // Castle Gate Aegis
+        new Stratified<Item>(events.item, Labels.item_castle_gate_aegis)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Giants";
+                    e.blob.icon = Optional.of(Labels.asset_shield);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_giant));
+                    return SideEffect.none;
+                });
+
         // Vase of Sacred Waters
+        new Stratified<Item>(events.item, Labels.item_vase_of_sacred_waters)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Giants";
+                    e.blob.icon = Optional.of(Labels.asset_vase);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_giant));
+                    return SideEffect.none;
+                });
+
         // Amulet of the Progenitors
         // Sharpened Quartz
+        new Stratified<Item>(events.item, Labels.item_sharpened_quartz)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 damage for Golems";
+                    e.blob.icon = Optional.of(Labels.asset_crystal);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                    ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_golem));
+                    return SideEffect.none;
+                });
+
         // Igneous Armaments
+        new Stratified<Item>(events.item, Labels.item_igneous_armaments)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 armor for Golems";
+                    e.blob.icon = Optional.of(Labels.asset_chestplate);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                    ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_golem));
+                    return SideEffect.none;
+                });
+
         // Moss-covered Stone
+        new Stratified<Item>(events.item, Labels.item_moss_covered_stone)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "+2 healing for Golems";
+                    e.blob.icon = Optional.of(Labels.asset_stone);
+                    e.blob.gold = 3;
+                    return SideEffect.none;
+                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                    ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_golem));
+                    return SideEffect.none;
+                });
+
         // Glyphic Geode
         // Self-Sustaining Soulstone
         // Hero's Call
