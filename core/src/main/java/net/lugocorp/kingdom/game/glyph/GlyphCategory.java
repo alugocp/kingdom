@@ -15,6 +15,18 @@ public enum GlyphCategory {
         this.icon = icon;
     }
 
+    /**
+     * Returns true if the given Glyph is represented in this GlyphCategory
+     */
+    public boolean contains(Glyph g) {
+        for (Glyph g1 : this.glyphs) {
+            if (g == g1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** {@inheritdoc} */
     @Override
     public String toString() {

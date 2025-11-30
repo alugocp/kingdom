@@ -2,9 +2,11 @@ package net.lugocorp.kingdom.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -30,6 +32,17 @@ public class Lambda {
      */
     public static <A, B> Set<B> map(Function<A, B> lambda, Set<A> input) {
         return input.stream().map((A x) -> lambda.apply(x)).collect(Collectors.toSet());
+    }
+
+    /**
+     * Maps each value in the given Set to a Map value
+     */
+    public static <A, B> Map<A, B> mapFromSet(Function<A, B> lambda, Set<A> input) {
+        final Map<A, B> output = new HashMap<>();
+        for (A a : input) {
+            output.put(a, lambda.apply(a));
+        }
+        return output;
     }
 
     /**

@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Log;
 import java.util.Optional;
 
 /**
@@ -104,6 +105,7 @@ public class TurnStructure {
             final CompPlayer comp = (CompPlayer) this.turn.getPlayer();
             comp.stats.unitPoints.add(comp.getUnitPoints());
             view.hud.logger.log(String.format("%s's turn", comp.name));
+            Log.log("%s's unit points: %d", comp.name, comp.getUnitPoints());
 
             // Handle AI player ArtifactAuction logic
             if (view.game.mechanics.auction.getAuction().map((Auction a) -> a.hasBeenDecided(view.game))
@@ -115,15 +117,20 @@ public class TurnStructure {
             }
 
             // Handle CompPlayer Unit recruitment logic
-            for (int a = 0; a < Math.floor(comp.getUnitPoints() / NewUnit.MAX_UNIT_POINTS); a++) {
+            if (comp.getUnitPoints() >= NewUnit.MAX_UNIT_POINTS) {
                 Optional<Glyph> glyph = comp.wishlist.glyphs.getDesiredOptions().getMostWanted();
+                Log.log("%s most wanted glyph: %s", comp.name, glyph);
                 if (glyph.isPresent()) {
-                    Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(comp, glyph.get());
+                    Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(view, comp, glyph.get());
                     if (spawnPoint.isPresent()) {
+                        Log.log("Will spawn unit at %s", spawnPoint.get());
                         comp.wishlist.units.setOptions(view.game.mechanics.recruitUnits.getRecruitmentOptions(view,
                                 glyph.get(), spawnPoint.get(), 1));
-                        comp.wishlist.units.getDesiredOptions().getMostWanted()
-                                .ifPresent((Unit u) -> view.game.mechanics.recruitUnits.choose(view, comp, u));
+                        final Optional<Unit> unit = comp.wishlist.units.getDesiredOptions().getMostWanted();
+                        unit.ifPresent((Unit u) -> view.game.mechanics.recruitUnits.choose(view, comp, u));
+                        Log.log("%s chose to recruit %s", comp.name, unit.get().name);
+                    } else {
+                        Log.log("No valid spawn point found");
                     }
                 }
             }

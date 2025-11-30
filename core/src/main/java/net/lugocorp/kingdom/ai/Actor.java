@@ -14,8 +14,10 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.Log;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -65,31 +67,39 @@ public class Actor {
         if (comp.stats.enemiesKilled.getMean() >= 0.3 && comp.stats.unitsLost.getMean() >= 0.5) {
             this.goals.removeIf((Goal g) -> g instanceof AttackEnemy);
         }
+
+        // TODO assess unit points and avoid passive buildings if it's too low
     }
 
     /**
      * Returns the Plan with the highest score in the given List
      */
     private Optional<Plan> getBestPlan(Iterable<Plan> plans) {
+        final Set<Plan> results = new HashSet<>();
         float score = -1f;
-        Optional<Plan> result = Optional.empty();
         for (Plan p : plans) {
             if (p.score > score) {
-                result = Optional.of(p);
+                results.clear();
+                results.add(p);
                 score = p.score;
+            } else if (p.score == score) {
+                results.add(p);
             }
         }
-        return result;
+        return results.size() > 0 ? Optional.of(Lambda.random(results)) : Optional.empty();
     }
 
     /**
      * Iterates through our PlanNodes to animate Units under the AI's control
      */
     public void executeUnitPlans(GameView view) {
-        for (Map.Entry<Unit, PlanNode> entry : this.plans.entrySet()) {
+        final Set<Map.Entry<Unit, PlanNode>> entries = new HashSet<>();
+        entries.addAll(this.plans.entrySet());
+        for (Map.Entry<Unit, PlanNode> entry : entries) {
             // If the given Unit has an entry in the ActionManager then let that ride before
             // executing the next PlanNode
             if (view.game.actions.unitHasAssignedAction(entry.getKey())) {
+                Log.log("%s already has an assigned action", entry.getKey().name);
                 continue;
             }
 
@@ -98,6 +108,7 @@ public class Actor {
             ActionResult result = ActionResult.RIDE;
             while (result == ActionResult.RIDE) {
                 result = n.act(view);
+                Log.log("Plan result for %s: %s", entry.getKey().name, result);
                 if (result == ActionResult.RIDE || result == ActionResult.POP) {
                     if (n.getChild().isPresent()) {
                         n = n.getChild().get();
@@ -121,7 +132,7 @@ public class Actor {
     public void assignUnitPlans(GameView view, Set<Unit> units) {
         for (Unit u : units) {
             if (!this.plans.containsKey(u) && !view.game.actions.unitHasAssignedAction(u)) {
-                Optional<PlanNode> plan = this.determinePlanNode(view, u);
+                final Optional<PlanNode> plan = this.determinePlanNode(view, u);
                 plan.ifPresent((PlanNode n) -> this.plans.put(u, n));
             }
         }
@@ -131,8 +142,31 @@ public class Actor {
      * This function generates a PlanNode for the given Unit
      */
     private Optional<PlanNode> determinePlanNode(GameView view, Unit u) {
-        Set<Plan> options = Lambda.map((Optional<Plan> o) -> o.get(), Lambda.filter((Optional<Plan> o) -> o.isPresent(),
-                Lambda.map((Goal n) -> n.suggestPlan(view, u), this.goals)));
-        return options.size() > 0 ? this.getBestPlan(options).map((Plan p) -> p.root) : Optional.empty();
+        final Map<Goal, Optional<Plan>> results = Lambda.mapFromSet((Goal n) -> n.suggestPlan(view, u), this.goals);
+        final List<Plan> options = Lambda.map((Optional<Plan> o) -> o.get(),
+                Lambda.filter((Optional<Plan> o) -> o.isPresent(), Lambda.toList(results.values())));
+        final Optional<Plan> best = options.size() > 0 ? this.getBestPlan(options) : Optional.empty();
+        this.printDeterminePlanLogs(u, results, best);
+        return best.map((Plan p) -> p.root);
+    }
+
+    /**
+     * Prints debug information when we're determining an AI Unit's Plans
+     */
+    private void printDeterminePlanLogs(Unit u, Map<Goal, Optional<Plan>> results, Optional<Plan> best) {
+        Log.log("Determining plan for %s", u.name);
+        for (Map.Entry<Goal, Optional<Plan>> e : results.entrySet()) {
+            final Optional<Plan> v = e.getValue();
+            if (v.isPresent()) {
+                Log.log("• %s: %s (%f)", e.getKey(), v.get(), v.get().score);
+            } else {
+                Log.log("• %s: ---", e.getKey());
+            }
+        }
+        if (best.isPresent()) {
+            Log.log("Chose %s", best.get());
+        } else {
+            Log.log("Chose nothing");
+        }
     }
 }

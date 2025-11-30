@@ -32,6 +32,8 @@ public class ClaimGlyphs extends Goal {
         final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
         final Point dest = ((MoveNode) root).dest;
         final Optional<MemoryCell> cell = memory.getCell(dest);
+        // TODO prioritize paths that claim multiple glyphs at a time
+        // TODO prioritize grabbing most wanted unit glyphs
         return cell.map((MemoryCell c) -> !c.getGlyph().isPresent() || c.getOwner().equals(root.unit.getLeader()))
                 .orElse(false) ? 0f : 1f;
     }

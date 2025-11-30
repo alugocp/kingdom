@@ -7,13 +7,14 @@ import net.lugocorp.kingdom.math.Point;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Properties and logic for the physical game map
  */
-public class World {
+public class World implements Iterable<Tile> {
     private final List<List<Tile>> grid = new ArrayList<List<Tile>>();
     private int w = 0;
     private int h = 0;
@@ -29,6 +30,36 @@ public class World {
             }
             this.grid.add(column);
         }
+    }
+
+    /**
+     * Returns an Iterator for the Tiles in this World
+     */
+    @Override
+    public Iterator<Tile> iterator() {
+        final World that = this;
+
+        return new Iterator<Tile>() {
+            private int x = 0;
+            private int y = 0;
+
+            /** {@inheritdoc} */
+            @Override
+            public boolean hasNext() {
+                return this.x < that.w && this.y < that.h;
+            }
+
+            /** {@inheritdoc} */
+            @Override
+            public Tile next() {
+                final Tile t = that.getTile(this.x, this.y).get();
+                if (++this.x == that.w) {
+                    this.x = 0;
+                    this.y++;
+                }
+                return t;
+            }
+        };
     }
 
     /**
