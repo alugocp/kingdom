@@ -80,7 +80,7 @@ public class TurnStructure {
             }
 
             // Choose a new Unit at the maximum unit points
-            for (int a = 0; a < Math.floor((this.turn.getPlayer().getUnitPoints()) / NewUnit.MAX_UNIT_POINTS); a++) {
+            if (this.turn.getPlayer().getUnitPoints() >= NewUnit.MAX_UNIT_POINTS) {
                 view.hud.popups.add(view.game.mechanics.recruitUnits.getNewUnitMenu(view));
             }
 
