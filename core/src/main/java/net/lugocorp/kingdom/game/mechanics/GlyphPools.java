@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class GlyphPools {
     private final Map<Glyph, List<String>> pools = new HashMap<>();
+    private final Map<Glyph, Integer> originals = new HashMap<>();
 
     /**
      * Initializes this object, ingests all registered Unit names in the Game and
@@ -22,8 +23,9 @@ public class GlyphPools {
     public void init(Game g) {
         for (Glyph glyph : Glyph.values()) {
             this.pools.put(glyph, new ArrayList<String>());
+            this.originals.put(glyph, 0);
         }
-        DummyUnit u = new DummyUnit();
+        final DummyUnit u = new DummyUnit();
         for (String name : g.events.unit.getStratifiers()) {
             // Set a couple of defaults on the Unit before running the generation event
             u.setNameOverride(name);
@@ -34,12 +36,16 @@ public class GlyphPools {
             g.generator.unitOptimal(u);
             if (u.shouldAddToGlyphPool()) {
                 this.add(name, u.glyphs.get());
+                for (Glyph g1 : u.glyphs.get()) {
+                    this.originals.put(g1, this.originals.get(g1) + 1);
+                }
             }
+            u.resetUnlistedStatus();
         }
     }
 
     /**
-     * Returns the remaining Unit names in the pool of the given Glyph
+     * Returns the remaining number of Unit names in the pool of the given Glyph
      */
     public int remaining(Glyph g) {
         return this.pools.get(g).size();
@@ -55,6 +61,13 @@ public class GlyphPools {
             sum += this.remaining(g.glyphs[a]);
         }
         return sum;
+    }
+
+    /**
+     * Returns the original number of Unit names in the pool of the given Glyph
+     */
+    public int total(Glyph g) {
+        return this.originals.get(g);
     }
 
     /**

@@ -97,6 +97,13 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         this.unlisted = true;
     }
 
+    /**
+     * Allows this Unit to appear in the recruitment Menu
+     */
+    public void resetUnlistedStatus() {
+        this.unlisted = false;
+    }
+
     /** {@inheritdoc} */
     @Override
     public void spawn(GameView view) {

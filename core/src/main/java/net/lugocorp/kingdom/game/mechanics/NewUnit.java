@@ -126,9 +126,11 @@ public class NewUnit {
         RowNode buttons = new RowNode().setColumns(category.get().glyphs.length);
         for (int a = 0; a < category.get().glyphs.length; a++) {
             final Glyph glyph = category.get().glyphs[a];
+            final String desc = String.format("%s (%d / %d remaining)", this.getGlyphDescription(glyph),
+                    view.game.mechanics.pools.remaining(glyph), view.game.mechanics.pools.total(glyph));
             glyphs.add(new HeaderNode(view.av, glyph.toString()).center());
             badges.add(new GlyphBadgeNode(view.av, glyph));
-            descs.add(new TextNode(view.av, this.getGlyphDescription(glyph)));
+            descs.add(new TextNode(view.av, desc));
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
                 view.hud.popups.complete();
                 view.hud.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
