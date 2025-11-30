@@ -84,7 +84,6 @@ public class PreviewShader implements Shader {
         // Render the preview model. For some reason the face normals are inverted in
         // the unit preview menu, so we set front face to clockwise here as a
         // counterweight
-        Gdx.gl.glFrontFace(GL20.GL_CW);
         int cull = GL20.GL_BACK;
         int depth = GL20.GL_LEQUAL;
         float depthNear = 0f;
@@ -109,7 +108,6 @@ public class PreviewShader implements Shader {
         Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_CLAMP_TO_EDGE);
         Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_CLAMP_TO_EDGE);
         renderable.meshPart.render(this.program);
-        Gdx.gl.glFrontFace(GL20.GL_CCW);
     }
 
     /** {@inheritdoc} */

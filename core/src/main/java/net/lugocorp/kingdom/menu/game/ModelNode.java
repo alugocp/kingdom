@@ -69,7 +69,7 @@ public class ModelNode implements MenuNode {
         // Read: (target dimension / half the screen dimension) / model dimension. This
         // is because OpenGL uses (-1, 1) for the coordinate grid, so we have to half
         // the screen width. Then we divide by the model width to make it a ratio.
-        transform.scale((float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
+        transform.scale(-(float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
                 (float) this.size.y * 2f / ((float) Coords.SIZE.y * this.modelHeight), 1f);
         transform.rotate(0f, 1f, 0f, 180f);
     }
