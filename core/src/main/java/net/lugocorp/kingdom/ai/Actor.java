@@ -68,7 +68,15 @@ public class Actor {
             this.goals.removeIf((Goal g) -> g instanceof AttackEnemy);
         }
 
-        // TODO assess unit points and avoid passive buildings if it's too low
+        // Focus on unit points vs passive buildings
+        if (comp.stats.unitPoints.getLatest() < 12) {
+            this.goals.removeIf((Goal g) -> g instanceof ClaimPassiveBuildings);
+            this.goals.add(new IncreaseUnitPoints());
+        }
+        if (comp.stats.unitPoints.getLatest() > 18) {
+            this.goals.removeIf((Goal g) -> g instanceof IncreaseUnitPoints);
+            this.goals.add(new ClaimPassiveBuildings());
+        }
     }
 
     /**
@@ -86,7 +94,7 @@ public class Actor {
                 results.add(p);
             }
         }
-        return results.size() > 0 ? Optional.of(Lambda.random(results)) : Optional.empty();
+        return results.size() > 0 && score > 0f ? Optional.of(Lambda.random(results)) : Optional.empty();
     }
 
     /**

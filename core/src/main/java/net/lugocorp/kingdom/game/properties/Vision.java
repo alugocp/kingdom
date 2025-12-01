@@ -18,6 +18,16 @@ public class Vision {
     private final Set<Point> vision = new HashSet<>();
 
     /**
+     * Returns the associated Unit's vision radius
+     */
+    public int get(GameView view, Player player, EventReceiver receiver) {
+        final Events.GetVisionEvent event = new Events.GetVisionEvent(player);
+        final boolean isNight = view.game.mechanics.dayNight.isNight();
+        receiver.handleEvent(view, event);
+        return event.cumulative(isNight);
+    }
+
+    /**
      * Changes the focal point of the associated Unit/Building
      */
     public void translate(Player player, World world, HexSide direction) {
@@ -33,13 +43,10 @@ public class Vision {
      * Changes how far the associated Unit/Building can see
      */
     public void set(GameView view, Player player, EventReceiver receiver, Point center) {
-        Events.GetVisionEvent event = new Events.GetVisionEvent(player);
-        receiver.handleEvent(view, event);
         this.remove(player, view.game.world);
         view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVision(t));
         this.vision.add(center);
-        boolean isNight = view.game.mechanics.dayNight.isNight();
-        for (Point p : Hexagons.getNeighbors(center, event.cumulative(isNight))) {
+        for (Point p : Hexagons.getNeighbors(center, this.get(view, player, receiver))) {
             view.game.world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
             this.vision.add(p);
         }

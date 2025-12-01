@@ -95,12 +95,14 @@ public class AbilityLogic {
 
         // Use overridden method from Player to determine how targets are selected
         return attacker.getLeader().get().select(view, points, "No attack targets are in range",
-                (Point p) -> SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
-                        effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(SideEffect.none),
-                        () -> view.game.actions.unitHasCastSpell(view, attacker),
-                        attacker.leadership.belongsToHuman()
-                                ? () -> view.hud.bot.tileMenu.refresh()
-                                : SideEffect.none));
+                (Point p) -> targets.get(p) == null
+                        ? SideEffect.none
+                        : SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
+                                effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(SideEffect.none),
+                                () -> view.game.actions.unitHasCastSpell(view, attacker),
+                                attacker.leadership.belongsToHuman()
+                                        ? () -> view.hud.bot.tileMenu.refresh()
+                                        : SideEffect.none));
     }
 
     /**

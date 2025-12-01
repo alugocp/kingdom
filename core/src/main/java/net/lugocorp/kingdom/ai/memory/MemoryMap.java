@@ -10,6 +10,7 @@ import java.util.Optional;
 public class MemoryMap {
     private final MemoryCell[][] grid;
     private final Point size;
+    // TODO does this need to update at the start of each turn?
 
     public MemoryMap(Point p) {
         this.size = p;

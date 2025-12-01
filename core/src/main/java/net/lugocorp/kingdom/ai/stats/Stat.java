@@ -30,6 +30,13 @@ public class Stat {
     }
 
     /**
+     * Returns the most recently committed piece of data
+     */
+    public int getLatest() {
+        return this.data.get(this.data.size() - 1);
+    }
+
+    /**
      * Returns the average value across the data (as an int)
      */
     public int getAverage() {

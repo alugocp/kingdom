@@ -30,23 +30,21 @@ public class ExploreMap extends Goal {
     /** {@inheritdoc} */
     @Override
     protected float getScore(GameView view, PlanNode root) {
-        MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
-        Point dest = ((MoveNode) root).dest;
-        Set<Point> adj = Hexagons.getNeighbors(dest, 1);
+        final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
+        final Unit unit = ((MoveNode) root).unit;
+        final Point dest = ((MoveNode) root).dest;
+        final int vision = unit.vision.get(view, unit.getLeader().get(), unit);
         float score = this.subscore(view, memory, dest);
-        for (Point p : Hexagons.getNeighbors(dest, 1)) {
+        for (Point p : Hexagons.getNeighbors(dest, vision)) {
             score += this.subscore(view, memory, p);
         }
-        return score / 7f;
+        return score / (float) Hexagons.tilesWithinRadius(vision);
     }
 
     /**
      * Returns a component of the final score for a given Point
      */
     private float subscore(GameView view, MemoryMap memory, Point p) {
-        if (!view.game.world.isInBounds(p)) {
-            return 0f;
-        }
         final Optional<MemoryCell> cell = memory.getCell(p);
         if (cell.map((MemoryCell c) -> !c.isVisible()).orElse(false)) {
             return cell.get().wasEverVisible() ? 0.5f : 1f;

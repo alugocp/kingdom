@@ -21,13 +21,8 @@ public class Hexagons {
      * the grid
      */
     public static Set<Point> getNeighbors(Point p, int r) {
-        // Calculate the expected number of neighbors (+1 for the focal Point)
-        int expected = 1;
-        for (int a = 1; a <= r; a++) {
-            expected += a * 6;
-        }
-
         // Collect the neighboring Points
+        final int expected = Hexagons.tilesWithinRadius(r);
         final List<Point> visited = new ArrayList<>();
         visited.add(p);
         int curr = 0;
@@ -46,6 +41,17 @@ public class Hexagons {
         Set<Point> coords = new HashSet<>();
         coords.addAll(visited);
         return coords;
+    }
+
+    /**
+     * Returns the number of Tiles within the given radius
+     */
+    public static int tilesWithinRadius(int radius) {
+        int n = 1;
+        for (int a = 1; a <= radius; a++) {
+            n += a * 6;
+        }
+        return n;
     }
 
     /**

@@ -33,7 +33,7 @@ public class IncreaseUnitPoints extends Goal {
         final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
         final Point dest = ((MoveNode) root).dest;
         final Optional<MemoryCell> cell = memory.getCell(dest);
-        return cell.map((MemoryCell c) -> c.getBuilding().isPresent() || c.getOwner().equals(root.unit.getLeader()))
-                .orElse(false) ? 0f : 1f;
+        return cell.map((MemoryCell c) -> !c.getBuilding().isPresent() && !c.getOwner().equals(root.unit.getLeader()))
+                .orElse(false) ? 1f : 0f;
     }
 }
