@@ -1,7 +1,5 @@
 package net.lugocorp.kingdom.color;
 
-// TODO move this, ColorPoint, and Colors (rename to ColorUtils) to utils/color
-
 /**
  * This class contains commonly used UI color values
  */

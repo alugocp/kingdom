@@ -35,8 +35,10 @@ public class SoundLoader extends AssetsPool<Sound> {
      * when requested
      */
     public void checkQueuedSounds() {
-        for (String name : this.queued) {
-            Optional<Sound> s = this.getAsset(name);
+        final Set<String> sounds = new HashSet<>();
+        sounds.addAll(this.queued);
+        for (String name : sounds) {
+            final Optional<Sound> s = this.getAsset(name);
             if (s.isPresent()) {
                 s.get().play(this.settings.getSoundVolume());
                 this.queued.remove(name);

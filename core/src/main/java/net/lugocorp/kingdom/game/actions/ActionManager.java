@@ -27,16 +27,24 @@ public class ActionManager {
             final boolean atEnd = u.leadership.belongsToPlayer(ending);
             final boolean atStart = u.leadership.belongsToPlayer(starting);
             if (atEnd || atStart) {
-                final ActionOverlay o = this.overlays.get(u);
                 if ((atStart && this.actions.get(u).startOfTurn()) || (atEnd && this.actions.get(u).endOfTurn())) {
-                    o.setChar(this.getActionOverlayChar(u));
+                    this.overlays.get(u).setChar(this.getActionOverlayChar(u));
                 } else {
-                    this.actions.remove(u);
-                    this.overlays.remove(u);
-                    o.dispel();
+                    this.removeUnitInfo(u);
                 }
             }
         }
+    }
+
+    /**
+     * Removes the given Unit's information from this instance
+     */
+    public void removeUnitInfo(Unit u) {
+        if (this.overlays.containsKey(u)) {
+            this.overlays.get(u).dispel();
+        }
+        this.overlays.remove(u);
+        this.actions.remove(u);
     }
 
     /**

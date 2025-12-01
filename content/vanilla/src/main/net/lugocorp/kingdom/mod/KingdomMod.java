@@ -1898,7 +1898,7 @@ public class KingdomMod implements GameMod {
         // Defensive Bloom
         new Stratified<Ability>(events.ability, Labels.ability_defensive_bloom).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = "15% chance to generate an apple when the unit is attacked";
+                    e.blob.desc = "15% chance to generate a natural item when the unit is attacked";
                     e.blob.setIcon(Labels.asset_dungeon_delve); // TODO new asset
                     return SideEffect.none;
                 }).add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {

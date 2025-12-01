@@ -165,6 +165,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
             l.units.remove(this);
         });
         view.game.units.remove(this);
+        view.game.actions.removeUnitInfo(this);
         this.movement.removeFromPosition(view.game);
         this.dispose();
     }

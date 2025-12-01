@@ -138,9 +138,6 @@ public class GameViewController implements InputProcessor {
         if (p.map((Point p1) -> p1.y >= Coords.SIZE.y - this.view.hud.bot.getHeight()).orElse(true)) {
             return true;
         }
-        // TODO when we hit complete turn it still selects some tile at the same time.
-        // Also, there are tiles that have zombie highlight effects on them (need to
-        // remove these)
 
         // Game World logic
         this.touch.start(p.get());

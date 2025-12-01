@@ -100,6 +100,7 @@ public class Movement {
                         this.unit.handleEvent(view, after).execute();
                         if (wasOnUnit && view.hud.bot.tileMenu.get().equals(start)
                                 && this.unit.leadership.belongsToHuman()) {
+                            view.hud.bot.minimap.refresh(view.game.world);
                             view.hud.bot.tileMenu.set(dest);
                         }
                     }
