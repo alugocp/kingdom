@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.ai.memory.MemoryMap;
+import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.world.WorldGenOptions;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
 import net.lugocorp.kingdom.ui.View;
@@ -21,6 +23,9 @@ public class GenerateWorldView extends ThreadedTaskView {
     protected void performTask() {
         WorldGenerator generator = new WorldGenerator();
         this.view.game.world.init(this.worldGenOpts.size);
+        for (CompPlayer comp : this.view.game.comps) {
+            comp.memory = new MemoryMap(this.worldGenOpts.size.w, this.worldGenOpts.size.h);
+        }
         generator.generateWorld(this.view, this.worldGenOpts, (Integer i) -> this.setProgress(i.intValue()));
         this.setProgress(100);
     }

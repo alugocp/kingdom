@@ -33,7 +33,7 @@ public class Stat {
      * Returns the most recently committed piece of data
      */
     public int getLatest() {
-        return this.data.get(this.data.size() - 1);
+        return this.data.size() == 0 ? 0 : this.data.get(this.data.size() - 1);
     }
 
     /**

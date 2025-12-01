@@ -37,6 +37,9 @@ public class ClaimPassiveBuildings extends Goal {
                 .orElse(true)) {
             return 0f;
         }
+        if (!view.game.events.building.hasEventHandler(cell.get().getBuilding().get(), "GenerateBuildingEvent")) {
+            return 0f;
+        }
         final Building b = view.game.generator.building(cell.flatMap((MemoryCell c) -> c.getBuilding()).get(), 0, 0);
         return b.isActive() ? 0f : 1f;
     }

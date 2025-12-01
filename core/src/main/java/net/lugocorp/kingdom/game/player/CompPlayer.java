@@ -23,12 +23,11 @@ public class CompPlayer extends Player {
     private final Actor actor = new Actor();
     public final Statistics stats = new Statistics();
     public final Wishlists wishlist;
-    public final MemoryMap memory;
+    public MemoryMap memory = null;
 
-    public CompPlayer(GameView view, int index, Point world, Fate fate, Color color) {
+    public CompPlayer(GameView view, int index, Fate fate, Color color) {
         super(String.format("Computer %d", index), fate, color);
         this.wishlist = new Wishlists(view, this);
-        this.memory = new MemoryMap(world);
         this.getFate().setPlayer(this);
     }
 
@@ -45,6 +44,7 @@ public class CompPlayer extends Player {
     public void makeDecisions(GameView view) {
         // TODO optimize this by limiting the number of operations the AI players
         // execute per frame
+        this.memory.refresh(view);
         this.actor.assessGoals(this);
         this.actor.assignUnitPlans(view, this.units);
         this.actor.executeUnitPlans(view);

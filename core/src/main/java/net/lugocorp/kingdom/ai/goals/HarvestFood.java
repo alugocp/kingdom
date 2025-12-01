@@ -44,8 +44,13 @@ public class HarvestFood extends Goal {
             return 0f;
         }
 
+        // Do not attempt to harvest food from non-Building Entities
+        if (!view.game.events.building.hasEventHandler(cell.get().getBuilding().get(), "GenerateBuildingEvent")) {
+            return 0f;
+        }
+
         // Get Building that we may move to
-        Building b = view.game.generator.building(cell.flatMap((MemoryCell c) -> c.getBuilding()).get(), 0, 0);
+        final Building b = view.game.generator.building(cell.flatMap((MemoryCell c) -> c.getBuilding()).get(), 0, 0);
         CapturedEvents.instance.setFakePoint(dest);
         for (Ability ability : root.unit.abilities.getPassives()) {
             if (!ability.hasTickHandler(view)) {

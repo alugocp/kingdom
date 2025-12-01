@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ai.memory;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 
 /**
@@ -10,14 +11,30 @@ import java.util.Optional;
 public class MemoryMap {
     private final MemoryCell[][] grid;
     private final Point size;
-    // TODO does this need to update at the start of each turn?
 
-    public MemoryMap(Point p) {
-        this.size = p;
-        this.grid = new MemoryCell[p.x][p.y];
-        for (int a = 0; a < p.x; a++) {
-            for (int b = 0; b < p.y; b++) {
+    public MemoryMap(int w, int h) {
+        this.size = new Point(w, h);
+        this.grid = new MemoryCell[w][h];
+        for (int a = 0; a < w; a++) {
+            for (int b = 0; b < h; b++) {
                 this.grid[a][b] = new MemoryCell();
+            }
+        }
+    }
+
+    /**
+     * Refreshes each currently visible MemoryCell
+     */
+    public void refresh(GameView view) {
+        // TODO optimize this when the maps get larger
+        for (int a = 0; a < this.size.x; a++) {
+            for (int b = 0; b < this.size.y; b++) {
+                final MemoryCell m = this.grid[a][b];
+                if (m.vision > 0) {
+                    final Tile t = view.game.world.getTile(a, b).get();
+                    this.decrementVision(t);
+                    this.incrementVision(t);
+                }
             }
         }
     }

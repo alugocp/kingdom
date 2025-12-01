@@ -23,6 +23,7 @@ public class IncreaseUnitPoints extends Goal {
     /** {@inheritdoc} */
     @Override
     public Optional<Plan> suggestPlan(GameView view, Unit u) {
+        // TODO AI filter for Tiles the Unit can actually get to (do for all Goals)
         final Set<Point> targets = Hexagons.getNeighbors(u.getPoint(), 4);
         return this.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
     }
