@@ -2,7 +2,9 @@ package net.lugocorp.kingdom.ai.memory;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This map represents the Actor's "vision" of the World. It tracks what the
@@ -37,6 +39,22 @@ public class MemoryMap {
                 }
             }
         }
+    }
+
+    /**
+     * Returns a Set of Points that have been seen before
+     */
+    public Set<Point> getKnownCells() {
+        // TODO find a way to optimize
+        final Set<Point> points = new HashSet<>();
+        for (int a = 0; a < this.size.x; a++) {
+            for (int b = 0; b < this.size.y; b++) {
+                if (this.grid[a][b].hasBeenSeen) {
+                    points.add(new Point(a, b));
+                }
+            }
+        }
+        return points;
     }
 
     /**
