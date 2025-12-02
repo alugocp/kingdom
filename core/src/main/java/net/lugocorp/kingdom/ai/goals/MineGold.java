@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ai.goals;
 import net.lugocorp.kingdom.ai.action.Goal;
+import net.lugocorp.kingdom.ai.action.GoalUtils;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.ai.memory.MemoryCell;
@@ -14,7 +15,6 @@ import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
-import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -30,7 +30,7 @@ public class MineGold extends Goal {
     /** {@inheritdoc} */
     @Override
     public Optional<Plan> suggestPlan(GameView view, Unit u) {
-        final Set<Point> targets = Hexagons.getNeighbors(u.getPoint(), 4);
+        final Set<Point> targets = GoalUtils.getMoveTargets(view, u, 4);
         return this.getBestPlan(Lambda.map((Point p) -> this.wrapPlanNode(view, new MoveNode(u, p)), targets));
     }
 
