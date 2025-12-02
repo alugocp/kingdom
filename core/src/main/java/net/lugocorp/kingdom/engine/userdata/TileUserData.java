@@ -29,8 +29,8 @@ public class TileUserData {
     public int pathLabel = 0;
 
     // Fog of war system
-    public boolean hasBeenSeen = true;
-    public int vision = 1;
+    public boolean hasBeenSeen = false;
+    public int vision = 0;
 
     // Renders the Tile hover selector
     public int hovered = 0;

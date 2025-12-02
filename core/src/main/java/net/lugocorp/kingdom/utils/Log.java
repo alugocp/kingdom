@@ -6,7 +6,7 @@ import java.io.PrintStream;
  */
 public class Log {
     private static final PrintStream out = System.out;
-    private static final boolean debug = true;
+    private static final boolean debug = false;
 
     /**
      * Logs the given message
