@@ -120,10 +120,12 @@ public class TopHud extends Menu {
                 SettingsView.addSettingsMenuNodes(view.av, new ListNode().add(new NakedButtonNode(view.av, "x", () -> {
                     SettingsIO.write(view.av.settings);
                     view.hud.popups.setDisplay(false);
-                }))).add(new SpacerNode()).add(new ButtonNode(view.av, "Exit Game", () -> {
-                    SettingsIO.write(view.av.settings);
-                    view.hud.popups.addNextUnrequired(this.getExitMenu(view));
-                }))
+                }))).add(new SpacerNode())
+                        .add(new TextNode(view.av, String.format("World seed: %d", view.game.world.getSeed())))
+                        .add(new ButtonNode(view.av, "Exit Game", () -> {
+                            SettingsIO.write(view.av.settings);
+                            view.hud.popups.addNextUnrequired(this.getExitMenu(view));
+                        }))
         /*
          * .add(new ButtonNode(view.av, "Save game", () -> { try {
          * view.getSerial().saveGame(view.game);

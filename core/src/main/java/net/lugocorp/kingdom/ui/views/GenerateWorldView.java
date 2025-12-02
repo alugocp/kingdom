@@ -22,7 +22,7 @@ public class GenerateWorldView extends ThreadedTaskView {
     @Override
     protected void performTask() {
         WorldGenerator generator = new WorldGenerator();
-        this.view.game.world.init(this.worldGenOpts.size);
+        this.view.game.world.init(this.worldGenOpts);
         for (CompPlayer comp : this.view.game.comps) {
             comp.memory = new MemoryMap(this.worldGenOpts.size.w, this.worldGenOpts.size.h);
         }

@@ -16,16 +16,14 @@ import java.util.Optional;
  */
 public class World implements Iterable<Tile> {
     private final List<List<Tile>> grid = new ArrayList<List<Tile>>();
-    private int w = 0;
-    private int h = 0;
+    private WorldGenOptions options = null;
 
-    public void init(WorldSize size) {
-        this.w = size.w;
-        this.h = size.h;
+    public void init(WorldGenOptions options) {
+        this.options = options;
 
-        for (int x = 0; x < w; x++) {
+        for (int x = 0; x < options.size.w; x++) {
             List<Tile> column = new ArrayList<Tile>();
-            for (int y = 0; y < h; y++) {
+            for (int y = 0; y < options.size.h; y++) {
                 column.add(null);
             }
             this.grid.add(column);
@@ -46,14 +44,14 @@ public class World implements Iterable<Tile> {
             /** {@inheritdoc} */
             @Override
             public boolean hasNext() {
-                return this.x < that.w && this.y < that.h;
+                return this.x < that.options.size.w && this.y < that.options.size.h;
             }
 
             /** {@inheritdoc} */
             @Override
             public Tile next() {
                 final Tile t = that.getTile(this.x, this.y).get();
-                if (++this.x == that.w) {
+                if (++this.x == that.options.size.w) {
                     this.x = 0;
                     this.y++;
                 }
@@ -80,7 +78,7 @@ public class World implements Iterable<Tile> {
      * Returns true if the coordinate points to a valid Tile in the World
      */
     public boolean isInBounds(int x, int y) {
-        return x >= 0 && y >= 0 && x < this.w && y < this.h;
+        return x >= 0 && y >= 0 && x < this.options.size.w && y < this.options.size.h;
     }
 
     /**
@@ -122,21 +120,21 @@ public class World implements Iterable<Tile> {
      * Returns World width
      */
     public int getWidth() {
-        return this.w;
+        return this.options.size.w;
     }
 
     /**
      * Returns World height
      */
     public int getHeight() {
-        return this.h;
+        return this.options.size.h;
     }
 
     /**
-     * Returns World size
+     * Returns the World seed
      */
-    public Point getSize() {
-        return new Point(this.w, this.h);
+    public long getSeed() {
+        return this.options.seed;
     }
 
     /**
@@ -147,8 +145,8 @@ public class World implements Iterable<Tile> {
         // shader
         // TODO include placeholder building models somehow
         final Array<Modellable> models = new Array<>();
-        for (int x = 0; x < this.w; x++) {
-            for (int y = 0; y < this.h; y++) {
+        for (int x = 0; x < this.options.size.w; x++) {
+            for (int y = 0; y < this.options.size.h; y++) {
                 final Optional<Tile> tile = this.getTile(x, y);
                 if (!tile.isPresent()) {
                     continue;
@@ -174,8 +172,8 @@ public class World implements Iterable<Tile> {
         final Array<ModelInstance> models = new Array<>();
         this.getModellables(includeTiles)
                 .forEach((Modellable m) -> m.getModelInstance().ifPresent((ModelInstance m1) -> models.add(m1)));
-        for (int x = 0; x < this.w; x++) {
-            for (int y = 0; y < this.h; y++) {
+        for (int x = 0; x < this.options.size.w; x++) {
+            for (int y = 0; y < this.options.size.h; y++) {
                 final Optional<Tile> tile = this.getTile(x, y);
                 if (!tile.isPresent()) {
                     continue;
