@@ -240,7 +240,10 @@ public class KingdomMod implements GameMod {
 
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
-            if (receiver.getLeader().isPresent() && !receiver.hunger.autoEatCheck(view)) {
+            // TODO receiver.getLeader().get().isHumanPlayer() is a stop-gap that should be
+            // removed before the beta release
+            if (receiver.getLeader().isPresent() && receiver.getLeader().get().isHumanPlayer()
+                    && !receiver.hunger.autoEatCheck(view)) {
                 return () -> receiver.loyalty.decrease(view, 1);
             }
             ((Events.RepeatedEvent) event).repeat = false;
