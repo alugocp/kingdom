@@ -140,6 +140,31 @@ public class Labels {
     public static final String asset_swim = "swim";
     public static final String asset_sword_slash = "sword slash";
     public static final String asset_drown = "drown";
+    public static final String asset_rising_spirit = "rising spirit";
+    public static final String asset_battle_glyph = "battle glyph";
+    public static final String asset_bloodlust = "bloodlust";
+    public static final String asset_mining_glyph = "mining glyph";
+    public static final String asset_extra_gem = "extra gem";
+    public static final String asset_nature_glyph = "nature glyph";
+    public static final String asset_extra_fruit = "extra fruit";
+    public static final String asset_bash = "bash";
+    public static final String asset_golden_spear = "golden spear";
+    public static final String asset_slime_armor = "slime armor";
+    public static final String asset_defensive_blossom = "defensive blossom";
+    public static final String asset_economic_activity = "economic activity";
+    public static final String asset_stomach = "stomach";
+    public static final String asset_fireball = "fireball";
+    public static final String asset_raise_undead = "raise undead";
+    public static final String asset_gilded_strike = "gilded strike";
+    public static final String asset_harvest_slime = "harvest slime";
+    public static final String asset_harvest_mushroom = "harvest mushroom";
+    public static final String asset_gems = "gems";
+    public static final String asset_market_value_goo = "market value goo";
+    public static final String asset_eat = "eat";
+    public static final String asset_worship_glyph = "worship glyph";
+    public static final String asset_spores = "spores";
+    public static final String asset_stomp = "stomp";
+    public static final String asset_axe_swing = "axe swing";
 
     /**
      * SECTION Tags
