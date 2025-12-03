@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  * Represents a local spirit that Players can compete for favor with
  */
 public class Patron extends Building {
-    private static final int MIN_FAVOR = 5;
+    private static final int MIN_FAVOR = 1;
     private final Map<Player, Integer> favor = new HashMap<>();
     private final Set<Point> domain = new HashSet<>();
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
