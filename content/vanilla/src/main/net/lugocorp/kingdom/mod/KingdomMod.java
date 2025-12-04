@@ -468,7 +468,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_market_value_goo)
                 .add(Events.GenerateBuildingEvent.class,
                         (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                            e.blob.setModelInstance(view.av, "fountain"); // TODO new asset
+                            e.blob.setModelInstance(view.av, "goo");
                             e.blob.desc = "This goo generates 3 auction points each turn for 2 turns";
                             e.blob.combat.health.setMaxAndValue(5);
                             e.blob.setMinimapColor(0x875f9a);
