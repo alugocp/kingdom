@@ -43,8 +43,6 @@ uniform int u_option;
 uniform bool u_lightOutline;
 uniform bool u_wave;
 varying MED vec2 v_diffuseUV;
-varying vec3 v_lightDiffuse;
-varying vec3 v_ambientLight;
 varying vec3 v_normal;
 const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
@@ -192,15 +190,7 @@ void main() {
         return;
     }
 
-    vec3 normal = v_normal;
-    bool isTopFace = normal == vec3(0.0, 1.0, 0.0);
-
-    // Make the texture black under low enough light
-    float intensity = dot(v_lightDiffuse + v_ambientLight, normalize(normal));
-    if (intensity == 0.0) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-        return;
-    }
+    bool isTopFace = v_normal == vec3(0.0, 1.0, 0.0);
 
     // Grab texture color at coordinate
     vec2 texCoords = v_diffuseUV;

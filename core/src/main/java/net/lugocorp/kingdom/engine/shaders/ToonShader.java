@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -43,8 +42,6 @@ public class ToonShader implements Shader {
 
     // Shader uniforms
     private int u_normalsTexture;
-    private int u_directionalLight;
-    private int u_ambientLight;
     private int u_projViewTrans;
     private int u_worldTrans;
     private int u_normalMatrix;
@@ -91,8 +88,6 @@ public class ToonShader implements Shader {
             throw new GdxRuntimeException(this.program.getLog());
         }
         this.u_normalsTexture = this.program.getUniformLocation("u_normalsTexture");
-        this.u_directionalLight = this.program.getUniformLocation("u_directionalLight");
-        this.u_ambientLight = this.program.getUniformLocation("u_ambientLight");
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
         this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
@@ -174,12 +169,7 @@ public class ToonShader implements Shader {
         Texture normals = this.frameBuffer.getColorBufferTexture();
         this.program.setUniformi(this.u_normalsTexture, this.context.textureBinder.bind(normals));
 
-        // Set lighting uniforms (we only set one in GameView)
-        DirectionalLightsAttribute lights = (DirectionalLightsAttribute) renderable.environment
-                .get(DirectionalLightsAttribute.Type);
-        this.program.setUniformf(this.u_directionalLight, lights.lights.first().direction);
-        ColorAttribute ambient = (ColorAttribute) renderable.environment.get(ColorAttribute.AmbientLight);
-        this.program.setUniformf(this.u_ambientLight, ambient.color);
+        // Set the game view resolution
         this.program.setUniformf(this.u_resolution, Coords.SIZE.x, Coords.SIZE.y);
 
         // Set object uniforms
