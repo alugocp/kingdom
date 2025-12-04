@@ -31,7 +31,7 @@ import java.util.Set;
  * This class manages the logic for artifact auctions
  */
 public class ArtifactAuction {
-    public static final int MAX_AUCTION_POINTS = 250;
+    public static final int MAX_AUCTION_POINTS = 100;
     @FieldSerializer.Optional("random")
     private final Random random = new Random();
     private final List<Artifact> artifacts = new ArrayList<>();

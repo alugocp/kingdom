@@ -1989,7 +1989,7 @@ public class KingdomMod implements GameMod {
         // Economic Activity
         new Stratified<Ability>(events.ability, Labels.ability_economic_activity).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("Generates 1 auction point when occupying a vault");
+                    e.blob.desc = String.format("Generates 3 auction points when occupying a vault");
                     e.blob.setIcon(Labels.asset_economic_activity);
                     return SideEffect.none;
                 })
@@ -2366,7 +2366,7 @@ public class KingdomMod implements GameMod {
         // Market Indicator
         new Stratified<Ability>(events.ability, Labels.ability_market_indicator).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("Generates 1 auction point when adjacent to a vault");
+                    e.blob.desc = String.format("Generates 3 auction points when adjacent to a vault");
                     e.blob.setIcon(Labels.asset_market_indicator);
                     return SideEffect.none;
                 })
@@ -3099,12 +3099,12 @@ public class KingdomMod implements GameMod {
         // Health Potion
         new Stratified<Item>(events.item, Labels.item_health_potion)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
-                    e.blob.desc = "Consume to heal by 10 hit points";
+                    e.blob.desc = "Consume to heal by 5 hit points";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.gold = 1;
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.potion(view, e, 10));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.potion(view, e, 5));
 
         // Incense
         // Sack of Gold
@@ -3123,9 +3123,9 @@ public class KingdomMod implements GameMod {
         // Capital
         new Stratified<Item>(events.item, Labels.item_capital)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
-                    e.blob.desc = "Consume to generate 10 auction points";
+                    e.blob.desc = "Consume to generate 6 auction points";
                     e.blob.icon = Optional.of(Labels.asset_paper);
-                    e.blob.gold = 10;
+                    e.blob.gold = 6;
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver,
                         Events.ItemConsumedEvent e) -> AbilityLogic.generateAuctionPoints(view, e.consumer, 10));
@@ -3412,10 +3412,10 @@ public class KingdomMod implements GameMod {
         // Life-Giving Elixir
         new Stratified<Item>(events.item, Labels.item_life_giving_elixir)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
-                    e.blob.desc = "Consume to generate 10 unit points";
+                    e.blob.desc = "Consume to generate 6 unit points";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.rarity = Rarity.UNCOMMON;
-                    e.blob.gold = 10;
+                    e.blob.gold = 6;
                     return SideEffect.none;
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> () -> e.consumer.getLeader()
