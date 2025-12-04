@@ -165,6 +165,12 @@ public class Labels {
     public static final String asset_spores = "spores";
     public static final String asset_stomp = "stomp";
     public static final String asset_axe_swing = "axe swing";
+    public static final String asset_thorny_skin = "thorny skin";
+    public static final String asset_trade = "trade";
+    public static final String asset_stunned = "stunned";
+    public static final String asset_proud_builder = "proud builder";
+    public static final String asset_poisoned = "poisoned";
+    public static final String asset_swift = "swift";
 
     /**
      * SECTION Tags

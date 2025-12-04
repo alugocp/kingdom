@@ -193,6 +193,12 @@ public class KingdomMod implements GameMod {
         sprites.register(Labels.asset_spores, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 7);
         sprites.register(Labels.asset_stomp, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 7);
         sprites.register(Labels.asset_axe_swing, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 8);
+        sprites.register(Labels.asset_thorny_skin, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 8);
+        sprites.register(Labels.asset_trade, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 8);
+        sprites.register(Labels.asset_stunned, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 8);
+        sprites.register(Labels.asset_proud_builder, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 8);
+        sprites.register(Labels.asset_poisoned, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 8);
+        sprites.register(Labels.asset_swift, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 8);
 
         // Artifact sprites
         sprites.register(Labels.asset_chos_sigil_of_haste, Labels.asset_artifacts, ArtifactNode.WIDTH,
@@ -2820,7 +2826,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_thorny_skin).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Adjacent attackers take damage");
-                    e.blob.setIcon(Labels.asset_acid_skin); // TODO new asset
+                    e.blob.setIcon(Labels.asset_thorny_skin);
                     return SideEffect.none;
                 }).add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit) {
@@ -2837,7 +2843,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_trade).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests gold coins from vaults every 4 turns";
-                    e.blob.setIcon(Labels.asset_mine_gold); // TODO new asset
+                    e.blob.setIcon(Labels.asset_trade);
                     return SideEffect.none;
                 })
                 .add(Events.SpawnEvent.class,
@@ -2852,12 +2858,11 @@ public class KingdomMod implements GameMod {
          * SECTION Status Effects
          */
 
-        // TODO icons for status effects
-
         // Stunned
         new Stratified<Ability>(events.ability, Labels.status_effect_stunned).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("The unit cannot act for 1 turn");
+                    e.blob.setIcon(Labels.asset_stunned);
                     return SideEffect.none;
                 }).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
@@ -2877,6 +2882,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.status_effect_more_favor).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("+1 favor next time the unit generates it");
+                    e.blob.setIcon(Labels.asset_worship_glyph);
                     return SideEffect.none;
                 }).add(Events.GenerateFavorEvent.class,
                         (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
@@ -2890,6 +2896,7 @@ public class KingdomMod implements GameMod {
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.desc = String.format("+2 attack and defense for 2 turns");
+                            e.blob.setIcon(Labels.asset_proud_builder);
                             return SideEffect.none;
                         })
                 .add(Events.StatusEffectAddedEvent.class,
@@ -2914,6 +2921,7 @@ public class KingdomMod implements GameMod {
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.desc = String.format("+2 defense for 2 turns");
+                            e.blob.setIcon(Labels.asset_shield);
                             return SideEffect.none;
                         })
                 .add(Events.StatusEffectAddedEvent.class,
@@ -2934,6 +2942,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.status_effect_poisoned).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("The unit takes 2 damage each turn for 4 turns");
+                    e.blob.setIcon(Labels.asset_poisoned);
                     return SideEffect.none;
                 }).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
@@ -2953,6 +2962,7 @@ public class KingdomMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.status_effect_swift).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("The unit can move an extra space for the next 2 turns");
+                    e.blob.setIcon(Labels.asset_swift);
                     return SideEffect.none;
                 }).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
