@@ -169,6 +169,7 @@ Thumbs.db
 /assets/settings.json
 /assets/DEFAULT.jar
 /assets/mods
+/*.jar
 
 ## Kingdom game:
 /content/build

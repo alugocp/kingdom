@@ -87,6 +87,15 @@ task installHooks(type: Copy){
 }
 
 /**
+ * This task copies the game JAR into the root repository
+ */
+task exportGame(type: Copy){
+    from new File(rootProject.rootDir, "lwjgl3/build/libs/Kingdom-${projectVersion}.jar")
+    into { rootProject.rootDir }
+    rename { 'LegendsOfTahn.jar' }
+}
+
+/**
  * This task is used to generate g3db 3D model files
  */
 class CleanAssetsTask extends DefaultTask {

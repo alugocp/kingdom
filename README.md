@@ -1,6 +1,6 @@
 # Legends of T'ahn
 
-![Static Badge](https://img.shields.io/badge/Java-11-a?color=%23ED8B00)
+![Static Badge](https://img.shields.io/badge/Java-17-a?color=%23ED8B00)
 ![Static Badge](https://img.shields.io/badge/libGDX-1.12.1-a?color=%23E74A45)
 ![Static Badge](https://img.shields.io/badge/Gradle-8-a?color=%23209BC4)
 ![Static Badge](https://img.shields.io/badge/Python-3.11-a?color=%23FFD43B)
@@ -25,6 +25,7 @@ This project uses [Gradle](https://gradle.org/) as a build system and dependency
 - `gradle test`: runs unit tests (if any).
 - `gradle spotlessApply`: reformats the business logic code
 - `gradle cleanAssets`: generates g3db files for game assets
+- `gradle exportGame`: copies the built standalone JAR file to the project root directory
 
 ## 3D Models
 You can create new models for this game using Blockbench and [fbx-conv](https://github.com/libgdx/fbx-conv).
