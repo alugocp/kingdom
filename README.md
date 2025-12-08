@@ -1,15 +1,19 @@
 # Legends of T'ahn
+![Static Badge](https://img.shields.io/badge/Version-1.0.0--alpha-a?color=%23009900)
 
+Legends of T'ahn is a turn-based strategy game written in Java with the [libGDX](https://libgdx.com/) library.
+Manage resources and train units as you explore and maintain the game world.
+
+No generative AI tools were used during development of this project.
+
+## Dependencies
 ![Static Badge](https://img.shields.io/badge/Java-17-a?color=%23ED8B00)
 ![Static Badge](https://img.shields.io/badge/libGDX-1.12.1-a?color=%23E74A45)
 ![Static Badge](https://img.shields.io/badge/Gradle-8-a?color=%23209BC4)
 ![Static Badge](https://img.shields.io/badge/Python-3.11-a?color=%23FFD43B)
 
-A turn-based strategy game written in Java with [libGDX](https://libgdx.com/).
-Manage resources and train units as you grow your empire and change the world around you.
-
 ## Getting Started
-Run the following commands after a fresh install:
+Run the following commands after cloning the repo:
 
 ```bash
 gradle installHooks cleanAssets content:vanilla:build run
@@ -37,7 +41,6 @@ You can also run `gradle cleanAssets` to convert all models at once.
 If you modify code under the `content` directory then you must run the following before playing the game again:
 
 ```bash
-rm -f mods/*.jar
 gradle content:vanilla:build
 ```
 
