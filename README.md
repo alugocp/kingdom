@@ -8,7 +8,7 @@ No generative AI tools were used during development of this project.
 
 ## Dependencies
 ![Static Badge](https://img.shields.io/badge/Java-17-a?color=%23ED8B00)
-![Static Badge](https://img.shields.io/badge/libGDX-1.12.1-a?color=%23E74A45)
+![Static Badge](https://img.shields.io/badge/libGDX-1.14.0-a?color=%23E74A45)
 ![Static Badge](https://img.shields.io/badge/Gradle-8-a?color=%23209BC4)
 ![Static Badge](https://img.shields.io/badge/Python-3.11-a?color=%23FFD43B)
 
