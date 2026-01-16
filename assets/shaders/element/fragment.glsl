@@ -2,6 +2,12 @@
  * References:
  * https://github.com/libgdx/libgdx/blob/d14a3eca/gdx/src/com/badlogic/gdx/graphics/g2d/SpriteBatch.java#L153-L185
  */
+#ifdef GL_ES
+#define MED mediump
+precision mediump float;
+#else
+#define MED
+#endif
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 uniform mat4 u_transform;

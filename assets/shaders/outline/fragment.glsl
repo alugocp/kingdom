@@ -1,3 +1,9 @@
+#ifdef GL_ES
+#define MED mediump
+precision mediump float;
+#else
+#define MED
+#endif
 uniform vec4 u_coordColor;
 
 void main() {

@@ -51,8 +51,6 @@ const float OUTLINE_WIDTH = 3.0;
 // (64.0 / 18.0) and (64.0 / 19.0) are special ratios based on the top face texture for tiles
 const float TEX_RATIO_X = 64.0 / 18.0;
 const float TEX_RATIO_Y = 64.0 / 19.0;
-float bx = v_diffuseUV.x * TEX_RATIO_X;
-float by = v_diffuseUV.y * TEX_RATIO_Y;
 
 vec4 normalsTexSample(float x, float y) {
     return texture2D(u_normalsTexture, vec2(x / 1600.0, y / 960.0));
@@ -86,6 +84,8 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     if (border == 0) {
         return;
     }
+    float bx = v_diffuseUV.x * TEX_RATIO_X;
+    float by = v_diffuseUV.y * TEX_RATIO_Y;
     border -= checkBorderColor(border, color, texture2, 32, 1.0 - bx, by); // Bot right
     border -= checkBorderColor(border, color, texture2, 16, bx, by); // Bot left
     border -= checkBorderColor(border, color, texture2, 8, 1.0 - bx, 1.0 - by); // Top right
@@ -99,6 +99,8 @@ void applyBorderExtensions(int extension, vec4 color) {
     if (extension == 0) {
         return;
     }
+    float bx = v_diffuseUV.x * TEX_RATIO_X;
+    float by = v_diffuseUV.y * TEX_RATIO_Y;
     extension -= checkBorderColor(extension, color, u_borderTextureExt4, 2048, bx, 1.0 - by); // Top left CCW
     extension -= checkBorderColor(extension, color, u_borderTextureExt4, 1024, bx, by); // Bot left CW
     extension -= checkBorderColor(extension, color, u_borderTextureExt42, 512, 1.0 - bx, 1.0 - by); // Top right CCW
@@ -130,6 +132,9 @@ void applyPath(vec4 color) {
     const float GLYPH = 18.0;
     applyBorder(u_movePath, color, u_pathTexture1, u_pathTexture2);
     if (u_pathLabel > 0) {
+        float bx = v_diffuseUV.x * TEX_RATIO_X;
+        float by = v_diffuseUV.y * TEX_RATIO_Y;
+
         // Render the dot texture
         vec4 value = texture2D(u_pathDotTexture, vec2(bx, by));
         if (value.a > 0.0) {

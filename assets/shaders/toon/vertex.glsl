@@ -2,6 +2,12 @@
  * References:
  * https://raw.githubusercontent.com/libgdx/libgdx/refs/heads/master/gdx/res/com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl
  */
+#ifdef GL_ES
+#define MED mediump
+precision mediump float;
+#else
+#define MED
+#endif
 attribute vec3 a_position;
 attribute vec3 a_normal;
 attribute vec2 a_texCoord0;
