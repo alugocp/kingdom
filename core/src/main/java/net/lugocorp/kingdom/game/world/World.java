@@ -141,9 +141,7 @@ public class World implements Iterable<Tile> {
      * Returns all Modellable instances present in the World
      */
     public Array<Modellable> getModellables(boolean includeTiles) {
-        // TODO includeTiles -> "justTiles vs justEntities" when we split the Toon
-        // shader
-        // TODO include placeholder building models somehow
+        // TODO includeTiles -> "justTiles vs justEntities" when we split the Toon shader
         final Array<Modellable> models = new Array<>();
         for (int x = 0; x < this.options.size.w; x++) {
             for (int y = 0; y < this.options.size.h; y++) {

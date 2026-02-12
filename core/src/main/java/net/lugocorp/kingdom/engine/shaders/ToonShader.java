@@ -62,7 +62,6 @@ public class ToonShader implements Shader {
     private int u_diffuseTexture;
     private int u_diffuseColor;
     private int u_opacity;
-    private int u_resolution;
     private int u_nighttime;
     private int u_hovered;
     private int u_option;
@@ -108,7 +107,6 @@ public class ToonShader implements Shader {
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
         this.u_opacity = this.program.getUniformLocation("u_opacity");
-        this.u_resolution = this.program.getUniformLocation("u_resolution");
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_hovered = this.program.getUniformLocation("u_hovered");
         this.u_option = this.program.getUniformLocation("u_option");
@@ -168,9 +166,6 @@ public class ToonShader implements Shader {
         // Set normals texture (to render outlines)
         Texture normals = this.frameBuffer.getColorBufferTexture();
         this.program.setUniformi(this.u_normalsTexture, this.context.textureBinder.bind(normals));
-
-        // Set the game view resolution
-        this.program.setUniformf(this.u_resolution, Coords.SIZE.x, Coords.SIZE.y);
 
         // Set object uniforms
         Matrix3 normal = new Matrix3();

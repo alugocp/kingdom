@@ -27,7 +27,6 @@ uniform sampler2D u_normalsTexture;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
 uniform vec4 u_borderColor;
-uniform vec2 u_resolution;
 uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
