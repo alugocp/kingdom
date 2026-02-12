@@ -104,7 +104,7 @@ public class GameView implements View {
         final int x = Gdx.input.getX();
         final int y = Gdx.input.getY();
         if (x >= 0 && y >= 0 && x < Coords.SIZE.x && y < Coords.SIZE.y) {
-            final byte[] data = ScreenUtils.getFrameBufferPixels(x, Coords.SIZE.y - y - 1, 1, 1, false);
+            final byte[] data = ScreenUtils.getFrameBufferPixels(x * 2, (Coords.SIZE.y - y - 1) * 2, 1, 1, false);
             if (data[0] < 255 && data[1] < 255) {
                 this.frameBufferMappedPoint.set(data[0], data[1]);
                 return;

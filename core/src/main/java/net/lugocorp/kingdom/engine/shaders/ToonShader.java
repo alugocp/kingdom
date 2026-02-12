@@ -33,7 +33,7 @@ import java.util.Optional;
  */
 public class ToonShader implements Shader {
     private static final int TIMER_MAX = 12000;
-    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x, Coords.SIZE.y, true);
+    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x * 2, Coords.SIZE.y * 2, true);
     private Optional<TileSelector> tileSelector = Optional.empty();
     private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;

@@ -52,7 +52,7 @@ const float TEX_RATIO_X = 64.0 / 18.0;
 const float TEX_RATIO_Y = 64.0 / 19.0;
 
 vec4 normalsTexSample(float x, float y) {
-    return texture2D(u_normalsTexture, vec2(x / 1600.0, y / 960.0));
+    return texture2D(u_normalsTexture, vec2(x / 3200.0, y / 1920.0));
 }
 
 bool outline() {
