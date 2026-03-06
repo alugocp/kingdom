@@ -42,6 +42,7 @@ public class ToonShader implements Shader {
     private int u_normalsTexture;
     private int u_projViewTrans;
     private int u_worldTrans;
+    private int u_diffuseUVTransform;
     private int u_diffuseTexture;
     private int u_diffuseColor;
     private int u_opacity;
@@ -61,6 +62,7 @@ public class ToonShader implements Shader {
         this.u_normalsTexture = this.program.getUniformLocation("u_normalsTexture");
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
+        this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
         this.u_opacity = this.program.getUniformLocation("u_opacity");
@@ -111,6 +113,8 @@ public class ToonShader implements Shader {
         // Set material uniforms
         TextureAttribute diffuse = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
         this.program.setUniformi(this.u_diffuseTexture, this.context.textureBinder.bind(diffuse.textureDescription));
+        this.program.setUniformf(this.u_diffuseUVTransform, diffuse.offsetU, diffuse.offsetV, diffuse.scaleU,
+                diffuse.scaleV);
         ColorAttribute color = (ColorAttribute) renderable.material.get(ColorAttribute.Diffuse);
         this.program.setUniformf(this.u_diffuseColor, color.color);
         BlendingAttribute blend = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
