@@ -49,7 +49,6 @@ public class ToonShader implements Shader {
     private int u_nighttime;
     private int u_vision;
     private int u_lightOutline;
-    private int u_blackout;
 
     /** {@inheritdoc} */
     @Override
@@ -69,7 +68,6 @@ public class ToonShader implements Shader {
         this.u_nighttime = this.program.getUniformLocation("u_nighttime");
         this.u_vision = this.program.getUniformLocation("u_vision");
         this.u_lightOutline = this.program.getUniformLocation("u_lightOutline");
-        this.u_blackout = this.program.getUniformLocation("u_blackout");
     }
 
     /** {@inheritdoc} */
@@ -130,22 +128,15 @@ public class ToonShader implements Shader {
         }
 
         // Set special shader data
-        if (renderable.userData != null && renderable.userData instanceof TileUserData) {
-            TileUserData data = (TileUserData) renderable.userData;
-            this.program.setUniformi(this.u_vision, data.collapseVision());
-            this.program.setUniformi(this.u_blackout, 0);
-        } else {
-            this.program.setUniformi(this.u_vision, 2);
-            this.program.setUniformi(this.u_blackout, 0);
+        this.program.setUniformi(this.u_vision, 2);
 
-            // Make the outline change color if this Unit / Building is being hovered over
-            if (renderable.userData != null && renderable.userData instanceof CoordUserData) {
-                final CoordUserData data = (CoordUserData) renderable.userData;
-                this.program.setUniformi(this.u_vision, data.isLowVisibility() ? 1 : 2);
-                this.program.setUniformi(this.u_lightOutline,
-                        this.tileSelector.flatMap((TileSelector ts) -> ts.getHovered())
-                                .map((Point p) -> p.equals(data.point)).orElse(false) ? 1 : 0);
-            }
+        // Make the outline change color if this Unit / Building is being hovered over
+        if (renderable.userData != null && renderable.userData instanceof CoordUserData) {
+            final CoordUserData data = (CoordUserData) renderable.userData;
+            this.program.setUniformi(this.u_vision, data.isLowVisibility() ? 1 : 2);
+            this.program.setUniformi(this.u_lightOutline,
+                    this.tileSelector.flatMap((TileSelector ts) -> ts.getHovered())
+                            .map((Point p) -> p.equals(data.point)).orElse(false) ? 1 : 0);
         }
 
         // Set context and render

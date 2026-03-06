@@ -15,7 +15,6 @@ uniform vec4 u_diffuseColor;
 uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_vision;
-uniform int u_blackout;
 uniform bool u_lightOutline;
 varying MED vec2 v_diffuseUV;
 const int HALF_VISIBILITY = 1;
@@ -51,11 +50,7 @@ void main() {
 
     // Grab texture color at coordinate
     vec2 texCoords = v_diffuseUV;
-    if (u_blackout == 0) {
-        gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
-    } else {
-        gl_FragColor = vec4(0.25, 0.25, 0.25, 1.0);
-    }
+    gl_FragColor = texture2D(u_diffuseTexture, texCoords) * u_diffuseColor;
     gl_FragColor.a *= u_opacity;
 
     // Make the color bluer if it's nighttime
