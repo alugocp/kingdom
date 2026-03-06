@@ -140,8 +140,7 @@ public class World implements Iterable<Tile> {
     /**
      * Returns all Modellable instances present in the World
      */
-    public Array<Modellable> getModellables(boolean includeTiles) {
-        // TODO includeTiles -> "justTiles vs justEntities" when we split the Toon shader
+    public Array<Modellable> getModellables(boolean renderTiles) {
         final Array<Modellable> models = new Array<>();
         for (int x = 0; x < this.options.size.w; x++) {
             for (int y = 0; y < this.options.size.h; y++) {
@@ -149,10 +148,9 @@ public class World implements Iterable<Tile> {
                 if (!tile.isPresent()) {
                     continue;
                 }
-                if (includeTiles) {
+                if (renderTiles) {
                     models.add(tile.get());
-                }
-                if (tile.get().isVisible()) {
+                } else if (tile.get().isVisible()) {
                     tile.get().building.ifPresent((Modellable m) -> models.add(m));
                     tile.get().unit.ifPresent((Modellable m) -> models.add(m));
                 }
@@ -166,9 +164,9 @@ public class World implements Iterable<Tile> {
      * justTiles. If true then this method will only return the ModelInstances of
      * Tiles, and if false then it will return all others.
      */
-    public Array<ModelInstance> getModelInstances(boolean includeTiles) {
+    public Array<ModelInstance> getModelInstances(boolean renderTiles) {
         final Array<ModelInstance> models = new Array<>();
-        this.getModellables(includeTiles)
+        this.getModellables(renderTiles)
                 .forEach((Modellable m) -> m.getModelInstance().ifPresent((ModelInstance m1) -> models.add(m1)));
         for (int x = 0; x < this.options.size.w; x++) {
             for (int y = 0; y < this.options.size.h; y++) {

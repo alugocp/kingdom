@@ -29,21 +29,25 @@ public class AudioVideo {
     public final ModelBatch outlines;
     public final ModelBatch previews;
     public final ModelBatch models;
+    public final ModelBatch tiles;
     public final Loaders loaders;
 
     public AudioVideo(Settings settings) {
         this.outlines = new ModelBatch(new BasicShaderProvider(this.shaders.outline));
         this.previews = new ModelBatch(new BasicShaderProvider(this.shaders.preview), new InverseRenderableSorter());
         this.models = new ModelBatch(new BasicShaderProvider(this.shaders.toon));
+        this.tiles = new ModelBatch(new BasicShaderProvider(this.shaders.tile));
         this.loaders = new Loaders(settings);
         this.settings = settings;
 
         // Initialize shader programs
         this.special.setShader(this.shaders.element);
         this.shaders.toon.setTextureLoader(this.loaders.textures);
+        this.shaders.tile.setTextureLoader(this.loaders.textures);
         this.shaders.outline.init();
         this.shaders.preview.init();
         this.shaders.toon.init();
+        this.shaders.tile.init();
     }
 
     /**

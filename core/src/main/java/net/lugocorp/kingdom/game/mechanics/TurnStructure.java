@@ -154,6 +154,7 @@ public class TurnStructure {
         dayNight.tick(view);
         boolean isDayAfterTick = dayNight.isDay();
         view.av.shaders.toon.setNighttime(dayNight.isNight());
+        view.av.shaders.tile.setNighttime(dayNight.isNight());
 
         // Recalculate favorite Players for Patrons
         view.game.mechanics.patronage.recalculateFavor(view);

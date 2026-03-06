@@ -8,4 +8,5 @@ public class ShaderZoo {
     public final OutlineShader outline = new OutlineShader();
     public final PreviewShader preview = new PreviewShader();
     public final ToonShader toon = new ToonShader();
+    public final TileShader tile = new TileShader();
 }
