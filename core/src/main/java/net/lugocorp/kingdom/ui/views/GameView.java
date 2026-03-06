@@ -54,7 +54,6 @@ public class GameView implements View {
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
         this.av.shaders.toon.setTileSelector(this.selector);
-        this.av.shaders.tile.setTileSelector(this.selector);
     }
 
     /**
@@ -229,9 +228,9 @@ public class GameView implements View {
         this.av.shapes.end();
 
         // Draw all Tiles with the TileShader
-        this.av.models.begin(this.camera);
-        this.av.models.render(this.game.world.getModelInstances(true), this.environment);
-        this.av.models.end();
+        this.av.tiles.begin(this.camera);
+        this.av.tiles.render(this.game.world.getModelInstances(true), this.environment);
+        this.av.tiles.end();
 
         // Draw all 3D models with the ToonShader
         this.av.models.begin(this.camera);

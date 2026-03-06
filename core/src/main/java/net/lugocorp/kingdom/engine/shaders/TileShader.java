@@ -31,8 +31,6 @@ import java.util.Optional;
  */
 public class TileShader implements Shader {
     private static final int TIMER_MAX = 12000;
-    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x * 2, Coords.SIZE.y * 2, true);
-    private Optional<TileSelector> tileSelector = Optional.empty();
     private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
@@ -135,13 +133,6 @@ public class TileShader implements Shader {
      */
     public void setTextureLoader(TextureLoader textures) {
         this.textures = Optional.of(textures);
-    }
-
-    /**
-     * Sets this Shader's TileSelector instance
-     */
-    public void setTileSelector(TileSelector tileSelector) {
-        this.tileSelector = Optional.of(tileSelector);
     }
 
     /** {@inheritdoc} */

@@ -34,7 +34,6 @@ import java.util.Optional;
 public class ToonShader implements Shader {
     public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x * 2, Coords.SIZE.y * 2, true);
     private Optional<TileSelector> tileSelector = Optional.empty();
-    private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
     private boolean nighttime = false;
@@ -81,13 +80,6 @@ public class ToonShader implements Shader {
      */
     public void setNighttime(boolean nighttime) {
         this.nighttime = nighttime;
-    }
-
-    /**
-     * Sets this Shader's TextureLoader instance
-     */
-    public void setTextureLoader(TextureLoader textures) {
-        this.textures = Optional.of(textures);
     }
 
     /**
