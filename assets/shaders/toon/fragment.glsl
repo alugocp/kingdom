@@ -16,6 +16,7 @@ uniform float u_nighttime;
 uniform float u_opacity;
 uniform int u_vision;
 uniform bool u_lightOutline;
+uniform bool u_outlineShader;
 varying MED vec2 v_diffuseUV;
 const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
@@ -39,7 +40,7 @@ bool outline() {
 // Main shader function
 void main() {
     // Apply the outline color
-    if (outline()) {
+    if (u_outlineShader && outline()) {
         if (u_lightOutline) {
             gl_FragColor = vec4(1.0, 1.0, 0.5, 0.5);
         } else {

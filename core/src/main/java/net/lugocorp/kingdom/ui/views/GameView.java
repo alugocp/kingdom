@@ -224,24 +224,26 @@ public class GameView implements View {
         final Array<ModelInstance> nonTileModels = this.game.world.getModelInstances(false, visibleTilesBounds);
 
         // Render normals to a FrameBuffer
-        this.av.shaders.toon.frameBuffer.begin();
-        this.viewport.apply();
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        this.av.outlines.begin(this.camera);
-        this.av.outlines.render(nonTileModels, this.environment);
-        this.av.outlines.end();
-        this.setFrameBufferMappedPoint();
-        this.av.shaders.toon.frameBuffer.end();
+        this.av.shaders.toon.setOutlineShader(this.av.settings.getOutlineShader());
+        if (this.av.settings.getOutlineShader()) {
+            this.av.shaders.toon.frameBuffer.begin();
+            this.viewport.apply();
+            Gdx.gl.glClearColor(1, 1, 1, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+            this.av.outlines.begin(this.camera);
+            this.av.outlines.render(nonTileModels, this.environment);
+            this.av.outlines.end();
+            this.setFrameBufferMappedPoint();
+            this.av.shaders.toon.frameBuffer.end();
 
-        // Reapply the Viewport or it won't work
-        this.viewport.apply();
+            // Reapply the Viewport or it won't work
+            this.viewport.apply();
+        } else {
+            this.frameBufferMappedPoint.set(-1, -1);
+        }
 
         // Draw the skybox background color
-        this.av.shapes.begin(ShapeType.Filled);
-        this.av.shapes.setColor(this.game.mechanics.dayNight.getSkyboxColor());
-        this.av.shapes.rect(0, 0, Coords.SIZE.x, Coords.SIZE.y);
-        this.av.shapes.end();
+        ScreenUtils.clear(this.game.mechanics.dayNight.getSkyboxColor());
 
         // Draw all Tiles with the TileShader
         this.av.tiles.begin(this.camera);

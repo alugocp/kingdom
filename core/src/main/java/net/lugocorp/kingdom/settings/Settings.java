@@ -7,6 +7,7 @@ public class Settings {
     private float soundVolume = 1.0f;
     private float musicVolume = 1.0f;
     private boolean autoComplete = false;
+    private boolean outlineShader = true;
     private boolean reverse = false;
     private boolean tutorial = true;
 
@@ -78,5 +79,19 @@ public class Settings {
      */
     public void setAutoComplete(boolean autoComplete) {
         this.autoComplete = autoComplete;
+    }
+
+    /**
+     * Gets the outlineShader field
+     */
+    public boolean getOutlineShader() {
+        return this.outlineShader;
+    }
+
+    /**
+     * Sets the outlineShader field
+     */
+    public void setOutlineShader(boolean outlineShader) {
+        this.outlineShader = outlineShader;
     }
 }
