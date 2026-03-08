@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
@@ -140,10 +141,14 @@ public class World implements Iterable<Tile> {
     /**
      * Returns all Modellable instances present in the World
      */
-    public Array<Modellable> getModellables(boolean renderTiles) {
+    public Array<Modellable> getModellables(boolean renderTiles, Optional<Rect> bounds) {
         final Array<Modellable> models = new Array<>();
-        for (int x = 0; x < this.options.size.w; x++) {
-            for (int y = 0; y < this.options.size.h; y++) {
+        final int left = Math.max(bounds.map((Rect r) -> r.x).orElse(0), 0);
+        final int top = Math.max(bounds.map((Rect r) -> r.y).orElse(0), 0);
+        final int right = Math.min(bounds.map((Rect r) -> r.w).orElse(this.options.size.w), this.options.size.w);
+        final int bottom = Math.min(bounds.map((Rect r) -> r.h).orElse(this.options.size.h), this.options.size.h);
+        for (int x = left; x < right; x++) {
+            for (int y = top; y < bottom; y++) {
                 final Optional<Tile> tile = this.getTile(x, y);
                 if (!tile.isPresent()) {
                     continue;
@@ -164,9 +169,9 @@ public class World implements Iterable<Tile> {
      * justTiles. If true then this method will only return the ModelInstances of
      * Tiles, and if false then it will return all others.
      */
-    public Array<ModelInstance> getModelInstances(boolean renderTiles) {
+    public Array<ModelInstance> getModelInstances(boolean renderTiles, Optional<Rect> bounds) {
         final Array<ModelInstance> models = new Array<>();
-        this.getModellables(renderTiles)
+        this.getModellables(renderTiles, bounds)
                 .forEach((Modellable m) -> m.getModelInstance().ifPresent((ModelInstance m1) -> models.add(m1)));
         for (int x = 0; x < this.options.size.w; x++) {
             for (int y = 0; y < this.options.size.h; y++) {

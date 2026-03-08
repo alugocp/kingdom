@@ -66,7 +66,7 @@ public class Game {
     public void rehydrateFromKryo(AudioVideo av, AllEventHandlers events, Generator generator) {
         this.events = events;
         this.generator = generator;
-        for (Modellable m : this.world.getModellables(true)) {
+        for (Modellable m : this.world.getModellables(true, Optional.empty())) {
             m.rehydrateFromKryo(av);
         }
     }

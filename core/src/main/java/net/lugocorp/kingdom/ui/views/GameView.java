@@ -11,6 +11,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.hud.Hud;
@@ -26,7 +27,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Optional;
 import java.util.function.Consumer;
-
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.utils.Array;
 /**
  * This class handles all the Game runtime logic
  */
@@ -155,6 +157,16 @@ public class GameView implements View {
         this.hud.bot.tileMenu.set(u.getPoint());
     }
 
+    /**
+     * Calculates which Game coordinates are visible on the screen
+     */
+    private Rect calculateVisibleArea() {
+        final Point topLeft = CameraLogic.getCoordUnderScreenPoint(0, 0);
+        final Point topRight = CameraLogic.getCoordUnderScreenPoint(Coords.SIZE.x, 0);
+        final Point botLeft = CameraLogic.getCoordUnderScreenPoint(0, Coords.SIZE.y);
+        return new Rect(topLeft.x, topLeft.y, topRight.x, botLeft.y);
+    }
+
     /** {@inheritdoc} */
     @Override
     public Viewport getViewport() {
@@ -207,13 +219,17 @@ public class GameView implements View {
         this.animations.update(this, dt);
         this.game.mechanics.turns.processTurnByFrame(this);
 
+        // Calculate which models to display
+        final Optional<Rect> visibleTilesBounds = Optional.of(this.calculateVisibleArea());
+        final Array<ModelInstance> nonTileModels = this.game.world.getModelInstances(false, visibleTilesBounds);
+
         // Render normals to a FrameBuffer
         this.av.shaders.toon.frameBuffer.begin();
         this.viewport.apply();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         this.av.outlines.begin(this.camera);
-        this.av.outlines.render(this.game.world.getModelInstances(false), this.environment);
+        this.av.outlines.render(nonTileModels, this.environment);
         this.av.outlines.end();
         this.setFrameBufferMappedPoint();
         this.av.shaders.toon.frameBuffer.end();
@@ -229,12 +245,12 @@ public class GameView implements View {
 
         // Draw all Tiles with the TileShader
         this.av.tiles.begin(this.camera);
-        this.av.tiles.render(this.game.world.getModelInstances(true), this.environment);
+        this.av.tiles.render(this.game.world.getModelInstances(true, visibleTilesBounds), this.environment);
         this.av.tiles.end();
 
         // Draw all 3D models with the ToonShader
         this.av.models.begin(this.camera);
-        this.av.models.render(this.game.world.getModelInstances(false), this.environment);
+        this.av.models.render(nonTileModels, this.environment);
         this.av.models.end();
 
         // Draw 2D assets
