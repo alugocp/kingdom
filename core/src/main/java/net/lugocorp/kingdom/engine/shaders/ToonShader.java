@@ -32,7 +32,7 @@ import java.util.Optional;
  * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.java
  */
 public class ToonShader implements Shader {
-    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x * 2, Coords.SIZE.y * 2, true);
+    public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x, Coords.SIZE.y, true);
     private Optional<TileSelector> tileSelector = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;

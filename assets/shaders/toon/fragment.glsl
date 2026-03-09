@@ -23,7 +23,7 @@ const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
 
 vec4 normalsTexSample(float x, float y) {
-    return texture2D(u_normalsTexture, vec2(x / 3200.0, y / 1920.0));
+    return texture2D(u_normalsTexture, vec2(x / 1600.0, y / 960.0));
 }
 
 bool outline() {
