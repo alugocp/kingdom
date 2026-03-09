@@ -18,6 +18,8 @@ import net.lugocorp.kingdom.ui.hud.Hud;
 import net.lugocorp.kingdom.ui.overlay.OverlayLayer;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -226,6 +228,7 @@ public class GameView implements View {
         // Render normals to a FrameBuffer
         this.av.shaders.toon.setOutlineShader(this.av.settings.getOutlineShader());
         if (this.av.settings.getOutlineShader()) {
+            HdpiUtils.setMode(HdpiMode.Pixels);
             this.av.shaders.toon.frameBuffer.begin();
             this.viewport.apply();
             Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -235,6 +238,7 @@ public class GameView implements View {
             this.av.outlines.end();
             this.setFrameBufferMappedPoint();
             this.av.shaders.toon.frameBuffer.end();
+            HdpiUtils.setMode(HdpiMode.Logical);
 
             // Reapply the Viewport or it won't work
             this.viewport.apply();

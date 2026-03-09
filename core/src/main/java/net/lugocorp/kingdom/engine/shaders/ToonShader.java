@@ -51,6 +51,8 @@ public class ToonShader implements Shader {
     private int u_vision;
     private int u_lightOutline;
     private int u_outlineShader;
+    private int u_frameBufferQueryRatioX;
+    private int u_frameBufferQueryRatioY;
 
     /** {@inheritdoc} */
     @Override
@@ -72,6 +74,8 @@ public class ToonShader implements Shader {
         this.u_vision = this.program.getUniformLocation("u_vision");
         this.u_lightOutline = this.program.getUniformLocation("u_lightOutline");
         this.u_outlineShader = this.program.getUniformLocation("u_outlineShader");
+        this.u_frameBufferQueryRatioX = this.program.getUniformLocation("u_frameBufferQueryRatioX");
+        this.u_frameBufferQueryRatioY = this.program.getUniformLocation("u_frameBufferQueryRatioY");
     }
 
     /** {@inheritdoc} */
@@ -109,6 +113,8 @@ public class ToonShader implements Shader {
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
         this.program.setUniformi(this.u_outlineShader, this.outlineShader ? 1 : 0);
         this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
+        this.program.setUniformf(this.u_frameBufferQueryRatioX, Gdx.graphics.getWidth() / (float) Gdx.graphics.getBackBufferWidth());
+        this.program.setUniformf(this.u_frameBufferQueryRatioY, Gdx.graphics.getHeight() / (float) Gdx.graphics.getBackBufferHeight());
     }
 
     /** {@inheritdoc} */

@@ -14,6 +14,8 @@ uniform sampler2D u_normalsTexture;
 uniform vec4 u_diffuseColor;
 uniform float u_nighttime;
 uniform float u_opacity;
+uniform float u_frameBufferQueryRatioX;
+uniform float u_frameBufferQueryRatioY;
 uniform int u_vision;
 uniform bool u_lightOutline;
 uniform bool u_outlineShader;
@@ -23,7 +25,7 @@ const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
 
 vec4 normalsTexSample(float x, float y) {
-    return texture2D(u_normalsTexture, vec2(x / 1600.0, y / 960.0));
+    return texture2D(u_normalsTexture, vec2((x / 1600.0) * u_frameBufferQueryRatioX, (y / 960.0)  * u_frameBufferQueryRatioY));
 }
 
 bool outline() {
