@@ -8,9 +8,11 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
+import net.lugocorp.kingdom.Main;
 import com.badlogic.gdx.Gdx;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,9 @@ class StartMenuView implements View {
                 .add(new SpacerNode(false).half())
                 .add(new ButtonNode(params.av, "Credits", () -> this.navigate.accept(new CreditsView(params))))
                 .add(new SpacerNode(false).half())
-                .add(new ButtonNode(params.av, "Mods", () -> this.navigate.accept(new ActiveModsView(params)))));
+                .add(new ButtonNode(params.av, "Mods", () -> this.navigate.accept(new ActiveModsView(params))))
+                .add(new SpacerNode(false))
+                .add(new TextNode(params.av, String.format("Version %s", Main.VERSION.toString())).center()));
     }
 
     /** {@inheritdoc} */
