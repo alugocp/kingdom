@@ -3,7 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
-import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;

@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.mods;
 import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
-import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import java.io.File;

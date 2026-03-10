@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.game.events.Event;
-import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.math.Point;

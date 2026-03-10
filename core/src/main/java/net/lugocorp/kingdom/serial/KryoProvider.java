@@ -24,18 +24,18 @@ class KryoProvider {
         kryo.register(com.badlogic.gdx.graphics.Color.class);
 
         // Register Kingdom classes
-        kryo.register(net.lugocorp.kingdom.game.events.AllEventHandlers.class);
-        kryo.register(net.lugocorp.kingdom.game.events.EventHandlerBundle.class);
-        kryo.register(net.lugocorp.kingdom.game.events.SignalBooster.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.Mechanics.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.ArtifactAuction.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.Auction.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.DayNight.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.DayNightState.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.Fates.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.GlyphPools.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.NewUnit.class);
-        kryo.register(net.lugocorp.kingdom.game.mechanics.TurnStructure.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.events.AllEventHandlers.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.events.EventHandlerBundle.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.events.SignalBooster.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.Mechanics.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.ArtifactAuction.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.Auction.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.DayNight.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.DayNightState.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.Fates.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.GlyphPools.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.NewUnit.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.mechanics.TurnStructure.class);
         kryo.register(net.lugocorp.kingdom.game.model.Ability.class);
         kryo.register(net.lugocorp.kingdom.game.model.Building.class);
         kryo.register(net.lugocorp.kingdom.game.model.Artifact.class);
@@ -50,7 +50,7 @@ class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.model.Item.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.GlyphCategory.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.UnitGlyphs.class);
-        kryo.register(net.lugocorp.kingdom.game.combat.HitPoints.class);
+        kryo.register(net.lugocorp.kingdom.gameplay.combat.HitPoints.class);
         kryo.register(net.lugocorp.kingdom.game.world.World.class);
         kryo.register(net.lugocorp.kingdom.game.Game.class);
         kryo.register(net.lugocorp.kingdom.math.Point.class);

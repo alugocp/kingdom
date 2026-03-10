@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
-import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;

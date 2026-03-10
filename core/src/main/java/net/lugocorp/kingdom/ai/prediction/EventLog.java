@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.ai.prediction;
-import net.lugocorp.kingdom.game.events.Event;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import java.util.ArrayList;

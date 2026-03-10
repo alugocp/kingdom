@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.layers;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
-import net.lugocorp.kingdom.game.combat.Combat;
-import net.lugocorp.kingdom.game.events.EventReceiver;
+import net.lugocorp.kingdom.gameplay.combat.Combat;
+import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Vision;

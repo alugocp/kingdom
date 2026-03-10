@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.mods;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
-import net.lugocorp.kingdom.game.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 
 /**
  * Interface that allows the game to load mods

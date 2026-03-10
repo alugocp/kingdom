@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ai.wishlist;
 import net.lugocorp.kingdom.ai.action.Goal;
-import net.lugocorp.kingdom.game.mechanics.ArtifactAuction;
-import net.lugocorp.kingdom.game.mechanics.Auction;
+import net.lugocorp.kingdom.gameplay.mechanics.ArtifactAuction;
+import net.lugocorp.kingdom.gameplay.mechanics.Auction;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;

@@ -4,7 +4,7 @@ import net.lugocorp.kingdom.builtin.animation.MoveAnimation;
 import net.lugocorp.kingdom.engine.animation.AnimationChain;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.actions.MoveAction;
+import net.lugocorp.kingdom.gameplay.actions.MoveAction;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;

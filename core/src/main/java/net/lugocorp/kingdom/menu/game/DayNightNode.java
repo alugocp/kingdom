@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
-import net.lugocorp.kingdom.game.mechanics.DayNight;
+import net.lugocorp.kingdom.gameplay.mechanics.DayNight;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
