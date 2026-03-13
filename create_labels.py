@@ -23,7 +23,7 @@ def generate_labels(modkey):
         print(f"package net.lugocorp.kingdom.content.{modkey};", file=file)
         print("", file=file)
         print("/**", file=file)
-        print(f" * Contains definitions for names and labels across the official {modkey} mods", file=file)
+        print(f" * Contains definitions for names and labels from the official {modkey} mod", file=file)
         print(" */", file=file)
         print("public class Labels {", file=file)
 

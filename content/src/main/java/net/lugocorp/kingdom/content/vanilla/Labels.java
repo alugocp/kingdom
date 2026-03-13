@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.content.vanilla;
 
 /**
- * Contains definitions for names and labels across all official content mods
+ * Contains definitions for names and labels from the official vanilla mod
  */
 public class Labels {
 
