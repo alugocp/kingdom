@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
+import net.lugocorp.kingdom.mods.ModProfile;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
@@ -89,8 +90,8 @@ public class LoadingGameView extends ThreadedTaskView {
             System.out.println(String.format("Loading mod %s", profile.name));
 
             // Load mod code
-            modLoader.loadMod(mod, this.events, this.av.loaders.sprites, this.av.loaders.models.getModAssetsMap());
-            this.mods.add(m);
+            modLoader.loadMod(mod, this.events, this.av.loaders.sprites);
+            this.mods.add(mod);
 
             // Set progress
             p = Math.min(90, p + dx);

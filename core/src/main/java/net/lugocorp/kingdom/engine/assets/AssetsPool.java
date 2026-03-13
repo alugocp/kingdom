@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.engine.assets;
-import net.lugocorp.kingdom.mods.ModAssetsMap;
 import net.lugocorp.kingdom.mods.ModLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -10,33 +9,13 @@ import java.util.Optional;
  * Wraps the logic for loading any built-in or mod assets into the game
  */
 public abstract class AssetsPool<T> {
-    private final AssetManager external = new AssetManager(new ExternalFileHandleResolver());
     private final AssetManager internal = new AssetManager();
-    private final ModAssetsMap modAssetsMap;
     private final Class<T> classInstance;
     private final String extension;
 
-    public AssetsPool(ModAssetsMap modAssetsMap, Class<T> classInstance, String extension) {
+    public AssetsPool(Class<T> classInstance, String extension) {
         this.classInstance = classInstance;
-        this.modAssetsMap = modAssetsMap;
         this.extension = extension;
-    }
-
-    /**
-     * Returns the mod assets map object
-     */
-    public ModAssetsMap getModAssetsMap() {
-        return this.modAssetsMap;
-    }
-
-    /**
-     * Returns the appropriate AssetManager to handle the given resource
-     */
-    protected AssetManager getAssetManager(String name) {
-        if (this.modAssetsMap.get(String.format("%s.%s", name, this.extension)).isPresent()) {
-            return this.external;
-        }
-        return this.internal;
     }
 
     /**
@@ -44,17 +23,14 @@ public abstract class AssetsPool<T> {
      */
     protected String getFilename(String name) {
         String filepath = String.format("%s.%s", name, this.extension);
-        return this.modAssetsMap
-                .get(filepath).map((String key) -> Gdx.files
-                        .external(String.format("%s/%s/%s", ModLoader.ASSETS_BASE, key, filepath)).path())
-                .orElse(Gdx.files.internal(filepath).path());
+        return Gdx.files.internal(filepath).path();
     }
 
     /**
      * Returns this asset if it has been loaded and nothing otherwise
      */
     protected Optional<T> getAsset(String name) {
-        AssetManager assets = this.getAssetManager(name);
+        AssetManager assets = this.internal;
         String filename = this.getFilename(name);
         assets.update();
         T asset = assets.get(filename, false);
@@ -73,7 +49,7 @@ public abstract class AssetsPool<T> {
      */
     public void checkForUnload(String name) {
         String filename = this.getFilename(name);
-        AssetManager assets = this.getAssetManager(name);
+        AssetManager assets = this.internal;
         if (assets.isLoaded(filename) && assets.getReferenceCount(filename) == 0) {
             assets.unload(filename);
         }
@@ -84,6 +60,5 @@ public abstract class AssetsPool<T> {
      */
     public void dispose() {
         this.internal.dispose();
-        this.external.dispose();
     }
 }

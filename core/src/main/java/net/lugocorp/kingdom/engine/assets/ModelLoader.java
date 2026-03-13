@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.engine.assets;
-import net.lugocorp.kingdom.mods.ModAssetsMap;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
@@ -14,8 +13,8 @@ import java.util.Optional;
 public class ModelLoader extends AssetsPool<Model> {
     private final Map<String, ModelLoader.ModelBounds> bounds = new HashMap<>();
 
-    public ModelLoader(ModAssetsMap modAssetsMap) {
-        super(modAssetsMap, Model.class, "g3db");
+    public ModelLoader() {
+        super(Model.class, "g3db");
     }
 
     /**

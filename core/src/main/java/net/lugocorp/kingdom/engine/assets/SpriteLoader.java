@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.engine.assets;
-import net.lugocorp.kingdom.mods.ModAssetsMap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashMap;
@@ -12,8 +11,8 @@ import java.util.Optional;
 public class SpriteLoader extends AssetsPool<Texture> {
     private final Map<String, TextureRegionData> sprites = new HashMap<>();
 
-    public SpriteLoader(ModAssetsMap modAssetsMap) {
-        super(modAssetsMap, Texture.class, "png");
+    public SpriteLoader() {
+        super(Texture.class, "png");
     }
 
     /**

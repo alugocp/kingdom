@@ -34,8 +34,6 @@ import net.lugocorp.kingdom.menu.game.ArtifactNode;
 import net.lugocorp.kingdom.menu.game.FateNode;
 import net.lugocorp.kingdom.menu.game.InventoryNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
-import net.lugocorp.kingdom.mod.common.Defs;
-import net.lugocorp.kingdom.mod.common.Labels;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModProfile;
 import net.lugocorp.kingdom.ui.views.GameView;

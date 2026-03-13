@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.engine.assets;
-import net.lugocorp.kingdom.mods.ModAssetsMap;
 import net.lugocorp.kingdom.settings.Settings;
 import com.badlogic.gdx.audio.Sound;
 import java.util.HashSet;
@@ -13,8 +12,8 @@ public class SoundLoader extends AssetsPool<Sound> {
     private final Set<String> queued = new HashSet<>();
     private final Settings settings;
 
-    public SoundLoader(ModAssetsMap modAssetsMap, Settings settings) {
-        super(modAssetsMap, Sound.class, "wav");
+    public SoundLoader(Settings settings) {
+        super(Sound.class, "wav");
         this.settings = settings;
     }
 

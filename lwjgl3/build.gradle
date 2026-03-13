@@ -20,7 +20,8 @@ apply plugin: 'io.github.fourlastor.construo'
 import io.github.fourlastor.construo.Target
 
 sourceSets.main.resources.srcDirs += [
-    rootProject.file('assets').path
+    rootProject.file('assets').path,
+    rootProject.file('content/vanilla/assets').path
 ]
 application.mainClass = 'net.lugocorp.kingdom.lwjgl3.Lwjgl3Launcher'
 eclipse.project.name = appName + '-lwjgl3'
@@ -209,7 +210,7 @@ class CleanAssetsTask extends DefaultTask {
     @TaskAction
     void action() {
         this.iterateAssetsFolder('assets')
-        this.iterateAssetsFolder('content/vanilla/src/main/assets')
+        this.iterateAssetsFolder('content/vanilla/assets')
     }
 
     /**

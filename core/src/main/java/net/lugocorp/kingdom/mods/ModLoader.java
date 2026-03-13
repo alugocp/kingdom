@@ -36,7 +36,7 @@ public class ModLoader {
     /**
      * Loads the given mod
      */
-    public void loadMod(GameMod mod, AllEventHandlers events, SpriteLoader sprites, ModAssetsMap modAssetsMap) {
+    public void loadMod(GameMod mod, AllEventHandlers events, SpriteLoader sprites) {
         mod.registerEvents(events);
         mod.registerSprites(sprites);
     }

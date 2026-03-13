@@ -6,7 +6,6 @@ import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.shaders.ShaderZoo;
-import net.lugocorp.kingdom.mods.ModAssetsMap;
 import net.lugocorp.kingdom.settings.Settings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -76,12 +75,11 @@ public class AudioVideo {
         public final MusicLoader music;
 
         private Loaders(Settings settings) {
-            ModAssetsMap modAssetsMap = new ModAssetsMap();
-            this.sprites = new SpriteLoader(modAssetsMap);
-            this.models = new ModelLoader(modAssetsMap);
-            this.textures = new TextureLoader(modAssetsMap);
-            this.sounds = new SoundLoader(modAssetsMap, settings);
-            this.music = new MusicLoader(modAssetsMap, settings);
+            this.sprites = new SpriteLoader();
+            this.models = new ModelLoader();
+            this.textures = new TextureLoader();
+            this.sounds = new SoundLoader(settings);
+            this.music = new MusicLoader(settings);
         }
     }
 

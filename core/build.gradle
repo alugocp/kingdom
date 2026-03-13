@@ -16,7 +16,8 @@ dependencies {
 sourceSets {
   main {
     java {
-      srcDirs = ['src', '../content/src']
+      srcDir 'src'
+      srcDir '../content/src'
     }
   }
 }
