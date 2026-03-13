@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.mod;
+package net.lugocorp.kingdom.content.vanilla;
 import net.lugocorp.kingdom.ai.goals.AttackEnemy;
 import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.builtin.Events;
@@ -52,13 +52,13 @@ import java.util.Set;
 /**
  * This mod defines all the content for version 1.0 of the base game
  */
-public class KingdomMod implements GameMod {
+public class VanillaMod implements GameMod {
 
     /** {@inheritdoc} */
     @Override
     public ModProfile getProfile() {
         return new ModProfile("vanilla", "Vanilla", "Contains all of the base content for this game.",
-                new Semver(1, 0, 0), new String[]{"Alex Lugo"});
+                new String[]{"Alex Lugo"});
     }
 
     /** {@inheritdoc} */

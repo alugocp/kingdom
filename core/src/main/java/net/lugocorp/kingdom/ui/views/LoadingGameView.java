@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
+import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
@@ -77,34 +78,22 @@ public class LoadingGameView extends ThreadedTaskView {
     @Override
     protected void performTask() {
         final ModLoader modLoader = new ModLoader();
-        try {
-            modLoader.resetModAssetsLocation();
-        } catch (Exception e) {
-            System.err.println("Could not clear the mod asset unzip directory");
-            e.printStackTrace();
-            return;
-        }
         this.setProgress(10);
-
-        // Check for mods and if none are found then create the default mod
-        if (modLoader.getMods().size() == 0) {
-            System.out.println("No mods found - unpacking vanilla mod");
-            modLoader.createDefaultMod();
-        }
 
         // Load all mods
         int p = 10;
-        final int dx = Math.max(1, 80 / modLoader.getMods().size());
-        for (String filepath : modLoader.getMods()) {
-            System.out.println(String.format("Loading mod at %s", filepath));
+        final GameMod[] mods = modLoader.getMods();
+        final int dx = Math.max(1, 80 / mods.length);
+        for (GameMod mod : mods) {
+            final ModProfile profile = mod.getProfile();
+            System.out.println(String.format("Loading mod %s", profile.name));
 
             // Load mod code
             try {
-                final GameMod m = modLoader.loadMod(filepath, this.events, this.av.loaders.sprites,
-                        this.av.loaders.models.getModAssetsMap());
+                modLoader.loadMod(mod, this.events, this.av.loaders.sprites, this.av.loaders.models.getModAssetsMap());
                 this.mods.add(m);
             } catch (Exception e) {
-                System.err.println(String.format("Error while loading mod at %s", filepath));
+                System.err.println(String.format("Error while loading mod %s", profile.name));
                 e.printStackTrace();
                 continue;
             }

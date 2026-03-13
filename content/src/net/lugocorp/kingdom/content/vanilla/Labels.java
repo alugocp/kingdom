@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.mod.common;
+package net.lugocorp.kingdom.content.vanilla;
 
 /**
  * Contains definitions for names and labels across all official content mods
