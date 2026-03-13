@@ -16,7 +16,7 @@ No generative AI tools were used during development of this project.
 Run the following commands after cloning the repo:
 
 ```bash
-gradle installHooks cleanAssets content:vanilla:build run
+gradle installHooks cleanAssets run
 ```
 
 ## Gradle
@@ -38,22 +38,15 @@ Then, run `fbx-conv -f <filename>.obj <filename>.g3db` to make the model usable 
 You can also run `gradle cleanAssets` to convert all models at once.
 
 ## Modifying content
-If you modify code under the `content` directory then you must run the following before playing the game again:
+If you change the 3D models then run `gradle cleanAssets` *before* rerunning `gradle build` or `gradle run`.
+
+If you want to add new content to an official mod, modify a `content/**/labels.json` file and then run the following:
 
 ```bash
-gradle content:vanilla:build
+python3 create_labels.py
 ```
 
-This will recompile the content JARs located in `mods`.
-If you change the 3D models then run `gradle cleanAssets` *before* `gradle content:vanilla:build`.
-
-If you want to add new content to an official mod, modify the `content/common/labels.json` file and then run the following:
-
-```bash
-python3 content/common/create_labels.py
-```
-
-This will re-generate the `Labels` class that all official mods use.
+This will re-generate the `Labels` classes that each official mod uses.
 
 ## Notes
 - [libGDX JavaDocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/index.html)

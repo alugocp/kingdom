@@ -89,14 +89,8 @@ public class LoadingGameView extends ThreadedTaskView {
             System.out.println(String.format("Loading mod %s", profile.name));
 
             // Load mod code
-            try {
-                modLoader.loadMod(mod, this.events, this.av.loaders.sprites, this.av.loaders.models.getModAssetsMap());
-                this.mods.add(m);
-            } catch (Exception e) {
-                System.err.println(String.format("Error while loading mod %s", profile.name));
-                e.printStackTrace();
-                continue;
-            }
+            modLoader.loadMod(mod, this.events, this.av.loaders.sprites, this.av.loaders.models.getModAssetsMap());
+            this.mods.add(m);
 
             // Set progress
             p = Math.min(90, p + dx);

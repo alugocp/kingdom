@@ -244,10 +244,10 @@ spotless {
         target '**/*.json'
         simple().indentWithSpaces(4)
     }
-    //python {
-    //    target '**/*.py'
-    //    black()
-    //}
+    python {
+        target 'create_labels.py'
+        black()
+    }
     groovyGradle {
         target '**/*.gradle'
         greclipse()
