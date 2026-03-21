@@ -60,8 +60,9 @@ public class AbilityLogic {
         // Use overridden method from Player to determine how targets are selected
         return attacker.getLeader().get().select(view, points, "No attack targets are in range", (Point p) -> {
             final Damage dmg = getDamage.apply(view.game.world.getTile(p).get());
-            return SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
-                    () -> view.game.actions.unitHasCastSpell(view, attacker));
+            return new SideEffect()
+                .add(attacker.combat.attack(view, targets.get(p), dmg))
+                .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
         });
     }
 
@@ -95,14 +96,18 @@ public class AbilityLogic {
 
         // Use overridden method from Player to determine how targets are selected
         return attacker.getLeader().get().select(view, points, "No attack targets are in range",
-                (Point p) -> targets.get(p) == null
-                        ? SideEffect.none
-                        : SideEffect.all(attacker.combat.attack(view, targets.get(p), dmg),
-                                effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(SideEffect.none),
-                                () -> view.game.actions.unitHasCastSpell(view, attacker),
-                                attacker.leadership.belongsToHuman()
-                                        ? () -> view.hud.bot.tileMenu.refresh()
-                                        : SideEffect.none));
+                (Point p) -> {
+                    final SideEffect effects = new SideEffect();
+                    if (targets.get(p) != null) {
+                        effects.add(attacker.combat.attack(view, targets.get(p), dmg))
+                                .add(effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(new SideEffect()))
+                                .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
+                        if (attacker.leadership.belongsToHuman()) {
+                            effects.add(() -> view.hud.bot.tileMenu.refresh());
+                        }
+                    }
+                    return effects;
+                });
     }
 
     /**
@@ -135,8 +140,8 @@ public class AbilityLogic {
 
         // Have the Player select which target to heal
         return healer.getLeader().get().select(view, points, "No heal targets are in range",
-                (Point p) -> SideEffect.all(healer.combat.heal(view, targets.get(p), hitPoints),
-                        () -> view.game.actions.unitHasCastSpell(view, healer)));
+                (Point p) -> new SideEffect().add(healer.combat.heal(view, targets.get(p), hitPoints))
+                        .add(() -> view.game.actions.unitHasCastSpell(view, healer)));
     }
 
     /**
@@ -168,7 +173,7 @@ public class AbilityLogic {
     public static SideEffect defense(Event event, int points) {
         Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
         e.dmg.base -= points;
-        return SideEffect.none;
+        return new SideEffect();
     }
 
     /**
@@ -180,18 +185,18 @@ public class AbilityLogic {
             Tile t = view.game.world.getTile(p).get();
 
             if (t.building.isPresent()) {
-                return () -> view.hud.logger.error("Cannot place another building here");
+                return new SideEffect().add(() -> view.hud.logger.error("Cannot place another building here"));
             }
             if (criteria.apply(t)) {
                 Building b = view.game.generator.building(building, p.x, p.y);
-                return () -> {
+                return new SideEffect().add(() -> {
                     b.spawn(view);
                     view.game.actions.unitHasCastSpell(view, caster);
-                };
+                });
             }
-            return () -> view.hud.logger.error("Invalid tile for this ability");
+            return new SideEffect().add(() -> view.hud.logger.error("Invalid tile for this ability"));
         }
-        return SideEffect.none;
+        return new SideEffect();
     }
 
     /**
@@ -203,7 +208,7 @@ public class AbilityLogic {
                 ? CapturedEvents.instance.getFakePoint().map((Point p1) -> p1).orElse(caster.getPoint())
                 : caster.getPoint();
         boolean isOnTile = view.game.world.getTile(p).map(criteria).orElse(false);
-        return isOnTile ? effect.get() : SideEffect.none;
+        return isOnTile ? effect.get() : new SideEffect();
     }
 
     /**
@@ -227,7 +232,7 @@ public class AbilityLogic {
                 return effect.get();
             }
         }
-        return SideEffect.none;
+        return new SideEffect();
     }
 
     /**
@@ -235,7 +240,7 @@ public class AbilityLogic {
      */
     public static SideEffect harvestFromTile(GameView view, Unit caster, String item,
             Function<Tile, Boolean> criteria) {
-        final List<SideEffect> effects = SideEffect.list();
+        final SideEffect effects = new SideEffect();
         if (!caster.haul.isFull()) {
             Item i = view.game.generator.item(item);
             effects.add(() -> {
@@ -252,7 +257,7 @@ public class AbilityLogic {
             });
             effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
         }
-        return AbilityLogic.doOnTile(view, caster, criteria, () -> SideEffect.all(effects));
+        return AbilityLogic.doOnTile(view, caster, criteria, () -> effects);
     }
 
     /**
@@ -268,8 +273,10 @@ public class AbilityLogic {
      * Ability that generates auction points
      */
     public static SideEffect generateAuctionPoints(GameView view, Unit caster, int points) {
+        final SideEffect effects = new SideEffect();
         Events.GenerateAuctionPointsEvent event = new Events.GenerateAuctionPointsEvent(caster, points);
-        caster.handleEvent(view, event);
-        return () -> view.game.mechanics.auction.addPoints(view, caster.getPoint(), event.points);
+        return effects
+            .add(caster.handleEvent(view, event))
+            .add(() -> view.game.mechanics.auction.addPoints(view, caster.getPoint(), event.points));
     }
 }

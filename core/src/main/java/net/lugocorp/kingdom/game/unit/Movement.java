@@ -54,19 +54,22 @@ public class Movement {
      * players)
      */
     public SideEffect move(GameView view, List<Point> path, boolean parallel) {
+        final SideEffect effects = new SideEffect();
+
         // Check the Unit's remaining move distance for this turn
         final int distance = Math.min(path.size(), view.game.actions.getRemainingMoveDistance(view, this.unit));
         if (distance < 1) {
-            return this.unit.leadership.belongsToHuman()
-                    ? () -> view.hud.logger.error("The unit cannot move anymore this turn")
-                    : SideEffect.none;
+            if (this.unit.leadership.belongsToHuman()) {
+                effects.add(() -> view.hud.logger.error("The unit cannot move anymore this turn"));
+            }
+            return effects;
         }
 
         // Make sure we can still take this path
         if (!this.skipPreCheck) {
             for (int a = 0; a < distance; a++) {
                 if (!this.canMoveToPoint(view, path.get(a))) {
-                    return SideEffect.none;
+                    return effects;
                 }
             }
         }
@@ -77,7 +80,8 @@ public class Movement {
                 parallel);
         final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous,
                 parallel);
-        return SideEffect.all(this.unit.handleEvent(view, before), () -> {
+            effects.add(this.unit.handleEvent(view, before));
+        effects.add(() -> {
             final Point start = this.unit.getPoint().copy();
             final boolean wasOnUnit = view.hud.bot.tileMenu.get().equals(start);
             final AnimationChain chain = new AnimationChain();
@@ -117,6 +121,7 @@ public class Movement {
             }
             view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, distance));
         });
+        return effects;
     }
 
     /**

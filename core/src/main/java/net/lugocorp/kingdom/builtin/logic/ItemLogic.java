@@ -16,13 +16,13 @@ public class ItemLogic {
      */
     public static SideEffect valuable(GameView view, Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        return () -> e.consumer.getLeader().ifPresent((Player p) -> {
+        return new SideEffect().add(() -> e.consumer.getLeader().ifPresent((Player p) -> {
             if (p instanceof CompPlayer) {
                 ((CompPlayer) p).stats.income.add(e.item.gold);
             }
             p.gold += e.item.gold;
             view.hud.top.update(view.game);
-        });
+        }));
     }
 
     /**
@@ -39,10 +39,10 @@ public class ItemLogic {
     public static SideEffect food(GameView view, Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
         if (e.consumer.hunger.canEat(e.item)) {
-            return () -> e.consumer.hunger.eat(view, true);
+            return new SideEffect().add(() -> e.consumer.hunger.eat(view, true));
         }
         e.consumed = false;
-        return () -> view.hud.logger.error("Item is not edible for this unit");
+        return new SideEffect().add(() -> view.hud.logger.error("Item is not edible for this unit"));
     }
 
     /**

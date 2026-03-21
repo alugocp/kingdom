@@ -38,6 +38,6 @@ public class HumanPlayer extends Player {
     @Override
     public SideEffect select(GameView view, Set<Point> points, String error, Function<Point, SideEffect> action) {
         view.selector.select(points, error, (Point p) -> action.apply(p).execute());
-        return SideEffect.none;
+        return new SideEffect();
     }
 }

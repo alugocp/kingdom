@@ -140,7 +140,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        List<SideEffect> effects = SideEffect.list();
+        final SideEffect effects = new SideEffect();
         effects.add(view.game.events.unit.handle(view, this, e));
         if (e.propagate) {
             for (Ability a : this.abilities.getActives()) {
@@ -153,7 +153,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                 effects.add(i.handleEventWithoutSignalBooster(view, e));
             }
         }
-        return SideEffect.all(effects);
+        return effects;
     }
 
     /** {@inheritdoc} */
@@ -237,7 +237,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
                                     final Set<Item> food = this.haul.getEdibleItems(view, u);
-                                    return () -> this.haul.transfer(u.haul, food.iterator().next());
+                                    return new SideEffect().add(() -> this.haul.transfer(u.haul, food.iterator().next()));
                                 }).execute()));
             }
 

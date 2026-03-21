@@ -17,7 +17,7 @@ public class UnitLogic {
         events.unit.addEventHandler(u.name, Events.UnitMoveDistanceEvent.class,
                 (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
                     e.distance = distance;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
     }
 
@@ -28,7 +28,7 @@ public class UnitLogic {
         events.unit.addEventHandler(u.name, Events.GetVisionEvent.class,
                 (GameView view, Unit receiver, Events.GetVisionEvent e) -> {
                     e.radius = radius;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
     }
 }

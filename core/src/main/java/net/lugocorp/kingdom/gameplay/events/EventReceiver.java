@@ -16,8 +16,10 @@ public interface EventReceiver {
         if (CapturedEvents.instance.isActive()) {
             CapturedEvents.instance.capture(e);
         }
-        return SideEffect.all(this.handleEventWithoutSignalBooster(view, e),
-                view.game.events.signals.propagate(view, this, e));
+        return new SideEffect()
+            .add(e)
+            .add(this.handleEventWithoutSignalBooster(view, e))
+            .add(view.game.events.signals.propagate(view, this, e));
     }
 
     /**

@@ -99,11 +99,12 @@ public class Abilities {
      */
     public SideEffect addStatusEffect(GameView view, String name) {
         // TODO move status effects to their own logic one day
+        final SideEffect effects = new SideEffect();
         final Ability status = view.game.generator.ability(this.unit, name);
-        return SideEffect.all(
-                () -> view.overlays.add(new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, name)),
-                () -> this.passives.add(status),
-                status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this.unit)));
+        effects.add(() -> view.overlays.add(new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, name)));
+        effects.add(() -> this.passives.add(status));
+        effects.add(status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this.unit)));
+        return effects;
     }
 
     /**

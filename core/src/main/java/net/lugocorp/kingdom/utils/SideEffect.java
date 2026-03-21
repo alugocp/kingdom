@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.utils;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,50 +15,41 @@ import java.util.List;
  * Methods that return SideEffect called inside another SideEffect method should
  * have their result propagated
  */
-public interface SideEffect {
+public class SideEffect {
+    private final List<Runnable> actions = new ArrayList<>();
+    private final List<Event> events = new ArrayList<>();
 
     /**
-     * Combines multiple SideEffects into one
+     * Registers an Event with this SideEffect
      */
-    public static SideEffect all(SideEffect... effects) {
-        return () -> {
-            for (SideEffect effect : effects) {
-                effect.execute();
-            }
-        };
+    public SideEffect add(Event event) {
+        this.events.add(event);
+        return this;
     }
 
     /**
-     * Combines multiple SideEffects into one
+     * Registers an action with this SideEffect
      */
-    public static SideEffect all(Iterable<SideEffect> effects) {
-        return () -> {
-            for (SideEffect effect : effects) {
-                effect.execute();
-            }
-        };
+    public SideEffect add(Runnable action) {
+        this.actions.add(action);
+        return this;
     }
 
     /**
-     * Returns a List (possible populated with SideEffects) that you can add more
-     * SideEffects to before calling SideEffect.all()
+     * Registers another SideEffect's Events and actions with this SideEffect
      */
-    public static List<SideEffect> list(SideEffect... effects) {
-        final List<SideEffect> list = new ArrayList<>();
-        for (SideEffect e : effects) {
-            list.add(e);
+    public SideEffect add(SideEffect child) {
+        this.actions.addAll(child.actions);
+        this.events.addAll(child.events);
+        return this;
+    }
+
+    /**
+     * Triggers the SideEffect's actions
+     */
+    public void execute() {
+        for (Runnable action : this.actions) {
+            action.run();
         }
-        return list;
     }
-
-    /**
-     * Placeholder SideEffect, like a null value
-     */
-    public static SideEffect none = () -> {
-    };
-
-    /**
-     * Unimplemented function that the SideEffect will trigger later
-     */
-    public void execute();
 }

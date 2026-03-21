@@ -127,13 +127,15 @@ public class EventHandlerBundle<T extends EventReceiver> {
             throw new RuntimeException(
                     String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
+        final SideEffect effects = new SideEffect();
         if (hasHandler) {
-            return SideEffect.all(
-                    Lambda.map((EventHandler<T> handler) -> handler.handle(view, receiver, e), this.handlers.get(key)));
+            for (EventHandler<T> handler : this.handlers.get(key)) {
+                effects.add(handler.handle(view, receiver, e));
+            }
         }
         if (hasDefault) {
             return this.defaults.get(e.channel).handle(view, receiver, e);
         }
-        return SideEffect.none;
+        return effects;
     }
 }

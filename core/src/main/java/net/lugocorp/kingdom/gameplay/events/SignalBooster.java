@@ -17,8 +17,8 @@ public class SignalBooster {
      * Broadcasts an Event with all listening EventReceivers
      */
     public SideEffect propagate(GameView view, EventReceiver original, Event e) {
+        final SideEffect effects = new SideEffect();
         if (this.receivers.containsKey(e.channel)) {
-            List<SideEffect> effects = new ArrayList<>();
             for (EventReceiver r : receivers.get(e.channel)) {
                 if (r == original) {
                     // Prevent infinite loops
@@ -26,9 +26,8 @@ public class SignalBooster {
                 }
                 effects.add(r.handleEventWithoutSignalBooster(view, e));
             }
-            return SideEffect.all(effects);
         }
-        return SideEffect.none;
+        return effects;
     }
 
     /**

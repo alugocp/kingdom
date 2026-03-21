@@ -40,7 +40,7 @@ public class Combat {
      * This method gets called when a combatant is killed in battle
      */
     private SideEffect onDeath(GameView view, Entity attacker) {
-        List<SideEffect> effects = SideEffect.list();
+        final SideEffect effects = new SideEffect();
         if (this.bearer.isEntityType(EntityType.BUILDING)) {
             // Restore the Building's health and place under the attacking Player's control
             // if it was destroyed by another player
@@ -57,7 +57,7 @@ public class Combat {
                     view.game.world.getTile(b.getPoint())
                             .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));
                 });
-                return SideEffect.all(effects);
+                return effects;
             }
         } else {
             effects.add(this.bearer.handleEvent(view, new Events.EntityDiedEvent(this.bearer, attacker)));
@@ -78,17 +78,17 @@ public class Combat {
             }
         }
         effects.add(() -> this.bearer.deactivate(view));
-        return SideEffect.all(effects);
+        return effects;
     }
 
     /**
      * Runs the logic required for this bearer to take Damage
      */
     public SideEffect takeDamage(GameView view, Damage dmg, Entity attacker) {
+        final SideEffect effects = new SideEffect();
         if (!this.health.isVulnerable()) {
-            return SideEffect.none;
+            return effects;
         }
-        List<SideEffect> effects = SideEffect.list();
         Events.TakeDamageEvent damageEvent = new Events.TakeDamageEvent(this.bearer, dmg);
         effects.add(this.bearer.handleEvent(view, damageEvent));
         effects.add(() -> this.health.set(this.health.get() - damageEvent.dmg.total()));
@@ -105,16 +105,18 @@ public class Combat {
             effects.add(() -> view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex,
                     String.format("-%d", dmg.total()))));
         }
-        return SideEffect.all(effects);
+        return effects;
     }
 
     /**
      * This bearer attacks another
      */
     public SideEffect attack(GameView view, Entity target, Damage dmg) {
+        final SideEffect effects = new SideEffect();
+
         // Determine if this attack was a critical hit or not
         Events.CheckCriticalHitEvent crit = new Events.CheckCriticalHitEvent(this.bearer);
-        this.bearer.handleEvent(view, crit);
+        effects.add(this.bearer.handleEvent(view, crit));
         if (Math.floor(Math.random() * 100) < crit.chance) {
             dmg.setMultiplier(crit.multiplier);
         }
@@ -122,46 +124,50 @@ public class Combat {
         // Trigger conjugate Events for an Entity attacking and another Entity being
         // attacked, then calculate the outcomes of the battle (damage taken, death
         // triggers, etc)
-        return SideEffect.all(this.bearer.handleEvent(view, new Events.AttackEvent(this.bearer, target, dmg)),
-                target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)),
-                target.combat.takeDamage(view, dmg, this.bearer), () -> {
-                    final boolean humanAttacker = this.bearer.getLeader().map((Player l) -> l.isHumanPlayer())
-                            .orElse(false);
-                    if (humanAttacker) {
-                        view.av.loaders.sounds.play("sfx/attack-enemy");
-                        if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead()) {
-                            view.av.loaders.sounds.play("sfx/unit-death");
-                        }
-                    }
-                    if (this.bearer.getEntityType() == EntityType.UNIT) {
-                        final Unit u = (Unit) this.bearer;
-                        view.animations.add(new AttackAnimation(u, target.getPoint()));
-                        if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead() && !u.haul.isFull()) {
-                            final Item item = view.game.mechanics.loot.drop(view.game);
-                            view.overlays
-                                    .add(new EntityRisingOverlay(view, this.bearer, ColorScheme.WHITE.hex, item.name));
-                            u.haul.add(item);
-                        }
-                    }
-                });
+        effects.add(this.bearer.handleEvent(view, new Events.AttackEvent(this.bearer, target, dmg)));
+        effects.add(target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)));
+        effects.add(target.combat.takeDamage(view, dmg, this.bearer));
+        effects.add(() -> {
+            final boolean humanAttacker = this.bearer.getLeader().map((Player l) -> l.isHumanPlayer())
+                    .orElse(false);
+            if (humanAttacker) {
+                view.av.loaders.sounds.play("sfx/attack-enemy");
+                if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead()) {
+                    view.av.loaders.sounds.play("sfx/unit-death");
+                }
+            }
+            if (this.bearer.getEntityType() == EntityType.UNIT) {
+                final Unit u = (Unit) this.bearer;
+                view.animations.add(new AttackAnimation(u, target.getPoint()));
+                if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead() && !u.haul.isFull()) {
+                    final Item item = view.game.mechanics.loot.drop(view.game);
+                    view.overlays
+                            .add(new EntityRisingOverlay(view, this.bearer, ColorScheme.WHITE.hex, item.name));
+                    u.haul.add(item);
+                }
+            }
+        });
+        return effects;
     }
 
     /**
      * This bearer heals another
      */
     public SideEffect heal(GameView view, Entity target, int amount) {
+        final SideEffect effects = new SideEffect();
         Events.HealEntityEvent heal = new Events.HealEntityEvent(this.bearer, target, amount);
-        this.bearer.handleEvent(view, heal);
-        return () -> {
-            final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
-            target.combat.health.set(target.combat.health.get() + heal.amount);
-            if (needsHealing) {
-                view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
-                        target.combat.health.get(), target.combat.health.get() + heal.amount));
-            }
-            view.overlays.add(
-                    new EntityRisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
-        };
+        return effects
+            .add(this.bearer.handleEvent(view, heal))
+            .add(() -> {
+                final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
+                target.combat.health.set(target.combat.health.get() + heal.amount);
+                if (needsHealing) {
+                    view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
+                            target.combat.health.get(), target.combat.health.get() + heal.amount));
+                }
+                view.overlays.add(
+                        new EntityRisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
+            });
     }
 
     /**

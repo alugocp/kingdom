@@ -262,12 +262,12 @@ public class VanillaMod implements GameMod {
         events.unit.setDefaultHandler(Events.GetVisionEvent.class,
                 (GameView view, Unit receiver, Events.GetVisionEvent e) -> {
                     e.radius = 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // GetsHungry
         events.unit.setDefaultHandler("GetsHungry",
-                (GameView view, Unit receiver, Event event) -> () -> receiver.hunger.gotHungry(view));
+                (GameView view, Unit receiver, Event event) -> new SideEffect().add(() -> receiver.hunger.gotHungry(view)));
 
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
@@ -275,17 +275,17 @@ public class VanillaMod implements GameMod {
             // removed before the beta release
             if (receiver.getLeader().isPresent() && receiver.getLeader().get().isHumanPlayer()
                     && !receiver.hunger.autoEatCheck(view)) {
-                return () -> receiver.loyalty.decrease(view, 1);
+                return new SideEffect().add(() -> receiver.loyalty.decrease(view, 1));
             }
             ((Events.RepeatedEvent) event).repeat = false;
-            return SideEffect.none;
+            return new SideEffect();
         });
 
         // UnitMoveDistanceEvent
         events.unit.setDefaultHandler(Events.UnitMoveDistanceEvent.class,
                 (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
                     e.distance = 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         /**
@@ -298,7 +298,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setModelInstance(view.av, Labels.asset_grass);
                     e.blob.setMinimapColor(0x2c9965);
                     e.blob.desc = "The seeds to spring new life lay dormant beneath this place";
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Rock
@@ -308,7 +308,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setMinimapColor(0x666666);
                     e.blob.setMaterial(Labels.asset_rock);
                     e.blob.desc = "The rocky mountainscape is home to many creatures";
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sand
@@ -318,7 +318,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setMinimapColor(0xc7c567);
                     e.blob.setMaterial(Labels.asset_sand);
                     e.blob.desc = "The hot sands seem to stretch on forever";
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Snow
@@ -328,7 +328,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setMinimapColor(0xffffff);
                     e.blob.setMaterial(Labels.asset_snow);
                     e.blob.desc = "Dense and cold";
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Water
@@ -339,7 +339,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
                     e.blob.desc = "Only certain units can swim";
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Lava
@@ -351,7 +351,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
                     e.blob.desc = "Watch your step!";
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         /**
@@ -366,7 +366,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.setMinimapColor(0x555555);
                     e.blob.setActive();
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Vault
@@ -378,7 +378,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.setMinimapColor(0x000000);
                     e.blob.setActive();
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Forest
@@ -388,7 +388,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x257d53);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Taiga
@@ -399,7 +399,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0xb4c3c7);
                     e.blob.setMaterial(Labels.asset_taiga);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Meadow
@@ -409,7 +409,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x4dd349);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Oasis
@@ -419,7 +419,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x2c9965);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Shrubland
@@ -429,7 +429,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x4dd349);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Mountain
@@ -440,7 +440,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setObstacle(true);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Healing Fountain
@@ -452,14 +452,14 @@ public class VanillaMod implements GameMod {
                             e.blob.combat.health.setMaxAndValue(35);
                             e.blob.setMinimapColor(0x875f9a);
                             e.blob.setActive();
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Building receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
-                    return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : SideEffect.none;
+                    return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : new SideEffect();
                 });
 
         // Market Value Goo
@@ -470,16 +470,16 @@ public class VanillaMod implements GameMod {
                             e.blob.desc = "This goo generates 3 auction points each turn for 2 turns";
                             e.blob.combat.health.setMaxAndValue(5);
                             e.blob.setMinimapColor(0x875f9a);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
-                .add(Events.SpawnEvent.class, (GameView view, Building receiver, Events.SpawnEvent e) -> () -> {
+                .add(Events.SpawnEvent.class, (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
                     view.game.future.addFutureTick("Tick", receiver, 1, true);
                     view.game.future.addFutureTick("Remove", receiver, 2, false);
-                }).add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
-                    return () -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 3);
+                })).add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
+                    return new SideEffect().add(() -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 3));
                 }).add("Remove", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
-                    return SideEffect.all(() -> view.game.future.removeFutureEvents(receiver, "Tick"),
-                            receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver));
+                    return new SideEffect().add(() -> view.game.future.removeFutureEvents(receiver, "Tick"))
+                            .add(receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver));
                 });
 
         /**
@@ -494,29 +494,29 @@ public class VanillaMod implements GameMod {
                     e.blob.preference = "Battle glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     e.blob.setIcons(Labels.asset_rising_spirit, Labels.asset_battle_glyph);
-                    return SideEffect.none;
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    return new SideEffect();
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
                     view.game.events.signals.addListener(Events.EntityDiedEvent.class, receiver);
                     view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
-                }).add(Events.EntityDiedEvent.class, (GameView view, Patron receiver, Events.EntityDiedEvent e) -> {
+                })).add(Events.EntityDiedEvent.class, (GameView view, Patron receiver, Events.EntityDiedEvent e) -> {
                     if (e.target.isEntityType(EntityType.UNIT) && ((Unit) e.target).glyphs.has(Glyph.BATTLE)
                             && e.target.getLeader().equals(receiver.getFavoritePlayer())) {
-                        return () -> {
+                        return new SideEffect().add(() -> {
                             e.target.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
                             view.game.mechanics.pools.reincarnate((Unit) e.target);
-                        };
+                        });
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.KilledEntityEvent.class, (GameView view, Patron receiver, Events.KilledEntityEvent e) -> {
                     if (e.killer.isEntityType(EntityType.UNIT) && ((Unit) e.killer).glyphs.has(Glyph.BATTLE)
                             && e.killer.getLeader().equals(receiver.getFavoritePlayer())
                             && e.target.isEntityType(EntityType.UNIT)) {
-                        return () -> {
+                        return new SideEffect().add(() -> {
                             e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
                             view.game.mechanics.pools.reincarnate((Unit) e.target);
-                        };
+                        });
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Great Corn Woman
@@ -529,23 +529,23 @@ public class VanillaMod implements GameMod {
                     e.blob.preference = "Units that cannot swim";
                     e.blob.isPreferredUnitType = (Unit u) -> !u.abilities.hasPassive(Labels.ability_swim);
                     e.blob.setIcons(Labels.asset_swim, Labels.asset_drown);
-                    return SideEffect.none;
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    return new SideEffect();
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
                     view.game.events.signals.addListener(Events.CanUnitMoveEvent.class, receiver);
                     view.game.events.signals.addListener(Events.UnitMovedEvent.class, receiver);
-                }).add(Events.CanUnitMoveEvent.class, (GameView view, Patron receiver, Events.CanUnitMoveEvent e) -> {
+                })).add(Events.CanUnitMoveEvent.class, (GameView view, Patron receiver, Events.CanUnitMoveEvent e) -> {
                     if (e.unit.getLeader().equals(receiver.getFavoritePlayer())
                             && e.tile.name.equals(Labels.tile_water)) {
                         e.canWalkOnTile = true;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.UnitMovedEvent.class, (GameView view, Patron receiver, Events.UnitMovedEvent e) -> {
                     if (e.unit.getLeader().equals(receiver.getFavoritePlayer())
                             && view.game.world.getTile(e.current).get().name.equals(Labels.tile_water)
                             && !e.unit.haul.isFull() && Lambda.chance(20)) {
-                        return () -> e.unit.haul.add(view.game.generator.item(Labels.item_fish));
+                        return new SideEffect().add(() -> e.unit.haul.add(view.game.generator.item(Labels.item_fish)));
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Eternal Guardian
@@ -557,25 +557,25 @@ public class VanillaMod implements GameMod {
                     e.blob.preference = "Battle glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     e.blob.setIcons(Labels.asset_bloodlust, Labels.asset_battle_glyph);
-                    return SideEffect.none;
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    return new SideEffect();
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
                     view.game.events.signals.addListener(Events.CheckCriticalHitEvent.class, receiver);
                     view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
-                }).add(Events.CheckCriticalHitEvent.class,
+                })).add(Events.CheckCriticalHitEvent.class,
                         (GameView view, Patron receiver, Events.CheckCriticalHitEvent e) -> {
                             if (e.entity.isEntityType(EntityType.UNIT) && ((Unit) e.entity).glyphs.has(Glyph.BATTLE)
                                     && e.entity.getLeader().equals(receiver.getFavoritePlayer())) {
                                 e.chance += 10;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.KilledEntityEvent.class, (GameView view, Patron receiver, Events.KilledEntityEvent e) -> {
                     if (e.killer.isEntityType(EntityType.UNIT) && ((Unit) e.killer).glyphs.has(Glyph.BATTLE)
                             && e.killer.getLeader().equals(receiver.getFavoritePlayer())
                             && e.target.isEntityType(EntityType.UNIT)) {
-                        return () -> e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5);
+                        return new SideEffect().add(() -> e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5));
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Wise Mountain
@@ -586,15 +586,15 @@ public class VanillaMod implements GameMod {
                     e.blob.preference = "Mining glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.MINING);
                     e.blob.setIcons(Labels.asset_extra_gem, Labels.asset_mining_glyph);
-                    return SideEffect.none;
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    return new SideEffect();
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
                     view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
-                }).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
+                })).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
                     if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.MINING)
                             && !e.unit.haul.isFull() && Lambda.chance(20)) {
-                        return () -> e.unit.haul.add(e.item);
+                        return new SideEffect().add(() -> e.unit.haul.add(e.item));
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Wise Oak
@@ -605,16 +605,16 @@ public class VanillaMod implements GameMod {
                     e.blob.preference = "Nature glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.NATURE);
                     e.blob.setIcons(Labels.asset_extra_fruit, Labels.asset_nature_glyph);
-                    return SideEffect.none;
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> () -> {
+                    return new SideEffect();
+                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
                     view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
-                }).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
-                    return () -> {
+                })).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
+                    return new SideEffect().add(() -> {
                         if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.NATURE)
                                 && !e.unit.haul.isFull() && Lambda.chance(20)) {
                             e.unit.haul.add(e.item);
                         }
-                    };
+                    });
                 });
 
         // Ahn-Juné
@@ -626,20 +626,20 @@ public class VanillaMod implements GameMod {
                     e.blob.preference = "Healing glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
                     e.blob.setIcons(Labels.asset_heal_wounds, Labels.asset_regeneration);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Patron receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Patron receiver, Events.RepeatedEvent e) -> {
-                    final List<SideEffect> effects = SideEffect.list();
+                    final SideEffect effects = new SideEffect();
                     final Optional<Player> favorite = receiver.getFavoritePlayer();
                     favorite.ifPresent((Player p) -> {
                         for (Unit u : Lambda.subset(4, p.units)) {
                             effects.add(u.combat.heal(view, 3));
                         }
                     });
-                    return SideEffect.all(effects);
+                    return effects;
                 });
 
         /**
@@ -652,19 +652,19 @@ public class VanillaMod implements GameMod {
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your healing glyph units get +1 movement speed";
                             e.blob.image = Optional.of(Labels.asset_chos_sigil_of_haste);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.UnitMoveDistanceEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Artifact receiver, Events.UnitMoveDistanceEvent e) -> {
                             if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.HEALING)) {
                                 e.distance++;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Urdin's Scroll of Agility
@@ -673,19 +673,19 @@ public class VanillaMod implements GameMod {
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your defense glyph units get +1 movement speed";
                             e.blob.image = Optional.of(Labels.asset_urdins_scroll_of_agility);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.UnitMoveDistanceEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Artifact receiver, Events.UnitMoveDistanceEvent e) -> {
                             if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.DEFENSE)) {
                                 e.distance++;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Sword of Aesethos
@@ -694,19 +694,19 @@ public class VanillaMod implements GameMod {
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your units have +10% critical hit chance";
                             e.blob.image = Optional.of(Labels.asset_sword_of_aesethos);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.CheckCriticalHitEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.CheckCriticalHitEvent.class,
                         (GameView view, Artifact receiver, Events.CheckCriticalHitEvent e) -> {
                             if (receiver.isClaimedByLeader(e.entity)) {
                                 e.chance += 10;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Kauna's Amulet
@@ -714,11 +714,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Your units within a patron's domain have extra defense";
                     e.blob.image = Optional.of(Labels.asset_kaunas_amulet);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.TakeDamageEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.TakeDamageEvent.class, (GameView view, Artifact receiver, Events.TakeDamageEvent e) -> {
                     if (receiver.isClaimedByLeader(e.target) && e.target.isEntityType(EntityType.UNIT)) {
@@ -729,7 +729,7 @@ public class VanillaMod implements GameMod {
                             }
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Staff of Wurmdel
@@ -738,18 +738,18 @@ public class VanillaMod implements GameMod {
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your healing spells restore +4 more health";
                             e.blob.image = Optional.of(Labels.asset_staff_of_wurmdel);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.HealEntityEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.HealEntityEvent.class, (GameView view, Artifact receiver, Events.HealEntityEvent e) -> {
                     if (receiver.isClaimedByLeader(e.healer)) {
                         e.amount += 4;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Tome of Morun
@@ -757,11 +757,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "20% chance to spawn a glyph when your units kill an enemy";
                     e.blob.image = Optional.of(Labels.asset_tome_of_morun);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.EntityDiedEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.EntityDiedEvent.class, (GameView view, Artifact receiver, Events.EntityDiedEvent e) -> {
                     if (receiver.isClaimedByLeader(e.killer) && !receiver.isClaimedByLeader(e.target)) {
@@ -770,7 +770,7 @@ public class VanillaMod implements GameMod {
                             t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Orb of Nerketo
@@ -779,7 +779,7 @@ public class VanillaMod implements GameMod {
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your units have +1 vision";
                             e.blob.image = Optional.of(Labels.asset_orb_of_nerketo);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
@@ -787,13 +787,13 @@ public class VanillaMod implements GameMod {
                             for (Unit u : e.player.units) {
                                 u.vision.set(view, e.player, u, u.getPoint());
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.GetVisionEvent.class, (GameView view, Artifact receiver, Events.GetVisionEvent e) -> {
                     if (receiver.isClaimedByPlayer(e.player)) {
                         e.radius++;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Shada's Flute
@@ -801,11 +801,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Your patrons generate 3 unit points per turn";
                     e.blob.image = Optional.of(Labels.asset_shadas_flute);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.future.addFutureTick("Tick", receiver, 1, true);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add("Tick", (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
                     for (Patron patron : view.game.mechanics.patronage) {
@@ -813,7 +813,7 @@ public class VanillaMod implements GameMod {
                             receiver.getOwner().get().addUnitPoints(view, 3);
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Stones of Thudin
@@ -822,12 +822,12 @@ public class VanillaMod implements GameMod {
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your vaults have +2 defense";
                             e.blob.image = Optional.of(Labels.asset_stones_of_thudin);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.TakeDamageEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.TakeDamageEvent.class, (GameView view, Artifact receiver, Events.TakeDamageEvent e) -> {
                     if (e.target.isEntityType(EntityType.BUILDING)) {
@@ -835,7 +835,7 @@ public class VanillaMod implements GameMod {
                             e.dmg.base -= 2;
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Chasi Bones
@@ -843,18 +843,18 @@ public class VanillaMod implements GameMod {
                 (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Your nature glyph units have a 20% chance to harvest an additional item";
                     e.blob.image = Optional.of(Labels.asset_chasi_bones);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.HarvestEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.HarvestEvent.class, (GameView view, Artifact receiver, Events.HarvestEvent e) -> {
                     if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.NATURE) && !e.unit.haul.isFull()
                             && Lambda.chance(20)) {
                         e.unit.haul.add(view.game.generator.item(e.item.getStratifier()));
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Ucha's Bowl of Plenty
@@ -864,12 +864,12 @@ public class VanillaMod implements GameMod {
                             e.blob.desc = "+1 option when selecting a new unit";
                             e.blob.image = Optional.of(Labels.asset_uchas_bowl_of_plenty);
                             e.blob.chips = 2;
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             e.player.numRecruitmentOptions++;
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Nerketo's Helm
@@ -878,18 +878,18 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Critical hits against your units are less effective";
                     e.blob.image = Optional.of(Labels.asset_nerketos_helm);
                     e.blob.chips = 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.CheckCriticalHitEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.CheckCriticalHitEvent.class,
                         (GameView view, Artifact receiver, Events.CheckCriticalHitEvent e) -> {
                             if (e.entity.isEntityType(EntityType.UNIT) && receiver.isClaimedByLeader(e.entity)) {
                                 e.multiplier = 1.1f;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Bounty of Ahn-June
@@ -899,12 +899,12 @@ public class VanillaMod implements GameMod {
                             e.blob.desc = "Trade glyph units on your vaults generate +2 more auction points";
                             e.blob.image = Optional.of(Labels.asset_bounty_of_ahn_june);
                             e.blob.chips = 2;
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.GenerateAuctionPointsEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.GenerateAuctionPointsEvent.class,
                         (GameView view, Artifact receiver, Events.GenerateAuctionPointsEvent e) -> {
@@ -913,7 +913,7 @@ public class VanillaMod implements GameMod {
                                             .map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false)) {
                                 e.points += 2;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Mark of Kung
@@ -922,18 +922,18 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Your battle glyph units get +1 movement speed";
                     e.blob.image = Optional.of(Labels.asset_mark_of_kung);
                     e.blob.chips = 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.UnitMoveDistanceEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Artifact receiver, Events.UnitMoveDistanceEvent e) -> {
                             if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.BATTLE)) {
                                 e.distance++;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Chalco's Seal of Protection
@@ -943,12 +943,12 @@ public class VanillaMod implements GameMod {
                             e.blob.desc = "Your trade glyph units have +2 defense";
                             e.blob.image = Optional.of(Labels.asset_chalcos_seal_of_protection);
                             e.blob.chips = 2;
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.TakeDamageEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.TakeDamageEvent.class, (GameView view, Artifact receiver, Events.TakeDamageEvent e) -> {
                     if (e.target.isEntityType(EntityType.UNIT)) {
@@ -957,7 +957,7 @@ public class VanillaMod implements GameMod {
                             e.dmg.base -= 2;
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Poda's Elixir
@@ -966,20 +966,20 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "15% chance refresh a glyph when you recruit a unit";
                     e.blob.image = Optional.of(Labels.asset_podas_elixir);
                     e.blob.chips = 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            return () -> view.game.events.signals.addListener(Events.SpawnEvent.class, e.artifact);
+                            return new SideEffect().add(() -> view.game.events.signals.addListener(Events.SpawnEvent.class, e.artifact));
                         })
                 .add(Events.SpawnEvent.class, (GameView view, Artifact receiver, Events.SpawnEvent e) -> {
                     if (e.spawned instanceof Unit) {
                         Unit u = (Unit) e.spawned;
                         Tile t = view.game.world.getTile(u.getPoint()).get();
                         if (receiver.isClaimedByLeader(u) && !t.getGlyph().isPresent() && Lambda.chance(15)) {
-                            return () -> t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
+                            return new SideEffect().add(() -> t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class))));
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Gaia's Effigy
@@ -988,15 +988,15 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+8 unit points each turn";
                     e.blob.image = Optional.of(Labels.asset_gaias_effigy);
                     e.blob.chips = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.future.addFutureTick("Tick", receiver, 1, true);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add("Tick", (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
                     receiver.getOwner().get().addUnitPoints(view, 8);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Rod of Adelon
@@ -1005,18 +1005,18 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "5% chance to recruit an enemy unit when you kill it";
                     e.blob.image = Optional.of(Labels.asset_rod_of_adelon);
                     e.blob.chips = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.KilledEntityEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.KilledEntityEvent.class, (GameView view, Artifact receiver, Events.KilledEntityEvent e) -> {
                     if (e.target.isEntityType(EntityType.UNIT) && receiver.isClaimedByLeader(e.killer)
                             && !e.killer.isFriendly(e.target) && Lambda.chance(5)) {
                         view.game.generator.unit(e.target.name, e.target.getX(), e.target.getY()).spawn(view);
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Blade of Sanguinor
@@ -1026,19 +1026,19 @@ public class VanillaMod implements GameMod {
                             e.blob.desc = "Your battle glyph units deal +2 damage";
                             e.blob.image = Optional.of(Labels.asset_blade_of_sanguinor);
                             e.blob.chips = 3;
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.AttackEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.AttackEvent.class, (GameView view, Artifact receiver, Events.AttackEvent e) -> {
                     if (e.target.isEntityType(EntityType.UNIT) && receiver.isClaimedByLeader(e.target)
                             && ((Unit) e.target).glyphs.has(Glyph.BATTLE)) {
                         e.dmg.base += 2;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Cask of Amonitor
@@ -1048,12 +1048,12 @@ public class VanillaMod implements GameMod {
                             e.blob.desc = "Your unoccupied tiles in a patron's domain provide +1 favor";
                             e.blob.image = Optional.of(Labels.asset_cask_of_amontior);
                             e.blob.chips = 3;
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
                             view.game.events.signals.addListener(Events.CalculateFavorEvent.class, e.artifact);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.CalculateFavorEvent.class,
                         (GameView view, Artifact receiver, Events.CalculateFavorEvent e) -> {
@@ -1066,7 +1066,7 @@ public class VanillaMod implements GameMod {
                                     }
                                 }
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         /**
@@ -1083,16 +1083,16 @@ public class VanillaMod implements GameMod {
                     e.blob.desc
                             .add("• 15% chance for your units to fully heal themselves when they kill an enemy unit");
                     e.blob.strategicGoals.add(new AttackEnemy());
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GetInitialGlyphEvent.class,
                         (GameView view, Fate receiver, Events.GetInitialGlyphEvent e) -> {
                             e.glyph = Optional.of(Glyph.BATTLE);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.GameStartEvent.class, (GameView view, Fate receiver, Events.GameStartEvent e) -> {
                     view.game.events.signals.addListener(Events.CheckCriticalHitEvent.class, receiver);
                     view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.CheckCriticalHitEvent.class,
                         (GameView view, Fate receiver, Events.CheckCriticalHitEvent e) -> {
                             if (e.entity.isEntityType(EntityType.UNIT)) {
@@ -1101,7 +1101,7 @@ public class VanillaMod implements GameMod {
                                     e.chance = 100;
                                 }
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.KilledEntityEvent.class, (GameView view, Fate receiver, Events.KilledEntityEvent e) -> {
                     if (e.killer.isEntityType(EntityType.UNIT) && e.target.isEntityType(EntityType.UNIT)) {
@@ -1111,7 +1111,7 @@ public class VanillaMod implements GameMod {
                             k.combat.health.set(k.combat.health.getMax());
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Merchant
@@ -1123,24 +1123,24 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("• Your vault buildings generate 2 unit points each turn");
                     e.blob.desc.add("• Your units generate 150% auction points");
                     e.blob.strategicGoals.add(new MineGold());
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GetInitialGlyphEvent.class,
                         (GameView view, Fate receiver, Events.GetInitialGlyphEvent e) -> {
                             e.glyph = Optional.of(Glyph.TRADE);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.EndOfTurnEvent.class, (GameView view, Fate receiver, Events.EndOfTurnEvent e) -> {
                     for (Point p : view.game.getVaultBuildings(receiver.getPlayer())) {
                         receiver.getPlayer().addUnitPoints(view, p, 2);
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
         new Stratified<Fate>(events.fate, Labels.fate_merchant).add(Events.GenerateAuctionPointsEvent.class,
                 (GameView view, Fate receiver, Events.GenerateAuctionPointsEvent e) -> {
                     if (e.unit.leadership.hasFate(receiver)) {
                         e.points += e.points / 2;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Veteran
@@ -1150,7 +1150,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("Playstyle: Military production");
                     e.blob.desc.add("• Your battle glyph units heal for 3 damage when they don't act in a turn");
                     e.blob.desc.add("• Recruiting a battle glyph unit gives you 15 unit points");
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.EndOfTurnEvent.class, (GameView view, Fate receiver, Events.EndOfTurnEvent e) -> {
                     for (Unit u : receiver.getPlayer().units) {
                         if (view.game.actions.getUnitActionType(u).map((ActionType at) -> at == ActionType.SKIP)
@@ -1158,13 +1158,13 @@ public class VanillaMod implements GameMod {
                             u.combat.heal(view, 3);
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.RecruitNewUnitEvent.class, (GameView view, Fate receiver, Events.RecruitNewUnitEvent e) -> {
                     if (e.unit.glyphs.has(Glyph.BATTLE)) {
                         receiver.getPlayer().addUnitPoints(view, e.unit.getPoint(), 15);
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Devout
@@ -1174,24 +1174,24 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("Playstyle: Patron collection");
                     e.blob.desc.add("• Your active patrons generate +6 unit points");
                     e.blob.desc.add("• Your units generate +3 favor");
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GameStartEvent.class, (GameView view, Fate receiver, Events.GameStartEvent e) -> {
                     view.game.events.signals.addListener(Events.GenerateFavorEvent.class, receiver);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.EndOfTurnEvent.class, (GameView view, Fate receiver, Events.EndOfTurnEvent e) -> {
                     for (Patron p : view.game.mechanics.patronage) {
                         if (p.getFavoritePlayer().map((Player p1) -> receiver.getPlayer().equals(p1)).orElse(false)) {
                             receiver.getPlayer().addUnitPoints(view, p.getPoint(), 6);
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
         new Stratified<Fate>(events.fate, Labels.fate_devout).add(Events.GenerateFavorEvent.class,
                 (GameView view, Fate receiver, Events.GenerateFavorEvent e) -> {
                     if (e.unit.leadership.hasFate(receiver)) {
                         e.favor += 3;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Sentinel
@@ -1202,34 +1202,34 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("• Your buildings take 15% less damage");
                     e.blob.desc.add("• When you create a building the occupying unit gains 2 attack and defense");
                     e.blob.desc.add("• Recruiting a defense glyph unit gives you 20 unit points");
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GameStartEvent.class, (GameView view, Fate receiver, Events.GameStartEvent e) -> {
                     view.game.events.signals.addListener(Events.TakeDamageEvent.class, receiver);
                     view.game.events.signals.addListener(Events.SpawnEvent.class, receiver);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Fate receiver, Events.TakeDamageEvent e) -> {
                     if (e.target.getEntityType() == EntityType.BUILDING
                             && e.target.getLeader().map((Player p) -> p.equals(receiver.getPlayer())).orElse(false)) {
                         e.dmg.base -= (int) (e.dmg.base * 0.15);
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.SpawnEvent.class, (GameView view, Fate receiver, Events.SpawnEvent e) -> {
                     if (e.spawned instanceof Building) {
                         final Building b = (Building) e.spawned;
                         if (b.getLeader().map((Player p) -> p.equals(receiver.getPlayer())).orElse(false)) {
-                            return () -> view.game.world.getTile(b.getPoint()).flatMap((Tile t) -> t.unit)
+                            return new SideEffect().add(() -> view.game.world.getTile(b.getPoint()).flatMap((Tile t) -> t.unit)
                                     .ifPresent((Unit u) -> {
                                         u.abilities.addStatusEffect(view, Labels.status_effect_proud_builder).execute();
-                                    });
+                                    }));
                         }
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.RecruitNewUnitEvent.class, (GameView view, Fate receiver, Events.RecruitNewUnitEvent e) -> {
                     if (e.unit.glyphs.has(Glyph.DEFENSE)) {
                         receiver.getPlayer().addUnitPoints(view, e.unit.getPoint(), 20);
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Usurper
@@ -1241,18 +1241,18 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("• You get a free auction chip at the start of the game");
                     e.blob.desc.add("• You get 15 unit points when you do not win an auction");
                     e.blob.strategicGoals.add(new MineGold());
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GetInitialGlyphEvent.class,
                         (GameView view, Fate receiver, Events.GetInitialGlyphEvent e) -> {
                             e.glyph = Optional.of(Glyph.TRADE);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.GameStartEvent.class, (GameView view, Fate receiver, Events.GameStartEvent e) -> {
                     e.player.auctionChips++;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.LostAuctionEvent.class, (GameView view, Fate receiver, Events.LostAuctionEvent e) -> {
                     e.player.addUnitPoints(view, 15);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // The Forager
@@ -1263,27 +1263,27 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("• Your first unit will have the nature glyph");
                     e.blob.desc.add("• Your units have a 20% chance to generate an extra item while harvesting");
                     e.blob.desc.add("• Your nature glyph units have +1 speed");
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GetInitialGlyphEvent.class,
                         (GameView view, Fate receiver, Events.GetInitialGlyphEvent e) -> {
                             e.glyph = Optional.of(Glyph.NATURE);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.GameStartEvent.class, (GameView view, Fate receiver, Events.GameStartEvent e) -> {
                     view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
                     view.game.events.signals.addListener(Events.UnitMoveDistanceEvent.class, receiver);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HarvestEvent.class, (GameView view, Fate receiver, Events.HarvestEvent e) -> {
                     if (e.unit.leadership.hasFate(receiver) && !e.unit.haul.isFull() && Lambda.chance(20)) {
                         e.unit.haul.add(view.game.generator.item(e.item.name));
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Fate receiver, Events.UnitMoveDistanceEvent e) -> {
                             if (e.unit.leadership.hasFate(receiver) && e.unit.glyphs.has(Glyph.NATURE)) {
                                 e.distance++;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         /**
@@ -1302,7 +1302,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.haul.setMax(2);
                     e.blob.species = Defs.species_ettin;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Gorax the Dragon Knight
@@ -1320,7 +1320,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_golem;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Glittersnout
@@ -1335,7 +1335,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(25);
                     e.blob.species = Defs.species_brownie;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sir Tlatec
@@ -1349,7 +1349,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_salamander;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Cenuok the Battle Grue
@@ -1365,7 +1365,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_sprite;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Gloop the Adventurer
@@ -1381,7 +1381,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_plasmoid;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Dominus the Lich
@@ -1400,7 +1400,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.DEFENSE);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_plasmoid;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Kamiena
@@ -1418,7 +1418,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_garuda;
                     UnitLogic.speed(events, e.blob, 1);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Pebbles
@@ -1436,7 +1436,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_golem;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Puffshroom
@@ -1451,7 +1451,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_toadstool;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Lord Tyson
@@ -1469,7 +1469,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_brownie;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Huiying the Alchemist
@@ -1485,7 +1485,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.HEALING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_elf;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Zen Hito the Kappa
@@ -1504,7 +1504,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(25);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_gnome;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Teragalor
@@ -1520,7 +1520,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_golem;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Glimmer
@@ -1539,7 +1539,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_sprite;
                     UnitLogic.vision(events, e.blob, 4);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Bluefeathers
@@ -1560,7 +1560,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_plasmoid;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sathra the Flame Caster
@@ -1578,7 +1578,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_gemstone;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Slip
@@ -1595,7 +1595,7 @@ public class VanillaMod implements GameMod {
                     e.blob.haul.setMax(12);
                     e.blob.hunger.tags.acceptAll();
                     e.blob.species = Defs.species_plasmoid;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Ariala the Mage
@@ -1621,7 +1621,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(25);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_sprite;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Barometz
@@ -1636,7 +1636,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_sprite;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Xella the Accursed
@@ -1654,7 +1654,7 @@ public class VanillaMod implements GameMod {
                     e.blob.species = Defs.species_tulpa;
                     UnitLogic.speed(events, e.blob, 3);
                     UnitLogic.vision(events, e.blob, 4);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Goldtooth
@@ -1672,7 +1672,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.hunger.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_undead;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Lurch
@@ -1697,7 +1697,7 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.HEALING);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_merfolk;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Yalitza
@@ -1716,7 +1716,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.hunger.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_tortugan;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sir Rootbeard
@@ -1739,7 +1739,7 @@ public class VanillaMod implements GameMod {
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_human;
                     UnitLogic.speed(events, e.blob, 3);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Theressa the Rover
@@ -1761,7 +1761,7 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_undead;
                     UnitLogic.speed(events, e.blob, 100);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         /**
@@ -1773,16 +1773,16 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Adjacent attackers take damage");
                     e.blob.setIcon(Labels.asset_acid_skin);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit) {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
                                 ? attacker.combat.takeDamage(view, new Damage(2), target)
-                                : SideEffect.none;
+                                : new SideEffect();
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Bash
@@ -1790,7 +1790,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 12 damage";
                     e.blob.setIcon(Labels.asset_bash);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(12), 1));
@@ -1800,7 +1800,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 5 damage";
                     e.blob.setIcon(Labels.asset_bite);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(5), 1));
@@ -1810,7 +1810,7 @@ public class VanillaMod implements GameMod {
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Constructs a healing fountain";
                     e.blob.setIcon(Labels.asset_build_healing_fountain);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_healing_fountain, (Tile t) -> true));
@@ -1820,7 +1820,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Builds a vault";
                     e.blob.setIcon(Labels.asset_build_vault);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_vault, (Tile t) -> true));
@@ -1831,7 +1831,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = String.format(
                             "Target a mine occupied by an enemy unit. The unit, mine, and any adjacent enemy units all take damage.");
                     e.blob.setIcon(Labels.asset_collapse_mine);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             Set<Point> mines = Lambda.filter((Point p) -> view.game.world.getTile(p)
@@ -1842,7 +1842,7 @@ public class VanillaMod implements GameMod {
                             return receiver.wielder.getLeader().get().select(view, mines, "No mines in range",
                                     (Point p) -> {
                                         Set<Entity> targets = new HashSet<>();
-                                        List<SideEffect> effects = SideEffect.list();
+                                        final SideEffect effects = new SideEffect();
                                         targets.add(view.game.world.getTile(p).get().unit.get());
                                         targets.add(view.game.world.getTile(p).get().building.get());
                                         for (Point p1 : Hexagons.getNeighbors(p, 1)) {
@@ -1854,7 +1854,7 @@ public class VanillaMod implements GameMod {
                                         for (Entity t : targets) {
                                             effects.add(receiver.wielder.combat.attack(view, t, new Damage(5)));
                                         }
-                                        return SideEffect.all(effects);
+                                        return effects;
                                     });
                         });
 
@@ -1863,12 +1863,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("+2 damage if this unit has a stored item");
                     e.blob.setIcon(Labels.asset_combat_loot);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
                     if (receiver.wielder.haul.hasItems()) {
                         e.dmg.base += 2;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Craft Golden Spear
@@ -1876,7 +1876,7 @@ public class VanillaMod implements GameMod {
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Gives the target adjacent ally a golden spear (+2 damage)");
                     e.blob.setIcon(Labels.asset_golden_spear);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
@@ -1885,11 +1885,11 @@ public class VanillaMod implements GameMod {
                                     .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, targets, "No allies in range",
                                     (Point p) -> {
-                                        return () -> {
+                                        return new SideEffect().add(() -> {
                                             view.game.world.getUnit(p).ifPresent((Unit u) -> u.haul
                                                     .add(view.game.generator.item(Labels.item_golden_spear)));
                                             view.game.actions.unitHasCastSpell(view, receiver.wielder);
-                                        };
+                                        });
                                     });
                         });
 
@@ -1899,12 +1899,12 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = String
                             .format("Consumes one goo item and gives the target ally slime armor (+2 defense)");
                     e.blob.setIcon(Labels.asset_slime_armor);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             if (!receiver.wielder.haul.hasItemWithTag(Labels.tag_goo)) {
                                 view.hud.logger.error("Cannot craft slime armor without a goo item");
-                                return SideEffect.none;
+                                return new SideEffect();
                             }
                             final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
                                     .flatMap((Tile t) -> t.unit)
@@ -1912,12 +1912,12 @@ public class VanillaMod implements GameMod {
                                     .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
                             return receiver.wielder.getLeader().get().select(view, targets, "No allies in range",
                                     (Point p) -> {
-                                        return () -> {
+                                        return new SideEffect().add(() -> {
                                             receiver.wielder.haul.removeItemWithTag(Labels.tag_goo);
                                             view.game.world.getUnit(p).ifPresent((Unit u) -> u.haul
                                                     .add(view.game.generator.item(Labels.item_slime_armor)));
                                             view.game.actions.unitHasCastSpell(view, receiver.wielder);
-                                        };
+                                        });
                                     });
                         });
 
@@ -1926,7 +1926,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x318ec0);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
@@ -1935,12 +1935,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "15% chance to generate a natural item when the unit is attacked";
                     e.blob.setIcon(Labels.asset_defensive_blossom);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     return !receiver.wielder.haul.isFull() && Lambda.chance(15)
-                            ? () -> receiver.wielder.haul
-                                    .add(view.game.mechanics.loot.dropByTag(view.game, Labels.tag_natural))
-                            : SideEffect.none;
+                            ? new SideEffect().add(() -> receiver.wielder.haul
+                                    .add(view.game.mechanics.loot.dropByTag(view.game, Labels.tag_natural)))
+                            : new SideEffect();
                 });
 
         // Deposit Seeds
@@ -1948,13 +1948,13 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Chance to spawn a meadow when this unit moves");
                     e.blob.setIcon(Labels.asset_deposit_seeds);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.UnitMovedEvent.class, (GameView view, Ability receiver, Events.UnitMovedEvent e) -> {
                     Point p = receiver.wielder.getPoint();
                     return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
                             && Lambda.chance(10)
-                                    ? () -> view.game.generator.building(Labels.building_meadow, p.x, p.y).spawn(view)
-                                    : SideEffect.none;
+                                    ? new SideEffect().add(() -> view.game.generator.building(Labels.building_meadow, p.x, p.y).spawn(view))
+                                    : new SideEffect();
                 });
 
         // Dig Mine
@@ -1962,7 +1962,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Digs a mine";
                     e.blob.setIcon(Labels.asset_dig_mine);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_mine, (Tile t) -> t.name.equals(Labels.tile_rock)));
@@ -1973,27 +1973,27 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = String
                             .format("Deals 8 damage and generates loot if targeting a tile with an active building");
                     e.blob.setIcon(Labels.asset_dungeon_delve);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.attackAndEffect(view, receiver.wielder,
                                 new Damage(8), 1,
                                 Optional.of((Point p) -> !receiver.wielder.haul.isFull() && view.game.world.getTile(p)
                                         .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false)
-                                                ? () -> receiver.wielder.haul
-                                                        .add(view.game.mechanics.loot.drop(view.game))
-                                                : SideEffect.none)));
+                                                ? new SideEffect().add(() -> receiver.wielder.haul
+                                                        .add(view.game.mechanics.loot.drop(view.game)))
+                                                : new SideEffect())));
 
         // Economic Activity
         new Stratified<Ability>(events.ability, Labels.ability_economic_activity).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Generates 3 auction points when occupying a vault");
                     e.blob.setIcon(Labels.asset_economic_activity);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
                                 receiver.wielder, (Building b) -> b.name.equals(Labels.building_vault),
@@ -2004,11 +2004,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Generates food");
                     e.blob.setIcon(Labels.asset_edible);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                                 receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_fruit),
@@ -2019,13 +2019,13 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Can cast a second spell below 2 hunger");
                     e.blob.setIcon(Labels.asset_stomach);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GetMaxActivationsEvent.class,
                         (GameView view, Ability receiver, Events.GetMaxActivationsEvent e) -> {
                             if (receiver.wielder.hunger.get(view) < 2) {
                                 e.max++;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Entrenched
@@ -2033,11 +2033,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("+2 armor when on an active building");
                     e.blob.setIcon(Labels.asset_local_defender);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     final boolean isOnActiveBuilding = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false);
-                    return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : SideEffect.none;
+                    return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : new SideEffect();
                 });
 
         // Fireball
@@ -2045,7 +2045,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 8 damage");
                     e.blob.setIcon(Labels.asset_fireball);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(8), 3));
@@ -2055,7 +2055,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 5 damage (or 12 damage to a building)");
                     e.blob.setIcon(Labels.asset_fire_cannon);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .dynamicDamageAttack(view, receiver.wielder, 2,
@@ -2068,7 +2068,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Damage up to 3 units in a line");
                     e.blob.setIcon(Labels.asset_fire_laser);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Set<Point> targets = new HashSet<>();
@@ -2080,7 +2080,7 @@ public class VanillaMod implements GameMod {
                             }
                             return receiver.wielder.getLeader().get().select(view, targets, "No targets available",
                                     (Point p) -> {
-                                        final List<SideEffect> effects = SideEffect.list();
+                                        final SideEffect effects = new SideEffect();
                                         final HexSide side = sideToPoint.get(p);
                                         for (int a = 0; a < 3; a++) {
                                             Point p1 = Hexagons.followLine(receiver.wielder.getPoint(), side, a + 1);
@@ -2092,7 +2092,7 @@ public class VanillaMod implements GameMod {
                                         if (receiver.wielder.leadership.belongsToHuman()) {
                                             effects.add(() -> view.hud.bot.tileMenu.refresh());
                                         }
-                                        return SideEffect.all(effects);
+                                        return effects;
                                     });
                         });
 
@@ -2101,11 +2101,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests natural items from meadows every 4 turns");
                     e.blob.setIcon(Labels.asset_pick_flowers);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_natural),
@@ -2117,12 +2117,12 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = String.format(
                             "This unit can only move to tiles adjacent to The Necromancer, and will follow The Necromancer as it moves");
                     e.blob.setIcon(Labels.asset_raise_undead);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.events.signals
-                                        .addListener(Events.AfterUnitMovedEvent.class, receiver))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.events.signals
+                                        .addListener(Events.AfterUnitMovedEvent.class, receiver)))
                 .add(Events.AfterUnitMovedEvent.class,
                         (GameView view, Ability receiver, Events.AfterUnitMovedEvent e) -> {
                             if (e.unit.name.equals(Labels.unit_necromancer)
@@ -2132,7 +2132,7 @@ public class VanillaMod implements GameMod {
                                 receiver.wielder.movement.turnOnPreCheck();
                                 return se;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     final Set<Point> radius = Lambda.filter(
@@ -2142,7 +2142,7 @@ public class VanillaMod implements GameMod {
                     if (radius.size() == 0) {
                         e.canWalkOnBuilding = false;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Gilded Strike
@@ -2150,16 +2150,16 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 12 damage and generates 10 gold");
                     e.blob.setIcon(Labels.asset_gilded_strike);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(12), 1, Optional.of((Point p) -> {
-                                    return () -> {
+                                    return new SideEffect().add(() -> {
                                         receiver.wielder.getLeader().ifPresent((Player l) -> {
                                             l.gold += 10;
                                         });
                                         view.hud.top.update(view.game);
-                                    };
+                                    });
                                 })));
 
         // Green Fortress
@@ -2167,12 +2167,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense on forests");
                     e.blob.setIcon(Labels.asset_green_fortress);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     boolean isForest = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building).map((Building b) -> b.name.equals(Labels.building_forest))
                             .orElse(false);
-                    return isForest ? AbilityLogic.defense(e, 2) : SideEffect.none;
+                    return isForest ? AbilityLogic.defense(e, 2) : new SideEffect();
                 });
 
         // Harvest Goo
@@ -2180,11 +2180,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests goo from mines every 4 turns";
                     e.blob.setIcon(Labels.asset_harvest_slime);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_goo),
@@ -2195,11 +2195,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests mushrooms from forests and mines every 4 turns";
                     e.blob.setIcon(Labels.asset_harvest_mushroom);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_mushroom),
@@ -2211,7 +2211,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Heals 5 damage";
                     e.blob.setIcon(Labels.asset_heal_wounds);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
 
@@ -2220,7 +2220,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Heals the target adjacent unit for a few hit points");
                     e.blob.setIcon(Labels.asset_hug);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 2));
 
@@ -2229,10 +2229,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Consumes all stored items and heals adjacent friendly units");
                     e.blob.setIcon(Labels.asset_hungry_frog_magic);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            List<SideEffect> effects = SideEffect.list(() -> receiver.wielder.haul.empty());
+                            final SideEffect effects = new SideEffect().add(() -> receiver.wielder.haul.empty());
                             Set<Point> targets = Hexagons.getNeighbors(receiver.wielder.getPoint(), 1);
                             for (Point p : targets) {
                                 Optional<Unit> u = view.game.world.getUnit(p);
@@ -2240,7 +2240,7 @@ public class VanillaMod implements GameMod {
                                     effects.add(receiver.wielder.combat.heal(view, u.get(), 10));
                                 }
                             }
-                            return SideEffect.all(effects);
+                            return effects;
                         });
 
         // Hunt Fish
@@ -2248,11 +2248,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests fish from water tiles");
                     e.blob.setIcon(Labels.asset_hunt_fish);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                                 receiver.wielder, Labels.item_fish, (Tile t) -> t.name.equals(Labels.tile_water)));
@@ -2262,14 +2262,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 5 damage with a 15% chance to stun";
                     e.blob.setIcon(Labels.asset_fire_cannon);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(5), 2, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : SideEffect.none;
+                                            : new SideEffect();
                                 })));
 
         // Inject Poison
@@ -2277,14 +2277,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 5 damage and poisons the target";
                     e.blob.setIcon(Labels.asset_bite, 0xffffff, 0x3dac2a);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(5), 1, Optional.of((Point p) -> {
                                     final Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent()
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_poisoned)
-                                            : SideEffect.none;
+                                            : new SideEffect();
                                 })));
 
         // Life Aura
@@ -2292,13 +2292,13 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Generates 3 unit points per turn");
                     e.blob.setIcon(Labels.asset_life_aura);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> () -> receiver.wielder
-                        .getLeader().ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 3)));
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder
+                        .getLeader().ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 3))));
 
         // Liquifying Presence
         new Stratified<Ability>(events.ability, Labels.ability_liquifying_presence)
@@ -2306,17 +2306,17 @@ public class VanillaMod implements GameMod {
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.desc = String.format("Deals 3 damage each turn to an occupied passive building");
                             e.blob.setIcon(Labels.asset_liquifying_presence);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
                     return b.map((Building b1) -> !b1.isActive()).orElse(false)
                             ? b.get().combat.takeDamage(view, new Damage(3), receiver.wielder)
-                            : SideEffect.none;
+                            : new SideEffect();
                 });
 
         // Local Defender
@@ -2324,19 +2324,19 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Adjacent buildings have +3 armor");
                     e.blob.setIcon(Labels.asset_local_defender);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.events.signals
-                                        .addListener(Events.AttackedEvent.class, receiver))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.events.signals
+                                        .addListener(Events.AttackedEvent.class, receiver)))
                 .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.target.isEntityType(EntityType.BUILDING)
                             && receiver.wielder.getLeader().equals(e.target.getLeader())
                             && Hexagons.areNeighbors(receiver.wielder.getPoint(), e.target.getPoint())) {
                         e.dmg.base -= 3;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Loose Gems
@@ -2344,12 +2344,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "15% chance to generate an emerald when the unit attacks";
                     e.blob.setIcon(Labels.asset_gems);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
                     return !receiver.wielder.haul.isFull() && Lambda.chance(15)
-                            ? () -> receiver.wielder.haul
-                                    .add(view.game.mechanics.loot.dropByTag(view.game, Labels.tag_gem))
-                            : SideEffect.none;
+                            ? new SideEffect().add(() -> receiver.wielder.haul
+                                    .add(view.game.mechanics.loot.dropByTag(view.game, Labels.tag_gem)))
+                            : new SideEffect();
                 });
 
         // Market Boom
@@ -2357,7 +2357,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Attacks generate 4 auction points");
                     e.blob.setIcon(Labels.asset_market_boom);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> AbilityLogic
                         .generateAuctionPoints(view, receiver.wielder, 4));
 
@@ -2366,11 +2366,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Generates 3 auction points when adjacent to a vault");
                     e.blob.setIcon(Labels.asset_market_indicator);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(
                         view, receiver.wielder,
                         (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false),
@@ -2381,14 +2381,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "20% chance to spawn goo when this unit moves. This goo generates auction points.";
                     e.blob.setIcon(Labels.asset_market_value_goo);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.UnitMovedEvent.class, (GameView view, Ability receiver, Events.UnitMovedEvent e) -> {
                     final Point p = receiver.wielder.getPoint();
                     return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
                             && Lambda.chance(20)
-                                    ? () -> view.game.generator.building(Labels.building_market_value_goo, p.x, p.y)
-                                            .spawn(view)
-                                    : SideEffect.none;
+                                    ? new SideEffect().add(() -> view.game.generator.building(Labels.building_market_value_goo, p.x, p.y)
+                                            .spawn(view))
+                                    : new SideEffect();
                 });
 
         // Metabolize
@@ -2396,17 +2396,17 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Consumes 1 random hauled item to move faster for the next 2 turns");
                     e.blob.setIcon(Labels.asset_eat);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             if (!receiver.wielder.haul.hasItems()) {
                                 if (receiver.wielder.leadership.belongsToHuman()) {
                                     view.hud.logger.error("No items to metabolize");
                                 }
-                                return SideEffect.none;
+                                return new SideEffect();
                             }
-                            return SideEffect.all(() -> receiver.wielder.haul.remove(receiver.wielder.haul.random()),
-                                    receiver.wielder.abilities.addStatusEffect(view, Labels.status_effect_swift));
+                            return new SideEffect().add(() -> receiver.wielder.haul.remove(receiver.wielder.haul.random()))
+                                    .add(receiver.wielder.abilities.addStatusEffect(view, Labels.status_effect_swift));
                         });
 
         // Mine Gems
@@ -2414,11 +2414,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests gems from mines");
                     e.blob.setIcon(Labels.asset_mine_gems);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_gem),
@@ -2429,11 +2429,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests gold coins from mines every 4 turns";
                     e.blob.setIcon(Labels.asset_mine_gold);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
@@ -2444,12 +2444,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit can traverse mountains");
                     e.blob.setIcon(Labels.asset_mountain_strider);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (e.tile.building.map((Building b) -> b.name.equals(Labels.building_mountain)).orElse(false)) {
                         e.canWalkOnBuilding = true;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Necrotic Blast
@@ -2457,7 +2457,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 8 damage");
                     e.blob.setIcon(Labels.asset_fireball, 0xdbc626, 0x53cb51);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(8), 3));
@@ -2467,10 +2467,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit can see normally at night");
                     e.blob.setIcon(Labels.asset_night_vision);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
                     e.canSeeAtNight = true;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Pebble Shot
@@ -2478,7 +2478,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 5 damage";
                     e.blob.setIcon(Labels.asset_fire_cannon);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(5), 3));
@@ -2488,11 +2488,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests apples from forests every 4 turns";
                     e.blob.setIcon(Labels.asset_pick_apples);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_apple,
@@ -2503,11 +2503,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit generates +1 favor");
                     e.blob.setIcon(Labels.asset_worship_glyph);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GenerateFavorEvent.class,
                         (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
                             e.favor += 1;
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Plant Forest
@@ -2515,7 +2515,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Plants a forest";
                     e.blob.setIcon(Labels.asset_plant_forest);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_forest,
@@ -2526,7 +2526,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Plants a meadow";
                     e.blob.setIcon(Labels.asset_plant_meadow);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_meadow,
@@ -2537,7 +2537,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
                     e.blob.setIcon(Labels.asset_defense);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
@@ -2546,7 +2546,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Grants the target +2 defense for the next 2 turns";
                     e.blob.setIcon(Labels.asset_spores);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getUnit(p).isPresent(),
@@ -2554,10 +2554,10 @@ public class VanillaMod implements GameMod {
                             return receiver.wielder.getLeader().get().select(view, points,
                                     "No valid targets for extra defense", (Point p) -> {
                                         final Unit target = view.game.world.getUnit(p).get();
-                                        return SideEffect.all(
-                                                target.abilities.addStatusEffect(view,
-                                                        Labels.status_effect_extra_defense),
-                                                () -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
+                                        return new SideEffect()
+                                                .add(target.abilities.addStatusEffect(view,
+                                                        Labels.status_effect_extra_defense))
+                                                .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                                     });
                         });
 
@@ -2566,7 +2566,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 8 damage");
                     e.blob.setIcon(Labels.asset_smash);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(8), 1));
@@ -2576,7 +2576,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Consumes 20 health to spawn a Ghastly Thrall (max one at a time, remains adjacent to this unit)";
                     e.blob.setIcon(Labels.asset_raise_undead);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             // Check for any existing Ghastly Thrall
@@ -2586,7 +2586,7 @@ public class VanillaMod implements GameMod {
                                     if (receiver.wielder.leadership.belongsToHuman()) {
                                         view.hud.logger.error("You can only raise one Ghastly Thrall at a time");
                                     }
-                                    return SideEffect.none;
+                                    return new SideEffect();
                                 }
                             }
 
@@ -2599,14 +2599,14 @@ public class VanillaMod implements GameMod {
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
                                     (Point p) -> {
-                                        return () -> {
+                                        return new SideEffect().add(() -> {
                                             view.game.actions.unitHasCastSpell(view, receiver.wielder);
                                             receiver.wielder.combat.takeDamage(view, new Damage(20), receiver.wielder);
                                             final Unit u = view.game.generator.unit(Labels.unit_ghastly_thrall, p.x,
                                                     p.y);
                                             view.game.setLeader(view, u, receiver.wielder.getLeader());
                                             u.spawn(view);
-                                        };
+                                        });
                                     });
                         });
 
@@ -2615,11 +2615,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit heals a little each turn");
                     e.blob.setIcon(Labels.asset_regeneration);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 1, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> receiver.wielder.combat
                         .heal(view, 1));
 
@@ -2628,7 +2628,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Removes a Poisoned effect from the target and heals both units");
                     e.blob.setIcon(Labels.asset_heal_wounds, 0xaa2007, 0x3dac2a);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getUnit(p)
@@ -2637,11 +2637,11 @@ public class VanillaMod implements GameMod {
                                     .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, targets,
                                     "No poisoned targets in range", (Point p) -> {
-                                        return () -> {
+                                        return new SideEffect().add(() -> {
                                             view.game.world.getUnit(p).ifPresent((Unit u) -> u.abilities
                                                     .removeStatusEffect(view, Labels.status_effect_poisoned));
                                             view.game.actions.unitHasCastSpell(view, receiver.wielder);
-                                        };
+                                        });
                                     });
                         });
 
@@ -2650,7 +2650,7 @@ public class VanillaMod implements GameMod {
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 8 damage (or 12 damage when on a forest)");
                     e.blob.setIcon(Labels.asset_sword_slash, 0xffffff, 0x00ff00);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver,
                                 Events.AbilityActivatedEvent e) -> AbilityLogic
@@ -2664,7 +2664,7 @@ public class VanillaMod implements GameMod {
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("This unit is faster on passive buildings");
                     e.blob.setIcon(Labels.asset_running_through_nature);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             boolean buildingIsPassive = view.game.world.getTile(e.unit.getPoint())
@@ -2672,7 +2672,7 @@ public class VanillaMod implements GameMod {
                             if (buildingIsPassive) {
                                 e.distance++;
                             }
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Self Sacrifice
@@ -2680,12 +2680,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Transfers all their health but 1 to the target unit");
                     e.blob.setIcon(Labels.asset_self_sacrifice);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final int hitPoints = receiver.wielder.combat.health.get() - 1;
-                            return SideEffect.all(AbilityLogic.healUnit(view, receiver.wielder, hitPoints),
-                                    () -> receiver.wielder.combat.health.set(1));
+                            return new SideEffect().add(AbilityLogic.healUnit(view, receiver.wielder, hitPoints))
+                                    .add(() -> receiver.wielder.combat.health.set(1));
                         });
 
         // Sacred Seeds
@@ -2693,11 +2693,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Harvests seeds from meadows that can be consumed to generate favor");
                     e.blob.setIcon(Labels.asset_deposit_seeds);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_sacred_seed,
@@ -2708,7 +2708,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
                     e.blob.setIcon(Labels.asset_defense);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
@@ -2717,7 +2717,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
                     e.blob.setIcon(Labels.asset_defense);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
@@ -2726,7 +2726,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Deals 8 damage");
                     e.blob.setIcon(Labels.asset_slime_shot);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(8), 3));
@@ -2736,14 +2736,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 8 damage with a 15% chance to stun";
                     e.blob.setIcon(Labels.asset_smash);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(8), 1, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : SideEffect.none;
+                                            : new SideEffect();
                                 })));
 
         // Stomp
@@ -2751,14 +2751,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 5 damage with a 15% chance to stun";
                     e.blob.setIcon(Labels.asset_stomp);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(5), 1, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : SideEffect.none;
+                                            : new SideEffect();
                                 })));
 
         // Stone Defense
@@ -2766,7 +2766,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Extra defense");
                     e.blob.setIcon(Labels.asset_defense);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
@@ -2776,11 +2776,11 @@ public class VanillaMod implements GameMod {
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.desc = String.format("Generates Health Potions from Mines");
                             e.blob.setIcon(Labels.asset_subterranean_potions);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_health_potion,
@@ -2791,12 +2791,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "This unit can swim on water tiles";
                     e.blob.setIcon(Labels.asset_swim);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (!e.canWalkOnTile && e.tile.name.equals(Labels.tile_water)) {
                         e.canWalkOnTile = true;
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Swing Axe
@@ -2804,7 +2804,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Deals 12 damage";
                     e.blob.setIcon(Labels.asset_axe_swing);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(12), 1));
@@ -2815,7 +2815,7 @@ public class VanillaMod implements GameMod {
                     Damage dmg = new Damage(5);
                     e.blob.desc = String.format("Deals 8 damage", dmg);
                     e.blob.setIcon(Labels.asset_sword_slash);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
                                 receiver.wielder, new Damage(8), 1));
@@ -2825,16 +2825,16 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("Adjacent attackers take damage");
                     e.blob.setIcon(Labels.asset_thorny_skin);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit) {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
                                 ? attacker.combat.takeDamage(view, new Damage(2), target)
-                                : SideEffect.none;
+                                : new SideEffect();
                     }
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Trade
@@ -2842,11 +2842,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = "Harvests gold coins from vaults every 4 turns";
                     e.blob.setIcon(Labels.asset_trade);
-                    return SideEffect.none;
+                    return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> () -> view.game.future.addFutureTick("Tick", receiver, 4, true))
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
@@ -2861,19 +2861,19 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("The unit cannot act for 1 turn");
                     e.blob.setIcon(Labels.asset_stunned);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
                             view.game.future.addFutureTick("Tick", receiver, 1, false);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver))
+                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver)))
                 .add(Events.IsStunnedEvent.class, (GameView view, Ability receiver, Events.IsStunnedEvent e) -> {
                     e.isStunned = true;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // More Favor
@@ -2881,12 +2881,12 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("+1 favor next time the unit generates it");
                     e.blob.setIcon(Labels.asset_worship_glyph);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.GenerateFavorEvent.class,
                         (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
                             receiver.wielder.abilities.removeStatusEffect(view, receiver);
                             e.favor += 1;
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         // Proud Builder
@@ -2895,23 +2895,23 @@ public class VanillaMod implements GameMod {
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.desc = String.format("+2 attack and defense for 2 turns");
                             e.blob.setIcon(Labels.asset_proud_builder);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
                             view.game.future.addFutureTick("Tick", receiver, 2, false);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver))
+                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver)))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
                     e.dmg.base += 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Extra Defense
@@ -2920,20 +2920,20 @@ public class VanillaMod implements GameMod {
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.desc = String.format("+2 defense for 2 turns");
                             e.blob.setIcon(Labels.asset_shield);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
                             view.game.future.addFutureTick("Tick", receiver, 2, false);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver))
+                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver)))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Poisoned
@@ -2941,17 +2941,17 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("The unit takes 2 damage each turn for 4 turns");
                     e.blob.setIcon(Labels.asset_poisoned);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
                             view.game.future.addFutureTick("Remove", receiver, 4, false);
                             view.game.future.addFutureTick("Poison", receiver, 1, true);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add("Remove",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> SideEffect.all(
-                                () -> view.game.future.removeFutureEvents(receiver, "Poison"),
-                                () -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.removeFutureEvents(receiver, "Poison"))
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add("Poison", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     return receiver.wielder.combat.takeDamage(view, new Damage(2), receiver.wielder);
                 });
@@ -2961,20 +2961,20 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String.format("The unit can move an extra space for the next 2 turns");
                     e.blob.setIcon(Labels.asset_swift);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
                             view.game.future.addFutureTick("Tick", receiver, 2, false);
-                            return SideEffect.none;
+                            return new SideEffect();
                         })
                 .add("Tick",
                         (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> () -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver))
+                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
+                                        receiver)))
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             e.distance++;
-                            return SideEffect.none;
+                            return new SideEffect();
                         });
 
         /**
@@ -2988,9 +2988,9 @@ public class VanillaMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_slime);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_goo);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> SideEffect.none);
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect());
 
         // Slime Armor
         new Stratified<Item>(events.item, Labels.item_slime_armor)
@@ -2998,10 +2998,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 defense";
                     e.blob.icon = Optional.of(Labels.asset_chestplate);
                     e.blob.gold = 1;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Golden Spear
@@ -3010,10 +3010,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+1 damage";
                     e.blob.icon = Optional.of(Labels.asset_spear);
                     e.blob.gold = 10;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     e.dmg.base += 2;
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Mushroom
@@ -3024,9 +3024,9 @@ public class VanillaMod implements GameMod {
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_mushroom);
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> SideEffect.none);
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect());
 
         // Sacred seed
         new Stratified<Item>(events.item, Labels.item_sacred_seed)
@@ -3035,7 +3035,7 @@ public class VanillaMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver, Events.ItemConsumedEvent e) -> {
                     return e.consumer.abilities.addStatusEffect(view, Labels.status_effect_more_favor);
                 });
@@ -3047,9 +3047,9 @@ public class VanillaMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_flower);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> SideEffect.none);
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect());
 
         // Fish
         new Stratified<Item>(events.item, Labels.item_fish)
@@ -3057,7 +3057,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_fish);
                     e.blob.gold = 1;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
 
@@ -3067,7 +3067,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_coin);
                     e.blob.gold = 1;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
 
@@ -3078,7 +3078,7 @@ public class VanillaMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_crystal);
                     e.blob.gold = 10;
                     e.blob.tags.add(Labels.tag_gem);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
 
@@ -3090,7 +3090,7 @@ public class VanillaMod implements GameMod {
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_fruit);
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
 
@@ -3100,7 +3100,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Consume to heal by 5 hit points";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.gold = 1;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.potion(view, e, 5));
 
@@ -3111,12 +3111,12 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Consume to generate 10 gold";
                     e.blob.icon = Optional.of(Labels.asset_pouch);
                     e.blob.gold = 10;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> () -> {
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> {
                             e.consumer.getLeader().ifPresent((Player p) -> p.gold += 10);
                             view.hud.top.update(view.game);
-                        });
+                        }));
 
         // Capital
         new Stratified<Item>(events.item, Labels.item_capital)
@@ -3124,7 +3124,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Consume to generate 6 auction points";
                     e.blob.icon = Optional.of(Labels.asset_paper);
                     e.blob.gold = 6;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver,
                         Events.ItemConsumedEvent e) -> AbilityLogic.generateAuctionPoints(view, e.consumer, 10));
 
@@ -3136,10 +3136,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+1 damage";
                     e.blob.icon = Optional.of(Labels.asset_sword);
                     e.blob.gold = 1;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 1, true);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Shield
@@ -3148,10 +3148,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+1 armor";
                     e.blob.icon = Optional.of(Labels.asset_shield);
                     e.blob.gold = 1;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 1, true);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Staff
@@ -3160,10 +3160,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+1 healing";
                     e.blob.icon = Optional.of(Labels.asset_staff);
                     e.blob.gold = 1;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 1, true);
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Prayer Beads
@@ -3187,10 +3187,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Plasmoids";
                     e.blob.icon = Optional.of(Labels.asset_slime);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_plasmoid));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Binding Solute
@@ -3199,10 +3199,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Plasmoids";
                     e.blob.icon = Optional.of(Labels.asset_slime);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_plasmoid));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Life-Giving Solute
@@ -3211,10 +3211,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Plasmoids";
                     e.blob.icon = Optional.of(Labels.asset_slime);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_plasmoid));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Blessed Solute
@@ -3224,10 +3224,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Garudas";
                     e.blob.icon = Optional.of(Labels.asset_feather);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_garuda));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Iron Beak Brace
@@ -3236,10 +3236,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Garudas";
                     e.blob.icon = Optional.of(Labels.asset_helmet);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_garuda));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Hollow Bone Rattle
@@ -3248,10 +3248,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Garudas";
                     e.blob.icon = Optional.of(Labels.asset_rattle);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_garuda));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Bag of Shiny Pebbles
@@ -3261,10 +3261,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Sprites";
                     e.blob.icon = Optional.of(Labels.asset_staff);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_sprite));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Overgrown Shield
@@ -3273,10 +3273,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Sprites";
                     e.blob.icon = Optional.of(Labels.asset_shield);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_sprite));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sap of Unbreaking
@@ -3285,10 +3285,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Sprites";
                     e.blob.icon = Optional.of(Labels.asset_slime);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_sprite));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sacred Pollen
@@ -3298,10 +3298,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Elves";
                     e.blob.icon = Optional.of(Labels.asset_spear);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_elf));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sentinel's Shield
@@ -3310,10 +3310,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Elves";
                     e.blob.icon = Optional.of(Labels.asset_shield);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_elf));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Healing Incantation
@@ -3322,10 +3322,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Elves";
                     e.blob.icon = Optional.of(Labels.asset_paper);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_elf));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Devout Incantation
@@ -3335,10 +3335,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Humans";
                     e.blob.icon = Optional.of(Labels.asset_hammer);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_human));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Battle Armaments
@@ -3347,10 +3347,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Humans";
                     e.blob.icon = Optional.of(Labels.asset_chestplate);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_human));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Bandage Kit
@@ -3359,10 +3359,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Humans";
                     e.blob.icon = Optional.of(Labels.asset_pouch);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_human));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Dearly Held Idol
@@ -3372,10 +3372,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Tortugans";
                     e.blob.icon = Optional.of(Labels.asset_mace);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_tortugan));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Shell Salve
@@ -3384,10 +3384,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Tortugans";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_tortugan));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Shell-Sealing Goo
@@ -3396,10 +3396,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Tortugans";
                     e.blob.icon = Optional.of(Labels.asset_slime);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_tortugan));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Sacred Shell Rattle
@@ -3414,10 +3414,10 @@ public class VanillaMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.rarity = Rarity.UNCOMMON;
                     e.blob.gold = 6;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> () -> e.consumer.getLeader()
-                                .ifPresent((Player p) -> p.addUnitPoints(view, e.consumer.getPoint(), 10)));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> e.consumer.getLeader()
+                                .ifPresent((Player p) -> p.addUnitPoints(view, e.consumer.getPoint(), 10))));
 
         // Blood-Thirsty Blade
         // Blood-Soaked Mail
@@ -3477,7 +3477,7 @@ public class VanillaMod implements GameMod {
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
                                 e.consumer, Labels.building_meadow, (Tile t) -> t.name.equals(Labels.tile_grass)));
@@ -3490,7 +3490,7 @@ public class VanillaMod implements GameMod {
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
                                 e.consumer, Labels.building_forest, (Tile t) -> t.name.equals(Labels.tile_grass)));
@@ -3503,7 +3503,7 @@ public class VanillaMod implements GameMod {
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
                                 e.consumer, Labels.building_taiga, (Tile t) -> t.name.equals(Labels.tile_snow)));
@@ -3516,7 +3516,7 @@ public class VanillaMod implements GameMod {
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
                                 e.consumer, Labels.building_shrubland, (Tile t) -> t.name.equals(Labels.tile_sand)));
@@ -3529,7 +3529,7 @@ public class VanillaMod implements GameMod {
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
                     e.blob.tags.add(Labels.tag_natural);
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
                                 e.consumer, Labels.building_oasis, (Tile t) -> t.name.equals(Labels.tile_sand)));
@@ -3541,7 +3541,7 @@ public class VanillaMod implements GameMod {
                     e.blob.icon = Optional.of(Labels.asset_shovel);
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
                                 e.consumer, Labels.building_mine, (Tile t) -> true));
@@ -3567,10 +3567,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Tulpas";
                     e.blob.icon = Optional.of(Labels.asset_sword);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_tulpa));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Shield of the Subconscious
@@ -3579,10 +3579,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Tulpas";
                     e.blob.icon = Optional.of(Labels.asset_shield);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_tulpa));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Staff of Inner Peace
@@ -3591,10 +3591,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Tulpas";
                     e.blob.icon = Optional.of(Labels.asset_staff);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_tulpa));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Rod of Psychic Devotion
@@ -3604,10 +3604,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Giants";
                     e.blob.icon = Optional.of(Labels.asset_club);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_giant));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Castle Gate Aegis
@@ -3616,10 +3616,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Giants";
                     e.blob.icon = Optional.of(Labels.asset_shield);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_giant));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Vase of Sacred Waters
@@ -3628,10 +3628,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Giants";
                     e.blob.icon = Optional.of(Labels.asset_vase);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_giant));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Amulet of the Progenitors
@@ -3641,10 +3641,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 damage for Golems";
                     e.blob.icon = Optional.of(Labels.asset_crystal);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 2, ((Unit) e.attacker).species.counts(Defs.species_golem));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Igneous Armaments
@@ -3653,10 +3653,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 armor for Golems";
                     e.blob.icon = Optional.of(Labels.asset_chestplate);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 2, ((Unit) e.target).species.counts(Defs.species_golem));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Moss-covered Stone
@@ -3665,10 +3665,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "+2 healing for Golems";
                     e.blob.icon = Optional.of(Labels.asset_stone);
                     e.blob.gold = 3;
-                    return SideEffect.none;
+                    return new SideEffect();
                 }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 2, ((Unit) e.healer).species.counts(Defs.species_golem));
-                    return SideEffect.none;
+                    return new SideEffect();
                 });
 
         // Glyphic Geode
