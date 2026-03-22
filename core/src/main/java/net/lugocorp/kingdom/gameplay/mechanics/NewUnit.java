@@ -168,9 +168,11 @@ public class NewUnit {
     public List<Unit> getRecruitmentOptions(GameView view, Glyph g, Point p, int n) {
         final List<Unit> options = new ArrayList<>();
         final GlyphPools pools = view.game.mechanics.pools;
-        final String[] names = pools.random(g, Math.min(pools.remaining(g), n));
-        for (String name : names) {
-            options.add(view.game.generator.unit(name, p.x, p.y));
+        if (pools.remaining(g) > 0) {
+            final String[] names = pools.random(g, Math.min(pools.remaining(g), n));
+            for (String name : names) {
+                options.add(view.game.generator.unit(name, p.x, p.y));
+            }
         }
         return options;
     }
