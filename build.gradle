@@ -89,7 +89,7 @@ task installHooks(type: Copy){
  * This task copies the game JAR into the root repository
  */
 task exportGame(type: Copy){
-    from new File(rootProject.rootDir, "lwjgl3/build/libs/Kingdom-${projectVersion}.jar")
+    from new File(rootProject.rootDir, "lwjgl3/build/libs/kingdom-${projectVersion}.jar")
     into { rootProject.rootDir }
     rename { 'LegendsOfTahn.jar' }
 }

@@ -18,10 +18,11 @@ apply plugin: 'io.github.fourlastor.construo'
 
 import io.github.fourlastor.construo.Target
 
-sourceSets.main.resources.srcDirs += [
-    rootProject.file('assets').path,
-    rootProject.file('content/vanilla/assets').path
-]
+sourceSets.main.resources {
+    srcDirs rootProject.file('assets').path, rootProject.file('content/vanilla/assets').path
+    exclude '**/*.bbmodel', '**/*.obj', '**/*.mtl'
+}
+
 application.mainClass = 'net.lugocorp.kingdom.lwjgl3.Lwjgl3Launcher'
 eclipse.project.name = appName + '-lwjgl3'
 java.sourceCompatibility = 17
