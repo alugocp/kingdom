@@ -1,7 +1,5 @@
 package net.lugocorp.kingdom.engine.shaders;
-import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
-import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
@@ -19,10 +17,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.util.Optional;
 
@@ -113,8 +109,10 @@ public class ToonShader implements Shader {
         this.program.setUniformMatrix(this.u_projViewTrans, camera.combined);
         this.program.setUniformi(this.u_outlineShader, this.outlineShader ? 1 : 0);
         this.program.setUniformf(this.u_nighttime, this.nighttime ? 1f : 0f);
-        this.program.setUniformf(this.u_frameBufferQueryRatioX, Gdx.graphics.getWidth() / (float) Gdx.graphics.getBackBufferWidth());
-        this.program.setUniformf(this.u_frameBufferQueryRatioY, Gdx.graphics.getHeight() / (float) Gdx.graphics.getBackBufferHeight());
+        this.program.setUniformf(this.u_frameBufferQueryRatioX,
+                Gdx.graphics.getWidth() / (float) Gdx.graphics.getBackBufferWidth());
+        this.program.setUniformf(this.u_frameBufferQueryRatioY,
+                Gdx.graphics.getHeight() / (float) Gdx.graphics.getBackBufferHeight());
     }
 
     /** {@inheritdoc} */

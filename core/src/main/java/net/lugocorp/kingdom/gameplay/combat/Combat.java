@@ -15,7 +15,6 @@ import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.overlay.HealthChangeOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -128,8 +127,7 @@ public class Combat {
         effects.add(target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)));
         effects.add(target.combat.takeDamage(view, dmg, this.bearer));
         effects.add(() -> {
-            final boolean humanAttacker = this.bearer.getLeader().map((Player l) -> l.isHumanPlayer())
-                    .orElse(false);
+            final boolean humanAttacker = this.bearer.getLeader().map((Player l) -> l.isHumanPlayer()).orElse(false);
             if (humanAttacker) {
                 view.av.loaders.sounds.play("sfx/attack-enemy");
                 if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead()) {
@@ -141,8 +139,7 @@ public class Combat {
                 view.animations.add(new AttackAnimation(u, target.getPoint()));
                 if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead() && !u.haul.isFull()) {
                     final Item item = view.game.mechanics.loot.drop(view.game);
-                    view.overlays
-                            .add(new EntityRisingOverlay(view, this.bearer, ColorScheme.WHITE.hex, item.name));
+                    view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.WHITE.hex, item.name));
                     u.haul.add(item);
                 }
             }
@@ -156,18 +153,16 @@ public class Combat {
     public SideEffect heal(GameView view, Entity target, int amount) {
         final SideEffect effects = new SideEffect();
         Events.HealEntityEvent heal = new Events.HealEntityEvent(this.bearer, target, amount);
-        return effects
-            .add(this.bearer.handleEvent(view, heal))
-            .add(() -> {
-                final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
-                target.combat.health.set(target.combat.health.get() + heal.amount);
-                if (needsHealing) {
-                    view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
-                            target.combat.health.get(), target.combat.health.get() + heal.amount));
-                }
-                view.overlays.add(
-                        new EntityRisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
-            });
+        return effects.add(this.bearer.handleEvent(view, heal)).add(() -> {
+            final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
+            target.combat.health.set(target.combat.health.get() + heal.amount);
+            if (needsHealing) {
+                view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
+                        target.combat.health.get(), target.combat.health.get() + heal.amount));
+            }
+            view.overlays.add(
+                    new EntityRisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
+        });
     }
 
     /**

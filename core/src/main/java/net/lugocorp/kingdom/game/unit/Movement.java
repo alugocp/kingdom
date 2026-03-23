@@ -4,11 +4,11 @@ import net.lugocorp.kingdom.builtin.animation.MoveAnimation;
 import net.lugocorp.kingdom.engine.animation.AnimationChain;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.gameplay.actions.MoveAction;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.gameplay.actions.MoveAction;
 import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -80,7 +80,7 @@ public class Movement {
                 parallel);
         final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous,
                 parallel);
-            effects.add(this.unit.handleEvent(view, before));
+        effects.add(this.unit.handleEvent(view, before));
         effects.add(() -> {
             final Point start = this.unit.getPoint().copy();
             final boolean wasOnUnit = view.hud.bot.tileMenu.get().equals(start);

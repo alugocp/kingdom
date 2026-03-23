@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 

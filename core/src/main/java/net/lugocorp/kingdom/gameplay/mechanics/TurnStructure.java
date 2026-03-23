@@ -14,8 +14,8 @@ import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class handles human and AI Players taking turns during the Game
@@ -125,7 +125,8 @@ public class TurnStructure {
                     Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(view, comp, glyph.get());
                     if (spawnPoint.isPresent()) {
                         Log.log("Will spawn unit at %s", spawnPoint.get());
-                        final List<Unit> options = view.game.mechanics.recruitUnits.getRecruitmentOptions(view, glyph.get(), spawnPoint.get(), 1);
+                        final List<Unit> options = view.game.mechanics.recruitUnits.getRecruitmentOptions(view,
+                                glyph.get(), spawnPoint.get(), 1);
                         if (options.size() > 0) {
                             comp.wishlist.units.setOptions(options);
                             final Optional<Unit> unit = comp.wishlist.units.getDesiredOptions().getMostWanted();

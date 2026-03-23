@@ -10,7 +10,6 @@ import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.mods.ModProfile;
-import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;

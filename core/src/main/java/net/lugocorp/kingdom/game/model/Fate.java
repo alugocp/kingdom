@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.ai.action.Goal;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
-import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.game.properties;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;

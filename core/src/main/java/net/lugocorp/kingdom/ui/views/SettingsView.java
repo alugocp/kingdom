@@ -64,8 +64,8 @@ public class SettingsView implements View {
                                 .add(new OptionsNode(av, av.settings.isTutorialEnabled() ? 1 : 0,
                                         (Integer index) -> av.settings.setTutorialEnabled(index == 1)).add("Off")
                                         .add("On")))
-                        .add(new ListNode().add(new SubheaderNode(av, "Outline Shader"))
-                                .add(new TextNode(av, "Turning this off will boost performance but will also disable tile selection via unit and building models"))
+                        .add(new ListNode().add(new SubheaderNode(av, "Outline Shader")).add(new TextNode(av,
+                                "Turning this off will boost performance but will also disable tile selection via unit and building models"))
                                 .add(new OptionsNode(av, av.settings.getOutlineShader() ? 1 : 0,
                                         (Integer index) -> av.settings.setOutlineShader(index == 1)).add("Off")
                                         .add("On"))));

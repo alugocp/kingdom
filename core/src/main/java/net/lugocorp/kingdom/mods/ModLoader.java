@@ -1,24 +1,7 @@
 package net.lugocorp.kingdom.mods;
-import net.lugocorp.kingdom.Main;
+import net.lugocorp.kingdom.content.vanilla.VanillaMod;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import net.lugocorp.kingdom.content.vanilla.VanillaMod;
 
 /**
  * This class handles loading mods

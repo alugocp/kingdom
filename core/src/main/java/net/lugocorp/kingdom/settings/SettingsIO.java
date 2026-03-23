@@ -16,8 +16,9 @@ public final class SettingsIO {
     public static final void write(Settings s) {
         final FileHandle f = Gdx.files.local(SettingsIO.filepath);
         final JSONObject data = new JSONObject().put("soundVolume", s.getSoundVolume())
-                .put("musicVolume", s.getMusicVolume()).put("autoComplete", s.getAutoComplete()).put("outlineShader", s.getOutlineShader())
-                .put("reverse", s.getReversedScrollDirection()).put("tutorial", s.isTutorialEnabled());
+                .put("musicVolume", s.getMusicVolume()).put("autoComplete", s.getAutoComplete())
+                .put("outlineShader", s.getOutlineShader()).put("reverse", s.getReversedScrollDirection())
+                .put("tutorial", s.isTutorialEnabled());
         f.writeString(data.toString(), false);
     }
 

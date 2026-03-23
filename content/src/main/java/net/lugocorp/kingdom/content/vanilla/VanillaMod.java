@@ -6,11 +6,6 @@ import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.builtin.logic.ItemLogic;
 import net.lugocorp.kingdom.builtin.logic.UnitLogic;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
-import net.lugocorp.kingdom.gameplay.actions.ActionType;
-import net.lugocorp.kingdom.gameplay.combat.Damage;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
-import net.lugocorp.kingdom.gameplay.events.Event;
-import net.lugocorp.kingdom.gameplay.events.Stratified;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.layers.Entity;
@@ -27,6 +22,11 @@ import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
 import net.lugocorp.kingdom.game.properties.Rarity;
+import net.lugocorp.kingdom.gameplay.actions.ActionType;
+import net.lugocorp.kingdom.gameplay.combat.Damage;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.Stratified;
 import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -38,11 +38,9 @@ import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModProfile;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
-import net.lugocorp.kingdom.utils.Semver;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -266,8 +264,8 @@ public class VanillaMod implements GameMod {
                 });
 
         // GetsHungry
-        events.unit.setDefaultHandler("GetsHungry",
-                (GameView view, Unit receiver, Event event) -> new SideEffect().add(() -> receiver.hunger.gotHungry(view)));
+        events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver, Event event) -> new SideEffect()
+                .add(() -> receiver.hunger.gotHungry(view)));
 
         // HungerStrikes
         events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
@@ -455,8 +453,8 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Building receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                        (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
                     return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : new SideEffect();
@@ -472,11 +470,14 @@ public class VanillaMod implements GameMod {
                             e.blob.setMinimapColor(0x875f9a);
                             return new SideEffect();
                         })
-                .add(Events.SpawnEvent.class, (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                    view.game.future.addFutureTick("Tick", receiver, 1, true);
-                    view.game.future.addFutureTick("Remove", receiver, 2, false);
-                })).add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
-                    return new SideEffect().add(() -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 3));
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
+                            view.game.future.addFutureTick("Tick", receiver, 1, true);
+                            view.game.future.addFutureTick("Remove", receiver, 2, false);
+                        }))
+                .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
+                    return new SideEffect()
+                            .add(() -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 3));
                 }).add("Remove", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     return new SideEffect().add(() -> view.game.future.removeFutureEvents(receiver, "Tick"))
                             .add(receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver));
@@ -495,10 +496,12 @@ public class VanillaMod implements GameMod {
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     e.blob.setIcons(Labels.asset_rising_spirit, Labels.asset_battle_glyph);
                     return new SideEffect();
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                    view.game.events.signals.addListener(Events.EntityDiedEvent.class, receiver);
-                    view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
-                })).add(Events.EntityDiedEvent.class, (GameView view, Patron receiver, Events.EntityDiedEvent e) -> {
+                }).add(Events.SpawnEvent.class,
+                        (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
+                            view.game.events.signals.addListener(Events.EntityDiedEvent.class, receiver);
+                            view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
+                        }))
+                .add(Events.EntityDiedEvent.class, (GameView view, Patron receiver, Events.EntityDiedEvent e) -> {
                     if (e.target.isEntityType(EntityType.UNIT) && ((Unit) e.target).glyphs.has(Glyph.BATTLE)
                             && e.target.getLeader().equals(receiver.getFavoritePlayer())) {
                         return new SideEffect().add(() -> {
@@ -530,10 +533,12 @@ public class VanillaMod implements GameMod {
                     e.blob.isPreferredUnitType = (Unit u) -> !u.abilities.hasPassive(Labels.ability_swim);
                     e.blob.setIcons(Labels.asset_swim, Labels.asset_drown);
                     return new SideEffect();
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                    view.game.events.signals.addListener(Events.CanUnitMoveEvent.class, receiver);
-                    view.game.events.signals.addListener(Events.UnitMovedEvent.class, receiver);
-                })).add(Events.CanUnitMoveEvent.class, (GameView view, Patron receiver, Events.CanUnitMoveEvent e) -> {
+                }).add(Events.SpawnEvent.class,
+                        (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
+                            view.game.events.signals.addListener(Events.CanUnitMoveEvent.class, receiver);
+                            view.game.events.signals.addListener(Events.UnitMovedEvent.class, receiver);
+                        }))
+                .add(Events.CanUnitMoveEvent.class, (GameView view, Patron receiver, Events.CanUnitMoveEvent e) -> {
                     if (e.unit.getLeader().equals(receiver.getFavoritePlayer())
                             && e.tile.name.equals(Labels.tile_water)) {
                         e.canWalkOnTile = true;
@@ -558,10 +563,12 @@ public class VanillaMod implements GameMod {
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     e.blob.setIcons(Labels.asset_bloodlust, Labels.asset_battle_glyph);
                     return new SideEffect();
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                    view.game.events.signals.addListener(Events.CheckCriticalHitEvent.class, receiver);
-                    view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
-                })).add(Events.CheckCriticalHitEvent.class,
+                }).add(Events.SpawnEvent.class,
+                        (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
+                            view.game.events.signals.addListener(Events.CheckCriticalHitEvent.class, receiver);
+                            view.game.events.signals.addListener(Events.KilledEntityEvent.class, receiver);
+                        }))
+                .add(Events.CheckCriticalHitEvent.class,
                         (GameView view, Patron receiver, Events.CheckCriticalHitEvent e) -> {
                             if (e.entity.isEntityType(EntityType.UNIT) && ((Unit) e.entity).glyphs.has(Glyph.BATTLE)
                                     && e.entity.getLeader().equals(receiver.getFavoritePlayer())) {
@@ -573,7 +580,8 @@ public class VanillaMod implements GameMod {
                     if (e.killer.isEntityType(EntityType.UNIT) && ((Unit) e.killer).glyphs.has(Glyph.BATTLE)
                             && e.killer.getLeader().equals(receiver.getFavoritePlayer())
                             && e.target.isEntityType(EntityType.UNIT)) {
-                        return new SideEffect().add(() -> e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5));
+                        return new SideEffect()
+                                .add(() -> e.killer.getLeader().get().addUnitPoints(view, receiver.getPoint(), 5));
                     }
                     return new SideEffect();
                 });
@@ -587,9 +595,11 @@ public class VanillaMod implements GameMod {
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.MINING);
                     e.blob.setIcons(Labels.asset_extra_gem, Labels.asset_mining_glyph);
                     return new SideEffect();
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                    view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
-                })).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
+                }).add(Events.SpawnEvent.class,
+                        (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
+                            view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
+                        }))
+                .add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
                     if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.MINING)
                             && !e.unit.haul.isFull() && Lambda.chance(20)) {
                         return new SideEffect().add(() -> e.unit.haul.add(e.item));
@@ -606,9 +616,11 @@ public class VanillaMod implements GameMod {
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.NATURE);
                     e.blob.setIcons(Labels.asset_extra_fruit, Labels.asset_nature_glyph);
                     return new SideEffect();
-                }).add(Events.SpawnEvent.class, (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                    view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
-                })).add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
+                }).add(Events.SpawnEvent.class,
+                        (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
+                            view.game.events.signals.addListener(Events.HarvestEvent.class, receiver);
+                        }))
+                .add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
                     return new SideEffect().add(() -> {
                         if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.NATURE)
                                 && !e.unit.haul.isFull() && Lambda.chance(20)) {
@@ -629,8 +641,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Patron receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                        (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Patron receiver, Events.RepeatedEvent e) -> {
                     final SideEffect effects = new SideEffect();
                     final Optional<Player> favorite = receiver.getFavoritePlayer();
@@ -969,14 +981,16 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            return new SideEffect().add(() -> view.game.events.signals.addListener(Events.SpawnEvent.class, e.artifact));
+                            return new SideEffect().add(
+                                    () -> view.game.events.signals.addListener(Events.SpawnEvent.class, e.artifact));
                         })
                 .add(Events.SpawnEvent.class, (GameView view, Artifact receiver, Events.SpawnEvent e) -> {
                     if (e.spawned instanceof Unit) {
                         Unit u = (Unit) e.spawned;
                         Tile t = view.game.world.getTile(u.getPoint()).get();
                         if (receiver.isClaimedByLeader(u) && !t.getGlyph().isPresent() && Lambda.chance(15)) {
-                            return new SideEffect().add(() -> t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class))));
+                            return new SideEffect()
+                                    .add(() -> t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class))));
                         }
                     }
                     return new SideEffect();
@@ -1217,8 +1231,8 @@ public class VanillaMod implements GameMod {
                     if (e.spawned instanceof Building) {
                         final Building b = (Building) e.spawned;
                         if (b.getLeader().map((Player p) -> p.equals(receiver.getPlayer())).orElse(false)) {
-                            return new SideEffect().add(() -> view.game.world.getTile(b.getPoint()).flatMap((Tile t) -> t.unit)
-                                    .ifPresent((Unit u) -> {
+                            return new SideEffect().add(() -> view.game.world.getTile(b.getPoint())
+                                    .flatMap((Tile t) -> t.unit).ifPresent((Unit u) -> {
                                         u.abilities.addStatusEffect(view, Labels.status_effect_proud_builder).execute();
                                     }));
                         }
@@ -1953,7 +1967,8 @@ public class VanillaMod implements GameMod {
                     Point p = receiver.wielder.getPoint();
                     return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
                             && Lambda.chance(10)
-                                    ? new SideEffect().add(() -> view.game.generator.building(Labels.building_meadow, p.x, p.y).spawn(view))
+                                    ? new SideEffect().add(() -> view.game.generator
+                                            .building(Labels.building_meadow, p.x, p.y).spawn(view))
                                     : new SideEffect();
                 });
 
@@ -1992,8 +2007,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
                                 receiver.wielder, (Building b) -> b.name.equals(Labels.building_vault),
@@ -2007,8 +2022,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                                 receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_fruit),
@@ -2104,8 +2119,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_natural),
@@ -2120,9 +2135,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.events.signals
-                                        .addListener(Events.AfterUnitMovedEvent.class, receiver)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> view.game.events.signals.addListener(Events.AfterUnitMovedEvent.class, receiver)))
                 .add(Events.AfterUnitMovedEvent.class,
                         (GameView view, Ability receiver, Events.AfterUnitMovedEvent e) -> {
                             if (e.unit.name.equals(Labels.unit_necromancer)
@@ -2183,8 +2197,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_goo),
@@ -2198,8 +2212,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_mushroom),
@@ -2251,8 +2265,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                                 receiver.wielder, Labels.item_fish, (Tile t) -> t.name.equals(Labels.tile_water)));
@@ -2295,10 +2309,11 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder
-                        .getLeader().ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 3))));
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                        .add(() -> receiver.wielder.getLeader()
+                                .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 3))));
 
         // Liquifying Presence
         new Stratified<Ability>(events.ability, Labels.ability_liquifying_presence)
@@ -2309,8 +2324,8 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
@@ -2327,9 +2342,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.events.signals
-                                        .addListener(Events.AttackedEvent.class, receiver)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.events.signals.addListener(Events.AttackedEvent.class, receiver)))
                 .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.target.isEntityType(EntityType.BUILDING)
                             && receiver.wielder.getLeader().equals(e.target.getLeader())
@@ -2369,8 +2383,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(
                         view, receiver.wielder,
                         (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false),
@@ -2386,8 +2400,8 @@ public class VanillaMod implements GameMod {
                     final Point p = receiver.wielder.getPoint();
                     return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
                             && Lambda.chance(20)
-                                    ? new SideEffect().add(() -> view.game.generator.building(Labels.building_market_value_goo, p.x, p.y)
-                                            .spawn(view))
+                                    ? new SideEffect().add(() -> view.game.generator
+                                            .building(Labels.building_market_value_goo, p.x, p.y).spawn(view))
                                     : new SideEffect();
                 });
 
@@ -2405,7 +2419,8 @@ public class VanillaMod implements GameMod {
                                 }
                                 return new SideEffect();
                             }
-                            return new SideEffect().add(() -> receiver.wielder.haul.remove(receiver.wielder.haul.random()))
+                            return new SideEffect()
+                                    .add(() -> receiver.wielder.haul.remove(receiver.wielder.haul.random()))
                                     .add(receiver.wielder.abilities.addStatusEffect(view, Labels.status_effect_swift));
                         });
 
@@ -2417,8 +2432,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_gem),
@@ -2432,8 +2447,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
@@ -2491,8 +2506,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_apple,
@@ -2618,8 +2633,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> receiver.wielder.combat
                         .heal(view, 1));
 
@@ -2696,8 +2711,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_sacred_seed,
@@ -2779,8 +2794,8 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_health_potion,
@@ -2845,8 +2860,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
@@ -2868,9 +2883,8 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         })
                 .add("Tick",
-                        (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver)))
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add(Events.IsStunnedEvent.class, (GameView view, Ability receiver, Events.IsStunnedEvent e) -> {
                     e.isStunned = true;
                     return new SideEffect();
@@ -2903,9 +2917,8 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         })
                 .add("Tick",
-                        (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver)))
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 2;
                     return new SideEffect();
@@ -2928,9 +2941,8 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         })
                 .add("Tick",
-                        (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver)))
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 2;
                     return new SideEffect();
@@ -2968,9 +2980,8 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         })
                 .add("Tick",
-                        (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> new SideEffect().add(() -> receiver.wielder.abilities.removeStatusEffect(view,
-                                        receiver)))
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             e.distance++;
@@ -3416,8 +3427,9 @@ public class VanillaMod implements GameMod {
                     e.blob.gold = 6;
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> e.consumer.getLeader()
-                                .ifPresent((Player p) -> p.addUnitPoints(view, e.consumer.getPoint(), 10))));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect()
+                                .add(() -> e.consumer.getLeader()
+                                        .ifPresent((Player p) -> p.addUnitPoints(view, e.consumer.getPoint(), 10))));
 
         // Blood-Thirsty Blade
         // Blood-Soaked Mail

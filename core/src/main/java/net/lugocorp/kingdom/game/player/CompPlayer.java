@@ -11,8 +11,6 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 

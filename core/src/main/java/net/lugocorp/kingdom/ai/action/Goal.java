@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ai.action;
 import net.lugocorp.kingdom.ai.plans.LazyNode;
-import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 

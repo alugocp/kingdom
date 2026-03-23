@@ -18,19 +18,18 @@ import net.lugocorp.kingdom.ui.hud.Hud;
 import net.lugocorp.kingdom.ui.overlay.OverlayLayer;
 import net.lugocorp.kingdom.ui.selection.TileSelector;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.glutils.HdpiUtils;
-import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Optional;
 import java.util.function.Consumer;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.utils.Array;
 /**
  * This class handles all the Game runtime logic
  */

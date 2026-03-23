@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
@@ -12,7 +13,6 @@ import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
-import net.lugocorp.kingdom.Main;
 import com.badlogic.gdx.Gdx;
 import java.util.List;
 import java.util.Optional;

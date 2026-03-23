@@ -3,9 +3,6 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
-import net.lugocorp.kingdom.gameplay.actions.ActionType;
-import net.lugocorp.kingdom.gameplay.actions.SkipAction;
-import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.game.glyph.UnitGlyphs;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.layers.Spawnable;
@@ -21,6 +18,9 @@ import net.lugocorp.kingdom.game.unit.Leadership;
 import net.lugocorp.kingdom.game.unit.Loyalty;
 import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
+import net.lugocorp.kingdom.gameplay.actions.ActionType;
+import net.lugocorp.kingdom.gameplay.actions.SkipAction;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -46,7 +46,6 @@ import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -237,7 +236,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                 .select(view, unitsToFeed, "No adjacent units to feed", (Point consumer) -> {
                                     final Unit u = view.game.world.getTile(consumer).flatMap((Tile t) -> t.unit).get();
                                     final Set<Item> food = this.haul.getEdibleItems(view, u);
-                                    return new SideEffect().add(() -> this.haul.transfer(u.haul, food.iterator().next()));
+                                    return new SideEffect()
+                                            .add(() -> this.haul.transfer(u.haul, food.iterator().next()));
                                 }).execute()));
             }
 

@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.gameplay.events;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,5 @@
 package net.lugocorp.kingdom.builtin;
 import net.lugocorp.kingdom.engine.render.Modellable;
-import net.lugocorp.kingdom.gameplay.combat.Damage;
-import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
@@ -13,6 +11,8 @@ import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.gameplay.combat.Damage;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Point;
 import java.util.List;
 import java.util.Optional;

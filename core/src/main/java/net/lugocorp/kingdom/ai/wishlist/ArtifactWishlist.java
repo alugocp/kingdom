@@ -1,12 +1,12 @@
 package net.lugocorp.kingdom.ai.wishlist;
 import net.lugocorp.kingdom.ai.action.Goal;
-import net.lugocorp.kingdom.gameplay.mechanics.ArtifactAuction;
-import net.lugocorp.kingdom.gameplay.mechanics.Auction;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.Inventory;
+import net.lugocorp.kingdom.gameplay.mechanics.ArtifactAuction;
+import net.lugocorp.kingdom.gameplay.mechanics.Auction;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;

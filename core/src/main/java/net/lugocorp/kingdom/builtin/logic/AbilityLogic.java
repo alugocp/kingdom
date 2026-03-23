@@ -2,8 +2,6 @@ package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
-import net.lugocorp.kingdom.gameplay.combat.Damage;
-import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
@@ -11,6 +9,8 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.gameplay.combat.Damage;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
@@ -18,7 +18,6 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -60,9 +59,8 @@ public class AbilityLogic {
         // Use overridden method from Player to determine how targets are selected
         return attacker.getLeader().get().select(view, points, "No attack targets are in range", (Point p) -> {
             final Damage dmg = getDamage.apply(view.game.world.getTile(p).get());
-            return new SideEffect()
-                .add(attacker.combat.attack(view, targets.get(p), dmg))
-                .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
+            return new SideEffect().add(attacker.combat.attack(view, targets.get(p), dmg))
+                    .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
         });
     }
 
@@ -95,19 +93,18 @@ public class AbilityLogic {
         }
 
         // Use overridden method from Player to determine how targets are selected
-        return attacker.getLeader().get().select(view, points, "No attack targets are in range",
-                (Point p) -> {
-                    final SideEffect effects = new SideEffect();
-                    if (targets.get(p) != null) {
-                        effects.add(attacker.combat.attack(view, targets.get(p), dmg))
-                                .add(effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(new SideEffect()))
-                                .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
-                        if (attacker.leadership.belongsToHuman()) {
-                            effects.add(() -> view.hud.bot.tileMenu.refresh());
-                        }
-                    }
-                    return effects;
-                });
+        return attacker.getLeader().get().select(view, points, "No attack targets are in range", (Point p) -> {
+            final SideEffect effects = new SideEffect();
+            if (targets.get(p) != null) {
+                effects.add(attacker.combat.attack(view, targets.get(p), dmg))
+                        .add(effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(new SideEffect()))
+                        .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
+                if (attacker.leadership.belongsToHuman()) {
+                    effects.add(() -> view.hud.bot.tileMenu.refresh());
+                }
+            }
+            return effects;
+        });
     }
 
     /**
@@ -275,8 +272,7 @@ public class AbilityLogic {
     public static SideEffect generateAuctionPoints(GameView view, Unit caster, int points) {
         final SideEffect effects = new SideEffect();
         Events.GenerateAuctionPointsEvent event = new Events.GenerateAuctionPointsEvent(caster, points);
-        return effects
-            .add(caster.handleEvent(view, event))
-            .add(() -> view.game.mechanics.auction.addPoints(view, caster.getPoint(), event.points));
+        return effects.add(caster.handleEvent(view, event))
+                .add(() -> view.game.mechanics.auction.addPoints(view, caster.getPoint(), event.points));
     }
 }
