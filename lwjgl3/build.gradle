@@ -12,7 +12,6 @@ buildscript {
 }
 plugins {
     id "application"
-    id "com.diffplug.spotless" version "7.2.1"
 }
 apply plugin: 'io.github.fourlastor.construo'
 
@@ -184,89 +183,4 @@ startScripts.classpath = project.tasks.jar.outputs.files
 
 if(enableGraalNative == 'true') {
     apply from: file("nativeimage.gradle")
-}
-
-/**
- * This task sets up Git hooks
- */
-task installHooks(type: Copy){
-    from new File(rootProject.rootDir, '.hooks/pre-commit')
-    into { new File(rootProject.rootDir, '.git/hooks')}
-}
-
-/**
- * This task copies the game JAR into the root repository
- */
-task exportGame(type: Copy){
-    from new File(rootProject.rootDir, "lwjgl3/build/libs/Kingdom-${projectVersion}.jar")
-    into { rootProject.rootDir }
-    rename { 'LegendsOfTahn.jar' }
-}
-
-/**
- * This task is used to generate g3db 3D model files
- */
-class CleanAssetsTask extends DefaultTask {
-    @TaskAction
-    void action() {
-        this.iterateAssetsFolder('assets')
-        this.iterateAssetsFolder('content/vanilla/assets')
-    }
-
-    /**
-     * This recursive function generates g3db files in the given folder
-     */
-    void iterateAssetsFolder(String filepath) {
-        def folder = new File(filepath)
-        for (file in folder.listFiles()) {
-            if (file.isDirectory()) {
-                this.iterateAssetsFolder(file.getPath())
-                continue
-            }
-            def pattern = ~/.obj$/
-            def matcher = file.getName() =~ pattern
-            if (!matcher.find()) {
-                continue
-            }
-            def objFile = file.getName()
-            def g3dbFile = file.getName()[0..-4] + "g3db"
-            def parent = file.getParent()
-            println("Generating $g3dbFile ($parent)...")
-            "fbx-conv -f $parent/$objFile $parent/$g3dbFile".execute()
-        }
-    }
-}
-
-tasks.register("cleanAssets", CleanAssetsTask)
-
-// Formatting
-spotless {
-    json {
-        target '**/*.json'
-        simple().indentWithSpaces(4)
-    }
-    python {
-        target 'create_labels.py'
-        black()
-    }
-    groovyGradle {
-        target '**/*.gradle'
-        greclipse()
-        trimTrailingWhitespace()
-        leadingTabsToSpaces(4)
-        endWithNewline()
-    }
-    java {
-        target fileTree('.') {
-            include '**/*.java'
-            exclude '**/build/**'
-        }
-        eclipse()
-        trimTrailingWhitespace()
-        leadingTabsToSpaces(4)
-        endWithNewline()
-        importOrder('net.lugocorp', 'com.badlogic', 'com.esotericsoftware', 'java')
-        removeUnusedImports()
-        replaceRegex("No space between package and imports", ";\\n\\nimport ", ";\nimport ")
-    }
 }
