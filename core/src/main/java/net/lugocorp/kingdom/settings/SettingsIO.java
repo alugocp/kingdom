@@ -1,8 +1,6 @@
 package net.lugocorp.kingdom.settings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * This class handles reading and writing a Settings file
@@ -15,11 +13,7 @@ public final class SettingsIO {
      */
     public static final void write(Settings s) {
         final FileHandle f = Gdx.files.local(SettingsIO.filepath);
-        final JSONObject data = new JSONObject().put("soundVolume", s.getSoundVolume())
-                .put("musicVolume", s.getMusicVolume()).put("autoComplete", s.getAutoComplete())
-                .put("outlineShader", s.getOutlineShader()).put("reverse", s.getReversedScrollDirection())
-                .put("tutorial", s.isTutorialEnabled());
-        f.writeString(data.toString(), false);
+        f.writeString(SettingsJson.toJson(s), false);
     }
 
     /**
@@ -27,20 +21,6 @@ public final class SettingsIO {
      */
     public static final Settings readOrDefault() {
         final FileHandle f = Gdx.files.local(SettingsIO.filepath);
-        final Settings s = new Settings();
-        if (f.exists()) {
-            final JSONObject data = new JSONObject(f.readString());
-            try {
-                s.setSoundVolume(data.getFloat("soundVolume"));
-                s.setMusicVolume(data.getFloat("musicVolume"));
-                s.setAutoComplete(data.getBoolean("autoComplete"));
-                s.setOutlineShader(data.getBoolean("outlineShader"));
-                s.setReversedScrollDirection(data.getBoolean("reverse"));
-                s.setTutorialEnabled(data.getBoolean("tutorial"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return s;
+        return f.exists() ? SettingsJson.fromJson(f.readString()) : new Settings();
     }
 }
