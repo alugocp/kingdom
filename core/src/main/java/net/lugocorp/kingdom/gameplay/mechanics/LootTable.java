@@ -13,7 +13,7 @@ import java.util.Map;
  * This class selects random Items whenever the Game requires it
  */
 public class LootTable {
-    // TODO optimize this using SQLite
+    // TODO optimize this using SQLite (https://github.com/xerial/sqlite-jdbc)
     private final Map<Tuple<String, Rarity>, List<String>> itemsByTagAndRarity = new HashMap<>();
     private final Map<Rarity, List<String>> itemsByRarity = new HashMap<>();
 

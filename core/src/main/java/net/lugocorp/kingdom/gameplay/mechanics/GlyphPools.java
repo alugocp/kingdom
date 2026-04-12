@@ -13,6 +13,7 @@ import java.util.Map;
  * This class tracks all the Units that can be recruited by their Glyph(s)
  */
 public class GlyphPools {
+    // TODO employ SQLite (https://github.com/xerial/sqlite-jdbc)
     private final Map<Glyph, List<String>> pools = new HashMap<>();
     private final Map<Glyph, Integer> originals = new HashMap<>();
 
