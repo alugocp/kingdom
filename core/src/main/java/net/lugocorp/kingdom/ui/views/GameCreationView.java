@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
-import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Generator;

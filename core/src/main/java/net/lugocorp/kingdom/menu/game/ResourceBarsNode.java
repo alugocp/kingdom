@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.engine.assets.FontParam;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;

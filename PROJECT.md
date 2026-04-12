@@ -23,6 +23,7 @@ This file explains all the code folders inside this repository.
     - `engine` provides an interface between the game logic and LibGDX
         - `animation` defines our animation system
         - `assets` loads all of our assets, including models and music
+        - `fonts` contains utility classes for using different font styles
         - `controllers` allows user input to travel to our menus and the game view
         - `projection` contains logic for translating mouse input to different coordinate systems
         - `render` defines common interfaces for renderable elements

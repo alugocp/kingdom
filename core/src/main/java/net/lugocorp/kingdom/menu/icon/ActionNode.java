@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.menu.icon;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.engine.assets.FontParam;
 import net.lugocorp.kingdom.engine.controllers.Shortcut;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.engine.shaders.ElementShader;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;

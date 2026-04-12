@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.overlay;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
-import net.lugocorp.kingdom.engine.assets.FontParam;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;

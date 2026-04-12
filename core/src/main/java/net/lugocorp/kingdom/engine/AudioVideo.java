@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.engine;
-import net.lugocorp.kingdom.engine.assets.FontService;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.assets.MusicLoader;
 import net.lugocorp.kingdom.engine.assets.SoundLoader;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
+import net.lugocorp.kingdom.engine.fonts.FontService;
 import net.lugocorp.kingdom.engine.shaders.ShaderZoo;
 import net.lugocorp.kingdom.settings.Settings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

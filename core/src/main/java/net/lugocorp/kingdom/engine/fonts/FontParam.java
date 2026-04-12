@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.engine.assets;
+package net.lugocorp.kingdom.engine.fonts;
 import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
 

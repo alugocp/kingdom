@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.color.ColorScheme;
-import net.lugocorp.kingdom.engine.assets.FontParam;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.Color;

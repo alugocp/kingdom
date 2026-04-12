@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.engine.assets.FontParam;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.gameplay.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.gameplay.mechanics.Mechanics;
