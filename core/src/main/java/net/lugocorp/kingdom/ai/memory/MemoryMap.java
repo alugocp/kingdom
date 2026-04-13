@@ -11,6 +11,7 @@ import java.util.Set;
  * Actor "saw" at each Tile the last time it had vision there.
  */
 public class MemoryMap {
+    private final Set<Point> knownCells = new HashSet<>();
     private final MemoryCell[][] grid;
     private final Point size;
 
@@ -45,16 +46,7 @@ public class MemoryMap {
      * Returns a Set of Points that have been seen before
      */
     public Set<Point> getKnownCells() {
-        // TODO find a way to optimize
-        final Set<Point> points = new HashSet<>();
-        for (int a = 0; a < this.size.x; a++) {
-            for (int b = 0; b < this.size.y; b++) {
-                if (this.grid[a][b].hasBeenSeen) {
-                    points.add(new Point(a, b));
-                }
-            }
-        }
-        return points;
+        return this.knownCells;
     }
 
     /**
@@ -71,7 +63,10 @@ public class MemoryMap {
      */
     public void incrementVision(Tile t) {
         this.getCell(t.getPoint()).ifPresent((MemoryCell cell) -> {
-            cell.hasBeenSeen = true;
+            if (!cell.hasBeenSeen) {
+                this.knownCells.add(t.getPoint());
+                cell.hasBeenSeen = true;
+            }
             cell.vision++;
             cell.building = t.building.isPresent() ? Optional.of(t.building.get().getStratifier()) : Optional.empty();
             cell.unit = t.unit.isPresent() ? Optional.of(t.unit.get().getStratifier()) : Optional.empty();

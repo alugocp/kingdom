@@ -147,7 +147,7 @@ public class Game {
      * Returns true if the human Player has no buildings left
      */
     public boolean hasHumanPlayerLost() {
-        // TODO optimize this
+        // TODO will be optimized by the upcomin towers mechanic
         return Lambda.filter((Building b) -> b.isActive(), this.human.buildings).size() == 0;
     }
 
@@ -155,7 +155,7 @@ public class Game {
      * Returns true if the human Player is the only one that has buildings left
      */
     public boolean hasHumanPlayerWon() {
-        // TODO optimize this too
+        // TODO will be optimized by the upcomin towers mechanic
         for (Player p : this.comps) {
             boolean remaining = Lambda.filter((Building b) -> b.isActive(), p.buildings).size() > 0;
             if (remaining) {
@@ -169,7 +169,7 @@ public class Game {
      * Returns all Buildings under a Player's control that can store Items
      */
     public Set<Point> getVaultBuildings(Player player) {
-        // TODO should probably optimize this
+        // TODO will remove this with the upcoming towers mechanic
         Set<Point> vaults = new HashSet<>();
         for (Building b : player.buildings) {
             if (b.items.isPresent()) {
@@ -188,7 +188,7 @@ public class Game {
      * obstacle either
      */
     public Set<Point> getRecruitmentTiles(Player player) {
-        // TODO optimize this PLEASE
+        // TODO will be optimized by the upcomin towers mechanic
         Set<Point> points = new HashSet<>();
         for (int a = 0; a < this.world.getWidth(); a++) {
             for (int b = 0; b < this.world.getHeight(); b++) {

@@ -55,7 +55,7 @@ public class UnitWishlist extends Wishlist<Unit> {
      */
     public Optional<Point> getSpawnPoint(GameView view, CompPlayer player, Glyph glyph) {
         // TODO make smarter spawn code based on what the AI will do with this unit
-        // TODO optimize this please for the love of god
+        // TODO will be optimized by the upcomin towers mechanic
         final Set<Point> options = new HashSet<>();
         for (Tile t : view.game.world) {
             if (t.leader.map((Player l) -> l.equals(player)).orElse(false) && !t.unit.isPresent()

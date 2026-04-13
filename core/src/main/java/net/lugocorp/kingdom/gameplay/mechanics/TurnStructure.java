@@ -165,10 +165,9 @@ public class TurnStructure {
         // Recalculate favorite Players for Patrons
         view.game.mechanics.patronage.recalculateFavor(view);
 
-        // Update Unit vision at dawn and dusk
+        // Update Unit and Building vision at dawn and dusk
         if (isDayBeforeTick != isDayAfterTick) {
             for (Player p : view.game.getAllPlayers()) {
-                // TODO can we optimize this?
                 for (Unit u : p.units) {
                     u.vision.set(view, p, u, u.getPoint());
                 }
