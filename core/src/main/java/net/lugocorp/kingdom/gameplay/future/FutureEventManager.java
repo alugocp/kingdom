@@ -15,7 +15,6 @@ import java.util.Optional;
  * This class stores and processes future Events
  */
 public class FutureEventManager {
-    // TODO optimize the futures field with a different data structure
     private final Map<Integer, BatchCounter<FutureTick>> futures = new HashMap<>();
     private final Game game;
 

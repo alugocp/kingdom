@@ -39,8 +39,6 @@ public class ArtifactNode implements MenuNode {
         this.click = click;
         this.artifact = artifact;
         this.desc = new TextNode(av, String.format("%s (costs %s)", artifact.desc, cost));
-        // TODO make the sprites loader (or some other layer above it) generate/cache
-        // Drawables for optimization
         this.image = new Drawable(av.loaders.sprites, artifact.image.orElse("placeholder"));
         this.mask = new Drawable(av.loaders.sprites, "artifact-mask");
         if (artifact.isClaimed()) {

@@ -146,7 +146,7 @@ public class ActionManager {
      * there is no next Unit)
      */
     public boolean goToNextUnit(GameView view) {
-        Optional<Unit> next = this.getNextUnitToAct(view.game.human);
+        final Optional<Unit> next = this.getNextUnitToAct(view.game.human);
         if (next.isPresent()) {
             final Point p = next.get().getPoint();
             view.centerOnPoint(p, false);
@@ -161,7 +161,6 @@ public class ActionManager {
      * Returns the next Unit that must act this turn
      */
     private Optional<Unit> getNextUnitToAct(Player player) {
-        // TODO optimize this
         for (Unit u : player.units) {
             if (!this.unitHasAssignedAction(u) && !u.sleep.isSleeping()) {
                 return Optional.of(u);
