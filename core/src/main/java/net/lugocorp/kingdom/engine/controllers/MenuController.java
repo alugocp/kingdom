@@ -35,8 +35,8 @@ public class MenuController implements InputProcessor {
      */
     public void reset() {
         this.mouseMoved(-1, -1);
-        final Point p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()).orElse(new Point(-1, -1));
-        this.mouseMoved(p.x, p.y);
+        final Optional<Point> p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY());
+        this.mouseMoved(p.map((Point p1) -> p1.x).orElse(-1), p.map((Point p1) -> p1.y).orElse(-1));
     }
 
     /**
@@ -67,8 +67,8 @@ public class MenuController implements InputProcessor {
      */
     private void scroll(int dy) {
         this.getMenu.get().ifPresent((Menu m) -> m.scroll(dy));
-        final Point p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()).orElse(new Point(-1, -1));
-        this.mouseMoved(p.x, p.y);
+        final Optional<Point> p = ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY());
+        this.mouseMoved(p.map((Point p1) -> p1.x).orElse(-1), p.map((Point p1) -> p1.y).orElse(-1));
     }
 
     /** {@inheritdoc} */
@@ -77,9 +77,9 @@ public class MenuController implements InputProcessor {
         if (!this.isRelevant()) {
             return false;
         }
-        final Point p = ViewportLogic.unproject(x, y).orElse(new Point(-1, -1));
-        if (this.isInMenu(p)) {
-            this.touch.start(p);
+        final Optional<Point> p = ViewportLogic.unproject(x, y);
+        if (p.isPresent() && this.isInMenu(p.get())) {
+            this.touch.start(p.get());
             return true;
         }
         return false;
@@ -110,7 +110,7 @@ public class MenuController implements InputProcessor {
             return false;
         }
         if (!this.touch.isDragging()) {
-            this.getMenu.get().get().click(ViewportLogic.unproject(x, y).orElse(new Point(-1, -1)));
+            ViewportLogic.unproject(x, y).ifPresent((Point p) -> this.getMenu.get().get().click(p));
         }
         this.touch.reset();
         return true;
@@ -135,7 +135,10 @@ public class MenuController implements InputProcessor {
     public boolean mouseMoved​(int x, int y) {
         final Optional<Menu> menu = this.getMenu.get();
         if (menu.isPresent()) {
-            return menu.get().mouseMoved(ViewportLogic.unproject(x, y).orElse(new Point(-1, -1)));
+            final Optional<Point> p = ViewportLogic.unproject(x, y);
+            if (p.isPresent()) {
+                return menu.get().mouseMoved(p.get());
+            }
         }
         return false;
     }

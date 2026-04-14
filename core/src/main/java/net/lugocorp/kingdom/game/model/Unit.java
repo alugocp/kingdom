@@ -215,9 +215,10 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                                         this.hunger.getPreferredFoods()))))));
 
         // Actions / spells section
-        final GridNode actives = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
-        final GridNode frees = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
-        final GridNode passives = new GridNode(new Point(ActionNode.SIDE, ActionNode.SIDE));
+        final Point size = new Point(ActionNode.SIDE, ActionNode.SIDE);
+        final GridNode actives = new GridNode(size);
+        final GridNode frees = new GridNode(size);
+        final GridNode passives = new GridNode(size);
         for (Ability a : this.abilities.getActives()) {
             actives.add(a.getMenuContent(view, p));
         }

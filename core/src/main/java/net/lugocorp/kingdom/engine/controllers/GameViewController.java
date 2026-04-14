@@ -237,7 +237,7 @@ public class GameViewController implements InputProcessor {
         // Unit/Building mouse over logic
         final Point b = this.view.getFrameBufferMappedPoint();
         if (!(b.x == -1 && b.y == -1)) {
-            this.view.selector.hover(new Point(b.x, b.y));
+            this.view.selector.hover(b);
             return true;
         }
 

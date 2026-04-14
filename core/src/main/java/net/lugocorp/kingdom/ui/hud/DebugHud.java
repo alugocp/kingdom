@@ -31,8 +31,7 @@ public class DebugHud {
      * Returns how many megabytes are being used by the game
      */
     private int getMemoryUsage() {
-        final long bytes = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        return (int) (bytes / 1000000);
+        return ((int) Runtime.getRuntime().totalMemory()) / 1000000;
     }
 
     /**

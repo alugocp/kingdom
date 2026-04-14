@@ -17,6 +17,7 @@ public class TileSelector {
     private final GameView view;
     private TileSelectMode mode = new TileMenuSelectMode();
     private Optional<Point> hovered = Optional.empty();
+    private Point hoveredPoint = new Point(0, 0);
 
     public TileSelector(GameView view) {
         this.view = view;
@@ -92,7 +93,8 @@ public class TileSelector {
                 this.mode.hoverTile(this.view, p);
                 t.changeHovered(true);
             });
-            this.hovered = Optional.of(p);
+            this.hovered = Optional.of(this.hoveredPoint);
+            this.hoveredPoint.set(p);
         } else {
             this.hovered = Optional.empty();
         }

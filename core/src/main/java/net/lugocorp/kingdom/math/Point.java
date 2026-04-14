@@ -30,6 +30,13 @@ public class Point {
     }
 
     /**
+     * Calls into set() with another Point's x, y values
+     */
+    public void set(Point p) {
+        this.set(p.x, p.y);
+    }
+
+    /**
      * Adds another Point to this Point
      */
     public void add(Point p) {
