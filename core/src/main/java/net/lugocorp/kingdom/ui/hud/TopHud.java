@@ -30,6 +30,7 @@ import java.util.Optional;
  * Represents the top half of the HUD UI
  */
 public class TopHud extends Menu {
+    private final DebugHud debug = new DebugHud();
     private final ResourceBarsNode unitPoints;
     private final ResourceBarsNode auctionPoints;
     private final DayNightNode dayNight;
@@ -179,5 +180,10 @@ public class TopHud extends Menu {
 
         // Draw the Menu content
         super.draw(av);
+
+        // Draw the debug HUD
+        if (this.debug.isActive()) {
+            this.debug.draw(av, this.getHeight());
+        }
     }
 }
