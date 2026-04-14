@@ -66,6 +66,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
     public Species species = Species.UNKNOWN;
+    private boolean existsInWorld = false;
     private boolean unlisted = false;
 
     public Unit(String name, int x, int y) {
@@ -103,6 +104,13 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         this.unlisted = false;
     }
 
+    /**
+     * Returns true if this Unit currently exists in the World
+     */
+    public boolean doesExistInWorld() {
+        return this.existsInWorld;
+    }
+
     /** {@inheritdoc} */
     @Override
     public void spawn(GameView view) {
@@ -110,6 +118,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this)).execute();
         this.hunger.eat(view, false);
         view.game.units.add(this);
+        this.existsInWorld = true;
     }
 
     /** {@inheritdoc} */
@@ -167,6 +176,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
         view.game.actions.removeUnitInfo(this);
         this.movement.removeFromPosition(view.game);
         this.dispose();
+        this.existsInWorld = false;
     }
 
     /** {@inheritdoc} */

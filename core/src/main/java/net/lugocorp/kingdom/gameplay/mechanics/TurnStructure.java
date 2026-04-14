@@ -191,12 +191,12 @@ public class TurnStructure {
                 }
             }
         } else if (!this.turn.getPlayer().isHumanPlayer()) {
-            // TODO decision making should last multiple frames
             final CompPlayer player = (CompPlayer) this.turn.getPlayer();
-            player.makeDecisions(view);
-            view.hud.bot.tileMenu.refresh();
-            this.nextTurn(view);
-            player.stats.commit();
+            if (player.makeDecisions(view)) {
+                view.hud.bot.tileMenu.refresh();
+                this.nextTurn(view);
+                player.stats.commit();
+            }
         }
     }
 }

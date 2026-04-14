@@ -21,6 +21,13 @@ public class BatchCounter<T> {
     }
 
     /**
+     * Sets the index on this BatchCounter back to the beginning
+     */
+    public void reset() {
+        this.index = 0;
+    }
+
+    /**
      * Returns the underlying list for this instance
      */
     public List<T> list() {

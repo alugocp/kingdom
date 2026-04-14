@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.BatchCounter;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.Log;
 import java.util.HashMap;
@@ -100,50 +101,56 @@ public class Actor {
     /**
      * Iterates through our PlanNodes to animate Units under the AI's control
      */
-    public void executeUnitPlans(GameView view) {
-        final Set<Map.Entry<Unit, PlanNode>> entries = new HashSet<>();
-        entries.addAll(this.plans.entrySet());
-        for (Map.Entry<Unit, PlanNode> entry : entries) {
+    public boolean executeUnitPlans(GameView view, BatchCounter<Unit> units) {
+        for (Unit u : units.getBatch()) {
+            // Skip this Unit if they aren't present in the plan set or no longer exist in
+            // the World
+            if (!this.plans.containsKey(u) || !u.doesExistInWorld()) {
+                continue;
+            }
+
             // If the given Unit has an entry in the ActionManager then let that ride before
             // executing the next PlanNode
-            if (view.game.actions.unitHasAssignedAction(entry.getKey())) {
-                Log.log("%s already has an assigned action", entry.getKey().name);
+            if (view.game.actions.unitHasAssignedAction(u)) {
+                Log.log("%s already has an assigned action", u.name);
                 continue;
             }
 
             // Kick off the next PlanNode in the Unit's Plan
-            PlanNode n = entry.getValue();
+            PlanNode n = this.plans.get(u);
             ActionResult result = ActionResult.RIDE;
             while (result == ActionResult.RIDE) {
                 result = n.act(view);
-                Log.log("Plan result for %s: %s", entry.getKey().name, result);
+                Log.log("Plan result for %s: %s", u.name, result);
                 if (result == ActionResult.RIDE || result == ActionResult.POP) {
                     if (n.getChild().isPresent()) {
                         n = n.getChild().get();
-                        this.plans.put(entry.getKey(), n);
+                        this.plans.put(u, n);
                     } else {
-                        this.plans.remove(entry.getKey());
+                        this.plans.remove(u);
                         break;
                     }
                 }
                 if (result == ActionResult.POP_ALL) {
-                    this.plans.remove(entry.getKey());
+                    this.plans.remove(u);
                 }
             }
         }
+        return units.isLastBatch();
     }
 
     /**
      * Ensures that all Units in the Set have an assigned plan (or are currently
      * performing an Action)
      */
-    public void assignUnitPlans(GameView view, Set<Unit> units) {
-        for (Unit u : units) {
+    public boolean assignUnitPlans(GameView view, BatchCounter<Unit> units) {
+        for (Unit u : units.getBatch()) {
             if (!this.plans.containsKey(u) && !view.game.actions.unitHasAssignedAction(u)) {
                 final Optional<PlanNode> plan = this.determinePlanNode(view, u);
                 plan.ifPresent((PlanNode n) -> this.plans.put(u, n));
             }
         }
+        return units.isLastBatch();
     }
 
     /**
