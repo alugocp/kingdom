@@ -237,24 +237,26 @@ public class AbilityLogic {
      */
     public static SideEffect harvestFromTile(GameView view, Unit caster, String item,
             Function<Tile, Boolean> criteria) {
-        final SideEffect effects = new SideEffect();
-        if (!caster.haul.isFull()) {
-            Item i = view.game.generator.item(item);
-            effects.add(() -> {
-                caster.haul.add(i);
-                view.overlays.add(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
-                if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
-                    CompPlayer comp = (CompPlayer) caster.getLeader().get();
-                    if (i.tags.has("natural")) {
-                        comp.stats.naturalHarvest.add(1);
-                    } else {
-                        comp.stats.otherHarvest.add(1);
+        return AbilityLogic.doOnTile(view, caster, criteria, () -> {
+            final SideEffect effects = new SideEffect();
+            if (!caster.haul.isFull()) {
+                Item i = view.game.generator.item(item);
+                effects.add(() -> {
+                    caster.haul.add(i);
+                    view.overlays.add(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
+                    if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
+                        CompPlayer comp = (CompPlayer) caster.getLeader().get();
+                        if (i.tags.has("natural")) {
+                            comp.stats.naturalHarvest.add(1);
+                        } else {
+                            comp.stats.otherHarvest.add(1);
+                        }
                     }
-                }
-            });
-            effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
-        }
-        return AbilityLogic.doOnTile(view, caster, criteria, () -> effects);
+                });
+                effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
+            }
+            return effects;
+        });
     }
 
     /**
