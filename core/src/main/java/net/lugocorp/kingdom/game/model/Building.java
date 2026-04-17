@@ -27,6 +27,7 @@ import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -34,6 +35,7 @@ import java.util.function.Supplier;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends Entity implements MenuSubject, Spawnable {
+    @FieldSerializer.Optional("getTile")
     private final Supplier<Tile> getTile;
     private final CoordUserData userData;
     private Optional<Color> minimapColor = Optional.empty();

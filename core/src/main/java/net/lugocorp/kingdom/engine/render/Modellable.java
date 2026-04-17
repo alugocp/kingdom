@@ -21,7 +21,7 @@ import java.util.Optional;
 public class Modellable {
     @FieldSerializer.Optional("models")
     private ModelLoader models;
-    @FieldSerializer.Optional("materials")
+    @FieldSerializer.Optional("textures")
     private TextureLoader textures;
     private String modelName = "PLACEHOLDER";
     private Optional<Tuple<Integer, String>> textureName = Optional.empty();
