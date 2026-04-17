@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.gameplay.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.gameplay.mechanics.Auction;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import java.util.Set;
  */
 public class ArtifactWishlist extends Wishlist<Artifact> {
     private final CompPlayer player;
+    @FieldSerializer.Optional("view")
     private final GameView view;
     private Optional<Artifact> wanted = Optional.empty();
 

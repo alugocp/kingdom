@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ai.wishlist;
 import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.action.Goal;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Ability;
@@ -19,11 +20,11 @@ import java.util.Set;
  * Helps a CompPlayer decide which Unit to recruit
  */
 public class UnitWishlist extends Wishlist<Unit> {
-    private final GameView view;
+    private final Game game;
 
-    public UnitWishlist(GameView view, Actor actor) {
+    public UnitWishlist(Game game, Actor actor) {
         super(actor);
-        this.view = view;
+        this.game = game;
     }
 
     /** {@inheritdoc} */
@@ -47,7 +48,7 @@ public class UnitWishlist extends Wishlist<Unit> {
      * Returns the Event channels associated with the given Ability
      */
     private Set<String> getAbilityChannels(Ability a) {
-        return this.view.game.events.ability.getChannels(a.getStratifier());
+        return this.game.events.ability.getChannels(a.getStratifier());
     }
 
     /**
