@@ -31,6 +31,12 @@ public class Movement {
         this.unit = unit;
     }
 
+    // This is for Kryo purposes only
+    public Movement() {
+        this.userData = null;
+        this.unit = null;
+    }
+
     /**
      * Skips the move function's pre-check (useful for having Units blindly follow
      * unorthodox movement logic)

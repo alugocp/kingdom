@@ -15,6 +15,11 @@ public class CoordUserData {
         this.getLowVisibility = getLowVisibility;
     }
 
+    // This is for Kryo purposes only
+    public CoordUserData() {
+        this.getLowVisibility = null;
+    }
+
     /**
      * Returns true if this CoordUserData falls on a low visibility Tile
      */

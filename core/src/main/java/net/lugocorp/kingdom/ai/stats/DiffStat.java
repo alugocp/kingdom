@@ -11,6 +11,11 @@ public class DiffStat extends Stat {
         this.previous = initial;
     }
 
+    // This is for Kryo purposes only
+    public DiffStat() {
+        this.previous = 0;
+    }
+
     /**
      * Commits a new difference value to the data
      */

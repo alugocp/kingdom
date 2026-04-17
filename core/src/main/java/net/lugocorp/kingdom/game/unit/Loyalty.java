@@ -16,6 +16,11 @@ public class Loyalty {
         this.unit = unit;
     }
 
+    // This is for Kryo purposes only
+    public Loyalty() {
+        this.unit = null;
+    }
+
     /**
      * Returns this instance's current loyalty value
      */

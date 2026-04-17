@@ -16,6 +16,13 @@ public class Species {
         this.color = color;
     }
 
+    // This is for Kryo purposes only
+    public Species() {
+        this.root = Optional.empty();
+        this.label = "";
+        this.color = 0;
+    }
+
     public Species(String label, int color) {
         this.root = Optional.empty();
         this.label = label;

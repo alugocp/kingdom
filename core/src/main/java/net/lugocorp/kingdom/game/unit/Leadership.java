@@ -16,6 +16,11 @@ public class Leadership {
         this.unit = unit;
     }
 
+    // This is for Kryo purposes only
+    public Leadership() {
+        this.unit = null;
+    }
+
     /**
      * Returns this instance's leading Player
      */

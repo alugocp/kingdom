@@ -18,6 +18,11 @@ public class Adjacency {
         this.unit = unit;
     }
 
+    // This is for Kryo purposes only
+    public Adjacency() {
+        this.unit = null;
+    }
+
     /**
      * Returns true if this Unit is adjacent to a vault Building
      */

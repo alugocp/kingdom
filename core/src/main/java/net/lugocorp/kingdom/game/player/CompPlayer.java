@@ -36,6 +36,12 @@ public class CompPlayer extends Player {
         this.getFate().setPlayer(this);
     }
 
+    // This is for Kryo purposes only
+    public CompPlayer() {
+        super("", null, null);
+        this.wishlist = null;
+    }
+
     /**
      * Returns this CompPlayer's Actor instance
      */

@@ -25,6 +25,11 @@ public class MemoryMap {
         }
     }
 
+    // This is for Kryo purposes only
+    public MemoryMap() {
+        this(1, 1);
+    }
+
     /**
      * Refreshes each currently visible MemoryCell
      */

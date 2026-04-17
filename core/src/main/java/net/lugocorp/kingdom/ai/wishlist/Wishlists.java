@@ -17,4 +17,12 @@ public class Wishlists {
         this.units = new UnitWishlist(view.game, player.getActor());
         this.glyphs = new GlyphWishlist(player.getActor());
     }
+
+    // This is for Kryo purposes only
+    public Wishlists() {
+        this.artifacts = null;
+        this.patrons = null;
+        this.units = null;
+        this.glyphs = null;
+    }
 }

@@ -55,7 +55,8 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
      */
     public void doAfterAuction() {
         // TODO make this more consistent with the way HumanPlayers do it (move to the
-        // Auction code)
+        // Auction code) and then replace the GameView field in this class with just
+        // Game
         this.player.auctionChips++;
         while (this.wanted.map((Artifact a) -> this.player.auctionChips >= a.chips).orElse(false)) {
             final Artifact a = this.wanted.get();

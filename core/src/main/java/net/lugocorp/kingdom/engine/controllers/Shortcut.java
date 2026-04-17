@@ -12,6 +12,12 @@ public class Shortcut {
         this.label = label;
     }
 
+    // This is for Kryo purposes only
+    public Shortcut() {
+        this.keycodes = null;
+        this.label = "";
+    }
+
     /**
      * Runs the given action if the given keycode is sufficient for this Shortcut
      */
