@@ -5,6 +5,8 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.builtin.logic.ItemLogic;
 import net.lugocorp.kingdom.builtin.logic.UnitLogic;
+import net.lugocorp.kingdom.content.Defs;
+import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
