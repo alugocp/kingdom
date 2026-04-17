@@ -16,6 +16,11 @@ public class HumanPlayer extends Player {
         super("you", null, color);
     }
 
+    // This constructor is only used for Kryo
+    public HumanPlayer() {
+        this(null);
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean isHumanPlayer() {

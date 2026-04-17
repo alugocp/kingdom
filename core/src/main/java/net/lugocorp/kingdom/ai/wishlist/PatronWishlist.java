@@ -15,6 +15,12 @@ public class PatronWishlist extends Wishlist<Patron> {
         this.game = game;
     }
 
+    // This constructor is only used for Kryo
+    public PatronWishlist() {
+        super(null);
+        this.game = null;
+    }
+
     /** {@inheritdoc} */
     @Override
     protected int getScoreForGoal(Patron option, Goal g) {

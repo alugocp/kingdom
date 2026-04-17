@@ -15,6 +15,11 @@ public class ActivateAction implements Action {
         this.remaining = e.max - 1;
     }
 
+    // Should only be used in conjunction with the Kryo system
+    public ActivateAction() {
+        this.remaining = 0;
+    }
+
     /** {@inheritdoc} */
     @Override
     public ActionType getType() {

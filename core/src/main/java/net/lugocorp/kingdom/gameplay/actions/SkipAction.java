@@ -13,6 +13,12 @@ public class SkipAction implements Action {
         this.label = label;
     }
 
+    // Should only be used in conjunction with the Kryo system
+    public SkipAction() {
+        this.readyToDrop = null;
+        this.label = "";
+    }
+
     /** {@inheritdoc} */
     @Override
     public ActionType getType() {

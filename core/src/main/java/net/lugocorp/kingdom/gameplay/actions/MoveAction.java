@@ -23,6 +23,14 @@ public class MoveAction implements Action {
         this.path.addAll(path);
     }
 
+    // Should only be used in conjunction with the Kryo system
+    public MoveAction() {
+        this.max = 0;
+        this.distance = 0;
+        this.view = null;
+        this.unit = null;
+    }
+
     /**
      * Returns the distance associated with this Action
      */

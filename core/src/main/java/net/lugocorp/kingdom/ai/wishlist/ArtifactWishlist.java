@@ -29,6 +29,13 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
         this.view = view;
     }
 
+    // This constructor is only used for Kryo
+    public ArtifactWishlist() {
+        super(null);
+        this.player = null;
+        this.view = null;
+    }
+
     /**
      * Handles whether or not the CompPlayer will enter into an Auction
      */

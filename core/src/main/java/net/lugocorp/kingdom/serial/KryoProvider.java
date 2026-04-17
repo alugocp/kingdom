@@ -25,6 +25,9 @@ public class KryoProvider {
         kryo.register(com.badlogic.gdx.graphics.Color.class);
         kryo.register(com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.class);
 
+        // net.lugocorp.kingdom.content.vanilla
+        kryo.register(net.lugocorp.kingdom.content.vanilla.VanillaMod.class);
+
         // net.lugocorp.kingdom.ai
         kryo.register(net.lugocorp.kingdom.ai.Actor.class);
         kryo.register(net.lugocorp.kingdom.ai.action.ActionResult.class);
@@ -150,7 +153,7 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.world.WorldSize.class);
 
         // net.lugocorp.kingdom.gameplay
-        kryo.register(net.lugocorp.kingdom.gameplay.actions.Action.class);
+        // kryo.register(net.lugocorp.kingdom.gameplay.actions.Action.class);
         kryo.register(net.lugocorp.kingdom.gameplay.actions.ActionManager.class);
         kryo.register(net.lugocorp.kingdom.gameplay.actions.ActionType.class);
         kryo.register(net.lugocorp.kingdom.gameplay.actions.ActivateAction.class);

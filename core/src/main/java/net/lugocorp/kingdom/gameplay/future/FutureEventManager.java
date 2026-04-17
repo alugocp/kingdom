@@ -22,6 +22,11 @@ public class FutureEventManager {
         this.game = game;
     }
 
+    // This constructor is only used for Kryo
+    public FutureEventManager() {
+        this.game = null;
+    }
+
     /**
      * Sets up an Event that will trigger on the given EventReceiver in the given
      * number of turns

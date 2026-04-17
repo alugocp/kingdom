@@ -27,6 +27,12 @@ public class UnitWishlist extends Wishlist<Unit> {
         this.game = game;
     }
 
+    // This constructor is only used for Kryo
+    public UnitWishlist() {
+        super(null);
+        this.game = null;
+    }
+
     /** {@inheritdoc} */
     @Override
     protected int getScoreForGoal(Unit option, Goal g) {

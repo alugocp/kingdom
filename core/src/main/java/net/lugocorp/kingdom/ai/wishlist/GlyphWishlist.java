@@ -13,6 +13,11 @@ public class GlyphWishlist extends Wishlist<Glyph> {
         this.setOptions(Glyph.values());
     }
 
+    // This constructor is only used for Kryo
+    public GlyphWishlist() {
+        super(null);
+    }
+
     /** {@inheritdoc} */
     @Override
     protected int getScoreForGoal(Glyph option, Goal g) {
