@@ -126,15 +126,12 @@ public class TopHud extends Menu {
                         .add(new RowNode().add(new ButtonNode(view.av, "Exit Game", () -> {
                             SettingsIO.write(view.av.settings);
                             view.hud.popups.addNextUnrequired(this.getExitMenu(view));
-                        })).add(new ButtonNode(view.av, "Save game", () -> {
-                            try {
-                                view.getSerial().saveGame(view.game);
-                                view.hud.logger.log("Game has been saved");
-                            } catch (Exception e) {
-                                view.hud.logger.error("Could not save game");
-                                e.printStackTrace();
-                            }
-                        }))));
+                        }))/*
+                             * .add(new ButtonNode(view.av, "Save game", () -> { try {
+                             * view.getSerial().saveGame(view.game);
+                             * view.hud.logger.log("Game has been saved"); } catch (Exception e) {
+                             * view.hud.logger.error("Could not save game"); e.printStackTrace(); } }))
+                             */));
     }
 
     private Menu getExitMenu(GameView view) {

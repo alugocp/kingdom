@@ -32,8 +32,9 @@ class StartMenuView implements View {
                 .add(new HeaderNode(params.av, "Legends of T'ahn").center()).add(new SpacerNode(false))
                 .add(new ButtonNode(params.av, "New game", () -> this.navigate.accept(new GameCreationView(params))))
                 .add(new SpacerNode(false).half())
-                .add(new ButtonNode(params.av, "Load game", () -> this.navigate.accept(new LoadGameView(params))))
-                .add(new SpacerNode(false).half())
+                // .add(new ButtonNode(params.av, "Load game", () -> this.navigate.accept(new
+                // LoadGameView(params))))
+                // .add(new SpacerNode(false).half())
                 .add(new ButtonNode(params.av, "Settings", () -> this.navigate.accept(new SettingsView(params))))
                 .add(new SpacerNode(false).half())
                 .add(new ButtonNode(params.av, "Credits", () -> this.navigate.accept(new CreditsView(params))))
