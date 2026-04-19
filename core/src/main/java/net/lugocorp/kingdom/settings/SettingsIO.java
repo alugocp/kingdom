@@ -1,26 +1,39 @@
 package net.lugocorp.kingdom.settings;
-import com.badlogic.gdx.Gdx;
+import net.lugocorp.kingdom.utils.Files;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
  * This class handles reading and writing a Settings file
  */
 public final class SettingsIO {
-    private static final String filepath = "settings.json";
+    private static final String FILENAME = "settings.json";
 
     /**
      * Saves Settings to a local file
      */
     public static final void write(Settings s) {
-        final FileHandle f = Gdx.files.local(SettingsIO.filepath);
-        f.writeString(SettingsJson.toJson(s), false);
+        try {
+            Files.ensureExistence();
+            final FileHandle f = Files.getFile(SettingsIO.FILENAME);
+            f.writeString(SettingsJson.toJson(s), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Reads Settings from a local file or returns a default instance otherwise
      */
     public static final Settings readOrDefault() {
-        final FileHandle f = Gdx.files.local(SettingsIO.filepath);
-        return f.exists() ? SettingsJson.fromJson(f.readString()) : new Settings();
+        try {
+            Files.ensureExistence();
+            final FileHandle f = Files.getFile(SettingsIO.FILENAME);
+            if (f.exists()) {
+                return SettingsJson.fromJson(f.readString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Settings();
     }
 }
