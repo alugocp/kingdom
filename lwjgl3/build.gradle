@@ -128,7 +128,12 @@ construo {
     humanName.set(appName)
 
     jlink {
+        // These settings allow us to build the game executables. Normally construo runs
+        // `jdeps --ignore-missing-deps --list-deps <game.jar>` to get a list of dependencies,
+        // which includes `java.base/sun.nio.ch`. `sun.nio.ch` cannot be found and causes jlink to
+        // fail, so we bypass the jdeps call and manually enter the other dependencies here
         guessModulesFromJar.set(false)
+        modules.addAll("java.desktop", "java.management", "java.sql", "jdk.unsupported")
     }
 
     targets.configure {
