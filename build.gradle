@@ -65,7 +65,7 @@ configure(subprojects) {
 
 subprojects {
     version = "$projectVersion"
-    ext.appName = 'kingdom'
+    ext.appName = "Legends of T'ahn"
     repositories {
         mavenCentral()
         // You may want to remove the following line if you have errors downloading dependencies.
