@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * This main class kicks off all game logic
  */
 public class Main implements ApplicationListener {
-    public static final Semver VERSION = new Semver(1, 0, 0);
+    public static final Semver VERSION = new Semver(1, 0, 0, Semver.ALPHA);
     public static Viewport viewport = null;
     private long prevTime = System.currentTimeMillis();
     private View view = null;

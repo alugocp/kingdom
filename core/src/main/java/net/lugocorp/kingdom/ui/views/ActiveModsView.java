@@ -25,16 +25,15 @@ class ActiveModsView implements View {
     ActiveModsView(StartMenuView.Params params) {
         ListNode node = new ListNode()
                 .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
-                .add(new HeaderNode(params.av, "Active Mods"));
+                .add(new HeaderNode(params.av, "Content"));
         for (GameMod mod : params.mods) {
             ModProfile profile = mod.getProfile();
             node.add(new SpacerNode()).add(new HeaderNode(params.av, profile.name))
-                    .add(new TextNode(params.av, String.format("Key: %s", profile.key)))
                     .add(new TextNode(params.av, profile.description));
             if (profile.credits.length > 0) {
                 node.add(new TextNode(params.av, "Credits:"));
                 for (String name : profile.credits) {
-                    node.add(new TextNode(params.av, name));
+                    node.add(new TextNode(params.av, String.format("  • %s", name)));
                 }
             }
         }

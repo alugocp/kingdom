@@ -55,7 +55,7 @@ public class VanillaMod implements GameMod {
     /** {@inheritdoc} */
     @Override
     public ModProfile getProfile() {
-        return new ModProfile("vanilla", "Vanilla", "Contains all of the base content for this game.",
+        return new ModProfile("vanilla", "Vanilla", "Contains all content in the initial release of Legends of T'ahn",
                 new String[]{"Alex Lugo"});
     }
 
