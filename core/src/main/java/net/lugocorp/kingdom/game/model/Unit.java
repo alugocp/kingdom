@@ -15,7 +15,6 @@ import net.lugocorp.kingdom.game.unit.Abilities;
 import net.lugocorp.kingdom.game.unit.Adjacency;
 import net.lugocorp.kingdom.game.unit.Hunger;
 import net.lugocorp.kingdom.game.unit.Leadership;
-import net.lugocorp.kingdom.game.unit.Loyalty;
 import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
@@ -58,7 +57,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     public final Adjacency nextTo = new Adjacency(this);
     public final Leadership leadership = new Leadership(this);
     public final Sleep sleep = new Sleep(this);
-    public final Loyalty loyalty = new Loyalty(this);
     public final Abilities abilities = new Abilities(this);
     public final Hunger hunger = new Hunger(this);
     public final Movement movement = new Movement(this, this.userData);
@@ -199,19 +197,15 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
                         .add(new ResourceBarsNode(view.av,
                                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
                                         this.combat.health.getMax()),
-                                new ResourceBarsNode.Bar("Loyalty", 0x203fab, this.loyalty.get(), Loyalty.MAX_LOYALTY),
                                 new ResourceBarsNode.Bar("Hunger", 0x7d4513, this.hunger.get(view),
                                         this.hunger.getTurnsBeforeHunger())))
                         .addExact(IconNode.SIDE, new HelperNode(view.av, new ListNode()
                                 .add(new SubheaderNode(view.av, "Health"))
                                 .add(new TextNode(view.av,
                                         "If a unit's health bar hits zero then they disappear off the map."))
-                                .add(new SubheaderNode(view.av, "Loyalty"))
-                                .add(new TextNode(view.av,
-                                        "If a unit's loyalty bar hits zero then it will abandon you and become independent. You can recruit an independent unit by giving it an item."))
                                 .add(new SubheaderNode(view.av, "Hunger"))
                                 .add(new TextNode(view.av, String.format(
-                                        "The hunger bar increases each turn until it's full, then loyalty will decrease each turn. This unit can clear its hunger bar by consuming %s.",
+                                        "The hunger bar increases each turn until it's full, then this unit will abandon you. This unit can clear its hunger bar by consuming %s.",
                                         this.hunger.getPreferredFoods()))))));
 
         // Actions / spells section

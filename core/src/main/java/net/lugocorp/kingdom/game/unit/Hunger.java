@@ -56,7 +56,8 @@ public class Hunger {
      */
     public void gotHungry(GameView view) {
         if (!this.autoEatCheck(view)) {
-            view.game.future.addFutureTick("HungerStrikes", this.unit, 1, true);
+            view.game.mechanics.pools.reincarnate(this.unit);
+            this.unit.deactivate(view);
         }
     }
 
@@ -101,7 +102,6 @@ public class Hunger {
             view.overlays.add(new EntityRisingOverlay(view, this.unit, 0x7d4513, "Hunger reset"));
         }
         view.game.future.removeFutureEvents(this.unit, "GetsHungry");
-        view.game.future.removeFutureEvents(this.unit, "HungerStrikes");
         view.game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false);
     }
 }

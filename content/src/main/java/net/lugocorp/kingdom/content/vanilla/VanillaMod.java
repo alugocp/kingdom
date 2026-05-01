@@ -269,18 +269,6 @@ public class VanillaMod implements GameMod {
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver, Event event) -> new SideEffect()
                 .add(() -> receiver.hunger.gotHungry(view)));
 
-        // HungerStrikes
-        events.unit.setDefaultHandler("HungerStrikes", (GameView view, Unit receiver, Event event) -> {
-            // TODO receiver.getLeader().get().isHumanPlayer() is a stop-gap that should be
-            // removed before the beta release
-            if (receiver.getLeader().isPresent() && receiver.getLeader().get().isHumanPlayer()
-                    && !receiver.hunger.autoEatCheck(view)) {
-                return new SideEffect().add(() -> receiver.loyalty.decrease(view, 1));
-            }
-            ((Events.RepeatedEvent) event).repeat = false;
-            return new SideEffect();
-        });
-
         // UnitMoveDistanceEvent
         events.unit.setDefaultHandler(Events.UnitMoveDistanceEvent.class,
                 (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {

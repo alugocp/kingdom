@@ -143,7 +143,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.unit.Adjacency.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Hunger.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Leadership.class);
-        kryo.register(net.lugocorp.kingdom.game.unit.Loyalty.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Movement.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Sleep.class);
         // kryo.register(net.lugocorp.kingdom.game.world.Biome.class);

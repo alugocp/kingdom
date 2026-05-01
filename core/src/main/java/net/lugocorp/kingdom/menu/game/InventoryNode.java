@@ -85,13 +85,6 @@ public class InventoryNode implements MenuNode {
     }
 
     /**
-     * Returns true if the given Unit can be recruited using an Item
-     */
-    private boolean canUnitBeRecruitedWithItem(Unit unit) {
-        return unit.leadership.isFreeRadical() && !unit.haul.isFull();
-    }
-
-    /**
      * The Unit on the currently open Tile picks up or equips the specified Item
      */
     private void unitTakesItem(int type, Item item) {
@@ -135,9 +128,8 @@ public class InventoryNode implements MenuNode {
         Set<Point> valid = new HashSet<>();
         for (Point p : points) {
             Optional<Tile> tile = this.view.game.world.getTile(p);
-            if (tile.isPresent() && tile.get().unit.isPresent() && (this.canUnitTakeItem(InventoryType.HAUL,
-                    tile.get().unit)
-                    || (tile.get().unit.isPresent() && this.canUnitBeRecruitedWithItem(tile.get().unit.get())))) {
+            if (tile.isPresent() && tile.get().unit.isPresent()
+                    && (this.canUnitTakeItem(InventoryType.HAUL, tile.get().unit))) {
                 valid.add(p);
             }
         }
@@ -152,9 +144,6 @@ public class InventoryNode implements MenuNode {
                 .flatMap((Unit u) -> u.getLeader()).get();
         Unit unit = this.view.game.world.getTile(p.x, p.y).get().unit.get();
         this.items.transfer(unit.haul, item);
-        if (unit.leadership.isFreeRadical()) {
-            unit.leadership.recruit(this.view, leader);
-        }
         this.view.hud.bot.tileMenu.refresh();
     }
 
