@@ -194,6 +194,7 @@ public class Labels {
     /**
      * SECTION Buildings
      */
+    public static final String building_tower = "Tower";
     public static final String building_mine = "Mine";
     public static final String building_vault = "Vault";
     public static final String building_forest = "Forest";

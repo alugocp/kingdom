@@ -346,6 +346,18 @@ public class VanillaMod implements GameMod {
          * SECTION Buildings
          */
 
+        // Tower
+        new Stratified<Building>(events.building, Labels.building_tower).add(Events.GenerateBuildingEvent.class,
+                (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                    e.blob.setModelInstance(view.av, "tower");
+                    e.blob.desc = "Towers provide influence over the map";
+                    e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
+                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.setMinimapColor(0x000000);
+                    e.blob.setActive();
+                    return new SideEffect();
+                });
+
         // Mine
         new Stratified<Building>(events.building, Labels.building_mine).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {

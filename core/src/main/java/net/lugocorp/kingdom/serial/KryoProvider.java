@@ -128,6 +128,7 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.model.Item.class);
         kryo.register(net.lugocorp.kingdom.game.model.Patron.class);
         kryo.register(net.lugocorp.kingdom.game.model.Tile.class);
+        kryo.register(net.lugocorp.kingdom.game.model.Tower.class);
         kryo.register(net.lugocorp.kingdom.game.model.Unit.class);
         kryo.register(net.lugocorp.kingdom.game.player.CompPlayer.class);
         kryo.register(net.lugocorp.kingdom.game.player.HumanPlayer.class);

@@ -195,6 +195,7 @@
         "prefix": "building",
         "name": "Buildings",
         "labels": [
+            "Tower",
             "Mine",
             "Vault",
             "Forest",

@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
-import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.math.Hexagons;
@@ -124,11 +124,11 @@ public class WorldGenerator {
             // Place Players with priority
             if (playersSpawned < g.getAllPlayers().size()) {
                 final Player player = playersSpawned == 0 ? g.human : g.comps.get(playersSpawned - 1);
-                final Building b = g.generator.building("Vault", p.x, p.y);
+                final Tower t = g.generator.tower(p.x, p.y);
                 for (int a = 0; a < 5; a++) {
-                    b.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
+                    t.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
                 }
-                b.spawn(view);
+                t.spawn(view);
                 g.getInitialUnit(view, player, p.x, p.y).spawn(view);
                 playersSpawned++;
             } else {

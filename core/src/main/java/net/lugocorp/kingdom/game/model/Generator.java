@@ -55,6 +55,17 @@ public class Generator {
     }
 
     /**
+     * Generates a new Tower
+     */
+    public Tower tower(int x, int y) {
+        final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
+        final Tower t = new Tower(x, y, getTile);
+        final Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(t);
+        this.view.game.events.building.handle(this.view, e.blob, e);
+        return t;
+    }
+
+    /**
      * Generates a new Patron
      */
     public Patron patron(String name, int x, int y) {
