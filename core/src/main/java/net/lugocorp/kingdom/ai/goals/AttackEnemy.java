@@ -8,7 +8,6 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
-import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
@@ -36,14 +35,6 @@ public class AttackEnemy extends Goal {
     }
 
     /**
-     * Returns true if the given Entity is a relevant attack target (an active
-     * Building or non-Building Entity)
-     */
-    private boolean isRelevantAttackTarget(Entity e) {
-        return e.getEntityType() != EntityType.BUILDING || ((Building) e).isActive();
-    }
-
-    /**
      * Returns true if the Event describes the death of a Unit with either: 1) a
      * different leader as the Unit, if sameLeader is false; 2) the same leader as
      * the Unit, if sameLeader is true
@@ -52,7 +43,7 @@ public class AttackEnemy extends Goal {
         if (e instanceof Events.EntityDiedEvent) {
             final Entity entity = ((Events.EntityDiedEvent) e).target;
             return entity.getLeader().map((Player l) -> l.equals(u.getLeader().get()) == sameLeader).orElse(false)
-                    && (sameLeader || this.isRelevantAttackTarget(entity));
+                    && (sameLeader || entity.isEntityType(EntityType.UNIT));
         }
         return false;
     }
@@ -65,7 +56,7 @@ public class AttackEnemy extends Goal {
             final Events.TakeDamageEvent evt = (Events.TakeDamageEvent) e;
             final Entity entity = evt.target;
             return entity.getLeader().map((Player l) -> l.equals(u.getLeader().get()) == sameLeader).orElse(false)
-                    && (sameLeader || this.isRelevantAttackTarget(entity)) ? evt.dmg.total() : 0;
+                    && (sameLeader || entity.isEntityType(EntityType.UNIT)) ? evt.dmg.total() : 0;
         }
         return 0;
     }

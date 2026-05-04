@@ -6,7 +6,6 @@ import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.game.properties.BuildingType;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.gameplay.events.Event;
@@ -39,7 +38,6 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     private final Supplier<Tile> getTile;
     private final CoordUserData userData;
     private Optional<Color> minimapColor = Optional.empty();
-    private BuildingType type = BuildingType.PASSIVE;
     private boolean obstacle = false;
     public Optional<Inventory> items = Optional.empty();
 
@@ -101,20 +99,6 @@ public class Building extends Entity implements MenuSubject, Spawnable {
      */
     public boolean getObstacle() {
         return this.obstacle;
-    }
-
-    /**
-     * Returns true if this Building is active
-     */
-    public boolean isActive() {
-        return this.type == BuildingType.ACTIVE;
-    }
-
-    /**
-     * Sets whether or not this is an active Building
-     */
-    public void setActive() {
-        this.type = BuildingType.ACTIVE;
     }
 
     /**
@@ -187,8 +171,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
                 .flatMap((Tile t) -> t.leader);
         final RowNode node = new RowNode().setColumns(2);
         final ListNode col1 = new ListNode().add(new HeaderNode(view.av, this.name));
-        final RowNode row = new RowNode().addRatio(30, new BadgeNode(view.av, ColorScheme.BLUE.hex,
-                ColorScheme.WHITE.hex, this.isActive() ? "Active" : "Passive"));
+        final RowNode row = new RowNode();
         if (leader.isPresent()) {
             row.add(new PlayerBadgeNode(view.av, leader.get()));
         }

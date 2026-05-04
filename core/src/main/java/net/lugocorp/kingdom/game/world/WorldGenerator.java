@@ -119,7 +119,6 @@ public class WorldGenerator {
         int playersSpawned = 0;
         final int maxBuildings = buildingPoints.size();
         final Set<String> patrons = g.events.patron.getStratifiers();
-        final Set<Tower> towers = new HashSet<>();
         while (buildingPoints.size() > 0) {
             // Choose a Point to spawn the content
             final Point p = this.randomValue(r, buildingPoints);
@@ -132,7 +131,7 @@ public class WorldGenerator {
                 for (int a = 0; a < 5; a++) {
                     t.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
                 }
-                towers.add(t);
+                g.towers.add(t);
                 t.spawn(view);
                 g.getInitialUnit(view, player, p.x, p.y).spawn(view);
                 playersSpawned++;
@@ -140,7 +139,7 @@ public class WorldGenerator {
             } else if (towersSpawned < worldGenOpts.size.towers) {
                 // Place remaining Towers with priority
                 final Tower t = g.generator.tower(p.x, p.y);
-                towers.add(t);
+                g.towers.add(t);
                 t.spawn(view);
                 towersSpawned++;
             } else {
@@ -223,7 +222,7 @@ public class WorldGenerator {
         // Calculate Tower Domains
         final Point domainPoint = new Point(0, 0);
         final Map<Tower, Set<Point>> domains = new HashMap<>();
-        for (Tower t : towers) {
+        for (Tower t : g.towers) {
             domains.put(t, new HashSet<Point>());
         }
         for (int a = 0; a < worldGenOpts.size.w; a++) {
@@ -231,7 +230,7 @@ public class WorldGenerator {
                 Tower best = null;
                 int shortest = 0;
                 domainPoint.set(a, b);
-                for (Tower t : towers) {
+                for (Tower t : g.towers) {
                     int dist = domainPoint.distance(t.getPoint());
                     if (best == null || dist < shortest) {
                         shortest = dist;
@@ -242,7 +241,7 @@ public class WorldGenerator {
             }
             progress.accept(80 + (int) Math.floor(20 * a / (float) worldGenOpts.size.w));
         }
-        for (Tower t : towers) {
+        for (Tower t : g.towers) {
             t.domain.init(g.world, t, domains.get(t));
         }
 

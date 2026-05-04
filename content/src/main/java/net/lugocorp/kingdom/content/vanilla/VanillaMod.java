@@ -354,7 +354,6 @@ public class VanillaMod implements GameMod {
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.setMinimapColor(0x000000);
-                    e.blob.setActive();
                     return new SideEffect();
                 });
 
@@ -365,7 +364,6 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Units with mining abilities can generate gold or items when they occupy this building";
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.setMinimapColor(0x555555);
-                    e.blob.setActive();
                     return new SideEffect();
                 });
 
@@ -377,7 +375,6 @@ public class VanillaMod implements GameMod {
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.setMinimapColor(0x000000);
-                    e.blob.setActive();
                     return new SideEffect();
                 });
 
@@ -451,7 +448,6 @@ public class VanillaMod implements GameMod {
                             e.blob.desc = "A unit that occupies this building gets healed a little each turn";
                             e.blob.combat.health.setMaxAndValue(35);
                             e.blob.setMinimapColor(0x875f9a);
-                            e.blob.setActive();
                             return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
@@ -1988,18 +1984,17 @@ public class VanillaMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_dungeon_delve).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.desc = String
-                            .format("Deals 8 damage and generates loot if targeting a tile with an active building");
+                            .format("Deals 8 damage and generates loot if targeting a tile with a building");
                     e.blob.setIcon(Labels.asset_dungeon_delve);
                     return new SideEffect();
-                })
-                .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.attackAndEffect(view, receiver.wielder,
-                                new Damage(8), 1,
-                                Optional.of((Point p) -> !receiver.wielder.haul.isFull() && view.game.world.getTile(p)
-                                        .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false)
-                                                ? new SideEffect().add(() -> receiver.wielder.haul
-                                                        .add(view.game.mechanics.loot.drop(view.game)))
-                                                : new SideEffect())));
+                }).add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(8), 1,
+                                        Optional.of((Point p) -> !receiver.wielder.haul.isFull()
+                                                && view.game.world.getTile(p).map((Tile t) -> t.building).isPresent()
+                                                        ? new SideEffect().add(() -> receiver.wielder.haul
+                                                                .add(view.game.mechanics.loot.drop(view.game)))
+                                                        : new SideEffect())));
 
         // Economic Activity
         new Stratified<Ability>(events.ability, Labels.ability_economic_activity).add(Events.GenerateAbilityEvent.class,
@@ -2048,12 +2043,12 @@ public class VanillaMod implements GameMod {
         // Entrenched
         new Stratified<Ability>(events.ability, Labels.ability_entrenched).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("+2 armor when on an active building");
+                    e.blob.desc = String.format("+2 armor when on a building");
                     e.blob.setIcon(Labels.asset_local_defender);
                     return new SideEffect();
                 }).add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     final boolean isOnActiveBuilding = view.game.world.getTile(receiver.wielder.getPoint())
-                            .flatMap((Tile t) -> t.building).map((Building b) -> b.isActive()).orElse(false);
+                            .map((Tile t) -> t.building).isPresent();
                     return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : new SideEffect();
                 });
 
@@ -2321,7 +2316,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Ability>(events.ability, Labels.ability_liquifying_presence)
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.desc = String.format("Deals 3 damage each turn to an occupied passive building");
+                            e.blob.desc = String.format("Deals 3 damage each turn to an occupied building");
                             e.blob.setIcon(Labels.asset_liquifying_presence);
                             return new SideEffect();
                         })
@@ -2331,7 +2326,7 @@ public class VanillaMod implements GameMod {
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
-                    return b.map((Building b1) -> !b1.isActive()).orElse(false)
+                    return b.isPresent()
                             ? b.get().combat.takeDamage(view, new Damage(3), receiver.wielder)
                             : new SideEffect();
                 });
@@ -2679,13 +2674,13 @@ public class VanillaMod implements GameMod {
         // Running Through Nature
         new Stratified<Ability>(events.ability, Labels.ability_running_through_nature).add(
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.desc = String.format("This unit is faster on passive buildings");
+                    e.blob.desc = String.format("This unit is faster on buildings");
                     e.blob.setIcon(Labels.asset_running_through_nature);
                     return new SideEffect();
                 }).add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             boolean buildingIsPassive = view.game.world.getTile(e.unit.getPoint())
-                                    .flatMap((Tile t) -> t.building).map((Building b) -> !b.isActive()).orElse(false);
+                                    .flatMap((Tile t) -> t.building).isPresent();
                             if (buildingIsPassive) {
                                 e.distance++;
                             }

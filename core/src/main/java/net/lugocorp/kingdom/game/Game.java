@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.HumanPlayer;
@@ -36,6 +37,7 @@ public class Game {
     public final ColorPool colorPool = new ColorPool();
     public final Mechanics mechanics = new Mechanics();
     public final List<CompPlayer> comps = new ArrayList<>();
+    public final Set<Tower> towers = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
     public final World world = new World();
     public final OffsetTime startTime;
@@ -144,21 +146,31 @@ public class Game {
     }
 
     /**
+     * Returns the number of remaining Towers controlled by the given Player
+     */
+    private int remainingTowers(Player p) {
+        int remaining = 0;
+        for (Tower t : this.towers) {
+            if (t.getLeader().map((Player p1) -> p == p1).orElse(false)) {
+                remaining++;
+            }
+        }
+        return remaining;
+    }
+
+    /**
      * Returns true if the human Player has no buildings left
      */
     public boolean hasHumanPlayerLost() {
-        // TODO will be optimized by the upcomin towers mechanic
-        return Lambda.filter((Building b) -> b.isActive(), this.human.buildings).size() == 0;
+        return this.remainingTowers(this.human) == 0;
     }
 
     /**
      * Returns true if the human Player is the only one that has buildings left
      */
     public boolean hasHumanPlayerWon() {
-        // TODO will be optimized by the upcomin towers mechanic
         for (Player p : this.comps) {
-            boolean remaining = Lambda.filter((Building b) -> b.isActive(), p.buildings).size() > 0;
-            if (remaining) {
+            if (this.remainingTowers(p) > 0) {
                 return false;
             }
         }

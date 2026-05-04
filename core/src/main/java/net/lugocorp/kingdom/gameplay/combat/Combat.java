@@ -4,9 +4,9 @@ import net.lugocorp.kingdom.builtin.animation.AttackAnimation;
 import net.lugocorp.kingdom.builtin.animation.DamagedAnimation;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.layers.Entity;
-import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
@@ -40,24 +40,22 @@ public class Combat {
      */
     private SideEffect onDeath(GameView view, Entity attacker) {
         final SideEffect effects = new SideEffect();
-        if (this.bearer.isEntityType(EntityType.BUILDING)) {
-            // Restore the Building's health and place under the attacking Player's control
+        if (this.bearer.isEntityType(EntityType.TOWER)) {
+            // Restore the Tower's health and place under the attacking Player's control
             // if it was destroyed by another player
-            final Building b = (Building) this.bearer;
             final Optional<Player> destroyer = attacker.getLeader();
-            if (b.isActive() && !b.getLeader().equals(destroyer)) {
-                effects.add(() -> {
-                    if (destroyer.map((Player d) -> d.isHumanPlayer()).orElse(false)) {
-                        view.hud.logger.log(String.format("You claimed the %s", b.name));
-                        view.av.loaders.sounds.play("sfx/captured");
-                    }
-                    view.overlays.add(new EntityRisingOverlay(view, b, ColorScheme.RED.hex, "Captured"));
-                    this.health.set(this.health.getMax());
-                    view.game.world.getTile(b.getPoint())
-                            .ifPresent((Tile t) -> view.game.setLeader(view, t, destroyer));
-                });
-                return effects;
-            }
+            final Tower t = (Tower) this.bearer;
+            effects.add(() -> {
+                if (!t.getLeader().equals(destroyer) && destroyer.map((Player d) -> d.isHumanPlayer()).orElse(false)) {
+                    view.overlays.add(new EntityRisingOverlay(view, t, ColorScheme.RED.hex, "Captured"));
+                    view.hud.logger.log("You claimed the tower");
+                    view.av.loaders.sounds.play("sfx/captured");
+                }
+                this.health.set(this.health.getMax());
+                view.game.world.getTile(t.getPoint())
+                        .ifPresent((Tile tile) -> view.game.setLeader(view, tile, destroyer));
+            });
+            return effects;
         } else {
             effects.add(this.bearer.handleEvent(view, new Events.EntityDiedEvent(this.bearer, attacker)));
             effects.add(attacker.handleEvent(view, new Events.KilledEntityEvent(attacker, this.bearer)));
