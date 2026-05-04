@@ -135,6 +135,7 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.properties.Domain.class);
         kryo.register(net.lugocorp.kingdom.game.properties.EntityType.class);
         kryo.register(net.lugocorp.kingdom.game.properties.Inventory.class);
+        kryo.register(net.lugocorp.kingdom.game.properties.Leadership.class);
         kryo.register(net.lugocorp.kingdom.game.properties.Rarity.class);
         kryo.register(net.lugocorp.kingdom.game.properties.Species.class);
         kryo.register(net.lugocorp.kingdom.game.properties.Tags.class);
@@ -142,7 +143,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.unit.Abilities.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Adjacency.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Hunger.class);
-        kryo.register(net.lugocorp.kingdom.game.unit.Leadership.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Movement.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Sleep.class);
         // kryo.register(net.lugocorp.kingdom.game.world.Biome.class);

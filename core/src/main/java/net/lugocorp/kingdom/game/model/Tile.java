@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.layers.Governable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
@@ -31,7 +32,7 @@ import java.util.Optional;
  * Represents a single hexagon in the game world and its corresponding
  * properties
  */
-public class Tile extends DynamicModellable implements EventReceiver, MenuSubject, Spawnable {
+public class Tile extends DynamicModellable implements EventReceiver, MenuSubject, Spawnable, Governable {
     private final TileUserData userData = new TileUserData();
     private Optional<ModelInstance> placeholderBuildingModel = Optional.empty();
     private Optional<GlyphCategory> glyph = Optional.empty();
@@ -40,7 +41,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     private boolean obstacle = false;
     private boolean wave = false;
     public final String name;
-    public Optional<Player> leader = Optional.empty();
     public Optional<Building> building = Optional.empty();
     public Optional<Unit> unit = Optional.empty();
     public String desc = "";
@@ -92,7 +92,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public Color getMinimapColor() {
         return this.userData.hasBeenSeen
-                ? this.leader.map((Player l) -> l.color)
+                ? this.getLeader().map((Player l) -> l.color)
                         .orElse(this.building.flatMap((Building b) -> b.getMinimapColor()).orElse(this.minimapColor))
                 : Color.BLACK;
     }
@@ -186,9 +186,9 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Causes this Tile (and its neighbors) to recalculate its visible borders
      */
     public void calculateBorders(World world, boolean iterate) {
-        this.userData.borderColor = this.leader.map((Player l) -> l.color).orElse(Color.BLACK);
-        this.userData.borders = Hexagons.getBorderInteger(this.getPoint(), (Point p) -> this.leader.isPresent()
-                && !world.getTile(p).flatMap((Tile t) -> t.leader).equals(this.leader));
+        this.userData.borderColor = this.getLeader().map((Player l) -> l.color).orElse(Color.BLACK);
+        this.userData.borders = Hexagons.getBorderInteger(this.getPoint(), (Point p) -> this.getLeader().isPresent()
+                && !world.getTile(p).flatMap((Tile t) -> t.getLeader()).equals(this.getLeader()));
         if (iterate) {
             for (Point p : Hexagons.getNeighbors(this.getPoint(), 1)) {
                 world.getTile(p).ifPresent((Tile t1) -> t1.calculateBorders(world, false));
@@ -210,6 +210,12 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     public void setMovePath(int path, int label) {
         this.userData.movePath = path;
         this.userData.pathLabel = label;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Optional<Player> getLeader() {
+        return this.getDomainCenter().getLeader();
     }
 
     /** {@inheritdoc} */
@@ -255,8 +261,8 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         if (this.glyph.isPresent()) {
             tileNodes.add(new GlyphIconsNode(view.av, this.glyph.get()));
         }
-        if (this.leader.isPresent()) {
-            tileNodes.add(new PlayerBadgeNode(view.av, this.leader.get()));
+        if (this.getLeader().isPresent()) {
+            tileNodes.add(new PlayerBadgeNode(view.av, this.getLeader().get()));
         }
         tileNodes.add(new TextNode(view.av, this.desc));
 

@@ -5,7 +5,6 @@ import net.lugocorp.kingdom.builtin.animation.DamagedAnimation;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Item;
-import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
@@ -52,8 +51,7 @@ public class Combat {
                     view.av.loaders.sounds.play("sfx/captured");
                 }
                 this.health.set(this.health.getMax());
-                view.game.world.getTile(t.getPoint())
-                        .ifPresent((Tile tile) -> view.game.setLeader(view, tile, destroyer));
+                view.game.setLeader(view, t, destroyer);
             });
             return effects;
         } else {

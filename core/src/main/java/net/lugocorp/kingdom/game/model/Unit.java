@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.game.glyph.UnitGlyphs;
 import net.lugocorp.kingdom.game.layers.Entity;
+import net.lugocorp.kingdom.game.layers.IndependentGovernable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
@@ -14,7 +15,6 @@ import net.lugocorp.kingdom.game.properties.Species;
 import net.lugocorp.kingdom.game.unit.Abilities;
 import net.lugocorp.kingdom.game.unit.Adjacency;
 import net.lugocorp.kingdom.game.unit.Hunger;
-import net.lugocorp.kingdom.game.unit.Leadership;
 import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
@@ -52,10 +52,9 @@ import java.util.Set;
  * A single controllable character (or NPC) that the player can interact with
  * in-game
  */
-public class Unit extends Entity implements MenuSubject, Spawnable {
+public class Unit extends Entity implements MenuSubject, Spawnable, IndependentGovernable {
     private final CoordUserData userData = new CoordUserData(() -> false);
     public final Adjacency nextTo = new Adjacency(this);
-    public final Leadership leadership = new Leadership(this);
     public final Sleep sleep = new Sleep(this);
     public final Abilities abilities = new Abilities(this);
     public final Hunger hunger = new Hunger(this);
@@ -63,9 +62,10 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     public final UnitGlyphs glyphs = new UnitGlyphs();
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
-    public Species species = Species.UNKNOWN;
+    private Optional<Player> leader = Optional.empty();
     private boolean existsInWorld = false;
     private boolean unlisted = false;
+    public Species species = Species.UNKNOWN;
 
     public Unit(String name, int x, int y) {
         super(name, x, y);
@@ -128,7 +128,13 @@ public class Unit extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public Optional<Player> getLeader() {
-        return this.leadership.getLeader();
+        return this.leader;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public void setLeader(Optional<Player> leader) {
+        this.leader = leader;
     }
 
     /** {@inheritdoc} */

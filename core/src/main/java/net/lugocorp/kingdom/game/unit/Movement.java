@@ -151,7 +151,6 @@ public class Movement {
         this.unit.setX(x);
         this.unit.setY(y);
         this.unit.resetModelPosition();
-        view.game.setLeader(view, destin, this.unit.getLeader());
         destin.building.ifPresent((Building b) -> b.setAlpha(0.5f));
         this.userData.point.x = x;
         this.userData.point.y = y;

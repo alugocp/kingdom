@@ -76,7 +76,7 @@ public class MemoryMap {
             cell.building = t.building.isPresent() ? Optional.of(t.building.get().getStratifier()) : Optional.empty();
             cell.unit = t.unit.isPresent() ? Optional.of(t.unit.get().getStratifier()) : Optional.empty();
             cell.glyph = t.getGlyph();
-            cell.owner = t.leader;
+            cell.owner = t.getLeader();
         });
     }
 

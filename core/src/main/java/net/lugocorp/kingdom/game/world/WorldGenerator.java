@@ -1,7 +1,9 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.math.Hexagons;
@@ -136,6 +138,9 @@ public class WorldGenerator {
                 g.getInitialUnit(view, player, p.x, p.y).spawn(view);
                 playersSpawned++;
                 towersSpawned++;
+                if (playersSpawned == g.getAllPlayers().size()) {
+                    this.calculateTowerDomains(g, worldGenOpts);
+                }
             } else if (towersSpawned < worldGenOpts.size.towers) {
                 // Place remaining Towers with priority
                 final Tower t = g.generator.tower(p.x, p.y);
@@ -216,10 +221,22 @@ public class WorldGenerator {
             }
 
             // Update progress as we generate content
-            progress.accept(60 + (int) Math.floor(20 * (maxBuildings - buildingPoints.size()) / (float) maxBuildings));
+            progress.accept(60 + (int) Math.floor(40 * (maxBuildings - buildingPoints.size()) / (float) maxBuildings));
         }
 
-        // Calculate Tower Domains
+        // Set leadership for Players' initial Towers
+        for (Tower tower : g.towers) {
+            final Tile tile = g.world.getTile(tower.getPoint()).get();
+            tile.unit.ifPresent((Unit u) -> g.setLeader(view, tower, u.getLeader()));
+        }
+
+        progress.accept(100);
+    }
+
+    /**
+     * Calculates the domains for each Tower
+     */
+    private void calculateTowerDomains(Game g, WorldGenOptions worldGenOpts) {
         final Point domainPoint = new Point(0, 0);
         final Map<Tower, Set<Point>> domains = new HashMap<>();
         for (Tower t : g.towers) {
@@ -239,13 +256,10 @@ public class WorldGenerator {
                 }
                 domains.get(best).add(domainPoint.copy());
             }
-            progress.accept(80 + (int) Math.floor(20 * a / (float) worldGenOpts.size.w));
         }
-        for (Tower t : g.towers) {
-            t.domain.init(g.world, t, domains.get(t));
+        for (Tower tower : g.towers) {
+            tower.domain.init(g.world, tower, domains.get(tower));
         }
-
-        progress.accept(100);
     }
 
     /**

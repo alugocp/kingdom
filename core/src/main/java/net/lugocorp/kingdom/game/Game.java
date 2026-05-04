@@ -102,28 +102,50 @@ public class Game {
     /**
      * Calls into the other setLeader()
      */
-    public void setLeader(GameView view, Tile t, Player p) {
-        this.setLeader(view, t, Optional.of(p));
+    public void setLeader(GameView view, Tower tower, Player p) {
+        this.setLeader(view, tower, Optional.of(p));
     }
 
     /**
-     * Sets the leader Player for a given Tile
+     * Sets the leader Player for a given Tower
      */
-    public void setLeader(GameView view, Tile t, Optional<Player> op) {
-        if (op.equals(t.leader)) {
+    public void setLeader(GameView view, Tower tower, Optional<Player> op) {
+        if (tower.leadership.belongsToPlayer(op)) {
             return;
         }
-        t.leader.ifPresent((Player p) -> {
-            t.building.ifPresent((Building b) -> p.buildings.remove(b));
-            p.tiles--;
+
+        // Remove Buildings and Tiles from the Tower's current Player (if any)
+        tower.getLeader().ifPresent((Player player) -> {
+            for (Point p : tower.domain.get()) {
+                final Tile t = view.game.world.getTile(p).get();
+                t.building.ifPresent((Building b) -> player.buildings.remove(b));
+                player.tiles--;
+            }
         });
-        op.ifPresent((Player p) -> {
-            t.building.ifPresent((Building b) -> p.buildings.add(b));
-            p.tiles++;
+
+        // Adds Buildings and Tiles to the Tower's new Player (if any)
+        op.ifPresent((Player player) -> {
+            for (Point p : tower.domain.get()) {
+                final Tile t = view.game.world.getTile(p).get();
+                t.building.ifPresent((Building b) -> player.buildings.add(b));
+                player.tiles++;
+            }
         });
-        t.building.ifPresent((Building b) -> b.handleLeaderChange(view, t.leader, op));
-        t.leader = op;
-        t.calculateBorders(this.world, true);
+
+        // Handle leader change for all Buildings in the domain
+        for (Point p : tower.domain.get()) {
+            final Tile t = view.game.world.getTile(p).get();
+            t.building.ifPresent((Building b) -> b.handleLeaderChange(view, tower.getLeader(), op));
+        }
+
+        // Set the Tower's leader
+        tower.setLeader(op);
+
+        // Recalculate borders for the domain's Tiles
+        for (Point p : tower.domain.get()) {
+            final Tile t = view.game.world.getTile(p).get();
+            t.calculateBorders(this.world, true);
+        }
     }
 
     /**
@@ -140,9 +162,8 @@ public class Game {
         u.getLeader().ifPresent((Player p) -> p.units.remove(u));
         op.ifPresent((Player p) -> p.units.add(u));
         u.getLeader().ifPresent((Player l) -> u.vision.remove(l, this.world));
-        u.leadership.setLeader(op);
+        u.setLeader(op);
         u.getLeader().ifPresent((Player l) -> u.vision.set(view, l, u, u.getPoint()));
-        this.setLeader(view, this.world.getTile(u.getPoint()).get(), op);
     }
 
     /**
@@ -205,9 +226,9 @@ public class Game {
         for (int a = 0; a < this.world.getWidth(); a++) {
             for (int b = 0; b < this.world.getHeight(); b++) {
                 if (this.world.getTile(a, b)
-                        .map((Tile t) -> t.leader.isPresent() && t.leader.get() == player && !t.unit.isPresent()
-                                && t.getGlyph().isPresent() && this.mechanics.pools.remaining(t.getGlyph().get()) > 0
-                                && !t.getObstacle()
+                        .map((Tile t) -> t.getLeader().isPresent() && t.getLeader().get() == player
+                                && !t.unit.isPresent() && t.getGlyph().isPresent()
+                                && this.mechanics.pools.remaining(t.getGlyph().get()) > 0 && !t.getObstacle()
                                 && !t.building.map((Building bldg) -> bldg.getObstacle()).orElse(false))
                         .orElse(false)) {
                     points.add(new Point(a, b));

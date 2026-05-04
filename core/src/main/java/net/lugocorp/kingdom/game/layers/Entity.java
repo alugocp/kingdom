@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.layers;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.game.properties.Leadership;
 import net.lugocorp.kingdom.game.properties.Vision;
 import net.lugocorp.kingdom.gameplay.combat.Combat;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
@@ -10,7 +11,8 @@ import java.util.Optional;
 /**
  * This class represents any physical object represented on the in-game map
  */
-public abstract class Entity extends DynamicModellable implements EventReceiver {
+public abstract class Entity extends DynamicModellable implements EventReceiver, Governable {
+    public final Leadership leadership = new Leadership(this);
     public final Vision vision = new Vision();
     public final Combat combat;
     public final String name;
@@ -51,9 +53,8 @@ public abstract class Entity extends DynamicModellable implements EventReceiver 
      */
     public abstract EntityType getEntityType();
 
-    /**
-     * Returns the Player that commands this Entity, if there is one
-     */
+    /** {@inheritdoc} */
+    @Override
     public abstract Optional<Player> getLeader();
 
     /** {@inheritdoc} */

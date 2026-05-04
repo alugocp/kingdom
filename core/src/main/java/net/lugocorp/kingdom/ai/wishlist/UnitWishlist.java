@@ -65,7 +65,7 @@ public class UnitWishlist extends Wishlist<Unit> {
         // TODO will be optimized by the upcomin towers mechanic
         final Set<Point> options = new HashSet<>();
         for (Tile t : view.game.world) {
-            if (t.leader.map((Player l) -> l.equals(player)).orElse(false) && !t.unit.isPresent()
+            if (t.getLeader().map((Player l) -> l.equals(player)).orElse(false) && !t.unit.isPresent()
                     && t.getGlyph().map((GlyphCategory gc) -> gc.contains(glyph)).orElse(false)) {
                 options.add(t.getPoint());
             }

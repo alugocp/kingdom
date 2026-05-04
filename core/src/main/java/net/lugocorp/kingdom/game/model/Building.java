@@ -67,7 +67,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public Optional<Player> getLeader() {
-        return this.getTile.get().leader;
+        return this.getTile.get().getLeader();
     }
 
     /**
@@ -124,7 +124,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
             if (t.unit.isPresent()) {
                 this.setAlpha(0.5f);
             }
-            t.leader.ifPresent((Player p) -> {
+            t.getLeader().ifPresent((Player p) -> {
                 this.vision.set(view, p, this, this.getPoint());
                 p.buildings.add(this);
             });
@@ -168,7 +168,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         final Optional<Player> leader = p.flatMap((Point p1) -> view.game.world.getTile(p1.x, p1.y))
-                .flatMap((Tile t) -> t.leader);
+                .flatMap((Tile t) -> t.getLeader());
         final RowNode node = new RowNode().setColumns(2);
         final ListNode col1 = new ListNode().add(new HeaderNode(view.av, this.name));
         final RowNode row = new RowNode();

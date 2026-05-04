@@ -48,9 +48,8 @@ public class NewUnit {
         final Set<Point> candidates = new HashSet<>();
         final Point center = CameraLogic.getCoordUnderScreenPoint(Coords.SIZE.x / 2, Coords.SIZE.y / 2);
         for (Point p : Hexagons.getNeighbors(center, 6)) {
-            if (view.game.world.getTile(p).map(
-                    (Tile t) -> !t.building.isPresent() && t.leader.map((Player p1) -> p1.equals(player)).orElse(false))
-                    .orElse(false)) {
+            if (view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()
+                    && t.getLeader().map((Player p1) -> p1.equals(player)).orElse(false)).orElse(false)) {
                 candidates.add(p);
             }
         }

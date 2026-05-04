@@ -1072,7 +1072,7 @@ public class VanillaMod implements GameMod {
                             if (receiver.isClaimedByPlayer(e.player)) {
                                 for (Point p : e.patron.getHostDomain(view).get()) {
                                     Tile t = view.game.world.getTile(p).get();
-                                    if (t.leader.map((Player p1) -> p1.equals(e.player)).orElse(false)
+                                    if (t.getLeader().map((Player p1) -> p1.equals(e.player)).orElse(false)
                                             && !t.unit.isPresent()) {
                                         e.favor++;
                                     }
@@ -1847,7 +1847,7 @@ public class VanillaMod implements GameMod {
                 }).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             Set<Point> mines = Lambda.filter((Point p) -> view.game.world.getTile(p)
-                                    .map((Tile t) -> !t.leader.equals(receiver.wielder.getLeader()) && t.building
+                                    .map((Tile t) -> !t.getLeader().equals(receiver.wielder.getLeader()) && t.building
                                             .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false)
                                             && t.unit.isPresent())
                                     .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
@@ -2603,12 +2603,10 @@ public class VanillaMod implements GameMod {
                             }
 
                             // Select a Tile to spawn the Unit on
-                            final Set<Point> points = Lambda.filter(
-                                    (Point p) -> view.game.world.getTile(p)
-                                            .map((Tile t) -> !t.unit.isPresent()
-                                                    && t.leader.equals(receiver.wielder.getLeader()))
-                                            .orElse(false),
-                                    Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
+                            final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                                    .map((Tile t) -> !t.unit.isPresent()
+                                            && t.getLeader().equals(receiver.wielder.getLeader()))
+                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
                                     (Point p) -> {
                                         return new SideEffect().add(() -> {
