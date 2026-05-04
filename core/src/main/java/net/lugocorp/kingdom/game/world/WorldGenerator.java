@@ -7,9 +7,11 @@ import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -113,9 +115,11 @@ public class WorldGenerator {
         progress.accept(60);
 
         // Place content (Players, Buildings, Patrons, and Glyphs) around the World
+        int towersSpawned = 0;
         int playersSpawned = 0;
         final int maxBuildings = buildingPoints.size();
         final Set<String> patrons = g.events.patron.getStratifiers();
+        final Set<Tower> towers = new HashSet<>();
         while (buildingPoints.size() > 0) {
             // Choose a Point to spawn the content
             final Point p = this.randomValue(r, buildingPoints);
@@ -128,9 +132,17 @@ public class WorldGenerator {
                 for (int a = 0; a < 5; a++) {
                     t.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
                 }
+                towers.add(t);
                 t.spawn(view);
                 g.getInitialUnit(view, player, p.x, p.y).spawn(view);
                 playersSpawned++;
+                towersSpawned++;
+            } else if (towersSpawned < worldGenOpts.size.towers) {
+                // Place remaining Towers with priority
+                final Tower t = g.generator.tower(p.x, p.y);
+                towers.add(t);
+                t.spawn(view);
+                towersSpawned++;
             } else {
                 // Spawn non-Player content
                 final int percent = r.nextInt(1000);
@@ -205,8 +217,35 @@ public class WorldGenerator {
             }
 
             // Update progress as we generate content
-            progress.accept(60 + (int) Math.floor(40 * (maxBuildings - buildingPoints.size()) / (float) maxBuildings));
+            progress.accept(60 + (int) Math.floor(20 * (maxBuildings - buildingPoints.size()) / (float) maxBuildings));
         }
+
+        // Calculate Tower Domains
+        final Point domainPoint = new Point(0, 0);
+        final Map<Tower, Set<Point>> domains = new HashMap<>();
+        for (Tower t : towers) {
+            domains.put(t, new HashSet<Point>());
+        }
+        for (int a = 0; a < worldGenOpts.size.w; a++) {
+            for (int b = 0; b < worldGenOpts.size.h; b++) {
+                Tower best = null;
+                int shortest = 0;
+                domainPoint.set(a, b);
+                for (Tower t : towers) {
+                    int dist = domainPoint.distance(t.getPoint());
+                    if (best == null || dist < shortest) {
+                        shortest = dist;
+                        best = t;
+                    }
+                }
+                domains.get(best).add(domainPoint.copy());
+            }
+            progress.accept(80 + (int) Math.floor(20 * a / (float) worldGenOpts.size.w));
+        }
+        for (Tower t : towers) {
+            t.domain.init(g.world, t, domains.get(t));
+        }
+
         progress.accept(100);
     }
 

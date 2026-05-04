@@ -2,10 +2,9 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.Domain;
 import net.lugocorp.kingdom.game.properties.EntityType;
-import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.gameplay.events.Event;
-import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
@@ -34,7 +33,6 @@ import java.util.function.Supplier;
 public class Patron extends Building {
     private static final int MIN_FAVOR = 1;
     private final Map<Player, Integer> favor = new HashMap<>();
-    private final Set<Point> domain = new HashSet<>();
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
     private Optional<Player> favorite = Optional.empty();
     private String preferenceIcon = "apple";
@@ -90,7 +88,9 @@ public class Patron extends Building {
         this.favorite = Optional.empty();
 
         // Count up favor from Units in this Patron's domain
-        for (Point p : this.domain) {
+        final Set<Point> domain = view.game.world.getTile(this.getPoint())
+                .map((Tile t) -> t.getDomainCenter().domain.get()).orElse(new HashSet<Point>());
+        for (Point p : domain) {
             final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
             if (!unit.flatMap((Unit u) -> u.getLeader()).isPresent()) {
                 continue;
@@ -141,29 +141,10 @@ public class Patron extends Building {
     }
 
     /**
-     * Sets up this Patron's domain
+     * Returns the Domain associated with this Patron's closest Tower
      */
-    private void initializeDomain(World world) {
-        Set<Point> domain = Hexagons.getNeighbors(this.getPoint(), 2);
-        for (Point p : domain) {
-            world.getTile(p).ifPresent((Tile t) -> t.addDomainBorder(
-                    Hexagons.getBorderInteger(p, (Point p1) -> !(domain.contains(p1) || p1.equals(this.getPoint())))));
-            this.domain.add(p);
-        }
-    }
-
-    /**
-     * Returns true if this Patron's domain includes the given Point
-     */
-    public boolean domainContains(Point p) {
-        return this.domain.contains(p);
-    }
-
-    /**
-     * Returns this Patron's domain
-     */
-    public Set<Point> getDomain() {
-        return this.domain;
+    public Domain getHostDomain(GameView view) {
+        return view.game.world.getTile(this.getPoint()).get().getDomainCenter().domain;
     }
 
     /** {@inheritdoc} */
@@ -190,7 +171,6 @@ public class Patron extends Building {
             t.building = Optional.of(this);
             t.setGlyph(Optional.empty());
         });
-        this.initializeDomain(view.game.world);
         this.handleEvent(view, new Events.SpawnEvent<Patron>(this)).execute();
     }
 

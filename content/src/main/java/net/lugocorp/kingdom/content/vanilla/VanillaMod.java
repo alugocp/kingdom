@@ -737,7 +737,7 @@ public class VanillaMod implements GameMod {
                 .add(Events.TakeDamageEvent.class, (GameView view, Artifact receiver, Events.TakeDamageEvent e) -> {
                     if (receiver.isClaimedByLeader(e.target) && e.target.isEntityType(EntityType.UNIT)) {
                         for (Patron p : view.game.mechanics.patronage) {
-                            if (p.domainContains(e.target.getPoint())) {
+                            if (p.getHostDomain(view).contains(e.target.getPoint())) {
                                 e.dmg.base -= 2;
                                 break;
                             }
@@ -1074,7 +1074,7 @@ public class VanillaMod implements GameMod {
                 .add(Events.CalculateFavorEvent.class,
                         (GameView view, Artifact receiver, Events.CalculateFavorEvent e) -> {
                             if (receiver.isClaimedByPlayer(e.player)) {
-                                for (Point p : e.patron.getDomain()) {
+                                for (Point p : e.patron.getHostDomain(view).get()) {
                                     Tile t = view.game.world.getTile(p).get();
                                     if (t.leader.map((Player p1) -> p1.equals(e.player)).orElse(false)
                                             && !t.unit.isPresent()) {

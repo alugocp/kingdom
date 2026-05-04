@@ -36,6 +36,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     private Optional<ModelInstance> placeholderBuildingModel = Optional.empty();
     private Optional<GlyphCategory> glyph = Optional.empty();
     private Color minimapColor = Color.BLACK;
+    private Tower domainCenter = null;
     private boolean obstacle = false;
     private boolean wave = false;
     public final String name;
@@ -70,6 +71,20 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     public void setGlyph(Optional<GlyphCategory> glyph) {
         this.glyph = this.building.isPresent() ? Optional.empty() : glyph;
         this.userData.glyph = this.glyph;
+    }
+
+    /**
+     * Returns the focal point for this Tile's domain
+     */
+    public Tower getDomainCenter() {
+        return this.domainCenter;
+    }
+
+    /**
+     * Sets the focal point for this Tile's domain
+     */
+    public void setDomainCenter(Tower tower) {
+        this.domainCenter = tower;
     }
 
     /**

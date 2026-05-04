@@ -51,6 +51,13 @@ public class Point {
         return new Point(this.x, this.y);
     }
 
+    /**
+     * Very coarse implementation of the distance formula between two Points
+     */
+    public int distance(Point p) {
+        return (int) Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2));
+    }
+
     /** {@inheritdoc} */
     @Override
     public String toString() {
