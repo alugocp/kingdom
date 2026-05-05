@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.GlyphCategory;
-import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
@@ -118,35 +117,34 @@ public class WorldGenerator {
 
         // Place content (Players, Buildings, Patrons, and Glyphs) around the World
         int towersSpawned = 0;
-        int playersSpawned = 0;
         final int maxBuildings = buildingPoints.size();
         final Set<String> patrons = g.events.patron.getStratifiers();
+        final Map<Player, Tower> playerSpawnPoints = new HashMap<>();
         while (buildingPoints.size() > 0) {
             // Choose a Point to spawn the content
             final Point p = this.randomValue(r, buildingPoints);
             buildingPoints.remove(p);
 
             // Place Players with priority
-            if (playersSpawned < g.getAllPlayers().size()) {
-                final Player player = playersSpawned == 0 ? g.human : g.comps.get(playersSpawned - 1);
+            if (playerSpawnPoints.size() < g.getAllPlayers().size()) {
+                final Player player = playerSpawnPoints.isEmpty() ? g.human : g.comps.get(playerSpawnPoints.size() - 1);
                 final Tower t = g.generator.tower(p.x, p.y);
                 for (int a = 0; a < 5; a++) {
                     t.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
                 }
+                playerSpawnPoints.put(player, t);
                 g.towers.add(t);
-                t.spawn(view);
-                g.getInitialUnit(view, player, p.x, p.y).spawn(view);
-                playersSpawned++;
                 towersSpawned++;
-                if (playersSpawned == g.getAllPlayers().size()) {
-                    this.calculateTowerDomains(g, worldGenOpts);
-                }
             } else if (towersSpawned < worldGenOpts.size.towers) {
                 // Place remaining Towers with priority
                 final Tower t = g.generator.tower(p.x, p.y);
                 g.towers.add(t);
-                t.spawn(view);
-                towersSpawned++;
+                if (++towersSpawned == worldGenOpts.size.towers) {
+                    this.calculateTowerDomains(g, worldGenOpts);
+                    for (Tower tower : g.towers) {
+                        tower.spawn(view);
+                    }
+                }
             } else {
                 // Spawn non-Player content
                 final int percent = r.nextInt(1000);
@@ -225,9 +223,13 @@ public class WorldGenerator {
         }
 
         // Set leadership for Players' initial Towers
-        for (Tower tower : g.towers) {
-            final Tile tile = g.world.getTile(tower.getPoint()).get();
-            tile.unit.ifPresent((Unit u) -> g.setLeader(view, tower, u.getLeader()));
+        for (Map.Entry<Player, Tower> e : playerSpawnPoints.entrySet()) {
+            final Player player = e.getKey();
+            final Tower tower = e.getValue();
+            final Point p = tower.getPoint();
+            final Unit u = g.getInitialUnit(view, player, p.x, p.y);
+            u.spawn(view);
+            g.setLeader(view, tower, player);
         }
 
         progress.accept(100);
