@@ -169,7 +169,6 @@ public class Patron extends Building {
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
-            t.setGlyph(Optional.empty());
         });
         this.handleEvent(view, new Events.SpawnEvent<Patron>(this)).execute();
     }

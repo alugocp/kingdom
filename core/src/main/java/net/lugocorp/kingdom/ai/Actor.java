@@ -4,7 +4,6 @@ import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
 import net.lugocorp.kingdom.ai.goals.AttackEnemy;
-import net.lugocorp.kingdom.ai.goals.ClaimGlyphs;
 import net.lugocorp.kingdom.ai.goals.ExploreMap;
 import net.lugocorp.kingdom.ai.goals.HarvestFood;
 import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
@@ -32,7 +31,6 @@ public class Actor {
     public Actor() {
         // These Goals should never be removed
         this.goals.add(new ExploreMap());
-        this.goals.add(new ClaimGlyphs());
         this.goals.add(new IncreaseUnitPoints());
         this.goals.add(new HarvestFood());
     }

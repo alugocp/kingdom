@@ -1,15 +1,10 @@
 package net.lugocorp.kingdom.engine.userdata;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import com.badlogic.gdx.graphics.Color;
-import java.util.Optional;
 
 /**
  * Data for Tile's userData field
  */
 public class TileUserData {
-
-    // Displays a faint glowing Glyph on the top face
-    public Optional<GlyphCategory> glyph = Optional.empty();
 
     // Adds a wave effect to the top face texture
     public boolean wave = false;

@@ -9,8 +9,6 @@ precision mediump float;
 #else
 #define MED
 #endif
-uniform bool u_includeGlyphTexture;
-uniform sampler2D u_glyphTexture;
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_pathTexture1;
 uniform sampler2D u_pathTexture2;
@@ -181,19 +179,6 @@ void main() {
         gl_FragColor = vec4(0.25, 0.25, 0.25, 1.0);
     }
     gl_FragColor.a *= u_opacity;
-
-    // Glyph texture logic
-    if (u_vision > NO_VISIBILITY && isTopFace && u_includeGlyphTexture) {
-        float diff = 0.0;
-        float beat = 0.07 * abs(mod(u_timer, 3000.0) - 1500.0) / 1500.0;
-        vec4 glyph = texture2D(u_glyphTexture, v_diffuseUV);
-        if (glyph.x > 0.0) {
-            diff = 0.1;
-        }
-        gl_FragColor.x -= (gl_FragColor.x * glyph.x * beat) + diff;
-        gl_FragColor.y -= (gl_FragColor.y * glyph.y * beat) + diff;
-        gl_FragColor.z -= (gl_FragColor.z * glyph.z * beat) + diff;
-    }
 
     // Tile selection logic
     if (u_hovered > 0) {

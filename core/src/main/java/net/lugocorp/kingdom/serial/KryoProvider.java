@@ -36,7 +36,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.ai.action.Plan.class);
         kryo.register(net.lugocorp.kingdom.ai.action.PlanNode.class);
         kryo.register(net.lugocorp.kingdom.ai.goals.AttackEnemy.class);
-        kryo.register(net.lugocorp.kingdom.ai.goals.ClaimGlyphs.class);
         kryo.register(net.lugocorp.kingdom.ai.goals.ExploreMap.class);
         kryo.register(net.lugocorp.kingdom.ai.goals.HarvestFood.class);
         kryo.register(net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints.class);
@@ -114,7 +113,6 @@ public class KryoProvider {
         // net.lugocorp.kingdom.game
         kryo.register(net.lugocorp.kingdom.game.Game.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.Glyph.class);
-        kryo.register(net.lugocorp.kingdom.game.glyph.GlyphCategory.class);
         kryo.register(net.lugocorp.kingdom.game.glyph.UnitGlyphs.class);
         kryo.register(net.lugocorp.kingdom.game.layers.DummyUnit.class);
         kryo.register(net.lugocorp.kingdom.game.layers.Entity.class);

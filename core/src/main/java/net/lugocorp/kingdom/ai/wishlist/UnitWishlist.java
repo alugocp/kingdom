@@ -3,16 +3,12 @@ import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Ability;
-import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
-import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -62,14 +58,7 @@ public class UnitWishlist extends Wishlist<Unit> {
      */
     public Optional<Point> getSpawnPoint(GameView view, CompPlayer player, Glyph glyph) {
         // TODO make smarter spawn code based on what the AI will do with this unit
-        // TODO will be optimized by the upcomin towers mechanic
-        final Set<Point> options = new HashSet<>();
-        for (Tile t : view.game.world) {
-            if (t.getLeader().map((Player l) -> l.equals(player)).orElse(false) && !t.unit.isPresent()
-                    && t.getGlyph().map((GlyphCategory gc) -> gc.contains(glyph)).orElse(false)) {
-                options.add(t.getPoint());
-            }
-        }
+        final Set<Point> options = view.game.getRecruitmentTiles(player);
         return options.size() > 0 ? Optional.of(Lambda.random(options)) : Optional.empty();
     }
 }

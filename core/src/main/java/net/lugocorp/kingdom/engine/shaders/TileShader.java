@@ -33,7 +33,6 @@ public class TileShader implements Shader {
     private int u_projViewTrans;
     private int u_worldTrans;
     private int u_normalMatrix;
-    private int u_includeGlyphTexture;
     private int u_pathTexture1;
     private int u_pathTexture2;
     private int u_pathDotTexture;
@@ -45,7 +44,6 @@ public class TileShader implements Shader {
     private int u_borderTextureExt3;
     private int u_borderTextureExt4;
     private int u_borderTextureExt42;
-    private int u_glyphTexture;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
     private int u_diffuseColor;
@@ -76,7 +74,6 @@ public class TileShader implements Shader {
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
         this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
-        this.u_includeGlyphTexture = this.program.getUniformLocation("u_includeGlyphTexture");
         this.u_borderTexture1 = this.program.getUniformLocation("u_borderTexture1");
         this.u_borderTexture2 = this.program.getUniformLocation("u_borderTexture2");
         this.u_pathTexture1 = this.program.getUniformLocation("u_pathTexture1");
@@ -88,7 +85,6 @@ public class TileShader implements Shader {
         this.u_borderTexture4 = this.program.getUniformLocation("u_borderTexture4");
         this.u_borderTextureExt4 = this.program.getUniformLocation("u_borderTextureExt4");
         this.u_borderTextureExt42 = this.program.getUniformLocation("u_borderTextureExt42");
-        this.u_glyphTexture = this.program.getUniformLocation("u_glyphTexture");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
@@ -167,7 +163,6 @@ public class TileShader implements Shader {
             this.program.setUniformi(this.u_option, data.option ? 1 : 0);
             this.program.setUniformf(this.u_borderColor, data.borderColor);
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
-            this.program.setUniformi(this.u_includeGlyphTexture, 0);
             this.program.setUniformi(this.u_movePath, 0);
             this.program.setUniformi(this.u_pathLabel, 0);
             this.program.setUniformi(this.u_domainBorderExtension, 0);
@@ -182,15 +177,6 @@ public class TileShader implements Shader {
                     this.program.setUniformi(this.u_diffuseTexture, this.context.textureBinder.bind(desc.get()));
                 } else {
                     this.program.setUniformi(this.u_blackout, 1);
-                }
-            }
-
-            // Glyph texture
-            if (this.textures.isPresent() && data.glyph.isPresent()) {
-                Optional<TextureDescriptor> tdesc = this.textures.get().getTextureDescriptor(data.glyph.get().icon);
-                if (tdesc.isPresent()) {
-                    this.program.setUniformi(this.u_includeGlyphTexture, 1);
-                    this.program.setUniformi(this.u_glyphTexture, this.context.textureBinder.bind(tdesc.get()));
                 }
             }
 
@@ -265,7 +251,6 @@ public class TileShader implements Shader {
             this.program.setUniformi(this.u_movePath, 0);
             this.program.setUniformi(this.u_pathLabel, 0);
             this.program.setUniformi(this.u_vision, 2);
-            this.program.setUniformi(this.u_includeGlyphTexture, 0);
             this.program.setUniformi(this.u_blackout, 0);
         }
 

@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.userdata.TileUserData;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.layers.Governable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
@@ -15,7 +14,6 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
-import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.TabsNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
@@ -35,7 +33,6 @@ import java.util.Optional;
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject, Spawnable, Governable {
     private final TileUserData userData = new TileUserData();
     private Optional<ModelInstance> placeholderBuildingModel = Optional.empty();
-    private Optional<GlyphCategory> glyph = Optional.empty();
     private Color minimapColor = Color.BLACK;
     private Tower domainCenter = null;
     private boolean obstacle = false;
@@ -56,21 +53,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     public Tile() {
         super(0, 0);
         this.name = null;
-    }
-
-    /**
-     * Returns this Tile's GlyphCategory
-     */
-    public Optional<GlyphCategory> getGlyph() {
-        return this.glyph;
-    }
-
-    /**
-     * Sets this Tile's GlyphCategory
-     */
-    public void setGlyph(Optional<GlyphCategory> glyph) {
-        this.glyph = this.building.isPresent() ? Optional.empty() : glyph;
-        this.userData.glyph = this.glyph;
     }
 
     /**
@@ -258,9 +240,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
 
         // Instantiate the Tile MenuNodes
         final ListNode tileNodes = new ListNode().add(new HeaderNode(view.av, this.name));
-        if (this.glyph.isPresent()) {
-            tileNodes.add(new GlyphIconsNode(view.av, this.glyph.get()));
-        }
         if (this.getLeader().isPresent()) {
             tileNodes.add(new PlayerBadgeNode(view.av, this.getLeader().get()));
         }

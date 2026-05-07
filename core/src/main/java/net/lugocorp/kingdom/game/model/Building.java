@@ -120,7 +120,6 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
-            t.setGlyph(Optional.empty());
             if (t.unit.isPresent()) {
                 this.setAlpha(0.5f);
             }

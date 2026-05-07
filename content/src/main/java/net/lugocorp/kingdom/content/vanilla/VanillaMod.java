@@ -9,7 +9,6 @@ import net.lugocorp.kingdom.content.Defs;
 import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
 import net.lugocorp.kingdom.game.glyph.Glyph;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Artifact;
@@ -763,25 +762,25 @@ public class VanillaMod implements GameMod {
                 });
 
         // Tome of Morun
-        new Stratified<Artifact>(events.artifact, Labels.artifact_tome_of_morun).add(Events.GenerateArtifactEvent.class,
-                (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
-                    e.blob.desc = "20% chance to spawn a glyph when your units kill an enemy";
-                    e.blob.image = Optional.of(Labels.asset_tome_of_morun);
-                    return new SideEffect();
-                }).add(Events.ArtifactClaimedEvent.class,
-                        (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            view.game.events.signals.addListener(Events.EntityDiedEvent.class, e.artifact);
-                            return new SideEffect();
-                        })
-                .add(Events.EntityDiedEvent.class, (GameView view, Artifact receiver, Events.EntityDiedEvent e) -> {
-                    if (receiver.isClaimedByLeader(e.killer) && !receiver.isClaimedByLeader(e.target)) {
-                        Tile t = view.game.world.getTile(e.killer.getPoint()).get();
-                        if (!t.getGlyph().isPresent() && Lambda.chance(20)) {
-                            t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class)));
-                        }
-                    }
-                    return new SideEffect();
-                });
+        // TODO completely rework the Tome of Morun
+        /*
+         * new Stratified<Artifact>(events.artifact,
+         * Labels.artifact_tome_of_morun).add(Events.GenerateArtifactEvent.class,
+         * (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+         * e.blob.desc = "20% chance to spawn a glyph when your units kill an enemy";
+         * e.blob.image = Optional.of(Labels.asset_tome_of_morun); return new
+         * SideEffect(); }).add(Events.ArtifactClaimedEvent.class, (GameView view,
+         * Artifact receiver, Events.ArtifactClaimedEvent e) -> {
+         * view.game.events.signals.addListener(Events.EntityDiedEvent.class,
+         * e.artifact); return new SideEffect(); }) .add(Events.EntityDiedEvent.class,
+         * (GameView view, Artifact receiver, Events.EntityDiedEvent e) -> { if
+         * (receiver.isClaimedByLeader(e.killer) &&
+         * !receiver.isClaimedByLeader(e.target)) { Tile t =
+         * view.game.world.getTile(e.killer.getPoint()).get(); if
+         * (!t.getGlyph().isPresent() && Lambda.chance(20)) {
+         * t.setGlyph(Optional.of(Lambda.random(Glyph/Category.class))); } } return new
+         * SideEffect(); });
+         */
 
         // Orb of Nerketo
         new Stratified<Artifact>(events.artifact, Labels.artifact_orb_of_nerketo)
@@ -971,28 +970,25 @@ public class VanillaMod implements GameMod {
                 });
 
         // Poda's Elixir
-        new Stratified<Artifact>(events.artifact, Labels.artifact_podas_elixir).add(Events.GenerateArtifactEvent.class,
-                (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
-                    e.blob.desc = "15% chance refresh a glyph when you recruit a unit";
-                    e.blob.image = Optional.of(Labels.asset_podas_elixir);
-                    e.blob.chips = 2;
-                    return new SideEffect();
-                }).add(Events.ArtifactClaimedEvent.class,
-                        (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            return new SideEffect().add(
-                                    () -> view.game.events.signals.addListener(Events.SpawnEvent.class, e.artifact));
-                        })
-                .add(Events.SpawnEvent.class, (GameView view, Artifact receiver, Events.SpawnEvent e) -> {
-                    if (e.spawned instanceof Unit) {
-                        Unit u = (Unit) e.spawned;
-                        Tile t = view.game.world.getTile(u.getPoint()).get();
-                        if (receiver.isClaimedByLeader(u) && !t.getGlyph().isPresent() && Lambda.chance(15)) {
-                            return new SideEffect()
-                                    .add(() -> t.setGlyph(Optional.of(Lambda.random(GlyphCategory.class))));
-                        }
-                    }
-                    return new SideEffect();
-                });
+        // TODO completely rework Poda's Elixir
+        /*
+         * new Stratified<Artifact>(events.artifact,
+         * Labels.artifact_podas_elixir).add(Events.GenerateArtifactEvent.class,
+         * (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+         * e.blob.desc = "15% chance refresh a glyph when you recruit a unit";
+         * e.blob.image = Optional.of(Labels.asset_podas_elixir); e.blob.chips = 2;
+         * return new SideEffect(); }).add(Events.ArtifactClaimedEvent.class, (GameView
+         * view, Artifact receiver, Events.ArtifactClaimedEvent e) -> { return new
+         * SideEffect().add( () ->
+         * view.game.events.signals.addListener(Events.SpawnEvent.class, e.artifact));
+         * }) .add(Events.SpawnEvent.class, (GameView view, Artifact receiver,
+         * Events.SpawnEvent e) -> { if (e.spawned instanceof Unit) { Unit u = (Unit)
+         * e.spawned; Tile t = view.game.world.getTile(u.getPoint()).get(); if
+         * (receiver.isClaimedByLeader(u) && !t.getGlyph().isPresent() &&
+         * Lambda.chance(15)) { return new SideEffect() .add(() ->
+         * t.setGlyph(Optional.of(Lambda.random(Glyph/Category.class)))); } } return new
+         * SideEffect(); });
+         */
 
         // Gaia's Effigy
         new Stratified<Artifact>(events.artifact, Labels.artifact_gaias_effigy).add(Events.GenerateArtifactEvent.class,

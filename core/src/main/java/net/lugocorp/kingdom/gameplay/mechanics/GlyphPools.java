@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.layers.DummyUnit;
 import net.lugocorp.kingdom.game.model.Unit;
 import java.util.ArrayList;
@@ -49,18 +48,6 @@ public class GlyphPools {
      */
     public int remaining(Glyph g) {
         return this.pools.get(g).size();
-    }
-
-    /**
-     * Calls into the other remaining() method for each Glyph in the given
-     * GlyphCategory
-     */
-    public int remaining(GlyphCategory g) {
-        int sum = 0;
-        for (int a = 0; a < g.glyphs.length; a++) {
-            sum += this.remaining(g.glyphs[a]);
-        }
-        return sum;
     }
 
     /**

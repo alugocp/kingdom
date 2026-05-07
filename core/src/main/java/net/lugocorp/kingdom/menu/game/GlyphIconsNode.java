@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.game.glyph.Glyph;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
@@ -30,10 +29,6 @@ public class GlyphIconsNode implements MenuNode {
             this.labels[a] = new TextNode(av, String.format("%s glyph", glyphs[a].toString()));
             this.popups[a] = new MenuPopup();
         }
-    }
-
-    public GlyphIconsNode(AudioVideo av, GlyphCategory gc) {
-        this(av, gc.glyphs);
     }
 
     /**

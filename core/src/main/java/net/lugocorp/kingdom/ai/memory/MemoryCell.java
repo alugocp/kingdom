@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.ai.memory;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.player.Player;
 import java.util.Optional;
 
@@ -7,7 +6,6 @@ import java.util.Optional;
  * This class details what our MemoryMap "remembers" about each Tile
  */
 public class MemoryCell {
-    Optional<GlyphCategory> glyph = Optional.empty();
     Optional<String> building = Optional.empty();
     Optional<Player> owner = Optional.empty();
     Optional<String> unit = Optional.empty();
@@ -40,13 +38,6 @@ public class MemoryCell {
      */
     public Optional<String> getBuilding() {
         return this.building;
-    }
-
-    /**
-     * Returns this MemoryCell's GlyphCategory
-     */
-    public Optional<GlyphCategory> getGlyph() {
-        return this.glyph;
     }
 
     /**

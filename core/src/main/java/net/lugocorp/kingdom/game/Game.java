@@ -17,6 +17,7 @@ import net.lugocorp.kingdom.gameplay.actions.ActionManager;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.future.FutureEventManager;
 import net.lugocorp.kingdom.gameplay.mechanics.Mechanics;
+import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -214,24 +215,24 @@ public class Game {
 
     /**
      * Returns the Points where the Player can recruit a new Unit. The Tiles at
-     * these Points all have the following properties: 1) Is under the control of
-     * the Player in question, 2) Has a glyph associated with it, 3) Is not occupied
-     * by another Unit, 4) The associated glyph has units in its pool, 5) The Tile
-     * is not an obstacle, 6) If there is a building on the Tile then it is not an
-     * obstacle either
+     * these Points all have the following properties: 1) Is on or adjacent to an
+     * aligned Tower 2) Is not occupied by another Unit, 3) The Tile is not an
+     * obstacle, 4) If there is a building on the Tile then it is not an obstacle
+     * either
      */
     public Set<Point> getRecruitmentTiles(Player player) {
-        // TODO will be optimized by the upcomin towers mechanic
-        Set<Point> points = new HashSet<>();
-        for (int a = 0; a < this.world.getWidth(); a++) {
-            for (int b = 0; b < this.world.getHeight(); b++) {
-                if (this.world.getTile(a, b)
-                        .map((Tile t) -> t.getLeader().isPresent() && t.getLeader().get() == player
-                                && !t.unit.isPresent() && t.getGlyph().isPresent()
-                                && this.mechanics.pools.remaining(t.getGlyph().get()) > 0 && !t.getObstacle()
+        final Set<Point> points = new HashSet<>();
+        for (Tower tower : this.towers) {
+            if (!tower.leadership.belongsToPlayer(player)) {
+                continue;
+            }
+            final Set<Point> candidates = Hexagons.getNeighbors(tower.getPoint(), 1);
+            for (Point p : candidates) {
+                if (this.world.getTile(p)
+                        .map((Tile t) -> !t.unit.isPresent() && !t.getObstacle()
                                 && !t.building.map((Building bldg) -> bldg.getObstacle()).orElse(false))
                         .orElse(false)) {
-                    points.add(new Point(a, b));
+                    points.add(p.copy());
                 }
             }
         }

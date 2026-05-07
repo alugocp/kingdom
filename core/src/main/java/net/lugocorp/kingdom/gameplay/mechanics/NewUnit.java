@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.projection.CameraLogic;
 import net.lugocorp.kingdom.game.glyph.Glyph;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
@@ -103,31 +102,23 @@ public class NewUnit {
      * Returns the Menu to handle new Unit selection
      */
     private Menu getUnitSelectionMenu(GameView view, Point p) {
-        // Retrieve the selected Tile's GlyphCategory. This should exist (as per the
-        // definition of view.game.getRecruitmentTiles()) so if we hit this error then
-        // something is wrong.
-        Optional<GlyphCategory> category = view.game.world.getTile(p).flatMap((Tile t) -> t.getGlyph());
-        if (!category.isPresent()) {
-            throw new RuntimeException("Attempt to recruit onto a tile without a glyph");
-        }
-
-        // Create the Menu content for Glyph selection
-        ListNode node = new ListNode().add(new RowNode()
+        final Glyph[] glyphs = Glyph.values();
+        final ListNode node = new ListNode().add(new RowNode()
                 .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
                 .add(new HeaderNode(view.av, "Recruit New Unit").center())
                 .add(new HelperNode(view.av,
                         "Glyphs are general categories that units fall under. They help narrow down your search when recruiting a new unit. A unit can have either one or two glyphs. Tiles also have glyphs - the tile you selected determines the glyphs that appear in this screen. The sword (combat glyphs) means battle, defense, and healing. The hammer (worker glyphs) means nature, mining and trade."))
                 .add(new ButtonNode(view.av, "Recruit a unit next turn instead", () -> view.hud.popups.complete())))
                 .add(new SpacerNode());
-        RowNode glyphs = new RowNode().setColumns(category.get().glyphs.length);
-        RowNode badges = new RowNode().setColumns(category.get().glyphs.length);
-        RowNode descs = new RowNode().setColumns(category.get().glyphs.length);
-        RowNode buttons = new RowNode().setColumns(category.get().glyphs.length);
-        for (int a = 0; a < category.get().glyphs.length; a++) {
-            final Glyph glyph = category.get().glyphs[a];
+        final RowNode names = new RowNode().setColumns(glyphs.length);
+        final RowNode badges = new RowNode().setColumns(glyphs.length);
+        final RowNode descs = new RowNode().setColumns(glyphs.length);
+        final RowNode buttons = new RowNode().setColumns(glyphs.length);
+        for (int a = 0; a < glyphs.length; a++) {
+            final Glyph glyph = glyphs[a];
             final String desc = String.format("%s (%d / %d remaining)", this.getGlyphDescription(glyph),
                     view.game.mechanics.pools.remaining(glyph), view.game.mechanics.pools.total(glyph));
-            glyphs.add(new HeaderNode(view.av, glyph.toString()).center());
+            names.add(new HeaderNode(view.av, glyph.toString()).center());
             badges.add(new GlyphBadgeNode(view.av, glyph));
             descs.add(new TextNode(view.av, desc));
             buttons.add(new ButtonNode(view.av, "Choose", () -> {
@@ -135,7 +126,7 @@ public class NewUnit {
                 view.hud.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
             }).enable(view.game.mechanics.pools.remaining(glyph) > 0));
         }
-        node.add(glyphs);
+        node.add(names);
         node.add(badges);
         node.add(descs);
         node.add(buttons);
@@ -187,7 +178,6 @@ public class NewUnit {
                 // view.game.getRecruitmentTiles()
                 throw new RuntimeException("Cannot recruit onto an occupied tile");
             }
-            t.setGlyph(Optional.empty());
             p.addUnitPoints(view, -NewUnit.MAX_UNIT_POINTS);
             view.game.setLeader(view, u, p);
             u.spawn(view);

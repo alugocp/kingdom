@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.glyph.GlyphCategory;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
@@ -153,19 +152,16 @@ public class WorldGenerator {
                     final String patron = this.randomValue(r, patrons);
                     g.generator.patron(patron, p.x, p.y).spawn(view);
                     patrons.remove(patron);
-                } else if (percent <= 450) {
-                    // Spawn a Glyph (40% chance)
-                    g.world.getTile(p).get().setGlyph(Optional.of(this.randomValue(r, GlyphCategory.values())));
-                } else if (percent <= 453) {
+                } else if (percent <= 53) {
                     // Spawn a Vault (0.3% chance)
                     g.generator.building("Vault", p.x, p.y).spawn(view);
-                } else if (percent <= 456) {
+                } else if (percent <= 56) {
                     // Spawn a Mine (0.3% chance)
                     g.generator.building("Mine", p.x, p.y).spawn(view);
-                } else if (percent <= 458) {
+                } else if (percent <= 58) {
                     // Spawn a Healing Fountain (0.2% chance)
                     g.generator.building("Healing Fountain", p.x, p.y).spawn(view);
-                } else if (percent <= 508) {
+                } else if (percent <= 108) {
                     // Spawn a Building (5% chance)
                     final String terrain = g.world.getTile(p.x, p.y).get().name;
                     Optional<String> building = Optional.empty();

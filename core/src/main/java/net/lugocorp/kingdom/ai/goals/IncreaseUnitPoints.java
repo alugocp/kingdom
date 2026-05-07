@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import java.util.Optional;
 import java.util.Set;
+// TODO rework or remove this one entirely? The towers mechanic makes this obsolete
 
 /**
  * This class tells the Actor to claim Tiles without a Building (so the Player
