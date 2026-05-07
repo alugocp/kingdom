@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.world;
+import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -129,7 +130,7 @@ public class WorldGenerator {
                 final Player player = playerSpawnPoints.isEmpty() ? g.human : g.comps.get(playerSpawnPoints.size() - 1);
                 final Tower t = g.generator.tower(p.x, p.y);
                 for (int a = 0; a < 5; a++) {
-                    t.items.ifPresent((Inventory i) -> i.add(g.generator.item("Apple")));
+                    t.items.ifPresent((Inventory i) -> i.add(g.generator.item(Labels.item_apple)));
                 }
                 playerSpawnPoints.put(player, t);
                 g.towers.add(t);
@@ -154,13 +155,13 @@ public class WorldGenerator {
                     patrons.remove(patron);
                 } else if (percent <= 53) {
                     // Spawn a Vault (0.3% chance)
-                    g.generator.building("Vault", p.x, p.y).spawn(view);
+                    g.generator.building(Labels.building_vault, p.x, p.y).spawn(view);
                 } else if (percent <= 56) {
                     // Spawn a Mine (0.3% chance)
                     g.generator.building("Mine", p.x, p.y).spawn(view);
                 } else if (percent <= 58) {
                     // Spawn a Healing Fountain (0.2% chance)
-                    g.generator.building("Healing Fountain", p.x, p.y).spawn(view);
+                    g.generator.building(Labels.building_healing_fountain, p.x, p.y).spawn(view);
                 } else if (percent <= 108) {
                     // Spawn a Building (5% chance)
                     final String terrain = g.world.getTile(p.x, p.y).get().name;
@@ -169,28 +170,28 @@ public class WorldGenerator {
 
                     // Forests/Meadows on Grass Tiles
                     if (terrain.equals(Biome.GRASS.terrain)) {
-                        building = Optional.of(r.nextBoolean() ? "Forest" : "Meadow");
+                        building = Optional.of(r.nextBoolean() ? Labels.building_forest : Labels.building_meadow);
                         radiusRange = 3;
                     }
 
                     // Oasis/Shrubland on Sand Tiles
                     if (terrain.equals(Biome.SAND.terrain)) {
                         if (r.nextBoolean()) {
-                            building = Optional.of("Shrubland");
+                            building = Optional.of(Labels.building_shrubland);
                             radiusRange = 2;
                         } else {
-                            building = Optional.of("Oasis");
+                            building = Optional.of(Labels.building_oasis);
                         }
                     }
 
                     // Taiga on Snow Tiles
                     if (terrain.equals(Biome.SNOW.terrain)) {
-                        building = Optional.of("Taiga");
+                        building = Optional.of(Labels.building_taiga);
                     }
 
                     // Mountains on Rock Tiles
                     if (terrain.equals(Biome.ROCK.terrain)) {
-                        building = Optional.of("Mountain");
+                        building = Optional.of(Labels.building_mountain);
                     }
 
                     // Actually spawn the Buildings if one was selected
@@ -205,8 +206,8 @@ public class WorldGenerator {
                         }
 
                         // Spawn the central Building (or water if the Building is an Oasis)
-                        if (building.get().equals("Oasis")) {
-                            g.generator.tile("Water", p.x, p.y).spawn(view);
+                        if (building.get().equals(Labels.building_oasis)) {
+                            g.generator.tile(Labels.tile_water, p.x, p.y).spawn(view);
                         } else {
                             g.generator.building(building.get(), p.x, p.y).spawn(view);
                         }
