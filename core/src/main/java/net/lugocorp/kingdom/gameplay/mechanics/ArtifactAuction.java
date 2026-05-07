@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.math.Coords;
@@ -133,6 +134,20 @@ public class ArtifactAuction {
     }
 
     /**
+     * Returns a set of Units that have Items to bid
+     */
+    public Set<Point> getBidderUnits(Player player) {
+        return Lambda.map((Unit u) -> u.getPoint(), Lambda.filter((Unit u) -> u.haul.hasItems(), player.units));
+    }
+
+    /**
+     * Returns the estimated bidding value at the given Point
+     */
+    public int getBidValueAtPoint(World world, Point p) {
+        return world.getTile(p).flatMap((Tile t) -> t.unit).map((Unit u) -> u.haul.getTotalGold()).orElse(0);
+    }
+
+    /**
      * Instantiates the Menu that allows a human Player to participate in an auction
      */
     public Menu getAuctionBuyInMenu(GameView view) {
@@ -142,8 +157,8 @@ public class ArtifactAuction {
                 .add(new HeaderNode(view.av, "Artifact Auction"))
                 .add(new TextNode(view.av, String.format("Pay %d gold to participate in the auction?", price)))
                 .add(new RowNode().add(new ButtonNode(view.av, "Yes", () -> {
-                    String error = "You have no vaults with items to bargain with";
-                    Set<Point> vaults = view.game.getVaultBuildings(view.game.human);
+                    String error = "You have no units with items to bargain with";
+                    Set<Point> vaults = this.getBidderUnits(view.game.human);
                     if (vaults.size() == 0) {
                         this.auction.get().doNotAddBidder();
                         view.hud.logger.error(error);
@@ -151,7 +166,7 @@ public class ArtifactAuction {
                         return;
                     }
                     view.hud.popups.setDisplay(false);
-                    view.hud.logger.log("Please select a vault with items to bid");
+                    view.hud.logger.log("Please select a unit with items to bid");
                     view.selector.select(vaults, error, (Point p) -> {
                         this.auction.get().addBidder(view.game.human, p);
                         view.game.human.gold -= price;
@@ -171,7 +186,7 @@ public class ArtifactAuction {
     public Menu getFollowUpMenu(GameView view, boolean firstIteration) {
         // Determine who won the Auction if this is the first iteration of the window
         if (firstIteration) {
-            final Optional<Player> winner = this.auction.get().getWinner(view.game.world, this.random);
+            final Optional<Player> winner = this.auction.get().getWinner(view.game, this.random);
             final boolean humanPlayerWon = winner.map((Player p) -> p.isHumanPlayer()).orElse(false);
             for (Player p : view.game.getAllPlayers()) {
                 if (winner.map((Player p1) -> p.equals(p1)).orElse(false)) {
@@ -179,6 +194,7 @@ public class ArtifactAuction {
                 } else {
                     p.getFate().handleEvent(view, new Events.LostAuctionEvent(p)).execute();
                 }
+                // TODO remove all Items from the bidding Units' hauls
             }
             if (humanPlayerWon) {
                 view.game.human.auctionChips++;

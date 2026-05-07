@@ -1,9 +1,8 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.math.Point;
 import java.util.HashMap;
@@ -64,25 +63,25 @@ public class Auction {
     }
 
     /**
-     * Returns the total worth of all the Items in the bidder's auctioned Building
+     * Returns the total worth of all the Items in the bidder's auctioned Unit haul
      * (if any)
      */
     private int getBidValue(World world, Player bidder) {
-        return world.getTile(this.bids.get(bidder)).flatMap((Tile t) -> t.building).flatMap((Building b) -> b.items)
-                .map((Inventory i) -> i.getTotalGold()).orElse(0);
+        return world.getTile(this.bids.get(bidder)).flatMap((Tile t) -> t.unit).map((Unit u) -> u.haul.getTotalGold())
+                .orElse(0);
     }
 
     /**
      * Retrieves the winner of this Auction
      */
-    Optional<Player> getWinner(World world, Random random) {
+    Optional<Player> getWinner(Game game, Random random) {
         if (this.bids.size() == 0) {
             return Optional.empty();
         }
         final Set<Player> winners = new HashSet<>();
         int maxBid = 0;
         for (Player bidder : this.bids.keySet()) {
-            int bid = this.getBidValue(world, bidder);
+            int bid = game.mechanics.auction.getBidValueAtPoint(game.world, this.bids.get(bidder));
             if (bid > maxBid) {
                 maxBid = bid;
                 winners.clear();

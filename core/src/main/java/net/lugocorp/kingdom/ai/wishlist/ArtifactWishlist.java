@@ -1,10 +1,7 @@
 package net.lugocorp.kingdom.ai.wishlist;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.game.model.Artifact;
-import net.lugocorp.kingdom.game.model.Building;
-import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.CompPlayer;
-import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.gameplay.mechanics.ArtifactAuction;
 import net.lugocorp.kingdom.gameplay.mechanics.Auction;
 import net.lugocorp.kingdom.math.Point;
@@ -43,9 +40,9 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
         this.setOptions(view.game.mechanics.auction.getArtifacts());
         this.wanted = this.getDesiredOptions().getMostWanted();
 
-        // Check which vault Building we should bid with
+        // Check which Unit we should bid with
         if (this.wanted.isPresent()) {
-            for (Point p : this.view.game.getVaultBuildings(player)) {
+            for (Point p : view.game.mechanics.auction.getBidderUnits(player)) {
                 if (this.shouldBidWithVault(this.wanted.get(), p)) {
                     this.view.game.mechanics.auction.getAuction().ifPresent((Auction a) -> a.addBidder(player, p));
                     return;
@@ -89,8 +86,7 @@ public class ArtifactWishlist extends Wishlist<Artifact> {
         }
 
         // Decide if the vault at this Point is a good bet
-        int value = this.view.game.world.getTile(p).flatMap((Tile t) -> t.building).flatMap((Building b) -> b.items)
-                .map((Inventory i) -> i.getTotalGold()).orElse(0);
+        final int value = auction.getBidValueAtPoint(this.view.game.world, p);
         return value > cost;
     }
 

@@ -203,7 +203,8 @@ public class Game {
      * Returns all Buildings under a Player's control that can store Items
      */
     public Set<Point> getVaultBuildings(Player player) {
-        // TODO will remove this with the upcoming towers mechanic
+        // TODO either optimize this or remove it (remove Building Inventory all
+        // together?)
         Set<Point> vaults = new HashSet<>();
         for (Building b : player.buildings) {
             if (b.items.isPresent()) {
