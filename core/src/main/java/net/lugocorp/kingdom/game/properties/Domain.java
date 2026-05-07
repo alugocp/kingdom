@@ -22,7 +22,7 @@ public class Domain {
         }
         for (Point p : points) {
             world.getTile(p).ifPresent((Tile t) -> {
-                t.addDomainBorder(Hexagons.getBorderInteger(p, (Point p1) -> !points.contains(p1)));
+                t.setBorder(Hexagons.getBorderInteger(p, (Point p1) -> !points.contains(p1)));
                 t.setDomainCenter(tower);
             });
             this.domain.add(p);

@@ -39,11 +39,6 @@ public class TileShader implements Shader {
     private int u_pathLabelsTexture;
     private int u_borderTexture1;
     private int u_borderTexture2;
-    private int u_borderTexture3;
-    private int u_borderTexture4;
-    private int u_borderTextureExt3;
-    private int u_borderTextureExt4;
-    private int u_borderTextureExt42;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
     private int u_diffuseColor;
@@ -53,11 +48,9 @@ public class TileShader implements Shader {
     private int u_option;
     private int u_vision;
     private int u_domainBorder;
-    private int u_domainBorderExtension;
     private int u_movePath;
     private int u_pathLabel;
     private int u_borderColor;
-    private int u_tileBorder;
     private int u_blackout;
     private int u_timer;
     private int u_wave;
@@ -80,11 +73,6 @@ public class TileShader implements Shader {
         this.u_pathTexture2 = this.program.getUniformLocation("u_pathTexture2");
         this.u_pathDotTexture = this.program.getUniformLocation("u_pathDotTexture");
         this.u_pathLabelsTexture = this.program.getUniformLocation("u_pathLabelsTexture");
-        this.u_borderTexture3 = this.program.getUniformLocation("u_borderTexture3");
-        this.u_borderTextureExt3 = this.program.getUniformLocation("u_borderTextureExt3");
-        this.u_borderTexture4 = this.program.getUniformLocation("u_borderTexture4");
-        this.u_borderTextureExt4 = this.program.getUniformLocation("u_borderTextureExt4");
-        this.u_borderTextureExt42 = this.program.getUniformLocation("u_borderTextureExt42");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
@@ -94,11 +82,9 @@ public class TileShader implements Shader {
         this.u_option = this.program.getUniformLocation("u_option");
         this.u_vision = this.program.getUniformLocation("u_vision");
         this.u_domainBorder = this.program.getUniformLocation("u_domainBorder");
-        this.u_domainBorderExtension = this.program.getUniformLocation("u_domainBorderExtension");
         this.u_movePath = this.program.getUniformLocation("u_movePath");
         this.u_pathLabel = this.program.getUniformLocation("u_pathLabel");
         this.u_borderColor = this.program.getUniformLocation("u_borderColor");
-        this.u_tileBorder = this.program.getUniformLocation("u_tileBorder");
         this.u_blackout = this.program.getUniformLocation("u_blackout");
         this.u_timer = this.program.getUniformLocation("u_timer");
         this.u_wave = this.program.getUniformLocation("u_wave");
@@ -165,9 +151,7 @@ public class TileShader implements Shader {
             this.program.setUniformi(this.u_wave, data.wave ? 1 : 0);
             this.program.setUniformi(this.u_movePath, 0);
             this.program.setUniformi(this.u_pathLabel, 0);
-            this.program.setUniformi(this.u_domainBorderExtension, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
-            this.program.setUniformi(this.u_tileBorder, 0);
             this.program.setUniformi(this.u_blackout, 0);
 
             // Place in the placeholder texture for unseen tiles
@@ -182,41 +166,14 @@ public class TileShader implements Shader {
 
             // Border textures
             if (this.textures.isPresent()) {
-                // Player borders
+                // Domain borders
                 if (data.borders > 0) {
                     Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("textures/border1");
                     Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("textures/border2");
                     if (tdesc1.isPresent() && tdesc2.isPresent()) {
                         this.program.setUniformi(this.u_borderTexture1, this.context.textureBinder.bind(tdesc1.get()));
                         this.program.setUniformi(this.u_borderTexture2, this.context.textureBinder.bind(tdesc2.get()));
-                        this.program.setUniformi(this.u_tileBorder, data.borders);
-                    }
-                }
-
-                // Domain borders
-                if (data.domainBorders > 0) {
-                    final Optional<TextureDescriptor> tdesc3 = this.textures.get()
-                            .getTextureDescriptor("textures/border3");
-                    final Optional<TextureDescriptor> tdesc4 = this.textures.get()
-                            .getTextureDescriptor("textures/border4");
-                    final Optional<TextureDescriptor> tdescExt3 = this.textures.get()
-                            .getTextureDescriptor("textures/border3-extend");
-                    final Optional<TextureDescriptor> tdescExt4 = this.textures.get()
-                            .getTextureDescriptor("textures/border4-extend");
-                    final Optional<TextureDescriptor> tdescExt42 = this.textures.get()
-                            .getTextureDescriptor("textures/border4-extend2");
-                    if (tdesc3.isPresent() && tdesc4.isPresent() && tdescExt3.isPresent() && tdescExt4.isPresent()
-                            && tdescExt42.isPresent()) {
-                        this.program.setUniformi(this.u_borderTexture3, this.context.textureBinder.bind(tdesc3.get()));
-                        this.program.setUniformi(this.u_borderTexture4, this.context.textureBinder.bind(tdesc4.get()));
-                        this.program.setUniformi(this.u_borderTextureExt3,
-                                this.context.textureBinder.bind(tdescExt3.get()));
-                        this.program.setUniformi(this.u_borderTextureExt4,
-                                this.context.textureBinder.bind(tdescExt4.get()));
-                        this.program.setUniformi(this.u_borderTextureExt42,
-                                this.context.textureBinder.bind(tdescExt42.get()));
-                        this.program.setUniformi(this.u_domainBorder, data.domainBorders);
-                        this.program.setUniformi(this.u_domainBorderExtension, data.domainExtensionBorders);
+                        this.program.setUniformi(this.u_domainBorder, data.borders);
                     }
                 }
 
@@ -245,9 +202,7 @@ public class TileShader implements Shader {
             this.program.setUniformi(this.u_wave, 0);
             this.program.setUniformi(this.u_option, 0);
             this.program.setUniformi(this.u_hovered, 0);
-            this.program.setUniformi(this.u_tileBorder, 0);
             this.program.setUniformi(this.u_domainBorder, 0);
-            this.program.setUniformi(this.u_domainBorderExtension, 0);
             this.program.setUniformi(this.u_movePath, 0);
             this.program.setUniformi(this.u_pathLabel, 0);
             this.program.setUniformi(this.u_vision, 2);

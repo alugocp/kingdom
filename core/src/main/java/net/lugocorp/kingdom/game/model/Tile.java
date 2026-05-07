@@ -6,11 +6,9 @@ import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.game.layers.Governable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
@@ -165,25 +163,17 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     }
 
     /**
-     * Causes this Tile (and its neighbors) to recalculate its visible borders
+     * Causes this Tile to recalculate its border color
      */
-    public void calculateBorders(World world, boolean iterate) {
-        this.userData.borderColor = this.getLeader().map((Player l) -> l.color).orElse(Color.BLACK);
-        this.userData.borders = Hexagons.getBorderInteger(this.getPoint(), (Point p) -> this.getLeader().isPresent()
-                && !world.getTile(p).flatMap((Tile t) -> t.getLeader()).equals(this.getLeader()));
-        if (iterate) {
-            for (Point p : Hexagons.getNeighbors(this.getPoint(), 1)) {
-                world.getTile(p).ifPresent((Tile t1) -> t1.calculateBorders(world, false));
-            }
-        }
+    public void recolorBorder() {
+        this.userData.borderColor = this.getLeader().map((Player l) -> l.color).orElse(Color.WHITE);
     }
 
     /**
-     * Bitwise OR's this Tile's border integer for Patron domains
+     * Sets this Tile's border integer for its Domain
      */
-    public void addDomainBorder(int border) {
-        this.userData.domainBorders |= border;
-        this.userData.domainExtensionBorders = Hexagons.getBorderExtensionInteger(this.userData.domainBorders);
+    public void setBorder(int border) {
+        this.userData.borders = border;
     }
 
     /**

@@ -9,12 +9,9 @@ public class TileUserData {
     // Adds a wave effect to the top face texture
     public boolean wave = false;
 
-    // Renders Player borders
-    public Color borderColor = Color.BLACK;
+    // Renders Domain borders
+    public Color borderColor = Color.WHITE;
     public int borders = 0;
-
-    // This int tracks which sides should display a Patron domain border
-    public int domainBorders = 0;
 
     // This int tracks which sides of the domain border should be extended
     public int domainExtensionBorders = 0;

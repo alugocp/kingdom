@@ -142,10 +142,10 @@ public class Game {
         // Set the Tower's leader
         tower.setLeader(op);
 
-        // Recalculate borders for the domain's Tiles
+        // Recolors all borders for the Domain's Tiles
         for (Point p : tower.domain.get()) {
             final Tile t = view.game.world.getTile(p).get();
-            t.calculateBorders(this.world, true);
+            t.recolorBorder();
         }
     }
 

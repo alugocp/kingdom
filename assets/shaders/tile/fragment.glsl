@@ -16,11 +16,6 @@ uniform sampler2D u_pathDotTexture;
 uniform sampler2D u_pathLabelsTexture;
 uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
-uniform sampler2D u_borderTexture3;
-uniform sampler2D u_borderTextureExt3;
-uniform sampler2D u_borderTexture4;
-uniform sampler2D u_borderTextureExt4;
-uniform sampler2D u_borderTextureExt42;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
 uniform vec4 u_borderColor;
@@ -31,8 +26,6 @@ uniform int u_vision;
 uniform int u_movePath;
 uniform int u_pathLabel;
 uniform int u_domainBorder;
-uniform int u_domainBorderExtension;
-uniform int u_tileBorder;
 uniform int u_blackout;
 uniform int u_hovered;
 uniform int u_option;
@@ -72,27 +65,6 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     border -= checkBorderColor(border, color, texture2, 4, bx, 1.0 - by); // Top left
     border -= checkBorderColor(border, color, texture1, 2, 1.0 - bx, by); // Right
     border -= checkBorderColor(border, color, texture1, 1, bx, by); // Left
-}
-
-// Extends smaller borders so that they connect aross tiles
-void applyBorderExtensions(int extension, vec4 color) {
-    if (extension == 0) {
-        return;
-    }
-    float bx = v_diffuseUV.x * TEX_RATIO_X;
-    float by = v_diffuseUV.y * TEX_RATIO_Y;
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 2048, bx, 1.0 - by); // Top left CCW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 1024, bx, by); // Bot left CW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 512, 1.0 - bx, 1.0 - by); // Top right CCW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 256, 1.0 - bx, by); // Bot right CW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 128, 1.0 - bx, 1.0 - by); // Right CCW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 64, 1.0 - bx, by); // Right CW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 32, 1.0 - bx, by); // Bot right CCW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt4, 16, 1.0 - bx, 1.0 - by); // Top right CW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 8, bx, by); // Bot left CCW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt42, 4, bx, 1.0 - by); // Top left CW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 2, bx, by); // Left CCW
-    extension -= checkBorderColor(extension, color, u_borderTextureExt3, 1, bx, 1.0 - by); // Left CW
 }
 
 vec2 getPathLabelOffset(int n) {
@@ -193,16 +165,13 @@ void main() {
     }
 
     // Border and path rendering logic
-    if (isTopFace && (u_tileBorder > 0 || u_domainBorder > 0 || u_movePath > 0 || u_pathLabel > 0)) {
+    if (isTopFace && (u_domainBorder > 0 || u_movePath > 0 || u_pathLabel > 0)) {
         vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
         applyPath(black);
 
         // These should not render on unseen tiles
         if (u_vision > NO_VISIBILITY) {
-            vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-            applyBorder(u_tileBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
-            applyBorder(u_domainBorder, white, u_borderTexture3, u_borderTexture4);
-            applyBorderExtensions(u_domainBorderExtension, white);
+            applyBorder(u_domainBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
         }
     }
 
