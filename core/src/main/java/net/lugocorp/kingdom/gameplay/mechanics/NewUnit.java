@@ -210,14 +210,14 @@ public class NewUnit {
                 return "Battle glyph units are good at quickly destroying enemy units and structures";
             case DEFENSE :
                 return "Defense glyphs units have high health pools and armor, and can guard your besieged buildings until backup arrives";
-            case HEALING :
-                return "Healing glyph units provide rest and recovery to the rest of your army";
             case NATURE :
                 return "Nature glyph units plant natural buildings and harvest food to keep your army fed and loyal";
             case MINING :
                 return "Mining glyph units harvest gold and other valuable items from mines";
             case TRADE :
                 return "Trade glyph units generate auction points as they transfer items across your kingdom";
+            case SUPPORT :
+                return "Support glyph units have useful effects that do not fall into the other categories";
         }
         return "If you're seeing this, please file a bug ticket";
     }

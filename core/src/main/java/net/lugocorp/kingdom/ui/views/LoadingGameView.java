@@ -42,7 +42,7 @@ public class LoadingGameView extends ThreadedTaskView {
                 0, 0);
         av.loaders.sprites.register("glyph-icon-defense", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 1, 0);
-        av.loaders.sprites.register("glyph-icon-healing", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
+        av.loaders.sprites.register("glyph-icon-support", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 2, 0);
         av.loaders.sprites.register("glyph-icon-nature", "game/glyph-icons", GlyphIconsNode.SIDE, GlyphIconsNode.SIDE,
                 0, 1);
@@ -54,7 +54,7 @@ public class LoadingGameView extends ThreadedTaskView {
                 0, 0);
         av.loaders.sprites.register("glyph-badge-defense", "game/glyph-badges", GlyphBadgeNode.SIDE,
                 GlyphBadgeNode.SIDE, 1, 0);
-        av.loaders.sprites.register("glyph-badge-healing", "game/glyph-badges", GlyphBadgeNode.SIDE,
+        av.loaders.sprites.register("glyph-badge-support", "game/glyph-badges", GlyphBadgeNode.SIDE,
                 GlyphBadgeNode.SIDE, 2, 0);
         av.loaders.sprites.register("glyph-badge-nature", "game/glyph-badges", GlyphBadgeNode.SIDE, GlyphBadgeNode.SIDE,
                 0, 1);

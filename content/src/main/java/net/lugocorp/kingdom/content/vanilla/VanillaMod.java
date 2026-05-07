@@ -632,8 +632,8 @@ public class VanillaMod implements GameMod {
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "shining-eyes");
                     e.blob.desc = "Heals 4 random units of its favorite player each turn";
-                    e.blob.preference = "Healing glyph units";
-                    e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.HEALING);
+                    e.blob.preference = "Support glyph units";
+                    e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.SUPPORT);
                     e.blob.setIcons(Labels.asset_heal_wounds, Labels.asset_regeneration);
                     return new SideEffect();
                 })
@@ -659,7 +659,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Artifact>(events.artifact, Labels.artifact_chos_sigil_of_haste)
                 .add(Events.GenerateArtifactEvent.class,
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
-                            e.blob.desc = "Your healing glyph units get +1 movement speed";
+                            e.blob.desc = "Your support glyph units get +1 movement speed";
                             e.blob.image = Optional.of(Labels.asset_chos_sigil_of_haste);
                             return new SideEffect();
                         })
@@ -670,7 +670,7 @@ public class VanillaMod implements GameMod {
                         })
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Artifact receiver, Events.UnitMoveDistanceEvent e) -> {
-                            if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.HEALING)) {
+                            if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.SUPPORT)) {
                                 e.distance++;
                             }
                             return new SideEffect();
@@ -1474,7 +1474,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_dig_mine);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems);
-                    e.blob.glyphs.set(Glyph.HEALING, Glyph.MINING);
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_brownie;
                     return new SideEffect();
@@ -1490,7 +1490,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_self_sacrifice);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_life_aura);
-                    e.blob.glyphs.set(Glyph.HEALING);
+                    e.blob.glyphs.set(Glyph.SUPPORT);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_elf;
                     return new SideEffect();
@@ -1508,7 +1508,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_hungry_frog_magic);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_forage_in_meadow,
                             Labels.ability_swim);
-                    e.blob.glyphs.set(Glyph.HEALING);
+                    e.blob.glyphs.set(Glyph.SUPPORT);
                     e.blob.combat.health.setMaxAndValue(25);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_gnome;
@@ -1702,7 +1702,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_remove_poison);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_thorny_skin,
                             Labels.ability_hunt_fish);
-                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.HEALING);
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.SUPPORT);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_merfolk;
                     return new SideEffect();
@@ -1742,7 +1742,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_heal_wounds);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_economic_activity,
                             Labels.ability_pious);
-                    e.blob.glyphs.set(Glyph.HEALING, Glyph.TRADE);
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.TRADE);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_human;
