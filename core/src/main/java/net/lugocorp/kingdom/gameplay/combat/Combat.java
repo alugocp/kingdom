@@ -38,41 +38,73 @@ public class Combat {
      * This method gets called when a combatant is killed in battle
      */
     private SideEffect onDeath(GameView view, Entity attacker) {
-        final SideEffect effects = new SideEffect();
+        // Logic for Towers
         if (this.bearer.isEntityType(EntityType.TOWER)) {
-            // Restore the Tower's health and place under the attacking Player's control
-            // if it was destroyed by another player
-            final Optional<Player> destroyer = attacker.getLeader();
-            final Tower t = (Tower) this.bearer;
-            effects.add(() -> {
-                if (!t.getLeader().equals(destroyer) && destroyer.map((Player d) -> d.isHumanPlayer()).orElse(false)) {
-                    view.overlays.add(new EntityRisingOverlay(view, t, ColorScheme.RED.hex, "Captured"));
-                    view.hud.logger.log("You claimed the tower");
-                    view.av.loaders.sounds.play("sfx/captured");
-                }
-                this.health.set(this.health.getMax());
-                view.game.setLeader(view, t, destroyer);
-            });
-            return effects;
-        } else {
-            effects.add(this.bearer.handleEvent(view, new Events.EntityDiedEvent(this.bearer, attacker)));
-            effects.add(attacker.handleEvent(view, new Events.KilledEntityEvent(attacker, this.bearer)));
+            return this.onTowerDeath(view, attacker.getLeader());
+        }
 
-            // Track CompPlayer stats whenever Units are slain
-            if (this.bearer.isEntityType(EntityType.UNIT)) {
-                effects.add(() -> {
-                    if (this.bearer.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
-                        CompPlayer comp = (CompPlayer) this.bearer.getLeader().get();
-                        comp.stats.unitsLost.add(1);
-                    }
-                    if (attacker.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
-                        CompPlayer comp = (CompPlayer) attacker.getLeader().get();
-                        comp.stats.enemiesKilled.add(1);
-                    }
-                });
-            }
+        // Logic for non-Towers
+        final SideEffect effects = new SideEffect();
+        effects.add(this.bearer.handleEvent(view, new Events.EntityDiedEvent(this.bearer, attacker)));
+        effects.add(attacker.handleEvent(view, new Events.KilledEntityEvent(attacker, this.bearer)));
+
+        // Track CompPlayer stats whenever Units are slain
+        if (this.bearer.isEntityType(EntityType.UNIT)) {
+            effects.add(() -> {
+                if (this.bearer.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
+                    CompPlayer comp = (CompPlayer) this.bearer.getLeader().get();
+                    comp.stats.unitsLost.add(1);
+                }
+                if (attacker.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
+                    CompPlayer comp = (CompPlayer) attacker.getLeader().get();
+                    comp.stats.enemiesKilled.add(1);
+                }
+            });
         }
         effects.add(() -> this.bearer.deactivate(view));
+        return effects;
+    }
+
+    /**
+     * Call this whenever a Tower dies. Restores the Tower's health and places it
+     * under the attacking Player's control (if it was destroyed by another player)
+     */
+    private SideEffect onTowerDeath(GameView view, Optional<Player> destroyer) {
+        final SideEffect effects = new SideEffect();
+        final Tower t = (Tower) this.bearer;
+        effects.add(() -> {
+            if (!t.getLeader().equals(destroyer) && destroyer.map((Player d) -> d.isHumanPlayer()).orElse(false)) {
+                view.overlays.add(new EntityRisingOverlay(view, t, ColorScheme.RED.hex, "Captured"));
+                view.hud.logger.log("You claimed the tower");
+                view.av.loaders.sounds.play("sfx/captured");
+            }
+            this.health.set(this.health.getMax());
+            view.game.setLeader(view, t, destroyer);
+        });
+        return effects;
+    }
+
+    /**
+     * Call this when a Tower is damaged because its Player cannot afford it
+     */
+    public SideEffect damageTowerWithoutGold(GameView view, Damage dmg) {
+        final SideEffect effects = new SideEffect();
+        final Events.TakeDamageEvent damageEvent = new Events.TakeDamageEvent(this.bearer, dmg);
+        effects.add(this.bearer.handleEvent(view, damageEvent));
+        final int result = this.health.get() - damageEvent.dmg.total();
+        effects.add(() -> this.health.set(result));
+        if (result > 0) {
+            effects.add(() -> view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex,
+                    String.format("-%d", dmg.total()))));
+        } else {
+            if (this.bearer.leadership.belongsToHuman()) {
+                effects.add(() -> {
+                    view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex, "Lost"));
+                    view.hud.logger.log("You lost a tower due to insufficient gold");
+                });
+            }
+            effects.add(this.onTowerDeath(view, Optional.empty()));
+        }
         return effects;
     }
 

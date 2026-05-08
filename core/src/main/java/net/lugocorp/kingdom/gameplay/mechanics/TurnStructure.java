@@ -1,10 +1,13 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
+import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
@@ -12,6 +15,7 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
 import java.util.List;
@@ -175,6 +179,19 @@ public class TurnStructure {
                     b.vision.set(view, p, b, b.getPoint());
                 }
             }
+        }
+
+        // Towers cost gold or lose health
+        final String cost = String.format("-%d", Tower.GOLD_COST);
+        for (Tower tower : view.game.towers) {
+            tower.getLeader().ifPresent((Player player) -> {
+                if (player.gold >= Tower.GOLD_COST) {
+                    view.overlays.add(new EntityRisingOverlay(view, tower, ColorScheme.GOLD.hex, cost));
+                    player.gold -= Tower.GOLD_COST;
+                } else {
+                    tower.combat.damageTowerWithoutGold(view, new Damage(10)).execute();
+                }
+            });
         }
     }
 

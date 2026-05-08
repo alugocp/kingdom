@@ -13,6 +13,7 @@ import java.util.function.Supplier;
  * Towers control influence over the map
  */
 public class Tower extends Building implements IndependentGovernable {
+    public static final int GOLD_COST = 10;
     private Optional<Player> leader = Optional.empty();
     public final Domain domain = new Domain();
 
