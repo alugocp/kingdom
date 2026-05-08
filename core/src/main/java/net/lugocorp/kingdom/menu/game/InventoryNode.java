@@ -38,6 +38,7 @@ public class InventoryNode implements MenuNode {
     private static final int MARGIN = 2;
     public static final int SIDE = 50;
     private final MenuPopup popup = new MenuPopup();
+    private final Optional<Inventory> equipped;
     private final Inventory items;
     private final GameView view;
     private final int x;
@@ -48,7 +49,8 @@ public class InventoryNode implements MenuNode {
     private int cols;
     private int rows;
 
-    public InventoryNode(GameView view, Inventory items, int x, int y) {
+    public InventoryNode(GameView view, Inventory items, Optional<Inventory> equipped, int x, int y) {
+        this.equipped = equipped;
         this.items = items;
         this.view = view;
         this.x = x;

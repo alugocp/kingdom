@@ -184,7 +184,7 @@ public class Inventory implements MenuSubject, Iterable<Item> {
         if (!p.isPresent()) {
             throw new RuntimeException("Cannot display inventories of unspawned units/buildings");
         }
-        return new InventoryNode(view, this, p.get().x, p.get().y);
+        return new InventoryNode(view, this, Optional.empty(), p.get().x, p.get().y);
     }
 
     /**

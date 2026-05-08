@@ -26,6 +26,7 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
+import net.lugocorp.kingdom.menu.game.InventoryNode;
 import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.icon.HeaderDescNode;
@@ -291,10 +292,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
         // Items section
         final ListNode col3 = new ListNode();
         if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
-            col3.add(new SubheaderNode(view.av, "Equipped Items"));
-            col3.add(this.equipped.getMenuContent(view, p));
-            col3.add(new SubheaderNode(view.av, "Stored Items"));
-            col3.add(this.haul.getMenuContent(view, p));
+            col3.add(new InventoryNode(view, this.haul, Optional.of(this.equipped), p.get().x, p.get().y));
         } else {
             col3.add(new SubheaderNode(view.av, "Inventory"));
             col3.add(new TextNode(view.av, String.format("Can equip up to %d items", this.equipped.getMax())));
