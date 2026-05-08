@@ -42,4 +42,11 @@ public class Domain {
     public Set<Point> get() {
         return this.domain;
     }
+
+    /**
+     * Returns how many Points are in this Domain
+     */
+    public int size() {
+        return this.domain.size();
+    }
 }

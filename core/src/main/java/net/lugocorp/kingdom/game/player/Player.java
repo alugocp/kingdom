@@ -1,9 +1,11 @@
 package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
@@ -31,7 +33,6 @@ public abstract class Player {
     public int gold = Player.INITIAL_GOLD; // TODO make private, add Overlay on increase
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
-    public int tiles = 0;
 
     Player(String name, Fate fate, Color color) {
         this.color = color;
@@ -61,10 +62,16 @@ public abstract class Player {
             Function<Point, SideEffect> action);
 
     /**
-     * Returns the number of bare tiles this Player has access to
+     * Returns the number of tiles under this Player's control
      */
-    public int getBareTiles() {
-        return this.tiles - this.buildings.size();
+    public int getNumberTiles(Game game) {
+        int total = 0;
+        for (Tower tower : game.towers) {
+            if (tower.leadership.belongsToHuman()) {
+                total += tower.domain.size();
+            }
+        }
+        return total;
     }
 
     /**

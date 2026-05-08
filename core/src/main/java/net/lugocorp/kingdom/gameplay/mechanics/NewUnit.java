@@ -37,7 +37,8 @@ public class NewUnit {
      * Assigns unit points to the given Player and returns that value
      */
     public void giveUnitPointsYield(GameView view, Player player) {
-        final int points = (int) Math.floor(20f * player.getBareTiles() / player.tiles);
+        final int tiles = player.getNumberTiles(view.game);
+        final int points = (int) Math.floor(20f * (tiles - player.buildings.size()) / tiles);
         if (!player.isHumanPlayer()) {
             player.addUnitPoints(view, points);
             return;

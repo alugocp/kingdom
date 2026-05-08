@@ -120,7 +120,6 @@ public class Game {
             for (Point p : tower.domain.get()) {
                 final Tile t = view.game.world.getTile(p).get();
                 t.building.ifPresent((Building b) -> player.buildings.remove(b));
-                player.tiles--;
             }
         });
 
@@ -129,7 +128,6 @@ public class Game {
             for (Point p : tower.domain.get()) {
                 final Tile t = view.game.world.getTile(p).get();
                 t.building.ifPresent((Building b) -> player.buildings.add(b));
-                player.tiles++;
             }
         });
 
