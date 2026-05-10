@@ -226,6 +226,7 @@ public class Game {
                 continue;
             }
             final Set<Point> candidates = Hexagons.getNeighbors(tower.getPoint(), 1);
+            candidates.add(tower.getPoint());
             for (Point p : candidates) {
                 if (this.world.getTile(p)
                         .map((Tile t) -> !t.unit.isPresent() && !t.getObstacle()
