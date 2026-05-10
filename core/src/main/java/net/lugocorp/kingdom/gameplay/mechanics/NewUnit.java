@@ -106,31 +106,23 @@ public class NewUnit {
         final Glyph[] glyphs = Glyph.values();
         final ListNode node = new ListNode().add(new RowNode()
                 .add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))
-                .add(new HeaderNode(view.av, "Recruit New Unit").center())
+                .add(new HeaderNode(view.av, "Select a Glyph").center())
                 .add(new HelperNode(view.av,
                         "Glyphs are general categories that units fall under. They help narrow down your search when recruiting a new unit. A unit can have either one or two glyphs. Tiles also have glyphs - the tile you selected determines the glyphs that appear in this screen. The sword (combat glyphs) means battle, defense, and healing. The hammer (worker glyphs) means nature, mining and trade."))
                 .add(new ButtonNode(view.av, "Recruit a unit next turn instead", () -> view.hud.popups.complete())))
                 .add(new SpacerNode());
-        final RowNode names = new RowNode().setColumns(glyphs.length);
-        final RowNode badges = new RowNode().setColumns(glyphs.length);
-        final RowNode descs = new RowNode().setColumns(glyphs.length);
-        final RowNode buttons = new RowNode().setColumns(glyphs.length);
+        final RowNode row1 = new RowNode().setColumns(3);
+        final RowNode row2 = new RowNode().setColumns(3);
         for (int a = 0; a < glyphs.length; a++) {
             final Glyph glyph = glyphs[a];
             final String desc = String.format("%s (%d / %d remaining)", this.getGlyphDescription(glyph),
                     view.game.mechanics.pools.remaining(glyph), view.game.mechanics.pools.total(glyph));
-            names.add(new HeaderNode(view.av, glyph.toString()).center());
-            badges.add(new GlyphBadgeNode(view.av, glyph));
-            descs.add(new TextNode(view.av, desc));
-            buttons.add(new ButtonNode(view.av, "Choose", () -> {
+            (a < 3 ? row1 : row2).add(new GlyphBadgeNode(view.av, glyph, desc, () -> {
                 view.hud.popups.complete();
                 view.hud.popups.add(this.getGlyphUnitSelectionMenu(view, glyph, p));
-            }).enable(view.game.mechanics.pools.remaining(glyph) > 0));
+            }, view.game.mechanics.pools.remaining(glyph) > 0));
         }
-        node.add(names);
-        node.add(badges);
-        node.add(descs);
-        node.add(buttons);
+        node.add(row1).add(row2);
         return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(), Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2),
                 false, node);
     }
