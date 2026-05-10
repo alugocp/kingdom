@@ -17,31 +17,38 @@ def clean(label: str) -> str:
 
 
 # Generates the actual labels files for each mod
-def generate_labels(modkey):
+def generate_labels(*modkeys):
+    sections = {}
 
     # Load the definitions JSON file (labels.json)
-    with open(f"content/{modkey}/labels.json", "r") as file:
-        data = json.loads(file.read())
+    for modkey in modkeys:
+        with open(f"content/{modkey}/labels.json", "r") as file:
+            data = json.loads(file.read())
+            for section in data["sections"]:
+                name = section["name"]
+                if not name in sections:
+                    sections[name] = {"prefix": section["prefix"], "labels": []}
+                sections[name]["labels"] += section["labels"]
 
     # Open the output file and start writing to it
     with open(
-        f"content/src/main/java/net/lugocorp/kingdom/content/{modkey}/Labels.java", "w"
+        f"content/src/main/java/net/lugocorp/kingdom/content/Labels.java", "w"
     ) as file:
 
         # Write the class and package declarations
-        print(f"package net.lugocorp.kingdom.content.{modkey};", file=file)
+        print(f"package net.lugocorp.kingdom.content;", file=file)
         print("", file=file)
         print("/**", file=file)
         print(
-            f" * Contains definitions for names and labels from the official {modkey} mod",
+            f" * Contains definitions for names and labels from official game content",
             file=file,
         )
         print(" */", file=file)
         print("public class Labels {", file=file)
 
         # Write each section header
-        for section in data["sections"]:
-            name = section["name"]
+        for name in sections:
+            section = sections[name]
             prefix = section["prefix"]
             print(f"", file=file)
             print(f"    /**", file=file)
