@@ -21,7 +21,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
-import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
+import net.lugocorp.kingdom.game.properties.InventoryType;
 import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;

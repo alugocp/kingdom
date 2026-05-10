@@ -19,10 +19,10 @@ import java.util.Set;
  */
 public class Inventory implements MenuSubject, Iterable<Item> {
     private final List<Item> items;
-    public final int type;
+    public final InventoryType type;
     private int max;
 
-    public Inventory(int type, int max) {
+    public Inventory(InventoryType type, int max) {
         this.items = new ArrayList<Item>(max);
         this.type = type;
         this.max = max;
@@ -33,7 +33,7 @@ public class Inventory implements MenuSubject, Iterable<Item> {
      */
     public Inventory() {
         this.items = null;
-        this.type = 0;
+        this.type = InventoryType.HAUL;
         this.max = 0;
     }
 
@@ -185,14 +185,5 @@ public class Inventory implements MenuSubject, Iterable<Item> {
             throw new RuntimeException("Cannot display inventories of unspawned units/buildings");
         }
         return new InventoryNode(view, this, Optional.empty(), p.get().x, p.get().y);
-    }
-
-    /**
-     * Nested class enum representing the different types of inventory
-     */
-    public static class InventoryType {
-        public static final int BUILDING = 3;
-        public static final int EQUIP = 2;
-        public static final int HAUL = 1;
     }
 }

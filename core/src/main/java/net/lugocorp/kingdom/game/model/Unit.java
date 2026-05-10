@@ -10,7 +10,7 @@ import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
-import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
+import net.lugocorp.kingdom.game.properties.InventoryType;
 import net.lugocorp.kingdom.game.properties.Species;
 import net.lugocorp.kingdom.game.unit.Abilities;
 import net.lugocorp.kingdom.game.unit.Adjacency;

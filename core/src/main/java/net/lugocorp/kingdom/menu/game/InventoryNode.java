@@ -10,7 +10,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Inventory;
-import net.lugocorp.kingdom.game.properties.Inventory.InventoryType;
+import net.lugocorp.kingdom.game.properties.InventoryType;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -60,7 +60,7 @@ public class InventoryNode implements MenuNode {
     /**
      * Returns true if the given Item has an effect when consumed
      */
-    public boolean itemIsConsumed(GameView view, Item item) {
+    private boolean itemIsConsumed(GameView view, Item item) {
         return view.game.events.item.hasEventHandler(item.getStratifier(), Events.ItemConsumedEvent.class);
     }
 
@@ -70,7 +70,7 @@ public class InventoryNode implements MenuNode {
      * checking against a Building or free Item. Otherwise, it will contain the Unit
      * (if any) on the Tile that you're trying to gift the Item to.
      */
-    private boolean canUnitTakeItem(int type, Optional<Unit> unit) {
+    private boolean canUnitTakeItem(InventoryType type, Optional<Unit> unit) {
         Optional<Unit> focal = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit);
         if (unit.isPresent()) {
             if (!unit.get().getLeader().equals(focal.get().getLeader())) {
@@ -89,7 +89,7 @@ public class InventoryNode implements MenuNode {
     /**
      * The Unit on the currently open Tile picks up or equips the specified Item
      */
-    private void unitTakesItem(int type, Item item) {
+    private void unitTakesItem(InventoryType type, Item item) {
         Unit unit = this.view.game.world.getTile(this.x, this.y).flatMap((Tile t) -> t.unit).get();
         if (type == InventoryType.EQUIP) {
             this.items.transfer(unit.equipped, item);
@@ -170,7 +170,42 @@ public class InventoryNode implements MenuNode {
     }
 
     /**
-     * Returns the index of the Item that Point p is hovering over
+     * Returns the total number of Items represented in this InventoryNode
+     */
+    private int getTotalItemsSize() {
+        return this.items.getMax() + this.equipped.map((Inventory i) -> i.getMax()).orElse(0);
+    }
+
+    /**
+     * Returns the Item at the given index across either Inventory
+     */
+    private Optional<Item> getItemFromTotalIndex(int totalIndex) {
+        int index = totalIndex;
+        if (this.equipped.isPresent()) {
+            final int max = this.equipped.get().getMax();
+            if (index < max) {
+                if (index >= 0 && index < this.equipped.get().getSize()) {
+                    return Optional.of(this.equipped.get().get(index));
+                }
+                return Optional.empty();
+            }
+            index -= max;
+        }
+        if (index >= 0 && index < this.items.getSize()) {
+            return Optional.of(this.items.get(index));
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Returns which Inventory the given total index refers to
+     */
+    private Inventory getInventoryByTotalIndex(int index) {
+        return this.equipped.map((Inventory inv) -> i < inv.getMax() ? inv : this.items).orElse(this.items);
+    }
+
+    /**
+     * Returns the total index of the Item that Point p is hovering over
      */
     private int getHoveredItemIndex(Rect bounds, Point p) {
         if (p.x < bounds.x || p.y < bounds.y) {
@@ -191,7 +226,7 @@ public class InventoryNode implements MenuNode {
     @Override
     public void pack(Menu menu, int width) {
         this.cols = (int) (width / (InventoryNode.SIDE + InventoryNode.MARGIN));
-        this.rows = this.items.getMax() == 0 ? 0 : (int) Math.ceil(this.items.getMax() / (float) this.cols);
+        this.rows = this.items.getMax() == 0 ? 0 : (int) Math.ceil(this.getTotalItemsSize() / (float) this.cols);
         this.popup.setMenu(menu);
         this.menu = menu;
     }
@@ -199,27 +234,26 @@ public class InventoryNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
-        if (this.items.getMax() == 0) {
+        final int max = this.getTotalItemsSize();
+        if (max == 0) {
             return;
         }
         av.sprites.begin();
         av.sprites.setColor(Color.WHITE);
         for (int a = 0; a < this.rows; a++) {
-            Rect flip = Coords.screen.flip(bounds.x, bounds.y + a * (InventoryNode.SIDE + InventoryNode.MARGIN),
+            final Rect flip = Coords.screen.flip(bounds.x, bounds.y + a * (InventoryNode.SIDE + InventoryNode.MARGIN),
                     bounds.w, InventoryNode.SIDE + InventoryNode.MARGIN);
             for (int b = 0; b < this.cols; b++) {
                 int index = (a * this.cols) + b;
-                if (index >= this.items.getMax()) {
+                if (index >= max) {
                     break;
                 }
-                Drawable icon = new Drawable(av.loaders.sprites, "placeholder");
-                if (index < this.items.getSize()) {
-                    Item item = this.items.get(index);
-                    if (item.icon.isPresent()) {
-                        icon.setSprite(item.icon.get());
-                    }
-                }
+                final Drawable icon = new Drawable(av.loaders.sprites, "placeholder");
+                final Optional<Item> target = this.getItemFromTotalIndex(index);
+                target.flatMap((Item item) -> item.icon).ifPresent((String s) -> icon.setSprite(s));
                 icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
+                // TODO make it circular if this.getInventoryByTotalIndex(i).type ==
+                // InventoryType.EQUIP
             }
         }
         av.sprites.end();
@@ -229,9 +263,11 @@ public class InventoryNode implements MenuNode {
     @Override
     public void click(Rect bounds, Point p) {
         final int i = this.getHoveredItemIndex(bounds, p);
+        final Optional<Item> target = this.getItemFromTotalIndex(i);
+        final InventoryType type = this.getInventoryByTotalIndex(i).type;
 
         // Return early if no Item was really clicked
-        if (i < 0 || i >= this.items.getSize()) {
+        if (!target.isPresent()) {
             this.controlsActive = false;
             return;
         }
@@ -239,7 +275,7 @@ public class InventoryNode implements MenuNode {
         this.popup.close();
 
         // Set up the controls menu
-        final Item item = this.items.get(i);
+        final Item item = target.get();
         final ListNode root = new ListNode().add(new SubheaderNode(this.view.av, item.name))
                 .add(new TextNode(this.view.av, item.desc));
         boolean hasActions = false;
@@ -316,8 +352,9 @@ public class InventoryNode implements MenuNode {
 
         // Set mini menu for the selected item
         final int i = this.getHoveredItemIndex(bounds, curr);
-        if (i >= 0 && i < this.items.getSize()) {
-            final Item item = this.items.get(i);
+        final Optional<Item> target = this.getItemFromTotalIndex(i);
+        if (target.isPresent()) {
+            final Item item = target.get();
 
             // Only reconstruct the mini Menu root if it's not already cached
             if (this.cachedHoverMenu.map((Tuple<Item, MenuNode> tuple) -> tuple.a != item).orElse(true)) {
