@@ -39,6 +39,7 @@ public class InventoryNode implements MenuNode {
     public static final int SIDE = 50;
     private final MenuPopup popup = new MenuPopup();
     private final Optional<Inventory> equipped;
+    private final MenuNode unitCanEquipMenu;
     private final Inventory items;
     private final GameView view;
     private final int x;
@@ -55,6 +56,7 @@ public class InventoryNode implements MenuNode {
         this.view = view;
         this.x = x;
         this.y = y;
+        this.unitCanEquipMenu = new ListNode().add(new TextNode(view.av, "This unit can equip an item here"));
     }
 
     /**
@@ -200,7 +202,7 @@ public class InventoryNode implements MenuNode {
     /**
      * Returns which Inventory the given total index refers to
      */
-    private Inventory getInventoryByTotalIndex(int index) {
+    private Inventory getInventoryByTotalIndex(int i) {
         return this.equipped.map((Inventory inv) -> i < inv.getMax() ? inv : this.items).orElse(this.items);
     }
 
@@ -250,10 +252,13 @@ public class InventoryNode implements MenuNode {
                 }
                 final Drawable icon = new Drawable(av.loaders.sprites, "placeholder");
                 final Optional<Item> target = this.getItemFromTotalIndex(index);
+                final InventoryType type = this.getInventoryByTotalIndex(index).type;
                 target.flatMap((Item item) -> item.icon).ifPresent((String s) -> icon.setSprite(s));
                 icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
-                // TODO make it circular if this.getInventoryByTotalIndex(i).type ==
-                // InventoryType.EQUIP
+                if (type == InventoryType.EQUIP) {
+                    icon.setSprite("equip frame");
+                    icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
+                }
             }
         }
         av.sprites.end();
@@ -353,6 +358,7 @@ public class InventoryNode implements MenuNode {
         // Set mini menu for the selected item
         final int i = this.getHoveredItemIndex(bounds, curr);
         final Optional<Item> target = this.getItemFromTotalIndex(i);
+        final InventoryType type = this.getInventoryByTotalIndex(i).type;
         if (target.isPresent()) {
             final Item item = target.get();
 
@@ -372,6 +378,8 @@ public class InventoryNode implements MenuNode {
                 this.cachedHoverMenu = Optional.of(new Tuple<Item, MenuNode>(item, root));
             }
             this.popup.update(bounds, curr, this.cachedHoverMenu.get().b);
+        } else if (type == InventoryType.EQUIP) {
+            this.popup.update(bounds, curr, this.unitCanEquipMenu);
         } else {
             this.popup.close();
         }

@@ -20,6 +20,7 @@ public class Labels {
     public static final String asset_snow = "snow";
     public static final String asset_taiga = "taiga";
     public static final String asset_placeholder = "placeholder";
+    public static final String asset_equip_frame = "equip frame";
     public static final String asset_potion = "potion";
     public static final String asset_apple = "apple";
     public static final String asset_pouch = "pouch";

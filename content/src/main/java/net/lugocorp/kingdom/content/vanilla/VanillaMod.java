@@ -116,6 +116,7 @@ public class VanillaMod implements GameMod {
         sprites.register(Labels.asset_telescope, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 3, 6);
         sprites.register(Labels.asset_scales, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 4, 6);
         sprites.register(Labels.asset_eye, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 5, 6);
+        sprites.register(Labels.asset_equip_frame, Labels.asset_items, InventoryNode.SIDE, InventoryNode.SIDE, 7, 7);
 
         // Ability sprites
         sprites.register(Labels.asset_bite, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 0);
