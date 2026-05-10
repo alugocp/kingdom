@@ -443,6 +443,7 @@ public class Labels {
     public static final String status_effect_extra_defense = "Extra Defense";
     public static final String status_effect_poisoned = "Poisoned";
     public static final String status_effect_swift = "Swift";
+    public static final String status_effect_exhausted = "Exhausted";
 
     /**
      * SECTION Items

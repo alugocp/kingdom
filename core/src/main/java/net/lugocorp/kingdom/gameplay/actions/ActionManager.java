@@ -40,10 +40,7 @@ public class ActionManager {
      * Removes the given Unit's information from this instance
      */
     public void removeUnitInfo(Unit u) {
-        if (this.overlays.containsKey(u)) {
-            this.overlays.get(u).dispel();
-        }
-        this.overlays.remove(u);
+        this.removeActionOverlay(u);
         this.actions.remove(u);
     }
 
@@ -84,10 +81,30 @@ public class ActionManager {
     }
 
     /**
-     * Returns true if thie given Unit can make an Action of the following type
+     * Returns true if the given Unit can make an Action of the following type
      */
     public boolean canUnitDoThis(Unit u, ActionType type) {
-        return !this.unitHasAssignedAction(u) || this.actions.get(u).canBeFollowedBy(type);
+        return (type == ActionType.SKIP || !u.sleep.isSleeping())
+                && (!this.unitHasAssignedAction(u) || this.actions.get(u).canBeFollowedBy(type));
+    }
+
+    /**
+     * Calculates and sets an ActionOverlay for the given Unit
+     */
+    public void setActionOverlay(GameView view, Unit u) {
+        final ActionOverlay o = new ActionOverlay(view, u, this.getActionOverlayChar(u));
+        this.overlays.put(u, o);
+        view.overlays.add(o);
+    }
+
+    /**
+     * Removes the given Unit's ActionOverlay from this instance
+     */
+    public void removeActionOverlay(Unit u) {
+        if (this.overlays.containsKey(u)) {
+            this.overlays.get(u).dispel();
+        }
+        this.overlays.remove(u);
     }
 
     /**
@@ -104,9 +121,7 @@ public class ActionManager {
             a.addedFirst();
 
             // Add Action state Overlay
-            final ActionOverlay o = new ActionOverlay(view, u, this.getActionOverlayChar(u));
-            this.overlays.put(u, o);
-            view.overlays.add(o);
+            this.setActionOverlay(view, u);
 
             // Handle UI / pan to next Unit / auto complete
             if (u.leadership.belongsToHuman() && !this.goToNextUnit(view)) {
@@ -173,7 +188,7 @@ public class ActionManager {
      * Returns a string representing the given Unit's action state
      */
     public String getUnitActionLabel(Unit u) {
-        if (this.actions.containsKey(u)) {
+        if (this.actions.containsKey(u) || u.sleep.isSleeping()) {
             final char c = this.getActionOverlayChar(u);
             return String.format("%c%c%c", c, c, c);
         }
@@ -186,6 +201,8 @@ public class ActionManager {
     public String getUnitActionDescription(Unit u) {
         if (this.actions.containsKey(u)) {
             return this.actions.get(u).getDescription();
+        } else if (u.sleep.isSleeping()) {
+            return "This unit cannot act due to a status condition";
         }
         return "This unit has not acted this turn";
     }

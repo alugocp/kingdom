@@ -2980,6 +2980,25 @@ public class VanillaMod implements GameMod {
                             return new SideEffect();
                         });
 
+        // Exhausted
+        new Stratified<Ability>(events.ability, Labels.status_effect_exhausted).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.desc = String.format("The unit cannot act for 3 turns");
+                    e.blob.setIcon(Labels.asset_stunned);
+                    return new SideEffect();
+                }).add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
+                            view.game.future.addFutureTick("Tick", receiver, 3, false);
+                            return new SideEffect();
+                        })
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
+                .add(Events.IsStunnedEvent.class, (GameView view, Ability receiver, Events.IsStunnedEvent e) -> {
+                    e.isStunned = true;
+                    return new SideEffect();
+                });
+
         /**
          * SECTION Items
          */

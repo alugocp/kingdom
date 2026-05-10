@@ -20,13 +20,6 @@ public class Sleep {
     }
 
     /**
-     * Sets this instance's sleep state
-     */
-    public void set(boolean sleeping) {
-        this.sleeping = sleeping;
-    }
-
-    /**
      * Returns true if we're in a sleep state
      */
     public boolean isSleeping() {
@@ -37,7 +30,7 @@ public class Sleep {
      * Checks if we should reset this Unit's sleep state at the start of a turn
      */
     public void wakeUpCheck(GameView view) {
-        Events.IsStunnedEvent event = new Events.IsStunnedEvent(this.unit);
+        final Events.IsStunnedEvent event = new Events.IsStunnedEvent(this.unit);
         this.unit.handleEvent(view, event).execute();
         if (event.isStunned) {
             this.sleeping = true;

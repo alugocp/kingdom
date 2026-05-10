@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
@@ -189,7 +190,7 @@ public class AbilityLogic {
                 return new SideEffect().add(() -> {
                     b.spawn(view);
                     view.game.actions.unitHasCastSpell(view, caster);
-                });
+                }).add(caster.abilities.addStatusEffect(view, Labels.status_effect_exhausted));
             }
             return new SideEffect().add(() -> view.hud.logger.error("Invalid tile for this ability"));
         }
