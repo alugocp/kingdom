@@ -2897,9 +2897,9 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(Events.GenerateFavorEvent.class,
                         (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
-                            receiver.wielder.abilities.removeStatusEffect(view, receiver);
                             e.favor += 1;
-                            return new SideEffect();
+                            return new SideEffect()
+                                    .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver));
                         });
 
         // Proud Builder
