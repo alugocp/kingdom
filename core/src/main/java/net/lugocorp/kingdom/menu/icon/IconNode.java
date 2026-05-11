@@ -100,5 +100,6 @@ public abstract class IconNode implements MenuNode {
         this.icon.render(av.special, flip.x, flip.y);
         av.special.end();
         av.shaders.element.originalColor();
+        av.shaders.element.setMode(ElementShader.DEFAULT_MODE);
     }
 }
