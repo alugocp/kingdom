@@ -241,10 +241,12 @@ public class Menu {
         av.shapes.end();
 
         // Draw Menu content
+        final int menuRatioX = (int) (Gdx.graphics.getWidth() / (float) Gdx.graphics.getBackBufferWidth());
+        final int menuRatioY = (int) (Gdx.graphics.getHeight() / (float) Gdx.graphics.getBackBufferHeight());
         final int[] s1 = ViewportLogic.project(bg.x, bg.y);
-        final int[] s2 = ViewportLogic.project(bg.x + bg.w, bg.y + bg.h);
+        final int[] s2 = ViewportLogic.project(bg.x + (bg.w * menuRatioX), bg.y + (bg.h * menuRatioY));
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-        Gdx.gl.glScissor(s2[0], s2[1], s1[0] - s2[0], s1[1] - s2[1]);
+        Gdx.gl.glScissor(s1[0], s1[1], s2[0], s2[1]);
         this.root.draw(av, new Rect(this.x + this.margin, this.y + this.margin - this.offset,
                 this.width - (this.margin * 2) - Menu.SCROLLBAR, h - (this.margin * 2)));
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
