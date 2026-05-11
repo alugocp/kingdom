@@ -36,7 +36,7 @@ public class UnitOptionsNode extends ListNode {
         for (Unit u : units) {
             this.previews
                     .add(new ModelNode(view.av, this.camera, view.getEnvironment(), u.getModelName(), u.getMaterial()));
-            this.units.add(((RowNode) u.getMenuContent(view, Optional.empty())).toListNode());
+            this.units.add(u.getMenuContent(view, Optional.empty()));
             this.buttons.add(new ButtonNode(view.av, "Choose", () -> click.accept(u)));
         }
         this.add(new SpacerNode(false)).add(new SubheaderNode(view.av, "Loading...").center())

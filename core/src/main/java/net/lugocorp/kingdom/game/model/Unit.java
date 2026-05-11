@@ -188,6 +188,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
+        final boolean isForRecruitment = !p.isPresent();
         final RowNode node = new RowNode();
         final BasicIconNode flavorMenu = new BasicIconNode(view.av, "guide-icon",
                 new ListNode()
@@ -196,28 +197,36 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
 
         // Unit stats section
         final ListNode col1 = new ListNode().add(new NameNode(view.av, this.name));
-        col1.add(new RowNode().addExact(40, flavorMenu)
-                .addExact(GlyphIconsNode.width(this.glyphs.size()), new GlyphIconsNode(view.av, this.glyphs.get()))
-                .add(this.getLeader().isPresent()
-                        ? new PlayerBadgeNode(view.av, this.getLeader().get())
-                        : new PlayerBadgeNode(view.av))
-                .add(new HoverTextNode(view.av, view.game.actions.getUnitActionLabel(this),
-                        new TextNode(view.av, view.game.actions.getUnitActionDescription(this)))))
-                .add(new SpacerNode(false).half())
-                .add(new RowNode()
-                        .add(new ResourceBarsNode(view.av,
-                                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
-                                        this.combat.health.getMax()),
-                                new ResourceBarsNode.Bar("Hunger", 0x7d4513, this.hunger.get(view),
-                                        this.hunger.getTurnsBeforeHunger())))
-                        .addExact(IconNode.SIDE, new HelperNode(view.av, new ListNode()
-                                .add(new SubheaderNode(view.av, "Health"))
-                                .add(new TextNode(view.av,
-                                        "If a unit's health bar hits zero then they disappear off the map."))
-                                .add(new SubheaderNode(view.av, "Hunger"))
-                                .add(new TextNode(view.av, String.format(
-                                        "The hunger bar increases each turn until it's full, then this unit will abandon you. This unit can clear its hunger bar by consuming %s.",
-                                        this.hunger.getPreferredFoods()))))));
+        final RowNode infoRow = new RowNode().addExact(40, flavorMenu)
+                .addExact(GlyphIconsNode.width(this.glyphs.size()), new GlyphIconsNode(view.av, this.glyphs.get()));
+        if (!isForRecruitment) {
+            infoRow.add(this.getLeader().isPresent()
+                    ? new PlayerBadgeNode(view.av, this.getLeader().get())
+                    : new PlayerBadgeNode(view.av))
+                    .add(new HoverTextNode(view.av, view.game.actions.getUnitActionLabel(this),
+                            new TextNode(view.av, view.game.actions.getUnitActionDescription(this))));
+        }
+        col1.add(infoRow);
+        if (!isForRecruitment) {
+            col1.add(new SpacerNode(false).half());
+        }
+        if (isForRecruitment) {
+            col1.add(new TextNode(view.av, String.format("%d max health", this.combat.health.getMax())))
+                    .add(new TextNode(view.av, String.format("%d max hunger", this.hunger.getTurnsBeforeHunger())));
+        } else {
+            col1.add(new RowNode().add(new ResourceBarsNode(view.av,
+                    new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax()),
+                    new ResourceBarsNode.Bar("Hunger", 0x7d4513, this.hunger.get(view),
+                            this.hunger.getTurnsBeforeHunger())))
+                    .addExact(IconNode.SIDE, new HelperNode(view.av, new ListNode()
+                            .add(new SubheaderNode(view.av, "Health"))
+                            .add(new TextNode(view.av,
+                                    "If a unit's health bar hits zero then they disappear off the map."))
+                            .add(new SubheaderNode(view.av, "Hunger"))
+                            .add(new TextNode(view.av, String.format(
+                                    "The hunger bar increases each turn until it's full, then this unit will abandon you. This unit can clear its hunger bar by consuming %s.",
+                                    this.hunger.getPreferredFoods()))))));
+        }
 
         // Actions / spells section
         final Point size = new Point(ActionNode.SIDE, ActionNode.SIDE);
@@ -298,10 +307,10 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
         if (this.getLeader().map((Player p1) -> p1.isHumanPlayer()).orElse(false)) {
             col3.add(new InventoryNode(view, this.haul, Optional.of(this.equipped), p.get().x, p.get().y));
         } else {
-            col3.add(new SubheaderNode(view.av, "Inventory"));
-            col3.add(new TextNode(view.av, String.format("Can equip up to %d items", this.equipped.getMax())));
-            col3.add(new TextNode(view.av, String.format("Can store up to %d items", this.haul.getMax())));
+            col3.add(new TextNode(view.av, String.format("%d equip slots", this.equipped.getMax())));
+            col3.add(new TextNode(view.av, String.format("%d bag space", this.haul.getMax())));
         }
-        return node.add(col1).addRatio(25, col2).add(col3);
+        node.add(col1).addRatio(25, col2).add(col3);
+        return isForRecruitment ? node.toListNode() : node;
     }
 }
