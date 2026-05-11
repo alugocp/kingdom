@@ -29,7 +29,7 @@ import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.menu.game.InventoryNode;
 import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
-import net.lugocorp.kingdom.menu.icon.HeaderDescNode;
+import net.lugocorp.kingdom.menu.icon.BasicIconNode;
 import net.lugocorp.kingdom.menu.icon.HelperNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.GridNode;
@@ -188,18 +188,20 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
         final RowNode node = new RowNode();
+        final BasicIconNode flavorMenu = new BasicIconNode(view.av, "guide-icon",
+                new ListNode()
+                        .add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString()))
+                        .add(new TextNode(view.av, this.desc)));
 
         // Unit stats section
         final ListNode col1 = new ListNode().add(new NameNode(view.av, this.name));
-        col1.add(new RowNode()
+        col1.add(new RowNode().addExact(40, flavorMenu)
                 .addExact(GlyphIconsNode.width(this.glyphs.size()), new GlyphIconsNode(view.av, this.glyphs.get()))
-                .add(new BadgeNode(view.av, this.species.color, ColorScheme.WHITE.hex, this.species.toString())))
-                .add(new RowNode().addExact(40, new HeaderDescNode(view.av, "guide-icon", "Description", this.desc))
-                        .add(this.getLeader().isPresent()
-                                ? new PlayerBadgeNode(view.av, this.getLeader().get())
-                                : new PlayerBadgeNode(view.av))
-                        .add(new HoverTextNode(view.av, view.game.actions.getUnitActionLabel(this),
-                                new TextNode(view.av, view.game.actions.getUnitActionDescription(this)))))
+                .add(this.getLeader().isPresent()
+                        ? new PlayerBadgeNode(view.av, this.getLeader().get())
+                        : new PlayerBadgeNode(view.av))
+                .add(new HoverTextNode(view.av, view.game.actions.getUnitActionLabel(this),
+                        new TextNode(view.av, view.game.actions.getUnitActionDescription(this)))))
                 .add(new RowNode()
                         .add(new ResourceBarsNode(view.av,
                                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
