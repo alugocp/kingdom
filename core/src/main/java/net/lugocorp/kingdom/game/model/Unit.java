@@ -35,6 +35,7 @@ import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.GridNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
+import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
 import net.lugocorp.kingdom.menu.text.HoverTextNode;
 import net.lugocorp.kingdom.menu.text.NameNode;
@@ -202,6 +203,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
                         : new PlayerBadgeNode(view.av))
                 .add(new HoverTextNode(view.av, view.game.actions.getUnitActionLabel(this),
                         new TextNode(view.av, view.game.actions.getUnitActionDescription(this)))))
+                .add(new SpacerNode(false).half())
                 .add(new RowNode()
                         .add(new ResourceBarsNode(view.av,
                                 new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
