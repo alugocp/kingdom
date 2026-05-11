@@ -40,6 +40,13 @@ public class MenuController implements InputProcessor {
     }
 
     /**
+     * Returns true if the provided Menu is associated with this MenuController
+     */
+    public boolean isMenu(Optional<Menu> menu) {
+        return this.getMenu.get().equals(menu);
+    }
+
+    /**
      * Returns true if the given Point falls within the current Menu
      */
     public boolean isInMenu(Point p) {

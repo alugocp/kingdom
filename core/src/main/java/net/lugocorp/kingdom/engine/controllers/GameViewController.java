@@ -117,6 +117,13 @@ public class GameViewController implements InputProcessor {
         this.view.centerOnPoint(p, false);
     }
 
+    /**
+     * Returns true if the given MenuController should take input
+     */
+    private boolean isMenuControllerActive(MenuController m) {
+        return !this.view.hud.popups.isDisplayed() || m.isMenu(this.view.hud.popups.get());
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
@@ -125,12 +132,15 @@ public class GameViewController implements InputProcessor {
 
         // Menu logic
         for (MenuController m : this.menus) {
-            if (m.touchDown(x, y, pointer, button)) {
+            if (this.isMenuControllerActive(m) && m.touchDown(x, y, pointer, button)) {
                 if (animating) {
                     m.cancel();
                 }
                 return true;
             }
+        }
+        if (this.view.hud.popups.isDisplayed()) {
+            return false;
         }
 
         // Do not click on the World if we've clicked on the Minimap
@@ -177,9 +187,12 @@ public class GameViewController implements InputProcessor {
     public boolean touchDragged​(int x, int y, int pointer) {
         // Menu logic
         for (MenuController m : this.menus) {
-            if (m.touchDragged(x, y, pointer)) {
+            if (this.isMenuControllerActive(m) && m.touchDragged(x, y, pointer)) {
                 return true;
             }
+        }
+        if (this.view.hud.popups.isDisplayed()) {
+            return false;
         }
 
         // Game World logic
@@ -207,11 +220,14 @@ public class GameViewController implements InputProcessor {
     public boolean scrolled(float dx, float dy) {
         // Menu logic
         for (MenuController m : this.menus) {
-            if (ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY()).map((Point p) -> m.isInMenu(p))
-                    .orElse(false)) {
+            if (this.isMenuControllerActive(m) && ViewportLogic.unproject(Gdx.input.getX(), Gdx.input.getY())
+                    .map((Point p) -> m.isInMenu(p)).orElse(false)) {
                 m.scrolled(0, dy);
                 return true;
             }
+        }
+        if (this.view.hud.popups.isDisplayed()) {
+            return false;
         }
 
         // Handle game interface
@@ -224,9 +240,12 @@ public class GameViewController implements InputProcessor {
     public boolean mouseMoved​(int x, int y) {
         // Menu logic
         for (MenuController m : this.menus) {
-            if (m.mouseMoved(x, y)) {
+            if (this.isMenuControllerActive(m) && m.mouseMoved(x, y)) {
                 return true;
             }
+        }
+        if (this.view.hud.popups.isDisplayed()) {
+            return false;
         }
 
         // Do not check the World if we're hovering over a permanent HUD element
@@ -251,6 +270,9 @@ public class GameViewController implements InputProcessor {
     @Override
     public boolean keyDown​(int keycode) {
         // TODO have the up/down and w/s keys affect menus if they're open?
+        if (this.view.hud.popups.isDisplayed()) {
+            return false;
+        }
 
         // WASD
         this.keys.down(keycode, Keys.W, () -> this.moveCamera(0, -GameViewController.SCROLL_SPEED));
@@ -272,9 +294,11 @@ public class GameViewController implements InputProcessor {
         this.keys.up(keycode);
 
         // Unit selection
-        this.keys.check(keycode, Keys.NUMPAD_ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
-        this.keys.check(keycode, Keys.ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
-        this.keys.check(keycode, Keys.TAB, () -> this.cycleUnits());
+        if (!this.view.hud.popups.isDisplayed()) {
+            this.keys.check(keycode, Keys.NUMPAD_ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
+            this.keys.check(keycode, Keys.ENTER, () -> this.view.hud.bot.turnButton.finishTurn(this.view, true));
+            this.keys.check(keycode, Keys.TAB, () -> this.cycleUnits());
+        }
         this.keys.check(keycode, Keys.ESCAPE, () -> {
             if (this.view.hud.popups.isDisplayed()) {
                 this.view.hud.popups.setDisplay(false);
@@ -285,7 +309,9 @@ public class GameViewController implements InputProcessor {
 
         // Menu logic
         for (MenuController m : this.menus) {
-            m.keyUp(keycode);
+            if (this.isMenuControllerActive(m)) {
+                m.keyUp(keycode);
+            }
         }
         return false;
     }

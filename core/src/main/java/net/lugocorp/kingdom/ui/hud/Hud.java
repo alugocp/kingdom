@@ -7,6 +7,8 @@ import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.settings.Settings;
 import net.lugocorp.kingdom.ui.tutorial.Tutorial;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,15 @@ public class Hud {
         this.bot.minimap.draw(view.av, view.getCenteredPoint());
         this.bot.tileMenu.draw(view.av);
         if (this.popups.isDisplayed()) {
+            // Shade the entire screen if there are popups
+            view.av.shapes.begin(ShapeType.Filled);
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            view.av.shapes.setColor(0f, 0f, 0f, 0.75f);
+            view.av.shapes.rect(0, 0, Coords.SIZE.x, Coords.SIZE.y);
+            view.av.shapes.end();
+
+            // Render the actual popup Menu
             this.popups.get().ifPresent((Menu m) -> m.draw(view.av));
         }
         this.tutorial.draw(view.av);
