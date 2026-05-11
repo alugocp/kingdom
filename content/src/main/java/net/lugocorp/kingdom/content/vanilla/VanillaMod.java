@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ai.goals.AttackEnemy;
 import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
+import net.lugocorp.kingdom.builtin.logic.BuildingLogic;
 import net.lugocorp.kingdom.builtin.logic.ItemLogic;
 import net.lugocorp.kingdom.builtin.logic.UnitLogic;
 import net.lugocorp.kingdom.content.Defs;
@@ -264,6 +265,11 @@ public class VanillaMod implements GameMod {
                     e.radius = 2;
                     return new SideEffect();
                 });
+        events.building.setDefaultHandler(Events.GetVisionEvent.class,
+                (GameView view, Building receiver, Events.GetVisionEvent e) -> {
+                    e.radius = 0;
+                    return new SideEffect();
+                });
 
         // GetsHungry
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver, Event event) -> new SideEffect()
@@ -354,6 +360,7 @@ public class VanillaMod implements GameMod {
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.setMinimapColor(0x000000);
+                    BuildingLogic.vision(events, e.blob, 3);
                     return new SideEffect();
                 });
 

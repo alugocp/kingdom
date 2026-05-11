@@ -131,8 +131,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
             for (EventHandler<T> handler : this.handlers.get(key)) {
                 effects.add(handler.handle(view, receiver, e));
             }
-        }
-        if (hasDefault) {
+        } else if (hasDefault) {
             return this.defaults.get(e.channel).handle(view, receiver, e);
         }
         return effects;

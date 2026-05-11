@@ -227,6 +227,7 @@ public class WorldGenerator {
             final Unit u = g.getInitialUnit(view, player, p.x, p.y);
             u.spawn(view);
             g.setLeader(view, tower, player);
+            tower.vision.set(view, player, tower, p);
         }
 
         progress.accept(100);

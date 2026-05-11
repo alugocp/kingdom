@@ -24,7 +24,7 @@ public class Vision {
         final Events.GetVisionEvent event = new Events.GetVisionEvent(player);
         final boolean isNight = view.game.mechanics.dayNight.isNight();
         receiver.handleEvent(view, event);
-        return event.cumulative(isNight);
+        return Math.max(0, event.cumulative(isNight));
     }
 
     /**
@@ -43,10 +43,13 @@ public class Vision {
      * Changes how far the associated Unit/Building can see
      */
     public void set(GameView view, Player player, EventReceiver receiver, Point center) {
+        final int radius = this.get(view, player, receiver);
         this.remove(player, view.game.world);
-        view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVision(t));
-        this.vision.add(center);
-        for (Point p : Hexagons.getNeighbors(center, this.get(view, player, receiver))) {
+        if (radius > 0) {
+            view.game.world.getTile(center).ifPresent((Tile t) -> player.incrementVision(t));
+            this.vision.add(center);
+        }
+        for (Point p : Hexagons.getNeighbors(center, radius)) {
             view.game.world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
             this.vision.add(p);
         }
