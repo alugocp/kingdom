@@ -19,6 +19,7 @@ import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,6 +34,7 @@ import java.util.function.Supplier;
 public class Patron extends Building {
     private static final int MIN_FAVOR = 1;
     private final Map<Player, Integer> favor = new HashMap<>();
+    @FieldSerializer.Optional("isPreferredUnitType")
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
     private Optional<Player> favorite = Optional.empty();
     private String preferenceIcon = "apple";
