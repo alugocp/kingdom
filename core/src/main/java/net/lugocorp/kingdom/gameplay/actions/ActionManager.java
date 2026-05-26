@@ -18,6 +18,17 @@ public class ActionManager {
     private final Map<Unit, Action> actions = new HashMap<>();
 
     /**
+     * Call this when we're reloading this instance from saved game state
+     */
+    public void rehydrateFromKryo(GameView view) {
+        for (Action a : this.actions.values()) {
+            if (a instanceof MoveAction) {
+                ((MoveAction) a).rehydrateFromKryo(view);
+            }
+        }
+    }
+
+    /**
      * Run this function at the end of the turn (purges stale Actions)
      */
     public void turnTransition(Player ending, Player starting) {

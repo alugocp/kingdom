@@ -66,9 +66,10 @@ public class Game {
      * Call this function on a Game that has been saved to a file and must now be
      * reloaded
      */
-    public void rehydrateFromKryo(AudioVideo av, AllEventHandlers events, Generator generator) {
+    public void rehydrateFromKryo(GameView view, AudioVideo av, AllEventHandlers events, Generator generator) {
         this.events = events;
         this.generator = generator;
+        this.actions.rehydrateFromKryo(view);
         this.mechanics.auction.rehydrateFromKryo();
         for (int x = 0; x < this.world.getWidth(); x++) {
             for (int y = 0; y < this.world.getHeight(); y++) {
