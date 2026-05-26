@@ -12,7 +12,7 @@ public class Wishlists {
     public final UnitWishlist units;
 
     public Wishlists(GameView view, CompPlayer player) {
-        this.artifacts = new ArtifactWishlist(view, player);
+        this.artifacts = new ArtifactWishlist(view.game, player);
         this.patrons = new PatronWishlist(view.game, player.getActor());
         this.units = new UnitWishlist(view.game, player.getActor());
         this.glyphs = new GlyphWishlist(player.getActor());

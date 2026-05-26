@@ -34,9 +34,9 @@ import java.util.function.Supplier;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends Entity implements MenuSubject, Spawnable {
-    @FieldSerializer.Optional("getTile")
-    private final Supplier<Tile> getTile;
     private final CoordUserData userData;
+    @FieldSerializer.Optional("getTile")
+    private Supplier<Tile> getTile;
     private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;
     public Optional<Inventory> items = Optional.empty();
@@ -56,6 +56,14 @@ public class Building extends Entity implements MenuSubject, Spawnable {
         super(null, 0, 0);
         this.userData = null;
         this.getTile = null;
+    }
+
+    /**
+     * Call this when we're reloading this instance from saved game state
+     */
+    public void rehydrateBuildingFromKryo(Supplier<Tile> getTile) {
+        this.getTile = getTile;
+        this.userData.rehydrateFromKryo(() -> !this.getTile.get().isVisible());
     }
 
     /** {@inheritdoc} */

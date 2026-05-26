@@ -8,7 +8,7 @@ import java.util.function.Supplier;
  */
 public class CoordUserData {
     @FieldSerializer.Optional("getLowVisibility")
-    private final Supplier<Boolean> getLowVisibility;
+    private Supplier<Boolean> getLowVisibility;
     public Point point = new Point(0, 0);
 
     public CoordUserData(Supplier<Boolean> getLowVisibility) {
@@ -18,6 +18,13 @@ public class CoordUserData {
     // This is for Kryo purposes only
     public CoordUserData() {
         this.getLowVisibility = null;
+    }
+
+    /**
+     * Call this when we're reloading this instance from saved game state
+     */
+    public void rehydrateFromKryo(Supplier<Boolean> getLowVisibility) {
+        this.getLowVisibility = getLowVisibility;
     }
 
     /**

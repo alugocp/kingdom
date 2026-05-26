@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.function.Supplier;
 
 /**
@@ -9,7 +8,6 @@ import java.util.function.Supplier;
  * relevant generator Events to instantiate each new object.
  */
 public class Generator {
-    @FieldSerializer.Optional("view")
     private final GameView view;
 
     public Generator(GameView view) {
@@ -69,10 +67,18 @@ public class Generator {
      * Generates a new Patron
      */
     public Patron patron(String name, int x, int y) {
+        final Patron p = this.patronDryRun(name, x, y);
+        this.view.game.mechanics.patronage.addPatron(p);
+        return p;
+    }
+
+    /**
+     * Generates a new Patron without registering them to the Patron index
+     */
+    public Patron patronDryRun(String name, int x, int y) {
         final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
         final Events.GeneratePatronEvent e = new Events.GeneratePatronEvent(new Patron(name, x, y, getTile));
         this.view.game.events.patron.handle(this.view, e.blob, e);
-        this.view.game.mechanics.patronage.addPatron(e.blob);
         return e.blob;
     }
 

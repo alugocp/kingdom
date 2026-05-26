@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Domain;
 import net.lugocorp.kingdom.game.properties.EntityType;
@@ -52,6 +53,13 @@ public class Patron extends Building {
      */
     public Patron() {
         super(null, 0, 0, null);
+    }
+
+    /**
+     * Call this when we're reloading this instance from saved game state
+     */
+    public void rehydratePatronFromKryo(Game game) {
+        this.isPreferredUnitType = game.generator.patronDryRun(this.name, 0, 0).isPreferredUnitType;
     }
 
     /** {@inheritdoc} */

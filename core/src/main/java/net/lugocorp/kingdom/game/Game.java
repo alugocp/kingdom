@@ -2,10 +2,10 @@ package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorPool;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Generator;
+import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -69,11 +69,23 @@ public class Game {
     public void rehydrateFromKryo(AudioVideo av, AllEventHandlers events, Generator generator) {
         this.events = events;
         this.generator = generator;
-        for (Modellable m : this.world.getModellables(true, Optional.empty())) {
-            m.rehydrateFromKryo(av);
+        this.mechanics.auction.rehydrateFromKryo();
+        for (int x = 0; x < this.world.getWidth(); x++) {
+            for (int y = 0; y < this.world.getHeight(); y++) {
+                final Tile t = this.world.getTile(x, y).get();
+                t.rehydrateFromKryo(av);
+                t.unit.ifPresent((Unit u) -> {
+                    u.rehydrateFromKryo(av);
+                    u.rehydrateUnitFromKryo();
+                });
+                t.building.ifPresent((Building b) -> {
+                    b.rehydrateFromKryo(av);
+                    b.rehydrateBuildingFromKryo(() -> t);
+                });
+            }
         }
-        for (Modellable m : this.world.getModellables(false, Optional.empty())) {
-            m.rehydrateFromKryo(av);
+        for (Patron p : this.mechanics.patronage) {
+            p.rehydratePatronFromKryo(this);
         }
     }
 
