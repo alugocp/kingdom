@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.layers.Entity;
+import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -12,6 +13,7 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
@@ -29,6 +31,17 @@ import java.util.function.Supplier;
  * This class contains utility functions for writing new Ability effects
  */
 public class AbilityLogic {
+
+    /**
+     * Sets the Ability's description to a flat string
+     */
+    public static StratifiedPayload<Ability, Events.GetDescriptionEvent> desc(String desc) {
+        return new StratifiedPayload<>(Events.GetDescriptionEvent.class,
+                (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                    e.desc = desc;
+                    return new SideEffect();
+                });
+    }
 
     /**
      * Attack ability with variable Damage based on the target

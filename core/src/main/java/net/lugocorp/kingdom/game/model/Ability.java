@@ -23,7 +23,6 @@ public class Ability implements EventReceiver, MenuSubject {
     private String icon = "apple";
     public final Unit wielder;
     public final String name;
-    public String desc = "";
 
     Ability(Unit wielder, String name) {
         this.wielder = wielder;
@@ -36,6 +35,15 @@ public class Ability implements EventReceiver, MenuSubject {
     public Ability() {
         this.wielder = null;
         this.name = null;
+    }
+
+    /**
+     * Returns a description for this Ability
+     */
+    public String getDescription(GameView view) {
+        final Events.GetDescriptionEvent e = new Events.GetDescriptionEvent();
+        this.handleEvent(view, e);
+        return e.desc;
     }
 
     /**
@@ -110,8 +118,8 @@ public class Ability implements EventReceiver, MenuSubject {
                     && canUnitDoThis) ? ActionNode.MODE_ACTIVE : ActionNode.MODE_DISABLED;
         }
         return new ActionNode(view.av, this.name, this.icon, this.shortcut,
-                Optional.of(this.isActive(view) ? "Exhaustive action" : "Passive ability"), Optional.of(this.desc),
-                () -> {
+                Optional.of(this.isActive(view) ? "Exhaustive action" : "Passive ability"),
+                Optional.of(this.getDescription(view)), () -> {
                     this.activate(view).execute();
                     view.hud.bot.tileMenu.refresh();
                 }).setMode(mode).setRecolor(this.recolor);

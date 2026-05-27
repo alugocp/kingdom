@@ -126,6 +126,13 @@ public class Events {
     }
 
     /**
+     * Generates the description for any given EventReceiver
+     */
+    public static class GetDescriptionEvent extends Event {
+        public String desc = "";
+    }
+
+    /**
      * Collects how far a Unit or Building can see
      */
     public static class GetVisionEvent extends Event {
