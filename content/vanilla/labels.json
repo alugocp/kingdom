@@ -92,7 +92,6 @@
             "raider",
             "merchant",
             "veteran",
-            "devout",
             "sentinel",
             "usurper",
             "forager",
@@ -258,7 +257,6 @@
             "The Raider",
             "The Merchant",
             "The Veteran",
-            "The Devout",
             "The Sentinel",
             "The Usurper",
             "The Forager"

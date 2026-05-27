@@ -245,7 +245,6 @@ public class VanillaMod implements GameMod {
         sprites.register(Labels.asset_raider, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 0);
         sprites.register(Labels.asset_merchant, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 0);
         sprites.register(Labels.asset_veteran, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 0);
-        sprites.register(Labels.asset_devout, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 3, 0);
         sprites.register(Labels.asset_sentinel, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 0, 1);
         sprites.register(Labels.asset_usurper, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 1, 1);
         sprites.register(Labels.asset_forager, Labels.asset_fates, FateNode.WIDTH, FateNode.HEIGHT, 2, 1);
@@ -1178,33 +1177,6 @@ public class VanillaMod implements GameMod {
                 .add(Events.RecruitNewUnitEvent.class, (GameView view, Fate receiver, Events.RecruitNewUnitEvent e) -> {
                     if (e.unit.glyphs.has(Glyph.BATTLE)) {
                         receiver.getPlayer().addUnitPoints(view, e.unit.getPoint(), 15);
-                    }
-                    return new SideEffect();
-                });
-
-        // The Devout
-        new Stratified<Fate>(events.fate, Labels.fate_devout)
-                .add(Events.GenerateFateEvent.class, (GameView view, Fate receiver, Events.GenerateFateEvent e) -> {
-                    e.blob.image = Optional.of(Labels.asset_devout);
-                    e.blob.desc.add("Playstyle: Patron collection");
-                    e.blob.desc.add("• Your active patrons generate +6 unit points");
-                    e.blob.desc.add("• Your units generate +3 favor");
-                    return new SideEffect();
-                }).add(Events.GameStartEvent.class, (GameView view, Fate receiver, Events.GameStartEvent e) -> {
-                    view.game.events.signals.addListener(Events.GenerateFavorEvent.class, receiver);
-                    return new SideEffect();
-                }).add(Events.EndOfTurnEvent.class, (GameView view, Fate receiver, Events.EndOfTurnEvent e) -> {
-                    for (Patron p : view.game.mechanics.patronage) {
-                        if (p.getFavoritePlayer().map((Player p1) -> receiver.getPlayer().equals(p1)).orElse(false)) {
-                            receiver.getPlayer().addUnitPoints(view, p.getPoint(), 6);
-                        }
-                    }
-                    return new SideEffect();
-                });
-        new Stratified<Fate>(events.fate, Labels.fate_devout).add(Events.GenerateFavorEvent.class,
-                (GameView view, Fate receiver, Events.GenerateFavorEvent e) -> {
-                    if (e.unit.leadership.hasFate(receiver)) {
-                        e.favor += 3;
                     }
                     return new SideEffect();
                 });

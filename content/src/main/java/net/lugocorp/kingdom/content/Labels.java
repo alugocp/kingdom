@@ -97,7 +97,6 @@ public class Labels {
     public static final String asset_raider = "raider";
     public static final String asset_merchant = "merchant";
     public static final String asset_veteran = "veteran";
-    public static final String asset_devout = "devout";
     public static final String asset_sentinel = "sentinel";
     public static final String asset_usurper = "usurper";
     public static final String asset_forager = "forager";
@@ -251,7 +250,6 @@ public class Labels {
     public static final String fate_raider = "The Raider";
     public static final String fate_merchant = "The Merchant";
     public static final String fate_veteran = "The Veteran";
-    public static final String fate_devout = "The Devout";
     public static final String fate_sentinel = "The Sentinel";
     public static final String fate_usurper = "The Usurper";
     public static final String fate_forager = "The Forager";
