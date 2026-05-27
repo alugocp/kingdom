@@ -15,6 +15,14 @@ public class Stratified<T extends EventReceiver> {
     }
 
     /**
+     * Adds an EventHandler to this instance's stratifier using a StratifiedPayload
+     */
+    public <E extends Event> Stratified<T> add(StratifiedPayload<T, E> payload) {
+        this.bundle.addEventHandler(this.stratifier, payload.eventClass, payload.handler);
+        return this;
+    }
+
+    /**
      * Adds an EventHandler to this instance's stratifier
      */
     public <E extends Event> Stratified<T> add(Class<E> eventClass, SingleEventHandler<T, E> handler) {

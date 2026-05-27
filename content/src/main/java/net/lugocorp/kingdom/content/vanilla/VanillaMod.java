@@ -360,9 +360,8 @@ public class VanillaMod implements GameMod {
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.setMinimapColor(0x000000);
-                    BuildingLogic.vision(events, e.blob, 3);
                     return new SideEffect();
-                });
+                }).add(BuildingLogic.vision(3));
 
         // Mine
         new Stratified<Building>(events.building, Labels.building_mine).add(Events.GenerateBuildingEvent.class,
@@ -1423,8 +1422,8 @@ public class VanillaMod implements GameMod {
         // Faustus
         // Maekuro the Mighty
         // Garudee
-        new Stratified<Unit>(events.unit, Labels.unit_garudee).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_garudee)
+                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Garuda artilleryman spits pebbles at invaders";
                     e.blob.setModelInstance(view.av, "garudee");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_pebble_shot,
@@ -1433,9 +1432,8 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.DEFENSE);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_garuda;
-                    UnitLogic.speed(events, e.blob, 1);
                     return new SideEffect();
-                });
+                }).add(UnitLogic.speed(1));
 
         // Pebbles
         // Magdalena
@@ -1543,8 +1541,8 @@ public class VanillaMod implements GameMod {
         // Grizzlemane the Mycoweaver
         // Magicad
         // The Druid
-        new Stratified<Unit>(events.unit, Labels.unit_druid).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_druid)
+                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A mysterious Druid who rarely speaks";
                     e.blob.setModelInstance(view.av, "druid");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_forest,
@@ -1554,9 +1552,8 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_sprite;
-                    UnitLogic.vision(events, e.blob, 4);
                     return new SideEffect();
-                });
+                }).add(UnitLogic.vision(4));
 
         // Bluefeathers
         // Broker Quercia
@@ -1658,8 +1655,8 @@ public class VanillaMod implements GameMod {
         // Xella the Accursed
         // Svelta Luktegress
         // Al-Fikra
-        new Stratified<Unit>(events.unit, Labels.unit_al_fikra).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_al_fikra)
+                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
                     e.blob.setModelInstance(view.av, "alfikra");
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
@@ -1668,10 +1665,8 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_tulpa;
-                    UnitLogic.speed(events, e.blob, 3);
-                    UnitLogic.vision(events, e.blob, 4);
                     return new SideEffect();
-                });
+                }).add(UnitLogic.speed(3)).add(UnitLogic.vision(4));
 
         // Goldtooth
         // The Necromancer
@@ -1741,8 +1736,8 @@ public class VanillaMod implements GameMod {
         // Photali
         // Batatita
         // Razma
-        new Stratified<Unit>(events.unit, Labels.unit_razma).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_razma)
+                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A wandering mystic and trader";
                     e.blob.setModelInstance(view.av, "alfikra");
                     e.blob.setMaterial("razma");
@@ -1754,9 +1749,8 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_human;
-                    UnitLogic.speed(events, e.blob, 3);
                     return new SideEffect();
-                });
+                }).add(UnitLogic.speed(3));
 
         // Theressa the Rover
         //
@@ -1766,8 +1760,8 @@ public class VanillaMod implements GameMod {
         // Alaistar and Wurmdel
         // Mi'chalb Lightfoot
         // Ghastly Thrall
-        new Stratified<Unit>(events.unit, Labels.unit_ghastly_thrall).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_ghastly_thrall)
+                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.doNotAddToGlyphPool();
                     e.blob.desc = "A terrifying undead warrior risen by those skilled in the dark arts";
                     e.blob.setModelInstance(view.av, "skeleton");
@@ -1776,9 +1770,8 @@ public class VanillaMod implements GameMod {
                     e.blob.glyphs.set(Glyph.BATTLE);
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_undead;
-                    UnitLogic.speed(events, e.blob, 100);
                     return new SideEffect();
-                });
+                }).add(UnitLogic.speed(100));
 
         /**
          * SECTION Abilities
