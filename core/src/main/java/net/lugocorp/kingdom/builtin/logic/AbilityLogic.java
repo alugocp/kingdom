@@ -124,8 +124,15 @@ public class AbilityLogic {
     /**
      * Simpler version of attackAndEffect()
      */
-    public static SideEffect attack(GameView view, Unit attacker, Damage dmg, int range) {
-        return AbilityLogic.attackAndEffect(view, attacker, dmg, range, Optional.empty());
+    public static StratifiedPayload[] attack(Damage dmg, int range) {
+        return new StratifiedPayload[]{
+                new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, dmg, range, Optional.empty())),
+                AbilityLogic.desc(String.format("Deals %s to %s", dmg,
+                        range == 1
+                                ? "a select melee target"
+                                : String.format("a select target up to %d tiles away", range)))};
     }
 
     /**

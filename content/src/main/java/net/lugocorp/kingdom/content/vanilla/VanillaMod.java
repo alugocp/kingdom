@@ -1799,18 +1799,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bash);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 12 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(12), 1));
+                }).add(AbilityLogic.attack(new Damage(12), 1));
 
         // Bite
         new Stratified<Ability>(events.ability, Labels.ability_bite).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bite);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 5 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(5), 1));
+                }).add(AbilityLogic.attack(new Damage(5), 1));
 
         // Build Healing Fountain
         new Stratified<Ability>(events.ability, Labels.ability_build_healing_fountain)
@@ -2049,9 +2045,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 8 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(8), 3));
+                }).add(AbilityLogic.attack(new Damage(8), 3));
 
         // Fire Cannon
         new Stratified<Ability>(events.ability, Labels.ability_fire_cannon).add(Events.GenerateAbilityEvent.class,
@@ -2452,9 +2446,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball, 0xdbc626, 0x53cb51);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 8 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(8), 3));
+                }).add(AbilityLogic.attack(new Damage(8), 3));
 
         // Night Vision
         new Stratified<Ability>(events.ability, Labels.ability_night_vision).add(Events.GenerateAbilityEvent.class,
@@ -2472,9 +2464,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 5 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(5), 3));
+                }).add(AbilityLogic.attack(new Damage(5), 3));
 
         // Pick Apples
         new Stratified<Ability>(events.ability, Labels.ability_pick_apples).add(Events.GenerateAbilityEvent.class,
@@ -2554,9 +2544,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_smash);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 8 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(8), 1));
+                }).add(AbilityLogic.attack(new Damage(8), 1));
 
         // Raise Undead
         new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
@@ -2712,9 +2700,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_slime_shot);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 8 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(8), 3));
+                }).add(AbilityLogic.attack(new Damage(8), 3));
 
         // Smash
         new Stratified<Ability>(events.ability, Labels.ability_smash).add(Events.GenerateAbilityEvent.class,
@@ -2788,9 +2774,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_axe_swing);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 12 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(12), 1));
+                }).add(AbilityLogic.attack(new Damage(12), 1));
 
         // Sword Slash
         new Stratified<Ability>(events.ability, Labels.ability_sword_slash).add(Events.GenerateAbilityEvent.class,
@@ -2798,9 +2782,7 @@ public class VanillaMod implements GameMod {
                     Damage dmg = new Damage(8);
                     e.blob.setIcon(Labels.asset_sword_slash);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 8 damage")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.attack(view,
-                                receiver.wielder, new Damage(8), 1));
+                }).add(AbilityLogic.attack(new Damage(8), 1));
 
         // Thorny Skin
         new Stratified<Ability>(events.ability, Labels.ability_thorny_skin).add(Events.GenerateAbilityEvent.class,
