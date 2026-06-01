@@ -11,6 +11,11 @@ public class Damage {
         this.base = base;
     }
 
+    public Damage(Damage dmg) {
+        this.multiplier = dmg.multiplier;
+        this.base = dmg.base;
+    }
+
     /**
      * Returns the final value of Damage dealt, accounting for critical hits
      */

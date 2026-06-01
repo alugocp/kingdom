@@ -17,8 +17,10 @@ import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
+import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import com.badlogic.gdx.math.Vector3;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -75,6 +77,16 @@ public class AbilityLogic {
             final Damage dmg = getDamage.apply(view.game.world.getTile(p).get());
             return new SideEffect().add(attacker.combat.attack(view, targets.get(p), dmg))
                     .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
+        }, (Tile t) -> {
+            if (!t.unit.isPresent() && !t.building.isPresent()) {
+                return Optional.empty();
+            }
+            final Damage dmg = getDamage.apply(t);
+            final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
+            attacker.handleEvent(view, new Events.AttackEvent(attacker, target, dmg));
+            return Optional.of(new LabelOverlay(t.getPoint(),
+                    new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
+                    dmg.toString()));
         });
     }
 
@@ -118,6 +130,16 @@ public class AbilityLogic {
                 }
             }
             return effects;
+        }, (Tile t) -> {
+            if (!t.unit.isPresent() && !t.building.isPresent()) {
+                return Optional.empty();
+            }
+            final Damage dmgLabel = new Damage(dmg);
+            final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
+            attacker.handleEvent(view, new Events.AttackEvent(attacker, target, dmgLabel));
+            return Optional.of(new LabelOverlay(t.getPoint(),
+                    new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
+                    dmgLabel.toString()));
         });
     }
 

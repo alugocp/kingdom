@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -60,6 +62,12 @@ public abstract class Player {
      */
     public abstract SideEffect select(GameView view, Set<Point> points, String error,
             Function<Point, SideEffect> action);
+
+    /**
+     * Like select() but also specifies a hover label function
+     */
+    public abstract SideEffect select(GameView view, Set<Point> points, String error,
+            Function<Point, SideEffect> action, Function<Tile, Optional<LabelOverlay>> hover);
 
     /**
      * Returns the number of tiles under this Player's control

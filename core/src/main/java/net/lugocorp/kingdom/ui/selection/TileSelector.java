@@ -4,11 +4,13 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * This class wraps the TileSelectMode logic for external use
@@ -57,6 +59,18 @@ public class TileSelector {
             return;
         }
         this.setMode(new TileSetSelectMode(points, action));
+    }
+
+    /**
+     * Sets TileSetSelectMode mode with a hover label function
+     */
+    public final void select(Set<Point> points, String error, Consumer<Point> action,
+            Function<Tile, Optional<LabelOverlay>> hover) {
+        if (points.size() == 0) {
+            this.view.hud.logger.error(error);
+            return;
+        }
+        this.setMode(new TileSetSelectMode(points, action, hover));
     }
 
     /**

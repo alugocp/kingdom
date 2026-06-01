@@ -1,18 +1,30 @@
 package net.lugocorp.kingdom.ui.selection;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * This TileSelector allows us to select one Tile from a finite Set
  */
 class TileSetSelectMode extends TileSelectMode {
+    private final Optional<Function<Tile, Optional<LabelOverlay>>> hover;
     private final Consumer<Point> action;
     private final Set<Point> points;
+    private Optional<LabelOverlay> overlay = Optional.empty();
 
     TileSetSelectMode(Set<Point> points, Consumer<Point> action) {
+        this.hover = Optional.empty();
+        this.points = points;
+        this.action = action;
+    }
+
+    TileSetSelectMode(Set<Point> points, Consumer<Point> action, Function<Tile, Optional<LabelOverlay>> hover) {
+        this.hover = Optional.of(hover);
         this.points = points;
         this.action = action;
     }
@@ -50,5 +62,18 @@ class TileSetSelectMode extends TileSelectMode {
         for (Point p : this.points) {
             view.game.world.getTile(p).ifPresent((Tile t) -> t.setOption(false));
         }
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    void hoverTile(GameView view, Point p) {
+        this.hover.ifPresent((Function<Tile, Optional<LabelOverlay>> func) -> {
+            view.game.world.getTile(p).ifPresent((Tile t) -> {
+                final Optional<LabelOverlay> label = func.apply(t);
+                this.overlay.ifPresent((LabelOverlay o) -> o.dispel());
+                label.ifPresent((LabelOverlay o) -> view.overlays.add(o));
+                this.overlay = label;
+            });
+        });
     }
 }

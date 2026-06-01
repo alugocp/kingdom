@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.BatchCounter;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -117,5 +118,12 @@ public class CompPlayer extends Player {
 
         // We've selected our targets, so we're ready to execute now
         return action.apply(SelectedTargets.instance.popPath());
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public SideEffect select(GameView view, Set<Point> points, String error, Function<Point, SideEffect> action,
+            Function<Tile, Optional<LabelOverlay>> hover) {
+        return this.select(view, points, error, action);
     }
 }
