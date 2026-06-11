@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Optional;
 import java.util.function.Consumer;
+
 /**
  * This class handles all the Game runtime logic
  */

@@ -75,6 +75,10 @@ public class TurnButton extends Menu {
             if (clicked) {
                 view.av.loaders.sounds.play("sfx/error");
             }
+        } else if (view.animations.inProgress()) {
+            if (clicked) {
+                view.hud.logger.error("Animations are still in progress");
+            }
         } else {
             view.av.loaders.sounds.play("sfx/end-turn");
             view.hud.logger.log("You have ended your turn");

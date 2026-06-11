@@ -137,12 +137,21 @@ public class ActionManager {
             // Handle UI / pan to next Unit / auto complete
             if (u.leadership.belongsToHuman() && !this.goToNextUnit(view)) {
                 view.hud.bot.turnButton.update(true, true);
-                if (view.av.settings.getAutoComplete()) {
-                    view.hud.bot.turnButton.finishTurn(view, false);
-                }
             }
         }
+    }
 
+    /**
+     * Returns true if all of the given Player's Units have acted this turn
+     */
+    public boolean allUnitsHaveActions(Player player) {
+        int counter = 0;
+        for (Unit u : this.actions.keySet()) {
+            if (u.leadership.belongsToPlayer(player)) {
+                counter++;
+            }
+        }
+        return counter == player.units.size();
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.Optional;
  */
 public class TurnStructure {
     private final Turn turn = new Turn();
+    private boolean shouldCheckForAutoTurnEnd = true;
 
     /**
      * Returns the current Turn
@@ -196,10 +197,19 @@ public class TurnStructure {
     }
 
     /**
+     * Returns true if the human Player's turn can auto end
+     */
+    private boolean checkAutoTurnEnd(GameView view) {
+        return this.turn.getPlayer().isHumanPlayer() && !view.hud.popups.get().isPresent()
+                && !view.animations.inProgress() && view.game.actions.allUnitsHaveActions(view.game.human);
+    }
+
+    /**
      * Performs some action each frame to keep the TurnStructure flowing
      */
     public void processTurnByFrame(GameView view) {
         if (this.turn.getState() == TurnState.TRANSITION) {
+            // Logic for in between turns
             if (view.game.future.checkFutureTicks(view) && !view.animations.inProgress()) {
                 this.turn.activate();
                 view.hud.bot.tileMenu.refresh();
@@ -207,7 +217,15 @@ public class TurnStructure {
                     view.hud.bot.turnButton.update(true, false);
                 }
             }
-        } else if (!this.turn.getPlayer().isHumanPlayer()) {
+            this.shouldCheckForAutoTurnEnd = true;
+        } else if (this.turn.getPlayer().isHumanPlayer()) {
+            // Check for auto turn end with the HumanPlayer
+            if (this.shouldCheckForAutoTurnEnd && view.av.settings.getAutoComplete() && this.checkAutoTurnEnd(view)) {
+                view.hud.bot.turnButton.finishTurn(view, false);
+                this.shouldCheckForAutoTurnEnd = false;
+            }
+        } else {
+            // Handle the CompPlayer's turn
             final CompPlayer player = (CompPlayer) this.turn.getPlayer();
             if (player.makeDecisions(view)) {
                 view.hud.bot.tileMenu.refresh();
