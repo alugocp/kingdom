@@ -99,7 +99,7 @@ public class Actor {
         for (Unit u : units.getBatch()) {
             // Skip this Unit if they aren't present in the plan set or no longer exist in
             // the World
-            if (!this.plans.containsKey(u) || !u.doesExistInWorld()) {
+            if (!this.plans.containsKey(u) || !u.doesExistInWorld() || u.sleep.isSleeping()) {
                 continue;
             }
 
