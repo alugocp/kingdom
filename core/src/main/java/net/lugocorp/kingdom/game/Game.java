@@ -37,6 +37,7 @@ public class Game {
     public final ActionManager actions = new ActionManager();
     public final ColorPool colorPool = new ColorPool();
     public final Mechanics mechanics = new Mechanics();
+    public final Generator generator = new Generator();
     public final List<CompPlayer> comps = new ArrayList<>();
     public final Set<Tower> towers = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
@@ -45,8 +46,6 @@ public class Game {
     public final HumanPlayer human;
     @FieldSerializer.Optional("events")
     public AllEventHandlers events;
-    @FieldSerializer.Optional("generator")
-    public Generator generator;
 
     public Game(AllEventHandlers events, OffsetTime startTime) {
         this.events = events;
@@ -63,12 +62,20 @@ public class Game {
     }
 
     /**
+     * Post-constructor initialization of Game state
+     */
+    public void init(GameView view) {
+        this.generator.setGameView(view);
+        this.mechanics.init(this);
+    }
+
+    /**
      * Call this function on a Game that has been saved to a file and must now be
      * reloaded
      */
-    public void rehydrateFromKryo(GameView view, AudioVideo av, AllEventHandlers events, Generator generator) {
+    public void rehydrateFromKryo(GameView view, AudioVideo av, AllEventHandlers events) {
         this.events = events;
-        this.generator = generator;
+        this.generator.setGameView(view);
         this.actions.rehydrateFromKryo(view);
         this.mechanics.auction.rehydrateFromKryo();
         for (int x = 0; x < this.world.getWidth(); x++) {

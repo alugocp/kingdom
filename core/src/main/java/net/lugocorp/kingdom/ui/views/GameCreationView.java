@@ -3,7 +3,6 @@ import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Fate;
-import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.world.WorldGenOptions;
 import net.lugocorp.kingdom.game.world.WorldSize;
@@ -57,8 +56,7 @@ class GameCreationView implements View {
         // Initialize Game and GameView state for world generation logic
         final Game game = new Game(params.events, OffsetTime.now());
         this.view = new GameView(params, game);
-        game.generator = new Generator(this.view);
-        game.mechanics.init(game);
+        game.init(this.view);
         this.setWorldSize(0);
 
         // Initialize GameCreationView UI components

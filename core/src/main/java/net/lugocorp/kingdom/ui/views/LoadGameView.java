@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.game.model.Generator;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
@@ -55,7 +54,7 @@ class LoadGameView implements View {
                         try {
                             Game game = this.params.serial.loadGame(savedGame);
                             GameView view = new GameView(this.params, game);
-                            game.rehydrateFromKryo(view, this.params.av, this.params.events, new Generator(view));
+                            game.rehydrateFromKryo(view, this.params.av, this.params.events);
                             this.navigate.accept(view);
                         } catch (Exception e) {
                             e.printStackTrace();
