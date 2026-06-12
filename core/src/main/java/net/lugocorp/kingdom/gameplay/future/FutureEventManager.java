@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.gameplay.future;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -31,23 +32,26 @@ public class FutureEventManager {
      * Sets up an Event that will trigger on the given EventReceiver in the given
      * number of turns
      */
-    public void addFutureTick(String channel, EventReceiver receiver, int interval, boolean repeat) {
+    public void addFutureTick(String channel, EventReceiver receiver, int interval, boolean repeat,
+            Optional<Player> playersTurn) {
         if (interval < 1) {
             throw new RuntimeException("You cannot set up a tick for the current or any past turns");
         }
-        final int turn = this.game.mechanics.turns.getTurn().getCounter() + interval;
+        final int diff = playersTurn
+                .map((Player p) -> this.game.mechanics.turns.getTurn().hasPlayerHadTurnYet(p) ? 1 : 0).orElse(0);
+        final int turn = this.game.mechanics.turns.getTurn().getCounter() + interval + diff;
         if (!this.futures.containsKey(turn)) {
             this.futures.put(turn, new BatchCounter<FutureTick>(20));
         }
-        this.futures.get(turn).list().add(new FutureTick(receiver, channel, turn, interval, repeat));
+        this.futures.get(turn).list().add(new FutureTick(receiver, channel, turn, interval, repeat, playersTurn));
     }
 
     /**
      * Calls into addFutureTick() with an Event class
      */
-    public <E extends Event> void addFutureTick(Class<E> channel, EventReceiver receiver, int interval,
-            boolean repeat) {
-        this.addFutureTick(channel.getSimpleName(), receiver, interval, repeat);
+    public <E extends Event> void addFutureTick(Class<E> channel, EventReceiver receiver, int interval, boolean repeat,
+            Optional<Player> playersTurn) {
+        this.addFutureTick(channel.getSimpleName(), receiver, interval, repeat, playersTurn);
     }
 
     /**
@@ -83,14 +87,14 @@ public class FutureEventManager {
     }
 
     /**
-     * Removes all future Events registered for the given receiver on a single
-     * channel
+     * Removes all upcoming FutureTicks registered for the given receiver on a
+     * single channel
      */
-    public void removeFutureEvents(EventReceiver receiver, String channel) {
+    public void removeFutureTicks(EventReceiver receiver, String channel) {
         for (BatchCounter<FutureTick> ticks : this.futures.values()) {
             int a = 0;
             while (a < ticks.list().size()) {
-                FutureTick ft = ticks.list().get(a);
+                final FutureTick ft = ticks.list().get(a);
                 if (ft.receiver == receiver && ft.channel.equals(channel)) {
                     ticks.processRemoval(a);
                     ticks.list().remove(a);
@@ -99,6 +103,13 @@ public class FutureEventManager {
                 }
             }
         }
+    }
+
+    /**
+     * Removes all upcoming FutureTicks registered to the given receiver and channel
+     */
+    public <E extends Event> void removeFutureTicks(EventReceiver receiver, Class<E> channel) {
+        this.removeFutureTicks(receiver, channel.getSimpleName());
     }
 
     /**
@@ -121,7 +132,7 @@ public class FutureEventManager {
         Events.RepeatedEvent e = new Events.RepeatedEvent(ft.channel, ft.interval, ft.repeat);
         ft.receiver.handleEvent(view, e).execute();
         if (e.repeat) {
-            this.addFutureTick(ft.channel, ft.receiver, e.interval, true);
+            this.addFutureTick(ft.channel, ft.receiver, e.interval, true, ft.playersTurn);
         }
     }
 

@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.properties.Tags;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -101,7 +102,7 @@ public class Hunger {
         if (visible) {
             view.overlays.add(new EntityRisingOverlay(view, this.unit, 0x7d4513, "Hunger reset"));
         }
-        view.game.future.removeFutureEvents(this.unit, "GetsHungry");
-        view.game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false);
+        view.game.future.removeFutureTicks(this.unit, "GetsHungry");
+        view.game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false, Optional.empty());
     }
 }

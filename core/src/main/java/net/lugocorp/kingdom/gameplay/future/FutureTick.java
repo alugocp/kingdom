@@ -1,18 +1,23 @@
 package net.lugocorp.kingdom.gameplay.future;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
+import java.util.Optional;
 
 /**
  * Represents an Event trigger that should happen during some future turn
  */
 public class FutureTick {
     // TODO this doesn't rehydrate quite right, units load hungry from save file
+    final Optional<Player> playersTurn;
     final EventReceiver receiver;
     final String channel;
     final boolean repeat;
     final int interval;
     final int turn;
 
-    FutureTick(EventReceiver receiver, String channel, int turn, int interval, boolean repeat) {
+    FutureTick(EventReceiver receiver, String channel, int turn, int interval, boolean repeat,
+            Optional<Player> playersTurn) {
+        this.playersTurn = playersTurn;
         this.receiver = receiver;
         this.interval = interval;
         this.channel = channel;
@@ -24,6 +29,7 @@ public class FutureTick {
      * This should only be used in conjunction with Kryo rehydration
      */
     public FutureTick() {
+        this.playersTurn = Optional.empty();
         this.receiver = null;
         this.interval = 0;
         this.channel = null;

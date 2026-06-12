@@ -457,7 +457,7 @@ public class VanillaMod implements GameMod {
                         })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
                     return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : new SideEffect();
@@ -468,21 +468,21 @@ public class VanillaMod implements GameMod {
                 .add(Events.GenerateBuildingEvent.class,
                         (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                             e.blob.setModelInstance(view.av, "goo");
-                            e.blob.desc = "This goo generates 3 auction points each turn for 2 turns";
+                            e.blob.desc = "This goo generates 3 auction points each turn for the next 2 turns";
                             e.blob.combat.health.setMaxAndValue(5);
                             e.blob.setMinimapColor(0x875f9a);
                             return new SideEffect();
                         })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, true);
-                            view.game.future.addFutureTick("Remove", receiver, 2, false);
+                            view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty());
+                            view.game.future.addFutureTick("Remove", receiver, 3, false, Optional.empty());
                         }))
                 .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     return new SideEffect()
                             .add(() -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 3));
                 }).add("Remove", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
-                    return new SideEffect().add(() -> view.game.future.removeFutureEvents(receiver, "Tick"))
+                    return new SideEffect().add(() -> view.game.future.removeFutureTicks(receiver, "Tick"))
                             .add(receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver));
                 });
 
@@ -645,7 +645,7 @@ public class VanillaMod implements GameMod {
                 })
                 .add(Events.SpawnEvent.class,
                         (GameView view, Patron receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Patron receiver, Events.RepeatedEvent e) -> {
                     final SideEffect effects = new SideEffect();
                     final Optional<Player> favorite = receiver.getFavoritePlayer();
@@ -819,7 +819,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, true);
+                            view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty());
                             return new SideEffect();
                         })
                 .add("Tick", (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
@@ -1005,7 +1005,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(Events.ArtifactClaimedEvent.class,
                         (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, true);
+                            view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty());
                             return new SideEffect();
                         })
                 .add("Tick", (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
@@ -1966,7 +1966,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Generates 3 auction points when occupying a vault"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
                                 receiver.wielder, (Building b) -> b.name.equals(Labels.building_vault),
@@ -1980,7 +1980,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Generates food"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                                 receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_fruit),
@@ -2072,7 +2072,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests natural items from meadows every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_natural),
@@ -2149,7 +2149,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests goo from mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_goo),
@@ -2163,7 +2163,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests mushrooms from forests and mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_mushroom),
@@ -2215,7 +2215,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests fish from water tiles"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
                                 receiver.wielder, Labels.item_fish, (Tile t) -> t.name.equals(Labels.tile_water)));
@@ -2258,7 +2258,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Generates 3 unit points per turn"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                         .add(() -> receiver.wielder.getLeader()
                                 .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 3))));
@@ -2273,7 +2273,7 @@ public class VanillaMod implements GameMod {
                 .add(AbilityLogic.desc("Deals 3 damage each turn to an occupied building"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
@@ -2330,7 +2330,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Generates 3 auction points when adjacent to a vault"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(
                         view, receiver.wielder,
                         (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false),
@@ -2380,7 +2380,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests gems from mines"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_gem),
@@ -2394,7 +2394,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests gold coins from mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
@@ -2446,7 +2446,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests apples from forests every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_apple,
@@ -2565,7 +2565,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("This unit heals a little each turn"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> receiver.wielder.combat
                         .heal(view, 1));
 
@@ -2645,7 +2645,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests seeds from meadows that can be consumed to generate favor"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_sacred_seed,
@@ -2722,7 +2722,7 @@ public class VanillaMod implements GameMod {
                 .add(AbilityLogic.desc("Generates Health Potions from Mines"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_health_potion,
@@ -2781,7 +2781,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Harvests gold coins from vaults every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true)))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
@@ -2798,7 +2798,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit cannot act for 1 turn")).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, false);
+                            view.game.future.addFutureTick("Tick", receiver, 1, false, e.unit.getLeader());
                             return new SideEffect();
                         })
                 .add("Tick",
@@ -2831,7 +2831,7 @@ public class VanillaMod implements GameMod {
                         })
                 .add(AbilityLogic.desc("+2 attack and defense for 2 turns")).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, false);
+                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
                             return new SideEffect();
                         })
                 .add("Tick",
@@ -2854,7 +2854,7 @@ public class VanillaMod implements GameMod {
                         })
                 .add(AbilityLogic.desc("+2 defense for 2 turns")).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, false);
+                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
                             return new SideEffect();
                         })
                 .add("Tick",
@@ -2873,13 +2873,13 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("The unit takes 2 damage each turn for 4 turns"))
                 .add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Remove", receiver, 4, false);
-                            view.game.future.addFutureTick("Poison", receiver, 1, true);
+                            view.game.future.addFutureTick("Remove", receiver, 4, false, e.unit.getLeader());
+                            view.game.future.addFutureTick("Poison", receiver, 1, true, e.unit.getLeader());
                             return new SideEffect();
                         })
                 .add("Remove",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.removeFutureEvents(receiver, "Poison"))
+                                .add(() -> view.game.future.removeFutureTicks(receiver, "Poison"))
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add("Poison", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     return receiver.wielder.combat.takeDamage(view, new Damage(2), receiver.wielder);
@@ -2893,7 +2893,7 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("The unit can move an extra space for the next 2 turns"))
                 .add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, false);
+                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
                             return new SideEffect();
                         })
                 .add("Tick",
@@ -2912,7 +2912,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit cannot act for 3 turns")).add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 3, false);
+                            view.game.future.addFutureTick("Tick", receiver, 3, false, e.unit.getLeader());
                             return new SideEffect();
                         })
                 .add("Tick",

@@ -21,6 +21,14 @@ public class Turn {
     }
 
     /**
+     * Returns true if the given Player has already completed their share of this
+     * current turn group
+     */
+    public boolean hasPlayerHadTurnYet(Player player) {
+        return this.players.indexOf(player) < this.players.indexOf(this.current);
+    }
+
+    /**
      * Initializes a new set of turns
      */
     void next() {
