@@ -30,8 +30,16 @@ class TileMoveSelectMode extends TileSelectMode {
     private final void removeShaderData(GameView view) {
         this.existingPath.ifPresent((List<Point> path) -> {
             for (Point p : path) {
-                view.game.world.getTile(p).ifPresent((Tile t) -> t.setMovePath(0, 0));
+                if (!view.game.world.getTile(p).isPresent()) {
+                    System.out.println(path);
+                    for (Point p1 : path) {
+                        System.out.println(p1);
+                    }
+                }
+                final Tile t = view.game.world.getTile(p).get();
+                t.setMovePath(0, 0);
             }
+            this.existingPath = Optional.empty();
         });
     }
 
@@ -75,13 +83,18 @@ class TileMoveSelectMode extends TileSelectMode {
     /** {@inheritdoc} */
     @Override
     final void hoverTile(GameView view, Point p) {
-        // Grab the path and the Unit's distance(s) they can move per turn
-        final List<Point> path = this.pathfinder.getPath(view, p);
+        // Calculate the movement path and remove existing shader flags
+        final List<Point> path = this.pathfinder.getPath(view, p.copy());
+        this.removeShaderData(view);
+        if (path.size() == 0) {
+            return;
+        }
+
+        // Grab the Unit's distance(s) they can move per turn
         final int remainingDistance = view.game.actions.getRemainingMoveDistance(view, this.unit);
         final int maxDistance = this.unit.movement.getMaxDistance(view);
 
         // Sets up Tile user data for the render pipeline
-        this.removeShaderData(view);
         this.existingPath = Optional.of(path);
         for (int a = 0; a < path.size(); a++) {
             final int a1 = a;

@@ -28,6 +28,10 @@ public class Pathfinder {
      * fly
      */
     public final List<Point> getPath(GameView view, Point dest) {
+        if (!view.game.world.isInBounds(dest)) {
+            return new ArrayList<Point>();
+        }
+
         // Return a path that has already been found by a previous iteration
         if (this.data.hasAlreadySeenPoint(dest)) {
             return this.data.reconstructPath(dest);
