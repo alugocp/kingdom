@@ -120,6 +120,12 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
 
     /** {@inheritdoc} */
     @Override
+    public String toString() {
+        return this.name;
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public void spawn(GameView view) {
         this.movement.setPosition(view, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this)).execute();

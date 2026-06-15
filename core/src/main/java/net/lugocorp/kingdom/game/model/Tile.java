@@ -188,6 +188,14 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
 
     /** {@inheritdoc} */
     @Override
+    public String toString() {
+        return String.format("%s %s%s%s", this.name, this.getPoint(),
+                this.building.map((Building b) -> String.format(" %s", b.name)).orElse(""),
+                this.unit.map((Unit u) -> String.format(" %s", u.name)).orElse(""));
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public Optional<Player> getLeader() {
         return this.getDomainCenter().getLeader();
     }

@@ -26,6 +26,7 @@ public class GenerateWorldView extends ThreadedTaskView {
         for (CompPlayer comp : this.view.game.comps) {
             comp.memory = new MemoryMap(this.worldGenOpts.size.w, this.worldGenOpts.size.h);
         }
+        System.out.println(String.format("Generating world #%d...", this.worldGenOpts.seed));
         generator.generateWorld(this.view, this.worldGenOpts, (Integer i) -> this.setProgress(i.intValue()));
         this.setProgress(100);
     }

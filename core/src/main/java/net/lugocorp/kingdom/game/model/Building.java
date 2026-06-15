@@ -125,6 +125,12 @@ public class Building extends Entity implements MenuSubject, Spawnable {
 
     /** {@inheritdoc} */
     @Override
+    public String toString() {
+        return this.name;
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public void spawn(GameView view) {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
