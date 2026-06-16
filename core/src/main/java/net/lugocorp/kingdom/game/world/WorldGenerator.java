@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
@@ -207,7 +208,10 @@ public class WorldGenerator {
 
                         // Spawn the central Building (or water if the Building is an Oasis)
                         if (building.get().equals(Labels.building_oasis)) {
-                            g.generator.tile(Labels.tile_water, p.x, p.y).spawn(view);
+                            final Tower center = g.world.getTile(p).get().getDomainCenter();
+                            final Tile t = g.generator.tile(Labels.tile_water, p.x, p.y);
+                            t.setDomainCenter(center);
+                            t.spawn(view);
                         } else {
                             g.generator.building(building.get(), p.x, p.y).spawn(view);
                         }
