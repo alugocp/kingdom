@@ -29,6 +29,13 @@ class TileSetSelectMode extends TileSelectMode {
         this.action = action;
     }
 
+    /**
+     * Dispels the LabelOverlay if there is one
+     */
+    private void dispelOverlay() {
+        this.overlay.ifPresent((LabelOverlay o) -> o.dispel());
+    }
+
     /** {@inheritdoc} */
     @Override
     final void init(GameView view) {
@@ -48,17 +55,20 @@ class TileSetSelectMode extends TileSelectMode {
     final void clickedValidPoint(GameView view, Point p) {
         view.av.loaders.sounds.play("sfx/arrow");
         this.action.accept(p);
+        this.dispelOverlay();
     }
 
     /** {@inheritdoc} */
     @Override
     final void clickedInvalidPoint(GameView view) {
         view.hud.logger.error("Click a glowing tile, or press ESC to cancel");
+        this.dispelOverlay();
     }
 
     /** {@inheritdoc} */
     @Override
     final void dispel(GameView view) {
+        this.dispelOverlay();
         for (Point p : this.points) {
             view.game.world.getTile(p).ifPresent((Tile t) -> t.setOption(false));
         }
@@ -70,8 +80,8 @@ class TileSetSelectMode extends TileSelectMode {
         this.hover.ifPresent((Function<Tile, Optional<LabelOverlay>> func) -> {
             view.game.world.getTile(p).ifPresent((Tile t) -> {
                 final Optional<LabelOverlay> label = func.apply(t);
-                this.overlay.ifPresent((LabelOverlay o) -> o.dispel());
                 label.ifPresent((LabelOverlay o) -> view.overlays.add(o));
+                this.dispelOverlay();
                 this.overlay = label;
             });
         });
