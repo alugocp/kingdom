@@ -63,15 +63,29 @@ public class Movement {
         final SideEffect effects = new SideEffect();
 
         // Check the Unit's remaining move distance for this turn
-        final int distance = Math.min(path.size(), view.game.actions.getRemainingMoveDistance(view, this.unit));
-        if (distance < 1) {
+        final int maxDistance = Math.min(path.size(), view.game.actions.getRemainingMoveDistance(view, this.unit));
+        if (maxDistance < 1) {
             if (this.unit.leadership.belongsToHuman()) {
                 effects.add(() -> view.hud.logger.error("The unit cannot move anymore this turn"));
             }
             return effects;
         }
 
+        // Calculate distance with speed cost in mind
+        int overallDistance = 0;
+        int remainingDistance = maxDistance;
+        for (int a = 0; a < maxDistance; a++) {
+            remainingDistance -= this.getSpeedCost(view, view.game.world.getTile(path.get(a)).get());
+            if (remainingDistance >= 0) {
+                overallDistance++;
+            }
+        }
+        if (overallDistance < 1) {
+            return effects;
+        }
+
         // Make sure we can still take this path
+        final int distance = overallDistance;
         if (!this.skipPreCheck) {
             for (int a = 0; a < distance; a++) {
                 if (!this.canMoveToPoint(view, path.get(a))) {
@@ -169,9 +183,44 @@ public class Movement {
      * Returns the maximum distance that this Unit can move in a turn
      */
     public int getMaxDistance(GameView view) {
-        Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(this.unit);
+        final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(this.unit);
         this.unit.handleEvent(view, event);
         return event.distance;
+    }
+
+    /**
+     * Returns the speed cost associated with traversing the given Tile
+     */
+    private int getSpeedCost(GameView view, Tile t) {
+        final Events.GetSpeedCostEvent event = new Events.GetSpeedCostEvent(t);
+        this.unit.handleEvent(view, event);
+        return event.cost;
+    }
+
+    /**
+     * Returns a list of the number of Tiles this Unit can move each turn along the
+     * given path
+     */
+    public List<Integer> getSubpathLengths(GameView view, List<Point> path) {
+        final List<Integer> lengths = new ArrayList<>();
+        final int remaining = view.game.actions.getRemainingMoveDistance(view, this.unit);
+        final int max = this.getMaxDistance(view);
+        int points = remaining;
+        int distance = 0;
+        for (int a = 0; a < path.size(); a++) {
+            final Tile t = view.game.world.getTile(path.get(a)).get();
+            final int cost = this.getSpeedCost(view, t);
+            if (cost <= points || distance == 0) {
+                points -= cost;
+                distance++;
+            }
+            if (points <= 0 || a == path.size() - 1) {
+                lengths.add(distance);
+                distance = 0;
+                points = max;
+            }
+        }
+        return lengths;
     }
 
     /**
@@ -184,13 +233,13 @@ public class Movement {
         }
 
         // Cannot move if a Unit already exists there
-        Tile t = view.game.world.getTile(p).get();
+        final Tile t = view.game.world.getTile(p).get();
         if (t.unit.isPresent()) {
             return false;
         }
 
         // Check if this Unit is allowed to move there (Tile and Building logic)
-        Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this.unit, t);
+        final Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this.unit, t);
         this.unit.handleEvent(view, event);
         return event.possible();
     }

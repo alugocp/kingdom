@@ -90,15 +90,14 @@ class TileMoveSelectMode extends TileSelectMode {
             return;
         }
 
-        // Grab the Unit's distance(s) they can move per turn
-        final int remainingDistance = view.game.actions.getRemainingMoveDistance(view, this.unit);
-        final int maxDistance = this.unit.movement.getMaxDistance(view);
-
         // Sets up Tile user data for the render pipeline
+        int nextMoveLabel = 1;
+        final List<Integer> subpathLengths = this.unit.movement.getSubpathLengths(view, path);
         this.existingPath = Optional.of(path);
         for (int a = 0; a < path.size(); a++) {
             final int a1 = a;
             final Point p1 = path.get(a);
+            final Tile t = view.game.world.getTile(p1).get();
 
             // Set the direction of the movement path texture(s) to render
             final int movePath = Hexagons.getBorderInteger(p1, (Point p2) -> (a1 > 0 && p2.equals(path.get(a1 - 1)))
@@ -106,23 +105,14 @@ class TileMoveSelectMode extends TileSelectMode {
 
             // Set the number to render on the path (how many turns this move will take)
             int moveLabel = 0;
-            if (a == path.size() - 1) {
-                // Label with 1 if last node index < remainingDistance, otherwise we add a turn
-                // until max distance closes the gap
-                moveLabel = (a < remainingDistance)
-                        ? 1
-                        : ((int) Math.ceil((a + 1 - remainingDistance) / (float) maxDistance) + 1);
-            } else if (a == remainingDistance - 1) {
-                // This is the final node you can access this turn
-                moveLabel = 1;
-            } else if (a >= remainingDistance && (a + 1 - remainingDistance) % maxDistance == 0) {
-                // This is the final node you can access on any given future turn
-                moveLabel = (int) Math.floor((a + 1 - remainingDistance) / (float) maxDistance) + 1;
+            final int reduced = subpathLengths.get(0) - 1;
+            if (reduced == 0) {
+                moveLabel = nextMoveLabel++;
+                subpathLengths.remove(0);
+            } else {
+                subpathLengths.set(0, reduced);
             }
-
-            // Set the actual render data
-            final int moveLabelForLambda = moveLabel;
-            view.game.world.getTile(p1).ifPresent((Tile t) -> t.setMovePath(movePath, moveLabelForLambda));
+            t.setMovePath(movePath, moveLabel);
         }
     }
 }

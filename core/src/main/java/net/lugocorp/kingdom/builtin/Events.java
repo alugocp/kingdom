@@ -180,6 +180,19 @@ public class Events {
     }
 
     /**
+     * Returns the speed cost associated with traversing the given Tile
+     */
+    public static class GetSpeedCostEvent extends Event {
+        public final Tile tile;
+        public int cost = 1;
+
+        public GetSpeedCostEvent(Tile tile) {
+            super();
+            this.tile = tile;
+        }
+    }
+
+    /**
      * Calculates how far a Unit can move
      */
     public static class UnitMoveDistanceEvent extends Event {
