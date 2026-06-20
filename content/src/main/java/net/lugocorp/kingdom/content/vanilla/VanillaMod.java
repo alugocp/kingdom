@@ -2541,9 +2541,8 @@ public class VanillaMod implements GameMod {
 
                             // Select a Tile to spawn the Unit on
                             final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getTile(p)
-                                    .map((Tile t) -> !t.unit.isPresent()
-                                            && t.getLeader().equals(receiver.wielder.getLeader()))
-                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
+                                    .map((Tile t) -> !t.unit.isPresent()).orElse(false),
+                                    Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
                                     (Point p) -> {
                                         return new SideEffect().add(() -> {

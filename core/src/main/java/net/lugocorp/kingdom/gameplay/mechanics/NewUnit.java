@@ -175,7 +175,9 @@ public class NewUnit {
             view.game.setLeader(view, u, p);
             u.spawn(view);
             p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u)).execute();
-            view.hud.logger.log(String.format("You recruited %s", u.name));
+            if (p.isHumanPlayer()) {
+                view.hud.logger.log(String.format("You recruited %s", u.name));
+            }
         });
     }
 

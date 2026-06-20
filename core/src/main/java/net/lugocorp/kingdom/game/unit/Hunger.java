@@ -57,6 +57,8 @@ public class Hunger {
      */
     public void gotHungry(GameView view) {
         if (!this.autoEatCheck(view)) {
+            view.hud.logger.log(String.format("%s got hungry and abandoned your cause", this.unit.name));
+            view.overlays.add(new EntityRisingOverlay(view, this.unit, 0x7d4513, "Hunger strikes"));
             view.game.mechanics.pools.reincarnate(this.unit);
             this.unit.deactivate(view);
         }
