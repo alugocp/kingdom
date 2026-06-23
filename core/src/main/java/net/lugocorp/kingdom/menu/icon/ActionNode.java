@@ -12,7 +12,6 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.Optional;
 
 /**
@@ -28,7 +27,6 @@ public class ActionNode extends IconNode {
     private final AudioVideo av;
     private final ListNode node;
     private final BitmapFont font;
-    private boolean border = false;
     private int mode = ActionNode.MODE_ACTIVE;
 
     public ActionNode(AudioVideo av, String name, String icon, Optional<Shortcut> shortcut, Optional<String> tagline,
@@ -55,14 +53,6 @@ public class ActionNode extends IconNode {
      */
     public ActionNode setMode(int mode) {
         this.mode = mode;
-        return this;
-    }
-
-    /**
-     * Sets whether or not this ActionNode should render a border
-     */
-    public ActionNode setBorder(boolean border) {
-        this.border = border;
         return this;
     }
 
@@ -103,18 +93,12 @@ public class ActionNode extends IconNode {
     @Override
     public void draw(AudioVideo av, Rect bounds) {
         super.draw(av, bounds);
-        final Rect flip = Coords.screen.flip(this.getBounds(bounds));
         this.shortcut.ifPresent((Shortcut s) -> {
+            final Rect flip = Coords.screen.flip(this.getBounds(bounds));
             av.sprites.begin();
             font.draw(av.sprites, s.label, flip.x, flip.y + flip.h);
             av.sprites.end();
         });
-        if (this.border) {
-            av.shapes.begin(ShapeType.Line);
-            av.shapes.setColor(ColorScheme.OUTLINE.color);
-            av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
-            av.shapes.end();
-        }
     }
 
     /** {@inheritdoc} */

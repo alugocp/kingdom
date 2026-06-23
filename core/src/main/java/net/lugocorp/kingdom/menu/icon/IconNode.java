@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.menu.icon;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.engine.shaders.ElementShader;
@@ -8,6 +9,7 @@ import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuPopup;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import java.util.Optional;
 
@@ -19,6 +21,7 @@ public abstract class IconNode implements MenuNode {
     private final int side;
     protected final MenuPopup popup = new MenuPopup();
     private Optional<Matrix4> recolor = Optional.empty();
+    private boolean border = false;
     private Drawable icon;
 
     public IconNode(AudioVideo av, String icon, int side) {
@@ -54,6 +57,14 @@ public abstract class IconNode implements MenuNode {
      */
     public IconNode setRecolor(Optional<Matrix4> recolor) {
         this.recolor = recolor;
+        return this;
+    }
+
+    /**
+     * Sets whether or not this ActionNode should render a border
+     */
+    public IconNode setBorder(boolean border) {
+        this.border = border;
         return this;
     }
 
@@ -101,5 +112,13 @@ public abstract class IconNode implements MenuNode {
         av.special.end();
         av.shaders.element.originalColor();
         av.shaders.element.setMode(ElementShader.DEFAULT_MODE);
+
+        // Border drawing logic
+        if (this.border) {
+            av.shapes.begin(ShapeType.Line);
+            av.shapes.setColor(ColorScheme.OUTLINE.color);
+            av.shapes.rect(flip.x, flip.y, flip.w, flip.h);
+            av.shapes.end();
+        }
     }
 }

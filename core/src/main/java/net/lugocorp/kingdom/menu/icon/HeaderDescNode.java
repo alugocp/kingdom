@@ -15,6 +15,7 @@ public class HeaderDescNode extends IconNode {
     public HeaderDescNode(AudioVideo av, String icon, String header, String desc) {
         super(av, icon, HeaderDescNode.SIDE);
         this.desc = new ListNode().add(new SubheaderNode(av, header)).add(new TextNode(av, desc));
+        this.setBorder(true);
     }
 
     /** {@inheritdoc} */

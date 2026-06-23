@@ -14,7 +14,6 @@ import net.lugocorp.kingdom.menu.icon.HelperNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
-import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
@@ -209,7 +208,7 @@ public class Patron extends Building {
                 .addExact(ActionNode.SIDE + 10, new HeaderDescNode(view.av, this.effectIcon, "Effect", this.effect))
                 .addExact(ActionNode.SIDE + 10,
                         new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference)))
-                .add(new SpacerNode(false).half()).add(new TextNode(view.av, this.desc))).add(favors);
+                .add(new TextNode(view.av, this.desc))).add(favors);
         if (this.favor.size() > 0) {
             final List<Player> sorted = Lambda.sort((Player player) -> this.favor.get(player),
                     Lambda.toList(this.favor.keySet()));
