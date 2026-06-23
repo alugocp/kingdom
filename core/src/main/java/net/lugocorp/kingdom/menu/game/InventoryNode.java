@@ -27,6 +27,7 @@ import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import java.util.HashSet;
 import java.util.Optional;
@@ -36,7 +37,7 @@ import java.util.Set;
  * A node that displays some Inventory
  */
 public class InventoryNode implements MenuNode {
-    private static final int MARGIN = 2;
+    private static final int MARGIN = 4;
     public static final int SIDE = 50;
     private final MenuPopup popup = new MenuPopup();
     private final Optional<Inventory> equipped;
@@ -259,6 +260,8 @@ public class InventoryNode implements MenuNode {
                 final Optional<Item> target = this.getItemFromTotalIndex(index);
                 final InventoryType type = this.getInventoryByTotalIndex(index).type;
                 target.flatMap((Item item) -> item.icon).ifPresent((String s) -> icon.setSprite(s));
+
+                // Apply ElementShader modes and render the Item icon
                 av.special.begin();
                 av.shaders.element.setMode(this.hoveredIndex.map((Integer hovered) -> index == hovered).orElse(false)
                         ? ElementShader.BRIGHT_MODE
@@ -268,11 +271,29 @@ public class InventoryNode implements MenuNode {
                 av.special.end();
                 av.shaders.element.originalColor();
                 av.shaders.element.setMode(ElementShader.DEFAULT_MODE);
+
+                // Different logic for equipped Items versus hauled Items
                 if (type == InventoryType.EQUIP) {
+                    // Draw the sprite frame that masks the icon into a circle
                     av.sprites.begin();
                     icon.setSprite("equip frame");
                     icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
                     av.sprites.end();
+
+                    // Outline the circle with a border
+                    av.shapes.begin(ShapeType.Line);
+                    av.shapes.setColor(ColorScheme.OUTLINE.color);
+                    av.shapes.circle(
+                            flip.x + (InventoryNode.SIDE * b) + (InventoryNode.MARGIN * b) + (InventoryNode.SIDE / 2),
+                            flip.y + (InventoryNode.SIDE / 2), InventoryNode.SIDE / 2);
+                    av.shapes.end();
+                } else {
+                    // Outline the square with a border
+                    av.shapes.begin(ShapeType.Line);
+                    av.shapes.setColor(ColorScheme.OUTLINE.color);
+                    av.shapes.rect(flip.x + (InventoryNode.SIDE * b) + (InventoryNode.MARGIN * b), flip.y,
+                            InventoryNode.SIDE, InventoryNode.SIDE);
+                    av.shapes.end();
                 }
             }
         }
