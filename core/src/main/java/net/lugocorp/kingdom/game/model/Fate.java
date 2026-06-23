@@ -1,8 +1,12 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.ai.action.Goal;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
+import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.text.SubheaderNode;
+import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
@@ -45,6 +49,18 @@ public class Fate implements EventReceiver {
      */
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    /**
+     * Adds this Fate's description to the given ListNode
+     */
+    public ListNode addToListNode(AudioVideo av, ListNode node) {
+        boolean first = true;
+        for (String s : this.desc) {
+            node.add(first ? new SubheaderNode(av, s) : new TextNode(av, s));
+            first = false;
+        }
+        return node;
     }
 
     /** {@inheritdoc} */

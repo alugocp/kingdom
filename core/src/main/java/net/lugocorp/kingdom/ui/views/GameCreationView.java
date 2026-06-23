@@ -12,6 +12,7 @@ import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.game.FateNode;
 import net.lugocorp.kingdom.menu.game.FateViewNode;
 import net.lugocorp.kingdom.menu.icon.HelperNode;
+import net.lugocorp.kingdom.menu.input.DropdownNode;
 import net.lugocorp.kingdom.menu.input.OptionsNode;
 import net.lugocorp.kingdom.menu.input.TextEntryNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
@@ -257,10 +258,10 @@ class GameCreationView implements View {
         final List<Fate> fates = view.game.mechanics.fates.getFates(view.game);
         final CompPlayer comp = new CompPlayer(view, number, view.game.mechanics.fates.chooseRandomFate(view.game),
                 view.game.colorPool.getFromPool());
-        final OptionsNode options = new OptionsNode(view.av, 0,
+        final DropdownNode options = new DropdownNode(view.av, 0,
                 (Integer index) -> comp.setFate(
                         index == 0 ? view.game.mechanics.fates.chooseRandomFate(view.game) : fates.get(index - 1)))
-                .add("Random");
+                .add("Random", new TextNode(view.av, "Chooses a random fate for this computer player"));
         final ListNode root = new ListNode().add(new SpacerNode())
                 .add(new RowNode().add(new SubheaderNode(view.av, comp.name) {
                     /** {@inheritdoc} */
@@ -271,7 +272,7 @@ class GameCreationView implements View {
                     }
                 }).add(options));
         for (Fate fate : fates) {
-            options.add(fate.name);
+            options.add(fate.name, fate.addToListNode(view.av, new ListNode()));
         }
         return new Tuple<CompPlayer, MenuNode>(comp, root);
     }

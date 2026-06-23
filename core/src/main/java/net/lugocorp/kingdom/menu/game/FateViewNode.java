@@ -6,8 +6,6 @@ import net.lugocorp.kingdom.menu.icon.HelperNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
-import net.lugocorp.kingdom.menu.text.SubheaderNode;
-import net.lugocorp.kingdom.menu.text.TextNode;
 
 /**
  * A node that displays some Fate and its description
@@ -38,11 +36,7 @@ public class FateViewNode extends ListNode {
         this.fate.setFate(av, fate);
         this.desc.clear();
         this.desc.add(new HeaderNode(av, fate.name));
-        boolean first = true;
-        for (String s : fate.desc) {
-            this.desc.add(first ? new SubheaderNode(av, s) : new TextNode(av, s));
-            first = false;
-        }
+        fate.addToListNode(av, this.desc);
         if (this.width > 0) {
             this.pack(this.menu, this.width);
         }

@@ -7,7 +7,6 @@ import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,6 @@ public class OptionsNode implements MenuNode {
     private final Consumer<Integer> selected;
     private final AudioVideo av;
     private int index = 0;
-    protected BitmapFont font;
 
     public OptionsNode(AudioVideo av, int index, Consumer<Integer> selected) {
         this.selected = selected;
@@ -31,6 +29,9 @@ public class OptionsNode implements MenuNode {
         this.av = av;
     }
 
+    /**
+     * Adds another option to this node
+     */
     public OptionsNode add(String label) {
         this.options.add(new TextNode(av, label));
         return this;
