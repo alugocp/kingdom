@@ -225,12 +225,17 @@ class GameCreationView implements View {
     private Menu getPlayerSelectionMenu() {
         this.comps.clear();
         final Tuple<CompPlayer, MenuNode> firstComp = this.addPlayerCustomizationNode(1);
+        final DropdownNode colorOptions = new DropdownNode(this.view.av,
+                this.view.game.colorPool.getIndex(this.view.game.human.getColor()),
+                (Integer index) -> this.view.game.human.setColor(this.view.game.colorPool,
+                        this.view.game.colorPool.getFromPool(index)),
+                (Integer index) -> this.view.game.colorPool.isAvailable(index));
         final ListNode nodes = new ListNode()
                 .add(new RowNode().add(new SubheaderNode(this.view.av, "Player"))
                         .add(new SubheaderNode(this.view.av, "Color")).add(new SubheaderNode(this.view.av, "Fate")))
                 .add(new SpacerNode(true).half())
-                .add(new RowNode().add(new SubheaderNode(this.view.av, this.view.game.human.name))
-                        .add(new TextNode(this.view.av, "Green")).add(this.humanFateNameNode))
+                .add(new RowNode().add(new SubheaderNode(this.view.av, this.view.game.human.name)).add(colorOptions)
+                        .add(this.humanFateNameNode))
                 .add(firstComp.b);
         final ListNode root = new ListNode();
         final Menu menu = new Menu(0, 0, Coords.SIZE.x, true, root);
@@ -251,6 +256,9 @@ class GameCreationView implements View {
                         }).setEnabledCriteria(() -> this.comps.size() + 1 < GameCreationView.MAX_PLAYERS)))
                 .add(new MenuMenuNode(nodes));
         this.comps.add(firstComp.a);
+        for (String color : this.view.game.colorPool.getColorNames()) {
+            colorOptions.add(color);
+        }
         menu.pack();
         return menu;
     }

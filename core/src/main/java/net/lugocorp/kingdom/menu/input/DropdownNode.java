@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.menu.input;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
@@ -9,6 +10,7 @@ import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.text.HoverTextNode;
 import net.lugocorp.kingdom.menu.text.NakedButtonNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,13 @@ public class DropdownNode implements MenuNode {
     public DropdownNode add(String label) {
         this.options.add(new NakedButtonNode(av, label, () -> {
         }));
-        this.disabledOptions.add(new TextNode(av, label));
+        this.disabledOptions.add(new TextNode(av, label) {
+            /** {@inheritdoc} */
+            @Override
+            protected BitmapFont getFont() {
+                return this.av.fonts.getFont(new FontParam().setSize(22).setColor(ColorScheme.TEXT.color));
+            }
+        });
         return this;
     }
 
@@ -59,7 +67,13 @@ public class DropdownNode implements MenuNode {
      */
     public DropdownNode add(String label, MenuNode root) {
         this.options.add(new HoverTextNode(av, label, root));
-        this.disabledOptions.add(new TextNode(av, label));
+        this.disabledOptions.add(new TextNode(av, label) {
+            /** {@inheritdoc} */
+            @Override
+            protected BitmapFont getFont() {
+                return this.av.fonts.getFont(new FontParam().setSize(22).setColor(ColorScheme.TEXT.color));
+            }
+        });
         return this;
     }
 
