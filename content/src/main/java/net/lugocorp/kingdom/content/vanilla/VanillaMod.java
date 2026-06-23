@@ -532,7 +532,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_pond_troll).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "pond-troll");
-                    e.blob.desc = "This ancient Troll made a pact with water spirits to save his village. In return she was forced to become a spirit herself, and now watches over those who seek to cross bodies of water.";
+                    e.blob.desc = "This ancient Troll made a pact with water spirits to save her village. In return she was forced to become a spirit herself, and now watches over those who seek to cross bodies of water.";
                     e.blob.effect = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
                     e.blob.preference = "Units that cannot swim";
                     e.blob.isPreferredUnitType = (Unit u) -> !u.abilities.hasPassive(Labels.ability_swim);

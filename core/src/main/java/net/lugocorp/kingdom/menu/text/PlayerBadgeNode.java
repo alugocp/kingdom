@@ -9,7 +9,7 @@ import net.lugocorp.kingdom.game.player.Player;
  */
 public class PlayerBadgeNode extends BadgeNode {
     public PlayerBadgeNode(AudioVideo av, Player player) {
-        super(av, Colors.asInt(player.color), ColorScheme.WHITE.hex, player.name);
+        super(av, Colors.asInt(player.getColor()), ColorScheme.WHITE.hex, player.name);
     }
 
     public PlayerBadgeNode(AudioVideo av) {

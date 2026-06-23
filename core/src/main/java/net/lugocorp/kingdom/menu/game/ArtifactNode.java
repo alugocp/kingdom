@@ -42,7 +42,7 @@ public class ArtifactNode implements MenuNode {
         this.image = new Drawable(av.loaders.sprites, artifact.image.orElse("placeholder"));
         this.mask = new Drawable(av.loaders.sprites, "artifact-mask");
         if (artifact.isClaimed()) {
-            this.ownership = Optional.of(new BadgeNode(av, Colors.asInt(this.artifact.getOwner().get().color),
+            this.ownership = Optional.of(new BadgeNode(av, Colors.asInt(this.artifact.getOwner().get().getColor()),
                     ColorScheme.WHITE.hex, this.artifact.getOwner().get().name));
         }
         this.name = new SubheaderNode(av, artifact.name);

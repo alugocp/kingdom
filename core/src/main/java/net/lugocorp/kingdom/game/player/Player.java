@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.player;
+import net.lugocorp.kingdom.color.ColorPool;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Artifact;
@@ -26,12 +27,12 @@ import java.util.function.Function;
 public abstract class Player {
     public static final int INITIAL_GOLD = 100;
     private int unitPoints = 0;
+    private Color color;
     private Fate fate;
     public final List<Artifact> artifacts = new ArrayList<>();
     public final Set<Building> buildings = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
     public final String name;
-    public final Color color;
     public int gold = Player.INITIAL_GOLD; // TODO make private, add Overlay on increase
     public int numRecruitmentOptions = 3;
     public int auctionChips = 0;
@@ -95,6 +96,21 @@ public abstract class Player {
     public void setFate(Fate fate) {
         this.fate = fate;
         fate.setPlayer(this);
+    }
+
+    /**
+     * Gets this Player's Color
+     */
+    public Color getColor() {
+        return this.color;
+    }
+
+    /**
+     * Sets this Player's Color
+     */
+    public void setColor(ColorPool pool, Color color) {
+        pool.releaseToPool(this.color);
+        this.color = color;
     }
 
     /**

@@ -62,14 +62,14 @@ class GameCreationView implements View {
 
         // Initialize GameCreationView UI components
         this.startButton = new ButtonNode(this.view.av, "Start Game", () -> {
-            view.game.comps.addAll(this.comps);
+            this.view.game.comps.addAll(this.comps);
             this.disableStartbutton();
             this.startGame();
         });
         this.humanFateNameNode = new TextNode(this.view.av, "");
-        this.worldSelection = this.getWorldSelectionMenu(this.view);
-        this.fateSelection = this.getFateSelectionMenu(this.view);
-        this.playerSelection = this.getPlayerSelectionMenu(this.view);
+        this.worldSelection = this.getWorldSelectionMenu();
+        this.fateSelection = this.getFateSelectionMenu();
+        this.playerSelection = this.getPlayerSelectionMenu();
         this.menu = this.worldSelection;
     }
 
@@ -113,7 +113,7 @@ class GameCreationView implements View {
     @Override
     public void start(Consumer<View> navigate) {
         this.navigate = navigate;
-        this.menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
+        this.menuController = new MenuController(this.view.av.settings, () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         this.menuController.reset();
     }
@@ -146,55 +146,53 @@ class GameCreationView implements View {
      * Returns a Menu to that allows the player to view and select a World
      * generation algorithm
      */
-    private Menu getWorldSelectionMenu(GameView view) {
-        final OptionsNode worldSizeOptions = new OptionsNode(view.av, 0,
+    private Menu getWorldSelectionMenu() {
+        final OptionsNode worldSizeOptions = new OptionsNode(this.view.av, 0,
                 (Integer i) -> this.setWorldSize(i.intValue()));
         for (WorldSize size : WorldSize.values()) {
             worldSizeOptions.add(String.format("%s (%d x %d tiles)", size.label, size.w, size.h));
         }
-        return new Menu(0, 0, Coords.SIZE.x, true,
-                new ListNode()
-                        .add(new RowNode()
-                                .addRatio(20,
-                                        new ButtonNode(view.av, "Back",
-                                                () -> this.navigate.accept(new StartMenuView(this.params))))
-                                .add(new HeaderNode(view.av, "World Generation").center())
-                                .addRatio(20, new ButtonNode(view.av, "Next", () -> this.setMenu(this.fateSelection))))
-                        .add(new SpacerNode())
-                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "World Seed"))
-                                .add(new TextEntryNode(view.av, Long.toString(this.worldGenOpts.seed),
-                                        (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
-                        .add(new SpacerNode(false).half())
-                        .add(new TextNode(
-                                view.av,
-                                "The world seed determines random values in world generation. Write down previous world seeds from games you enjoyed to replay on the exact same map."))
-                        .add(new SpacerNode(false))
-                        .add(new RowNode().addRatio(25, new SubheaderNode(view.av, "Map Size")).add(worldSizeOptions))
-                        .add(new SpacerNode(false).half()).add(new TextNode(view.av,
-                                "There are multiple options for world size that you can generate. These options will determine the number of tiles present in the game world.")));
+        return new Menu(0, 0, Coords.SIZE.x, true, new ListNode()
+                .add(new RowNode()
+                        .addRatio(20,
+                                new ButtonNode(this.view.av, "Back",
+                                        () -> this.navigate.accept(new StartMenuView(this.params))))
+                        .add(new HeaderNode(this.view.av, "World Generation").center())
+                        .addRatio(20, new ButtonNode(this.view.av, "Next", () -> this.setMenu(this.fateSelection))))
+                .add(new SpacerNode())
+                .add(new RowNode().addRatio(25, new SubheaderNode(this.view.av, "World Seed"))
+                        .add(new TextEntryNode(this.view.av, Long.toString(this.worldGenOpts.seed),
+                                (String x) -> this.setWorldSeed(x)).setNumbersOnly(true)))
+                .add(new SpacerNode(false).half())
+                .add(new TextNode(this.view.av,
+                        "The world seed determines random values in world generation. Write down previous world seeds from games you enjoyed to replay on the exact same map."))
+                .add(new SpacerNode(false))
+                .add(new RowNode().addRatio(25, new SubheaderNode(this.view.av, "Map Size")).add(worldSizeOptions))
+                .add(new SpacerNode(false).half()).add(new TextNode(this.view.av,
+                        "There are multiple options for world size that you can generate. These options will determine the number of tiles present in the game world.")));
     }
 
     /**
      * Returns a Menu to that allows the player to view and select a Fate
      */
-    private Menu getFateSelectionMenu(GameView view) {
-        final List<Fate> fates = view.game.mechanics.fates.getFates(view.game);
+    private Menu getFateSelectionMenu() {
+        final List<Fate> fates = this.view.game.mechanics.fates.getFates(this.view.game);
         final ListNode options = new ListNode();
         final MenuMenuNode wrapper = new MenuMenuNode(options);
-        final FateViewNode display = new FateViewNode(view.av, fates.get(0), true);
+        final FateViewNode display = new FateViewNode(this.view.av, fates.get(0), true);
         final ListNode root = new ListNode()
                 .add(new RowNode()
-                        .addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.worldSelection)))
-                        .add(new HeaderNode(view.av, "Select a Fate").center())
-                        .addRatio(20, new ButtonNode(view.av, "Next", () -> this.setMenu(this.playerSelection))))
-                .add(new SpacerNode())
-                .add(new RowNode()
+                        .addRatio(20, new ButtonNode(this.view.av, "Back", () -> this.setMenu(this.worldSelection)))
+                        .add(new HeaderNode(this.view.av, "Select a Fate").center())
+                        .addRatio(20, new ButtonNode(this.view.av, "Next", () -> this.setMenu(this.playerSelection))))
+                .add(new SpacerNode()).add(new RowNode()
                         .addRatio(40,
-                                new ListNode().add(new SubheaderNode(view.av, "Your Selected Fate")).add(display)
-                                        .add(new HelperNode(view.av,
+                                new ListNode().add(new SubheaderNode(this.view.av, "Your Selected Fate")).add(display)
+                                        .add(new HelperNode(this.view.av,
                                                 "Glyphs are categories of related units that have similar abilities")))
                         .addRatio(60,
-                                new ListNode().add(new SubheaderNode(view.av, String.format("%d Fates", fates.size())))
+                                new ListNode()
+                                        .add(new SubheaderNode(this.view.av, String.format("%d Fates", fates.size())))
                                         .add(wrapper)));
 
         // Set up RowNodes of FateNodes
@@ -204,11 +202,11 @@ class GameCreationView implements View {
             RowNode row = new RowNode().setColumns(columns);
             for (int b = 0; b < columns && a < fates.size();) {
                 final Fate fate = fates.get(a);
-                row.add(new FateNode(view.av, fate, () -> {
+                row.add(new FateNode(this.view.av, fate, () -> {
                     this.humanFateNameNode.setText(fate.name);
-                    view.av.loaders.sounds.play("sfx/card-flick");
-                    view.game.human.setFate(fate);
-                    display.setFate(view.av, fate);
+                    this.view.av.loaders.sounds.play("sfx/card-flick");
+                    this.view.game.human.setFate(fate);
+                    display.setFate(this.view.av, fate);
                 }));
                 a++;
                 b++;
@@ -217,34 +215,40 @@ class GameCreationView implements View {
             options.add(new SpacerNode(false));
         }
         this.humanFateNameNode.setText(fates.get(0).name);
-        view.game.human.setFate(fates.get(0));
+        this.view.game.human.setFate(fates.get(0));
         return new Menu(0, 0, Coords.SIZE.x, true, root);
     }
 
     /**
      * Returns a Menu to that allows the Player to customize their opponents
      */
-    private Menu getPlayerSelectionMenu(GameView view) {
+    private Menu getPlayerSelectionMenu() {
         this.comps.clear();
-        final Tuple<CompPlayer, MenuNode> firstComp = this.addPlayerCustomizationNode(view, 1);
+        final Tuple<CompPlayer, MenuNode> firstComp = this.addPlayerCustomizationNode(1);
         final ListNode nodes = new ListNode()
-                .add(new RowNode().add(new SubheaderNode(view.av, view.game.human.name)).add(this.humanFateNameNode))
+                .add(new RowNode().add(new SubheaderNode(this.view.av, "Player"))
+                        .add(new SubheaderNode(this.view.av, "Color")).add(new SubheaderNode(this.view.av, "Fate")))
+                .add(new SpacerNode(true).half())
+                .add(new RowNode().add(new SubheaderNode(this.view.av, this.view.game.human.name))
+                        .add(new TextNode(this.view.av, "Green")).add(this.humanFateNameNode))
                 .add(firstComp.b);
         final ListNode root = new ListNode();
         final Menu menu = new Menu(0, 0, Coords.SIZE.x, true, root);
-        root.add(new RowNode().addRatio(20, new ButtonNode(view.av, "Back", () -> this.setMenu(this.fateSelection)))
-                .add(new HeaderNode(view.av, "Customize Players").center()).addRatio(20, this.startButton))
-                .add(new SpacerNode()).add(new RowNode().add(new ButtonNode(view.av, "Drop Player", () -> {
+        root.add(
+                new RowNode().addRatio(20, new ButtonNode(this.view.av, "Back", () -> this.setMenu(this.fateSelection)))
+                        .add(new HeaderNode(this.view.av, "Customize Players").center()).addRatio(20, this.startButton))
+                .add(new SpacerNode()).add(new RowNode().add(new ButtonNode(this.view.av, "Drop Player", () -> {
                     this.comps.remove(this.comps.size() - 1);
                     nodes.pop();
                     menu.pack();
-                }).setEnabledCriteria(() -> this.comps.size() > 1)).add(new ButtonNode(view.av, "Add Player", () -> {
-                    final Tuple<CompPlayer, MenuNode> results = this.addPlayerCustomizationNode(view,
-                            this.comps.size() + 1);
-                    this.comps.add(results.a);
-                    nodes.add(results.b);
-                    menu.pack();
-                }).setEnabledCriteria(() -> this.comps.size() + 1 < GameCreationView.MAX_PLAYERS)))
+                }).setEnabledCriteria(() -> this.comps.size() > 1))
+                        .add(new ButtonNode(this.view.av, "Add Player", () -> {
+                            final Tuple<CompPlayer, MenuNode> results = this
+                                    .addPlayerCustomizationNode(this.comps.size() + 1);
+                            this.comps.add(results.a);
+                            nodes.add(results.b);
+                            menu.pack();
+                        }).setEnabledCriteria(() -> this.comps.size() + 1 < GameCreationView.MAX_PLAYERS)))
                 .add(new MenuMenuNode(nodes));
         this.comps.add(firstComp.a);
         menu.pack();
@@ -254,25 +258,33 @@ class GameCreationView implements View {
     /**
      * Returns a MenuNode that allows you to customize the given Player
      */
-    private Tuple<CompPlayer, MenuNode> addPlayerCustomizationNode(GameView view, int number) {
-        final List<Fate> fates = view.game.mechanics.fates.getFates(view.game);
-        final CompPlayer comp = new CompPlayer(view, number, view.game.mechanics.fates.chooseRandomFate(view.game),
-                view.game.colorPool.getFromPool());
-        final DropdownNode options = new DropdownNode(view.av, 0,
-                (Integer index) -> comp.setFate(
-                        index == 0 ? view.game.mechanics.fates.chooseRandomFate(view.game) : fates.get(index - 1)))
-                .add("Random", new TextNode(view.av, "Chooses a random fate for this computer player"));
+    private Tuple<CompPlayer, MenuNode> addPlayerCustomizationNode(int number) {
+        final List<Fate> fates = this.view.game.mechanics.fates.getFates(this.view.game);
+        final CompPlayer comp = new CompPlayer(view, number,
+                this.view.game.mechanics.fates.chooseRandomFate(this.view.game),
+                this.view.game.colorPool.getFromPool());
+        final DropdownNode fateOptions = new DropdownNode(this.view.av, 0, (Integer index) -> comp.setFate(
+                index == 0 ? this.view.game.mechanics.fates.chooseRandomFate(this.view.game) : fates.get(index - 1)),
+                (Integer index) -> true)
+                .add("Random", new TextNode(this.view.av, "Chooses a random fate for this computer player"));
+        final DropdownNode colorOptions = new DropdownNode(this.view.av,
+                this.view.game.colorPool.getIndex(comp.getColor()),
+                (Integer index) -> comp.setColor(this.view.game.colorPool, this.view.game.colorPool.getFromPool(index)),
+                (Integer index) -> this.view.game.colorPool.isAvailable(index));
+        final GameView gameView = this.view;
         final ListNode root = new ListNode().add(new SpacerNode())
-                .add(new RowNode().add(new SubheaderNode(view.av, comp.name) {
+                .add(new RowNode().add(new SubheaderNode(this.view.av, comp.name) {
                     /** {@inheritdoc} */
                     @Override
                     protected BitmapFont getFont() {
-                        return this.av.fonts
-                                .getFont(new FontParam().setFont("Fontin-Bold").setSize(22).setColor(comp.color));
+                        return gameView.av.fonts.getFont(new FontParam().setFont("Fontin-Bold").setSize(22));
                     }
-                }).add(options));
+                }).add(colorOptions).add(fateOptions));
         for (Fate fate : fates) {
-            options.add(fate.name, fate.addToListNode(view.av, new ListNode()));
+            fateOptions.add(fate.name, fate.addToListNode(this.view.av, new ListNode()));
+        }
+        for (String color : this.view.game.colorPool.getColorNames()) {
+            colorOptions.add(color);
         }
         return new Tuple<CompPlayer, MenuNode>(comp, root);
     }

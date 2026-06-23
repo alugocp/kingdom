@@ -74,7 +74,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      */
     public Color getMinimapColor() {
         return this.userData.hasBeenSeen
-                ? this.getLeader().map((Player l) -> l.color)
+                ? this.getLeader().map((Player l) -> l.getColor())
                         .orElse(this.building.flatMap((Building b) -> b.getMinimapColor()).orElse(this.minimapColor))
                 : Color.BLACK;
     }
@@ -168,7 +168,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Causes this Tile to recalculate its border color
      */
     public void recolorBorder() {
-        this.userData.borderColor = this.getLeader().map((Player l) -> l.color).orElse(Color.WHITE);
+        this.userData.borderColor = this.getLeader().map((Player l) -> l.getColor()).orElse(Color.WHITE);
     }
 
     /**
