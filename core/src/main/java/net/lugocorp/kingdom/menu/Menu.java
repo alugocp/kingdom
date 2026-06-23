@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.menu;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
+import net.lugocorp.kingdom.engine.render.Drawable;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
@@ -16,12 +17,14 @@ import java.util.Optional;
 public class Menu {
     private static final int MINI_MENU_WIDTH = 250;
     private static final int SCROLLBAR = 15;
+    public static final int TEXTURE_SIDE = 200;
     private final boolean tall;
     private Optional<Menu> submenu = Optional.empty();
     private Optional<Point> prev = Optional.empty();
     private Optional<Point> curr = Optional.empty();
     private Optional<Menu> mini = Optional.empty();
     private boolean scrollBarHighlighted = false;
+    private Drawable background = null; // TODO make final and add av to Menu constructor
     private boolean outlined = false;
     private int margin = 15;
     private int offset = 0;
@@ -233,12 +236,9 @@ public class Menu {
     public void draw(AudioVideo av) {
         final int h = this.getHeight();
         final Rect bg = Coords.screen.flip(this.x, this.y, this.width, h);
-
-        // Draw black background
-        av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(ColorScheme.MENU.color);
-        av.shapes.rect(bg.x, bg.y, bg.w, bg.h);
-        av.shapes.end();
+        if (this.background == null) {
+            this.background = new Drawable(av.loaders.sprites, "menu");
+        }
 
         // Draw Menu content
         final int menuRatioX = (int) (Gdx.graphics.getBackBufferWidth() / (float) Gdx.graphics.getWidth());
@@ -247,6 +247,13 @@ public class Menu {
         final int[] s2 = ViewportLogic.project(bg.x + (bg.w * menuRatioX), bg.y + (bg.h * menuRatioY));
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glScissor(s1[0], s1[1], s2[0], s2[1]);
+        av.sprites.begin();
+        for (int a = 0; a < bg.w; a += Menu.TEXTURE_SIDE) {
+            for (int b = 0; b < bg.h; b += Menu.TEXTURE_SIDE) {
+                this.background.render(av.sprites, bg.x + a, bg.y + b);
+            }
+        }
+        av.sprites.end();
         this.root.draw(av, new Rect(this.x + this.margin, this.y + this.margin - this.offset,
                 this.width - (this.margin * 2) - Menu.SCROLLBAR, h - (this.margin * 2)));
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);

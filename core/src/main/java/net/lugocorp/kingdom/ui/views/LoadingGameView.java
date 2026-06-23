@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
 import net.lugocorp.kingdom.menu.game.GlyphBadgeNode;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
@@ -35,6 +36,7 @@ public class LoadingGameView extends ThreadedTaskView {
         pixmap.dispose();
 
         // Load built-in sprites
+        av.loaders.sprites.register("menu", "ui/menu", Menu.TEXTURE_SIDE, Menu.TEXTURE_SIDE, 0, 0);
         av.loaders.sprites.register("loading-screen", "ui/loading-screen", Coords.SIZE.x, Coords.SIZE.y, 0, 0);
         av.loaders.sprites.register("artifact-mask", "game/artifact-mask", ArtifactNode.WIDTH, ArtifactNode.HEIGHT, 0,
                 0);
