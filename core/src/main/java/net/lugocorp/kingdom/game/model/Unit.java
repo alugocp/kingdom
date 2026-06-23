@@ -254,14 +254,14 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
             if (view.game.actions.canUnitDoThis(this, ActionType.MOVE)) {
                 actives.add(new ActionNode(view.av, "Move", "move-action", Optional.of(new Shortcut("M", Keys.M)),
                         Optional.of("Exhaustive action"), Optional.of("Moves this unit to the target tile"),
-                        () -> view.selector.move(this)));
+                        () -> view.selector.move(this)).setBorder(true));
             }
 
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
                 frees.add(new ActionNode(view.av, "Deposit", "deposit-action", Optional.of(new Shortcut("E", Keys.E)),
                         Optional.of("Free action"), Optional.of("Gives all stored items to an adjacent vault"),
-                        () -> view.selector.deposit(this)));
+                        () -> view.selector.deposit(this)).setBorder(true));
             }
 
             // Give Food
@@ -276,7 +276,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
                                     final Set<Item> food = this.haul.getEdibleItems(view, u);
                                     return new SideEffect()
                                             .add(() -> this.haul.transfer(u.haul, food.iterator().next()));
-                                }).execute()));
+                                }).execute())
+                        .setBorder(true));
             }
 
             // Skip turn until haul Inventory is full
@@ -291,7 +292,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
                                     "This unit is waiting for maximum stored items, but you can give it a different command",
                                     () -> this.haul.isFull()));
                             view.hud.bot.tileMenu.refresh();
-                        }));
+                        }).setBorder(true));
             }
 
             // Skip turn
@@ -303,7 +304,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
                                             "This unit is skipping its turn, but you can give it a different command",
                                             () -> true));
                             view.hud.bot.tileMenu.refresh();
-                        }));
+                        }).setBorder(true));
             }
         }
         for (Ability a : this.abilities.getPassives()) {

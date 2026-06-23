@@ -122,6 +122,6 @@ public class Ability implements EventReceiver, MenuSubject {
                 Optional.of(this.getDescription(view)), () -> {
                     this.activate(view).execute();
                     view.hud.bot.tileMenu.refresh();
-                }).setMode(mode).setRecolor(this.recolor);
+                }).setBorder(true).setMode(mode).setRecolor(this.recolor);
     }
 }
