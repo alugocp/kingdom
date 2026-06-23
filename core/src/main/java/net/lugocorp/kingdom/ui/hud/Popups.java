@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.hud;
+import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class Popups {
     private final GameView view;
     private final List<Boolean> required = new ArrayList<>();
     private final List<Menu> queue = new ArrayList<>();
+    private float transition = 0f;
     private boolean display = false;
 
     public Popups(GameView view) {
@@ -93,7 +95,23 @@ public class Popups {
         if (!this.display && display) {
             this.view.hud.logger.clear();
         }
-        this.display = display && !this.queue.isEmpty();
+        final boolean toDisplay = display && !this.queue.isEmpty();
+        if (toDisplay && !this.isDisplayed()) {
+            this.transition = 1f;
+        }
+        this.display = toDisplay;
+    }
+
+    /**
+     * Handlees frame-level logic for the slide-in transition
+     */
+    public void handleTransition() {
+        if (this.queue.isEmpty() || this.isReady()) {
+            return;
+        }
+        this.transition = Math.max(this.transition - 0.1f, 0f);
+        final int end = this.view.hud.top.getHeight();
+        this.queue.get(0).setY(end + (int) ((Coords.SIZE.y - end) * this.transition));
     }
 
     /**
@@ -101,5 +119,12 @@ public class Popups {
      */
     public boolean isDisplayed() {
         return this.display && !this.queue.isEmpty();
+    }
+
+    /**
+     * Returns true if the Menu is ready to take input
+     */
+    public boolean isReady() {
+        return this.transition == 0f;
     }
 }

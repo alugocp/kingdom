@@ -220,6 +220,7 @@ public class GameView implements View {
         // Update Animations and other Game state
         this.animations.update(this, dt);
         this.game.mechanics.turns.processTurnByFrame(this);
+        this.hud.popups.handleTransition();
 
         // Calculate which models to display
         final Optional<Rect> visibleTilesBounds = Optional.of(this.calculateVisibleArea());

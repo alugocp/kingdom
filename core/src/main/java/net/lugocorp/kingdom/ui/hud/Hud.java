@@ -38,10 +38,8 @@ public class Hud {
     public List<MenuController> getControllers(GameView view, Settings settings) {
         final List<MenuController> controllers = new ArrayList<>();
         controllers.add(new MenuController(settings, () -> Optional.of(this.tutorial)));
-        controllers.add(new MenuController(settings,
-                () -> view.game.mechanics.turns.canHumanPlayerAct() && view.hud.popups.isDisplayed()
-                        ? this.popups.get()
-                        : Optional.empty()));
+        controllers.add(new MenuController(settings, () -> view.game.mechanics.turns.canHumanPlayerAct()
+                && view.hud.popups.isDisplayed() && view.hud.popups.isReady() ? this.popups.get() : Optional.empty()));
         controllers.add(new MenuController(settings, () -> Optional.of(this.bot.turnButton)));
         controllers.add(new MenuController(settings, () -> Optional.of(this.bot.tileMenu)));
         controllers.add(new MenuController(settings, () -> Optional.of(this.top)));
