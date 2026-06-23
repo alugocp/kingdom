@@ -14,15 +14,18 @@ import net.lugocorp.kingdom.menu.icon.HelperNode;
 import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
+import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -41,6 +44,7 @@ public class Patron extends Building {
     private String preferenceIcon = "apple";
     private String effectIcon = "apple";
     public String preference = "";
+    public String effect = "";
 
     Patron(String name, int x, int y, Supplier<Tile> getTile) {
         super(name, x, y, getTile);
@@ -198,20 +202,21 @@ public class Patron extends Building {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        final ListNode favors = new ListNode();
+        final ListNode favors = new ListNode().add(new SubheaderNode(view.av, "Favor"));
         final RowNode node = new RowNode().add(new ListNode().add(new HeaderNode(view.av, this.name)).add(new RowNode()
-                .addExact(IconNode.SIDE, new HelperNode(view.av,
-                        "Patrons are special buildings that cannot be traversed on. You can gain favor with a patron by moving your units within its domain. During each turn, a patron chooses the player with the most favor and gives them a powerful bonus for the rest of that turn."))
-                .addExact(ActionNode.SIDE + 10, new HeaderDescNode(view.av, this.effectIcon, "Effect", this.desc))
+                .addExact(IconNode.SIDE + 10, new HelperNode(view.av,
+                        "Patrons are guardians of the natural world. You can gain favor with a patron by maintaining a presence in its surrounding domain. Your units determine your favor with all nearby patrons each turn. Each patron gives its favorite player some bonus for that turn."))
+                .addExact(ActionNode.SIDE + 10, new HeaderDescNode(view.av, this.effectIcon, "Effect", this.effect))
                 .addExact(ActionNode.SIDE + 10,
-                        new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference))))
-                .add(favors);
+                        new HeaderDescNode(view.av, this.preferenceIcon, "Preferred Units", this.preference)))
+                .add(new SpacerNode(false).half()).add(new TextNode(view.av, this.desc))).add(favors);
         if (this.favor.size() > 0) {
-            favors.add(new SubheaderNode(view.av, "Players"));
-            for (Player k : this.favor.keySet()) {
-                final String label = String.format("%s: %d", k.name, this.favor.get(k));
+            final List<Player> sorted = Lambda.sort((Player player) -> this.favor.get(player),
+                    Lambda.toList(this.favor.keySet()));
+            for (Player k : sorted) {
                 final boolean fav = this.favorite.map((Player f) -> k == f).orElse(false);
-                favors.add(new TextNode(view.av, fav ? String.format("%s (favorite)", label) : label));
+                favors.add(new RowNode().addRatio(30, new TextNode(view.av, k.name)).add(
+                        new TextNode(view.av, String.format("%d%s", this.favor.get(k), fav ? " (favorite)" : ""))));
             }
         } else {
             favors.add(new TextNode(view.av, "No players are competing for this patron right now"));

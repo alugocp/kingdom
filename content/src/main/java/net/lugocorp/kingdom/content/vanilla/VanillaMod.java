@@ -494,7 +494,8 @@ public class VanillaMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_joyous_reaper).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "joyous-reaper");
-                    e.blob.desc = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit is reincarnated (returns as a unit recruitment option).";
+                    e.blob.desc = "This spirit ferries the souls of warriors to the afterlife. Sometimes it appears before mortals as an omen of encroaching death.";
+                    e.blob.effect = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit is reincarnated (returns as a unit recruitment option).";
                     e.blob.preference = "Battle glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     e.blob.setIcons(Labels.asset_rising_spirit, Labels.asset_battle_glyph);
@@ -531,7 +532,8 @@ public class VanillaMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_pond_troll).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "pond-troll");
-                    e.blob.desc = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
+                    e.blob.desc = "This ancient Troll made a pact with water spirits to save his village. In return she was forced to become a spirit herself, and now watches over those who seek to cross bodies of water.";
+                    e.blob.effect = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
                     e.blob.preference = "Units that cannot swim";
                     e.blob.isPreferredUnitType = (Unit u) -> !u.abilities.hasPassive(Labels.ability_swim);
                     e.blob.setIcons(Labels.asset_swim, Labels.asset_drown);
@@ -561,7 +563,8 @@ public class VanillaMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_flutterwing).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "flutterwing");
-                    e.blob.desc = "Your battle glyph units have +20% critical hit chance and generate 5 unit points when they kill another unit";
+                    e.blob.desc = "This great spirit dances upon the bodies of freshly slain warriors. It recycles their fleeting essence into new life to sustain the great cycle.";
+                    e.blob.effect = "Your battle glyph units have +20% critical hit chance and generate 5 unit points when they kill another unit";
                     e.blob.preference = "Battle glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.BATTLE);
                     e.blob.setIcons(Labels.asset_bloodlust, Labels.asset_battle_glyph);
@@ -593,7 +596,8 @@ public class VanillaMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_wise_mountain).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "wise-mountain");
-                    e.blob.desc = "Your mining glyph units' harvest abilities have a 20% chance to generate an additional item";
+                    e.blob.desc = "This mountain has watched over villages at its base for thousands upon thousands of years. It has witnessed the rise and fall of dynasties, the crashing wake of invading armies, and the birth of new forms of magic.";
+                    e.blob.effect = "Your mining glyph units' harvest abilities have a 20% chance to generate an additional item";
                     e.blob.preference = "Mining glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.MINING);
                     e.blob.setIcons(Labels.asset_extra_gem, Labels.asset_mining_glyph);
@@ -614,7 +618,8 @@ public class VanillaMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_wise_oak).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "wise-oak");
-                    e.blob.desc = "Your nature glyph units' harvest abilities have a 20% chance to generate an additional item";
+                    e.blob.desc = "This elder communes with the surrounding forest through a complex network of underground fungal helpers. It knows the names of all the trees and flowers and shrubs that have existed on the continent for the past several hundred years.";
+                    e.blob.effect = "Your nature glyph units' harvest abilities have a 20% chance to generate an additional item";
                     e.blob.preference = "Nature glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.NATURE);
                     e.blob.setIcons(Labels.asset_extra_fruit, Labels.asset_nature_glyph);
@@ -637,7 +642,8 @@ public class VanillaMod implements GameMod {
         new Stratified<Patron>(events.patron, Labels.patron_shining_eyes).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance(view.av, "shining-eyes");
-                    e.blob.desc = "Heals 4 random units of its favorite player each turn";
+                    e.blob.desc = "A mysterious being from some upper realm. The light that irradiates from its otherworldly form nurtures the soul and heals fatal wounds. Many believe its true form is far more strange than how it normally depicts itself.";
+                    e.blob.effect = "Heals 4 random units of its favorite player each turn";
                     e.blob.preference = "Support glyph units";
                     e.blob.isPreferredUnitType = (Unit u) -> u.glyphs.has(Glyph.SUPPORT);
                     e.blob.setIcons(Labels.asset_heal_wounds, Labels.asset_regeneration);
