@@ -6,12 +6,14 @@ import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import com.badlogic.gdx.math.Matrix4;
 import java.util.Optional;
 
 /**
  * An in-game pickup to be used by Units
  */
 public class Item implements EventReceiver {
+    private Optional<Matrix4> recolor = Optional.empty();
     public final Tags tags = new Tags();
     public final String name;
     public Optional<String> icon = Optional.empty();
@@ -28,6 +30,20 @@ public class Item implements EventReceiver {
      */
     public Item() {
         this.name = null;
+    }
+
+    /**
+     * Gets this Item's recolor matrix
+     */
+    public Optional<Matrix4> getRecolor() {
+        return this.recolor;
+    }
+
+    /**
+     * Sets this Item's recolor matrix
+     */
+    public void setRecolor(Optional<Matrix4> recolor) {
+        this.recolor = recolor;
     }
 
     /**

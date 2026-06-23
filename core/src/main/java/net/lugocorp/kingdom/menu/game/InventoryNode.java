@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.engine.render.Drawable;
+import net.lugocorp.kingdom.engine.shaders.ElementShader;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -25,8 +26,8 @@ import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Tuple;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Matrix4;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -39,12 +40,14 @@ public class InventoryNode implements MenuNode {
     public static final int SIDE = 50;
     private final MenuPopup popup = new MenuPopup();
     private final Optional<Inventory> equipped;
-    private final MenuNode unitCanEquipMenu;
+    private final MenuNode canEquipMenu;
+    private final MenuNode canHaulMenu;
     private final Inventory items;
     private final GameView view;
     private final int x;
     private final int y;
     private Optional<Tuple<Item, MenuNode>> cachedHoverMenu = Optional.empty();
+    private Optional<Integer> hoveredIndex = Optional.empty();
     private boolean controlsActive = false;
     private Menu menu = null;
     private int cols;
@@ -56,7 +59,8 @@ public class InventoryNode implements MenuNode {
         this.view = view;
         this.x = x;
         this.y = y;
-        this.unitCanEquipMenu = new ListNode().add(new TextNode(view.av, "This unit can equip an item here"));
+        this.canEquipMenu = new ListNode().add(new TextNode(view.av, "You can equip an item here"));
+        this.canHaulMenu = new ListNode().add(new TextNode(view.av, "You can haul an item here"));
     }
 
     /**
@@ -215,6 +219,9 @@ public class InventoryNode implements MenuNode {
         }
         final int x = (p.x - bounds.x) / InventoryNode.SIDE;
         final int y = (p.y - bounds.y) / InventoryNode.SIDE;
+        if (x > this.cols) {
+            return -1;
+        }
         return (this.cols * y) + x;
     }
 
@@ -240,13 +247,11 @@ public class InventoryNode implements MenuNode {
         if (max == 0) {
             return;
         }
-        av.sprites.begin();
-        av.sprites.setColor(Color.WHITE);
         for (int a = 0; a < this.rows; a++) {
             final Rect flip = Coords.screen.flip(bounds.x, bounds.y + a * (InventoryNode.SIDE + InventoryNode.MARGIN),
                     bounds.w, InventoryNode.SIDE + InventoryNode.MARGIN);
             for (int b = 0; b < this.cols; b++) {
-                int index = (a * this.cols) + b;
+                final int index = (a * this.cols) + b;
                 if (index >= max) {
                     break;
                 }
@@ -254,14 +259,23 @@ public class InventoryNode implements MenuNode {
                 final Optional<Item> target = this.getItemFromTotalIndex(index);
                 final InventoryType type = this.getInventoryByTotalIndex(index).type;
                 target.flatMap((Item item) -> item.icon).ifPresent((String s) -> icon.setSprite(s));
-                icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
+                av.special.begin();
+                av.shaders.element.setMode(this.hoveredIndex.map((Integer hovered) -> index == hovered).orElse(false)
+                        ? ElementShader.BRIGHT_MODE
+                        : ElementShader.DEFAULT_MODE);
+                target.flatMap((Item i) -> i.getRecolor()).ifPresent((Matrix4 m) -> av.shaders.element.recolor(m));
+                icon.render(av.special, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
+                av.special.end();
+                av.shaders.element.originalColor();
+                av.shaders.element.setMode(ElementShader.DEFAULT_MODE);
                 if (type == InventoryType.EQUIP) {
+                    av.sprites.begin();
                     icon.setSprite("equip frame");
                     icon.render(av.sprites, flip.x + b * (InventoryNode.SIDE + InventoryNode.MARGIN), flip.y);
+                    av.sprites.end();
                 }
             }
         }
-        av.sprites.end();
     }
 
     /** {@inheritdoc} */
@@ -359,6 +373,7 @@ public class InventoryNode implements MenuNode {
         final int i = this.getHoveredItemIndex(bounds, curr);
         final Optional<Item> target = this.getItemFromTotalIndex(i);
         final InventoryType type = this.getInventoryByTotalIndex(i).type;
+        final int max = this.getTotalItemsSize();
         if (target.isPresent()) {
             final Item item = target.get();
 
@@ -378,9 +393,15 @@ public class InventoryNode implements MenuNode {
                 this.cachedHoverMenu = Optional.of(new Tuple<Item, MenuNode>(item, root));
             }
             this.popup.update(bounds, curr, this.cachedHoverMenu.get().b);
+            this.hoveredIndex = Optional.of(i);
         } else if (type == InventoryType.EQUIP) {
-            this.popup.update(bounds, curr, this.unitCanEquipMenu);
+            this.popup.update(bounds, curr, this.canEquipMenu);
+            this.hoveredIndex = Optional.of(i);
+        } else if (i < max) {
+            this.popup.update(bounds, curr, this.canHaulMenu);
+            this.hoveredIndex = Optional.of(i);
         } else {
+            this.hoveredIndex = Optional.empty();
             this.popup.close();
         }
     }
