@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.util.LinkedList;
@@ -36,7 +37,7 @@ public class Tutorial extends Menu {
         final int mid = (Coords.SIZE.y + this.view.hud.top.getHeight() - this.view.hud.bot.getHeight()) / 2;
         final int center = (Coords.SIZE.x / 2) - 150;
         this.add(
-                "Welcome to Legends of T'ahn! This is a small tutorial for beginners that you can turn off in the settings at the top right.",
+                "Welcome to Legends of T'ahn! This is a small tutorial for beginners. You can turn this off in the settings menu located at the top right of the screen.",
                 TutorialArrow.NONE, center, mid);
         this.add(
                 "This is the unit/building/tile menu. You can click on the tabs below to view details on any unit, building, or tile in the game world.",
@@ -48,13 +49,13 @@ public class Tutorial extends Menu {
                 "This is the minimap. It gives you an overview of the entire game world. You'll see it change colors as your units explore the map and claim tiles in your name. You can also click on it to instantly move the camera.",
                 TutorialArrow.DOWN, Coords.SIZE.x - 330, bot);
         this.add(
-                "Below the minimap is the finish turn button. Click this when you're ready to end your turn so the computer players can go.",
+                "Below the minimap is the finish turn button. Click this when you're ready to end your turn so the computer players can take theirs.",
                 TutorialArrow.DOWN, Coords.SIZE.x - 330, bot);
         this.add(
                 "This is the overhead bar. You can view personal and global stats here, as well as access the settings menu.",
                 TutorialArrow.UP, center, top);
         this.add(
-                "There are forces conspiring against you elsewhere in the map. Grow your clan as you explore the game world and stop these conspirators!",
+                "There is one tower under your control. Grow your clan as you explore the game world to take your enemies' towers and claim victory.",
                 TutorialArrow.NONE, center, mid);
         this.add("That's the basics! Click on the red arrow ability below to move your unit, or try another ability.",
                 TutorialArrow.DOWN, (Coords.SIZE.x / 3) - 150, bot);
@@ -66,7 +67,7 @@ public class Tutorial extends Menu {
     private Tutorial add(String text, TutorialArrow arrow, int x, int y) {
         final TextNode node = new TextNode(this.view.av, text);
         final TextNode click = new TextNode(this.view.av,
-                String.format("click to continue (%d/8)", this.popups.size() + 1)) {
+                String.format("press space or click to continue (%d/8)", this.popups.size() + 1)) {
             /** {@inheritdoc} */
             @Override
             protected BitmapFont getFont() {
@@ -86,6 +87,7 @@ public class Tutorial extends Menu {
      * Swaps to the next node
      */
     private void next() {
+        this.view.av.loaders.sounds.play("sfx/card-flick");
         this.popups.remove();
     }
 
@@ -153,7 +155,6 @@ public class Tutorial extends Menu {
     @Override
     public boolean click(Point p) {
         if (this.popups.size() > 0 && this.popups.peek().bounds.contains(p)) {
-            this.view.av.loaders.sounds.play("sfx/card-flick");
             this.next();
             return true;
         }
@@ -169,6 +170,8 @@ public class Tutorial extends Menu {
     /** {@inheritdoc} */
     @Override
     public void keyPressed(int keycode) {
-        // No-op
+        if (keycode == Keys.SPACE && this.popups.size() > 0) {
+            this.next();
+        }
     }
 }
