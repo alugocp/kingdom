@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModProfile;
+import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.function.Consumer;
  */
 class ActiveModsView implements View {
     private final StartMenuView.Params params;
+    private final Background background;
     private Consumer<View> navigate;
     private Menu menu;
 
@@ -37,7 +39,8 @@ class ActiveModsView implements View {
                 }
             }
         }
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, node);
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, node).noBackground();
+        this.background = new Background(params.av);
         this.params = params;
     }
 
@@ -53,6 +56,7 @@ class ActiveModsView implements View {
     /** {@inheritdoc} */
     @Override
     public void render(int dt) {
+        this.background.render();
         this.menu.draw(this.params.av);
     }
 

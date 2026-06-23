@@ -109,9 +109,15 @@ public class DropdownNode implements MenuNode {
         final int w = bounds.w - (DropdownNode.MARGINX * 2);
         int y = bounds.y + DropdownNode.MARGINY;
 
-        // Draw surrounding border
+        // Draw black background
         final int h = this.getHeight();
         final Rect bg = Coords.screen.flip(bounds);
+        av.shapes.begin(ShapeType.Filled);
+        av.shapes.setColor(ColorScheme.BLACK.color);
+        av.shapes.rect(bg.x, bg.y + bounds.h - h, bg.w, h);
+        av.shapes.end();
+
+        // Draw surrounding border
         av.shapes.begin(ShapeType.Line);
         av.shapes.setColor(ColorScheme.WHITE.color);
         av.shapes.rect(bg.x, bg.y + bounds.h - h, bg.w, h);

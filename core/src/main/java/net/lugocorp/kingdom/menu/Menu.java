@@ -17,7 +17,7 @@ import java.util.Optional;
 public class Menu {
     private static final int MINI_MENU_WIDTH = 250;
     private static final int SCROLLBAR = 15;
-    public static final int TEXTURE_SIDE = 200;
+    public static final int TEXTURE_SIDE = 1000;
     private final boolean tall;
     private Optional<Menu> submenu = Optional.empty();
     private Optional<Point> prev = Optional.empty();
@@ -25,6 +25,7 @@ public class Menu {
     private Optional<Menu> mini = Optional.empty();
     private boolean scrollBarHighlighted = false;
     private Drawable background = null; // TODO make final and add av to Menu constructor
+    private boolean renderBackground = true;
     private boolean outlined = false;
     private int margin = 15;
     private int offset = 0;
@@ -47,6 +48,14 @@ public class Menu {
      */
     public Menu outline() {
         this.outlined = true;
+        return this;
+    }
+
+    /**
+     * Disables rendering the background for this Menu
+     */
+    public Menu noBackground() {
+        this.renderBackground = false;
         return this;
     }
 
@@ -247,13 +256,15 @@ public class Menu {
         final int[] s2 = ViewportLogic.project(bg.x + (bg.w * menuRatioX), bg.y + (bg.h * menuRatioY));
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glScissor(s1[0], s1[1], s2[0], s2[1]);
-        av.sprites.begin();
-        for (int a = 0; a < bg.w; a += Menu.TEXTURE_SIDE) {
-            for (int b = 0; b < bg.h; b += Menu.TEXTURE_SIDE) {
-                this.background.render(av.sprites, bg.x + a, bg.y + b);
+        if (this.renderBackground) {
+            av.sprites.begin();
+            for (int a = 0; a < bg.w; a += Menu.TEXTURE_SIDE) {
+                for (int b = 0; b < bg.h; b += Menu.TEXTURE_SIDE) {
+                    this.background.render(av.sprites, bg.x + a, bg.y + b);
+                }
             }
+            av.sprites.end();
         }
-        av.sprites.end();
         this.root.draw(av, new Rect(this.x + this.margin, this.y + this.margin - this.offset,
                 this.width - (this.margin * 2) - Menu.SCROLLBAR, h - (this.margin * 2)));
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);

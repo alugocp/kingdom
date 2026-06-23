@@ -78,12 +78,13 @@ public class TopHud extends Menu {
                                         Optional.empty(),
                                         () -> view.hud.popups.addNextUnrequired(this.getSettingsMenu(view)))))
                 // Human player details
-                .add(new RowNode().add(this.unitPoints).add(this.gold).add(this.artifacts).add(this.auctionChips));
+                .add(new RowNode().addRatio(50, this.unitPoints).add(this.gold).add(this.artifacts)
+                        .add(this.auctionChips));
         this.pack();
     }
 
     /**
-     * Updates the Hud info
+     * Updates the HUD info
      */
     public void update(Game g) {
         this.gold.setText(String.format("%s Gold", this.prettyInt(g.human.gold)));

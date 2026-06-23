@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
@@ -19,11 +20,13 @@ import java.util.function.Consumer;
  */
 class CreditsView implements View {
     private final StartMenuView.Params params;
+    private final Background background;
     private final Menu menu;
     private Consumer<View> navigate;
 
     CreditsView(StartMenuView.Params params) {
         this.params = params;
+        this.background = new Background(params.av);
         this.menu = new Menu((Coords.SIZE.x / 2) - 600, 0, 1200, false,
                 new ListNode()
                         .add(new RowNode().add(new ButtonNode(params.av, "Back",
@@ -46,7 +49,8 @@ class CreditsView implements View {
                                         .add(new TextNode(params.av, "Ken Possible")))
                                 .add(new ListNode().add(new TextNode(params.av, "Swol Stefan"))
                                         .add(new TextNode(params.av, "Rhys"))
-                                        .add(new TextNode(params.av, "Alec Lisy")))));
+                                        .add(new TextNode(params.av, "Alec Lisy")))))
+                .noBackground();
     }
 
     /** {@inheritdoc} */
@@ -61,6 +65,7 @@ class CreditsView implements View {
     /** {@inheritdoc} */
     @Override
     public void render(int dt) {
+        this.background.render();
         this.menu.draw(this.params.av);
     }
 

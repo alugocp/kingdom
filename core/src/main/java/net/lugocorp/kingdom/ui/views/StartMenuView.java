@@ -12,6 +12,7 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.serial.SaveLoad;
+import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.function.Consumer;
  * View to select in-app options
  */
 class StartMenuView implements View {
+    private final Background background;
     private final Params params;
     private final Menu menu;
     private Consumer<View> navigate;
 
     StartMenuView(Params params) {
         this.params = params;
+        this.background = new Background(params.av);
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
                 .add(new HeaderNode(params.av, "Legends of T'ahn").center()).add(new SpacerNode(false))
                 .add(new ButtonNode(params.av, "New game", () -> this.navigate.accept(new GameCreationView(params))))
@@ -40,7 +43,8 @@ class StartMenuView implements View {
                 .add(new SpacerNode(false).half())
                 .add(new ButtonNode(params.av, "Content", () -> this.navigate.accept(new ActiveModsView(params))))
                 .add(new SpacerNode(false))
-                .add(new TextNode(params.av, String.format("Version %s", Main.VERSION.toString())).center()));
+                .add(new TextNode(params.av, String.format("Version %s", Main.VERSION.toString())).center()))
+                .noBackground();
     }
 
     /** {@inheritdoc} */
@@ -54,6 +58,7 @@ class StartMenuView implements View {
     /** {@inheritdoc} */
     @Override
     public void render(int dt) {
+        this.background.render();
         this.menu.draw(this.params.av);
     }
 

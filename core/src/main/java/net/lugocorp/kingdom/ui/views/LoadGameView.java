@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.nio.file.Path;
@@ -21,17 +22,20 @@ import java.util.function.Consumer;
  */
 class LoadGameView implements View {
     private final StartMenuView.Params params;
+    private final Background background;
     private final ListNode content = new ListNode();
     private final Menu menu;
     private Consumer<View> navigate;
 
     LoadGameView(StartMenuView.Params params) {
         this.params = params;
+        this.background = new Background(params.av);
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
                 new ListNode()
                         .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
                         .add(new HeaderNode(params.av, "Load Games")).add(new SpacerNode())
-                        .add(this.content.add(new TextNode(params.av, "Loading..."))));
+                        .add(this.content.add(new TextNode(params.av, "Loading..."))))
+                .noBackground();
     }
 
     /** {@inheritdoc} */
@@ -67,6 +71,7 @@ class LoadGameView implements View {
     /** {@inheritdoc} */
     @Override
     public void render(int dt) {
+        this.background.render();
         this.menu.draw(this.params.av);
     }
 

@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.settings.SettingsIO;
+import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
@@ -23,16 +24,18 @@ import java.util.function.Consumer;
  */
 public class SettingsView implements View {
     private final StartMenuView.Params params;
+    private final Background background;
     private final Menu menu;
     private Consumer<View> navigate;
 
     SettingsView(StartMenuView.Params params) {
         this.params = params;
+        this.background = new Background(params.av);
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, SettingsView.addSettingsMenuNodes(params.av,
                 new ListNode().add(new ButtonNode(params.av, "Back", () -> {
                     SettingsIO.write(params.av.settings);
                     this.navigate.accept(new StartMenuView(params));
-                }))));
+                })))).noBackground();
     }
 
     /**
@@ -83,6 +86,7 @@ public class SettingsView implements View {
     /** {@inheritdoc} */
     @Override
     public void render(int dt) {
+        this.background.render();
         this.menu.draw(this.params.av);
     }
 

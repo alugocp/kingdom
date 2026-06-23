@@ -23,6 +23,7 @@ import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.Gdx;
@@ -43,6 +44,7 @@ class GameCreationView implements View {
     private final StartMenuView.Params params;
     private final TextNode humanFateNameNode;
     private final ButtonNode startButton;
+    private final Background background;
     private final Menu worldSelection;
     private final Menu fateSelection;
     private final Menu playerSelection;
@@ -53,6 +55,7 @@ class GameCreationView implements View {
 
     GameCreationView(StartMenuView.Params params) {
         this.params = params;
+        this.background = new Background(params.av);
 
         // Initialize Game and GameView state for world generation logic
         final Game game = new Game(params.events, OffsetTime.now());
@@ -121,6 +124,7 @@ class GameCreationView implements View {
     /** {@inheritdoc} */
     @Override
     public void render(int dt) {
+        this.background.render();
         this.menu.draw(this.view.av);
     }
 
@@ -168,8 +172,10 @@ class GameCreationView implements View {
                         "The world seed determines random values in world generation. Write down previous world seeds from games you enjoyed to replay on the exact same map."))
                 .add(new SpacerNode(false))
                 .add(new RowNode().addRatio(25, new SubheaderNode(this.view.av, "Map Size")).add(worldSizeOptions))
-                .add(new SpacerNode(false).half()).add(new TextNode(this.view.av,
-                        "There are multiple options for world size that you can generate. These options will determine the number of tiles present in the game world.")));
+                .add(new SpacerNode(false).half())
+                .add(new TextNode(this.view.av,
+                        "There are multiple options for world size that you can generate. These options will determine the number of tiles present in the game world.")))
+                .noBackground();
     }
 
     /**
@@ -216,7 +222,7 @@ class GameCreationView implements View {
         }
         this.humanFateNameNode.setText(fates.get(0).name);
         this.view.game.human.setFate(fates.get(0));
-        return new Menu(0, 0, Coords.SIZE.x, true, root);
+        return new Menu(0, 0, Coords.SIZE.x, true, root).noBackground();
     }
 
     /**
@@ -238,7 +244,7 @@ class GameCreationView implements View {
                         .add(this.humanFateNameNode))
                 .add(firstComp.b);
         final ListNode root = new ListNode();
-        final Menu menu = new Menu(0, 0, Coords.SIZE.x, true, root);
+        final Menu menu = new Menu(0, 0, Coords.SIZE.x, true, root).noBackground();
         root.add(
                 new RowNode().addRatio(20, new ButtonNode(this.view.av, "Back", () -> this.setMenu(this.fateSelection)))
                         .add(new HeaderNode(this.view.av, "Customize Players").center()).addRatio(20, this.startButton))

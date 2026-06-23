@@ -66,6 +66,8 @@ public class ResourceBarsNode implements MenuNode {
         for (int a = 0; a < this.bars.length; a++) {
             final ResourceBarsNode.Bar bar = this.bars[a];
             final int y = yInitial - (((int) font.getLineHeight() + ResourceBarsNode.PADDING) * a);
+            av.shapes.setColor(ColorScheme.BLACK.color);
+            av.shapes.rect(barX, y, barWidth, this.font.getLineHeight());
             av.shapes.setColor(Colors.fromHex(bar.color));
             av.shapes.rect(barX, y, barWidth * Math.min(1f, bar.value / (float) bar.max), this.font.getLineHeight());
         }
