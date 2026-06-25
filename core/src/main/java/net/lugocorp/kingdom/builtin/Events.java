@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.builtin;
+import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.Entity;
@@ -16,7 +17,6 @@ import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Point;
 import java.util.List;
 import java.util.Optional;
-
 /**
  * Contains a collection of Events that are integral to the game's core
  * mechanics
@@ -544,6 +544,19 @@ public class Events {
 
         public GetMaxActivationsEvent(Unit unit) {
             this.unit = unit;
+        }
+    }
+
+    /**
+     * Used to figure out what Items a Unit can eat
+     */
+    public static class CanEatItemEvent extends Event {
+        public final Item item;
+        public boolean edible;
+
+        public CanEatItemEvent(Item item) {
+            this.edible = item.tags.has(Labels.tag_fruit) || item.tags.has(Labels.tag_meat);
+            this.item = item;
         }
     }
 }

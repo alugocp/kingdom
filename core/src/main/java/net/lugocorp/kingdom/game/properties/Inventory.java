@@ -156,7 +156,7 @@ public class Inventory implements MenuSubject, Iterable<Item> {
             if (!i.isConsumable(view)) {
                 continue;
             }
-            if (u.hunger.canEat(i)) {
+            if (u.hunger.canEat(view, i)) {
                 edible.add(i);
             }
         }

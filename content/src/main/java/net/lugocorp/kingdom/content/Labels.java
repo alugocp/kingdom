@@ -177,6 +177,7 @@ public class Labels {
      */
     public static final String tag_natural = "natural";
     public static final String tag_fruit = "fruit";
+    public static final String tag_meat = "meat";
     public static final String tag_mushroom = "mushroom";
     public static final String tag_gem = "gem";
     public static final String tag_goo = "goo";
@@ -416,6 +417,7 @@ public class Labels {
     public static final String ability_regeneration = "Regeneration";
     public static final String ability_remove_poison = "Remove Poison";
     public static final String ability_revenge_of_the_forest = "Revenge of the Forest";
+    public static final String ability_rock_appetite = "Rock Appetite";
     public static final String ability_running_through_nature = "Running Through Nature";
     public static final String ability_self_sacrifice = "Self Sacrifice";
     public static final String ability_sacred_seeds = "Sacred Seeds";
@@ -430,6 +432,7 @@ public class Labels {
     public static final String ability_swing_axe = "Swing Axe";
     public static final String ability_sword_slash = "Sword Slash";
     public static final String ability_thorny_skin = "Thorny Skin";
+    public static final String ability_total_appetite = "Total Appetite";
     public static final String ability_trade = "Trade";
 
     /**

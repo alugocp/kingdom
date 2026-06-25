@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.unit;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.game.properties.Tags;
 import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
@@ -12,7 +12,6 @@ import java.util.Set;
  */
 public class Hunger {
     private final Unit unit;
-    public final Tags tags = new Tags();
     private int turnsToGetHungry = 20;
 
     public Hunger(Unit unit) {
@@ -25,17 +24,12 @@ public class Hunger {
     }
 
     /**
-     * Returns this instance's preferred food
-     */
-    public String getPreferredFoods() {
-        return this.tags.pretty("or", "items");
-    }
-
-    /**
      * Returns true if this instance's Unit can eat the given Item
      */
-    public boolean canEat(Item i) {
-        return this.tags.intersects(i.tags);
+    public boolean canEat(GameView view, Item i) {
+        final Events.CanEatItemEvent e = new Events.CanEatItemEvent(i);
+        this.unit.handleEvent(view, e);
+        return e.edible;
     }
 
     /**

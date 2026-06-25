@@ -71,7 +71,7 @@ public class HarvestFood extends Goal {
                         continue;
                     }
                     final Events.GenerateItemEvent event1 = (Events.GenerateItemEvent) event;
-                    if (root.unit.hunger.canEat(event1.blob)) {
+                    if (root.unit.hunger.canEat(view, event1.blob)) {
                         CapturedEvents.instance.clearFakePoint();
                         return 1f;
                     }

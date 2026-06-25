@@ -71,9 +71,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
 
     public Unit(String name, int x, int y) {
         super(name, x, y);
-
-        // Set default edible Item tags
-        this.hunger.tags.add("fruit");
     }
 
     /**
@@ -235,10 +232,8 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
                             .add(new SubheaderNode(view.av, "Health"))
                             .add(new TextNode(view.av,
                                     "If a unit's health bar hits zero then they disappear off the map."))
-                            .add(new SubheaderNode(view.av, "Hunger"))
-                            .add(new TextNode(view.av, String.format(
-                                    "The hunger bar increases each turn until it's full, then this unit will abandon you. This unit can clear its hunger bar by consuming %s.",
-                                    this.hunger.getPreferredFoods()))))));
+                            .add(new SubheaderNode(view.av, "Hunger")).add(new TextNode(view.av,
+                                    "The hunger bar increases each turn until it's full, then this unit will abandon you. This unit can clear its hunger bar by consuming edible items.")))));
         }
 
         // Actions / spells section

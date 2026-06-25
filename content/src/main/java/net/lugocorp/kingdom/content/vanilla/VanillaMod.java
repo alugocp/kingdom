@@ -1309,7 +1309,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "This craggy golem has priceless gems set into its flesh";
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_smash);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_stone_defense,
-                            Labels.ability_loose_gems);
+                            Labels.ability_loose_gems, Labels.ability_rock_appetite);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_golem;
@@ -1508,7 +1508,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_dig_mine, Labels.ability_hurl_rock);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_stone_defense, Labels.ability_mine_gems, Labels.ability_mine_gold,
-                            Labels.ability_subterranean_potions);
+                            Labels.ability_subterranean_potions, Labels.ability_rock_appetite);
                     e.blob.glyphs.set(Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_golem;
@@ -1547,7 +1547,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setModelInstance(view.av, "blob");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_slime_shot);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_acid_skin,
-                            Labels.ability_liquifying_presence);
+                            Labels.ability_liquifying_presence, Labels.ability_total_appetite);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.species = Defs.species_plasmoid;
@@ -1565,7 +1565,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_fire_laser,
                             Labels.ability_collapse_mine);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_crystal_skin,
-                            Labels.ability_night_vision, Labels.ability_mine_gems);
+                            Labels.ability_night_vision, Labels.ability_mine_gems, Labels.ability_rock_appetite);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.combat.health.setMaxAndValue(35);
                     e.blob.species = Defs.species_gemstone;
@@ -1580,11 +1580,11 @@ public class VanillaMod implements GameMod {
                     e.blob.setMaterial("slip", 1);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_metabolize);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
-                            Labels.ability_market_value_goo, Labels.ability_economic_activity);
+                            Labels.ability_market_value_goo, Labels.ability_economic_activity,
+                            Labels.ability_total_appetite);
                     e.blob.glyphs.set(Glyph.TRADE);
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.haul.setMax(12);
-                    e.blob.hunger.tags.acceptAll();
                     e.blob.species = Defs.species_plasmoid;
                     return new SideEffect();
                 });
@@ -2612,6 +2612,17 @@ public class VanillaMod implements GameMod {
                                                         .map((Building b) -> b.name.equals(Labels.building_forest))
                                                         .orElse(false) ? 12 : 8)));
 
+        // Rock Appetite
+        new Stratified<Ability>(events.ability, Labels.ability_rock_appetite).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_crystal);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("This unit can only eat gem items"))
+                .add(Events.CanEatItemEvent.class, (GameView view, Ability receiver, Events.CanEatItemEvent e) -> {
+                    e.edible = e.item.tags.has(Labels.tag_gem);
+                    return new SideEffect();
+                });
+
         // Running Through Nature
         new Stratified<Ability>(events.ability, Labels.ability_running_through_nature)
                 .add(Events.GenerateAbilityEvent.class,
@@ -2775,6 +2786,17 @@ public class VanillaMod implements GameMod {
                                 ? attacker.combat.takeDamage(view, new Damage(2), target)
                                 : new SideEffect();
                     }
+                    return new SideEffect();
+                });
+
+        // Total Appetite
+        new Stratified<Ability>(events.ability, Labels.ability_total_appetite).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_stomach);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("This unit can eat any item"))
+                .add(Events.CanEatItemEvent.class, (GameView view, Ability receiver, Events.CanEatItemEvent e) -> {
+                    e.edible = true;
                     return new SideEffect();
                 });
 
@@ -3008,6 +3030,7 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_fish);
                     e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_meat);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
