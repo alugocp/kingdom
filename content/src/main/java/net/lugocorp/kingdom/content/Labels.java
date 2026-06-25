@@ -438,6 +438,7 @@ public class Labels {
     /**
      * SECTION Status Effects
      */
+    public static final String status_effect_cooldown = "Cooldown";
     public static final String status_effect_stunned = "Stunned";
     public static final String status_effect_more_favor = "More Favor";
     public static final String status_effect_proud_builder = "Proud Builder";

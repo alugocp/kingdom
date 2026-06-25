@@ -17,6 +17,7 @@ import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Point;
 import java.util.List;
 import java.util.Optional;
+
 /**
  * Contains a collection of Events that are integral to the game's core
  * mechanics
@@ -557,6 +558,18 @@ public class Events {
         public CanEatItemEvent(Item item) {
             this.edible = item.tags.has(Labels.tag_fruit) || item.tags.has(Labels.tag_meat);
             this.item = item;
+        }
+    }
+
+    /**
+     * Used to determine whether or not we can use the given Ability (by its name)
+     */
+    public static class CanUseAbilityEvent extends Event {
+        public final String ability;
+        public boolean canUse = true;
+
+        public CanUseAbilityEvent(String ability) {
+            this.ability = ability;
         }
     }
 }

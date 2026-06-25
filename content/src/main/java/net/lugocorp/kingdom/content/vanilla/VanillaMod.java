@@ -2700,6 +2700,7 @@ public class VanillaMod implements GameMod {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(8), 1, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
+                                    receiver.wielder.abilities.cooldown(view, receiver, 3).execute();
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
                                             : new SideEffect();
@@ -2817,6 +2818,41 @@ public class VanillaMod implements GameMod {
         /**
          * SECTION Status Effects
          */
+
+        // Cooldown
+        new Stratified<Ability>(events.ability, Labels.status_effect_cooldown).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_stunned);
+                    return new SideEffect();
+                }).add(Events.CanUseAbilityEvent.class,
+                        (GameView view, Ability receiver, Events.CanUseAbilityEvent e) -> {
+                            e.canUse = e.canUse && !receiver.name
+                                    .equals(String.format("%s (%s)", Labels.status_effect_cooldown, e.ability));
+                            return new SideEffect();
+                        })
+                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                    // Calculates the number of remaining turns on the cooldown
+                    final String desc = receiver.getDescription(view);
+                    String number = "";
+                    for (int a = 0; a < desc.length(); a++) {
+                        if (desc.charAt(a) >= '0' && desc.charAt(a) <= '9') {
+                            number += desc.charAt(a);
+                        }
+                    }
+
+                    // Remove the cooldown effect and reapply with fewer remaining turns (if
+                    // applicable)
+                    final int turns = number.length() == 0 ? 0 : Integer.parseInt(number);
+                    final SideEffect effects = new SideEffect().add(() -> {
+                        receiver.wielder.abilities.removeStatusEffect(view, receiver);
+                    });
+                    if (turns > 1) {
+                        final String ability = receiver.name.substring(Labels.status_effect_cooldown.length() + 2,
+                                receiver.name.length() - 1);
+                        effects.add(receiver.wielder.abilities.cooldown(view, ability, turns - 1));
+                    }
+                    return effects;
+                });
 
         // Stunned
         new Stratified<Ability>(events.ability, Labels.status_effect_stunned).add(Events.GenerateAbilityEvent.class,

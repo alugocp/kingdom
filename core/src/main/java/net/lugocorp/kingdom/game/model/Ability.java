@@ -24,7 +24,7 @@ public class Ability implements EventReceiver, MenuSubject {
     public final Unit wielder;
     public final String name;
 
-    Ability(Unit wielder, String name) {
+    public Ability(Unit wielder, String name) {
         this.wielder = wielder;
         this.name = name;
     }
@@ -43,7 +43,19 @@ public class Ability implements EventReceiver, MenuSubject {
     public String getDescription(GameView view) {
         final Events.GetDescriptionEvent e = new Events.GetDescriptionEvent();
         this.handleEvent(view, e);
+        if (!this.canUse(view)) {
+            return String.format("%s (cannot use right now)", e.desc);
+        }
         return e.desc;
+    }
+
+    /**
+     * Returns true if this Ability can currently be used
+     */
+    public boolean canUse(GameView view) {
+        final Events.CanUseAbilityEvent e = new Events.CanUseAbilityEvent(this.name);
+        this.wielder.handleEvent(view, e);
+        return e.canUse;
     }
 
     /**
@@ -111,7 +123,8 @@ public class Ability implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public MenuNode getMenuContent(GameView view, Optional<Point> p) {
-        final boolean canUnitDoThis = view.game.actions.canUnitDoThis(this.wielder, ActionType.ACTIVATE);
+        final boolean canUnitDoThis = view.game.actions.canUnitDoThis(this.wielder, ActionType.ACTIVATE)
+                && this.canUse(view);
         int mode = ActionNode.MODE_NOTHING;
         if (this.isActive(view)) {
             mode = (this.wielder.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()

@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Generator;
@@ -99,14 +100,23 @@ public class Abilities {
     }
 
     /**
-     * Adds a status effect (Ability under the hood) to this instance. Also triggers
-     * a special Event on the Ability so it can kick off tick events
+     * Adds a status effect to this instance by the given name
      */
     public SideEffect addStatusEffect(GameView view, String name) {
         // TODO move status effects to their own logic one day
-        final SideEffect effects = new SideEffect();
         final Ability status = view.game.generator.ability(this.unit, name);
-        effects.add(() -> view.overlays.add(new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, name)));
+        return this.addStatusEffect(view, status);
+    }
+
+    /**
+     * Adds a status effect (Ability under the hood) to this instance. Also triggers
+     * a special Event on the Ability so it can kick off tick events
+     */
+    public SideEffect addStatusEffect(GameView view, Ability status) {
+        // TODO move status effects to their own logic one day
+        final SideEffect effects = new SideEffect();
+        effects.add(
+                () -> view.overlays.add(new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, status.name)));
         effects.add(() -> this.passives.add(status));
         effects.add(status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this.unit)));
         return effects;
@@ -135,5 +145,37 @@ public class Abilities {
             }
         }
         remove.ifPresent((Ability s) -> this.removeStatusEffect(view, s));
+    }
+
+    /**
+     * Applies a cooldown for the given Ability to the associated Unit (calls into
+     * the underlying method)
+     */
+    public SideEffect cooldown(GameView view, Ability ability, int turns) {
+        return this.cooldown(view, ability.name, turns);
+    }
+
+    /**
+     * Applies a cooldown for the given Ability to the associated Unit
+     */
+    public SideEffect cooldown(GameView view, String ability, int turns) {
+        // TODO move status effects to their own logic one day
+        final Ability effect = view.game.generator
+                .ability(new Ability(this.unit, String.format("%s (%s)", Labels.status_effect_cooldown, ability)) {
+                    /** {@inheritdoc} */
+                    @Override
+                    public String getStratifier() {
+                        return Labels.status_effect_cooldown;
+                    }
+
+                    /** {@inheritdoc} */
+                    @Override
+                    public String getDescription(GameView view) {
+                        return String.format("On cooldown for the next %d turn(s)", turns);
+                    }
+                });
+        return new SideEffect().add(this.addStatusEffect(view, effect)).add(() -> {
+            view.game.future.addFutureTick("Tick", effect, 1, false, Optional.empty());
+        });
     }
 }
