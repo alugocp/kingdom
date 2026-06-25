@@ -2700,7 +2700,6 @@ public class VanillaMod implements GameMod {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(8), 1, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
-                                    receiver.wielder.abilities.cooldown(view, receiver, 3).execute();
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
                                             : new SideEffect();
