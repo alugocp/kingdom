@@ -21,13 +21,12 @@ public class GenerateWorldView extends ThreadedTaskView {
     /** {@inheritdoc} */
     @Override
     protected void performTask() {
-        WorldGenerator generator = new WorldGenerator();
-        this.view.game.world.init(this.worldGenOpts);
+        final WorldGenerator generator = new WorldGenerator(this.view.game.world, this.worldGenOpts);
         for (CompPlayer comp : this.view.game.comps) {
             comp.memory = new MemoryMap(this.worldGenOpts.size.w, this.worldGenOpts.size.h);
         }
         System.out.println(String.format("Generating world #%d...", this.worldGenOpts.seed));
-        generator.generateWorld(this.view, this.worldGenOpts, (Integer i) -> this.setProgress(i.intValue()));
+        generator.generateWorld(this.view, (Integer i) -> this.setProgress(i.intValue()));
         this.setProgress(100);
     }
 

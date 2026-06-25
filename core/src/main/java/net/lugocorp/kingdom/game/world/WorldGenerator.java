@@ -18,48 +18,58 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * This class handles world generation logic
  */
 public class WorldGenerator {
     private static final int BIOME_UNIT_SIZE = 5;
+    private final WorldGenOptions worldGenOpts;
+    private final Random rand;
+    private final World world;
+
+    public WorldGenerator(World world, WorldGenOptions worldGenOpts) {
+        this.rand = new Random(worldGenOpts.seed);
+        this.worldGenOpts = worldGenOpts;
+        this.world = world;
+    }
 
     /**
      * The main function that initiates world generation
      */
-    public void generateWorld(GameView view, WorldGenOptions worldGenOpts, Consumer<Integer> progress) {
-        final Random r = new Random(worldGenOpts.seed);
+    public void generateWorld(GameView view, Consumer<Integer> progress) {
         final Game g = view.game;
+        this.world.init(this.worldGenOpts);
 
         // Set up coasts (if any)
-        final boolean coastTop = r.nextBoolean();
-        final boolean coastBot = r.nextBoolean();
-        final boolean coastLeft = (worldGenOpts.size.getArea() >= WorldSize.MEDIUM.getArea() || !(coastTop && coastBot))
-                && r.nextBoolean();
-        final boolean coastRight = (worldGenOpts.size.getArea() >= WorldSize.MEDIUM.getArea()
-                || !((coastTop ? 1 : 0) + (coastBot ? 1 : 0) + (coastLeft ? 1 : 0) == 2)) && r.nextBoolean();
+        final boolean coastTop = this.rand.nextBoolean();
+        final boolean coastBot = this.rand.nextBoolean();
+        final boolean coastLeft = (this.worldGenOpts.size.getArea() >= WorldSize.MEDIUM.getArea()
+                || !(coastTop && coastBot)) && this.rand.nextBoolean();
+        final boolean coastRight = (this.worldGenOpts.size.getArea() >= WorldSize.MEDIUM.getArea()
+                || !((coastTop ? 1 : 0) + (coastBot ? 1 : 0) + (coastLeft ? 1 : 0) == 2)) && this.rand.nextBoolean();
 
         // Set default biome
         Biome mainBiome = Biome.GRASS;
         // TODO uncomment this when there are more units designed for these Biomes
         /*
-         * float biomeSelection = r.nextFloat(); if (biomeSelection < 0.05) { mainBiome
-         * = Biome.SAND; } else if (biomeSelection < 0.1) { mainBiome = Biome.ROCK; }
-         * else if (biomeSelection < 0.15) { mainBiome = Biome.SNOW; }
+         * float biomeSelection = this.rand.nextFloat(); if (biomeSelection < 0.05) {
+         * mainBiome = Biome.SAND; } else if (biomeSelection < 0.1) { mainBiome =
+         * Biome.ROCK; } else if (biomeSelection < 0.15) { mainBiome = Biome.SNOW; }
          */
 
         // Set Biome seeds
         final Biome[] otherBiomes = this.getDifferentBiomes(mainBiome);
-        final int biomeSeedsW = worldGenOpts.size.w / WorldGenerator.BIOME_UNIT_SIZE;
-        final int biomeSeedsH = worldGenOpts.size.h / WorldGenerator.BIOME_UNIT_SIZE;
+        final int biomeSeedsW = this.worldGenOpts.size.w / WorldGenerator.BIOME_UNIT_SIZE;
+        final int biomeSeedsH = this.worldGenOpts.size.h / WorldGenerator.BIOME_UNIT_SIZE;
         final Point[][] biomeSeedOffsets = new Point[biomeSeedsW][biomeSeedsH];
         final Biome[][] biomeSeeds = new Biome[biomeSeedsW][biomeSeedsH];
         for (int b = 0; b < biomeSeedsH; b++) {
             final boolean isHorizontalCoast = (coastTop && b == 0) || (coastBot && b == biomeSeedsH - 1);
             for (int a = 0; a < biomeSeedsW; a++) {
-                biomeSeedOffsets[a][b] = new Point(r.nextInt(WorldGenerator.BIOME_UNIT_SIZE),
-                        r.nextInt(WorldGenerator.BIOME_UNIT_SIZE));
+                biomeSeedOffsets[a][b] = new Point(this.rand.nextInt(WorldGenerator.BIOME_UNIT_SIZE),
+                        this.rand.nextInt(WorldGenerator.BIOME_UNIT_SIZE));
 
                 // Coastal Biome seeds
                 if (isHorizontalCoast || (coastLeft && a == 0) || (coastRight && a == biomeSeedsW - 1)) {
@@ -68,9 +78,9 @@ public class WorldGenerator {
                 }
 
                 // Non-coastal Biome seeds
-                final float biomeDecision = r.nextFloat();
+                final float biomeDecision = this.rand.nextFloat();
                 if (biomeDecision < 0.05) {
-                    biomeSeeds[a][b] = this.randomValue(r, otherBiomes);
+                    biomeSeeds[a][b] = this.randomValue(otherBiomes);
                 } else if (biomeDecision < 0.4) {
                     final Biome prev = (a == 0) ? mainBiome : biomeSeeds[a - 1][b];
                     biomeSeeds[a][b] = prev;
@@ -83,8 +93,8 @@ public class WorldGenerator {
 
         // Fill out Tiles in the World
         final Set<Point> buildingPoints = new HashSet<>();
-        for (int a = 0; a < worldGenOpts.size.w; a++) {
-            for (int b = 0; b < worldGenOpts.size.h; b++) {
+        for (int a = 0; a < this.worldGenOpts.size.w; a++) {
+            for (int b = 0; b < this.worldGenOpts.size.h; b++) {
                 final Point focalSeed = new Point(a / WorldGenerator.BIOME_UNIT_SIZE,
                         b / WorldGenerator.BIOME_UNIT_SIZE);
                 float closestSeedDistance = 1000f;
@@ -123,7 +133,7 @@ public class WorldGenerator {
         final Map<Player, Tower> playerSpawnPoints = new HashMap<>();
         while (buildingPoints.size() > 0) {
             // Choose a Point to spawn the content
-            final Point p = this.randomValue(r, buildingPoints);
+            final Point p = this.randomValue(buildingPoints);
             buildingPoints.remove(p);
 
             // Place Players with priority
@@ -136,22 +146,22 @@ public class WorldGenerator {
                 playerSpawnPoints.put(player, t);
                 g.towers.add(t);
                 towersSpawned++;
-            } else if (towersSpawned < worldGenOpts.size.towers) {
+            } else if (towersSpawned < this.worldGenOpts.size.towers) {
                 // Place remaining Towers with priority
                 final Tower t = g.generator.tower(p.x, p.y);
                 g.towers.add(t);
-                if (++towersSpawned == worldGenOpts.size.towers) {
-                    this.calculateTowerDomains(g, worldGenOpts);
+                if (++towersSpawned == this.worldGenOpts.size.towers) {
+                    this.calculateTowerDomains(g);
                     for (Tower tower : g.towers) {
                         tower.spawn(view);
                     }
                 }
             } else {
                 // Spawn non-Player content
-                final int percent = r.nextInt(1000);
+                final int percent = this.rand.nextInt(1000);
                 if (percent <= 50 && patrons.size() > 0) {
                     // Spawn a Patron (5% chance)
-                    final String patron = this.randomValue(r, patrons);
+                    final String patron = this.randomValue(patrons);
                     g.generator.patron(patron, p.x, p.y).spawn(view);
                     patrons.remove(patron);
                 } else if (percent <= 53) {
@@ -171,13 +181,14 @@ public class WorldGenerator {
 
                     // Forests/Meadows on Grass Tiles
                     if (terrain.equals(Biome.GRASS.terrain)) {
-                        building = Optional.of(r.nextBoolean() ? Labels.building_forest : Labels.building_meadow);
+                        building = Optional
+                                .of(this.rand.nextBoolean() ? Labels.building_forest : Labels.building_meadow);
                         radiusRange = 3;
                     }
 
                     // Oasis/Shrubland on Sand Tiles
                     if (terrain.equals(Biome.SAND.terrain)) {
-                        if (r.nextBoolean()) {
+                        if (this.rand.nextBoolean()) {
                             building = Optional.of(Labels.building_shrubland);
                             radiusRange = 2;
                         } else {
@@ -197,7 +208,7 @@ public class WorldGenerator {
 
                     // Actually spawn the Buildings if one was selected
                     if (building.isPresent()) {
-                        final Set<Point> area = Hexagons.getNeighbors(p, r.nextInt(radiusRange) + 1);
+                        final Set<Point> area = Hexagons.getNeighbors(p, this.rand.nextInt(radiusRange) + 1);
                         for (Point p1 : area) {
                             // If the Tile exists, has the intended terrain, and there is no building yet
                             if (buildingPoints.contains(p1) && g.world.getTile(p1).get().name.equals(terrain)) {
@@ -238,16 +249,30 @@ public class WorldGenerator {
     }
 
     /**
+     * Returns all Biomes that aren't the given Biome
+     */
+    private Biome[] getDifferentBiomes(Biome b) {
+        int a = 0;
+        final Biome[] others = new Biome[Biome.values().length - 1];
+        for (Biome o : Biome.values()) {
+            if (o != b) {
+                others[a++] = o;
+            }
+        }
+        return others;
+    }
+
+    /**
      * Calculates the domains for each Tower
      */
-    private void calculateTowerDomains(Game g, WorldGenOptions worldGenOpts) {
+    private void calculateTowerDomains(Game g) {
         final Point domainPoint = new Point(0, 0);
         final Map<Tower, Set<Point>> domains = new HashMap<>();
         for (Tower t : g.towers) {
             domains.put(t, new HashSet<Point>());
         }
-        for (int a = 0; a < worldGenOpts.size.w; a++) {
-            for (int b = 0; b < worldGenOpts.size.h; b++) {
+        for (int a = 0; a < this.worldGenOpts.size.w; a++) {
+            for (int b = 0; b < this.worldGenOpts.size.h; b++) {
                 Tower best = null;
                 int shortest = 0;
                 domainPoint.set(a, b);
@@ -267,6 +292,50 @@ public class WorldGenerator {
     }
 
     /**
+     * Returns a grid of relatively evenly spaced Points
+     */
+    private Point[][] getSpacedPoints(int cellW, int cellH, int marginW, int marginH,
+            Function<Point, Boolean> isValid) {
+        final int resultW = this.worldGenOpts.size.w / cellW;
+        final int resultH = this.worldGenOpts.size.h / cellH;
+        final Point[][] points = new Point[resultW][resultH];
+        for (int a = 0; a < resultW; a++) {
+            for (int b = 0; b < resultH; b++) {
+                final int minX = (a * cellW) + marginW;
+                final int minY = (b * cellH) + marginH;
+                final int maxX = Math.min((a * cellW) + cellW - marginW, this.worldGenOpts.size.w);
+                final int maxY = Math.min((b * cellH) + cellH - marginH, this.worldGenOpts.size.h);
+                final Set<Point> possibilities = new HashSet<>();
+                for (int x = minX; x < maxX; x++) {
+                    for (int y = minY; y < maxY; y++) {
+                        final Point p = new Point(x, y);
+                        if (isValid.apply(p)) {
+                            possibilities.add(p);
+                        }
+                    }
+                }
+                points[a][b] = possibilities.size() > 0 ? this.randomValue(possibilities) : null;
+            }
+        }
+        return points;
+    }
+
+    /**
+     * Takes a 2D grid of Points and puts the non-null values into a set
+     */
+    private Set<Point> collapseGridToSet(Point[][] grid) {
+        final Set<Point> points = new HashSet<>();
+        for (int a = 0; a < grid.length; a++) {
+            for (int b = 0; b < grid[a].length; b++) {
+                if (grid[a][b] != null) {
+                    points.add(grid[a][b]);
+                }
+            }
+        }
+        return points;
+    }
+
+    /**
      * Implementation of the distance function
      */
     private float distance(int x1, int y1, int x2, int y2) {
@@ -276,22 +345,22 @@ public class WorldGenerator {
     /**
      * Return a random element from the given array
      */
-    private <T> T randomValue(Random r, T[] array) {
-        return array[r.nextInt(array.length)];
+    private <T> T randomValue(T[] array) {
+        return array[this.rand.nextInt(array.length)];
     }
 
     /**
      * Return a random element from the given List
      */
-    private <T> T randomValue(Random r, List<T> array) {
-        return array.get(r.nextInt(array.size()));
+    private <T> T randomValue(List<T> array) {
+        return array.get(this.rand.nextInt(array.size()));
     }
 
     /**
      * Return a random element from the given Set
      */
-    private <T> T randomValue(Random r, Set<T> s) {
-        final int index = r.nextInt(s.size());
+    private <T> T randomValue(Set<T> s) {
+        final int index = this.rand.nextInt(s.size());
         final Iterator<T> iterator = s.iterator();
         for (int a = 0; a < index; a++) {
             iterator.next();
@@ -300,16 +369,18 @@ public class WorldGenerator {
     }
 
     /**
-     * Returns all Biomes that aren't the given Biome
+     * Returns a random subset of the given set
      */
-    private Biome[] getDifferentBiomes(Biome b) {
-        int a = 0;
-        final Biome[] others = new Biome[Biome.values().length - 1];
-        for (Biome o : Biome.values()) {
-            if (o != b) {
-                others[a++] = o;
-            }
+    private <T> Set<T> randomSubset(Set<T> s, int size) {
+        if (s.size() < size) {
+            throw new RuntimeException("The set is too small to return a random subset of the requested size");
         }
-        return others;
+        final Set<T> result = new HashSet<>();
+        for (int a = 0; a < size; a++) {
+            final T t = this.randomValue(s);
+            result.add(t);
+            s.remove(t);
+        }
+        return result;
     }
 }
