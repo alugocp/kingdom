@@ -18,6 +18,7 @@ public class ItemLogic {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
         return new SideEffect().add(() -> e.consumer.getLeader().ifPresent((Player p) -> {
             if (p instanceof CompPlayer) {
+                // TODO how do we track this across all gold-increasing methods?
                 ((CompPlayer) p).stats.income.add(e.item.gold);
             }
             p.gold += e.item.gold;

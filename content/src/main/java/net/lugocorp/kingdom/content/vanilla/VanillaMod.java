@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.builtin.logic.BuildingLogic;
 import net.lugocorp.kingdom.builtin.logic.ItemLogic;
 import net.lugocorp.kingdom.builtin.logic.UnitLogic;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.content.Defs;
 import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.engine.assets.SpriteLoader;
@@ -38,6 +39,7 @@ import net.lugocorp.kingdom.menu.game.InventoryNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModProfile;
+import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -372,15 +374,44 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 });
 
-        // Vault
-        new Stratified<Building>(events.building, Labels.building_vault).add(Events.GenerateBuildingEvent.class,
+        // Cache
+        new Stratified<Building>(events.building, Labels.building_cache).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "vault");
-                    e.blob.desc = "This building can store items and its contents be wagered in auctions";
+                    e.blob.desc = "This building can store items";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.combat.health.setMaxAndValue(45);
                     e.blob.setMinimapColor(0x000000);
                     return new SideEffect();
+                });
+
+        // Marketplace
+        new Stratified<Building>(events.building, Labels.building_marketplace).add(Events.GenerateBuildingEvent.class,
+                (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                    e.blob.setModelInstance(view.av, "vault");
+                    e.blob.desc = "Occupying units generate gold and sometimes an item";
+                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.setMinimapColor(0x000000);
+                    return new SideEffect();
+                })
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
+                    final Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
+                    final SideEffect effects = new SideEffect();
+                    u.ifPresent((Unit unit) -> {
+                        effects.add(Math.random() < 0.05 ? () -> {
+                            final Item item = view.game.mechanics.loot.drop(view.game);
+                            view.overlays.add(new EntityRisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
+                            unit.haul.add(item);
+                        } : () -> {
+                            view.overlays.add(new EntityRisingOverlay(view, unit, ColorScheme.GOLD.hex, "+5 gold"));
+                            unit.getLeader().get().gold += 5;
+                            view.hud.top.update(view.game);
+                        });
+                    });
+                    return effects;
                 });
 
         // Forest
@@ -841,7 +872,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Artifact>(events.artifact, Labels.artifact_stones_of_thudin)
                 .add(Events.GenerateArtifactEvent.class,
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
-                            e.blob.desc = "Your vaults have +2 defense";
+                            e.blob.desc = "Your towers have +2 defense";
                             e.blob.image = Optional.of(Labels.asset_stones_of_thudin);
                             return new SideEffect();
                         })
@@ -852,7 +883,7 @@ public class VanillaMod implements GameMod {
                         })
                 .add(Events.TakeDamageEvent.class, (GameView view, Artifact receiver, Events.TakeDamageEvent e) -> {
                     if (e.target.isEntityType(EntityType.BUILDING)) {
-                        if (receiver.isClaimedByLeader(e.target) && e.target.name.equals(Labels.building_vault)) {
+                        if (receiver.isClaimedByLeader(e.target) && e.target.name.equals(Labels.building_tower)) {
                             e.dmg.base -= 2;
                         }
                     }
@@ -917,7 +948,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Artifact>(events.artifact, Labels.artifact_bounty_of_ahn_june)
                 .add(Events.GenerateArtifactEvent.class,
                         (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
-                            e.blob.desc = "Trade glyph units on your vaults generate +2 more auction points";
+                            e.blob.desc = "Your trade glyph units generate +2 more auction points";
                             e.blob.image = Optional.of(Labels.asset_bounty_of_ahn_june);
                             e.blob.chips = 2;
                             return new SideEffect();
@@ -929,9 +960,7 @@ public class VanillaMod implements GameMod {
                         })
                 .add(Events.GenerateAuctionPointsEvent.class,
                         (GameView view, Artifact receiver, Events.GenerateAuctionPointsEvent e) -> {
-                            if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.TRADE)
-                                    && view.game.world.getTile(e.unit.getPoint()).flatMap((Tile t) -> t.building)
-                                            .map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false)) {
+                            if (receiver.isClaimedByLeader(e.unit) && e.unit.glyphs.has(Glyph.TRADE)) {
                                 e.points += 2;
                             }
                             return new SideEffect();
@@ -1140,7 +1169,7 @@ public class VanillaMod implements GameMod {
                     e.blob.image = Optional.of(Labels.asset_merchant);
                     e.blob.desc.add("Playstyle: Market control");
                     e.blob.desc.add("• Your first unit will have the trade glyph");
-                    e.blob.desc.add("• Your vault buildings generate 2 unit points each turn");
+                    e.blob.desc.add("• Your buildings that can hold item generate 2 unit points each turn");
                     e.blob.desc.add("• Your units generate 150% auction points");
                     e.blob.strategicGoals.add(new MineGold());
                     return new SideEffect();
@@ -1698,7 +1727,8 @@ public class VanillaMod implements GameMod {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "Warrior-king of the Tortoise Kingdom";
                     e.blob.setModelInstance(view.av, "gargantos");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash, Labels.ability_build_vault);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash,
+                            Labels.ability_build_marketplace);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_shell_defense,
                             Labels.ability_market_boom, Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
@@ -1797,14 +1827,14 @@ public class VanillaMod implements GameMod {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_healing_fountain, (Tile t) -> true));
 
-        // Build Vault
-        new Stratified<Ability>(events.ability, Labels.ability_build_vault).add(Events.GenerateAbilityEvent.class,
+        // Build Marketplace
+        new Stratified<Ability>(events.ability, Labels.ability_build_marketplace).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_build_vault);
+                    e.blob.setIcon(Labels.ability_build_marketplace);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Builds a vault")).add(Events.AbilityActivatedEvent.class,
+                }).add(AbilityLogic.desc("Builds a marketplace")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, Labels.building_vault, (Tile t) -> true));
+                                receiver.wielder, Labels.ability_build_marketplace, (Tile t) -> true));
 
         // Collapse Mine
         new Stratified<Ability>(events.ability, Labels.ability_collapse_mine).add(Events.GenerateAbilityEvent.class,
@@ -1969,13 +1999,13 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_economic_activity);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates 3 auction points when occupying a vault"))
+                }).add(AbilityLogic.desc("Generates 3 auction points when occupying a marketplace"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
-                                receiver.wielder, (Building b) -> b.name.equals(Labels.building_vault),
+                                receiver.wielder, (Building b) -> b.name.equals(Labels.building_marketplace),
                                 () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 1)));
 
         // Edible
@@ -2333,14 +2363,16 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_market_indicator);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates 3 auction points when adjacent to a vault"))
+                }).add(AbilityLogic.desc("Generates 3 auction points when adjacent to a marketplace"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(
-                        view, receiver.wielder,
-                        (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_vault)).orElse(false),
-                        () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 1)));
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(view,
+                                receiver.wielder,
+                                (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_marketplace))
+                                        .orElse(false),
+                                () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 1)));
 
         // Market Value Goo
         new Stratified<Ability>(events.ability, Labels.ability_market_value_goo).add(Events.GenerateAbilityEvent.class,
@@ -2805,14 +2837,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_trade);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests gold coins from vaults every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests gold coins from a marketplace every other turn"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 2, true, Optional.empty())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
-                                (Building b) -> b.name.equals(Labels.building_vault)));
+                                (Building b) -> b.name.equals(Labels.building_marketplace)));
 
         /**
          * SECTION Status Effects

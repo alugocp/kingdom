@@ -155,8 +155,8 @@ public class WorldGenerator {
                     g.generator.patron(patron, p.x, p.y).spawn(view);
                     patrons.remove(patron);
                 } else if (percent <= 53) {
-                    // Spawn a Vault (0.3% chance)
-                    g.generator.building(Labels.building_vault, p.x, p.y).spawn(view);
+                    // Spawn a Cache (0.3% chance)
+                    g.generator.building(Labels.building_marketplace, p.x, p.y).spawn(view);
                 } else if (percent <= 56) {
                     // Spawn a Mine (0.3% chance)
                     g.generator.building("Mine", p.x, p.y).spawn(view);

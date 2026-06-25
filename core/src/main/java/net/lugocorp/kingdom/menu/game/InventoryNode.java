@@ -361,7 +361,7 @@ public class InventoryNode implements MenuNode {
                     hasActions = true;
                 }
                 if (this.items.type == InventoryType.HAUL && this.canBuildingTakeItem()) {
-                    root.add(new ButtonNode(this.view.av, "Put in vault", () -> this.buildingTakesItem(item))
+                    root.add(new ButtonNode(this.view.av, "Put in building", () -> this.buildingTakesItem(item))
                             .setNoise("sfx/item-check"));
                     hasActions = true;
                 }

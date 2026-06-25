@@ -197,7 +197,8 @@ public class Labels {
      */
     public static final String building_tower = "Tower";
     public static final String building_mine = "Mine";
-    public static final String building_vault = "Vault";
+    public static final String building_cache = "Cache";
+    public static final String building_marketplace = "Marketplace";
     public static final String building_forest = "Forest";
     public static final String building_taiga = "Taiga";
     public static final String building_meadow = "Meadow";
@@ -363,7 +364,7 @@ public class Labels {
     public static final String ability_bash = "Bash";
     public static final String ability_bite = "Bite";
     public static final String ability_build_healing_fountain = "Build Healing Fountain";
-    public static final String ability_build_vault = "Build Vault";
+    public static final String ability_build_marketplace = "Build Marketplace";
     public static final String ability_collapse_mine = "Collapse Mine";
     public static final String ability_combat_loot = "Combat Loot";
     public static final String ability_craft_golden_spear = "Craft Golden Spear";

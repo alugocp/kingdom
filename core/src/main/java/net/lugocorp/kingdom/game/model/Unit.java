@@ -255,7 +255,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
             // Deposit Items
             if (this.nextTo.vault(view.game)) {
                 frees.add(new ActionNode(view.av, "Deposit", "deposit-action", Optional.of(new Shortcut("E", Keys.E)),
-                        Optional.of("Free action"), Optional.of("Gives all stored items to an adjacent vault"),
+                        Optional.of("Free action"), Optional.of("Gives all stored items to an adjacent building"),
                         () -> view.selector.deposit(this)).setBorder(true));
             }
 

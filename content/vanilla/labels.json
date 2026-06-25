@@ -198,7 +198,8 @@
         "labels": [
             "Tower",
             "Mine",
-            "Vault",
+            "Cache",
+            "Marketplace",
             "Forest",
             "Taiga",
             "Meadow",
@@ -374,7 +375,7 @@
             "Bash",
             "Bite",
             "Build Healing Fountain",
-            "Build Vault",
+            "Build Marketplace",
             "Collapse Mine",
             "Combat Loot",
             "Craft Golden Spear",
