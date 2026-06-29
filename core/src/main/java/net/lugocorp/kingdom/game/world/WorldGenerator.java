@@ -63,14 +63,12 @@ public class WorldGenerator {
         final Biome[] otherBiomes = this.getDifferentBiomes(mainBiome);
         final int biomeSeedsW = this.worldGenOpts.size.w / WorldGenerator.BIOME_UNIT_SIZE;
         final int biomeSeedsH = this.worldGenOpts.size.h / WorldGenerator.BIOME_UNIT_SIZE;
-        final Point[][] biomeSeedOffsets = new Point[biomeSeedsW][biomeSeedsH];
         final Biome[][] biomeSeeds = new Biome[biomeSeedsW][biomeSeedsH];
+        final Point[][] biomeSeedCenters = this.getSpacedPoints(WorldGenerator.BIOME_UNIT_SIZE,
+                WorldGenerator.BIOME_UNIT_SIZE, 1, 1, (Point p) -> true);
         for (int b = 0; b < biomeSeedsH; b++) {
             final boolean isHorizontalCoast = (coastTop && b == 0) || (coastBot && b == biomeSeedsH - 1);
             for (int a = 0; a < biomeSeedsW; a++) {
-                biomeSeedOffsets[a][b] = new Point(this.rand.nextInt(WorldGenerator.BIOME_UNIT_SIZE),
-                        this.rand.nextInt(WorldGenerator.BIOME_UNIT_SIZE));
-
                 // Coastal Biome seeds
                 if (isHorizontalCoast || (coastLeft && a == 0) || (coastRight && a == biomeSeedsW - 1)) {
                     biomeSeeds[a][b] = Biome.WATER;
@@ -105,9 +103,8 @@ public class WorldGenerator {
                     for (int dy = -1; dy < 2; dy++) {
                         Point seed = new Point(focalSeed.x + dx, focalSeed.y + dy);
                         if (seed.x >= 0 && seed.y >= 0 && seed.x < biomeSeedsW && seed.y < biomeSeedsH) {
-                            Point offset = biomeSeedOffsets[seed.x][seed.y];
-                            float d = this.distance((seed.x * WorldGenerator.BIOME_UNIT_SIZE) + offset.x,
-                                    (seed.y * WorldGenerator.BIOME_UNIT_SIZE) + offset.y, a, b);
+                            final float d = this.distance(biomeSeedCenters[seed.x][seed.y].x,
+                                    biomeSeedCenters[seed.x][seed.y].y, a, b);
                             if (d < closestSeedDistance) {
                                 closestSeed = biomeSeeds[seed.x][seed.y];
                                 closestSeedDistance = d;
@@ -126,106 +123,113 @@ public class WorldGenerator {
         }
         progress.accept(60);
 
-        // Place content (Players, Buildings, Patrons, and Glyphs) around the World
-        int towersSpawned = 0;
-        final int maxBuildings = buildingPoints.size();
+        // Place Towers
+        for (Point p : this
+                .collapseGridToSet(this.getSpacedPoints(6, 6, 1, 1, (Point p) -> buildingPoints.contains(p)))) {
+            final Tower t = g.generator.tower(p.x, p.y);
+            t.items.ifPresent((Inventory i) -> {
+                for (int a = 0; a < i.getMax(); a++) {
+                    i.add(g.generator.item(Labels.item_apple));
+                }
+            });
+            buildingPoints.remove(p);
+            g.towers.add(t);
+        }
+
+        // Initialize and spawn the Towers
+        this.calculateTowerDomains(g);
+        for (Tower tower : g.towers) {
+            tower.spawn(view);
+        }
+
+        // Place Mines
+        for (Point p : this
+                .collapseGridToSet(this.getSpacedPoints(8, 8, 2, 2, (Point p) -> buildingPoints.contains(p)))) {
+            g.generator.building(Labels.building_mine, p.x, p.y).spawn(view);
+            buildingPoints.remove(p);
+        }
+
+        // Place Marketplaces
+        for (Point p : this
+                .collapseGridToSet(this.getSpacedPoints(8, 8, 2, 2, (Point p) -> buildingPoints.contains(p)))) {
+            g.generator.building(Labels.building_marketplace, p.x, p.y).spawn(view);
+            buildingPoints.remove(p);
+        }
+
+        // Place other content (Buildings and Patrons) around the World
         final Set<String> patrons = g.events.patron.getStratifiers();
-        final Map<Player, Tower> playerSpawnPoints = new HashMap<>();
+        final int maxBuildings = buildingPoints.size();
         while (buildingPoints.size() > 0) {
             // Choose a Point to spawn the content
             final Point p = this.randomValue(buildingPoints);
             buildingPoints.remove(p);
 
-            // Place Players with priority
-            if (playerSpawnPoints.size() < g.getAllPlayers().size()) {
-                final Player player = playerSpawnPoints.isEmpty() ? g.human : g.comps.get(playerSpawnPoints.size() - 1);
-                final Tower t = g.generator.tower(p.x, p.y);
-                for (int a = 0; a < 5; a++) {
-                    t.items.ifPresent((Inventory i) -> i.add(g.generator.item(Labels.item_apple)));
-                }
-                playerSpawnPoints.put(player, t);
-                g.towers.add(t);
-                towersSpawned++;
-            } else if (towersSpawned < this.worldGenOpts.size.towers) {
-                // Place remaining Towers with priority
-                final Tower t = g.generator.tower(p.x, p.y);
-                g.towers.add(t);
-                if (++towersSpawned == this.worldGenOpts.size.towers) {
-                    this.calculateTowerDomains(g);
-                    for (Tower tower : g.towers) {
-                        tower.spawn(view);
-                    }
-                }
-            } else {
-                // Spawn non-Player content
-                final int percent = this.rand.nextInt(1000);
-                if (percent <= 50 && patrons.size() > 0) {
-                    // Spawn a Patron (5% chance)
+            // Decide what content to spawn
+            final int percent = this.rand.nextInt(1000);
+            if (percent <= 50) {
+                // Spawn a Patron (5% chance) if any are available
+                if (patrons.size() > 0) {
                     final String patron = this.randomValue(patrons);
                     g.generator.patron(patron, p.x, p.y).spawn(view);
                     patrons.remove(patron);
-                } else if (percent <= 53) {
-                    // Spawn a Cache (0.3% chance)
-                    g.generator.building(Labels.building_marketplace, p.x, p.y).spawn(view);
-                } else if (percent <= 56) {
-                    // Spawn a Mine (0.3% chance)
-                    g.generator.building("Mine", p.x, p.y).spawn(view);
-                } else if (percent <= 58) {
-                    // Spawn a Healing Fountain (0.2% chance)
-                    g.generator.building(Labels.building_healing_fountain, p.x, p.y).spawn(view);
-                } else if (percent <= 108) {
-                    // Spawn a Building (5% chance)
-                    final String terrain = g.world.getTile(p.x, p.y).get().name;
-                    Optional<String> building = Optional.empty();
-                    int radiusRange = 1;
+                }
+            } else if (percent <= 53) {
+                // Spawn a Cache (0.3% chance)
+                g.generator.building(Labels.building_cache, p.x, p.y).spawn(view);
+            } else if (percent <= 55) {
+                // Spawn a Healing Fountain (0.2% chance)
+                g.generator.building(Labels.building_healing_fountain, p.x, p.y).spawn(view);
+            } else if (percent <= 105) {
+                // Spawn a natural Building (5% chance)
+                final String terrain = g.world.getTile(p.x, p.y).get().name;
+                Optional<String> building = Optional.empty();
+                int radiusRange = 1;
 
-                    // Forests/Meadows on Grass Tiles
-                    if (terrain.equals(Biome.GRASS.terrain)) {
-                        building = Optional
-                                .of(this.rand.nextBoolean() ? Labels.building_forest : Labels.building_meadow);
-                        radiusRange = 3;
+                // Forests/Meadows on Grass Tiles
+                if (terrain.equals(Biome.GRASS.terrain)) {
+                    building = Optional.of(this.rand.nextBoolean() ? Labels.building_forest : Labels.building_meadow);
+                    radiusRange = 3;
+                }
+
+                // Oasis/Shrubland on Sand Tiles
+                if (terrain.equals(Biome.SAND.terrain)) {
+                    if (this.rand.nextBoolean()) {
+                        building = Optional.of(Labels.building_shrubland);
+                        radiusRange = 2;
+                    } else {
+                        building = Optional.of(Labels.building_oasis);
                     }
+                }
 
-                    // Oasis/Shrubland on Sand Tiles
-                    if (terrain.equals(Biome.SAND.terrain)) {
-                        if (this.rand.nextBoolean()) {
-                            building = Optional.of(Labels.building_shrubland);
-                            radiusRange = 2;
-                        } else {
-                            building = Optional.of(Labels.building_oasis);
+                // Taiga on Snow Tiles
+                if (terrain.equals(Biome.SNOW.terrain)) {
+                    building = Optional.of(Labels.building_taiga);
+                }
+
+                // Mountains on Rock Tiles
+                if (terrain.equals(Biome.ROCK.terrain)) {
+                    building = Optional.of(Labels.building_mountain);
+                }
+
+                // Actually spawn the Buildings if one was selected
+                if (building.isPresent()) {
+                    final Set<Point> area = Hexagons.getNeighbors(p, this.rand.nextInt(radiusRange) + 1);
+                    for (Point p1 : area) {
+                        // If the Tile exists, has the intended terrain, and there is no building yet
+                        if (buildingPoints.contains(p1) && g.world.getTile(p1).get().name.equals(terrain)) {
+                            g.generator.building(building.get(), p1.x, p1.y).spawn(view);
+                            buildingPoints.remove(p1);
                         }
                     }
 
-                    // Taiga on Snow Tiles
-                    if (terrain.equals(Biome.SNOW.terrain)) {
-                        building = Optional.of(Labels.building_taiga);
-                    }
-
-                    // Mountains on Rock Tiles
-                    if (terrain.equals(Biome.ROCK.terrain)) {
-                        building = Optional.of(Labels.building_mountain);
-                    }
-
-                    // Actually spawn the Buildings if one was selected
-                    if (building.isPresent()) {
-                        final Set<Point> area = Hexagons.getNeighbors(p, this.rand.nextInt(radiusRange) + 1);
-                        for (Point p1 : area) {
-                            // If the Tile exists, has the intended terrain, and there is no building yet
-                            if (buildingPoints.contains(p1) && g.world.getTile(p1).get().name.equals(terrain)) {
-                                g.generator.building(building.get(), p1.x, p1.y).spawn(view);
-                                buildingPoints.remove(p1);
-                            }
-                        }
-
-                        // Spawn the central Building (or water if the Building is an Oasis)
-                        if (building.get().equals(Labels.building_oasis)) {
-                            final Tower center = g.world.getTile(p).get().getDomainCenter();
-                            final Tile t = g.generator.tile(Labels.tile_water, p.x, p.y);
-                            t.setDomainCenter(center);
-                            t.spawn(view);
-                        } else {
-                            g.generator.building(building.get(), p.x, p.y).spawn(view);
-                        }
+                    // Spawn the central Building (or water if the Building is an Oasis)
+                    if (building.get().equals(Labels.building_oasis)) {
+                        final Tower center = g.world.getTile(p).get().getDomainCenter();
+                        final Tile t = g.generator.tile(Labels.tile_water, p.x, p.y);
+                        t.setDomainCenter(center);
+                        t.spawn(view);
+                    } else {
+                        g.generator.building(building.get(), p.x, p.y).spawn(view);
                     }
                 }
             }
@@ -234,15 +238,16 @@ public class WorldGenerator {
             progress.accept(60 + (int) Math.floor(40 * (maxBuildings - buildingPoints.size()) / (float) maxBuildings));
         }
 
-        // Set leadership for Players' initial Towers
-        for (Map.Entry<Player, Tower> e : playerSpawnPoints.entrySet()) {
-            final Player player = e.getKey();
-            final Tower tower = e.getValue();
+        // Spawn all Players and their initial Units
+        final List<Player> players = g.getAllPlayers();
+        for (Tower tower : this.randomSubset(g.towers, players.size())) {
+            final Player player = players.remove(0);
             final Point p = tower.getPoint();
             final Unit u = g.getInitialUnit(view, player, p.x, p.y);
             u.spawn(view);
             g.setLeader(view, tower, player);
             tower.vision.set(view, player, tower, p);
+            g.towers.add(tower);
         }
 
         progress.accept(100);
@@ -301,8 +306,8 @@ public class WorldGenerator {
         final Point[][] points = new Point[resultW][resultH];
         for (int a = 0; a < resultW; a++) {
             for (int b = 0; b < resultH; b++) {
-                final int minX = (a * cellW) + marginW;
-                final int minY = (b * cellH) + marginH;
+                final int minX = Math.min((a * cellW) + marginW, this.worldGenOpts.size.w);
+                final int minY = Math.min((b * cellH) + marginH, this.worldGenOpts.size.h);
                 final int maxX = Math.min((a * cellW) + cellW - marginW, this.worldGenOpts.size.w);
                 final int maxY = Math.min((b * cellH) + cellH - marginH, this.worldGenOpts.size.h);
                 final Set<Point> possibilities = new HashSet<>();

@@ -4,15 +4,13 @@ package net.lugocorp.kingdom.game.world;
  * Represents the possible size values for World generation
  */
 public enum WorldSize {
-    SMALL("Small", 25, 25, 25), MEDIUM("Medium", 35, 35, 50);
+    SMALL("Small", 25, 25), MEDIUM("Medium", 35, 35);
     public final String label;
-    public final int towers;
     public final int w;
     public final int h;
 
-    private WorldSize(String label, int w, int h, int towers) {
+    private WorldSize(String label, int w, int h) {
         this.label = label;
-        this.towers = towers;
         this.w = w;
         this.h = h;
     }
