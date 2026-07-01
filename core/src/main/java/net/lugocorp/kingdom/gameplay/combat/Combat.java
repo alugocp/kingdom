@@ -74,7 +74,7 @@ public class Combat {
         final Tower t = (Tower) this.bearer;
         effects.add(() -> {
             if (!t.getLeader().equals(destroyer) && destroyer.map((Player d) -> d.isHumanPlayer()).orElse(false)) {
-                view.overlays.add(new EntityRisingOverlay(view, t, ColorScheme.RED.hex, "Captured"));
+                view.overlays.entity(t).addRising(new EntityRisingOverlay(view, t, ColorScheme.RED.hex, "Captured"));
                 view.hud.logger.log("You claimed the tower");
                 view.av.loaders.sounds.play("sfx/captured");
             }
@@ -94,12 +94,13 @@ public class Combat {
         final int result = this.health.get() - damageEvent.dmg.total();
         effects.add(() -> this.health.set(result));
         if (result > 0) {
-            effects.add(() -> view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex,
-                    String.format("-%d", dmg.total()))));
+            effects.add(() -> view.overlays.entity(this.bearer).addRising(new EntityRisingOverlay(view, this.bearer,
+                    ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
         } else {
             if (this.bearer.leadership.belongsToHuman()) {
                 effects.add(() -> {
-                    view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex, "Lost"));
+                    view.overlays.entity(this.bearer)
+                            .addRising(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex, "Lost"));
                     view.hud.logger.log("You lost a tower due to insufficient gold");
                 });
             }
@@ -126,11 +127,11 @@ public class Combat {
         if (this.bearer.getEntityType() == EntityType.UNIT) {
             effects.add(() -> view.animations.add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
         }
-        effects.add(() -> view.overlays.add(new HealthChangeOverlay(view, this.bearer, this.health.getMax(),
-                this.health.get(), this.health.get() - damageEvent.dmg.total())));
+        effects.add(() -> view.overlays.entity(this.bearer).add(new HealthChangeOverlay(view, this.bearer,
+                this.health.getMax(), this.health.get(), this.health.get() - damageEvent.dmg.total())));
         if (!willDie) {
-            effects.add(() -> view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.RED.hex,
-                    String.format("-%d", dmg.total()))));
+            effects.add(() -> view.overlays.entity(this.bearer).addRising(new EntityRisingOverlay(view, this.bearer,
+                    ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
         }
         return effects;
     }
@@ -167,7 +168,8 @@ public class Combat {
                 view.animations.add(new AttackAnimation(u, target.getPoint()));
                 if (target.isEntityType(EntityType.UNIT) && target.combat.health.isDead() && !u.haul.isFull()) {
                     final Item item = view.game.mechanics.loot.drop(view.game);
-                    view.overlays.add(new EntityRisingOverlay(view, this.bearer, ColorScheme.WHITE.hex, item.name));
+                    view.overlays.entity(this.bearer)
+                            .addRising(new EntityRisingOverlay(view, this.bearer, ColorScheme.WHITE.hex, item.name));
                     u.haul.add(item);
                 }
             }
@@ -185,10 +187,10 @@ public class Combat {
             final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
             target.combat.health.set(target.combat.health.get() + heal.amount);
             if (needsHealing) {
-                view.overlays.add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
+                view.overlays.entity(target).add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
                         target.combat.health.get(), target.combat.health.get() + heal.amount));
             }
-            view.overlays.add(
+            view.overlays.entity(target).addRising(
                     new EntityRisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
         });
     }

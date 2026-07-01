@@ -403,10 +403,12 @@ public class VanillaMod implements GameMod {
                     u.ifPresent((Unit unit) -> {
                         effects.add(Math.random() < 0.05 ? () -> {
                             final Item item = view.game.mechanics.loot.drop(view.game);
-                            view.overlays.add(new EntityRisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
+                            view.overlays.entity(unit)
+                                    .addRising(new EntityRisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
                             unit.haul.add(item);
                         } : () -> {
-                            view.overlays.add(new EntityRisingOverlay(view, unit, ColorScheme.GOLD.hex, "+5 gold"));
+                            view.overlays.entity(unit)
+                                    .addRising(new EntityRisingOverlay(view, unit, ColorScheme.GOLD.hex, "+5 gold"));
                             unit.getLeader().get().gold += 5;
                             view.hud.top.update(view.game);
                         });
@@ -1830,7 +1832,7 @@ public class VanillaMod implements GameMod {
         // Build Marketplace
         new Stratified<Ability>(events.ability, Labels.ability_build_marketplace).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.ability_build_marketplace);
+                    e.blob.setIcon(Labels.asset_build_vault);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Builds a marketplace")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,

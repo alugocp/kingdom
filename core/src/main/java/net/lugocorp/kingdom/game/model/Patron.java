@@ -117,7 +117,7 @@ public class Patron extends Building {
             if (event.favor <= 0) {
                 continue;
             }
-            view.overlays.add(
+            view.overlays.entity(u).addRising(
                     new EntityRisingOverlay(view, u, ColorScheme.BLUE.hex, String.format("%d favor", event.favor)));
 
             // Add favor to the ledger

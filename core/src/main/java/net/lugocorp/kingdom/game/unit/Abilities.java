@@ -115,8 +115,8 @@ public class Abilities {
     public SideEffect addStatusEffect(GameView view, Ability status) {
         // TODO move status effects to their own logic one day
         final SideEffect effects = new SideEffect();
-        effects.add(
-                () -> view.overlays.add(new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, status.name)));
+        effects.add(() -> view.overlays.entity(this.unit)
+                .addRising(new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, status.name)));
         effects.add(() -> this.passives.add(status));
         effects.add(status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this.unit)));
         return effects;
@@ -127,7 +127,7 @@ public class Abilities {
      */
     public void removeStatusEffect(GameView view, Ability status) {
         // TODO move status effects to their own logic one day
-        view.overlays.add(
+        view.overlays.entity(this.unit).addRising(
                 new EntityRisingOverlay(view, this.unit, ColorScheme.WHITE.hex, String.format("-%s", status.name)));
         this.passives.remove(status);
     }

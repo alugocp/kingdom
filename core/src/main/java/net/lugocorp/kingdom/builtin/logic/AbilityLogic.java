@@ -286,7 +286,8 @@ public class AbilityLogic {
                 Item i = view.game.generator.item(item);
                 effects.add(() -> {
                     caster.haul.add(i);
-                    view.overlays.add(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
+                    view.overlays.entity(caster)
+                            .addRising(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
                     if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
                         CompPlayer comp = (CompPlayer) caster.getLeader().get();
                         if (i.tags.has("natural")) {

@@ -58,6 +58,13 @@ public abstract class Overlay {
     }
 
     /**
+     * Returns this Overlay's offset Vector3
+     */
+    Vector3 getOffset() {
+        return this.offset;
+    }
+
+    /**
      * Returns the current position of the Overlay
      */
     protected float[] getPosition(GameView view) {

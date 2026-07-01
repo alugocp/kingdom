@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.selection;
+import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
@@ -80,7 +81,12 @@ class TileSetSelectMode extends TileSelectMode {
         this.hover.ifPresent((Function<Tile, Optional<LabelOverlay>> func) -> {
             view.game.world.getTile(p).ifPresent((Tile t) -> {
                 final Optional<LabelOverlay> label = func.apply(t);
-                label.ifPresent((LabelOverlay o) -> view.overlays.add(o));
+                final Optional<Entity> e = t.getPriorityEntity();
+                if (e.isPresent()) {
+                    label.ifPresent((LabelOverlay o) -> view.overlays.entity(e.get()).add(o));
+                } else {
+                    label.ifPresent((LabelOverlay o) -> view.overlays.add(o));
+                }
                 this.dispelOverlay();
                 this.overlay = label;
             });

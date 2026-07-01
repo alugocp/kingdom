@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.userdata.TileUserData;
+import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.layers.Governable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
@@ -124,6 +125,19 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         if (this.userData.vision == 0) {
             this.placeholderBuildingModel = this.building.flatMap((Building b) -> b.getModelInstance());
         }
+    }
+
+    /**
+     * Returns the Entity on this Tile that has the most priority
+     */
+    public Optional<Entity> getPriorityEntity() {
+        if (this.unit.isPresent()) {
+            return Optional.of((Entity) this.unit.get());
+        }
+        if (this.building.isPresent()) {
+            return Optional.of((Entity) this.building.get());
+        }
+        return Optional.empty();
     }
 
     /**

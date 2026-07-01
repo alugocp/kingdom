@@ -105,7 +105,7 @@ public class ActionManager {
     public void setActionOverlay(GameView view, Unit u) {
         final ActionOverlay o = new ActionOverlay(view, u, this.getActionOverlayChar(u));
         this.overlays.put(u, o);
-        view.overlays.add(o);
+        view.overlays.entity(u).setAction(o);
     }
 
     /**

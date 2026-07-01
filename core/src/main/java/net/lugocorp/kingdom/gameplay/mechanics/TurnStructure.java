@@ -187,7 +187,8 @@ public class TurnStructure {
         for (Tower tower : view.game.towers) {
             tower.getLeader().ifPresent((Player player) -> {
                 if (player.gold >= Tower.GOLD_COST) {
-                    view.overlays.add(new EntityRisingOverlay(view, tower, ColorScheme.GOLD.hex, cost));
+                    view.overlays.entity(tower)
+                            .addRising(new EntityRisingOverlay(view, tower, ColorScheme.GOLD.hex, cost));
                     player.gold -= Tower.GOLD_COST;
                 } else {
                     tower.combat.damageTowerWithoutGold(view, new Damage(10)).execute();
