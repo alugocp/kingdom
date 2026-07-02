@@ -1836,7 +1836,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Builds a marketplace")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, Labels.ability_build_marketplace, (Tile t) -> true));
+                                receiver.wielder, Labels.building_marketplace, (Tile t) -> true));
 
         // Collapse Mine
         new Stratified<Ability>(events.ability, Labels.ability_collapse_mine).add(Events.GenerateAbilityEvent.class,

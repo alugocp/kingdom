@@ -75,7 +75,7 @@ public class Hunger {
     /**
      * Returns the number of turns until we trigger GetsHungry
      */
-    private int getTurnsUntilGetsHungry(GameView view) {
+    public int getTurnsUntilGetsHungry(GameView view) {
         return view.game.future.getFutureEventRemainingTurns(this.unit, "GetsHungry");
     }
 

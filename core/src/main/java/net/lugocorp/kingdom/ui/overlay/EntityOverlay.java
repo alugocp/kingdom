@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.overlay;
+import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +13,13 @@ public class EntityOverlay {
     private final List<RisingOverlay> rising = new ArrayList<>();
     private final List<Overlay> overlays = new ArrayList<>();
     private Optional<ActionOverlay> action = Optional.empty();
+    private Optional<IconsOverlay> icons = Optional.empty();
 
     /**
      * Adds an Overlay to this EntityOverlay
      */
     public void add(Overlay o) {
-        o.getOffset().y += EntityOverlay.LINE_HEIGHT * this.overlays.size();
+        o.getOffset().y += EntityOverlay.LINE_HEIGHT * (this.overlays.size() + (this.icons.isPresent() ? 1 : 0));
         this.overlays.add(o);
         for (Overlay o1 : this.getOverlaysAbove(o)) {
             o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
@@ -28,10 +30,14 @@ public class EntityOverlay {
      * Sets the ActionOverlay associated with this EntityOverlay
      */
     public void setAction(ActionOverlay o) {
-        o.getOffset().y += EntityOverlay.LINE_HEIGHT * this.overlays.size();
+        final boolean replacingOtherAction = this.action.isPresent();
+        this.action.ifPresent((ActionOverlay o1) -> o1.runCallback());
+        o.getOffset().y += EntityOverlay.LINE_HEIGHT * (this.overlays.size() + (this.icons.isPresent() ? 1 : 0));
         this.action = Optional.of(o);
-        for (Overlay o1 : this.getOverlaysAbove(o)) {
-            o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
+        if (!replacingOtherAction) {
+            for (Overlay o1 : this.getOverlaysAbove(o)) {
+                o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
+            }
         }
     }
 
@@ -39,15 +45,40 @@ public class EntityOverlay {
      * Adds a RisingOverlay to this EntityOverlay
      */
     public void addRising(RisingOverlay o) {
+        o.getOffset().y += EntityOverlay.LINE_HEIGHT
+                * (this.overlays.size() + (this.icons.isPresent() ? 1 : 0) + (this.action.isPresent() ? 1 : 0));
         this.rising.add(0, o);
         for (Overlay o1 : this.getOverlaysAbove(o)) {
             o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
         }
     }
 
+    /**
+     * Sets the IconsOverlay associated with this EntityOverlay
+     */
+    public void setIcons(GameView view, Entity e) {
+        final IconsOverlay o = new IconsOverlay(view, e);
+        final boolean replacingOtherIcons = this.icons.isPresent();
+        this.icons.ifPresent((IconsOverlay o1) -> o1.runCallback());
+        this.icons = Optional.of(o);
+        System.out.println(String.format("Icons for %s", e.name));
+        if (!replacingOtherIcons) {
+            for (Overlay o1 : this.getOverlaysAbove(o)) {
+                o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
+            }
+        }
+    }
+
+    /**
+     * Returns a list of Overlays that are rendered above the given Overlay
+     */
     private List<Overlay> getOverlaysAbove(Overlay o) {
         final List<Overlay> above = new ArrayList<>();
-        if (this.overlays.contains(o)) {
+        if (this.action.map((ActionOverlay o1) -> o == o1).orElse(false)) {
+            above.addAll(this.overlays);
+            this.action.ifPresent((ActionOverlay o1) -> above.add(o1));
+            above.addAll(this.rising);
+        } else if (this.overlays.contains(o)) {
             final int i = this.overlays.indexOf(o);
             for (int a = i + 1; a < this.overlays.size(); a++) {
                 above.add(this.overlays.get(a));
@@ -69,6 +100,18 @@ public class EntityOverlay {
      * Updates this EntityOverlay's progress through its animation
      */
     public void update(int dt) {
+        // Process the IconsOverlay (if necessary)
+        this.icons.ifPresent((IconsOverlay o) -> {
+            o.update(dt);
+            if (o.isDone()) {
+                for (Overlay o1 : this.getOverlaysAbove(o)) {
+                    o1.getOffset().y -= EntityOverlay.LINE_HEIGHT;
+                }
+                o.runCallback();
+                this.icons = Optional.empty();
+            }
+        });
+
         // Process the basic Overlays
         int a = 0;
         while (a < this.overlays.size()) {

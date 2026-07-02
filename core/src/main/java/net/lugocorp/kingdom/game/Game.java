@@ -186,6 +186,7 @@ public class Game {
         u.getLeader().ifPresent((Player l) -> u.vision.remove(l, this.world));
         u.setLeader(op);
         u.getLeader().ifPresent((Player l) -> u.vision.set(view, l, u, u.getPoint()));
+        view.overlays.entity(u).setIcons(view, u);
     }
 
     /**
