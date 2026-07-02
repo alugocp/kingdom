@@ -39,7 +39,7 @@ import net.lugocorp.kingdom.menu.game.InventoryNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModProfile;
-import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
+import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -404,11 +404,11 @@ public class VanillaMod implements GameMod {
                         effects.add(Math.random() < 0.05 ? () -> {
                             final Item item = view.game.mechanics.loot.drop(view.game);
                             view.overlays.entity(unit)
-                                    .addRising(new EntityRisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
+                                    .addRising(new RisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
                             unit.haul.add(item);
                         } : () -> {
                             view.overlays.entity(unit)
-                                    .addRising(new EntityRisingOverlay(view, unit, ColorScheme.GOLD.hex, "+5 gold"));
+                                    .addRising(new RisingOverlay(view, unit, ColorScheme.GOLD.hex, "+5 gold"));
                             unit.getLeader().get().gold += 5;
                             view.hud.top.update(view.game);
                         });

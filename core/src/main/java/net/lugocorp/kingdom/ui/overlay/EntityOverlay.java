@@ -19,10 +19,7 @@ public class EntityOverlay {
     public void add(Overlay o) {
         o.getOffset().y += EntityOverlay.LINE_HEIGHT * this.overlays.size();
         this.overlays.add(o);
-        this.action.ifPresent((ActionOverlay o1) -> {
-            o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
-        });
-        for (Overlay o1 : this.rising) {
+        for (Overlay o1 : this.getOverlaysAbove(o)) {
             o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
         }
     }
@@ -33,7 +30,7 @@ public class EntityOverlay {
     public void setAction(ActionOverlay o) {
         o.getOffset().y += EntityOverlay.LINE_HEIGHT * this.overlays.size();
         this.action = Optional.of(o);
-        for (Overlay o1 : this.rising) {
+        for (Overlay o1 : this.getOverlaysAbove(o)) {
             o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
         }
     }
@@ -42,10 +39,30 @@ public class EntityOverlay {
      * Adds a RisingOverlay to this EntityOverlay
      */
     public void addRising(RisingOverlay o) {
-        this.rising.add(o);
-        for (Overlay o1 : this.rising) {
+        this.rising.add(0, o);
+        for (Overlay o1 : this.getOverlaysAbove(o)) {
             o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
         }
+    }
+
+    private List<Overlay> getOverlaysAbove(Overlay o) {
+        final List<Overlay> above = new ArrayList<>();
+        if (this.overlays.contains(o)) {
+            final int i = this.overlays.indexOf(o);
+            for (int a = i + 1; a < this.overlays.size(); a++) {
+                above.add(this.overlays.get(a));
+            }
+            this.action.ifPresent((ActionOverlay o1) -> above.add(o1));
+            above.addAll(this.rising);
+        } else if (this.action.map((ActionOverlay o1) -> o == o1).orElse(false)) {
+            above.addAll(this.rising);
+        } else if (this.rising.contains(o)) {
+            final int i = this.rising.indexOf(o);
+            for (int a = i + 1; a < this.rising.size(); a++) {
+                above.add(this.rising.get(a));
+            }
+        }
+        return above;
     }
 
     /**
@@ -58,17 +75,11 @@ public class EntityOverlay {
             final Overlay o = this.overlays.get(a);
             o.update(dt);
             if (o.isDone()) {
+                for (Overlay o1 : this.getOverlaysAbove(o)) {
+                    o1.getOffset().y -= EntityOverlay.LINE_HEIGHT;
+                }
                 o.runCallback();
                 this.overlays.remove(a);
-                for (int b = a; b < this.overlays.size(); b++) {
-                    this.overlays.get(b).getOffset().y -= EntityOverlay.LINE_HEIGHT;
-                }
-                this.action.ifPresent((ActionOverlay o1) -> {
-                    o1.getOffset().y -= EntityOverlay.LINE_HEIGHT;
-                });
-                for (Overlay o1 : this.rising) {
-                    o1.getOffset().y -= EntityOverlay.LINE_HEIGHT;
-                }
             } else {
                 a++;
             }
@@ -78,11 +89,11 @@ public class EntityOverlay {
         this.action.ifPresent((ActionOverlay o) -> {
             o.update(dt);
             if (o.isDone()) {
-                o.runCallback();
-                this.action = Optional.empty();
-                for (Overlay o1 : this.rising) {
+                for (Overlay o1 : this.getOverlaysAbove(o)) {
                     o1.getOffset().y -= EntityOverlay.LINE_HEIGHT;
                 }
+                o.runCallback();
+                this.action = Optional.empty();
             }
         });
 
@@ -92,11 +103,11 @@ public class EntityOverlay {
             final Overlay o = this.rising.get(a);
             o.update(dt);
             if (o.isDone()) {
+                for (Overlay o1 : this.getOverlaysAbove(o)) {
+                    o1.getOffset().y -= EntityOverlay.LINE_HEIGHT;
+                }
                 o.runCallback();
                 this.rising.remove(a);
-                for (int b = a; b < this.rising.size(); b++) {
-                    this.rising.get(b).getOffset().y -= EntityOverlay.LINE_HEIGHT;
-                }
             } else {
                 a++;
             }

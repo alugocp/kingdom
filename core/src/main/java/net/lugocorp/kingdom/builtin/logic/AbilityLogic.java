@@ -16,8 +16,8 @@ import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
-import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
+import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.math.Vector3;
@@ -287,7 +287,7 @@ public class AbilityLogic {
                 effects.add(() -> {
                     caster.haul.add(i);
                     view.overlays.entity(caster)
-                            .addRising(new EntityRisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
+                            .addRising(new RisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
                     if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
                         CompPlayer comp = (CompPlayer) caster.getLeader().get();
                         if (i.tags.has("natural")) {

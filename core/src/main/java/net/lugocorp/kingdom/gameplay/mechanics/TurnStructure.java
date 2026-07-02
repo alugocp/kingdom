@@ -15,7 +15,7 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
-import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
+import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
 import java.util.List;
@@ -187,8 +187,7 @@ public class TurnStructure {
         for (Tower tower : view.game.towers) {
             tower.getLeader().ifPresent((Player player) -> {
                 if (player.gold >= Tower.GOLD_COST) {
-                    view.overlays.entity(tower)
-                            .addRising(new EntityRisingOverlay(view, tower, ColorScheme.GOLD.hex, cost));
+                    view.overlays.entity(tower).addRising(new RisingOverlay(view, tower, ColorScheme.GOLD.hex, cost));
                     player.gold -= Tower.GOLD_COST;
                 } else {
                     tower.combat.damageTowerWithoutGold(view, new Damage(10)).execute();

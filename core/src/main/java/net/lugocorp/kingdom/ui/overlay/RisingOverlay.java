@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.ui.overlay;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.fonts.FontParam;
+import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.Color;
@@ -22,6 +23,10 @@ public class RisingOverlay extends Overlay {
         super(p, offset);
         this.color = color;
         this.label = label;
+    }
+
+    public RisingOverlay(GameView view, Entity e, int color, String label) {
+        this(e.getPoint(), new Vector3(0f, view.av.loaders.models.getModelHeight(e.getModelName()), 0f), color, label);
     }
 
     /**

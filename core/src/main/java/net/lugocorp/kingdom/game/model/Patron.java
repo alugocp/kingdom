@@ -17,7 +17,7 @@ import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
+import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -118,7 +118,7 @@ public class Patron extends Building {
                 continue;
             }
             view.overlays.entity(u).addRising(
-                    new EntityRisingOverlay(view, u, ColorScheme.BLUE.hex, String.format("%d favor", event.favor)));
+                    new RisingOverlay(view, u, ColorScheme.BLUE.hex, String.format("%d favor", event.favor)));
 
             // Add favor to the ledger
             final Player leader = u.getLeader().get();

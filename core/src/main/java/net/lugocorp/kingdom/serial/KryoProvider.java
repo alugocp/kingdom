@@ -261,7 +261,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.ui.hud.TopHud.class);
         kryo.register(net.lugocorp.kingdom.ui.hud.TurnButton.class);
         kryo.register(net.lugocorp.kingdom.ui.overlay.ActionOverlay.class);
-        kryo.register(net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay.class);
         kryo.register(net.lugocorp.kingdom.ui.overlay.HealthChangeOverlay.class);
         kryo.register(net.lugocorp.kingdom.ui.overlay.Overlay.class);
         kryo.register(net.lugocorp.kingdom.ui.overlay.OverlayLayer.class);

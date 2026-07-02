@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.ui.overlay.EntityRisingOverlay;
+import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 import java.util.Set;
@@ -52,8 +52,7 @@ public class Hunger {
     public void gotHungry(GameView view) {
         if (!this.autoEatCheck(view)) {
             view.hud.logger.log(String.format("%s got hungry and abandoned your cause", this.unit.name));
-            view.overlays.entity(this.unit)
-                    .addRising(new EntityRisingOverlay(view, this.unit, 0x7d4513, "Hunger strikes"));
+            view.overlays.entity(this.unit).addRising(new RisingOverlay(view, this.unit, 0x7d4513, "Hunger strikes"));
             view.game.mechanics.pools.reincarnate(this.unit);
             this.unit.deactivate(view);
         }
@@ -97,8 +96,7 @@ public class Hunger {
      */
     public void eat(GameView view, boolean visible) {
         if (visible) {
-            view.overlays.entity(this.unit)
-                    .addRising(new EntityRisingOverlay(view, this.unit, 0x7d4513, "Hunger reset"));
+            view.overlays.entity(this.unit).addRising(new RisingOverlay(view, this.unit, 0x7d4513, "Hunger reset"));
         }
         view.game.future.removeFutureTicks(this.unit, "GetsHungry");
         view.game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false, Optional.empty());
