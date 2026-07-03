@@ -62,7 +62,7 @@ public class Hunger {
      * Returns the "hunger" value associated with this instance
      */
     public int get(GameView view) {
-        return this.getTurnsBeforeHunger() - Math.max(0, this.getTurnsUntilGetsHungry(view));
+        return Math.max(0, this.getTurnsUntilGetsHungry(view));
     }
 
     /**

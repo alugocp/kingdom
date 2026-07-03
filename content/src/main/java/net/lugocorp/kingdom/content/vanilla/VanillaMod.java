@@ -2029,10 +2029,11 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stomach);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Can cast a second spell below 2 hunger"))
+                }).add(AbilityLogic.desc("Can cast an additional spell above 50% hunger"))
                 .add(Events.GetMaxActivationsEvent.class,
                         (GameView view, Ability receiver, Events.GetMaxActivationsEvent e) -> {
-                            if (receiver.wielder.hunger.get(view) < 2) {
+                            if (receiver.wielder.hunger.get(view) * 2 > receiver.wielder.hunger
+                                    .getTurnsBeforeHunger()) {
                                 e.max++;
                             }
                             return new SideEffect();
