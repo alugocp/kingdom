@@ -14,7 +14,7 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
-import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
+import net.lugocorp.kingdom.menu.game.ResourceIconsNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.BadgeNode;
@@ -188,9 +188,12 @@ public class Building extends Entity implements MenuSubject, Spawnable {
         if (leader.isPresent()) {
             row.add(new PlayerBadgeNode(view.av, leader.get()));
         }
-        col1.add(row).add(new ResourceBarsNode(view.av,
-                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(), this.combat.health.getMax())))
-                .add(new TextNode(view.av, this.desc));
+        col1.add(row);
+        if (this.combat.health.isVulnerable()) {
+            col1.add(new ResourceIconsNode(view.av, new ResourceIconsNode.Bar("Health", "heart-icon",
+                    this.combat.health.get(), this.combat.health.getMax())));
+        }
+        col1.add(new TextNode(view.av, this.desc));
         node.add(col1);
         if (this.items.isPresent()) {
             final ListNode col2 = new ListNode();
