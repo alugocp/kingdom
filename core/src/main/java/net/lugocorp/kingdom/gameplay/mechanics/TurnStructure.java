@@ -65,6 +65,7 @@ public class TurnStructure {
         }
         view.hud.top.update(view.game);
         for (Unit u : this.turn.getPlayer().units) {
+            view.overlays.entity(u).setIcons(view, u);
             u.sleep.wakeUpCheck(view);
         }
         view.game.mechanics.recruitUnits.giveUnitPointsYield(view, this.turn.getPlayer());

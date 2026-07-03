@@ -172,8 +172,8 @@ public class NewUnit {
                 throw new RuntimeException("Cannot recruit onto an occupied tile");
             }
             p.addUnitPoints(view, -NewUnit.MAX_UNIT_POINTS);
-            view.game.setLeader(view, u, p);
             u.spawn(view);
+            view.game.setLeader(view, u, p);
             p.getFate().handleEvent(view, new Events.RecruitNewUnitEvent(u)).execute();
             if (p.isHumanPlayer()) {
                 view.hud.logger.log(String.format("You recruited %s", u.name));

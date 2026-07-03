@@ -2590,8 +2590,8 @@ public class VanillaMod implements GameMod {
                                             receiver.wielder.combat.takeDamage(view, new Damage(20), receiver.wielder);
                                             final Unit u = view.game.generator.unit(Labels.unit_ghastly_thrall, p.x,
                                                     p.y);
-                                            view.game.setLeader(view, u, receiver.wielder.getLeader());
                                             u.spawn(view);
+                                            view.game.setLeader(view, u, receiver.wielder.getLeader());
                                         });
                                     });
                         });

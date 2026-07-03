@@ -100,5 +100,6 @@ public class Hunger {
         }
         view.game.future.removeFutureTicks(this.unit, "GetsHungry");
         view.game.future.addFutureTick("GetsHungry", this.unit, this.turnsToGetHungry, false, Optional.empty());
+        view.overlays.entity(this.unit).setIcons(view, this.unit);
     }
 }

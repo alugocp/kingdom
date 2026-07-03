@@ -61,7 +61,7 @@ public class EntityOverlay {
         final boolean replacingOtherIcons = this.icons.isPresent();
         this.icons.ifPresent((IconsOverlay o1) -> o1.runCallback());
         this.icons = Optional.of(o);
-        System.out.println(String.format("Icons for %s", e.name));
+        o.getOffset().y += EntityOverlay.LINE_HEIGHT / 2f;
         if (!replacingOtherIcons) {
             for (Overlay o1 : this.getOverlaysAbove(o)) {
                 o1.getOffset().y += EntityOverlay.LINE_HEIGHT;
@@ -161,6 +161,7 @@ public class EntityOverlay {
      * Renders this EntityOverlay onto the Game World
      */
     public void render(GameView view) {
+        this.icons.ifPresent((IconsOverlay o) -> o.render(view));
         for (Overlay o : this.overlays) {
             o.render(view);
         }
