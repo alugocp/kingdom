@@ -53,6 +53,7 @@ public class IconsOverlay extends Overlay {
             }
             this.icons.get(a).render(view.av.special, (int) (pos[0] + (0.3f * a)), (int) pos[1]);
             view.av.special.end();
+            view.av.shaders.element.originalColor();
         }
     }
 }

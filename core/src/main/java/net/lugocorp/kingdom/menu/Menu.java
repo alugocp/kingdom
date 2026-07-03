@@ -106,7 +106,7 @@ public class Menu {
         if (this.submenu.isPresent()) {
             throw new RuntimeException("Cannot set more than one submenu on the same Menu");
         }
-        this.submenu = Optional.of(m);
+        this.submenu = Optional.of(m.noBackground());
     }
 
     /**
