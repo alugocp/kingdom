@@ -92,7 +92,7 @@ public class ResourceIconsNode implements MenuNode {
             // Draw the value icons
             for (int a = 0; a < bar.value; a++) {
                 final int x = iconStartX + (35 * (a % bar.cols));
-                final int y = flip.y - (35 * (a / bar.cols)) + 35;
+                final int y = flip.y - (35 * (a / bar.cols)) + (35 * (bar.rows - 1));
                 bar.icon.render(av.sprites, x, y);
             }
             av.sprites.end();
@@ -102,7 +102,7 @@ public class ResourceIconsNode implements MenuNode {
             av.shaders.element.setMode(ElementShader.GRAY_MODE);
             for (int a = bar.value; a < bar.max; a++) {
                 final int x = iconStartX + (35 * (a % bar.cols));
-                final int y = flip.y - (35 * (a / bar.cols)) + 35;
+                final int y = flip.y - (35 * (a / bar.cols)) + (35 * (bar.rows - 1));
                 bar.icon.render(av.special, x, y);
             }
             av.special.end();
