@@ -26,9 +26,7 @@ public class OverlayLayer {
      * Adds a new Overlay to this instance
      */
     public void add(Overlay o) {
-        if (view.game.world.getTile(o.getOrigin()).map((Tile t) -> t.isVisible()).orElse(false)) {
-            this.overlays.add(o);
-        }
+        this.overlays.add(o);
     }
 
     /**
@@ -53,15 +51,19 @@ public class OverlayLayer {
                 this.dropList.add(o);
                 continue;
             }
-            o.render(this.view);
+            if (view.game.world.getTile(o.getOrigin()).map((Tile t) -> t.isVisible()).orElse(false)) {
+                o.render(this.view);
+            }
         }
         this.overlays.removeAll(this.dropList);
         this.dropList.clear();
 
         // Process the EntityOverlays
-        for (EntityOverlay o : this.entityOverlays.values()) {
-            o.update(dt);
-            o.render(this.view);
+        for (Map.Entry<Entity, EntityOverlay> e : this.entityOverlays.entrySet()) {
+            if (view.game.world.getTile(e.getKey().getPoint()).map((Tile t) -> t.isVisible()).orElse(false)) {
+                e.getValue().update(dt);
+                e.getValue().render(this.view);
+            }
         }
     }
 }
