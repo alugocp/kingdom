@@ -27,7 +27,6 @@ import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.game.GlyphIconsNode;
 import net.lugocorp.kingdom.menu.game.InventoryNode;
-import net.lugocorp.kingdom.menu.game.ResourceBarsNode;
 import net.lugocorp.kingdom.menu.game.ResourceIconsNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
 import net.lugocorp.kingdom.menu.icon.BasicIconNode;
@@ -222,13 +221,11 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
             col1.add(new SpacerNode(false).half());
         }
         col1.add(new RowNode()
-                .add(new ListNode()
-                        .add(new ResourceBarsNode(view.av,
-                                new ResourceBarsNode.Bar("Health", 0x3d9e33, this.combat.health.get(),
-                                        this.combat.health.getMax())))
-                        .add(new ResourceIconsNode(view.av,
-                                new ResourceIconsNode.Bar("Hunger", "food-icon", this.hunger.get(view),
-                                        this.hunger.getTurnsBeforeHunger()))))
+                .add(new ResourceIconsNode(view.av,
+                        new ResourceIconsNode.Bar("Health", "heart-icon", this.combat.health.get(),
+                                this.combat.health.getMax()),
+                        new ResourceIconsNode.Bar("Hunger", "food-icon", this.hunger.get(view),
+                                this.hunger.getTurnsBeforeHunger())))
                 .addExact(IconNode.SIDE, new HelperNode(view.av, new ListNode()
                         .add(new SubheaderNode(view.av, "Health"))
                         .add(new TextNode(view.av, "If a unit's health bar hits zero then they disappear off the map."))

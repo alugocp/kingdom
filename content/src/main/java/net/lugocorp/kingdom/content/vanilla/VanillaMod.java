@@ -359,7 +359,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setModelInstance(view.av, "tower");
                     e.blob.desc = "Towers provide influence over the map";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x000000);
                     return new SideEffect();
                 }).add(BuildingLogic.vision(3));
@@ -369,7 +369,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "mine");
                     e.blob.desc = "Units with mining abilities can generate gold or items when they occupy this building";
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x555555);
                     return new SideEffect();
                 });
@@ -380,7 +380,7 @@ public class VanillaMod implements GameMod {
                     e.blob.setModelInstance(view.av, "vault");
                     e.blob.desc = "This building can store items";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x000000);
                     return new SideEffect();
                 });
@@ -390,7 +390,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "vault");
                     e.blob.desc = "Occupying units generate gold and sometimes an item";
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x000000);
                     return new SideEffect();
                 })
@@ -421,7 +421,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
-                    e.blob.combat.health.setMaxAndValue(20);
+                    e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x257d53);
                     return new SideEffect();
                 });
@@ -431,7 +431,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "forest");
                     e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
-                    e.blob.combat.health.setMaxAndValue(20);
+                    e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0xb4c3c7);
                     e.blob.setMaterial(Labels.asset_taiga);
                     return new SideEffect();
@@ -442,7 +442,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "meadow");
                     e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
-                    e.blob.combat.health.setMaxAndValue(20);
+                    e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x4dd349);
                     return new SideEffect();
                 });
@@ -452,7 +452,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "oasis");
                     e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
-                    e.blob.combat.health.setMaxAndValue(20);
+                    e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x2c9965);
                     return new SideEffect();
                 });
@@ -462,7 +462,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "shrubland");
                     e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
-                    e.blob.combat.health.setMaxAndValue(20);
+                    e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x4dd349);
                     return new SideEffect();
                 });
@@ -484,7 +484,7 @@ public class VanillaMod implements GameMod {
                         (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                             e.blob.setModelInstance(view.av, "fountain");
                             e.blob.desc = "A unit that occupies this building gets healed a little each turn";
-                            e.blob.combat.health.setMaxAndValue(35);
+                            e.blob.combat.health.setMaxAndValue(10);
                             e.blob.setMinimapColor(0x875f9a);
                             return new SideEffect();
                         })
@@ -502,7 +502,7 @@ public class VanillaMod implements GameMod {
                         (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                             e.blob.setModelInstance(view.av, "goo");
                             e.blob.desc = "This goo generates 3 auction points each turn for the next 2 turns";
-                            e.blob.combat.health.setMaxAndValue(5);
+                            e.blob.combat.health.setMaxAndValue(2);
                             e.blob.setMinimapColor(0x875f9a);
                             return new SideEffect();
                         })
@@ -1323,7 +1323,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_shield_defense,
                             Labels.ability_efficient_stomach);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(2);
                     e.blob.species = Defs.species_ettin;
                     return new SideEffect();
@@ -1342,7 +1342,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_stone_defense,
                             Labels.ability_loose_gems, Labels.ability_rock_appetite);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_golem;
                     return new SideEffect();
                 });
@@ -1357,7 +1357,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems, Labels.ability_mine_gold);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(25);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_brownie;
                     return new SideEffect();
                 });
@@ -1371,7 +1371,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
                             Labels.ability_plate_mail, Labels.ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_salamander;
                     return new SideEffect();
                 });
@@ -1387,7 +1387,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_sprite;
                     return new SideEffect();
                 });
@@ -1402,7 +1402,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_combat_loot,
                             Labels.ability_night_vision, Labels.ability_regeneration);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_plasmoid;
                     return new SideEffect();
@@ -1422,7 +1422,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
                             Labels.ability_harvest_goo);
                     e.blob.glyphs.set(Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_plasmoid;
                     return new SideEffect();
                 });
@@ -1439,7 +1439,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_swing_axe);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_entrenched);
                     e.blob.glyphs.set(Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_garuda;
                     return new SideEffect();
                 }).add(UnitLogic.speed(1));
@@ -1457,7 +1457,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_mountain_strider,
                             Labels.ability_local_defender);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_golem;
                     return new SideEffect();
                 });
@@ -1472,7 +1472,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_defensive_bloom,
                             Labels.ability_harvest_mushrooms);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_toadstool;
                     return new SideEffect();
                 });
@@ -1490,7 +1490,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems);
                     e.blob.glyphs.set(Glyph.SUPPORT, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_brownie;
                     return new SideEffect();
                 });
@@ -1506,7 +1506,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_life_aura);
                     e.blob.glyphs.set(Glyph.SUPPORT);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_elf;
                     return new SideEffect();
                 });
@@ -1524,7 +1524,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_forage_in_meadow,
                             Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.SUPPORT);
-                    e.blob.combat.health.setMaxAndValue(25);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_gnome;
                     return new SideEffect();
@@ -1541,7 +1541,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_stone_defense, Labels.ability_mine_gems, Labels.ability_mine_gold,
                             Labels.ability_subterranean_potions, Labels.ability_rock_appetite);
                     e.blob.glyphs.set(Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_golem;
                     return new SideEffect();
                 });
@@ -1559,7 +1559,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_night_vision, Labels.ability_green_fortress);
                     e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_sprite;
                     return new SideEffect();
                 }).add(UnitLogic.vision(4));
@@ -1580,7 +1580,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_acid_skin,
                             Labels.ability_liquifying_presence, Labels.ability_total_appetite);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_plasmoid;
                     return new SideEffect();
                 });
@@ -1598,7 +1598,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_crystal_skin,
                             Labels.ability_night_vision, Labels.ability_mine_gems, Labels.ability_rock_appetite);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_gemstone;
                     return new SideEffect();
                 });
@@ -1614,7 +1614,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_market_value_goo, Labels.ability_economic_activity,
                             Labels.ability_total_appetite);
                     e.blob.glyphs.set(Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(1);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_plasmoid;
                     return new SideEffect();
@@ -1640,7 +1640,7 @@ public class VanillaMod implements GameMod {
                             Labels.ability_regeneration, Labels.ability_running_through_nature,
                             Labels.ability_sacred_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(25);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_sprite;
                     return new SideEffect();
@@ -1655,7 +1655,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration, Labels.ability_edible,
                             Labels.ability_deposit_seeds);
                     e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_sprite;
                     return new SideEffect();
@@ -1671,7 +1671,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
                             Labels.ability_market_indicator);
                     e.blob.glyphs.set(Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_tulpa;
                     return new SideEffect();
@@ -1689,7 +1689,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
                             Labels.ability_night_vision);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.hunger.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_undead;
                     return new SideEffect();
@@ -1715,7 +1715,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_thorny_skin,
                             Labels.ability_hunt_fish);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.SUPPORT);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_merfolk;
                     return new SideEffect();
                 });
@@ -1734,7 +1734,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_shell_defense,
                             Labels.ability_market_boom, Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(45);
+                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.hunger.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_tortugan;
                     return new SideEffect();
@@ -1756,7 +1756,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_economic_activity,
                             Labels.ability_pious);
                     e.blob.glyphs.set(Glyph.SUPPORT, Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(35);
+                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_human;
                     return new SideEffect();
@@ -1778,7 +1778,7 @@ public class VanillaMod implements GameMod {
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_ghastly_thrall);
                     e.blob.glyphs.set(Glyph.BATTLE);
-                    e.blob.combat.health.setMaxAndValue(20);
+                    e.blob.combat.health.setMaxAndValue(4);
                     e.blob.species = Defs.species_undead;
                     return new SideEffect();
                 }).add(UnitLogic.speed(100));
@@ -1798,7 +1798,7 @@ public class VanillaMod implements GameMod {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
-                                ? attacker.combat.takeDamage(view, new Damage(2), target)
+                                ? attacker.combat.takeDamage(view, new Damage(1), target)
                                 : new SideEffect();
                     }
                     return new SideEffect();
@@ -1809,14 +1809,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bash);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(12), 1));
+                }).add(AbilityLogic.attack(new Damage(3), 1));
 
         // Bite
         new Stratified<Ability>(events.ability, Labels.ability_bite).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bite);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(5), 1));
+                }).add(AbilityLogic.attack(new Damage(2), 1));
 
         // Build Healing Fountain
         new Stratified<Ability>(events.ability, Labels.ability_build_healing_fountain)
@@ -1866,7 +1866,7 @@ public class VanillaMod implements GameMod {
                                             }
                                         }
                                         for (Entity t : targets) {
-                                            effects.add(receiver.wielder.combat.attack(view, t, new Damage(5)));
+                                            effects.add(receiver.wielder.combat.attack(view, t, new Damage(2)));
                                         }
                                         return effects;
                                     });
@@ -1986,10 +1986,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dungeon_delve);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 8 damage and generates loot if targeting a tile with a building"))
+                }).add(AbilityLogic.desc("Deals 3 damage and generates loot if targeting a tile with a building"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(8), 1,
+                                .attackAndEffect(view, receiver.wielder, new Damage(3), 1,
                                         Optional.of((Point p) -> !receiver.wielder.haul.isFull()
                                                 && view.game.world.getTile(p).map((Tile t) -> t.building).isPresent()
                                                         ? new SideEffect().add(() -> receiver.wielder.haul
@@ -2056,20 +2056,20 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(8), 3));
+                }).add(AbilityLogic.attack(new Damage(2), 3));
 
         // Fire Cannon
         new Stratified<Ability>(events.ability, Labels.ability_fire_cannon).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 5 damage (or 12 damage to a building)"))
+                }).add(AbilityLogic.desc("Deals 2 damage (or 5 damage to a building)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .dynamicDamageAttack(view, receiver.wielder, 2,
                                         (Tile t) -> t.building.isPresent() && !t.unit.isPresent()
-                                                ? new Damage(12)
-                                                : new Damage(5)));
+                                                ? new Damage(5)
+                                                : new Damage(2)));
 
         // Fire Laser
         new Stratified<Ability>(events.ability, Labels.ability_fire_laser).add(Events.GenerateAbilityEvent.class,
@@ -2093,7 +2093,7 @@ public class VanillaMod implements GameMod {
                                             Point p1 = Hexagons.followLine(receiver.wielder.getPoint(), side, a + 1);
                                             view.game.world.getTile(p1).flatMap((Tile t) -> t.unit)
                                                     .ifPresent((Unit u) -> effects.add(
-                                                            receiver.wielder.combat.attack(view, u, new Damage(4))));
+                                                            receiver.wielder.combat.attack(view, u, new Damage(2))));
                                         }
                                         effects.add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                                         if (receiver.wielder.leadership.belongsToHuman()) {
@@ -2155,10 +2155,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_gilded_strike);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 12 damage and generates 10 gold"))
+                }).add(AbilityLogic.desc("Deals 2 damage and generates 10 gold"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(12), 1, Optional.of((Point p) -> {
+                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
                                     return new SideEffect().add(() -> {
                                         receiver.wielder.getLeader().ifPresent((Player l) -> {
                                             l.gold += 10;
@@ -2264,10 +2264,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 5 damage with a 15% chance to stun"))
+                }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(5), 2, Optional.of((Point p) -> {
+                                .attackAndEffect(view, receiver.wielder, new Damage(2), 2, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
@@ -2279,10 +2279,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bite, 0xffffff, 0x3dac2a);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 5 damage and poisons the target"))
+                }).add(AbilityLogic.desc("Deals 1 damage and poisons the target"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(5), 1, Optional.of((Point p) -> {
+                                .attackAndEffect(view, receiver.wielder, new Damage(1), 1, Optional.of((Point p) -> {
                                     final Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent()
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_poisoned)
@@ -2309,7 +2309,7 @@ public class VanillaMod implements GameMod {
                             e.blob.setIcon(Labels.asset_liquifying_presence);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("Deals 3 damage each turn to an occupied building"))
+                .add(AbilityLogic.desc("Deals 1 damage each turn to an occupied building"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
@@ -2317,7 +2317,7 @@ public class VanillaMod implements GameMod {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
                     return b.isPresent()
-                            ? b.get().combat.takeDamage(view, new Damage(3), receiver.wielder)
+                            ? b.get().combat.takeDamage(view, new Damage(1), receiver.wielder)
                             : new SideEffect();
                 });
 
@@ -2459,7 +2459,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball, 0xdbc626, 0x53cb51);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(8), 3));
+                }).add(AbilityLogic.attack(new Damage(3), 3));
 
         // Night Vision
         new Stratified<Ability>(events.ability, Labels.ability_night_vision).add(Events.GenerateAbilityEvent.class,
@@ -2477,7 +2477,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(5), 3));
+                }).add(AbilityLogic.attack(new Damage(1), 3));
 
         // Pick Apples
         new Stratified<Ability>(events.ability, Labels.ability_pick_apples).add(Events.GenerateAbilityEvent.class,
@@ -2557,7 +2557,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_smash);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(8), 1));
+                }).add(AbilityLogic.attack(new Damage(2), 1));
 
         // Raise Undead
         new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
@@ -2566,7 +2566,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc(
-                        "Consumes 20 health to spawn a Ghastly Thrall (max one at a time, remains adjacent to this unit)"))
+                        "Consumes 5 health to spawn a Ghastly Thrall (max one at a time, remains adjacent to this unit)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             // Check for any existing Ghastly Thrall
@@ -2586,14 +2586,14 @@ public class VanillaMod implements GameMod {
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
                                     (Point p) -> {
-                                        return new SideEffect().add(() -> {
-                                            view.game.actions.unitHasCastSpell(view, receiver.wielder);
-                                            receiver.wielder.combat.takeDamage(view, new Damage(20), receiver.wielder);
-                                            final Unit u = view.game.generator.unit(Labels.unit_ghastly_thrall, p.x,
-                                                    p.y);
-                                            u.spawn(view);
-                                            view.game.setLeader(view, u, receiver.wielder.getLeader());
-                                        });
+                                        return new SideEffect().add(receiver.wielder.combat.takeDamage(view,
+                                                new Damage(5), receiver.wielder)).add(() -> {
+                                                    view.game.actions.unitHasCastSpell(view, receiver.wielder);
+                                                    final Unit u = view.game.generator.unit(Labels.unit_ghastly_thrall,
+                                                            p.x, p.y);
+                                                    u.spawn(view);
+                                                    view.game.setLeader(view, u, receiver.wielder.getLeader());
+                                                });
                                     });
                         });
 
@@ -2638,14 +2638,14 @@ public class VanillaMod implements GameMod {
                             e.blob.setIcon(Labels.asset_sword_slash, 0xffffff, 0x00ff00);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("Deals 8 damage (or 12 damage when on a forest)"))
+                .add(AbilityLogic.desc("Deals 2 damage (or 4 damage when on a forest)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver,
                                 Events.AbilityActivatedEvent e) -> AbilityLogic
                                         .dynamicDamageAttack(view, receiver.wielder, 1,
                                                 (Tile t) -> new Damage(t.building
                                                         .map((Building b) -> b.name.equals(Labels.building_forest))
-                                                        .orElse(false) ? 12 : 8)));
+                                                        .orElse(false) ? 4 : 2)));
 
         // Rock Appetite
         new Stratified<Ability>(events.ability, Labels.ability_rock_appetite).add(Events.GenerateAbilityEvent.class,
@@ -2723,17 +2723,17 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_slime_shot);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(8), 3));
+                }).add(AbilityLogic.attack(new Damage(2), 3));
 
         // Smash
         new Stratified<Ability>(events.ability, Labels.ability_smash).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_smash);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 8 damage with a 15% chance to stun"))
+                }).add(AbilityLogic.desc("Deals 3 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(8), 1, Optional.of((Point p) -> {
+                                .attackAndEffect(view, receiver.wielder, new Damage(3), 1, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
@@ -2745,10 +2745,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stomp);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 5 damage with a 15% chance to stun"))
+                }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(5), 1, Optional.of((Point p) -> {
+                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
                                     Optional<Unit> u = view.game.world.getUnit(p);
                                     return u.isPresent() && Lambda.chance(15)
                                             ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
@@ -2797,15 +2797,14 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_axe_swing);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(12), 1));
+                }).add(AbilityLogic.attack(new Damage(3), 1));
 
         // Sword Slash
         new Stratified<Ability>(events.ability, Labels.ability_sword_slash).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    Damage dmg = new Damage(8);
                     e.blob.setIcon(Labels.asset_sword_slash);
                     return new SideEffect();
-                }).add(AbilityLogic.attack(new Damage(8), 1));
+                }).add(AbilityLogic.attack(new Damage(2), 1));
 
         // Thorny Skin
         new Stratified<Ability>(events.ability, Labels.ability_thorny_skin).add(Events.GenerateAbilityEvent.class,
@@ -2818,7 +2817,7 @@ public class VanillaMod implements GameMod {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
-                                ? attacker.combat.takeDamage(view, new Damage(2), target)
+                                ? attacker.combat.takeDamage(view, new Damage(1), target)
                                 : new SideEffect();
                     }
                     return new SideEffect();
@@ -2967,7 +2966,7 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_poisoned);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("The unit takes 2 damage each turn for 4 turns"))
+                }).add(AbilityLogic.desc("The unit takes 1 damage each turn for 4 turns"))
                 .add(Events.StatusEffectAddedEvent.class,
                         (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
                             view.game.future.addFutureTick("Remove", receiver, 4, false, e.unit.getLeader());
@@ -2979,7 +2978,7 @@ public class VanillaMod implements GameMod {
                                 .add(() -> view.game.future.removeFutureTicks(receiver, "Poison"))
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add("Poison", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
-                    return receiver.wielder.combat.takeDamage(view, new Damage(2), receiver.wielder);
+                    return receiver.wielder.combat.takeDamage(view, new Damage(1), receiver.wielder);
                 });
 
         // Swift

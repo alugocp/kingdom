@@ -191,7 +191,7 @@ public class TurnStructure {
                     view.overlays.entity(tower).addRising(new RisingOverlay(view, tower, ColorScheme.GOLD.hex, cost));
                     player.gold -= Tower.GOLD_COST;
                 } else {
-                    tower.combat.damageTowerWithoutGold(view, new Damage(10)).execute();
+                    tower.combat.damageTowerWithoutGold(view, new Damage(2)).execute();
                 }
             });
         }
