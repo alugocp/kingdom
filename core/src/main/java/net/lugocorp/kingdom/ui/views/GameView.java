@@ -205,6 +205,9 @@ public class GameView implements View {
         // Kick off the TurnStructure
         this.game.mechanics.turns.startOfTurn(this);
         this.initHudMessages();
+
+        // Start the music
+        this.params.av.loaders.music.play("sfx/fantasy-background");
     }
 
     /** {@inheritdoc} */

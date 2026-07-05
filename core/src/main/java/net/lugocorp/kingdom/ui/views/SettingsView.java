@@ -48,8 +48,10 @@ public class SettingsView implements View {
                                 .add(new VolumeNode(av, av.settings.getSoundVolume(),
                                         (Float v) -> av.settings.setSoundVolume(v))))
                         .add(new ListNode().add(new SubheaderNode(av, "Music"))
-                                .add(new VolumeNode(av, av.settings.getMusicVolume(),
-                                        (Float v) -> av.settings.setMusicVolume(v)))))
+                                .add(new VolumeNode(av, av.settings.getMusicVolume(), (Float v) -> {
+                                    av.loaders.music.setVolume(v);
+                                    av.settings.setMusicVolume(v);
+                                }))))
                 .add(new SpacerNode()).add(
                         new HeaderNode(av, "Controls"))
                 .add(new RowNode()
