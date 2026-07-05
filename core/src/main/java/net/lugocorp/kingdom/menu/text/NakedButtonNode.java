@@ -85,8 +85,8 @@ public class NakedButtonNode extends TextNode {
     public void click(Rect bounds, Point p) {
         final Rect inner = this.getInnerBounds(bounds);
         if (inner.contains(p)) {
-            this.ping.ifPresent((String sound) -> this.av.loaders.sounds.play(sound));
             this.action.run();
+            this.ping.ifPresent((String sound) -> this.av.loaders.sounds.play(sound));
         }
     }
 
