@@ -15,6 +15,7 @@ import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.menu.text.PlayerBadgeNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
@@ -214,7 +215,7 @@ public class Patron extends Building {
                     Lambda.toList(this.favor.keySet()));
             for (Player k : sorted) {
                 final boolean fav = this.favorite.map((Player f) -> k == f).orElse(false);
-                favors.add(new RowNode().addRatio(30, new TextNode(view.av, k.name)).add(
+                favors.add(new RowNode().addRatio(30, new PlayerBadgeNode(view.av, k)).add(
                         new TextNode(view.av, String.format("%d%s", this.favor.get(k), fav ? " (favorite)" : ""))));
             }
         } else {
