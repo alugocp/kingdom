@@ -89,17 +89,10 @@ public class CompPlayer extends Player {
         final boolean result = this.actor.handleAdditionalPlans(view, this.unitsForDecisionMaking.get());
         if (result) {
             // Terminate the decision-making process
-            this.unitsForDecisionMaking.get().reset();
-            this.planningState = PlanningState.INITIAL_PLANNING;
-            for (Unit u : this.unitsForDecisionMaking.get().list()) {
-                if (view.game.actions.getAvailableActionTypes(u).size() > 0) {
-                    return false;
-                }
-            }
             this.unitsForDecisionMaking = Optional.empty();
-            return true;
+            this.planningState = PlanningState.INITIAL_PLANNING;
         }
-        return false;
+        return result;
     }
 
     /** {@inheritdoc} */
