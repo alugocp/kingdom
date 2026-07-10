@@ -8,8 +8,11 @@ import net.lugocorp.kingdom.ai.goals.ExploreMap;
 import net.lugocorp.kingdom.ai.goals.HarvestFood;
 import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
 import net.lugocorp.kingdom.ai.goals.MineGold;
+import net.lugocorp.kingdom.ai.plans.CastSpellNode;
+import net.lugocorp.kingdom.ai.plans.MoveNode;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.gameplay.actions.ActionType;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.BatchCounter;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -111,26 +114,31 @@ public class Actor {
             }
 
             // Kick off the next PlanNode in the Unit's Plan
-            PlanNode n = this.plans.get(u);
-            ActionResult result = ActionResult.RIDE;
-            while (result == ActionResult.RIDE) {
-                result = n.act(view);
-                Log.log("Plan result for %s: %s", u.name, result);
-                if (result == ActionResult.RIDE || result == ActionResult.POP) {
-                    if (n.getChild().isPresent()) {
-                        n = n.getChild().get();
-                        this.plans.put(u, n);
-                    } else {
-                        this.plans.remove(u);
-                        break;
-                    }
-                }
-                if (result == ActionResult.POP_ALL) {
-                    this.plans.remove(u);
-                }
-            }
+            this.executeSingleUnitPlan(view, u);
         }
         return units.isLastBatch();
+    }
+
+    // Performs the logic behind a single Unit's current PlanNode(s)
+    private void executeSingleUnitPlan(GameView view, Unit u) {
+        PlanNode n = this.plans.get(u);
+        ActionResult result = ActionResult.RIDE;
+        while (result == ActionResult.RIDE) {
+            result = n.act(view);
+            Log.log("Plan result for %s: %s", u.name, result);
+            if (result == ActionResult.RIDE || result == ActionResult.POP) {
+                if (n.getChild().isPresent()) {
+                    n = n.getChild().get();
+                    this.plans.put(u, n);
+                } else {
+                    this.plans.remove(u);
+                    break;
+                }
+            }
+            if (result == ActionResult.POP_ALL) {
+                this.plans.remove(u);
+            }
+        }
     }
 
     /**
@@ -142,6 +150,32 @@ public class Actor {
             if (!this.plans.containsKey(u) && !view.game.actions.unitHasAssignedAction(u)) {
                 final Optional<PlanNode> plan = this.determinePlanNode(view, u);
                 plan.ifPresent((PlanNode n) -> this.plans.put(u, n));
+            }
+        }
+        return units.isLastBatch();
+    }
+
+    /**
+     * Returns true if the given PlanNode relies on an ActionType present in the
+     * list
+     */
+    private boolean planNodeReferencesActionTypes(List<ActionType> actionTypes, PlanNode n) {
+        // TODO make this prettier / more robust for adding new PlanNode subclasses
+        return (n instanceof MoveNode && actionTypes.contains(ActionType.MOVE))
+                || (n instanceof CastSpellNode && actionTypes.contains(ActionType.ACTIVATE));
+    }
+
+    /**
+     * Allows Units that are not exhausted to perform additional Actions
+     */
+    public boolean handleAdditionalPlans(GameView view, BatchCounter<Unit> units) {
+        for (Unit u : units.getBatch()) {
+            final List<ActionType> actionTypes = view.game.actions.getAvailableActionTypes(u);
+            if (!this.plans.containsKey(u)) {
+                this.determinePlanNode(view, u).ifPresent((PlanNode n) -> this.plans.put(u, n));
+            }
+            if (this.plans.containsKey(u) && this.planNodeReferencesActionTypes(actionTypes, this.plans.get(u))) {
+                this.executeSingleUnitPlan(view, u);
             }
         }
         return units.isLastBatch();

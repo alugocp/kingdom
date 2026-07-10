@@ -28,7 +28,7 @@ public class CompPlayer extends Player {
     public final Statistics stats = new Statistics();
     public final Wishlists wishlist;
     private Optional<BatchCounter<Unit>> unitsForDecisionMaking = Optional.empty();
-    private boolean executingUnitPlans = false;
+    private PlanningState planningState = PlanningState.INITIAL_PLANNING;
     public MemoryMap memory = null;
 
     public CompPlayer(GameView view, int index, Fate fate, Color color) {
@@ -63,22 +63,41 @@ public class CompPlayer extends Player {
             this.unitsForDecisionMaking = Optional.of(new BatchCounter(10, unitsCopy));
         }
 
+        // Handle the initial plan assignment phase
+        if (this.planningState == PlanningState.INITIAL_PLANNING) {
+            final boolean result = this.actor.assignUnitPlans(view, this.unitsForDecisionMaking.get());
+            if (result) {
+                // Transition to the execution phase
+                this.unitsForDecisionMaking.get().reset();
+                this.planningState = PlanningState.EXECUTION;
+            }
+            return false;
+        }
+
         // Handle the plan execution phase
-        if (this.executingUnitPlans) {
+        if (this.planningState == PlanningState.EXECUTION) {
             final boolean result = this.actor.executeUnitPlans(view, this.unitsForDecisionMaking.get());
             if (result) {
                 // Terminate the decision-making process
-                this.unitsForDecisionMaking = Optional.empty();
-                this.executingUnitPlans = false;
+                this.unitsForDecisionMaking.get().reset();
+                this.planningState = PlanningState.ADDITIONAL;
             }
-            return result;
+            return false;
         }
 
-        // Handle the plan assignment phase
-        if (this.actor.assignUnitPlans(view, this.unitsForDecisionMaking.get())) {
-            // Transition to the execution phase
+        // Handle additional actions
+        final boolean result = this.actor.handleAdditionalPlans(view, this.unitsForDecisionMaking.get());
+        if (result) {
+            // Terminate the decision-making process
             this.unitsForDecisionMaking.get().reset();
-            this.executingUnitPlans = true;
+            this.planningState = PlanningState.INITIAL_PLANNING;
+            for (Unit u : this.unitsForDecisionMaking.get().list()) {
+                if (view.game.actions.getAvailableActionTypes(u).size() > 0) {
+                    return false;
+                }
+            }
+            this.unitsForDecisionMaking = Optional.empty();
+            return true;
         }
         return false;
     }

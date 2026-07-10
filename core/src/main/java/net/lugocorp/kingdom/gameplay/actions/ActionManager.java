@@ -4,8 +4,10 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.ActionOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -97,6 +99,19 @@ public class ActionManager {
     public boolean canUnitDoThis(Unit u, ActionType type) {
         return (type == ActionType.SKIP || !u.sleep.isSleeping())
                 && (!this.unitHasAssignedAction(u) || this.actions.get(u).canBeFollowedBy(type));
+    }
+
+    /**
+     * Returns a list of ActionTypes representing what the given Unit can do
+     */
+    public List<ActionType> getAvailableActionTypes(Unit u) {
+        final List<ActionType> types = new ArrayList<>();
+        for (ActionType type : ActionType.values()) {
+            if (this.canUnitDoThis(u, type)) {
+                types.add(type);
+            }
+        }
+        return types;
     }
 
     /**
