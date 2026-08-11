@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.ai.action.GoalUtils;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
+import net.lugocorp.kingdom.ai.action.Priority;
 import net.lugocorp.kingdom.ai.memory.MemoryCell;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.plans.MoveNode;
@@ -30,27 +31,36 @@ public class ExploreMap extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected float getScore(GameView view, PlanNode root) {
+    protected Priority getScore(GameView view, PlanNode root) {
         final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
         final Unit unit = ((MoveNode) root).unit;
         final Point dest = ((MoveNode) root).dest;
         final int vision = unit.vision.get(view, unit.getLeader().get(), unit);
-        float score = this.subscore(view, memory, dest);
-        for (Point p : Hexagons.getNeighbors(dest, vision)) {
-            score += this.subscore(view, memory, p);
-        }
-        return score / (float) Hexagons.tilesWithinRadius(vision);
-    }
+        final Set<Point> points = Hexagons.getNeighbors(dest, vision);
+        points.add(dest);
 
-    /**
-     * Returns a component of the final score for a given Point
-     */
-    private float subscore(GameView view, MemoryMap memory, Point p) {
-        final Optional<MemoryCell> cell = memory.getCell(p);
-        if (cell.map((MemoryCell c) -> !c.isVisible()).orElse(false)) {
-            return cell.get().wasEverVisible() ? 0.5f : 1f;
+        // Calculate how many Tiles will be revealed or revisited
+        int revisited = 0;
+        int revealed = 0;
+        for (Point p : points) {
+            final Optional<MemoryCell> cell = memory.getCell(p);
+            if (cell.map((MemoryCell c) -> !c.isVisible()).orElse(false)) {
+                if (cell.get().wasEverVisible()) {
+                    revisited++;
+                } else {
+                    revealed++;
+                }
+            }
         }
-        return 0f;
+
+        // Determine Priority based on aforementioned stats
+        if (revealed > 7) {
+            return Priority.OPTIMAL;
+        }
+        if (revealed > 4 || revisited > 7) {
+            return Priority.GOOD_IDEA;
+        }
+        return Priority.NEUTRAL;
     }
 
     /** {@inheritdoc} */

@@ -38,7 +38,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.ai.goals.AttackEnemy.class);
         kryo.register(net.lugocorp.kingdom.ai.goals.ExploreMap.class);
         kryo.register(net.lugocorp.kingdom.ai.goals.HarvestFood.class);
-        kryo.register(net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints.class);
         kryo.register(net.lugocorp.kingdom.ai.goals.MineGold.class);
         kryo.register(net.lugocorp.kingdom.ai.memory.MemoryCell.class);
         kryo.register(net.lugocorp.kingdom.ai.memory.MemoryMap.class);

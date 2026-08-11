@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.ai.action.GoalUtils;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
+import net.lugocorp.kingdom.ai.action.Priority;
 import net.lugocorp.kingdom.ai.memory.MemoryCell;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.plans.MoveNode;
@@ -36,17 +37,17 @@ public class HarvestFood extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected float getScore(GameView view, PlanNode root) {
+    protected Priority getScore(GameView view, PlanNode root) {
         final MemoryMap memory = ((CompPlayer) root.unit.getLeader().get()).memory;
         final Point dest = ((MoveNode) root).dest;
         final Optional<MemoryCell> cell = memory.getCell(dest);
         if (cell.map((MemoryCell c) -> !c.getBuilding().isPresent()).orElse(true)) {
-            return 0f;
+            return Priority.BAD_IDEA;
         }
 
         // Do not attempt to harvest food from non-Building Entities
         if (!view.game.events.building.hasEventHandler(cell.get().getBuilding().get(), "GenerateBuildingEvent")) {
-            return 0f;
+            return Priority.BAD_IDEA;
         }
 
         // Get Building that we may move to
@@ -73,13 +74,13 @@ public class HarvestFood extends Goal {
                     final Events.GenerateItemEvent event1 = (Events.GenerateItemEvent) event;
                     if (root.unit.hunger.canEat(view, event1.blob)) {
                         CapturedEvents.instance.clearFakePoint();
-                        return 1f;
+                        return Priority.GOOD_IDEA;
                     }
                 }
             }
         }
         CapturedEvents.instance.clearFakePoint();
-        return 0f;
+        return Priority.BAD_IDEA;
     }
 
     /** {@inheritdoc} */

@@ -6,7 +6,7 @@ package net.lugocorp.kingdom.utils;
 public enum LogSys {
     AI("AI");
 
-    private final String label;
+    public final String label;
 
     private LogSys(String label) {
         this.label = label;

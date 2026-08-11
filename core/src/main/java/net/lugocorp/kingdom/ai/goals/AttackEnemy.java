@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.ai.goals;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
+import net.lugocorp.kingdom.ai.action.Priority;
 import net.lugocorp.kingdom.ai.plans.CastSpellNode;
 import net.lugocorp.kingdom.ai.prediction.EventLog;
 import net.lugocorp.kingdom.builtin.Events;
@@ -70,11 +71,11 @@ public class AttackEnemy extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected float getScore(GameView view, PlanNode root) {
+    protected Priority getScore(GameView view, PlanNode root) {
         final CastSpellNode node = (CastSpellNode) root;
         final Unit unit = root.unit;
         return node.scoreByPrediction((EventLog prediction) -> {
-            Optional<Tuple<Path, Float>> best = Optional.empty();
+            Optional<Tuple<Path, Priority>> best = Optional.empty();
             for (Path branch : prediction.getTargetPaths()) {
                 final List<Event> events = prediction.getEvents(branch);
                 boolean attackerDied = Lambda.some((Event e) -> this.hasUnitDied(e, unit), events);
@@ -87,11 +88,11 @@ public class AttackEnemy extends Goal {
 
                 // Find our best target Path to return. If more of our Units died
                 // from this Combat than enemy Units then it'll be scored at zero.
-                float score = 0f;
+                Priority score = Priority.BAD_IDEA;
                 if (alliesDied < enemiesDied || (alliesDied == enemiesDied && damageReceived < damageDealt)) {
-                    score = 1f;
+                    score = Priority.GOOD_IDEA;
                 }
-                if (!best.isPresent() || score > best.get().b) {
+                if (!best.isPresent() || score.value > best.get().b.value) {
                     best = Optional.of(new Tuple(branch, score));
                 }
             }

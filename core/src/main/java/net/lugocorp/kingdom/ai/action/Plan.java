@@ -5,9 +5,9 @@ package net.lugocorp.kingdom.ai.action;
  */
 public class Plan {
     public final PlanNode root;
-    public final float score;
+    public final Priority score;
 
-    public Plan(PlanNode root, float score) {
+    public Plan(PlanNode root, Priority score) {
         this.score = score;
         this.root = root;
     }

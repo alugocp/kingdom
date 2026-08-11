@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.ai.action;
-import net.lugocorp.kingdom.ai.plans.LazyNode;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.events.Event;
@@ -32,7 +31,7 @@ public abstract class Goal {
     /**
      * Returns a score value for the given PlanNode
      */
-    protected abstract float getScore(GameView view, PlanNode root);
+    protected abstract Priority getScore(GameView view, PlanNode root);
 
     /**
      * Returns true if the given Glyph aligns with this Goal
@@ -63,20 +62,13 @@ public abstract class Goal {
     }
 
     /**
-     * Returns a Plan where the Unit in question does nothing
-     */
-    protected final Plan emptyPlan(Unit u) {
-        return new Plan(new LazyNode(u), 0f);
-    }
-
-    /**
      * Returns the Plan with the highest score in the given List, and filters out
      * any Plans with a score of 0
      */
     protected final Optional<Plan> getBestPlan(Iterable<Plan> plans) {
         Optional<Plan> best = Optional.empty();
         for (Plan p : plans) {
-            if (!best.isPresent() || p.score > best.get().score) {
+            if (!best.isPresent() || p.score.value > best.get().score.value) {
                 best = Optional.of(p);
             }
         }

@@ -3,10 +3,10 @@ import net.lugocorp.kingdom.ai.action.ActionResult;
 import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.ai.action.Plan;
 import net.lugocorp.kingdom.ai.action.PlanNode;
+import net.lugocorp.kingdom.ai.action.Priority;
 import net.lugocorp.kingdom.ai.goals.AttackEnemy;
 import net.lugocorp.kingdom.ai.goals.ExploreMap;
 import net.lugocorp.kingdom.ai.goals.HarvestFood;
-import net.lugocorp.kingdom.ai.goals.IncreaseUnitPoints;
 import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.ai.plans.CastSpellNode;
 import net.lugocorp.kingdom.ai.plans.MoveNode;
@@ -34,7 +34,6 @@ public class Actor {
     public Actor() {
         // These Goals should never be removed
         this.goals.add(new ExploreMap());
-        this.goals.add(new IncreaseUnitPoints());
         this.goals.add(new HarvestFood());
     }
 
@@ -67,14 +66,6 @@ public class Actor {
         if (comp.stats.enemiesKilled.getMean() >= 0.3 && comp.stats.unitsLost.getMean() >= 0.5) {
             this.goals.removeIf((Goal g) -> g instanceof AttackEnemy);
         }
-
-        // Focus on unit points vs passive buildings
-        if (comp.stats.unitPoints.getLatest() < 12) {
-            this.goals.add(new IncreaseUnitPoints());
-        }
-        if (comp.stats.unitPoints.getLatest() > 18) {
-            this.goals.removeIf((Goal g) -> g instanceof IncreaseUnitPoints);
-        }
     }
 
     /**
@@ -82,9 +73,9 @@ public class Actor {
      */
     private Optional<Plan> getBestPlan(Iterable<Plan> plans) {
         final Set<Plan> results = new HashSet<>();
-        float score = -1f;
+        Priority score = Priority.FATAL;
         for (Plan p : plans) {
-            if (p.score > score) {
+            if (p.score.value > score.value) {
                 results.clear();
                 results.add(p);
                 score = p.score;
@@ -92,7 +83,9 @@ public class Actor {
                 results.add(p);
             }
         }
-        return results.size() > 0 && score > 0f ? Optional.of(Lambda.random(results)) : Optional.empty();
+        return results.size() > 0 && score.value > Priority.BAD_IDEA.value
+                ? Optional.of(Lambda.random(results))
+                : Optional.empty();
     }
 
     /**

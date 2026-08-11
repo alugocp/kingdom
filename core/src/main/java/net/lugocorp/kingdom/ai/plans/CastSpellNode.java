@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ai.plans;
 import net.lugocorp.kingdom.ai.action.ActionResult;
 import net.lugocorp.kingdom.ai.action.PlanNode;
+import net.lugocorp.kingdom.ai.action.Priority;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ai.prediction.EventLog;
 import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
@@ -32,13 +33,13 @@ public class CastSpellNode extends PlanNode {
      * Grants another class access to our prediction of future Events, so that they
      * can calculate a score value from it
      */
-    public float scoreByPrediction(Function<EventLog, Optional<Tuple<Path, Float>>> selectPathAndScore) {
-        Optional<Tuple<Path, Float>> result = selectPathAndScore.apply(this.prediction);
-        if (result.map((Tuple<Path, Float> r) -> r.b > 0f).orElse(false)) {
+    public Priority scoreByPrediction(Function<EventLog, Optional<Tuple<Path, Priority>>> selectPathAndScore) {
+        final Optional<Tuple<Path, Priority>> result = selectPathAndScore.apply(this.prediction);
+        if (result.map((Tuple<Path, Priority> r) -> r.b.value > Priority.NEUTRAL.value).orElse(false)) {
             this.selectedPath = Optional.of(result.get().a);
             return result.get().b;
         }
-        return 0f;
+        return Priority.FATAL;
     }
 
     /** {@inheritdoc} */
