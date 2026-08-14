@@ -27,17 +27,17 @@ class CreditsView implements View {
     CreditsView(StartMenuView.Params params) {
         this.params = params;
         this.background = new Background(params.av);
-        this.menu = new Menu((Coords.SIZE.x / 2) - 600, 0, 1200, false,
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
                 new ListNode()
-                        .add(new RowNode().add(new ButtonNode(params.av, "Back",
-                                () -> this.navigate.accept(new StartMenuView(params)))).add(
-                                        new HeaderNode(params.av, "Credits").center()))
-                        .add(new SpacerNode())
+                        .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
+                        .add(new HeaderNode(params.av, "Credits").center()).add(new SpacerNode())
                         .add(new RowNode()
                                 .add(new ListNode().add(new SubheaderNode(params.av, "Game Design"))
                                         .add(new TextNode(params.av, "Alex Lugo")))
                                 .add(new ListNode().add(new SubheaderNode(params.av, "Programming"))
-                                        .add(new TextNode(params.av, "Alex Lugo")))
+                                        .add(new TextNode(params.av, "Alex Lugo"))))
+                        .add(new SpacerNode())
+                        .add(new RowNode()
                                 .add(new ListNode().add(new SubheaderNode(params.av, "3D Modelling"))
                                         .add(new TextNode(params.av, "Alex Lugo")))
                                 .add(new ListNode().add(new SubheaderNode(params.av, "Character Design"))
