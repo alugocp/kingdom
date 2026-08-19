@@ -126,16 +126,23 @@ public class ToonShader implements Shader {
         this.program.setUniformMatrix(this.u_worldTrans, renderable.worldTransform);
 
         // Set material uniforms
-        TextureAttribute diffuse = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
-        this.program.setUniformi(this.u_diffuseTexture, this.context.textureBinder.bind(diffuse.textureDescription));
-        this.program.setUniformf(this.u_diffuseUVTransform, diffuse.offsetU, diffuse.offsetV, diffuse.scaleU,
-                diffuse.scaleV);
-        ColorAttribute color = (ColorAttribute) renderable.material.get(ColorAttribute.Diffuse);
-        this.program.setUniformf(this.u_diffuseColor, color.color);
-        BlendingAttribute blend = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
-        if (blend != null) {
-            this.context.setBlending(true, blend.sourceFunction, blend.destFunction);
-            this.program.setUniformf(this.u_opacity, blend.opacity);
+        if (renderable.material.has(TextureAttribute.Diffuse)) {
+            final TextureAttribute diffuse = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
+            this.program.setUniformi(this.u_diffuseTexture,
+                    this.context.textureBinder.bind(diffuse.textureDescription));
+            this.program.setUniformf(this.u_diffuseUVTransform, diffuse.offsetU, diffuse.offsetV, diffuse.scaleU,
+                    diffuse.scaleV);
+        }
+        if (renderable.material.has(ColorAttribute.Diffuse)) {
+            final ColorAttribute color = (ColorAttribute) renderable.material.get(ColorAttribute.Diffuse);
+            this.program.setUniformf(this.u_diffuseColor, color.color);
+        }
+        if (renderable.material.has(BlendingAttribute.Type)) {
+            final BlendingAttribute blend = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
+            if (blend != null) {
+                this.context.setBlending(true, blend.sourceFunction, blend.destFunction);
+                this.program.setUniformf(this.u_opacity, blend.opacity);
+            }
         }
 
         // Set special shader data
