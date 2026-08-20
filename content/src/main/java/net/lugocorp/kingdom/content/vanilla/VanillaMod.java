@@ -1553,7 +1553,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Unit>(events.unit, Labels.unit_druid)
                 .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A mysterious Druid who rarely speaks";
-                    e.blob.setModelInstance(view.av, "druid");
+                    e.blob.setModelInstance(view.av, "the-druid");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_forest,
                             Labels.ability_revenge_of_the_forest);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
