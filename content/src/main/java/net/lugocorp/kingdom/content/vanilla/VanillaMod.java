@@ -377,7 +377,7 @@ public class VanillaMod implements GameMod {
         // Cache
         new Stratified<Building>(events.building, Labels.building_cache).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "vault");
+                    e.blob.setModelInstance(view.av, "cache");
                     e.blob.desc = "This building can store items";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.combat.health.setMaxAndValue(5);
@@ -388,7 +388,7 @@ public class VanillaMod implements GameMod {
         // Marketplace
         new Stratified<Building>(events.building, Labels.building_marketplace).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "vault");
+                    e.blob.setModelInstance(view.av, "marketplace");
                     e.blob.desc = "Occupying units generate gold and sometimes an item";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x000000);
