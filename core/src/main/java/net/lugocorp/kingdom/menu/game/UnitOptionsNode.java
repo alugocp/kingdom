@@ -9,7 +9,6 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.RowNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
-import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import java.util.List;
@@ -39,7 +38,7 @@ public class UnitOptionsNode extends ListNode {
             this.units.add(u.getMenuContent(view, Optional.empty()));
             this.buttons.add(new ButtonNode(view.av, "Choose", () -> click.accept(u)));
         }
-        this.add(new SpacerNode(false)).add(new SubheaderNode(view.av, "Loading...").center())
+        this.add(new SpacerNode(false)).add(new DiceLoadingNode(view.av, this.camera, view.getEnvironment()))
                 .add(new SpacerNode(false));
     }
 
