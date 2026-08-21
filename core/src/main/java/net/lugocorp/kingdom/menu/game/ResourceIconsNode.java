@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
  */
 public class ResourceIconsNode implements MenuNode {
     private static final int PADDING = 5;
+    private static final int ICON = 20;
     private final GlyphLayout layout = new GlyphLayout();
     private final ResourceIconsNode.Bar[] bars;
     private final BitmapFont font;
@@ -43,7 +44,8 @@ public class ResourceIconsNode implements MenuNode {
      * Returns the height of a single ResourceIconsNode.Bar
      */
     private int getBarHeight(ResourceIconsNode.Bar bar) {
-        return Math.max((int) (ResourceIconsNode.PADDING + this.font.getLineHeight()), bar.rows * 35);
+        return Math.max((int) (ResourceIconsNode.PADDING + this.font.getLineHeight()),
+                bar.rows * ResourceIconsNode.ICON);
     }
 
     /** {@inheritdoc} */
@@ -66,7 +68,7 @@ public class ResourceIconsNode implements MenuNode {
             }
         }
         for (ResourceIconsNode.Bar bar : this.bars) {
-            bar.cols = (width - this.textWidth) / 35;
+            bar.cols = (width - this.textWidth) / ResourceIconsNode.ICON;
             bar.rows = (bar.max / bar.cols) + (bar.max % bar.cols > 0 ? 1 : 0);
         }
     }
@@ -91,8 +93,9 @@ public class ResourceIconsNode implements MenuNode {
 
             // Draw the value icons
             for (int a = 0; a < bar.value; a++) {
-                final int x = iconStartX + (35 * (a % bar.cols));
-                final int y = flip.y - (35 * (a / bar.cols)) + (35 * (bar.rows - 1));
+                final int x = iconStartX + (ResourceIconsNode.ICON * (a % bar.cols));
+                final int y = flip.y - (ResourceIconsNode.ICON * (a / bar.cols))
+                        + (ResourceIconsNode.ICON * (bar.rows - 1));
                 bar.icon.render(av.sprites, x, y);
             }
             av.sprites.end();
@@ -101,8 +104,9 @@ public class ResourceIconsNode implements MenuNode {
             av.special.begin();
             av.shaders.element.setMode(ElementShader.GRAY_MODE);
             for (int a = bar.value; a < bar.max; a++) {
-                final int x = iconStartX + (35 * (a % bar.cols));
-                final int y = flip.y - (35 * (a / bar.cols)) + (35 * (bar.rows - 1));
+                final int x = iconStartX + (ResourceIconsNode.ICON * (a % bar.cols));
+                final int y = flip.y - (ResourceIconsNode.ICON * (a / bar.cols))
+                        + (ResourceIconsNode.ICON * (bar.rows - 1));
                 bar.icon.render(av.special, x, y);
             }
             av.special.end();

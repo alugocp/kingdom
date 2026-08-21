@@ -70,8 +70,8 @@ public class LoadingGameView extends ThreadedTaskView {
         av.loaders.sprites.register("sun-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 3, 0);
         av.loaders.sprites.register("moon-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 4, 0);
         av.loaders.sprites.register("skull-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 5, 0);
-        av.loaders.sprites.register("food-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 6, 0);
-        av.loaders.sprites.register("heart-icon", "ui/icons", IconNode.SIDE, IconNode.SIDE, 7, 0);
+        av.loaders.sprites.register("food-icon", "ui/small-icons", 20, 20, 0, 0);
+        av.loaders.sprites.register("heart-icon", "ui/small-icons", 20, 20, 1, 0);
         av.loaders.sprites.register("move-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 0, 0);
         av.loaders.sprites.register("deposit-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 1, 0);
         av.loaders.sprites.register("give-action", "ui/actions", ActionNode.SIDE, ActionNode.SIDE, 2, 0);

@@ -128,7 +128,7 @@ public class Combat {
             effects.add(() -> view.animations.add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
         }
         effects.add(() -> view.overlays.entity(this.bearer).add(new HealthChangeOverlay(view, this.bearer,
-                this.health.getMax(), this.health.get(), this.health.get() - damageEvent.dmg.total())));
+                this.health.get(), this.health.get() - damageEvent.dmg.total())));
         if (!willDie) {
             effects.add(() -> view.overlays.entity(this.bearer).addRising(
                     new RisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
@@ -187,8 +187,8 @@ public class Combat {
             final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
             target.combat.health.set(target.combat.health.get() + heal.amount);
             if (needsHealing) {
-                view.overlays.entity(target).add(new HealthChangeOverlay(view, target, target.combat.health.getMax(),
-                        target.combat.health.get(), target.combat.health.get() + heal.amount));
+                view.overlays.entity(target).add(new HealthChangeOverlay(view, target, target.combat.health.get(),
+                        target.combat.health.get() + heal.amount));
             }
             view.overlays.entity(target).addRising(
                     new RisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
