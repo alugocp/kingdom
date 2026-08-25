@@ -378,6 +378,7 @@ public class Labels {
     public static final String ability_edible = "Edible";
     public static final String ability_efficient_stomach = "Efficient Stomach";
     public static final String ability_entrenched = "Entrenched";
+    public static final String ability_fast = "Fast";
     public static final String ability_fireball = "Fireball";
     public static final String ability_fire_cannon = "Fire Cannon";
     public static final String ability_fire_laser = "Fire Laser";
@@ -388,6 +389,7 @@ public class Labels {
     public static final String ability_harvest_goo = "Harvest Goo";
     public static final String ability_harvest_mushrooms = "Harvest Mushrooms";
     public static final String ability_heal_wounds = "Heal Wounds";
+    public static final String ability_high_vision = "High Vision";
     public static final String ability_hug = "Hug";
     public static final String ability_hungry_frog_magic = "Hungry Frog Magic";
     public static final String ability_hunt_fish = "Hunt Fish";
@@ -425,6 +427,7 @@ public class Labels {
     public static final String ability_shell_defense = "Shell Defense";
     public static final String ability_shield_defense = "Shield Defense";
     public static final String ability_slime_shot = "Slime Shot";
+    public static final String ability_slow = "Slow";
     public static final String ability_smash = "Smash";
     public static final String ability_stomp = "Stomp";
     public static final String ability_stone_defense = "Stone Defense";

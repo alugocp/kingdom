@@ -1431,18 +1431,18 @@ public class VanillaMod implements GameMod {
         // Faustus
         // Maekuro the Mighty
         // Garudee
-        new Stratified<Unit>(events.unit, Labels.unit_garudee)
-                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_garudee).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Garuda artilleryman spits pebbles at invaders";
                     e.blob.setModelInstance(view.av, "garudee");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_pebble_shot,
                             Labels.ability_swing_axe);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_entrenched);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_entrenched, Labels.ability_slow);
                     e.blob.glyphs.set(Glyph.DEFENSE);
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_garuda;
                     return new SideEffect();
-                }).add(UnitLogic.speed(1));
+                });
 
         // Pebbles
         // Magdalena
@@ -1550,19 +1550,19 @@ public class VanillaMod implements GameMod {
         // Grizzlemane the Mycoweaver
         // Magicad
         // The Druid
-        new Stratified<Unit>(events.unit, Labels.unit_druid)
-                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_druid).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A mysterious Druid who rarely speaks";
                     e.blob.setModelInstance(view.av, "the-druid");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_forest,
                             Labels.ability_revenge_of_the_forest);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
-                            Labels.ability_night_vision, Labels.ability_green_fortress);
+                            Labels.ability_night_vision, Labels.ability_green_fortress, Labels.ability_high_vision);
                     e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_sprite;
                     return new SideEffect();
-                }).add(UnitLogic.vision(4));
+                });
 
         // Bluefeathers
         // Broker Quercia
@@ -1664,18 +1664,18 @@ public class VanillaMod implements GameMod {
         // Xella the Accursed
         // Svelta Luktegress
         // Al-Fikra
-        new Stratified<Unit>(events.unit, Labels.unit_al_fikra)
-                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_al_fikra).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
                     e.blob.setModelInstance(view.av, "alfikra");
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
-                            Labels.ability_market_indicator);
+                            Labels.ability_market_indicator, Labels.ability_fast, Labels.ability_high_vision);
                     e.blob.glyphs.set(Glyph.TRADE);
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_tulpa;
                     return new SideEffect();
-                }).add(UnitLogic.speed(3)).add(UnitLogic.vision(4));
+                });
 
         // Goldtooth
         // The Necromancer
@@ -1746,21 +1746,21 @@ public class VanillaMod implements GameMod {
         // Photali
         // Batatita
         // Razma
-        new Stratified<Unit>(events.unit, Labels.unit_razma)
-                .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+        new Stratified<Unit>(events.unit, Labels.unit_razma).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A wandering mystic and trader";
                     e.blob.setModelInstance(view.av, "alfikra");
                     e.blob.setMaterial("razma");
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_fireball,
                             Labels.ability_heal_wounds);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_economic_activity,
-                            Labels.ability_pious);
+                            Labels.ability_pious, Labels.ability_fast);
                     e.blob.glyphs.set(Glyph.SUPPORT, Glyph.TRADE);
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_human;
                     return new SideEffect();
-                }).add(UnitLogic.speed(3));
+                });
 
         // Theressa the Rover
         //
@@ -2051,6 +2051,18 @@ public class VanillaMod implements GameMod {
                     return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : new SideEffect();
                 });
 
+        // Fast
+        new Stratified<Ability>(events.ability, Labels.ability_fast).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xff9525);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("This unit can normally move 3 spaces per turn"))
+                .add(Events.UnitMoveDistanceEvent.class,
+                        (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
+                            e.distance = 3;
+                            return new SideEffect();
+                        });
+
         // Fireball
         new Stratified<Ability>(events.ability, Labels.ability_fireball).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -2217,6 +2229,17 @@ public class VanillaMod implements GameMod {
                 }).add(AbilityLogic.desc("Heals 5 damage"))
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
+
+        // High Vision
+        new Stratified<Ability>(events.ability, Labels.ability_high_vision).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_night_vision, 0xa18f1e, 0xffffff);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("This unit can normally see in a 4 tile radius around it"))
+                .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
+                    e.radius = 4;
+                    return new SideEffect();
+                });
 
         // Hug
         new Stratified<Ability>(events.ability, Labels.ability_hug).add(Events.GenerateAbilityEvent.class,
@@ -2724,6 +2747,18 @@ public class VanillaMod implements GameMod {
                     e.blob.setIcon(Labels.asset_slime_shot);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 3));
+
+        // Slow
+        new Stratified<Ability>(events.ability, Labels.ability_slow).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xffd9b1);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("This unit can normally move 1 space per turn"))
+                .add(Events.UnitMoveDistanceEvent.class,
+                        (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
+                            e.distance = 1;
+                            return new SideEffect();
+                        });
 
         // Smash
         new Stratified<Ability>(events.ability, Labels.ability_smash).add(Events.GenerateAbilityEvent.class,
