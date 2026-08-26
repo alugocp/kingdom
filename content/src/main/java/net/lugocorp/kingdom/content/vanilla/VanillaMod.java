@@ -276,6 +276,13 @@ public class VanillaMod implements GameMod {
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver, Event event) -> new SideEffect()
                 .add(() -> receiver.hunger.gotHungry(view)));
 
+        // UnitMoveDistanceEvent
+        events.unit.setDefaultHandler(Events.UnitMoveDistanceEvent.class,
+                (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
+                    e.distance = 2;
+                    return new SideEffect();
+                });
+
         /**
          * SECTION Tiles
          */

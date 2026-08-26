@@ -198,7 +198,7 @@ public class Events {
      */
     public static class UnitMoveDistanceEvent extends Event {
         public final Unit unit;
-        public int distance = 2;
+        public int distance = 1;
 
         public UnitMoveDistanceEvent(Unit unit) {
             super();
