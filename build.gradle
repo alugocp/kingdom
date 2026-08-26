@@ -101,7 +101,7 @@ class CleanAssetsTask extends DefaultTask {
     @TaskAction
     void action() {
         this.iterateAssetsFolder('assets')
-        this.iterateAssetsFolder('content/vanilla/assets')
+        this.iterateAssetsFolder('content/assets/vanilla')
     }
 
     /**

@@ -22,7 +22,7 @@ def generate_labels(*modkeys):
 
     # Load the definitions JSON file (labels.json)
     for modkey in modkeys:
-        with open(f"content/{modkey}/labels.json", "r") as file:
+        with open(f"content/assets/{modkey}.json", "r") as file:
             data = json.loads(file.read())
             for section in data["sections"]:
                 name = section["name"]

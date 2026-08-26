@@ -19,7 +19,7 @@ apply plugin: 'io.github.fourlastor.construo'
 import io.github.fourlastor.construo.Target
 
 sourceSets.main.resources {
-    srcDirs rootProject.file('assets').path, rootProject.file('content/vanilla/assets').path
+    srcDirs rootProject.file('assets').path, rootProject.file('content/assets/vanilla').path
     exclude '**/*.bbmodel', '**/*.obj', '**/*.mtl'
 }
 
