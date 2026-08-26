@@ -1690,8 +1690,8 @@ public class VanillaMod implements GameMod {
                             Labels.ability_night_vision);
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.hunger.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_undead;
+                    UnitLogic.hungry(view, e.blob);
                     return new SideEffect();
                 });
 
@@ -1735,8 +1735,8 @@ public class VanillaMod implements GameMod {
                             Labels.ability_market_boom, Labels.ability_swim);
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
                     e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.hunger.setTimeToHunger(view, 10);
                     e.blob.species = Defs.species_tortugan;
+                    UnitLogic.hungry(view, e.blob);
                     return new SideEffect();
                 });
 

@@ -11,23 +11,19 @@ import net.lugocorp.kingdom.utils.SideEffect;
 public class UnitLogic {
 
     /**
+     * Makes the given Unit get hungry faster than normal
+     */
+    public static void hungry(GameView view, Unit unit) {
+        unit.hunger.setTimeToHunger(view, 10);
+    }
+
+    /**
      * Changes this Unit's speed
      */
     public static StratifiedPayload<Unit, Events.UnitMoveDistanceEvent> speed(int distance) {
         return new StratifiedPayload<>(Events.UnitMoveDistanceEvent.class,
                 (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
                     e.distance = distance;
-                    return new SideEffect();
-                });
-    }
-
-    /**
-     * Changes this Unit's vision
-     */
-    public static StratifiedPayload<Unit, Events.GetVisionEvent> vision(int radius) {
-        return new StratifiedPayload<>(Events.GetVisionEvent.class,
-                (GameView view, Unit receiver, Events.GetVisionEvent e) -> {
-                    e.radius = radius;
                     return new SideEffect();
                 });
     }
