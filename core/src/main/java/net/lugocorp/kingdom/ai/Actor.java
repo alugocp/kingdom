@@ -29,7 +29,7 @@ public class Actor {
 
         // Make Decisions for miscellaneous DecisionChannels
         final DecisionChannel[] misc = new DecisionChannel[]{DecisionChannel.recruitUnit(),
-                DecisionChannel.recruitArtifact()};
+                DecisionChannel.recruitArtifact(), DecisionChannel.auctionEntry()};
         for (DecisionChannel channel : misc) {
             if (this.decisions.containsKey(channel)) {
                 continue;

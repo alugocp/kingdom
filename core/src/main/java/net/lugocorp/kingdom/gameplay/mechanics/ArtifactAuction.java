@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
+import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.Game;
@@ -208,7 +209,11 @@ public class ArtifactAuction {
             if (humanPlayerWon) {
                 view.game.human.auctionChips++;
             } else {
-                winner.ifPresent((Player p) -> ((CompPlayer) p).wishlist.artifacts.doAfterAuction(view));
+                winner.ifPresent((Player p) -> {
+                    final CompPlayer comp = (CompPlayer) p;
+                    comp.auctionChips++;
+                    comp.actor.enactDecision(DecisionChannel.recruitArtifact());
+                });
                 return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,
                         new ListNode().add(new NakedButtonNode(view.av, "x", () -> view.hud.popups.setDisplay(false)))

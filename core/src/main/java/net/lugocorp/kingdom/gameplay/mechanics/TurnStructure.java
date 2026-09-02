@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
+import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
-import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -9,7 +9,6 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
@@ -18,8 +17,6 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * This class handles human and AI Players taking turns during the Game
@@ -120,31 +117,28 @@ public class TurnStructure {
                 view.game.mechanics.auction.getAuction().get().hasSeenResults();
             } else if (view.game.mechanics.auction.getAuction().isPresent()) {
                 // The CompPlayer decides whether or not it will enter the Auction
-                comp.wishlist.artifacts.decideOnAuctionEntry();
+                comp.actor.enactDecision(DecisionChannel.auctionEntry());
             }
 
             // Handle CompPlayer Unit recruitment logic
             if (comp.getUnitPoints() >= NewUnit.MAX_UNIT_POINTS) {
-                Optional<Glyph> glyph = comp.wishlist.glyphs.getDesiredOptions().getMostWanted();
-                Log.log("%s most wanted glyph: %s", comp.name, glyph);
-                if (glyph.isPresent()) {
-                    Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(view, comp, glyph.get());
-                    if (spawnPoint.isPresent()) {
-                        Log.log("Will spawn unit at %s", spawnPoint.get());
-                        final List<Unit> options = view.game.mechanics.recruitUnits.getRecruitmentOptions(view,
-                                glyph.get(), spawnPoint.get(), 1);
-                        if (options.size() > 0) {
-                            comp.wishlist.units.setOptions(options);
-                            final Optional<Unit> unit = comp.wishlist.units.getDesiredOptions().getMostWanted();
-                            unit.ifPresent((Unit u) -> view.game.mechanics.recruitUnits.choose(view, comp, u));
-                            Log.log("%s chose to recruit %s", comp.name, unit.get().name);
-                        } else {
-                            Log.log("%s glyph pool was empty", glyph.get());
-                        }
-                    } else {
-                        Log.log("No valid spawn point found");
-                    }
-                }
+                comp.actor.enactDecision(DecisionChannel.recruitUnit());
+                /*
+                 * Optional<Glyph> glyph =
+                 * comp.wishlist.glyphs.getDesiredOptions().getMostWanted();
+                 * Log.log("%s most wanted glyph: %s", comp.name, glyph); if (glyph.isPresent())
+                 * { Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(view, comp,
+                 * glyph.get()); if (spawnPoint.isPresent()) { Log.log("Will spawn unit at %s",
+                 * spawnPoint.get()); final List<Unit> options =
+                 * view.game.mechanics.recruitUnits.getRecruitmentOptions(view, glyph.get(),
+                 * spawnPoint.get(), 1); if (options.size() > 0) {
+                 * comp.wishlist.units.setOptions(options); final Optional<Unit> unit =
+                 * comp.wishlist.units.getDesiredOptions().getMostWanted(); unit.ifPresent((Unit
+                 * u) -> view.game.mechanics.recruitUnits.choose(view, comp, u));
+                 * Log.log("%s chose to recruit %s", comp.name, unit.get().name); } else {
+                 * Log.log("%s glyph pool was empty", glyph.get()); } } else {
+                 * Log.log("No valid spawn point found"); } }
+                 */
             }
         }
     }

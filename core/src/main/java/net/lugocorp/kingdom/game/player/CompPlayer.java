@@ -25,7 +25,7 @@ import java.util.function.Function;
  * This Player is operated by an Actor (entry point to the AI system)
  */
 public class CompPlayer extends Player {
-    private final Actor actor = new Actor();
+    public final Actor actor = new Actor();
     public final Statistics stats = new Statistics();
     private Optional<BatchCounter<Unit>> unitsForDecisionMaking = Optional.empty();
     public MemoryMap memory = null;

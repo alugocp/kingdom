@@ -33,6 +33,13 @@ public class DecisionChannel {
         return new DecisionChannel("RECRUIT_ARTIFACT");
     }
 
+    /**
+     * A decision chanel for deciding on Auction entry
+     */
+    public static DecisionChannel auctionEntry() {
+        return new DecisionChannel("AUCTION_ENTRY");
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean equals(Object o) {
