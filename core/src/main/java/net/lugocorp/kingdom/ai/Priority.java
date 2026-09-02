@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.ai.action;
+package net.lugocorp.kingdom.ai;
 
 /**
  * Models all the levels of priority for computer players' possible actions
