@@ -9,13 +9,10 @@ This file explains all the code folders inside this repository.
 
 - `core` contains all business logic to make the game happen on top of LibGDX
     - `ai` implements our CPU player logic
-        - `action` defines the overall backbone of CPU player logic
-        - `goals` represents the different strategies a CPU player can strive towards
+        - `goals` contains a collection of abstract gameplay requirements that the CPU player strives towards
         - `memory` allows CPU players to remember what they previously saw under the fog of war
-        - `plans` defines the actions a CPU player can select for their units
         - `prediction` allows CPU players to better choose from options (with event handlers)
         - `stats` allows CPU players to track their performance
-        - `wishlist` allows CPU players to better choose from lists of options (without event handlers)
     - `builtin`
         - `animation` contains a set of game animation utilities
         - `logic` congregates useful logic for defining game content
@@ -23,8 +20,8 @@ This file explains all the code folders inside this repository.
     - `engine` provides an interface between the game logic and LibGDX
         - `animation` defines our animation system
         - `assets` loads all of our assets, including models and music
-        - `fonts` contains utility classes for using different font styles
         - `controllers` allows user input to travel to our menus and the game view
+        - `fonts` contains utility classes for using different font styles
         - `projection` contains logic for translating mouse input to different coordinate systems
         - `render` defines common interfaces for renderable elements
         - `shaders` allows us to use GLSL shaders to render the game
