@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.game.model;
-import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
@@ -10,10 +9,8 @@ import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * A Fate is a general path the players can choose at the start of the game.
@@ -22,7 +19,6 @@ import java.util.Set;
 public class Fate implements EventReceiver {
     public final String name;
     public final List<String> desc = new ArrayList<>();
-    public final Set<Goal> strategicGoals = new HashSet<>();
     public Optional<String> image = Optional.empty();
     private Player player = null;
 

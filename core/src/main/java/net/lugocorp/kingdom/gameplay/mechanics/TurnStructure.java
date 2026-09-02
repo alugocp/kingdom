@@ -228,7 +228,9 @@ public class TurnStructure {
         } else {
             // Handle the CompPlayer's turn
             final CompPlayer player = (CompPlayer) this.turn.getPlayer();
-            if (player.makeDecisions(view)) {
+            // TODO re-implement decision making for non-Unit DecisionChannels (do it in the
+            // relevant mechanics classes)
+            if (!player.makeUnitDecisions(view)) {
                 view.hud.bot.tileMenu.refresh();
                 this.nextTurn(view);
                 player.stats.commit();

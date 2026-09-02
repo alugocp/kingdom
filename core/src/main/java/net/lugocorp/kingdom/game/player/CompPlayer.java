@@ -1,13 +1,15 @@
 package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.ai.Actor;
+import net.lugocorp.kingdom.ai.DecisionChannel;
+import net.lugocorp.kingdom.ai.GoalSet;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
 import net.lugocorp.kingdom.ai.stats.Statistics;
-import net.lugocorp.kingdom.ai.wishlist.Wishlists;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.gameplay.actions.SkipAction;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -25,20 +27,17 @@ import java.util.function.Function;
 public class CompPlayer extends Player {
     private final Actor actor = new Actor();
     public final Statistics stats = new Statistics();
-    public final Wishlists wishlist;
     private Optional<BatchCounter<Unit>> unitsForDecisionMaking = Optional.empty();
     public MemoryMap memory = null;
 
     public CompPlayer(GameView view, int index, Fate fate, Color color) {
         super(String.format("Computer %d", index), fate, color);
-        this.wishlist = new Wishlists(view, this);
         this.getFate().setPlayer(this);
     }
 
     // This is for Kryo purposes only
     public CompPlayer() {
         super("", null, null);
-        this.wishlist = null;
     }
 
     /**

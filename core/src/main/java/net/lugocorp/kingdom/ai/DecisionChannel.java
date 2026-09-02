@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.game.model.Unit;
 
 /**
  * DecisionChannels reference a specific Unit or some Menu flow (i.e. recruiting

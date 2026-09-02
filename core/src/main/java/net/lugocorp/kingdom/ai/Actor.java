@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.ai;
-import net.lugocorp.kingdom.ai.action.Goal;
 import net.lugocorp.kingdom.game.model.Unit;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,7 @@ public class Actor {
         // Make Decisions regarding Units
         for (Unit unit : units) {
             final DecisionChannel channel = DecisionChannel.unit(unit);
-            if (this.decisons.containsKey(channel)) {
+            if (this.decisions.containsKey(channel)) {
                 continue;
             }
             for (Goal goal : goals) {
@@ -29,10 +28,10 @@ public class Actor {
         }
 
         // Make Decisions for miscellaneous DecisionChannels
-        final DecisionChannel misc = new DecisionChannel[]{DecisionChannel.recruitUnit(),
+        final DecisionChannel[] misc = new DecisionChannel[]{DecisionChannel.recruitUnit(),
                 DecisionChannel.recruitArtifact()};
         for (DecisionChannel channel : misc) {
-            if (this.decisons.containsKey(channel)) {
+            if (this.decisions.containsKey(channel)) {
                 continue;
             }
             for (Goal goal : goals) {

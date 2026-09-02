@@ -1,6 +1,4 @@
 package net.lugocorp.kingdom.content.vanilla;
-import net.lugocorp.kingdom.ai.goals.AttackEnemy;
-import net.lugocorp.kingdom.ai.goals.MineGold;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.builtin.logic.BuildingLogic;
@@ -1125,7 +1123,6 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("• Your units always deal critical hits at or below 25% of their max health");
                     e.blob.desc
                             .add("• 15% chance for your units to fully heal themselves when they kill an enemy unit");
-                    e.blob.strategicGoals.add(new AttackEnemy());
                     return new SideEffect();
                 }).add(Events.GetInitialGlyphEvent.class,
                         (GameView view, Fate receiver, Events.GetInitialGlyphEvent e) -> {
@@ -1165,7 +1162,6 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("• Your first unit will have the trade glyph");
                     e.blob.desc.add("• Your buildings that can hold item generate 2 unit points each turn");
                     e.blob.desc.add("• Your units generate 150% auction points");
-                    e.blob.strategicGoals.add(new MineGold());
                     return new SideEffect();
                 }).add(Events.GetInitialGlyphEvent.class,
                         (GameView view, Fate receiver, Events.GetInitialGlyphEvent e) -> {
@@ -1256,7 +1252,6 @@ public class VanillaMod implements GameMod {
                     e.blob.desc.add("• Your first unit will have the trade glyph");
                     e.blob.desc.add("• You get a free auction chip at the start of the game");
                     e.blob.desc.add("• You get 15 unit points when you do not win an auction");
-                    e.blob.strategicGoals.add(new MineGold());
                     return new SideEffect();
                 }).add(Events.GetInitialGlyphEvent.class,
                         (GameView view, Fate receiver, Events.GetInitialGlyphEvent e) -> {

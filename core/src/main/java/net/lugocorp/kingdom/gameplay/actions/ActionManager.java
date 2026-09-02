@@ -59,9 +59,9 @@ public class ActionManager {
         final List<Unit> withoutActions = new ArrayList<>();
         for (Unit u : player.units) {
             if (this.unitHasAssignedAction(u)) {
-                withActions.push(u);
+                withActions.add(u);
             } else {
-                withoutActions.push(u);
+                withoutActions.add(u);
             }
         }
         return new Tuple<>(withActions, withoutActions);

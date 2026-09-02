@@ -30,33 +30,20 @@ public class KryoProvider {
 
         // net.lugocorp.kingdom.ai
         kryo.register(net.lugocorp.kingdom.ai.Actor.class);
-        kryo.register(net.lugocorp.kingdom.ai.action.ActionResult.class);
-        kryo.register(net.lugocorp.kingdom.ai.action.Goal.class);
-        kryo.register(net.lugocorp.kingdom.ai.action.GoalUtils.class);
-        kryo.register(net.lugocorp.kingdom.ai.action.Plan.class);
-        kryo.register(net.lugocorp.kingdom.ai.action.PlanNode.class);
-        kryo.register(net.lugocorp.kingdom.ai.goals.AttackEnemy.class);
-        kryo.register(net.lugocorp.kingdom.ai.goals.ExploreMap.class);
-        kryo.register(net.lugocorp.kingdom.ai.goals.HarvestFood.class);
-        kryo.register(net.lugocorp.kingdom.ai.goals.MineGold.class);
+        kryo.register(net.lugocorp.kingdom.ai.Behavior.class);
+        kryo.register(net.lugocorp.kingdom.ai.Decision.class);
+        kryo.register(net.lugocorp.kingdom.ai.DecisionChannel.class);
+        kryo.register(net.lugocorp.kingdom.ai.Goal.class);
+        kryo.register(net.lugocorp.kingdom.ai.GoalSet.class);
+        kryo.register(net.lugocorp.kingdom.ai.Priority.class);
         kryo.register(net.lugocorp.kingdom.ai.memory.MemoryCell.class);
         kryo.register(net.lugocorp.kingdom.ai.memory.MemoryMap.class);
-        kryo.register(net.lugocorp.kingdom.ai.plans.CastSpellNode.class);
-        kryo.register(net.lugocorp.kingdom.ai.plans.LazyNode.class);
-        kryo.register(net.lugocorp.kingdom.ai.plans.MoveNode.class);
         kryo.register(net.lugocorp.kingdom.ai.prediction.CapturedEvents.class);
         kryo.register(net.lugocorp.kingdom.ai.prediction.EventLog.class);
         kryo.register(net.lugocorp.kingdom.ai.prediction.SelectedTargets.class);
         kryo.register(net.lugocorp.kingdom.ai.stats.DiffStat.class);
         kryo.register(net.lugocorp.kingdom.ai.stats.Stat.class);
         kryo.register(net.lugocorp.kingdom.ai.stats.Statistics.class);
-        kryo.register(net.lugocorp.kingdom.ai.wishlist.ArtifactWishlist.class);
-        kryo.register(net.lugocorp.kingdom.ai.wishlist.Desires.class);
-        kryo.register(net.lugocorp.kingdom.ai.wishlist.GlyphWishlist.class);
-        kryo.register(net.lugocorp.kingdom.ai.wishlist.PatronWishlist.class);
-        kryo.register(net.lugocorp.kingdom.ai.wishlist.UnitWishlist.class);
-        // kryo.register(net.lugocorp.kingdom.ai.wishlist.Wishlist.class);
-        kryo.register(net.lugocorp.kingdom.ai.wishlist.Wishlists.class);
 
         // net.lugocorp.kingdom.builtin
         kryo.register(net.lugocorp.kingdom.builtin.Events.class);
