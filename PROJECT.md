@@ -2,8 +2,8 @@
 This file explains all the code folders inside this repository.
 
 - `content` defines all content in the game
+    - `assets` contains all the assets for all content
     - `src` contains all Java code for all content
-    - `vanilla` contains all the assets for base game content
 
 <br>
 
