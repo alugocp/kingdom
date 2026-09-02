@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.ActionOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Tuple;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +48,23 @@ public class ActionManager {
                 }
             }
         }
+    }
+
+    /**
+     * Returns two lists - one of Units with Actions and one of Units without
+     * Actions
+     */
+    public Tuple<List<Unit>, List<Unit>> getUnitsWithAndWithoutActions(Player player) {
+        final List<Unit> withActions = new ArrayList<>();
+        final List<Unit> withoutActions = new ArrayList<>();
+        for (Unit u : player.units) {
+            if (this.unitHasAssignedAction(u)) {
+                withActions.push(u);
+            } else {
+                withoutActions.push(u);
+            }
+        }
+        return new Tuple<>(withActions, withoutActions);
     }
 
     /**
@@ -99,19 +117,6 @@ public class ActionManager {
     public boolean canUnitDoThis(Unit u, ActionType type) {
         return (type == ActionType.SKIP || !u.sleep.isSleeping())
                 && (!this.unitHasAssignedAction(u) || this.actions.get(u).canBeFollowedBy(type));
-    }
-
-    /**
-     * Returns a list of ActionTypes representing what the given Unit can do
-     */
-    public List<ActionType> getAvailableActionTypes(Unit u) {
-        final List<ActionType> types = new ArrayList<>();
-        for (ActionType type : ActionType.values()) {
-            if (this.canUnitDoThis(u, type)) {
-                types.add(type);
-            }
-        }
-        return types;
     }
 
     /**

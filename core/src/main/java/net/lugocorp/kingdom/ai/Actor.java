@@ -52,7 +52,19 @@ public class Actor {
         }
     }
 
-    // TODO implement actDecisions()
-    // TODO add some logic to loop makeDecisions() and actDecisions() while Units
-    // can still act
+    /**
+     * Acts out the Behavior associated with the given DecisionChannel, and returns
+     * true if there was a Behavior to enact
+     */
+    public boolean enactDecision(DecisionChannel channel) {
+        final Decision d = this.decisions.get(channel);
+        if (d == null) {
+            return false;
+        }
+        d.behavior.act();
+        if (d.behavior.isFinished()) {
+            this.decisions.remove(channel);
+        }
+        return true;
+    }
 }

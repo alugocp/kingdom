@@ -14,7 +14,6 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.BatchCounter;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +27,6 @@ public class CompPlayer extends Player {
     public final Statistics stats = new Statistics();
     public final Wishlists wishlist;
     private Optional<BatchCounter<Unit>> unitsForDecisionMaking = Optional.empty();
-    private PlanningState planningState = PlanningState.INITIAL_PLANNING;
     public MemoryMap memory = null;
 
     public CompPlayer(GameView view, int index, Fate fate, Color color) {
@@ -44,55 +42,28 @@ public class CompPlayer extends Player {
     }
 
     /**
-     * Returns this CompPlayer's Actor instance
+     * Runs the CompPlayer's decision-making logic and returns false when complete
      */
-    public Actor getActor() {
-        return this.actor;
-    }
+    public boolean makeUnitDecisions(GameView view) {
+        final List<Unit> units = view.game.actions.getUnitsWithAndWithoutActions(this).b;
 
-    /**
-     * Runs the Actor's decision-making logic for the current turn
-     */
-    public boolean makeDecisions(GameView view) {
-        // Initiate decision-making process
-        if (!this.unitsForDecisionMaking.isPresent()) {
-            final List<Unit> unitsCopy = new ArrayList<>();
-            this.memory.refresh(view);
-            this.actor.assessGoals(this);
-            unitsCopy.addAll(this.units);
-            this.unitsForDecisionMaking = Optional.of(new BatchCounter(10, unitsCopy));
-        }
-
-        // Handle the initial plan assignment phase
-        if (this.planningState == PlanningState.INITIAL_PLANNING) {
-            final boolean result = this.actor.assignUnitPlans(view, this.unitsForDecisionMaking.get());
-            if (result) {
-                // Transition to the execution phase
-                this.unitsForDecisionMaking.get().reset();
-                this.planningState = PlanningState.EXECUTION;
+        // Assign and enact a Behavior to all Units without an Action
+        this.actor.makeDecisions(GoalSet.singleton, units);
+        for (Unit u : units) {
+            if (!this.actor.enactDecision(DecisionChannel.unit(u))) {
+                view.game.actions.unitHasActed(view, u,
+                        new SkipAction("There is no behavior set for this unit", () -> true));
             }
-            return false;
         }
 
-        // Handle the plan execution phase
-        if (this.planningState == PlanningState.EXECUTION) {
-            final boolean result = this.actor.executeUnitPlans(view, this.unitsForDecisionMaking.get());
-            if (result) {
-                // Terminate the decision-making process
-                this.unitsForDecisionMaking.get().reset();
-                this.planningState = PlanningState.ADDITIONAL;
+        // Return true if we can still act again
+        for (Unit u : units) {
+            // TODO replace with canUnitDoThis() so that we support double actions
+            if (!view.game.actions.unitHasAssignedAction(u)) {
+                return true;
             }
-            return false;
         }
-
-        // Handle additional actions
-        final boolean result = this.actor.handleAdditionalPlans(view, this.unitsForDecisionMaking.get());
-        if (result) {
-            // Terminate the decision-making process
-            this.unitsForDecisionMaking = Optional.empty();
-            this.planningState = PlanningState.INITIAL_PLANNING;
-        }
-        return result;
+        return false;
     }
 
     /** {@inheritdoc} */

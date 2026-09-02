@@ -7,6 +7,7 @@ import java.util.List;
  * Contains all the Goals utilized by CompPlayers
  */
 public class GoalSet implements Iterable<Goal> {
+    public static final GoalSet singleton = new GoalSet();
     private final List<Goal> goals = new ArrayList<>();
 
     public GoalSet() {
