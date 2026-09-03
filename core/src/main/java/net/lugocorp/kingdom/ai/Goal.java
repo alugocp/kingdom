@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * A Goal is an abstract effort that the CompPlayers strive towards
@@ -32,7 +34,16 @@ public abstract class Goal {
     }
 
     /**
+     * Returns an empty Decision
+     */
+    protected Decision noDecision(DecisionChannel channel) {
+        // We can use null here because FATAL is supposed to mean "do not act upon this
+        // Decision"
+        return new Decision(channel, Priority.FATAL, null);
+    }
+
+    /**
      * Generates a Decision for the given Actor and DecisionChannel
      */
-    protected abstract Decision makeDecision(Actor actor, DecisionChannel channel);
+    protected abstract Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel);
 }

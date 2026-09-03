@@ -60,8 +60,11 @@ public class Actor {
         if (d == null) {
             return false;
         }
-        d.behavior.act();
-        if (d.behavior.isFinished()) {
+        final boolean isFatal = d.priority == Priority.FATAL;
+        if (!isFatal) {
+            d.behavior.act();
+        }
+        if (isFatal || d.behavior.isFinished()) {
             this.decisions.remove(channel);
         }
         return true;

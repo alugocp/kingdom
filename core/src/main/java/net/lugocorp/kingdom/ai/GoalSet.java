@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ai.goals.ExploreMapGoal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +12,7 @@ public class GoalSet implements Iterable<Goal> {
     private final List<Goal> goals = new ArrayList<>();
 
     public GoalSet() {
-        // Add goals in order here with their dependencies as constructor parameters
+        this.goals.add(new ExploreMapGoal());
     }
 
     /**

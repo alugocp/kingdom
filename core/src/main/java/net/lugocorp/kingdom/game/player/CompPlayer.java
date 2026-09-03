@@ -62,6 +62,11 @@ public class CompPlayer extends Player {
                 return true;
             }
         }
+
+        // Reset the Goals at the end of this CompPlayer's turn
+        for (Goal g : GoalSet.singleton) {
+            g.reset();
+        }
         return false;
     }
 

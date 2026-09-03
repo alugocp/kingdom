@@ -132,6 +132,13 @@ public class World implements Iterable<Tile> {
     }
 
     /**
+     * Returns the number of Tiles in this World
+     */
+    public int getSize() {
+        return this.getWidth() * this.getHeight();
+    }
+
+    /**
      * Returns the World seed
      */
     public long getSeed() {
