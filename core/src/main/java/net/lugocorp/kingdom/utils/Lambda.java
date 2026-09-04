@@ -171,4 +171,17 @@ public class Lambda {
         }
         return subset;
     }
+
+    /**
+     * Counts up the members of the given set that match the given criteria
+     */
+    public static <T> int count(Iterable<T> set, Function<T, Boolean> criteria) {
+        int total = 0;
+        for (T t : set) {
+            if (criteria.apply(t)) {
+                total++;
+            }
+        }
+        return total;
+    }
 }

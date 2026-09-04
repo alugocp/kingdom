@@ -9,6 +9,8 @@ This file explains all the code folders inside this repository.
 
 - `core` contains all business logic to make the game happen on top of LibGDX
     - `ai` implements our CPU player logic
+        - `analysis` contains logic that helps the AI assess Game objects' potential uses
+        - `behaviors` defines different ways that the AI can direct itself
         - `goals` contains a collection of abstract gameplay requirements that the CPU player strives towards
         - `memory` allows CPU players to remember what they previously saw under the fog of war
         - `prediction` allows CPU players to better choose from options (with event handlers)

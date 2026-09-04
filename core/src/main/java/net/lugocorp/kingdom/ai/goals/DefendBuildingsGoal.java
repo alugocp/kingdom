@@ -4,13 +4,13 @@ import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.DecisionClass;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.Priority;
+import net.lugocorp.kingdom.ai.analysis.UnitAnalysis;
 import net.lugocorp.kingdom.ai.behaviors.MoveUnitBehavior;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.game.model.UnitDefaults;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.math.Point;
@@ -28,8 +28,8 @@ public class DefendBuildingsGoal extends Goal {
     /** {@inheritdoc} */
     @Override
     protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final int defensiveUnits = this.getNumberOfDefensiveUnits(view, player);
-        final int towers = this.getNumberOfTowers(view, player);
+        final int defensiveUnits = Lambda.count(player.units, (Unit u) -> UnitAnalysis.isDefensive(view, u));
+        final int towers = Lambda.count(view.game.towers, (Tower t) -> t.leadership.belongsToPlayer(player));
 
         // Recruit unit handler (recruit a fast Trade Glyph Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
@@ -71,7 +71,7 @@ public class DefendBuildingsGoal extends Goal {
                 // Make an assessment for the Priority of moving this Unit
                 final boolean isDire = b.isEntityType(EntityType.TOWER) || b.combat.health.atOrBelowPercent(60);
                 final List<Point> path = pathfinder.getPath(view, p);
-                final boolean defensive = this.isDefensiveUnit(unit);
+                final boolean defensive = UnitAnalysis.isDefensive(view, unit);
                 Priority priority = defensive ? Priority.GOOD_IDEA : Priority.NEUTRAL;
                 if (path.size() > 0) {
                     if (isDire) {
@@ -87,38 +87,5 @@ public class DefendBuildingsGoal extends Goal {
 
         // No decision fallback
         return this.noDecision(channel);
-    }
-
-    /**
-     * Returns true if the given Unit has defensive capabilities
-     */
-    private boolean isDefensiveUnit(Unit u) {
-        return u.glyphs.has(Glyph.DEFENSE) || u.combat.health.getMax() > UnitDefaults.HEALTH;
-    }
-
-    /**
-     * Returns the number of defensive Units controlled by the given CompPlayer
-     */
-    private int getNumberOfDefensiveUnits(GameView view, CompPlayer player) {
-        int count = 0;
-        for (Unit u : player.units) {
-            if (this.isDefensiveUnit(u)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Returns the number of Towers that belong to this CompPlayer
-     */
-    private int getNumberOfTowers(GameView view, CompPlayer player) {
-        int total = 0;
-        for (Tower tower : view.game.towers) {
-            if (tower.leadership.belongsToPlayer(player)) {
-                total += tower.domain.size();
-            }
-        }
-        return total;
     }
 }

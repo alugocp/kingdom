@@ -5,13 +5,14 @@ import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.DecisionClass;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.Priority;
+import net.lugocorp.kingdom.ai.analysis.TileAnalysis;
+import net.lugocorp.kingdom.ai.analysis.UnitAnalysis;
 import net.lugocorp.kingdom.ai.behaviors.MoveUnitBehavior;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -29,7 +30,7 @@ public class ExploreMapGoal extends Goal {
     protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
         final World world = view.game.world;
         final float ratio = (float) player.memory.getKnownCells().size() / (float) world.getSize();
-        final int fastUnits = this.getNumberOfFastUnits(view, player);
+        final int fastUnits = Lambda.count(player.units, (Unit u) -> UnitAnalysis.isFast(view, u));
 
         // Recruit unit handler (recruit a fast Trade Glyph Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
@@ -92,19 +93,6 @@ public class ExploreMapGoal extends Goal {
     }
 
     /**
-     * Returns the number of fast Units controlled by the given CompPlayer
-     */
-    private int getNumberOfFastUnits(GameView view, CompPlayer player) {
-        int count = 0;
-        for (Unit u : player.units) {
-            if (u.movement.getMaxDistance(view) > 2) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /**
      * Returns a Decision that moves the given Unit towards some nearby, unexplored
      * part of the World
      */
@@ -129,7 +117,9 @@ public class ExploreMapGoal extends Goal {
             if (p.equals(unit.getPoint())) {
                 continue;
             }
-            final int score = (this.getAdjacentUnknownTiles(view, player, p) * 5) - (unit.getPoint().distance(p) * 3);
+            final int unknowns = TileAnalysis.nearby(view, p, 1,
+                    (Point p1) -> !player.memory.getKnownCells().contains(p1));
+            final int score = (unknowns * 5) - (unit.getPoint().distance(p) * 3);
             if (score > highest) {
                 final List<Point> path = pathfinder.getPath(view, p);
                 if (path.size() > 0) {
@@ -139,18 +129,5 @@ public class ExploreMapGoal extends Goal {
             }
         }
         return best == null ? null : new MoveUnitBehavior(unit, best);
-    }
-
-    /**
-     * Returns the number of unknown Tiles adjacent to the given Point
-     */
-    private int getAdjacentUnknownTiles(GameView view, CompPlayer player, Point p) {
-        int unknown = 0;
-        for (Point a : Hexagons.getAdjacents(p)) {
-            if (view.game.world.isInBounds(p) && !player.memory.getKnownCells().contains(a)) {
-                unknown++;
-            }
-        }
-        return unknown;
     }
 }
