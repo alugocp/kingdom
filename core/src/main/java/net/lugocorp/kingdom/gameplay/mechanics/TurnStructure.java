@@ -117,12 +117,12 @@ public class TurnStructure {
                 view.game.mechanics.auction.getAuction().get().hasSeenResults();
             } else if (view.game.mechanics.auction.getAuction().isPresent()) {
                 // The CompPlayer decides whether or not it will enter the Auction
-                comp.actor.enactDecision(DecisionChannel.auctionEntry());
+                comp.actor.enactDecision(view, DecisionChannel.auctionEntry());
             }
 
             // Handle CompPlayer Unit recruitment logic
             if (comp.getUnitPoints() >= NewUnit.MAX_UNIT_POINTS) {
-                comp.actor.enactDecision(DecisionChannel.recruitUnit());
+                comp.actor.enactDecision(view, DecisionChannel.recruitUnit());
                 /*
                  * Optional<Glyph> glyph =
                  * comp.wishlist.glyphs.getDesiredOptions().getMostWanted();

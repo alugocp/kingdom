@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ai;
 import net.lugocorp.kingdom.game.model.Unit;
-import java.utils.Optional;
+import java.util.Optional;
 
 /**
  * DecisionChannels reference a specific Unit or some Menu flow (i.e. recruiting
@@ -19,7 +19,7 @@ public class DecisionChannel {
      * A decision chanel for the given Unit
      */
     public static DecisionChannel unit(Unit u) {
-        return new DecisionChannel(DecisionClass.UNIT, Optional.of(unit));
+        return new DecisionChannel(DecisionClass.UNIT, Optional.of(u));
     }
 
     /**
@@ -62,7 +62,7 @@ public class DecisionChannel {
      * is none)
      */
     public Unit getUnit() {
-        if (!this.isUnit()) {
+        if (!this.hasUnit()) {
             throw new RuntimeException("This DecisionChannel does not have an associated Unit");
         }
         return this.unit.get();

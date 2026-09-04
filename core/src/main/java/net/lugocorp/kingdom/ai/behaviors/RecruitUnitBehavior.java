@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ai.Behavior;
 import net.lugocorp.kingdom.ai.Priority;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.function.Function;
 
 /**
@@ -19,13 +20,13 @@ public class RecruitUnitBehavior implements Behavior {
 
     /** {@inheritdoc} */
     @Override
-    public void act() {
+    public void act(GameView view) {
         // TODO
     }
 
     /** {@inheritdoc} */
     @Override
-    public boolean isFinished() {
+    public boolean isFinished(GameView view) {
         return true;
     }
 }

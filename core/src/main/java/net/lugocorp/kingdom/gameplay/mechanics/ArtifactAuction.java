@@ -212,7 +212,7 @@ public class ArtifactAuction {
                 winner.ifPresent((Player p) -> {
                     final CompPlayer comp = (CompPlayer) p;
                     comp.auctionChips++;
-                    comp.actor.enactDecision(DecisionChannel.recruitArtifact());
+                    comp.actor.enactDecision(view, DecisionChannel.recruitArtifact());
                 });
                 return new Menu(Mechanics.MENU_MARGIN, view.hud.top.getHeight(),
                         Coords.SIZE.x - (Mechanics.MENU_MARGIN * 2), false,

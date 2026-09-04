@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * Behaviors are objects that can live for one or more turns and direct a
@@ -9,10 +10,10 @@ public interface Behavior {
     /**
      * Runs the actual logic that governs this Behavior
      */
-    public void act();
+    public void act(GameView view);
 
     /**
      * Returns true when this Behavior's lifetime has expired
      */
-    public boolean isFinished();
+    public boolean isFinished(GameView view);
 }

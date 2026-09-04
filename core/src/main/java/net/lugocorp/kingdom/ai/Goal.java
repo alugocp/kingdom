@@ -25,8 +25,8 @@ public abstract class Goal {
     /**
      * Returns a Decision for the given Actor and DecisionChannel
      */
-    public Decision getDecision(Actor actor, DecisionChannel channel) {
-        final Decision d = this.makeDecision(actor, channel);
+    public Decision getDecision(GameView view, CompPlayer player, DecisionChannel channel) {
+        final Decision d = this.makeDecision(view, player, channel);
         if (d.priority.value > this.highestPriorityThisTurn.value) {
             this.highestPriorityThisTurn = d.priority;
         }

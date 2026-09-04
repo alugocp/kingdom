@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.ai.Actor;
 import net.lugocorp.kingdom.ai.DecisionChannel;
+import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.GoalSet;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
@@ -47,9 +48,9 @@ public class CompPlayer extends Player {
         final List<Unit> units = view.game.actions.getUnitsWithAndWithoutActions(this).b;
 
         // Assign and enact a Behavior to all Units without an Action
-        this.actor.makeDecisions(GoalSet.singleton, units);
+        this.actor.makeDecisions(view, this, GoalSet.singleton, units);
         for (Unit u : units) {
-            if (!this.actor.enactDecision(DecisionChannel.unit(u))) {
+            if (!this.actor.enactDecision(view, DecisionChannel.unit(u))) {
                 view.game.actions.unitHasActed(view, u,
                         new SkipAction("There is no behavior set for this unit", () -> true));
             }
