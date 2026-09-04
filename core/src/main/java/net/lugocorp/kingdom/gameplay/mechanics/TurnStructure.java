@@ -108,7 +108,6 @@ public class TurnStructure {
             }
         } else {
             final CompPlayer comp = (CompPlayer) this.turn.getPlayer();
-            comp.stats.unitPoints.add(comp.getUnitPoints());
             view.hud.logger.log(String.format("%s's turn", comp.name));
             Log.log("%s's unit points: %d", comp.name, comp.getUnitPoints());
 
@@ -214,7 +213,6 @@ public class TurnStructure {
                 Log.log(LogSys.AI, "End decision making for %s", player);
                 view.hud.bot.tileMenu.refresh();
                 this.nextTurn(view);
-                player.stats.commit();
             }
         }
     }

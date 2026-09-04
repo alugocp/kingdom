@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -17,10 +16,6 @@ public class ItemLogic {
     public static SideEffect valuable(GameView view, Event event) {
         Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
         return new SideEffect().add(() -> e.consumer.getLeader().ifPresent((Player p) -> {
-            if (p instanceof CompPlayer) {
-                // TODO how do we track this across all gold-increasing methods?
-                ((CompPlayer) p).stats.income.add(e.item.gold);
-            }
             p.gold += e.item.gold;
             view.hud.top.update(view.game);
         }));

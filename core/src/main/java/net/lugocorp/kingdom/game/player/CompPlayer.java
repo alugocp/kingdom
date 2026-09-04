@@ -6,7 +6,6 @@ import net.lugocorp.kingdom.ai.GoalSet;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
-import net.lugocorp.kingdom.ai.stats.Statistics;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -29,7 +28,6 @@ import java.util.function.Function;
  */
 public class CompPlayer extends Player {
     public final Actor actor = new Actor();
-    public final Statistics stats = new Statistics();
     private Optional<BatchCounter<Unit>> unitsForDecisionMaking = Optional.empty();
     public MemoryMap memory = null;
 

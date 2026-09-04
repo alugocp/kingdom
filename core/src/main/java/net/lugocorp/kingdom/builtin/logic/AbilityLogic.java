@@ -9,8 +9,6 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.game.player.CompPlayer;
-import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
@@ -288,14 +286,6 @@ public class AbilityLogic {
                     caster.haul.add(i);
                     view.overlays.entity(caster)
                             .addRising(new RisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
-                    if (caster.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
-                        CompPlayer comp = (CompPlayer) caster.getLeader().get();
-                        if (i.tags.has("natural")) {
-                            comp.stats.naturalHarvest.add(1);
-                        } else {
-                            comp.stats.otherHarvest.add(1);
-                        }
-                    }
                 });
                 effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
             }

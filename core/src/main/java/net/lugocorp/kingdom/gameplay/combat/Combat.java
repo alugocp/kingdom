@@ -7,7 +7,6 @@ import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.ui.overlay.HealthChangeOverlay;
@@ -48,19 +47,7 @@ public class Combat {
         effects.add(this.bearer.handleEvent(view, new Events.EntityDiedEvent(this.bearer, attacker)));
         effects.add(attacker.handleEvent(view, new Events.KilledEntityEvent(attacker, this.bearer)));
 
-        // Track CompPlayer stats whenever Units are slain
-        if (this.bearer.isEntityType(EntityType.UNIT)) {
-            effects.add(() -> {
-                if (this.bearer.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
-                    CompPlayer comp = (CompPlayer) this.bearer.getLeader().get();
-                    comp.stats.unitsLost.add(1);
-                }
-                if (attacker.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
-                    CompPlayer comp = (CompPlayer) attacker.getLeader().get();
-                    comp.stats.enemiesKilled.add(1);
-                }
-            });
-        }
+        // Entity deactivation
         effects.add(() -> this.bearer.deactivate(view));
         return effects;
     }

@@ -14,7 +14,6 @@ This file explains all the code folders inside this repository.
         - `goals` contains a collection of abstract gameplay requirements that the CPU player strives towards
         - `memory` allows CPU players to remember what they previously saw under the fog of war
         - `prediction` allows CPU players to better choose from options (with event handlers)
-        - `stats` allows CPU players to track their performance
     - `builtin`
         - `animation` contains a set of game animation utilities
         - `logic` congregates useful logic for defining game content
