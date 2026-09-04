@@ -16,7 +16,7 @@ No generative AI tools were used during development of this project.
 Run the following commands after cloning the repo:
 
 ```bash
-gradle installHooks cleanAssets run
+gradle installHooks copyDefaults cleanAssets run
 ```
 
 ## Gradle

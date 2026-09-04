@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.utils;
+import net.lugocorp.kingdom.FeatureFlags;
 import java.io.PrintStream;
 
 /**
@@ -6,7 +7,7 @@ import java.io.PrintStream;
  */
 public class Log {
     private static final PrintStream out = System.out;
-    private static final boolean debug = false;
+    private static final boolean debug = FeatureFlags.DEBUG;
 
     /**
      * Logs the given message

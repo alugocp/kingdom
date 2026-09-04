@@ -86,6 +86,14 @@ task installHooks(type: Copy){
 }
 
 /**
+ * This task sets up default versions of gitignored files
+ */
+task copyDefaults(type: Copy){
+    from new File(rootProject.rootDir, 'defaults/FeatureFlags.java')
+    into { new File(rootProject.rootDir, 'core/src/main/java/net/lugocorp/kingdom')}
+}
+
+/**
  * This task copies the game JAR into the root repository
  */
 task exportGame(type: Copy){

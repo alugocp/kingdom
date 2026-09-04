@@ -172,5 +172,6 @@ Thumbs.db
 /*.jar
 
 ## Kingdom game:
+/core/src/main/java/net/lugocorp/kingdom/FeatureFlags.java
 /content/build
 *.g3db

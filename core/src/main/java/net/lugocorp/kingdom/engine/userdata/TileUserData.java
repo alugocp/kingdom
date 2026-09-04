@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.engine.userdata;
+import net.lugocorp.kingdom.FeatureFlags;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -21,8 +22,8 @@ public class TileUserData {
     public int pathLabel = 0;
 
     // Fog of war system
-    public boolean hasBeenSeen = false;
-    public int vision = 0;
+    public boolean hasBeenSeen = FeatureFlags.DEBUG;
+    public int vision = FeatureFlags.DEBUG ? 1 : 0;
 
     // Renders the Tile hover selector
     public int hovered = 0;
