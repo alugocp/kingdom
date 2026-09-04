@@ -41,7 +41,7 @@ public class ExploreMapGoal extends Goal {
             if (fastUnits == 0) {
                 p = Priority.NECESSITY;
             }
-            return new Decision(channel, p, new RecruitUnitBehavior(Glyph.TRADE,
+            return new Decision(channel, this, p, new RecruitUnitBehavior(Glyph.TRADE,
                     (Unit u) -> u.movement.getMaxDistance(view) > 2 ? Priority.GOOD_IDEA : Priority.NEUTRAL));
         }
 
@@ -110,7 +110,7 @@ public class ExploreMapGoal extends Goal {
         if (behavior == null) {
             return this.noDecision(channel);
         }
-        return new Decision(channel, priority, this.getExplorationBehavior(view, player, channel.getUnit()));
+        return new Decision(channel, this, priority, this.getExplorationBehavior(view, player, channel.getUnit()));
     }
 
     /**
@@ -122,7 +122,10 @@ public class ExploreMapGoal extends Goal {
         int highest = 0;
         // TODO can optimize this later to only check border known tiles
         for (Point p : player.memory.getKnownCells()) {
-            final int score = this.getAdjacentUnknownTiles(view, player, p) - (unit.getPoint().distance(p) * 3);
+            if (p.equals(unit.getPoint())) {
+                continue;
+            }
+            final int score = (this.getAdjacentUnknownTiles(view, player, p) * 5) - (unit.getPoint().distance(p) * 3);
             if (score > highest) {
                 final List<Point> path = pathfinder.getPath(view, p);
                 if (path.size() > 0) {
@@ -131,7 +134,7 @@ public class ExploreMapGoal extends Goal {
                 }
             }
         }
-        return new MoveUnitBehavior(unit, best);
+        return best == null ? null : new MoveUnitBehavior(unit, best);
     }
 
     /**

@@ -3,6 +3,8 @@ import net.lugocorp.kingdom.ai.Behavior;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Log;
+import net.lugocorp.kingdom.utils.LogSys;
 import java.util.List;
 
 /**
@@ -20,6 +22,7 @@ public class MoveUnitBehavior implements Behavior {
     /** {@inheritdoc} */
     @Override
     public void act(GameView view) {
+        Log.log(LogSys.AI, "Moving %s along path %s", this.unit, this.path);
         this.unit.movement.move(view, this.path, true).execute();
     }
 

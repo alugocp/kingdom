@@ -81,7 +81,7 @@ public class DecisionChannel {
     @Override
     public boolean equals(Object o) {
         if (o != null && o instanceof DecisionChannel) {
-            return ((DecisionChannel) o).value.equals(this.value);
+            return ((DecisionChannel) o).toString().equals(this.toString());
         }
         return false;
     }

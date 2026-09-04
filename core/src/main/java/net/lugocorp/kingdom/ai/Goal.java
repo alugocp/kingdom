@@ -39,7 +39,7 @@ public abstract class Goal {
     protected Decision noDecision(DecisionChannel channel) {
         // We can use null here because FATAL is supposed to mean "do not act upon this
         // Decision"
-        return new Decision(channel, Priority.FATAL, null);
+        return new Decision(channel, this, Priority.FATAL, null);
     }
 
     /**

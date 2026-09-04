@@ -1,7 +1,10 @@
 package net.lugocorp.kingdom.ai;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
+import net.lugocorp.kingdom.gameplay.actions.SkipAction;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Log;
+import net.lugocorp.kingdom.utils.LogSys;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +14,7 @@ import java.util.Map;
  * CompPlayer
  */
 public class Actor {
-    private final Map<DecisionChannel, Decision> decisions = new HashMap<>();
+    private final Map<String, Decision> decisions = new HashMap<>();
 
     /**
      * Assigns Decisions for each DecisionChannel associated with this Actor's
@@ -21,7 +24,7 @@ public class Actor {
         // Make Decisions regarding Units
         for (Unit unit : units) {
             final DecisionChannel channel = DecisionChannel.unit(unit);
-            if (this.decisions.containsKey(channel)) {
+            if (this.decisions.containsKey(channel.toString())) {
                 continue;
             }
             for (Goal goal : goals) {
@@ -33,7 +36,7 @@ public class Actor {
         final DecisionChannel[] misc = new DecisionChannel[]{DecisionChannel.recruitUnit(),
                 DecisionChannel.recruitArtifact(), DecisionChannel.auctionEntry()};
         for (DecisionChannel channel : misc) {
-            if (this.decisions.containsKey(channel)) {
+            if (this.decisions.containsKey(channel.toString())) {
                 continue;
             }
             for (Goal goal : goals) {
@@ -49,14 +52,19 @@ public class Actor {
      */
     private void consider(GameView view, CompPlayer player, Goal goal, DecisionChannel channel) {
         final Decision d = goal.getDecision(view, player, channel);
-        if (this.decisions.containsKey(channel)) {
-            final int incumbent = this.decisions.get(channel).priority.value;
+        boolean accept = false;
+        if (this.decisions.containsKey(channel.toString())) {
+            final int incumbent = this.decisions.get(channel.toString()).priority.value;
             final int incoming = d.priority.value;
             if (incoming > incumbent || (incoming == incumbent && Math.random() < 0.3)) {
-                this.decisions.put(channel, d);
+                accept = true;
             }
         } else {
-            this.decisions.put(channel, d);
+            accept = true;
+        }
+        if (accept) {
+            Log.log(LogSys.AI, "Set decision %s", d);
+            this.decisions.put(channel.toString(), d);
         }
     }
 
@@ -65,16 +73,25 @@ public class Actor {
      * true if there was a Behavior to enact
      */
     public boolean enactDecision(GameView view, DecisionChannel channel) {
-        final Decision d = this.decisions.get(channel);
+        final Decision d = this.decisions.get(channel.toString());
         if (d == null) {
+            Log.log(LogSys.AI, "Decision not found");
             return false;
         }
         final boolean isFatal = d.priority == Priority.FATAL;
-        if (!isFatal) {
+        if (isFatal) {
+            if (channel.hasUnit()) {
+                Log.log(LogSys.AI, "Decision would be fatal, skipping turn...");
+                view.game.actions.unitHasActed(view, channel.getUnit(),
+                        new SkipAction("This unit's player has skipped its turn", () -> true));
+            }
+        } else {
+            Log.log(LogSys.AI, "Enacting...");
             d.behavior.act(view);
         }
         if (isFatal || d.behavior.isFinished(view)) {
-            this.decisions.remove(channel);
+            Log.log(LogSys.AI, "Decision has been removed");
+            this.decisions.remove(channel.toString());
         }
         return true;
     }

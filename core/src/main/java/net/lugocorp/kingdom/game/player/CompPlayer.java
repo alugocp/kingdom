@@ -15,6 +15,8 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.BatchCounter;
+import net.lugocorp.kingdom.utils.Log;
+import net.lugocorp.kingdom.utils.LogSys;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
 import java.util.List;
@@ -48,8 +50,10 @@ public class CompPlayer extends Player {
         final List<Unit> units = view.game.actions.getUnitsWithAndWithoutActions(this).b;
 
         // Assign and enact a Behavior to all Units without an Action
+        Log.log(LogSys.AI, "Making unit decisions");
         this.actor.makeDecisions(view, this, GoalSet.singleton, units);
         for (Unit u : units) {
+            Log.log(LogSys.AI, "Enacting decision for %s", u);
             if (!this.actor.enactDecision(view, DecisionChannel.unit(u))) {
                 view.game.actions.unitHasActed(view, u,
                         new SkipAction("There is no behavior set for this unit", () -> true));
@@ -60,6 +64,7 @@ public class CompPlayer extends Player {
         for (Unit u : units) {
             // TODO replace with canUnitDoThis() so that we support double actions
             if (!view.game.actions.unitHasAssignedAction(u)) {
+                Log.log(LogSys.AI, "Will make more decisions next turn");
                 return true;
             }
         }
@@ -68,6 +73,7 @@ public class CompPlayer extends Player {
         for (Goal g : GoalSet.singleton) {
             g.reset();
         }
+        Log.log(LogSys.AI, "Goal state has been reset");
         return false;
     }
 

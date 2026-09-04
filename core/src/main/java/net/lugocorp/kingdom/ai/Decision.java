@@ -8,10 +8,19 @@ public class Decision {
     public final DecisionChannel channel;
     public final Priority priority;
     public final Behavior behavior;
+    public final Goal goal;
 
-    public Decision(DecisionChannel channel, Priority priority, Behavior behavior) {
+    public Decision(DecisionChannel channel, Goal goal, Priority priority, Behavior behavior) {
         this.channel = channel;
         this.priority = priority;
         this.behavior = behavior;
+        this.goal = goal;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public String toString() {
+        final String b = this.behavior == null ? "null" : this.behavior.getClass().getSimpleName();
+        return String.format("(%s, %s, %s, %s)", this.channel, this.goal.getClass().getSimpleName(), this.priority, b);
     }
 }

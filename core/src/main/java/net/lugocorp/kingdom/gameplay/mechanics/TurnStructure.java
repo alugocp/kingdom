@@ -17,6 +17,7 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
+import net.lugocorp.kingdom.utils.LogSys;
 
 /**
  * This class handles human and AI Players taking turns during the Game
@@ -224,7 +225,9 @@ public class TurnStructure {
             final CompPlayer player = (CompPlayer) this.turn.getPlayer();
             // TODO re-implement decision making for non-Unit DecisionChannels (do it in the
             // relevant mechanics classes)
+            Log.log(LogSys.AI, "Start decision making for %s", player);
             if (!player.makeUnitDecisions(view)) {
+                Log.log(LogSys.AI, "End decision making for %s", player);
                 view.hud.bot.tileMenu.refresh();
                 this.nextTurn(view);
                 player.stats.commit();
