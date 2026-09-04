@@ -30,8 +30,14 @@ public class RecruitUnitBehavior implements Behavior {
     /** {@inheritdoc} */
     @Override
     public void act(GameView view) {
+        // Get all possible spawn Points
+        final Set<Point> tiles = view.game.getRecruitmentTiles(this.player);
+        if (tiles.size() == 0) {
+            return;
+        }
+
         // Get the preferred spawn Point
-        final Point spawnPoint = this.getSpawnPoint.apply(view.game.getRecruitmentTiles(this.player));
+        final Point spawnPoint = this.getSpawnPoint.apply(tiles);
         if (spawnPoint == null) {
             return;
         }

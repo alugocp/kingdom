@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.model.UnitDefaults;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
@@ -12,7 +13,7 @@ import java.util.Set;
  */
 public class Hunger {
     private final Unit unit;
-    private int turnsToGetHungry = 20;
+    private int turnsToGetHungry = UnitDefaults.HUNGER;
 
     public Hunger(Unit unit) {
         this.unit = unit;

@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.model.UnitDefaults;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
@@ -253,7 +254,7 @@ public class VanillaMod implements GameMod {
         // GetVisionEvent
         events.unit.setDefaultHandler(Events.GetVisionEvent.class,
                 (GameView view, Unit receiver, Events.GetVisionEvent e) -> {
-                    e.radius = 2;
+                    e.radius = UnitDefaults.VISION;
                     return new SideEffect();
                 });
         events.building.setDefaultHandler(Events.GetVisionEvent.class,
@@ -269,7 +270,7 @@ public class VanillaMod implements GameMod {
         // UnitMoveDistanceEvent
         events.unit.setDefaultHandler(Events.UnitMoveDistanceEvent.class,
                 (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
-                    e.distance = 2;
+                    e.distance = UnitDefaults.SPEED;
                     return new SideEffect();
                 });
 

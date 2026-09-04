@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.ai.goals.DefendBuildingsGoal;
 import net.lugocorp.kingdom.ai.goals.ExploreMapGoal;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ public class GoalSet implements Iterable<Goal> {
 
     public GoalSet() {
         this.goals.add(new ExploreMapGoal());
+        this.goals.add(new DefendBuildingsGoal());
     }
 
     /**
