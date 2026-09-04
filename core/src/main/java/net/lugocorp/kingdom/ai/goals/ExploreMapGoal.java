@@ -15,7 +15,9 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This causes the CompPlayer to explore the World
@@ -41,8 +43,10 @@ public class ExploreMapGoal extends Goal {
             if (fastUnits == 0) {
                 p = Priority.NECESSITY;
             }
-            return new Decision(channel, this, p, new RecruitUnitBehavior(Glyph.TRADE,
-                    (Unit u) -> u.movement.getMaxDistance(view) > 2 ? Priority.GOOD_IDEA : Priority.NEUTRAL));
+            return new Decision(channel, this, p,
+                    new RecruitUnitBehavior(player, Glyph.TRADE,
+                            (Unit u) -> u.movement.getMaxDistance(view) > 2 ? Priority.GOOD_IDEA : Priority.NEUTRAL,
+                            (Set<Point> options) -> options.size() > 0 ? Lambda.random(options) : null));
         }
 
         // Unit handler

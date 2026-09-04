@@ -124,22 +124,6 @@ public class TurnStructure {
             // Handle CompPlayer Unit recruitment logic
             if (comp.getUnitPoints() >= NewUnit.MAX_UNIT_POINTS) {
                 comp.actor.enactDecision(view, DecisionChannel.recruitUnit());
-                /*
-                 * Optional<Glyph> glyph =
-                 * comp.wishlist.glyphs.getDesiredOptions().getMostWanted();
-                 * Log.log("%s most wanted glyph: %s", comp.name, glyph); if (glyph.isPresent())
-                 * { Optional<Point> spawnPoint = comp.wishlist.units.getSpawnPoint(view, comp,
-                 * glyph.get()); if (spawnPoint.isPresent()) { Log.log("Will spawn unit at %s",
-                 * spawnPoint.get()); final List<Unit> options =
-                 * view.game.mechanics.recruitUnits.getRecruitmentOptions(view, glyph.get(),
-                 * spawnPoint.get(), 1); if (options.size() > 0) {
-                 * comp.wishlist.units.setOptions(options); final Optional<Unit> unit =
-                 * comp.wishlist.units.getDesiredOptions().getMostWanted(); unit.ifPresent((Unit
-                 * u) -> view.game.mechanics.recruitUnits.choose(view, comp, u));
-                 * Log.log("%s chose to recruit %s", comp.name, unit.get().name); } else {
-                 * Log.log("%s glyph pool was empty", glyph.get()); } } else {
-                 * Log.log("No valid spawn point found"); } }
-                 */
             }
         }
     }
