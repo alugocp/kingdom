@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.utils;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,9 +47,11 @@ public class Lambda {
     /**
      * Converts the given Collection into a List
      */
-    public static <A> List<A> toList(Collection<A> c) {
+    public static <A> List<A> toList(Iterable<A> src) {
         final List<A> ls = new ArrayList<>();
-        ls.addAll(c);
+        for (A a : src) {
+            ls.add(a);
+        }
         return ls;
     }
 

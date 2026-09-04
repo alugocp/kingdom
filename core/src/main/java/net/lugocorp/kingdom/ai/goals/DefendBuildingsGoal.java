@@ -31,7 +31,7 @@ public class DefendBuildingsGoal extends Goal {
         final int defensiveUnits = Lambda.count(player.units, (Unit u) -> UnitAnalysis.isDefensive(view, u));
         final int towers = Lambda.count(view.game.towers, (Tower t) -> t.leadership.belongsToPlayer(player));
 
-        // Recruit unit handler (recruit a fast Trade Glyph Unit)
+        // Recruit unit handler (recruit a defensive Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
             Priority priority = Priority.BAD_IDEA;
             if (player.units.size() > 1 && defensiveUnits == 0) {

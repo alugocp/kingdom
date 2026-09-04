@@ -28,7 +28,7 @@ public class IconsOverlay extends Overlay {
         } else {
             this.recolor = Optional.empty();
         }
-        if (e.isEntityType(EntityType.UNIT) && ((Unit) e).hunger.getTurnsUntilGetsHungry(view) < 3) {
+        if (e.isEntityType(EntityType.UNIT) && ((Unit) e).hunger.get(view) < 3) {
             this.icons.add(new Drawable(view.av.loaders.sprites, "food-icon"));
         }
     }
