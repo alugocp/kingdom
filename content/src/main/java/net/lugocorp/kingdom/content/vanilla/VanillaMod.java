@@ -417,6 +417,17 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 });
 
+        // Dense Forest
+        new Stratified<Building>(events.building, Labels.building_dense_forest).add(Events.GenerateBuildingEvent.class,
+                (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                    e.blob.setModelInstance(view.av, "dense forest");
+                    e.blob.desc = "Many people consider these old-growth forests impossible to traverse";
+                    e.blob.combat.health.setMaxAndValue(10);
+                    e.blob.setMinimapColor(0x194D34);
+                    e.blob.setObstacle(true);
+                    return new SideEffect();
+                });
+
         // Taiga
         new Stratified<Building>(events.building, Labels.building_taiga).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
@@ -466,6 +477,32 @@ public class VanillaMod implements GameMod {
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setObstacle(true);
+                    return new SideEffect();
+                });
+
+        // Hill
+        new Stratified<Building>(events.building, Labels.building_hill).add(Events.GenerateBuildingEvent.class,
+                (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                    e.blob.setModelInstance(view.av, "hill");
+                    e.blob.desc = "These rolling hills slow down travellers";
+                    e.blob.setMinimapColor(0x2c9965);
+                    return new SideEffect();
+                })
+                .add(Events.GetSpeedCostEvent.class, (GameView view, Building receiver, Events.GetSpeedCostEvent e) -> {
+                    e.cost = 1;
+                    return new SideEffect();
+                });;
+
+        // Bluff
+        new Stratified<Building>(events.building, Labels.building_bluff).add(Events.GenerateBuildingEvent.class,
+                (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                    e.blob.setModelInstance(view.av, "bluff");
+                    e.blob.desc = "These bluffs provide gorgeous views but are difficult to pass";
+                    e.blob.setMinimapColor(0x2c9965);
+                    return new SideEffect();
+                })
+                .add(Events.GetSpeedCostEvent.class, (GameView view, Building receiver, Events.GetSpeedCostEvent e) -> {
+                    e.cost = 1;
                     return new SideEffect();
                 });
 

@@ -201,11 +201,14 @@
             "Cache",
             "Marketplace",
             "Forest",
+            "Dense Forest",
             "Taiga",
             "Meadow",
             "Oasis",
             "Shrubland",
             "Mountain",
+            "Hill",
+            "Bluff",
             "Healing Fountain",
             "Market Value Goo"
         ]

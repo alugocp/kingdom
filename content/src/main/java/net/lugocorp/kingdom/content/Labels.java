@@ -200,11 +200,14 @@ public class Labels {
     public static final String building_cache = "Cache";
     public static final String building_marketplace = "Marketplace";
     public static final String building_forest = "Forest";
+    public static final String building_dense_forest = "Dense Forest";
     public static final String building_taiga = "Taiga";
     public static final String building_meadow = "Meadow";
     public static final String building_oasis = "Oasis";
     public static final String building_shrubland = "Shrubland";
     public static final String building_mountain = "Mountain";
+    public static final String building_hill = "Hill";
+    public static final String building_bluff = "Bluff";
     public static final String building_healing_fountain = "Healing Fountain";
     public static final String building_market_value_goo = "Market Value Goo";
 
