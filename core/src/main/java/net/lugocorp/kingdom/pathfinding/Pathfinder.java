@@ -45,6 +45,23 @@ public class Pathfinder {
     }
 
     /**
+     * Returns the shortest path to the given Point or an adjacent Point
+     */
+    public final List<Point> getPathOrAdjacent(GameView view, Point center) {
+        List<Point> result = this.getPath(view, center);
+        if (result.size() > 0) {
+            return result;
+        }
+        for (Point p : Hexagons.getAdjacents(center)) {
+            final List<Point> path = this.getPath(view, p);
+            if (path.size() > 0 && (result.size() == 0 || path.size() < result.size())) {
+                result = path;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the adjacent Points that the Unit can traverse to
      */
     private final Set<Point> getNeighbors(GameView view, Point p) {

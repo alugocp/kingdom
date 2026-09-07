@@ -37,7 +37,7 @@ public class FeedUnitsGoal extends Goal {
                 return this.noDecision(channel);
             }
 
-            // Find something that we can path to
+            // Find something that we can path to (Building)
             int distance = 0;
             Entity best = null;
             final Pathfinder pathfinder = new Pathfinder(unit);
@@ -45,7 +45,7 @@ public class FeedUnitsGoal extends Goal {
                 final Set<Item> food = b.items.map((Inventory i) -> i.getEdibleItems(view, unit))
                         .orElse(new HashSet<Item>());
                 if (food.size() > 0) {
-                    final List<Point> path = pathfinder.getPath(view, b.getPoint());
+                    final List<Point> path = pathfinder.getPathOrAdjacent(view, b.getPoint());
                     if (path.size() > 0 && path.size() < speed * (hunger - 1)) {
                         if (path.size() <= speed) {
                             return this.getFeedDecision(view, channel, unit, b);
@@ -57,13 +57,15 @@ public class FeedUnitsGoal extends Goal {
                     }
                 }
             }
+
+            // Find something that we can path to (Unit)
             for (Unit u : player.units) {
                 if (u == unit) {
                     continue;
                 }
                 final Set<Item> food = u.haul.getEdibleItems(view, unit);
                 if (food.size() > 0) {
-                    final List<Point> path = pathfinder.getPath(view, u.getPoint());
+                    final List<Point> path = pathfinder.getPathOrAdjacent(view, u.getPoint());
                     if (path.size() > 0 && path.size() < speed * (hunger - 3)) {
                         if (best == null || path.size() < distance) {
                             distance = path.size();

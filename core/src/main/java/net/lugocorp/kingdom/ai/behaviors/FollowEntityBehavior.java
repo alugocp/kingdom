@@ -25,7 +25,7 @@ public class FollowEntityBehavior implements Behavior {
     @Override
     public void act(GameView view) {
         final Pathfinder pathfinder = new Pathfinder(this.unit);
-        final List<Point> path = pathfinder.getPath(view, this.target.getPoint());
+        final List<Point> path = pathfinder.getPathOrAdjacent(view, this.target.getPoint());
         if (path.size() == 0) {
             this.kill = true;
             return;
