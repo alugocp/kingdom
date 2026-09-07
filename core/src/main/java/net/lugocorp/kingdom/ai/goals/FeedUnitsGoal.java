@@ -58,6 +58,9 @@ public class FeedUnitsGoal extends Goal {
                 }
             }
             for (Unit u : player.units) {
+                if (u == unit) {
+                    continue;
+                }
                 final Set<Item> food = u.haul.getEdibleItems(view, unit);
                 if (food.size() > 0) {
                     final List<Point> path = pathfinder.getPath(view, u.getPoint());

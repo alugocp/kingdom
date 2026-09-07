@@ -27,7 +27,8 @@ public class GiveItemBehavior implements Behavior {
     /** {@inheritdoc} */
     @Override
     public void act(GameView view) {
-        if (!Hexagons.areNeighbors(this.sender.getPoint(), this.receiver.getPoint())) {
+        if (!(Hexagons.areNeighbors(this.sender.getPoint(), this.receiver.getPoint())
+                || this.sender.getPoint().equals(this.receiver.getPoint()))) {
             return;
         }
         final Inventory r = (receiver instanceof Unit) ? ((Unit) receiver).haul : ((Building) receiver).items.get();
