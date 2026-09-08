@@ -485,19 +485,21 @@ public class VanillaMod implements GameMod {
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "hill");
                     e.blob.desc = "These rolling hills slow down travellers";
+                    e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x2c9965);
                     return new SideEffect();
                 })
                 .add(Events.GetSpeedCostEvent.class, (GameView view, Building receiver, Events.GetSpeedCostEvent e) -> {
                     e.cost = 1;
                     return new SideEffect();
-                });;
+                });
 
         // Bluff
         new Stratified<Building>(events.building, Labels.building_bluff).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "bluff");
                     e.blob.desc = "These bluffs provide gorgeous views but are difficult to pass";
+                    e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x2c9965);
                     return new SideEffect();
                 })

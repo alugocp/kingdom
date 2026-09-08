@@ -185,10 +185,20 @@ public class WorldGenerator {
                 Optional<String> building = Optional.empty();
                 int radiusRange = 1;
 
-                // Forests/Meadows on Grass Tiles
+                // Forests/Meadows/Hills/Bluffs on Grass Tiles
                 if (terrain.equals(Biome.GRASS.terrain)) {
-                    building = Optional.of(this.rand.nextBoolean() ? Labels.building_forest : Labels.building_meadow);
-                    radiusRange = 3;
+                    final int grass = this.rand.nextInt(12);
+                    if (grass == 0) {
+                        building = Optional.of(Labels.building_bluff);
+                        radiusRange = 2;
+                    } else if (grass < 3) {
+                        building = Optional.of(Labels.building_hill);
+                        radiusRange = 3;
+                    } else {
+                        building = Optional
+                                .of(this.rand.nextBoolean() ? Labels.building_forest : Labels.building_meadow);
+                        radiusRange = 3;
+                    }
                 }
 
                 // Oasis/Shrubland on Sand Tiles
