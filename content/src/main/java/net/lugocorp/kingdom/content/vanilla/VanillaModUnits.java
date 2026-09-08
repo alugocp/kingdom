@@ -24,12 +24,15 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A ravenous Plasmoid with an acidic body";
                     e.blob.setModelInstance(view.av, "blob");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_slime_shot);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_acid_skin,
-                            Labels.ability_liquifying_presence, Labels.ability_total_appetite);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(20);
                     e.blob.species = Defs.species_plasmoid;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_slime_shot);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_slow,
+                            Labels.ability_liquifying_presence, Labels.ability_acid_skin,
+                            Labels.ability_total_appetite);
+                    UnitLogic.largeHealthPool(e.blob);
+                    e.blob.equipped.setMax(0);
+                    e.blob.haul.setMax(3);
                     return new SideEffect();
                 });
 
@@ -39,14 +42,14 @@ class VanillaModUnits {
                     e.blob.desc = "This fallen creature now terrorizes its once idyllic home";
                     e.blob.setModelInstance(view.av, "druid");
                     e.blob.setMaterial("necromancer");
+                    e.blob.species = Defs.species_undead;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_necrotic_blast,
                             Labels.ability_raise_undead);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
-                            Labels.ability_night_vision);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.species = Defs.species_undead;
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
+                            Labels.ability_regeneration);
                     UnitLogic.hungry(view, e.blob);
+                    UnitLogic.largeHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -55,14 +58,14 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.setModelInstance(view.av, "gloop");
                     e.blob.desc = "This Plasmoid adventurer is eager to prove themself in the dungeons";
+                    e.blob.species = Defs.species_plasmoid;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash,
                             Labels.ability_dungeon_delve);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_combat_loot,
-                            Labels.ability_night_vision, Labels.ability_regeneration);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.haul.setMax(12);
-                    e.blob.species = Defs.species_plasmoid;
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
+                            Labels.ability_combat_loot, Labels.ability_regeneration);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
                     return new SideEffect();
                 });
 
@@ -71,13 +74,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.setModelInstance(view.av, Labels.asset_crystal);
                     e.blob.desc = "This Gemstone can focus light into powerful attacks";
+                    e.blob.species = Defs.species_gemstone;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_fire_laser,
                             Labels.ability_collapse_mine);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_crystal_skin,
-                            Labels.ability_night_vision, Labels.ability_mine_gems, Labels.ability_rock_appetite);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_gemstone;
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
+                            Labels.ability_crystal_skin, Labels.ability_mine_gems, Labels.ability_rock_appetite);
+                    UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -88,12 +91,12 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.setModelInstance(view.av, "axolotl");
                     e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
+                    e.blob.species = Defs.species_salamander;
+                    e.blob.glyphs.set(Glyph.BATTLE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
-                            Labels.ability_plate_mail, Labels.ability_regeneration);
-                    e.blob.glyphs.set(Glyph.BATTLE);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_salamander;
+                            Labels.ability_regeneration, Labels.ability_plate_mail);
+                    UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -104,13 +107,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This nature spirit guards an ancient forest in Eaglehaven";
                     e.blob.setModelInstance(view.av, "beetlemoss");
+                    e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_fire_cannon,
                             Labels.ability_plant_forest);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_mine_gems);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_sprite;
+                    UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -129,12 +132,12 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Garuda artilleryman spits pebbles at invaders";
                     e.blob.setModelInstance(view.av, "garudee");
+                    e.blob.species = Defs.species_garuda;
+                    e.blob.glyphs.set(Glyph.DEFENSE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_pebble_shot,
                             Labels.ability_swing_axe);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_entrenched, Labels.ability_slow);
-                    e.blob.glyphs.set(Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.species = Defs.species_garuda;
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_slow, Labels.ability_entrenched);
+                    UnitLogic.largeHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -147,12 +150,12 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Golem wanders the rocky peaks where it was forged long ago";
                     e.blob.setModelInstance(view.av, "golem-grotto");
+                    e.blob.species = Defs.species_golem;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_smash, Labels.ability_plant_meadow);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_mountain_strider,
-                            Labels.ability_local_defender);
-                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.species = Defs.species_golem;
+                            Labels.ability_regeneration, Labels.ability_local_defender);
+                    UnitLogic.largeHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -161,13 +164,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Golem-like fungal being spawns new ecosystems where it roams";
                     e.blob.setModelInstance(view.av, "puffshroom");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_pummel,
+                    e.blob.species = Defs.species_toadstool;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash,
                             Labels.ability_protective_spores);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_defensive_bloom,
                             Labels.ability_harvest_mushrooms);
-                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.species = Defs.species_toadstool;
+                    UnitLogic.largeHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -179,13 +182,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "Warrior-king of the Tortoise Kingdom";
                     e.blob.setModelInstance(view.av, "gargantos");
+                    e.blob.species = Defs.species_tortugan;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_smash,
                             Labels.ability_build_marketplace);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_shell_defense,
-                            Labels.ability_market_boom, Labels.ability_swim);
-                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.species = Defs.species_tortugan;
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_shell_defense,
+                            Labels.ability_market_boom);
+                    UnitLogic.largeHealthPool(e.blob);
                     UnitLogic.hungry(view, e.blob);
                     return new SideEffect();
                 });
@@ -196,13 +199,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "Enchanted waters accumulate into this Golem's bowl-shaped body";
                     e.blob.setModelInstance(view.av, "stalagmus");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_dig_mine, Labels.ability_hurl_rock);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
-                            Labels.ability_stone_defense, Labels.ability_mine_gems, Labels.ability_mine_gold,
-                            Labels.ability_subterranean_potions, Labels.ability_rock_appetite);
-                    e.blob.glyphs.set(Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_golem;
+                    e.blob.glyphs.set(Glyph.MINING);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_hurl_rock, Labels.ability_dig_mine);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
+                            Labels.ability_rock_appetite, Labels.ability_stone_defense, Labels.ability_mine_gems,
+                            Labels.ability_mine_gold, Labels.ability_subterranean_potions);
+                    UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -216,13 +219,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A mysterious Druid who rarely speaks";
                     e.blob.setModelInstance(view.av, "the-druid");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_forest,
-                            Labels.ability_revenge_of_the_forest);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
-                            Labels.ability_night_vision, Labels.ability_green_fortress, Labels.ability_high_vision);
-                    e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(10);
                     e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_revenge_of_the_forest,
+                            Labels.ability_plant_forest);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_high_vision,
+                            Labels.ability_night_vision, Labels.ability_pick_apples, Labels.ability_green_fortress);
+                    UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -232,14 +235,14 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "He doesn't say much, he's just a little guy";
                     e.blob.setModelInstance(view.av, "pumpkin-boy");
+                    e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_meadow, Labels.ability_hug);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_regeneration, Labels.ability_running_through_nature,
                             Labels.ability_sacred_seeds);
-                    e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.haul.setMax(12);
-                    e.blob.species = Defs.species_sprite;
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
                     return new SideEffect();
                 });
 
@@ -248,13 +251,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This sheep-like Sprite blooms with delicious fruit";
                     e.blob.setModelInstance(view.av, "barometz");
+                    e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.NATURE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_bite);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration, Labels.ability_edible,
                             Labels.ability_deposit_seeds);
-                    e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.haul.setMax(12);
-                    e.blob.species = Defs.species_sprite;
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
                     return new SideEffect();
                 });
 
@@ -264,13 +267,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Brownie is blind, but traverses the subterranean world with the aid of his nose";
                     e.blob.setModelInstance(view.av, "condylure");
+                    e.blob.species = Defs.species_brownie;
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.MINING);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_build_healing_fountain,
                             Labels.ability_dig_mine);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems);
-                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_brownie;
+                    UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -281,13 +284,13 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "Elven high missionary to Surgarde";
                     e.blob.setModelInstance(view.av, "daumia");
+                    e.blob.species = Defs.species_elf;
+                    e.blob.glyphs.set(Glyph.SUPPORT);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_heal_wounds,
                             Labels.ability_self_sacrifice);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_life_aura);
-                    e.blob.glyphs.set(Glyph.SUPPORT);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_elf;
+                    UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
 
@@ -302,14 +305,14 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "Just a little Gnome and his frog";
                     e.blob.setModelInstance(view.av, "frog-gnome");
+                    e.blob.species = Defs.species_gnome;
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.TRADE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_heal_wounds,
                             Labels.ability_hungry_frog_magic);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_forage_in_meadow,
-                            Labels.ability_swim);
-                    e.blob.glyphs.set(Glyph.SUPPORT);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.haul.setMax(12);
-                    e.blob.species = Defs.species_gnome;
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim,
+                            Labels.ability_forage_in_meadow);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
                     return new SideEffect();
                 });
 
@@ -321,12 +324,12 @@ class VanillaModUnits {
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This being aids the great merchant kings of Eastern Bycidia";
                     e.blob.setModelInstance(view.av, "alfikra");
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
-                            Labels.ability_market_indicator, Labels.ability_fast, Labels.ability_high_vision);
-                    e.blob.glyphs.set(Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.haul.setMax(12);
                     e.blob.species = Defs.species_tulpa;
+                    e.blob.glyphs.set(Glyph.TRADE);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast, Labels.ability_high_vision,
+                            Labels.ability_regeneration, Labels.ability_market_indicator);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
                     return new SideEffect();
                 });
 
@@ -345,116 +348,5 @@ class VanillaModUnits {
                     e.blob.species = Defs.species_undead;
                     return new SideEffect();
                 }).add(UnitLogic.speed(100));
-
-        // TODO delete the following Units
-
-        // Knuckleheads
-        new Stratified<Unit>(events.unit, Labels.unit_knuckleheads).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, "knuckleheads");
-                    e.blob.desc = "This Ettin roams the Dragonlands and feasts on giant lizard flesh";
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_bash, Labels.ability_stomp);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_shield_defense,
-                            Labels.ability_efficient_stomach);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.haul.setMax(2);
-                    e.blob.species = Defs.species_ettin;
-                    return new SideEffect();
-                });
-
-        // Gemrock
-        new Stratified<Unit>(events.unit, Labels.unit_gemrock).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, "golem-grotto");
-                    e.blob.setMaterial("gemrock");
-                    e.blob.desc = "This craggy golem has priceless gems set into its flesh";
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_stone_defense,
-                            Labels.ability_loose_gems, Labels.ability_rock_appetite);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_golem;
-                    return new SideEffect();
-                });
-
-        // Glittersnout
-        new Stratified<Unit>(events.unit, Labels.unit_glittersnout).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, "glittersnout");
-                    e.blob.desc = "She's a skilled goldsmith from the high nation of Urqusuyu";
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_gilded_strike,
-                            Labels.ability_craft_golden_spear);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
-                            Labels.ability_mine_gems, Labels.ability_mine_gold);
-                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_brownie;
-                    return new SideEffect();
-                });
-
-        // Nebaneba
-        new Stratified<Unit>(events.unit, Labels.unit_nebaneba).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, "nebaneba");
-                    e.blob.desc = "This living goo crafts slime armor for his allies";
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash,
-                            Labels.ability_craft_slime_armor);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
-                            Labels.ability_harvest_goo);
-                    e.blob.glyphs.set(Glyph.DEFENSE);
-                    e.blob.combat.health.setMaxAndValue(20);
-                    e.blob.species = Defs.species_plasmoid;
-                    return new SideEffect();
-                });
-
-        // Slip
-        new Stratified<Unit>(events.unit, Labels.unit_slip).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "This Plasmoid stores wares in its gelatinous form and ferries them across trade routes";
-                    e.blob.setModelInstance(view.av, "blob");
-                    e.blob.setMaterial("slip", 1);
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_metabolize);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
-                            Labels.ability_market_value_goo, Labels.ability_economic_activity,
-                            Labels.ability_total_appetite);
-                    e.blob.glyphs.set(Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(1);
-                    e.blob.haul.setMax(12);
-                    e.blob.species = Defs.species_plasmoid;
-                    return new SideEffect();
-                });
-
-        // Barbs
-        new Stratified<Unit>(events.unit, Labels.unit_barbs).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "This pufferfish woman can inject foes with poison from her many barbs";
-                    e.blob.setModelInstance(view.av, "barbs");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_inject_poison,
-                            Labels.ability_remove_poison);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_thorny_skin,
-                            Labels.ability_hunt_fish);
-                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.SUPPORT);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.species = Defs.species_merfolk;
-                    return new SideEffect();
-                });
-
-        // Razma
-        new Stratified<Unit>(events.unit, Labels.unit_razma).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "A wandering mystic and trader";
-                    e.blob.setModelInstance(view.av, "alfikra");
-                    e.blob.setMaterial("razma");
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_fireball,
-                            Labels.ability_heal_wounds);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_economic_activity,
-                            Labels.ability_pious, Labels.ability_fast);
-                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.TRADE);
-                    e.blob.combat.health.setMaxAndValue(10);
-                    e.blob.haul.setMax(12);
-                    e.blob.species = Defs.species_human;
-                    return new SideEffect();
-                });
     }
 }
