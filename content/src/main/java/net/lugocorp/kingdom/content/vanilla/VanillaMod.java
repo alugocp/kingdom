@@ -420,7 +420,7 @@ public class VanillaMod implements GameMod {
         // Dense Forest
         new Stratified<Building>(events.building, Labels.building_dense_forest).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "dense forest");
+                    e.blob.setModelInstance(view.av, "dense-forest");
                     e.blob.desc = "Many people consider these old-growth forests impossible to traverse";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x194D34);

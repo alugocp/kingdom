@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.game.world;
 import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -223,7 +224,8 @@ public class WorldGenerator {
 
                 // Actually spawn the Buildings if one was selected
                 if (building.isPresent()) {
-                    final Set<Point> area = Hexagons.getNeighbors(p, this.rand.nextInt(radiusRange) + 1);
+                    final int radius = this.rand.nextInt(radiusRange) + 1;
+                    final Set<Point> area = Hexagons.getNeighbors(p, radius);
                     for (Point p1 : area) {
                         // If the Tile exists, has the intended terrain, and there is no building yet
                         if (buildingPoints.contains(p1) && g.world.getTile(p1).get().name.equals(terrain)) {
@@ -232,13 +234,25 @@ public class WorldGenerator {
                         }
                     }
 
-                    // Spawn the central Building (or water if the Building is an Oasis)
+                    // Spawn the central Building (or run special placement logic)
                     if (building.get().equals(Labels.building_oasis)) {
+                        // Water in the middle of Oases
                         final Tower center = g.world.getTile(p).get().getDomainCenter();
                         final Tile t = g.generator.tile(Labels.tile_water, p.x, p.y);
                         t.setDomainCenter(center);
                         t.spawn(view);
-                    } else {
+                    } else if (building.get().equals(Labels.building_forest) && radius > 1) {
+                        // Dense Forests inside large enough Forests
+                        final Set<Point> replace = Hexagons.getNeighbors(p, this.rand.nextInt(radius));
+                        replace.add(p);
+                        for (Point p1 : replace) {
+                            if (g.world.isInBounds(p1) && g.world.getTile(p1).get().building
+                                    .map((Building b) -> b.name.equals(Labels.building_forest)).orElse(false)) {
+                                g.generator.building(Labels.building_dense_forest, p1.x, p1.y).spawn(view);
+                            }
+                        }
+                    }
+                    {
                         g.generator.building(building.get(), p.x, p.y).spawn(view);
                     }
                 }
