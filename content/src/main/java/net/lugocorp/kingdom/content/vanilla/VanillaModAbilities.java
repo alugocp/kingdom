@@ -64,23 +64,25 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 1));
 
-        // Build Healing Fountain
-        new Stratified<Ability>(events.ability, Labels.ability_build_healing_fountain)
+        // Construct Healing Fountain
+        new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain)
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.setIcon(Labels.asset_build_healing_fountain);
+                            e.blob.setIcon(Labels.asset_construct_healing_fountain);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("Constructs a healing fountain")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_healing_fountain, (Tile t) -> true));
 
-        // Build Marketplace
-        new Stratified<Ability>(events.ability, Labels.ability_build_marketplace).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_build_vault);
-                    return new SideEffect();
-                }).add(AbilityLogic.desc("Builds a marketplace")).add(Events.AbilityActivatedEvent.class,
+        // Construct Marketplace
+        new Stratified<Ability>(events.ability, Labels.ability_construct_marketplace)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            e.blob.setIcon(Labels.asset_build_vault);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.desc("Builds a marketplace")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_marketplace, (Tile t) -> true));
 
@@ -218,10 +220,10 @@ class VanillaModAbilities {
                                     : new SideEffect();
                 });
 
-        // Dig Mine
-        new Stratified<Ability>(events.ability, Labels.ability_dig_mine).add(Events.GenerateAbilityEvent.class,
+        // Construct Mine
+        new Stratified<Ability>(events.ability, Labels.ability_construct_mine).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_dig_mine);
+                    e.blob.setIcon(Labels.asset_construct_mine);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Digs a mine")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,

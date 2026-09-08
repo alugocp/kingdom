@@ -101,14 +101,14 @@ public class Labels {
     public static final String asset_usurper = "usurper";
     public static final String asset_forager = "forager";
     public static final String asset_bite = "bite";
-    public static final String asset_build_healing_fountain = "build healing fountain";
+    public static final String asset_construct_healing_fountain = "build healing fountain";
     public static final String asset_build_vault = "build vault";
     public static final String asset_collapse_mine = "collapse mine";
     public static final String asset_combat_loot = "combat loot";
     public static final String asset_acid_skin = "acid skin";
     public static final String asset_green_fortress = "green fortress";
     public static final String asset_deposit_seeds = "deposit seeds";
-    public static final String asset_dig_mine = "dig mine";
+    public static final String asset_construct_mine = "dig mine";
     public static final String asset_dungeon_delve = "dungeon delve";
     public static final String asset_edible = "edible";
     public static final String asset_fire_cannon = "fire cannon";
@@ -366,8 +366,8 @@ public class Labels {
     public static final String ability_acid_skin = "Acid Skin";
     public static final String ability_bash = "Bash";
     public static final String ability_bite = "Bite";
-    public static final String ability_build_healing_fountain = "Build Healing Fountain";
-    public static final String ability_build_marketplace = "Build Marketplace";
+    public static final String ability_construct_healing_fountain = "Construct Healing Fountain";
+    public static final String ability_construct_marketplace = "Construct Marketplace";
     public static final String ability_collapse_mine = "Collapse Mine";
     public static final String ability_combat_loot = "Combat Loot";
     public static final String ability_craft_golden_spear = "Craft Golden Spear";
@@ -375,7 +375,7 @@ public class Labels {
     public static final String ability_crystal_skin = "Crystal Skin";
     public static final String ability_defensive_bloom = "Defensive Bloom";
     public static final String ability_deposit_seeds = "Deposit Seeds";
-    public static final String ability_dig_mine = "Dig Mine";
+    public static final String ability_construct_mine = "Construct Mine";
     public static final String ability_dungeon_delve = "Dungeon Delve";
     public static final String ability_economic_activity = "Economic Activity";
     public static final String ability_edible = "Edible";

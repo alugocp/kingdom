@@ -185,7 +185,7 @@ class VanillaModUnits {
                     e.blob.species = Defs.species_tortugan;
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_smash,
-                            Labels.ability_build_marketplace);
+                            Labels.ability_construct_marketplace);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_shell_defense,
                             Labels.ability_market_boom);
                     UnitLogic.largeHealthPool(e.blob);
@@ -201,7 +201,8 @@ class VanillaModUnits {
                     e.blob.setModelInstance(view.av, "stalagmus");
                     e.blob.species = Defs.species_golem;
                     e.blob.glyphs.set(Glyph.MINING);
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_hurl_rock, Labels.ability_dig_mine);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_hurl_rock,
+                            Labels.ability_construct_mine);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_rock_appetite, Labels.ability_stone_defense, Labels.ability_mine_gems,
                             Labels.ability_mine_gold, Labels.ability_subterranean_potions);
@@ -269,8 +270,8 @@ class VanillaModUnits {
                     e.blob.setModelInstance(view.av, "condylure");
                     e.blob.species = Defs.species_brownie;
                     e.blob.glyphs.set(Glyph.SUPPORT, Glyph.MINING);
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_build_healing_fountain,
-                            Labels.ability_dig_mine);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_construct_healing_fountain,
+                            Labels.ability_construct_mine);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems);
                     UnitLogic.standardHealthPool(e.blob);
