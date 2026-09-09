@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.content.vanilla;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.content.Labels;
-import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -32,6 +31,26 @@ class VanillaModAbilities {
      * Registers all Abilities for the Vanilla mod
      */
     static void registerEvents(AllEventHandlers events) {
+        // Absorb
+        new Stratified<Ability>(events.ability, Labels.ability_absorb).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add a real icon
+                    e.blob.setIcon(Labels.asset_apple);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Consumes all hauled items to restore 5 health"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            if (!receiver.wielder.haul.hasItems()) {
+                                return new SideEffect().add(() -> {
+                                    if (receiver.wielder.leadership.belongsToHuman()) {
+                                        view.hud.logger.error("You must have hauled items in order to cast Absorb");
+                                    }
+                                });
+                            }
+                            return new SideEffect().add(() -> receiver.wielder.haul.empty())
+                                    .add(receiver.wielder.combat.heal(view, receiver.wielder, 5));
+                        });
+
         // Acid Skin
         new Stratified<Ability>(events.ability, Labels.ability_acid_skin).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -60,7 +79,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain)
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.setIcon(Labels.asset_construct_healing_fountain);
+                            e.blob.setIcon(Labels.asset_build_healing_fountain);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("Constructs a healing fountain")).add(Events.AbilityActivatedEvent.class,
@@ -78,35 +97,31 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_marketplace, (Tile t) -> true));
 
-        // Collapse Mine
-        new Stratified<Ability>(events.ability, Labels.ability_collapse_mine).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_collapse_mine);
-                    return new SideEffect();
-                })
+        // Collapse Structure
+        new Stratified<Ability>(events.ability, Labels.ability_collapse_structure)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            e.blob.setIcon(Labels.asset_collapse_mine);
+                            return new SideEffect();
+                        })
                 .add(AbilityLogic.desc(
-                        "Target a mine occupied by an enemy unit. The unit, mine, and any adjacent enemy units all take damage."))
+                        "Deals 5 damage to an adjacent structure, 3 damage to any occupying unit, and 3 damage to the caster"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            Set<Point> mines = Lambda.filter((Point p) -> view.game.world.getTile(p)
-                                    .map((Tile t) -> !t.getLeader().equals(receiver.wielder.getLeader()) && t.building
-                                            .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false)
-                                            && t.unit.isPresent())
-                                    .orElse(false), Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
-                            return receiver.wielder.getLeader().get().select(view, mines, "No mines in range",
+                            Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                                    .map((Tile t) -> t.building.isPresent()).orElse(false),
+                                    Hexagons.getAdjacents(receiver.wielder.getPoint()));
+                            return receiver.wielder.getLeader().get().select(view, targets, "No buildings in range",
                                     (Point p) -> {
-                                        Set<Entity> targets = new HashSet<>();
                                         final SideEffect effects = new SideEffect();
-                                        targets.add(view.game.world.getTile(p).get().unit.get());
-                                        targets.add(view.game.world.getTile(p).get().building.get());
-                                        for (Point p1 : Hexagons.getNeighbors(p, 1)) {
-                                            Optional<Unit> u = view.game.world.getTile(p1).flatMap((Tile t) -> t.unit);
-                                            if (u.map((Unit u1) -> !u1.isFriendly(receiver.wielder)).orElse(false)) {
-                                                targets.add(u.get());
-                                            }
-                                        }
-                                        for (Entity t : targets) {
-                                            effects.add(receiver.wielder.combat.attack(view, t, new Damage(2)));
+                                        final Building target1 = view.game.world.getTile(p).get().building.get();
+                                        final Optional<Unit> target2 = view.game.world.getTile(p).get().unit;
+                                        effects.add(
+                                                receiver.wielder.combat.attack(view, receiver.wielder, new Damage(3)));
+                                        effects.add(receiver.wielder.combat.attack(view, target1, new Damage(5)));
+                                        if (target2.isPresent()) {
+                                            effects.add(
+                                                    receiver.wielder.combat.attack(view, target2.get(), new Damage(3)));
                                         }
                                         return effects;
                                     });
@@ -164,7 +179,7 @@ class VanillaModAbilities {
         // Construct Mine
         new Stratified<Ability>(events.ability, Labels.ability_construct_mine).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_construct_mine);
+                    e.blob.setIcon(Labels.asset_dig_mine);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Digs a mine")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
@@ -321,6 +336,21 @@ class VanillaModAbilities {
                     return isForest ? AbilityLogic.defense(e, 2) : new SideEffect();
                 });
 
+        // Harvest Figs
+        new Stratified<Ability>(events.ability, Labels.ability_harvest_figs).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add a real icon
+                    e.blob.setIcon(Labels.asset_harvest_mushroom);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Harvests figs from forests every 4 turns"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
+                                view, receiver.wielder, Labels.item_fig,
+                                (Building b) -> b.name.equals(Labels.building_forest)));
+
         // Harvest Mushrooms
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mushrooms).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -335,6 +365,21 @@ class VanillaModAbilities {
                                 view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_mushroom),
                                 (Building b) -> b.name.equals(Labels.building_forest)
                                         || b.name.equals(Labels.building_mine)));
+
+        // Harvest Truffles
+        new Stratified<Ability>(events.ability, Labels.ability_harvest_truffles).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add a real icon
+                    e.blob.setIcon(Labels.asset_harvest_mushroom);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Harvests truffles from forests every 4 turns"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
+                                view, receiver.wielder, Labels.item_truffle,
+                                (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Heal Wounds
         new Stratified<Ability>(events.ability, Labels.ability_heal_wounds).add(Events.GenerateAbilityEvent.class,
@@ -412,6 +457,21 @@ class VanillaModAbilities {
                                             : new SideEffect();
                                 })));
 
+        // Investment
+        new Stratified<Ability>(events.ability, Labels.ability_investment).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add a real icon
+                    e.blob.setIcon(Labels.asset_market_indicator);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Generates 3 auction points on a marketplace"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
+                                receiver.wielder, (Building b) -> b.name.equals(Labels.building_marketplace),
+                                () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
+
         // Life Aura
         new Stratified<Ability>(events.ability, Labels.ability_life_aura).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -424,6 +484,17 @@ class VanillaModAbilities {
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                         .add(() -> receiver.wielder.getLeader()
                                 .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 3))));
+
+        // Life Finds a Way
+        new Stratified<Ability>(events.ability, Labels.ability_life_finds_a_way).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add a real icon
+                    e.blob.setIcon(Labels.asset_apple);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Generates unit points when the unit is attacked"))
+                .add(Events.AttackedEvent.class, (GameView view, Ability receiver,
+                        Events.AttackedEvent e) -> new SideEffect().add(() -> receiver.wielder.getLeader()
+                                .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 5))));
 
         // Liquifying Presence
         new Stratified<Ability>(events.ability, Labels.ability_liquifying_presence)
@@ -467,7 +538,7 @@ class VanillaModAbilities {
                                 receiver.wielder,
                                 (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_marketplace))
                                         .orElse(false),
-                                () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 1)));
+                                () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
 
         // Mine Gems
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
@@ -560,6 +631,18 @@ class VanillaModAbilities {
                             return new SideEffect();
                         });
 
+        // Plant Cushion
+        new Stratified<Ability>(events.ability, Labels.ability_plant_cushion).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add a real icon
+                    e.blob.setIcon(Labels.asset_defense);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("+2 defense if the unit has a natural item in their inventory"))
+                .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver,
+                        Events.TakeDamageEvent e) -> receiver.wielder.haul.hasItemWithTag(Labels.tag_natural)
+                                ? AbilityLogic.defense(e, 2)
+                                : new SideEffect());
+
         // Plant Forest
         new Stratified<Ability>(events.ability, Labels.ability_plant_forest).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -646,6 +729,8 @@ class VanillaModAbilities {
                                     });
                         });
 
+        // Rallying Cry
+
         // Regeneration
         new Stratified<Ability>(events.ability, Labels.ability_regeneration).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -728,6 +813,14 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_sacred_seed,
                                 (Building b) -> b.name.equals(Labels.building_meadow)));
+
+        // Scratch
+        new Stratified<Ability>(events.ability, Labels.ability_scratch).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add a real icon
+                    e.blob.setIcon(Labels.asset_sword_slash);
+                    return new SideEffect();
+                }).add(AbilityLogic.attack(new Damage(1), 1));
 
         // Shell Defense
         new Stratified<Ability>(events.ability, Labels.ability_shell_defense).add(Events.GenerateAbilityEvent.class,

@@ -111,15 +111,15 @@ public class VanillaMod implements GameMod {
 
         // Ability sprites
         sprites.register(Labels.asset_bite, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 0);
-        sprites.register(Labels.asset_construct_healing_fountain, Labels.asset_abilities, ActionNode.SIDE,
-                ActionNode.SIDE, 1, 0);
+        sprites.register(Labels.asset_build_healing_fountain, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE,
+                1, 0);
         sprites.register(Labels.asset_build_vault, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 0);
         sprites.register(Labels.asset_collapse_mine, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 0);
         sprites.register(Labels.asset_combat_loot, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 0);
         sprites.register(Labels.asset_acid_skin, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 0);
         sprites.register(Labels.asset_green_fortress, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 0);
         sprites.register(Labels.asset_deposit_seeds, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 0);
-        sprites.register(Labels.asset_construct_mine, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 1);
+        sprites.register(Labels.asset_dig_mine, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 1);
         sprites.register(Labels.asset_dungeon_delve, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 1);
         sprites.register(Labels.asset_edible, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 1);
         sprites.register(Labels.asset_fire_cannon, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 1);

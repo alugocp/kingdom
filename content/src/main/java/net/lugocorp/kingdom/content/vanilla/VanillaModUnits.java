@@ -26,7 +26,7 @@ class VanillaModUnits {
                     e.blob.setModelInstance(view.av, "blob");
                     e.blob.species = Defs.species_plasmoid;
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_slime_shot);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_slime_shot, Labels.ability_absorb);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_slow,
                             Labels.ability_liquifying_presence, Labels.ability_acid_skin,
                             Labels.ability_total_appetite);
@@ -77,7 +77,7 @@ class VanillaModUnits {
                     e.blob.species = Defs.species_gemstone;
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_fire_laser,
-                            Labels.ability_collapse_mine);
+                            Labels.ability_collapse_structure);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_crystal_skin, Labels.ability_mine_gems, Labels.ability_rock_appetite);
                     UnitLogic.standardHealthPool(e.blob);
@@ -93,7 +93,9 @@ class VanillaModUnits {
                     e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
                     e.blob.species = Defs.species_salamander;
                     e.blob.glyphs.set(Glyph.BATTLE);
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash);
+                    // TODO implement Rallying Cry
+                    e.blob.abilities.setActive(view.game.generator,
+                            Labels.ability_sword_slash/* , Labels.ability_rallying_cry */);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
                             Labels.ability_regeneration, Labels.ability_plate_mail);
                     UnitLogic.standardHealthPool(e.blob);
@@ -121,6 +123,21 @@ class VanillaModUnits {
         // Little Buck
         // Garulax
         // Patagan
+        new Stratified<Unit>(events.unit, Labels.unit_patagan).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This battle mage is one of King Gargantos's most loyal subjects";
+                    // TODO add a real model
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_tortugan;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.SUPPORT);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_fireball,
+                            Labels.ability_heal_wounds);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_shell_defense);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
         // Iyart
         //
         // Badroch the Pack Grue
@@ -145,6 +162,20 @@ class VanillaModUnits {
         // The Hunched Warlock
         //
         // Lost Golem
+        new Stratified<Unit>(events.unit, Labels.unit_lost_golem).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This Golem wanders the rocky peaks where it was forged long ago";
+                    // TODO add a real model
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_golem;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_stomp, Labels.ability_plant_forest);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_plant_cushion,
+                            Labels.ability_harvest_figs);
+                    UnitLogic.largeHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Golem of the Grotto
         new Stratified<Unit>(events.unit, Labels.unit_golem_of_the_grotto).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -154,7 +185,7 @@ class VanillaModUnits {
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_smash, Labels.ability_plant_meadow);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_mountain_strider,
-                            Labels.ability_regeneration, Labels.ability_local_defender);
+                            Labels.ability_regeneration, Labels.ability_life_finds_a_way);
                     UnitLogic.largeHealthPool(e.blob);
                     return new SideEffect();
                 });
@@ -311,7 +342,7 @@ class VanillaModUnits {
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_heal_wounds,
                             Labels.ability_hungry_frog_magic);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim,
-                            Labels.ability_forage_in_meadow);
+                            Labels.ability_harvest_truffles, Labels.ability_investment, Labels.ability_trade);
                     UnitLogic.standardHealthPool(e.blob);
                     UnitLogic.largeInventory(e.blob);
                     return new SideEffect();

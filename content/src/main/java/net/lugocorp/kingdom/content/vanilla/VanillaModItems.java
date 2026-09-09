@@ -603,6 +603,32 @@ class VanillaModItems {
         // Stygian Eye
         // Ring of Life Eternal
         // Truffle
+        new Stratified<Item>(events.item, Labels.item_truffle)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "A tasty and expensive fungus";
+                    // TODO add a real icon
+                    e.blob.icon = Optional.of(Labels.asset_mushroom);
+                    e.blob.gold = 10;
+                    e.blob.tags.add(Labels.tag_mushroom);
+                    e.blob.tags.add(Labels.tag_natural);
+                    e.blob.tags.add(Labels.tag_fruit);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+
+        // Fig
+        new Stratified<Item>(events.item, Labels.item_fig)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "A sweet edible fruit resembling a tiny satchel";
+                    // TODO add a real icon
+                    e.blob.icon = Optional.of(Labels.asset_mushroom);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_natural);
+                    e.blob.tags.add(Labels.tag_fruit);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+
         // Scholarly Robes
         // Sanguine Blade
         // Necrotic Tome
