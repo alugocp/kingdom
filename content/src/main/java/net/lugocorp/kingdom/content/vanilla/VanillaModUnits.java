@@ -63,7 +63,7 @@ class VanillaModUnits {
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash,
                             Labels.ability_dungeon_delve);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
-                            Labels.ability_combat_loot, Labels.ability_regeneration);
+                            Labels.ability_combat_loot, Labels.ability_mine_gems, Labels.ability_regeneration);
                     UnitLogic.standardHealthPool(e.blob);
                     UnitLogic.largeInventory(e.blob);
                     return new SideEffect();

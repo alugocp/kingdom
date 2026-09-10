@@ -75,6 +75,9 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 1));
 
+        // Blessing of Nature's Hand
+        // Conservation of Energy
+
         // Construct Healing Fountain
         new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain)
                 .add(Events.GenerateAbilityEvent.class,
@@ -161,6 +164,8 @@ class VanillaModAbilities {
                             : new SideEffect();
                 });
 
+        // Defensive Stone Form
+
         // Deposit Seeds
         new Stratified<Ability>(events.ability, Labels.ability_deposit_seeds).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -225,6 +230,8 @@ class VanillaModAbilities {
                             .map((Tile t) -> t.building).isPresent();
                     return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : new SideEffect();
                 });
+
+        // Erupt
 
         // Fast
         new Stratified<Ability>(events.ability, Labels.ability_fast).add(Events.GenerateAbilityEvent.class,
@@ -323,6 +330,8 @@ class VanillaModAbilities {
                     return new SideEffect();
                 });
 
+        // Great Cycle
+
         // Green Fortress
         new Stratified<Ability>(events.ability, Labels.ability_green_fortress).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -335,6 +344,9 @@ class VanillaModAbilities {
                             .orElse(false);
                     return isForest ? AbilityLogic.defense(e, 2) : new SideEffect();
                 });
+
+        // Harvest Batatas
+        // Harvest Cacao
 
         // Harvest Figs
         new Stratified<Ability>(events.ability, Labels.ability_harvest_figs).add(Events.GenerateAbilityEvent.class,
@@ -350,6 +362,8 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_fig,
                                 (Building b) -> b.name.equals(Labels.building_forest)));
+
+        // Harvest Mesquite
 
         // Harvest Mushrooms
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mushrooms).add(Events.GenerateAbilityEvent.class,
@@ -389,6 +403,8 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Heals 5 damage"))
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
+
+        // Healing Water
 
         // High Vision
         new Stratified<Ability>(events.ability, Labels.ability_high_vision).add(Events.GenerateAbilityEvent.class,
@@ -472,6 +488,8 @@ class VanillaModAbilities {
                                 receiver.wielder, (Building b) -> b.name.equals(Labels.building_marketplace),
                                 () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
 
+        // Lava Bubble
+
         // Life Aura
         new Stratified<Ability>(events.ability, Labels.ability_life_aura).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -515,6 +533,8 @@ class VanillaModAbilities {
                             : new SideEffect();
                 });
 
+        // Magma Skin
+
         // Market Boom
         new Stratified<Ability>(events.ability, Labels.ability_market_boom).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -539,6 +559,8 @@ class VanillaModAbilities {
                                 (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_marketplace))
                                         .orElse(false),
                                 () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
+
+        // Medicinal Tuber
 
         // Mine Gems
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
@@ -567,6 +589,8 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
                                 view, receiver.wielder, Labels.item_gold_coin,
                                 (Building b) -> b.name.equals(Labels.building_mine)));
+
+        // Mining Stone Form
 
         // Mountain Strider
         new Stratified<Ability>(events.ability, Labels.ability_mountain_strider).add(Events.GenerateAbilityEvent.class,
@@ -671,6 +695,8 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
+        // Power of Nature
+
         // Protective Spores
         new Stratified<Ability>(events.ability, Labels.ability_protective_spores).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -690,6 +716,8 @@ class VanillaModAbilities {
                                                 .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                                     });
                         });
+
+        // Raid Mine
 
         // Raise Undead
         new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
@@ -830,6 +858,8 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
+        // Shield Bash
+
         // Slime Shot
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -887,6 +917,8 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
+        // Stone Form
+
         // Subterranean Potions
         new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions)
                 .add(Events.GenerateAbilityEvent.class,
@@ -922,6 +954,8 @@ class VanillaModAbilities {
                     e.blob.setIcon(Labels.asset_axe_swing);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(3), 1));
+
+        // Swing Pickaxe
 
         // Sword Slash
         new Stratified<Ability>(events.ability, Labels.ability_sword_slash).add(Events.GenerateAbilityEvent.class,
