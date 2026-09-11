@@ -76,11 +76,13 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.attack(new Damage(2), 1));
 
         // Blessing of Nature's Hand
-        new Stratified<Ability>(events.ability, Labels.ability_bite).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_bite);
-                    return new SideEffect();
-                }).add(AbilityLogic.desc("+2 healing on forests or oases"))
+        new Stratified<Ability>(events.ability, Labels.ability_blessing_of_natures_hand)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            e.blob.setIcon(Labels.asset_bite);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.desc("+2 healing on forests or oases"))
                 .add(Events.HealEntityEvent.class, (GameView view, Ability receiver, Events.HealEntityEvent e) -> {
                     if (e.healer == receiver.wielder && view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building).map((Building b) -> b.name.equals(Labels.building_forest)
@@ -1095,7 +1097,7 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Stone Form
-        new Stratified<Ability>(events.ability, Labels.ability_stone_defense).add(Events.GenerateAbilityEvent.class,
+        new Stratified<Ability>(events.ability, Labels.ability_stone_form).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x828282);
                     return new SideEffect();
