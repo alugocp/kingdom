@@ -34,8 +34,7 @@ class VanillaModAbilities {
         // Absorb
         new Stratified<Ability>(events.ability, Labels.ability_absorb).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add a real icon
-                    e.blob.setIcon(Labels.asset_apple);
+                    e.blob.setIcon(Labels.asset_drown, 0x318ec0, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Consumes all hauled items to restore 5 health"))
                 .add(Events.AbilityActivatedEvent.class,
@@ -76,7 +75,7 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.attack(new Damage(2), 1));
 
         // Blessing of Nature's Hand
-        // Conservation of Energy
+        // Conservation of Energy (asset_regeneration recolor)
 
         // Construct Healing Fountain
         new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain)
@@ -164,7 +163,7 @@ class VanillaModAbilities {
                             : new SideEffect();
                 });
 
-        // Defensive Stone Form
+        // Defensive Stone Form (defense glyph)
 
         // Deposit Seeds
         new Stratified<Ability>(events.ability, Labels.ability_deposit_seeds).add(Events.GenerateAbilityEvent.class,
@@ -351,8 +350,7 @@ class VanillaModAbilities {
         // Harvest Figs
         new Stratified<Ability>(events.ability, Labels.ability_harvest_figs).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add a real icon
-                    e.blob.setIcon(Labels.asset_harvest_mushroom);
+                    e.blob.setIcon(Labels.asset_harvest_figs);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Harvests figs from forests every 4 turns"))
                 .add(Events.SpawnEvent.class,
@@ -383,8 +381,7 @@ class VanillaModAbilities {
         // Harvest Truffles
         new Stratified<Ability>(events.ability, Labels.ability_harvest_truffles).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add a real icon
-                    e.blob.setIcon(Labels.asset_harvest_mushroom);
+                    e.blob.setIcon(Labels.asset_harvest_mushroom, 0xb16255, 0x57372c);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Harvests truffles from forests every 4 turns"))
                 .add(Events.SpawnEvent.class,
@@ -404,7 +401,7 @@ class VanillaModAbilities {
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
 
-        // Healing Water
+        // Healing Water (asset_subterranean_potions)
 
         // High Vision
         new Stratified<Ability>(events.ability, Labels.ability_high_vision).add(Events.GenerateAbilityEvent.class,
@@ -476,8 +473,7 @@ class VanillaModAbilities {
         // Investment
         new Stratified<Ability>(events.ability, Labels.ability_investment).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add a real icon
-                    e.blob.setIcon(Labels.asset_market_indicator);
+                    e.blob.setIcon(Labels.asset_economic_activity);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates 3 auction points on a marketplace"))
                 .add(Events.SpawnEvent.class,
@@ -488,7 +484,7 @@ class VanillaModAbilities {
                                 receiver.wielder, (Building b) -> b.name.equals(Labels.building_marketplace),
                                 () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
 
-        // Lava Bubble
+        // Lava Bubble (asset_harvest_slime)
 
         // Life Aura
         new Stratified<Ability>(events.ability, Labels.ability_life_aura).add(Events.GenerateAbilityEvent.class,
@@ -506,8 +502,7 @@ class VanillaModAbilities {
         // Life Finds a Way
         new Stratified<Ability>(events.ability, Labels.ability_life_finds_a_way).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add a real icon
-                    e.blob.setIcon(Labels.asset_apple);
+                    e.blob.setIcon(Labels.asset_defensive_blossom, 0x417b80, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates unit points when the unit is attacked"))
                 .add(Events.AttackedEvent.class, (GameView view, Ability receiver,
@@ -533,7 +528,7 @@ class VanillaModAbilities {
                             : new SideEffect();
                 });
 
-        // Magma Skin
+        // Magma Skin (asset_acid_skin)
 
         // Market Boom
         new Stratified<Ability>(events.ability, Labels.ability_market_boom).add(Events.GenerateAbilityEvent.class,
@@ -560,7 +555,7 @@ class VanillaModAbilities {
                                         .orElse(false),
                                 () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
 
-        // Medicinal Tuber
+        // Medicinal Tuber (asset_spores)
 
         // Mine Gems
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
@@ -590,7 +585,7 @@ class VanillaModAbilities {
                                 view, receiver.wielder, Labels.item_gold_coin,
                                 (Building b) -> b.name.equals(Labels.building_mine)));
 
-        // Mining Stone Form
+        // Mining Stone Form (mining glyph)
 
         // Mountain Strider
         new Stratified<Ability>(events.ability, Labels.ability_mountain_strider).add(Events.GenerateAbilityEvent.class,
@@ -658,8 +653,7 @@ class VanillaModAbilities {
         // Plant Cushion
         new Stratified<Ability>(events.ability, Labels.ability_plant_cushion).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add a real icon
-                    e.blob.setIcon(Labels.asset_defense);
+                    e.blob.setIcon(Labels.asset_defensive_blossom, 0xe858d4, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense if the unit has a natural item in their inventory"))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver,
@@ -695,7 +689,7 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
-        // Power of Nature
+        // Power of Nature (asset_pick_flowers)
 
         // Protective Spores
         new Stratified<Ability>(events.ability, Labels.ability_protective_spores).add(Events.GenerateAbilityEvent.class,
@@ -717,7 +711,7 @@ class VanillaModAbilities {
                                     });
                         });
 
-        // Raid Mine
+        // Raid Mine (asset_dungeon_delve)
 
         // Raise Undead
         new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
@@ -757,7 +751,7 @@ class VanillaModAbilities {
                                     });
                         });
 
-        // Rallying Cry
+        // Rallying Cry (asset_bloodlust)
 
         // Regeneration
         new Stratified<Ability>(events.ability, Labels.ability_regeneration).add(Events.GenerateAbilityEvent.class,
@@ -845,8 +839,7 @@ class VanillaModAbilities {
         // Scratch
         new Stratified<Ability>(events.ability, Labels.ability_scratch).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add a real icon
-                    e.blob.setIcon(Labels.asset_sword_slash);
+                    e.blob.setIcon(Labels.asset_self_sacrifice);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(1), 1));
 
@@ -917,7 +910,7 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
-        // Stone Form
+        // Stone Form (asset_acid_skin)
 
         // Subterranean Potions
         new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions)

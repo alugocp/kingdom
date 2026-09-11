@@ -172,7 +172,7 @@ public class VanillaMod implements GameMod {
         sprites.register(Labels.asset_stomach, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 6);
         sprites.register(Labels.asset_fireball, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 6);
         sprites.register(Labels.asset_raise_undead, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 6);
-        sprites.register(Labels.asset_gilded_strike, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 6);
+        sprites.register(Labels.asset_erupt, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 6);
         sprites.register(Labels.asset_harvest_slime, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 7);
         sprites.register(Labels.asset_harvest_mushroom, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 7);
         sprites.register(Labels.asset_gems, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 7);
@@ -188,6 +188,15 @@ public class VanillaMod implements GameMod {
         sprites.register(Labels.asset_proud_builder, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 8);
         sprites.register(Labels.asset_poisoned, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 8);
         sprites.register(Labels.asset_swift, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 8);
+        sprites.register(Labels.asset_blessing_of_natures_hand, Labels.asset_abilities, ActionNode.SIDE,
+                ActionNode.SIDE, 7, 8);
+        sprites.register(Labels.asset_great_cycle, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 0, 9);
+        sprites.register(Labels.asset_harvest_batatas, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 1, 9);
+        sprites.register(Labels.asset_harvest_cacao, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 2, 9);
+        sprites.register(Labels.asset_harvest_mesquite, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 3, 9);
+        sprites.register(Labels.asset_defense_glyph, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 9);
+        sprites.register(Labels.asset_shield_bash, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 9);
+        sprites.register(Labels.asset_harvest_figs, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 9);
 
         // Artifact sprites
         sprites.register(Labels.asset_chos_sigil_of_haste, Labels.asset_artifacts, ArtifactNode.WIDTH,

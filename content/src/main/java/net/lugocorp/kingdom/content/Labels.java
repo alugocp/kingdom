@@ -171,6 +171,14 @@ public class Labels {
     public static final String asset_proud_builder = "proud builder";
     public static final String asset_poisoned = "poisoned";
     public static final String asset_swift = "swift";
+    public static final String asset_blessing_of_natures_hand = "blessing of natures hand";
+    public static final String asset_great_cycle = "great cycle";
+    public static final String asset_harvest_batatas = "harvest batatas";
+    public static final String asset_harvest_cacao = "harvest cacao";
+    public static final String asset_harvest_mesquite = "harvest mesquite";
+    public static final String asset_defense_glyph = "defense glyph";
+    public static final String asset_shield_bash = "shield bash";
+    public static final String asset_harvest_figs = "harvest figs";
 
     /**
      * SECTION Tags
