@@ -2,12 +2,14 @@ package net.lugocorp.kingdom.ai;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
+import net.lugocorp.kingdom.prediction.SelectionTree;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
 import net.lugocorp.kingdom.utils.LogSys;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class provides access to all of the Decision-making logic for a
@@ -15,12 +17,18 @@ import java.util.Map;
  */
 public class Actor {
     private final Map<String, Decision> decisions = new HashMap<>();
+    private Optional<Behavior> current = Optional.empty();
+    private boolean deliberating = false;
+    private SelectionTree tree = null;
+    // TODO add an ActorState class that contains deliberating/current/tree state
 
     /**
      * Assigns Decisions for each DecisionChannel associated with this Actor's
      * CompPlayer
      */
     public void makeDecisions(GameView view, CompPlayer player, GoalSet goals, List<Unit> units) {
+        this.deliberating = true;
+
         // Make Decisions regarding Units
         for (Unit unit : units) {
             final DecisionChannel channel = DecisionChannel.unit(unit);
@@ -43,6 +51,37 @@ public class Actor {
                 this.consider(view, player, goal, channel);
             }
         }
+
+        this.deliberating = false;
+    }
+
+    /**
+     * Returns true if this Actor is currently making Decisions (or false if it is
+     * ready to act on those Decisions)
+     */
+    public boolean isDeliberating() {
+        return this.deliberating;
+    }
+
+    /**
+     * Returns the Behavior that is currently being processed (if one exists)
+     */
+    public Optional<Behavior> getCurrentBehavior() {
+        return this.current;
+    }
+
+    /**
+     * Returns the active SelectionTree
+     */
+    public SelectionTree getSelectionTree() {
+        return this.tree;
+    }
+
+    /**
+     * Sets a new active SelectionTree
+     */
+    public void newSelectionTree() {
+        this.tree = new SelectionTree();
     }
 
     /**
@@ -53,6 +92,7 @@ public class Actor {
     private void consider(GameView view, CompPlayer player, Goal goal, DecisionChannel channel) {
         final Decision d = goal.getDecision(view, player, channel);
         boolean accept = false;
+        this.tree = null;
         if (this.decisions.containsKey(channel.toString())) {
             final int incumbent = this.decisions.get(channel.toString()).priority.value;
             final int incoming = d.priority.value;
@@ -87,6 +127,7 @@ public class Actor {
             }
         } else {
             Log.log(LogSys.AI, "Enacting...");
+            this.current = Optional.of(d.behavior);
             d.behavior.act(view);
         }
         if (isFatal || d.behavior.isFinished(view)) {

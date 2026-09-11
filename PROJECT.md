@@ -13,7 +13,6 @@ This file explains all the code folders inside this repository.
         - `behaviors` defines different ways that the AI can direct itself
         - `goals` contains a collection of abstract gameplay requirements that the CPU player strives towards
         - `memory` allows CPU players to remember what they previously saw under the fog of war
-        - `prediction` allows CPU players to better choose from options (with event handlers)
     - `builtin`
         - `animation` contains a set of game animation utilities
         - `logic` congregates useful logic for defining game content

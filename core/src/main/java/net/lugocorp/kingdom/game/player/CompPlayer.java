@@ -1,18 +1,20 @@
 package net.lugocorp.kingdom.game.player;
 import net.lugocorp.kingdom.ai.Actor;
+import net.lugocorp.kingdom.ai.Behavior;
 import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.GoalSet;
+import net.lugocorp.kingdom.ai.behaviors.ActivateAbilityBehavior;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
-import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.prediction.EventLog;
+import net.lugocorp.kingdom.prediction.SelectionTree;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.BatchCounter;
 import net.lugocorp.kingdom.utils.Log;
 import net.lugocorp.kingdom.utils.LogSys;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -27,7 +29,6 @@ import java.util.function.Function;
  */
 public class CompPlayer extends Player {
     public final Actor actor = new Actor();
-    private Optional<BatchCounter<Unit>> unitsForDecisionMaking = Optional.empty();
     public MemoryMap memory = null;
 
     public CompPlayer(GameView view, int index, Fate fate, Color color) {
@@ -95,13 +96,26 @@ public class CompPlayer extends Player {
     /** {@inheritdoc} */
     @Override
     public SideEffect select(GameView view, Set<Point> points, String error, Function<Point, SideEffect> action) {
-        final SideEffect effects = new SideEffect();
-        if (points.size() == 0) {
-            return effects;
+        // Logic for when we're deliberating
+        if (this.actor.isDeliberating()) {
+            final SelectionTree tree = this.actor.getSelectionTree();
+            for (Point p : points) {
+                tree.add(p, EventLog.getHandle());
+                action.apply(p);
+                tree.moveUp();
+            }
+            return new SideEffect();
         }
 
-        // We've selected our targets, so we're ready to execute now
-        return action.apply(SelectedTargets.instance.popPath());
+        // Logic for when we're acting on Decisions
+        final Optional<Behavior> behavior = this.actor.getCurrentBehavior();
+        if (behavior.map((Behavior b) -> b instanceof ActivateAbilityBehavior).orElse(false)) {
+            // TODO make sure the selection is within our options
+            return action.apply(((ActivateAbilityBehavior) behavior.get()).getSelection());
+        }
+
+        // Should not be here
+        throw new RuntimeException(String.format("%s cannot make a selection - should not be here", this.name));
     }
 
     /** {@inheritdoc} */

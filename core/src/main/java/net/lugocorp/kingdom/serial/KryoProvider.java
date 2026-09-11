@@ -38,7 +38,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.ai.Priority.class);
         kryo.register(net.lugocorp.kingdom.ai.memory.MemoryCell.class);
         kryo.register(net.lugocorp.kingdom.ai.memory.MemoryMap.class);
-        kryo.register(net.lugocorp.kingdom.ai.prediction.SelectedTargets.class);
 
         // net.lugocorp.kingdom.builtin
         kryo.register(net.lugocorp.kingdom.builtin.Events.class);

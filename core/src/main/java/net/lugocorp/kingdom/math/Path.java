@@ -1,11 +1,12 @@
 package net.lugocorp.kingdom.math;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Represents a series of Points in a particular order
  */
-public class Path {
+public class Path implements Iterable<Point> {
     private final List<Point> points = new ArrayList<>();
 
     /**
@@ -39,6 +40,13 @@ public class Path {
     }
 
     /**
+     * Removes and returns the last Point in this Path
+     */
+    public Point pop() {
+        return this.points.remove(this.points.size() - 1);
+    }
+
+    /**
      * Concatenates another Path onto this one
      */
     public Path concat(Path path) {
@@ -46,6 +54,12 @@ public class Path {
             this.add(p);
         }
         return this;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Iterator<Point> iterator() {
+        return this.points.iterator();
     }
 
     /** {@inheritdoc} */
