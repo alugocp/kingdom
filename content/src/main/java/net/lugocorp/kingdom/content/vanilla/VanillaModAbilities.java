@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.content.vanilla;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.content.Labels;
+import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -350,7 +351,7 @@ class VanillaModAbilities {
                     e.blob.setIcon(Labels.asset_great_cycle);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Fully heals friendly adjacent units on death"))
-                .add(Events.EntityDied.class, (GameView view, Ability receiver, Events.EntityDied e) -> {
+                .add(Events.EntityDiedEvent.class, (GameView view, Ability receiver, Events.EntityDiedEvent e) -> {
                     final SideEffect effects = new SideEffect();
                     if (e.target == receiver.wielder) {
                         for (Point p : Hexagons.getAdjacents(e.target.getPoint())) {
@@ -360,6 +361,7 @@ class VanillaModAbilities {
                             }
                         }
                     }
+                    return effects;
                 });
 
         // Green Fortress
@@ -803,8 +805,8 @@ class VanillaModAbilities {
                             final SideEffect effects = new SideEffect();
                             if (receiver.wielder.haul.hasItemWithTag(Labels.tag_natural)) {
                                 effects.add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_natural));
-                                effects.add(
-                                        AbilityLogic.attackAndEffect(view, receiver.wielder, 3, 1, Optional.empty()));
+                                effects.add(AbilityLogic.attackAndEffect(view, receiver.wielder, new Damage(3), 1,
+                                        Optional.empty()));
                             } else if (receiver.wielder.leadership.belongsToHuman()) {
                                 effects.add(() -> view.hud.logger
                                         .error("You have no natural items to activate this ability"));
@@ -848,7 +850,8 @@ class VanillaModAbilities {
                             return receiver.wielder.getLeader().get().select(view, points, "No mines are in range",
                                     (Point p) -> {
                                         return new SideEffect()
-                                                .add(attacker.combat.attack(view, targets.get(p), new Damage(4)))
+                                                .add(receiver.wielder.combat.attack(view,
+                                                        view.game.world.getTile(p).get().building.get(), new Damage(4)))
                                                 .add(() -> {
                                                     if (!receiver.wielder.haul.isFull()) {
                                                         receiver.wielder.haul
