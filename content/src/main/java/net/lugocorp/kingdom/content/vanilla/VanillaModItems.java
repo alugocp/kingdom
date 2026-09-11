@@ -115,6 +115,16 @@ class VanillaModItems {
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
 
+        // Bag of Gold
+        new Stratified<Item>(events.item, Labels.item_bag_of_gold)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to increase your gold";
+                    e.blob.icon = Optional.of(Labels.asset_pouch);
+                    e.blob.gold = 5;
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
+
         // Emerald
         new Stratified<Item>(events.item, Labels.item_emerald)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {

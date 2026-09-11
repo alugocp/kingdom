@@ -163,7 +163,7 @@ class VanillaModUnits {
         // Lost Golem
         new Stratified<Unit>(events.unit, Labels.unit_lost_golem).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "This Golem wanders the rocky peaks where it was forged long ago";
+                    e.blob.desc = "This Golem guides those who wind up in the Lost Lands";
                     // TODO add a real model
                     e.blob.setModelInstance(view.av, "placeholder1");
                     e.blob.species = Defs.species_golem;
@@ -310,6 +310,21 @@ class VanillaModUnits {
 
         // Photali
         // Batatita
+        new Stratified<Unit>(events.unit, Labels.unit_batatita).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This small nature spirit communes with the hearty tubers that grow within caves";
+                    // TODO add a real model
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.MINING);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_medicinal_tuber,
+                            Labels.ability_raid_mine);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
+                            Labels.ability_harvest_batatas, Labels.ability_mine_gold);
+                    UnitLogic.standardHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Lady Daumia
         new Stratified<Unit>(events.unit, Labels.unit_lady_daumia).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -326,11 +341,42 @@ class VanillaModUnits {
                 });
 
         // Zen Hito the Kappa
+        new Stratified<Unit>(events.unit, Labels.unit_zen_hito_the_kappa).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "A wandering healer who never turns down a request for help";
+                    // TODO add a real model
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_kappa;
+                    e.blob.glyphs.set(Glyph.SUPPORT);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_scratch,
+                            Labels.ability_construct_healing_fountain);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_great_cycle,
+                            Labels.ability_healing_water);
+                    UnitLogic.standardHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Soothing Gills
         // Melis the Honey Troll
         // Passiflor
         // Oystermane
         // Wuraj the Blessed
+        new Stratified<Unit>(events.unit, Labels.unit_wuraj_the_blessed).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This Elven shaman has dedicated her life to the restoration of her ancestral forests";
+                    // TODO add a real model
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_elf;
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_power_of_nature,
+                            Labels.ability_heal_wounds);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_high_vision,
+                            Labels.ability_night_vision, Labels.ability_blessing_of_natures_hand,
+                            Labels.ability_harvest_cacao, Labels.ability_harvest_mesquite);
+                    UnitLogic.standardHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Frogger the Gnome
         new Stratified<Unit>(events.unit, Labels.unit_frogger_the_gnome).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -372,11 +418,11 @@ class VanillaModUnits {
                     e.blob.doNotAddToGlyphPool();
                     e.blob.desc = "A terrifying undead warrior risen by those skilled in the dark arts";
                     e.blob.setModelInstance(view.av, "skeleton");
+                    e.blob.species = Defs.species_undead;
+                    e.blob.glyphs.set(Glyph.BATTLE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_ghastly_thrall);
-                    e.blob.glyphs.set(Glyph.BATTLE);
                     e.blob.combat.health.setMaxAndValue(4);
-                    e.blob.species = Defs.species_undead;
                     return new SideEffect();
                 }).add(UnitLogic.speed(100));
     }

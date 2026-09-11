@@ -345,6 +345,22 @@ class VanillaModAbilities {
                 });
 
         // Great Cycle
+        new Stratified<Ability>(events.ability, Labels.ability_great_cycle).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_great_cycle);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Fully heals friendly adjacent units on death"))
+                .add(Events.EntityDied.class, (GameView view, Ability receiver, Events.EntityDied e) -> {
+                    final SideEffect effects = new SideEffect();
+                    if (e.target == receiver.wielder) {
+                        for (Point p : Hexagons.getAdjacents(e.target.getPoint())) {
+                            final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                            if (unit.map((Unit u) -> u.leadership.sameLeader(e.target)).orElse(false)) {
+                                effects.add(e.target.combat.heal(view, unit.get(), unit.get().combat.health.getMax()));
+                            }
+                        }
+                    }
+                });
 
         // Green Fortress
         new Stratified<Ability>(events.ability, Labels.ability_green_fortress).add(Events.GenerateAbilityEvent.class,
@@ -453,7 +469,19 @@ class VanillaModAbilities {
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
 
-        // Healing Water (asset_subterranean_potions)
+        // Healing Water
+        new Stratified<Ability>(events.ability, Labels.ability_healing_water).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_subterranean_potions, 0xba3521, 0x318ec0);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Generates Health Potions from water tiles"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
+                                receiver.wielder, Labels.item_health_potion,
+                                (Tile t) -> t.name.equals(Labels.tile_water)));
 
         // High Vision
         new Stratified<Ability>(events.ability, Labels.ability_high_vision).add(Events.GenerateAbilityEvent.class,
@@ -622,7 +650,15 @@ class VanillaModAbilities {
                                         .orElse(false),
                                 () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
 
-        // Medicinal Tuber (asset_spores)
+        // Medicinal Tuber
+        new Stratified<Ability>(events.ability, Labels.ability_medicinal_tuber).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_spores);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Heals 2 damage (or 4 damage for a mining glyph unit)"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view,
+                                receiver.wielder, (Unit u) -> u.glyphs.has(Glyph.MINING) ? 4 : 2));
 
         // Mine Gems
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
@@ -756,7 +792,25 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
-        // Power of Nature (asset_pick_flowers)
+        // Power of Nature
+        new Stratified<Ability>(events.ability, Labels.ability_power_of_nature).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_pick_flowers);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Consumes a natural item to deal 3 damage to the target in melee range"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (receiver.wielder.haul.hasItemWithTag(Labels.tag_natural)) {
+                                effects.add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_natural));
+                                effects.add(
+                                        AbilityLogic.attackAndEffect(view, receiver.wielder, 3, 1, Optional.empty()));
+                            } else if (receiver.wielder.leadership.belongsToHuman()) {
+                                effects.add(() -> view.hud.logger
+                                        .error("You have no natural items to activate this ability"));
+                            }
+                            return effects;
+                        });
 
         // Protective Spores
         new Stratified<Ability>(events.ability, Labels.ability_protective_spores).add(Events.GenerateAbilityEvent.class,
@@ -778,7 +832,32 @@ class VanillaModAbilities {
                                     });
                         });
 
-        // Raid Mine (asset_dungeon_delve)
+        // Raid Mine
+        new Stratified<Ability>(events.ability, Labels.ability_raid_mine).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_dungeon_delve);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Deals 4 damage to the target mine and generates gold"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Set<Point> points = Lambda.filter(
+                                    (Point p) -> view.game.world.getTile(receiver.wielder.getPoint())
+                                            .flatMap((Tile t) -> t.building)
+                                            .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false),
+                                    Hexagons.getAdjacents(receiver.wielder.getPoint()));
+                            return receiver.wielder.getLeader().get().select(view, points, "No mines are in range",
+                                    (Point p) -> {
+                                        return new SideEffect()
+                                                .add(attacker.combat.attack(view, targets.get(p), new Damage(4)))
+                                                .add(() -> {
+                                                    if (!receiver.wielder.haul.isFull()) {
+                                                        receiver.wielder.haul
+                                                                .add(view.game.generator.item(Labels.item_bag_of_gold));
+                                                    }
+                                                })
+                                                .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
+                                    });
+                        });
 
         // Raise Undead
         new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
@@ -828,7 +907,8 @@ class VanillaModAbilities {
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final SideEffect effects = new SideEffect()
-                                    .add(receiver.wielder.abilities.cooldown(view, receiver, 2));
+                                    .add(receiver.wielder.abilities.cooldown(view, receiver, 2))
+                                    .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                             for (Point p : Hexagons.getAdjacents(receiver.wielder.getPoint())) {
                                 final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                                 if (unit.map((Unit u) -> u.leadership.sameLeader(receiver.wielder)).orElse(false)) {

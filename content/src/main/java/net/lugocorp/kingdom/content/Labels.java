@@ -448,6 +448,7 @@ public class Labels {
     public static final String item_flower = "Flower";
     public static final String item_fish = "Fish";
     public static final String item_gold_coin = "Gold Coin";
+    public static final String item_bag_of_gold = "Bag of Gold";
     public static final String item_emerald = "Emerald";
     public static final String item_apple = "Apple";
     public static final String item_health_potion = "Health Potion";

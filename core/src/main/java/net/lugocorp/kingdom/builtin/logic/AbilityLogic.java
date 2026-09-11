@@ -158,7 +158,8 @@ public class AbilityLogic {
     /**
      * Private helper method for common heal abilities
      */
-    private static SideEffect heal(GameView view, Unit healer, int hitPoints, Function<Tile, Entity> getEntity) {
+    private static SideEffect heal(GameView view, Unit healer, Function<Point, Integer> getHitPoints,
+            Function<Tile, Entity> getEntity) {
         Map<Point, Entity> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
@@ -178,7 +179,7 @@ public class AbilityLogic {
 
         // Have the Player select which target to heal
         return healer.getLeader().get().select(view, points, "No heal targets are in range",
-                (Point p) -> new SideEffect().add(healer.combat.heal(view, targets.get(p), hitPoints))
+                (Point p) -> new SideEffect().add(healer.combat.heal(view, targets.get(p), getHitPoints.apply(p)))
                         .add(() -> view.game.actions.unitHasCastSpell(view, healer)));
     }
 
@@ -186,7 +187,16 @@ public class AbilityLogic {
      * Ability that heals a Unit
      */
     public static SideEffect healUnit(GameView view, Unit healer, int hitPoints) {
-        return AbilityLogic.heal(view, healer, hitPoints, (Tile t) -> t.unit.orElse(null));
+        return AbilityLogic.heal(view, healer, (Point p) -> hitPoints, (Tile t) -> t.unit.orElse(null));
+    }
+
+    /**
+     * Ability that heals a Unit for some dynamic amount
+     */
+    public static SideEffect healUnit(GameView view, Unit healer, Function<Unit, Integer> getHitPoints) {
+        return AbilityLogic.heal(view, healer,
+                (Point p) -> getHitPoints.apply(view.game.world.getTile(p).get().unit.get()),
+                (Tile t) -> t.unit.orElse(null));
     }
 
     /**
@@ -194,7 +204,7 @@ public class AbilityLogic {
      */
     public static SideEffect healBuilding(GameView view, Unit healer, int hitPoints,
             Function<Building, Boolean> criteria) {
-        return AbilityLogic.heal(view, healer, hitPoints, (Tile t) -> {
+        return AbilityLogic.heal(view, healer, (Point p) -> hitPoints, (Tile t) -> {
             if (t.building.isPresent()) {
                 Building b = t.building.get();
                 if (criteria.apply(b)) {
