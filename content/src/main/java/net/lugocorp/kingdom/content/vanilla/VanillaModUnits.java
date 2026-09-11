@@ -93,9 +93,8 @@ class VanillaModUnits {
                     e.blob.desc = "Tlatec the Axolotl-man has travelled far from his home in search of worthy opponents";
                     e.blob.species = Defs.species_salamander;
                     e.blob.glyphs.set(Glyph.BATTLE);
-                    // TODO implement Rallying Cry
-                    e.blob.abilities.setActive(view.game.generator,
-                            Labels.ability_sword_slash/* , Labels.ability_rallying_cry */);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash,
+                            Labels.ability_rallying_cry);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
                             Labels.ability_regeneration, Labels.ability_plate_mail);
                     UnitLogic.standardHealthPool(e.blob);

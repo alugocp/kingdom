@@ -150,7 +150,7 @@
             "stomach",
             "fireball",
             "raise undead",
-            "gilded strike",
+            "erupt",
             "harvest slime",
             "harvest mushroom",
             "gems",
@@ -446,7 +446,9 @@
             "Extra Defense",
             "Poisoned",
             "Swift",
-            "Exhausted"
+            "Exhausted",
+            "Rally",
+            "Stone Form Active"
         ]
     },
     {
@@ -601,7 +603,10 @@
             "Moss-covered Stone",
             "Glyphic Geode",
             "Self-Sustaining Soulstone",
-            "Hero's Call"
+            "Hero's Call",
+            "Cacao",
+            "Mesquite",
+            "Batata"
         ]
     }
 ]}

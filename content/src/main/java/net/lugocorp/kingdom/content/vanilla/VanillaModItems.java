@@ -620,8 +620,7 @@ class VanillaModItems {
         new Stratified<Item>(events.item, Labels.item_fig)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "A sweet edible fruit resembling a tiny satchel";
-                    // TODO add a real icon
-                    e.blob.icon = Optional.of(Labels.asset_mushroom);
+                    e.blob.icon = Optional.of(Labels.asset_harvest_figs);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
@@ -745,5 +744,41 @@ class VanillaModItems {
         // Glyphic Geode
         // Self-Sustaining Soulstone
         // Hero's Call
+        // Cacao
+        new Stratified<Item>(events.item, Labels.item_cacao)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to stave off hunger";
+                    e.blob.icon = Optional.of(Labels.asset_harvest_cacao);
+                    e.blob.gold = 3;
+                    e.blob.tags.add(Labels.tag_fruit);
+                    e.blob.tags.add(Labels.tag_natural);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+
+        // Mesquite
+        new Stratified<Item>(events.item, Labels.item_mesquite)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to stave off hunger";
+                    e.blob.icon = Optional.of(Labels.asset_harvest_mesquite);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_fruit);
+                    e.blob.tags.add(Labels.tag_natural);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+
+        // Batata
+        new Stratified<Item>(events.item, Labels.item_batata)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to stave off hunger and restore 1 health";
+                    e.blob.icon = Optional.of(Labels.asset_harvest_batatas);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_fruit);
+                    e.blob.tags.add(Labels.tag_natural);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect()
+                                .add(ItemLogic.food(view, e)).add(e.consumer.combat.heal(view, e.consumer, 1)));
     }
 }

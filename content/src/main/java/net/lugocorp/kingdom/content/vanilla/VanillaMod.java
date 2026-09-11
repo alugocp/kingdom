@@ -1516,5 +1516,34 @@ public class VanillaMod implements GameMod {
                     e.isStunned = true;
                     return new SideEffect();
                 });
+
+        // Rally
+        new Stratified<Ability>(events.ability, Labels.status_effect_rally).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_bloodlust);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("+2 damage and +1 speed for 2 turns")).add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
+                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
+                            return new SideEffect();
+                        })
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
+                .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
+                    e.dmg.base += 2;
+                    return new SideEffect();
+                }).add(Events.UnitMoveDistanceEvent.class,
+                        (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
+                            e.distance++;
+                            return new SideEffect();
+                        });
+
+        // Stone Form Active
+        new Stratified<Ability>(events.ability, Labels.status_effect_stone_form_active).add(
+                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x828282);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("The unit has returned to its natural rocky form"));
     }
 }

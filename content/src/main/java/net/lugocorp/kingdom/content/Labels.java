@@ -155,7 +155,7 @@ public class Labels {
     public static final String asset_stomach = "stomach";
     public static final String asset_fireball = "fireball";
     public static final String asset_raise_undead = "raise undead";
-    public static final String asset_gilded_strike = "gilded strike";
+    public static final String asset_erupt = "erupt";
     public static final String asset_harvest_slime = "harvest slime";
     public static final String asset_harvest_mushroom = "harvest mushroom";
     public static final String asset_gems = "gems";
@@ -434,6 +434,8 @@ public class Labels {
     public static final String status_effect_poisoned = "Poisoned";
     public static final String status_effect_swift = "Swift";
     public static final String status_effect_exhausted = "Exhausted";
+    public static final String status_effect_rally = "Rally";
+    public static final String status_effect_stone_form_active = "Stone Form Active";
 
     /**
      * SECTION Items
@@ -587,4 +589,7 @@ public class Labels {
     public static final String item_glyphic_geode = "Glyphic Geode";
     public static final String item_self_sustaining_soulstone = "Self-Sustaining Soulstone";
     public static final String item_heros_call = "Hero's Call";
+    public static final String item_cacao = "Cacao";
+    public static final String item_mesquite = "Mesquite";
+    public static final String item_batata = "Batata";
 }

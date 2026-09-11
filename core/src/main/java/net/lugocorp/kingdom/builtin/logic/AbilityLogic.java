@@ -311,4 +311,21 @@ public class AbilityLogic {
         return effects.add(caster.handleEvent(view, event))
                 .add(() -> view.game.mechanics.auction.addPoints(view, caster.getPoint(), event.points));
     }
+
+    /**
+     * Returns true if Stone Form can be active at the given Point
+     */
+    public static SideEffect checkStoneForm(GameView view, Unit u) {
+        final boolean needsStoneForm = view.game.mechanics.dayNight.isNight()
+                || view.game.world.getTile(u.getPoint()).map((Tile t) -> t.name.equals(Labels.tile_rock)).orElse(false);
+        final boolean hasStoneForm = u.abilities.hasStatusEffect(Labels.status_effect_stone_form_active);
+        final SideEffect effects = new SideEffect();
+        if (needsStoneForm && !hasStoneForm) {
+            effects.add(u.abilities.addStatusEffect(view, Labels.status_effect_stone_form_active));
+        }
+        if (!needsStoneForm && hasStoneForm) {
+            effects.add(() -> u.abilities.removeStatusEffect(view, Labels.status_effect_stone_form_active));
+        }
+        return effects;
+    }
 }
