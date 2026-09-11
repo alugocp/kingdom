@@ -50,6 +50,7 @@ This file explains all the code folders inside this repository.
         - `text` contains text-based menu elements
     - `mods` allows us to load game content
     - `pathfinding` implements pathfinding algorithms for the game UI
+    - `prediction` contains logic to predict cause and effect of the game rules
     - `serial` allows us to save and load game state
     - `settings` allows us to load and save game settings
     - `ui` contains all logic for game UI

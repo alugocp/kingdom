@@ -4,7 +4,6 @@ import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.GoalSet;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
-import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.ai.prediction.SelectedTargets;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -98,13 +97,6 @@ public class CompPlayer extends Player {
     public SideEffect select(GameView view, Set<Point> points, String error, Function<Point, SideEffect> action) {
         final SideEffect effects = new SideEffect();
         if (points.size() == 0) {
-            return effects;
-        }
-
-        // If we're making a prediction then we should split off
-        // our prediction for each possible target from points.
-        if (SelectedTargets.instance.isPrediction()) {
-            CapturedEvents.instance.split(points, (Point p) -> effects.add(action.apply(p)));
             return effects;
         }
 

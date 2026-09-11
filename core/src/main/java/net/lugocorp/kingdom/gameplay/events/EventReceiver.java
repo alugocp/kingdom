@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.gameplay.events;
-import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
+import net.lugocorp.kingdom.prediction.EventLog;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 
@@ -13,9 +13,7 @@ public interface EventReceiver {
      * API sugar to handle an Event
      */
     public default SideEffect handleEvent(GameView view, Event e) {
-        if (CapturedEvents.instance.isActive()) {
-            CapturedEvents.instance.capture(e);
-        }
+        EventLog.log(e, this);
         return new SideEffect().add(e).add(this.handleEventWithoutSignalBooster(view, e))
                 .add(view.game.events.signals.propagate(view, this, e));
     }

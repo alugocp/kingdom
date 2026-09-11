@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
+import net.lugocorp.kingdom.prediction.EventLog;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
@@ -58,6 +59,7 @@ public class TurnStructure {
      * Kicks off a new Turn
      */
     public void startOfTurn(GameView view) {
+        EventLog.reset();
         if (this.turn.isFirstTurnPlayer()) {
             this.startOfTurnGroup(view);
         }

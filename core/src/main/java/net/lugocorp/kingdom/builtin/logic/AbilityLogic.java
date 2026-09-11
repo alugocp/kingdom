@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.builtin.logic;
-import net.lugocorp.kingdom.ai.prediction.CapturedEvents;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.content.Labels;
@@ -252,10 +251,7 @@ public class AbilityLogic {
      */
     public static SideEffect doOnTile(GameView view, Unit caster, Function<Tile, Boolean> criteria,
             Supplier<SideEffect> effect) {
-        Point p = CapturedEvents.instance.isActive()
-                ? CapturedEvents.instance.getFakePoint().map((Point p1) -> p1).orElse(caster.getPoint())
-                : caster.getPoint();
-        boolean isOnTile = view.game.world.getTile(p).map(criteria).orElse(false);
+        boolean isOnTile = view.game.world.getTile(caster.getPoint()).map(criteria).orElse(false);
         return isOnTile ? effect.get() : new SideEffect();
     }
 
