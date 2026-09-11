@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
+import net.lugocorp.kingdom.FeatureFlags;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.engine.projection.CameraLogic;
 import net.lugocorp.kingdom.game.glyph.Glyph;
@@ -153,7 +154,8 @@ public class NewUnit {
         final GlyphPools pools = view.game.mechanics.pools;
         if (pools.remaining(g) > 0) {
             final String[] names = pools.random(g, Math.min(pools.remaining(g), n));
-            for (String name : names) {
+            final String[] namesWithOverride = FeatureFlags.DEBUG ? FeatureFlags.UNIT_OPTIONS.orElse(names) : names;
+            for (String name : namesWithOverride) {
                 options.add(view.game.generator.unit(name, p.x, p.y));
             }
         }

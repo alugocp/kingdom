@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game;
+import net.lugocorp.kingdom.FeatureFlags;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorPool;
 import net.lugocorp.kingdom.engine.AudioVideo;
@@ -107,7 +108,10 @@ public class Game {
         p.getFate().handleEvent(view, e).execute();
         final Glyph g = e.glyph.orElse(Lambda.random(Glyph.class));
         final String name = this.mechanics.pools.random(g, 1)[0];
-        final Unit u = this.generator.unit(name, x, y);
+        final String nameWithOverride = FeatureFlags.DEBUG && p.isHumanPlayer()
+                ? FeatureFlags.FIRST_UNIT.orElse(name)
+                : name;
+        final Unit u = this.generator.unit(nameWithOverride, x, y);
         this.mechanics.pools.remove(u);
         this.setLeader(view, u, p);
         return u;
