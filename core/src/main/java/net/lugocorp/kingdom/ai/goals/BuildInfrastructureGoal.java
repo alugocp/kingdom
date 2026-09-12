@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.ai.goals;
-import net.lugocorp.kingdom.ai.Consideration;
 import net.lugocorp.kingdom.ai.Decision;
 import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.DecisionClass;
 import net.lugocorp.kingdom.ai.Goal;
+import net.lugocorp.kingdom.ai.Prioritized;
 import net.lugocorp.kingdom.ai.Priority;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
 import net.lugocorp.kingdom.game.glyph.Glyph;
@@ -13,9 +13,9 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.prediction.Prediction;
-import net.lugocorp.kingdom.prediction.SelectionTree;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -40,15 +40,12 @@ public class BuildInfrastructureGoal extends Goal {
         if (channel.is(DecisionClass.UNIT)) {
             final Unit unit = channel.getUnit();
             for (Ability ability : unit.abilities.getActives()) {
-                final SelectionTree tree = player.actor.newSelectionTree();
-                ability.activate(view);
-                // Set up paths to event lists and analyze accordingly
-                final Consideration<Path> consideration = new Consideration<>();
-                tree.iteratePredictions((Prediction prediction) -> {
-                    final Priority priority = null;
-                    // TODO something here
-                    consideration.consider(priority, prediction.path);
-                });
+                final Optional<Prioritized<Path>> best = player.actor.analyzeActiveAbility(view, ability,
+                        (Prediction prediction) -> {
+                            // TODO implement me please
+                            return Priority.NEUTRAL;
+                        });
+                // TODO implement me please
             }
         }
 

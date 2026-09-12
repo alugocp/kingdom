@@ -97,8 +97,8 @@ public class CompPlayer extends Player {
     @Override
     public SideEffect select(GameView view, Set<Point> points, String error, Function<Point, SideEffect> action) {
         // Logic for when we're deliberating
-        if (this.actor.isDeliberating()) {
-            final SelectionTree tree = this.actor.getSelectionTree();
+        if (this.actor.state.isDeliberating()) {
+            final SelectionTree tree = this.actor.state.getSelectionTree().get();
             for (Point p : points) {
                 tree.add(p, EventLog.getHandle());
                 action.apply(p);
@@ -108,10 +108,10 @@ public class CompPlayer extends Player {
         }
 
         // Logic for when we're acting on Decisions
-        final Optional<Behavior> behavior = this.actor.getCurrentBehavior();
-        if (behavior.map((Behavior b) -> b instanceof ActivateAbilityBehavior).orElse(false)) {
+        final Behavior behavior = this.actor.state.getCurrentBehavior().get();
+        if (behavior instanceof ActivateAbilityBehavior) {
             // TODO make sure the selection is within our options
-            return action.apply(((ActivateAbilityBehavior) behavior.get()).getSelection());
+            return action.apply(((ActivateAbilityBehavior) behavior).getSelection());
         }
 
         // Should not be here

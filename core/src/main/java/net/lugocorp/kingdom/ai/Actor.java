@@ -21,18 +21,13 @@ import java.util.function.Function;
  */
 public class Actor {
     private final Map<String, Decision> decisions = new HashMap<>();
-    private Optional<Behavior> current = Optional.empty();
-    private boolean deliberating = false;
-    private SelectionTree tree = null;
-    // TODO add an ActorState class that contains deliberating/current/tree state
+    public final ActorState state = new ActorState();
 
     /**
      * Assigns Decisions for each DecisionChannel associated with this Actor's
      * CompPlayer
      */
     public void makeDecisions(GameView view, CompPlayer player, GoalSet goals, List<Unit> units) {
-        this.deliberating = true;
-
         // Make Decisions regarding Units
         for (Unit unit : units) {
             final DecisionChannel channel = DecisionChannel.unit(unit);
@@ -69,38 +64,6 @@ public class Actor {
                 this.decisions.put(channel.toString(), d);
             });
         }
-
-        this.deliberating = false;
-    }
-
-    /**
-     * Returns true if this Actor is currently making Decisions (or false if it is
-     * ready to act on those Decisions)
-     */
-    public boolean isDeliberating() {
-        return this.deliberating;
-    }
-
-    /**
-     * Returns the Behavior that is currently being processed (if one exists)
-     */
-    public Optional<Behavior> getCurrentBehavior() {
-        return this.current;
-    }
-
-    /**
-     * Returns the active SelectionTree
-     */
-    public SelectionTree getSelectionTree() {
-        return this.tree;
-    }
-
-    /**
-     * Sets a new active SelectionTree
-     */
-    public SelectionTree newSelectionTree() {
-        this.tree = new SelectionTree();
-        return this.getSelectionTree();
     }
 
     /**
@@ -122,7 +85,7 @@ public class Actor {
             }
         } else {
             Log.log(LogSys.AI, "Enacting...");
-            this.current = Optional.of(d.behavior);
+            this.state.enact(d.behavior);
             d.behavior.act(view);
         }
         if (isFatal || d.behavior.isFinished(view)) {
@@ -139,7 +102,7 @@ public class Actor {
     public Optional<Prioritized<Path>> analyzeActiveAbility(GameView view, Ability ability,
             Function<Prediction, Priority> prioritize) {
         final Consideration<Path> consideration = new Consideration<>();
-        final SelectionTree tree = this.newSelectionTree();
+        final SelectionTree tree = this.state.deliberate();
         ability.activate(view);
         tree.iteratePredictions((Prediction prediction) -> {
             final Priority priority = prioritize.apply(prediction);
