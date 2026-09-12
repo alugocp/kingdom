@@ -45,6 +45,17 @@ public class Lambda {
     }
 
     /**
+     * Flattens a set of sets into a one-dimensional set
+     */
+    public static <T> Set<T> flatten(Set<Set<T>> inputs) {
+        final Set<T> result = new HashSet<>();
+        for (Set<T> s : inputs) {
+            result.addAll(s);
+        }
+        return result;
+    }
+
+    /**
      * Converts the given Collection into a List
      */
     public static <A> List<A> toList(Iterable<A> src) {
