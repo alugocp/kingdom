@@ -88,7 +88,7 @@ public class Ability implements EventReceiver, MenuSubject {
     }
 
     /**
-     * Returns true fi this Ability can be activated
+     * Returns true if this Ability can be activated
      */
     public boolean isActive(GameView view) {
         return this.hasEventHandler(view, Events.AbilityActivatedEvent.class);

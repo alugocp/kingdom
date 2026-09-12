@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.prediction;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
+import java.util.function.Consumer;
 
 /**
  * This class tracks boundaries in the EventLog based on branching paths of
@@ -37,5 +38,13 @@ public class SelectionTree {
     public void moveUp() {
         this.getNode(this.pointer).recordEvents();
         this.pointer.pop();
+    }
+
+    /**
+     * Iterate through the leaf nodes, calculate their Event logs, and generate
+     * Predictions based on that
+     */
+    public void iteratePredictions(Consumer<Prediction> callback) {
+        // TODO implement me please
     }
 }

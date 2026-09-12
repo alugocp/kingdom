@@ -1,7 +1,10 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
+import net.lugocorp.kingdom.math.Path;
+import net.lugocorp.kingdom.prediction.Prediction;
 import net.lugocorp.kingdom.prediction.SelectionTree;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * This class provides access to all of the Decision-making logic for a
@@ -35,9 +39,16 @@ public class Actor {
             if (this.decisions.containsKey(channel.toString())) {
                 continue;
             }
+
+            final Consideration<Decision> consideration = new Consideration<>();
             for (Goal goal : goals) {
-                this.consider(view, player, goal, channel);
+                final Decision d = goal.getDecision(view, player, channel);
+                consideration.consider(d.priority, d);
             }
+            consideration.getValue().ifPresent((Decision d) -> {
+                Log.log(LogSys.AI, "Set decision %s", d);
+                this.decisions.put(channel.toString(), d);
+            });
         }
 
         // Make Decisions for miscellaneous DecisionChannels
@@ -47,9 +58,16 @@ public class Actor {
             if (this.decisions.containsKey(channel.toString())) {
                 continue;
             }
+
+            final Consideration<Decision> consideration = new Consideration<>();
             for (Goal goal : goals) {
-                this.consider(view, player, goal, channel);
+                final Decision d = goal.getDecision(view, player, channel);
+                consideration.consider(d.priority, d);
             }
+            consideration.getValue().ifPresent((Decision d) -> {
+                Log.log(LogSys.AI, "Set decision %s", d);
+                this.decisions.put(channel.toString(), d);
+            });
         }
 
         this.deliberating = false;
@@ -80,32 +98,9 @@ public class Actor {
     /**
      * Sets a new active SelectionTree
      */
-    public void newSelectionTree() {
+    public SelectionTree newSelectionTree() {
         this.tree = new SelectionTree();
-    }
-
-    /**
-     * Generate a Decision for the given Goal and DecisionChannel and assign it if
-     * it has the highest Priority (or if it ties the highest Priority and we pass
-     * by random chance)
-     */
-    private void consider(GameView view, CompPlayer player, Goal goal, DecisionChannel channel) {
-        final Decision d = goal.getDecision(view, player, channel);
-        boolean accept = false;
-        this.tree = null;
-        if (this.decisions.containsKey(channel.toString())) {
-            final int incumbent = this.decisions.get(channel.toString()).priority.value;
-            final int incoming = d.priority.value;
-            if (incoming > incumbent || (incoming == incumbent && Math.random() < 0.3)) {
-                accept = true;
-            }
-        } else {
-            accept = true;
-        }
-        if (accept) {
-            Log.log(LogSys.AI, "Set decision %s", d);
-            this.decisions.put(channel.toString(), d);
-        }
+        return this.getSelectionTree();
     }
 
     /**
@@ -135,5 +130,21 @@ public class Actor {
             this.decisions.remove(channel.toString());
         }
         return true;
+    }
+
+    /**
+     * Makes a Prediction for each possible selection Path after activating the
+     * given Ability, then returns the highest Priority Path
+     */
+    public Optional<Prioritized<Path>> analyzeActiveAbility(GameView view, Ability ability,
+            Function<Prediction, Priority> prioritize) {
+        final Consideration<Path> consideration = new Consideration<>();
+        final SelectionTree tree = this.newSelectionTree();
+        ability.activate(view);
+        tree.iteratePredictions((Prediction prediction) -> {
+            final Priority priority = prioritize.apply(prediction);
+            consideration.consider(priority, prediction.path);
+        });
+        return consideration.getState();
     }
 }
