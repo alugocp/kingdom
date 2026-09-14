@@ -3,7 +3,10 @@ import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
+import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Path;
+import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.prediction.EventLog;
 import net.lugocorp.kingdom.prediction.Prediction;
 import net.lugocorp.kingdom.prediction.SelectionTree;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -14,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * This class provides access to all of the Decision-making logic for a
@@ -96,11 +100,28 @@ public class Actor {
     }
 
     /**
+     * Runs the given function with a fake/temporary/hypothetical Point for the
+     * given Unit's position
+     */
+    private <T> T spoofUnitPosition(Unit u, Point p, Supplier<T> func) {
+        final int x = u.getX();
+        final int y = u.getY();
+        u.setX(p.x);
+        u.setY(p.y);
+        final T t = func.get();
+        u.setX(x);
+        u.setY(y);
+        return t;
+    }
+
+    /**
      * Makes a Prediction for each possible selection Path after activating the
      * given Ability, then returns the highest Priority Path
      */
     public Optional<Prioritized<Path>> analyzeActiveAbility(GameView view, Ability ability,
             Function<Prediction, Priority> prioritize) {
+        // TODO move these methods to AbilityAnalysis(ActorState state)
+        // TODO actor.analyze.activeAbility(...)
         final Consideration<Path> consideration = new Consideration<>();
         final SelectionTree tree = this.state.deliberate();
         ability.activate(view);
@@ -109,5 +130,33 @@ public class Actor {
             consideration.consider(priority, prediction.path);
         });
         return consideration.getState();
+    }
+
+    /**
+     * Calls analyzeActiveAbility() but with a hypothetical position for the Unit
+     */
+    public Optional<Prioritized<Path>> analyzeActiveAbility(GameView view, Ability ability, Point p,
+            Function<Prediction, Priority> prioritize) {
+        return this.spoofUnitPosition(ability.wielder, p, () -> this.analyzeActiveAbility(view, ability, prioritize));
+    }
+
+    /**
+     * Predicts the outcome of the given Event on the given Ability, and assigns a
+     * Priority to the outcome
+     */
+    public Priority analyzePassiveAbility(GameView view, Ability ability, Event event,
+            Function<List<Event>, Priority> prioritize) {
+        final int handle = EventLog.getHandle();
+        ability.handleEvent(view, event);
+        return prioritize.apply(EventLog.getEvents(handle));
+    }
+
+    /**
+     * Calls analyzePassiveAbility() but with a hypothetical position for the Unit
+     */
+    public Priority analyzePassiveAbility(GameView view, Ability ability, Event event, Point p,
+            Function<List<Event>, Priority> prioritize) {
+        return this.spoofUnitPosition(ability.wielder, p,
+                () -> this.analyzePassiveAbility(view, ability, event, prioritize));
     }
 }
