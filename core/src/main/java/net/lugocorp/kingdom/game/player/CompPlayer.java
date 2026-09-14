@@ -4,7 +4,6 @@ import net.lugocorp.kingdom.ai.Behavior;
 import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.GoalSet;
-import net.lugocorp.kingdom.ai.behaviors.ActivateAbilityBehavior;
 import net.lugocorp.kingdom.ai.memory.MemoryMap;
 import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -109,9 +108,11 @@ public class CompPlayer extends Player {
 
         // Logic for when we're acting on Decisions
         final Behavior behavior = this.actor.state.getCurrentBehavior().get();
-        if (behavior instanceof ActivateAbilityBehavior) {
-            // TODO make sure the selection is within our options
-            return action.apply(((ActivateAbilityBehavior) behavior).getSelection());
+        final Optional<Point> selection = behavior.getSelection();
+        if (selection.isPresent()) {
+            // Selection should be present - if it's not then there's a major problem and
+            // some logic is out of sync somewhere
+            return points.contains(selection.get()) ? action.apply(selection.get()) : new SideEffect();
         }
 
         // Should not be here

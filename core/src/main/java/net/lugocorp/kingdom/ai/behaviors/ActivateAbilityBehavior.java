@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import java.util.Optional;
 
 /**
  * This Behavior tells the given Unit to activate some Ability
@@ -20,11 +21,10 @@ public class ActivateAbilityBehavior implements Behavior {
         this.unit = unit;
     }
 
-    /**
-     * Returns the next Point parameter in a chain of calls to CompPlayer.select()
-     */
-    public Point getSelection() {
-        return this.selections.popFromFront();
+    /** {@inheritdoc} */
+    @Override
+    public Optional<Point> getSelection() {
+        return this.selections.isEmpty() ? Optional.empty() : Optional.of(this.selections.popFromFront());
     }
 
     /** {@inheritdoc} */

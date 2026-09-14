@@ -1,8 +1,10 @@
 package net.lugocorp.kingdom.ai.behaviors;
 import net.lugocorp.kingdom.ai.Behavior;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This Behavior calls down into arbitrarily many other Behaviors
@@ -14,6 +16,12 @@ public class ListBehavior implements Behavior {
         for (int a = 0; a < children.length; a++) {
             this.children.add(children[a]);
         }
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public Optional<Point> getSelection() {
+        return this.children.get(0).getSelection();
     }
 
     /** {@inheritdoc} */
