@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * This map represents the Actor's "vision" of the World. It tracks what the
@@ -52,6 +53,24 @@ public class MemoryMap {
      */
     public Set<Point> getKnownCells() {
         return this.knownCells;
+    }
+
+    /**
+     * Iterates some function over all known cells
+     */
+    public Optional<Point> getClosestKnownTileWhere(GameView view, Point focal, Function<Tile, Boolean> func) {
+        Optional<Point> best = Optional.empty();
+        int shortest = 0;
+        for (Point p : this.getKnownCells()) {
+            if (func.apply(view.game.world.getTile(p).get())) {
+                final int dist = p.distance(focal);
+                if (!best.isPresent() || dist < shortest) {
+                    best = Optional.of(p);
+                    shortest = dist;
+                }
+            }
+        }
+        return best;
     }
 
     /**

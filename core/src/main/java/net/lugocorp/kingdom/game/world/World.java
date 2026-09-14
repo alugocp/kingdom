@@ -118,6 +118,22 @@ public class World implements Iterable<Tile> {
     }
 
     /**
+     * Returns an instance of a Building with the given name (if one exists in this
+     * World)
+     */
+    public Optional<Building> findBuilding(String name) {
+        for (int x = 0; x < this.getWidth(); x++) {
+            for (int y = 0; y < this.getHeight(); y++) {
+                final Optional<Building> building = this.getTile(x, y).get().building;
+                if (building.map((Building b) -> b.name.equals(name)).orElse(false)) {
+                    return building;
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Returns World width
      */
     public int getWidth() {
