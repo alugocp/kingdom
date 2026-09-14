@@ -45,7 +45,7 @@ public class BuildInfrastructureGoal extends Goal {
             final Unit unit = channel.getUnit();
             final Consideration<ActivateAbilityBehavior> consideration = new Consideration<>();
             for (Ability ability : unit.abilities.getActives()) {
-                final Optional<Prioritized<Path>> best = player.actor.analyzeActiveAbility(view, ability,
+                final Optional<Prioritized<Path>> best = player.actor.analyze.activeAbility(view, ability,
                         (Prediction prediction) -> {
                             for (Event event : prediction.log) {
                                 if (event instanceof Events.GenerateBuildingEvent) {
