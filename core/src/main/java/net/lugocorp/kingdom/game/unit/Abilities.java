@@ -100,6 +100,19 @@ public class Abilities {
     }
 
     /**
+     * Returns the stack count of the given status effect by name
+     */
+    public int getStatusEffectStackCount(String status) {
+        int count = 0;
+        for (Ability s : this.passives) {
+            if (s.name.equals(status)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Adds a status effect to this instance by the given name
      */
     public SideEffect addStatusEffect(GameView view, String name) {
@@ -145,6 +158,19 @@ public class Abilities {
             }
         }
         remove.ifPresent((Ability s) -> this.removeStatusEffect(view, s));
+    }
+
+    /**
+     * Removes all status effects from this instance with the given name
+     */
+    public void clearStatusEffect(GameView view, String status) {
+        final List<Ability> effects = new ArrayList<>();
+        effects.addAll(this.passives);
+        for (Ability s : effects) {
+            if (s.name.equals(status)) {
+                this.removeStatusEffect(view, s);
+            }
+        }
     }
 
     /**

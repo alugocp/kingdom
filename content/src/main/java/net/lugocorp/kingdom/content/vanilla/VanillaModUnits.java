@@ -142,6 +142,20 @@ class VanillaModUnits {
         // Badroch the Pack Grue
         // Lord Sakamoto
         // Pelagma
+        new Stratified<Unit>(events.unit, Labels.unit_pelagma).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "She disintegrates minerals for sustenance using her molten body";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_elemental;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.MINING);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_lava_bubble, Labels.ability_erupt);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_scalding_skin,
+                            Labels.ability_mine_gems, Labels.ability_mine_gold, Labels.ability_rock_appetite);
+                    UnitLogic.largeHealthPool(e.blob);
+                    UnitLogic.hungry(view, e.blob);
+                    return new SideEffect();
+                });
+
         // Ushaptimun
         // Garudee
         new Stratified<Unit>(events.unit, Labels.unit_garudee).add(Events.GenerateUnitEvent.class,
@@ -224,6 +238,22 @@ class VanillaModUnits {
                 });
 
         // Sir Rootbeard
+        new Stratified<Unit>(events.unit, Labels.unit_sir_rootbeard).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "Sir Rootbeard is among the most respected Dwarves in all of Surgarde";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_dwarf;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_shield_bash);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast,
+                            Labels.ability_conservation_of_energy, Labels.ability_investment, Labels.ability_trade,
+                            Labels.ability_stone_form, Labels.ability_defensive_stone_form);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
+        //
         // Stalagmus
         new Stratified<Unit>(events.unit, Labels.unit_stalagmus).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -242,9 +272,25 @@ class VanillaModUnits {
 
         // Xella the Accursed
         // Svelta Luktegress
+        new Stratified<Unit>(events.unit, Labels.unit_svelta_luktegress).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This Dwarven miner is well known throughout Helligdom";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_dwarf;
+                    e.blob.glyphs.set(Glyph.MINING);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_swing_pickaxe,
+                            Labels.ability_construct_mine);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast, Labels.ability_night_vision,
+                            Labels.ability_mine_gems, Labels.ability_stone_form, Labels.ability_mining_stone_form);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
         // Alaistar and Wurmdel
         // Mi'chalb Lightfoot
         // Illapa (Quechua for lightning)
+        //
         // The Druid
         new Stratified<Unit>(events.unit, Labels.unit_druid).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -410,8 +456,6 @@ class VanillaModUnits {
                     return new SideEffect();
                 });
 
-        //
-        //
         // Ghastly Thrall
         new Stratified<Unit>(events.unit, Labels.unit_ghastly_thrall)
                 .add(Events.GenerateUnitEvent.class, (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {

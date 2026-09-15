@@ -1545,5 +1545,38 @@ public class VanillaMod implements GameMod {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x828282);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit has returned to its natural rocky form"));
+
+        // Conserved Energy
+        new Stratified<Ability>(events.ability, Labels.status_effect_conserved_energy)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            e.blob.setIcon(Labels.asset_regeneration, 0x00ff10, 0x00a9ff);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.desc("+1 defense"))
+                .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
+                    e.dmg.base--;
+                    return new SideEffect();
+                });
+
+        // Burned
+        new Stratified<Ability>(events.ability, Labels.status_effect_burned).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_fireball);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("The unit takes 1 damage each turn for 4 turns"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
+                            view.game.future.addFutureTick("Remove", receiver, 4, false, e.unit.getLeader());
+                            view.game.future.addFutureTick("Burn", receiver, 1, true, e.unit.getLeader());
+                            return new SideEffect();
+                        })
+                .add("Remove",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.removeFutureTicks(receiver, "Burn"))
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
+                .add("Burn", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                    return receiver.wielder.combat.takeDamage(view, new Damage(1), receiver.wielder);
+                });
     }
 }

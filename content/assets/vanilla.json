@@ -389,7 +389,6 @@
             "Life Aura",
             "Life Finds a Way",
             "Liquifying Presence",
-            "Magma Skin",
             "Market Boom",
             "Market Indicator",
             "Medicinal Tuber",
@@ -417,6 +416,7 @@
             "Running Through Nature",
             "Self Sacrifice",
             "Sacred Seeds",
+            "Scalding Skin",
             "Scratch",
             "Shell Defense",
             "Shield Bash",
@@ -448,7 +448,9 @@
             "Swift",
             "Exhausted",
             "Rally",
-            "Stone Form Active"
+            "Stone Form Active",
+            "Conserved Energy",
+            "Burned"
         ]
     },
     {

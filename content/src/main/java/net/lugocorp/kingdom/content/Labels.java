@@ -378,7 +378,6 @@ public class Labels {
     public static final String ability_life_aura = "Life Aura";
     public static final String ability_life_finds_a_way = "Life Finds a Way";
     public static final String ability_liquifying_presence = "Liquifying Presence";
-    public static final String ability_magma_skin = "Magma Skin";
     public static final String ability_market_boom = "Market Boom";
     public static final String ability_market_indicator = "Market Indicator";
     public static final String ability_medicinal_tuber = "Medicinal Tuber";
@@ -406,6 +405,7 @@ public class Labels {
     public static final String ability_running_through_nature = "Running Through Nature";
     public static final String ability_self_sacrifice = "Self Sacrifice";
     public static final String ability_sacred_seeds = "Sacred Seeds";
+    public static final String ability_scalding_skin = "Scalding Skin";
     public static final String ability_scratch = "Scratch";
     public static final String ability_shell_defense = "Shell Defense";
     public static final String ability_shield_bash = "Shield Bash";
@@ -436,6 +436,8 @@ public class Labels {
     public static final String status_effect_exhausted = "Exhausted";
     public static final String status_effect_rally = "Rally";
     public static final String status_effect_stone_form_active = "Stone Form Active";
+    public static final String status_effect_conserved_energy = "Conserved Energy";
+    public static final String status_effect_burned = "Burned";
 
     /**
      * SECTION Items
