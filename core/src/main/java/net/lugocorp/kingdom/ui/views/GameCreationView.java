@@ -41,7 +41,7 @@ import java.util.function.Consumer;
 class GameCreationView implements View {
     private static final int MAX_PLAYERS = 6;
     private final WorldGenOptions worldGenOpts = new WorldGenOptions(
-            FeatureFlags.WORLD_SEED.orElse(GameCreationView.getRandomSeed()));
+            (FeatureFlags.DEBUG ? FeatureFlags.WORLD_SEED : Optional.empty()).orElse(GameCreationView.getRandomSeed()));
     private final List<CompPlayer> comps = new ArrayList();
     private final StartMenuView.Params params;
     private final TextNode humanFateNameNode;
