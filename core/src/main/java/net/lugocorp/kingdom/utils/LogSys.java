@@ -4,7 +4,7 @@ package net.lugocorp.kingdom.utils;
  * Contains subsystem tags to help filter log output
  */
 public enum LogSys {
-    AI("AI");
+    AI("AI"), EVENT("EVENT");
 
     public final String label;
 

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.FeatureFlags;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.game.Game;
@@ -39,7 +40,8 @@ import java.util.function.Consumer;
  */
 class GameCreationView implements View {
     private static final int MAX_PLAYERS = 6;
-    private final WorldGenOptions worldGenOpts = new WorldGenOptions(GameCreationView.getRandomSeed());
+    private final WorldGenOptions worldGenOpts = new WorldGenOptions(
+            FeatureFlags.WORLD_SEED.orElse(GameCreationView.getRandomSeed()));
     private final List<CompPlayer> comps = new ArrayList();
     private final StartMenuView.Params params;
     private final TextNode humanFateNameNode;

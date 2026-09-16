@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.prediction;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.utils.Log;
+import net.lugocorp.kingdom.utils.LogSys;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public abstract class EventLog {
      * Adds an incoming Event to the log
      */
     public static void log(Event e, EventReceiver receiver) {
-        Log.log(String.format("%s received %s", receiver.getStratifier(), e.getClass().getSimpleName()));
+        Log.log(LogSys.EVENT, "%s received %s", receiver.getStratifier(), e.getClass().getSimpleName());
         EventLog.events.add(e);
     }
 

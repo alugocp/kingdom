@@ -34,6 +34,11 @@ public class Log {
      * Calls log(msg) but with the given LogSys
      */
     public static void log(LogSys sys, String msg) {
+        for (int a = 0; a < FeatureFlags.LOG_FILTER.length; a++) {
+            if (FeatureFlags.LOG_FILTER[a].equals(sys.label)) {
+                return;
+            }
+        }
         Log.log(String.format("[%s] %s", sys.label, msg));
     }
 
@@ -41,6 +46,11 @@ public class Log {
      * Calls log(format, ...args) but with the given LogSys
      */
     public static void log(LogSys sys, String format, Object... args) {
+        for (int a = 0; a < FeatureFlags.LOG_FILTER.length; a++) {
+            if (FeatureFlags.LOG_FILTER[a].equals(sys.label)) {
+                return;
+            }
+        }
         Log.log(String.format("[%s] %s", sys.label, format), args);
     }
 }
