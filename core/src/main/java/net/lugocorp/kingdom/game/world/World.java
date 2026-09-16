@@ -118,6 +118,22 @@ public class World implements Iterable<Tile> {
     }
 
     /**
+     * Returns an instance of a Tile with the given name (if one exists in this
+     * World)
+     */
+    public Optional<Tile> findTile(String name) {
+        for (int x = 0; x < this.getWidth(); x++) {
+            for (int y = 0; y < this.getHeight(); y++) {
+                final Tile tile = this.getTile(x, y).get();
+                if (tile.name.equals(name)) {
+                    return Optional.of(tile);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Returns an instance of a Building with the given name (if one exists in this
      * World)
      */

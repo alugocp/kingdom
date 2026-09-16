@@ -31,7 +31,7 @@ public class HarvestAuctionPointsGoal extends Goal {
     /** {@inheritdoc} */
     @Override
     protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        // Recruit unit handler (recruit a trade Unit)
+        // Recruit unit handler (recruit a Trade Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
             return new Decision(channel, this, Priority.GOOD_IDEA,
                     new RecruitUnitBehavior(player, Glyph.TRADE,
@@ -95,9 +95,10 @@ public class HarvestAuctionPointsGoal extends Goal {
      */
     private Optional<String> doesAbilityGeneratePointsOnBuilding(GameView view, CompPlayer player, Ability ability) {
         // TODO cache the results of this so we don't rerun it every turn
-        final String[] options = {Labels.building_marketplace};
-        for (int a = 0; a < options.length; a++) {
-            final Optional<Point> override = view.game.world.findBuilding(options[a]).map((Building b) -> b.getPoint());
+        final String[] buildings = {Labels.building_marketplace};
+        for (int a = 0; a < buildings.length; a++) {
+            final Optional<Point> override = view.game.world.findBuilding(buildings[a])
+                    .map((Building b) -> b.getPoint());
             if (!override.isPresent()) {
                 continue;
             }
@@ -112,7 +113,7 @@ public class HarvestAuctionPointsGoal extends Goal {
                         return Priority.FATAL;
                     });
             if (priority != Priority.FATAL) {
-                return Optional.of(options[a]);
+                return Optional.of(buildings[a]);
             }
         }
         return Optional.empty();
