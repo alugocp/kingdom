@@ -25,8 +25,8 @@ public class Consideration<T> {
      * Inputs another state value to possibly record
      */
     public void consider(Priority p, T t) {
-        if (this.state.map((Prioritized<T> s) -> s.priority.value > p.value
-                || (s.priority.value == p.value && Math.random() < 0.3)).orElse(true)) {
+        if (this.state.map((Prioritized<T> s) -> p.value > s.priority.value
+                || (p.value == s.priority.value && Math.random() < 0.3)).orElse(true)) {
             this.state = Optional.of(new Prioritized<T>(p, t));
         }
     }
