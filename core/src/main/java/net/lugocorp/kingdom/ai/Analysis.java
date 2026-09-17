@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Ability;
+import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Path;
@@ -14,13 +16,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * This class contains helper methods to analyze Ability consequences for the
- * CompPlayer
+ * This class contains helper methods to analyze consequences for the CompPlayer
  */
-public class AbilityAnalysis {
+public class Analysis {
     private final ActorState state;
 
-    public AbilityAnalysis(ActorState state) {
+    public Analysis(ActorState state) {
         this.state = state;
     }
 
@@ -80,5 +81,15 @@ public class AbilityAnalysis {
     public Priority passiveAbility(GameView view, Ability ability, Event event, Point p,
             Function<List<Event>, Priority> prioritize) {
         return this.spoofUnitPosition(ability.wielder, p, () -> this.passiveAbility(view, ability, event, prioritize));
+    }
+
+    /**
+     * Makes a Prediction for what will happen if the given Unit consumes the given
+     * Item
+     */
+    public Priority itemConsumption(GameView view, Unit unit, Item item, Function<List<Event>, Priority> prioritize) {
+        final int handle = EventLog.getHandle();
+        item.handleEvent(view, new Events.ItemConsumedEvent(item, unit));
+        return prioritize.apply(EventLog.getEvents(handle));
     }
 }

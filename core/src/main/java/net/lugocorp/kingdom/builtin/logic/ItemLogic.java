@@ -1,7 +1,8 @@
 package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 
@@ -13,12 +14,12 @@ public class ItemLogic {
     /**
      * Item that can be consumed to increase the Player's gold
      */
-    public static SideEffect valuable(GameView view, Event event) {
-        Events.ItemConsumedEvent e = (Events.ItemConsumedEvent) event;
-        return new SideEffect().add(() -> e.consumer.getLeader().ifPresent((Player p) -> {
-            p.gold += e.item.gold;
-            view.hud.top.update(view.game);
-        }));
+    public static StratifiedPayload<Item, Events.ItemConsumedEvent> valuable() {
+        return new StratifiedPayload<>(Events.ItemConsumedEvent.class,
+                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> {
+                    e.consumer.getLeader().get().gold += e.item.gold;
+                    view.hud.top.update(view.game);
+                }).add(e.consumer.handleEvent(view, new Events.YieldGoldEvent(e.consumer, e.item.gold))));
     }
 
     /**

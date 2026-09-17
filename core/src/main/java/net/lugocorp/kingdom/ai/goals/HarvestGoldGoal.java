@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.Prioritized;
 import net.lugocorp.kingdom.ai.Priority;
 import net.lugocorp.kingdom.ai.behaviors.ActivateAbilityBehavior;
+import net.lugocorp.kingdom.ai.behaviors.ConsumeItemBehavior;
 import net.lugocorp.kingdom.ai.behaviors.ListBehavior;
 import net.lugocorp.kingdom.ai.behaviors.MoveUnitBehavior;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
@@ -87,6 +88,23 @@ public class HarvestGoldGoal extends Goal {
         // Unit handler
         if (channel.is(DecisionClass.UNIT)) {
             final Unit unit = channel.getUnit();
+
+            // Consume any valuable Items in this Unit's haul Inventory
+            for (Item item : unit.haul) {
+                final Priority priority = player.actor.analyze.itemConsumption(view, unit, item, (List<Event> log) -> {
+                    for (Event e : log) {
+                        if (e.getClass() == Events.YieldGoldEvent.class) {
+                            return Priority.GOOD_IDEA;
+                        }
+                    }
+                    return Priority.FATAL;
+                });
+                if (priority != Priority.FATAL) {
+                    return new Decision(channel, this, Priority.NECESSITY, new ConsumeItemBehavior(unit, item));
+                }
+            }
+
+            // Move the Unit to a Mine (or build a Mine)
             final Optional<String> building = this.doesUnitGenerateGoldOnBuilding(view, player, unit);
             if (building.isPresent()) {
 
@@ -220,11 +238,9 @@ public class HarvestGoldGoal extends Goal {
                                 if (item.gold > 1) {
                                     return Priority.GOOD_IDEA;
                                 }
+                            } else if (e.getClass() == Events.YieldGoldEvent.class) {
+                                return Priority.GOOD_IDEA;
                             }
-                            /*
-                             * else if (e.getClass() == Events.YieldGoldEvent.class) { return
-                             * Priority.GOOD_IDEA; }
-                             */
                         }
                         return Priority.FATAL;
                     });

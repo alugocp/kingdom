@@ -112,8 +112,7 @@ class VanillaModItems {
                     e.blob.icon = Optional.of(Labels.asset_coin);
                     e.blob.gold = 1;
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
+                }).add(ItemLogic.valuable());
 
         // Bag of Gold
         new Stratified<Item>(events.item, Labels.item_bag_of_gold)
@@ -122,8 +121,7 @@ class VanillaModItems {
                     e.blob.icon = Optional.of(Labels.asset_pouch);
                     e.blob.gold = 5;
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
+                }).add(ItemLogic.valuable());
 
         // Emerald
         new Stratified<Item>(events.item, Labels.item_emerald)
@@ -133,8 +131,7 @@ class VanillaModItems {
                     e.blob.gold = 10;
                     e.blob.tags.add(Labels.tag_gem);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
+                }).add(ItemLogic.valuable());
 
         // Apple
         new Stratified<Item>(events.item, Labels.item_apple)
@@ -166,8 +163,7 @@ class VanillaModItems {
                     e.blob.icon = Optional.of(Labels.asset_pouch);
                     e.blob.gold = 10;
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
+                }).add(ItemLogic.valuable());
 
         // Capital
         new Stratified<Item>(events.item, Labels.item_capital)

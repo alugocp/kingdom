@@ -263,6 +263,20 @@ public class Events {
     }
 
     /**
+     * Triggered when the Unit yields gold
+     */
+    public static class YieldGoldEvent extends Event {
+        public final Unit unit;
+        public final int gold;
+
+        public YieldGoldEvent(Unit unit, int gold) {
+            super();
+            this.unit = unit;
+            this.gold = gold;
+        }
+    }
+
+    /**
      * Triggered when an Ability is activated
      */
     public static class AbilityActivatedEvent extends Event {

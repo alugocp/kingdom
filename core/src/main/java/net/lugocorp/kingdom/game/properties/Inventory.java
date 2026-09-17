@@ -91,6 +91,13 @@ public class Inventory implements MenuSubject, Iterable<Item> {
     }
 
     /**
+     * Returns true if this Inventory has the given Item
+     */
+    public boolean has(Item item) {
+        return this.items.contains(item);
+    }
+
+    /**
      * Removes an Item from this Inventory
      */
     public void remove(Item item) {

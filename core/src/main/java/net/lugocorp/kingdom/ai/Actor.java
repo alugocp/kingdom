@@ -16,10 +16,10 @@ import java.util.Map;
 public class Actor {
     private final Map<String, Decision> decisions = new HashMap<>();
     public final ActorState state = new ActorState();
-    public final AbilityAnalysis analyze;
+    public final Analysis analyze;
 
     public Actor() {
-        this.analyze = new AbilityAnalysis(this.state);
+        this.analyze = new Analysis(this.state);
     }
 
     /**
