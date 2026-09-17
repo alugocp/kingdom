@@ -6,7 +6,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
- * This Behavior tells the given Unit to consue an Item
+ * This Behavior tells the given Unit to consume an Item
  */
 public class ConsumeItemBehavior implements Behavior {
     private final Item item;

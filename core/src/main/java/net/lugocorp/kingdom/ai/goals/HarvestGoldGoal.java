@@ -91,6 +91,9 @@ public class HarvestGoldGoal extends Goal {
 
             // Consume any valuable Items in this Unit's haul Inventory
             for (Item item : unit.haul) {
+                if (unit.hunger.canEat(view, item)) {
+                    continue;
+                }
                 final Priority priority = player.actor.analyze.itemConsumption(view, unit, item, (List<Event> log) -> {
                     for (Event e : log) {
                         if (e.getClass() == Events.YieldGoldEvent.class) {
