@@ -5,6 +5,8 @@ import net.lugocorp.kingdom.ai.DecisionClass;
 import net.lugocorp.kingdom.ai.Goal;
 import net.lugocorp.kingdom.ai.Prioritized;
 import net.lugocorp.kingdom.ai.Priority;
+import net.lugocorp.kingdom.ai.behaviors.ActivateAbilityBehavior;
+import net.lugocorp.kingdom.ai.behaviors.ListBehavior;
 import net.lugocorp.kingdom.ai.behaviors.MoveUnitBehavior;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
 import net.lugocorp.kingdom.builtin.Events;
@@ -24,6 +26,7 @@ import net.lugocorp.kingdom.prediction.Prediction;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Chooser;
 import net.lugocorp.kingdom.utils.Lambda;
+import net.lugocorp.kingdom.utils.Tuple;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,20 +104,23 @@ public class HarvestFoodGoal extends Goal {
                         } else {
                             // Try to spawn the Building if one is not close enough
                             for (Ability active : unit.abilities.getActives()) {
-                                final Optional<String> tile = this.doesAbilitySpawnBuildingOnTile(view, player, active,
-                                        building.get());
+                                final Optional<Tuple<String, Path>> tile = this.doesAbilitySpawnBuildingOnTile(view,
+                                        player, active, building.get());
                                 if (tile.isPresent()) {
                                     final Optional<Point> dest = this.findNearbyTile(view, player, unit.getPoint(),
-                                            tile.get());
+                                            tile.get().a);
                                     if (dest.isPresent()) {
                                         final List<Point> tilePath = pathfinder.getPath(view, dest.get());
-                                        if (tilePath.size() > 0 && tilePath.size() < 6) {
+                                        if (dest.get().equals(unit.getPoint())
+                                                || (tilePath.size() > 0 && tilePath.size() < 6)) {
                                             return new Decision(channel, this, Priority.OPTIMAL,
-                                                    new MoveUnitBehavior(unit, tilePath));
+                                                    new ListBehavior(new MoveUnitBehavior(unit, tilePath),
+                                                            new ActivateAbilityBehavior(unit, active, tile.get().b)));
                                         }
                                         if (tilePath.size() > 0 && tilePath.size() < 12) {
                                             return new Decision(channel, this, Priority.GOOD_IDEA,
-                                                    new MoveUnitBehavior(unit, tilePath));
+                                                    new ListBehavior(new MoveUnitBehavior(unit, tilePath),
+                                                            new ActivateAbilityBehavior(unit, active, tile.get().b)));
                                         }
                                     }
                                 }
@@ -239,8 +245,8 @@ public class HarvestFoodGoal extends Goal {
     /**
      * Returns the name of a Tile that the given Ability spawns a Building on
      */
-    private Optional<String> doesAbilitySpawnBuildingOnTile(GameView view, CompPlayer player, Ability ability,
-            String target) {
+    private Optional<Tuple<String, Path>> doesAbilitySpawnBuildingOnTile(GameView view, CompPlayer player,
+            Ability ability, String target) {
         // TODO cache the results of this so we don't rerun it every turn
         final String[] tiles = {Labels.tile_grass, Labels.tile_rock, Labels.tile_sand, Labels.tile_snow};
         for (int a = 0; a < tiles.length; a++) {
@@ -261,7 +267,7 @@ public class HarvestFoodGoal extends Goal {
                         return Priority.FATAL;
                     });
             if (prioritized.map((Prioritized<Path> p) -> p.priority != Priority.FATAL).orElse(false)) {
-                return Optional.of(tiles[a]);
+                return Optional.of(new Tuple<String, Path>(tiles[a], prioritized.get().value));
             }
         }
         return Optional.empty();

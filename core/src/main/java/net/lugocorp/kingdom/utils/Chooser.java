@@ -14,6 +14,13 @@ public class Chooser<T> {
     }
 
     /**
+     * Returns true if we've accepted an option yet
+     */
+    public boolean has() {
+        return this.value != null;
+    }
+
+    /**
      * Returns the chosen value
      */
     public T get() {

@@ -167,10 +167,7 @@ class VanillaModItems {
                     e.blob.gold = 10;
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> {
-                            e.consumer.getLeader().ifPresent((Player p) -> p.gold += 10);
-                            view.hud.top.update(view.game);
-                        }));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.valuable(view, e));
 
         // Capital
         new Stratified<Item>(events.item, Labels.item_capital)
