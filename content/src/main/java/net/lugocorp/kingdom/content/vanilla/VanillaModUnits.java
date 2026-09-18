@@ -96,7 +96,7 @@ class VanillaModUnits {
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash,
                             Labels.ability_rallying_cry);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
-                            Labels.ability_regeneration, Labels.ability_plate_mail);
+                            Labels.ability_regeneration, Labels.ability_armor);
                     UnitLogic.standardHealthPool(e.blob);
                     return new SideEffect();
                 });
@@ -138,7 +138,7 @@ class VanillaModUnits {
                 });
 
         // Iyart
-        //
+        // Priestess Aq'bil
         // Badroch the Pack Grue
         // Lord Sakamoto
         // Pelagma
@@ -173,7 +173,7 @@ class VanillaModUnits {
 
         // Defender Cuauhtli
         // The Hunched Warlock
-        //
+        // Amachaq
         // Lost Golem
         new Stratified<Unit>(events.unit, Labels.unit_lost_golem).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -218,9 +218,9 @@ class VanillaModUnits {
                     return new SideEffect();
                 });
 
-        //
+        // Kalteelk
         // The Elder
-        //
+        // Neer
         // King Gargantos
         new Stratified<Unit>(events.unit, Labels.unit_king_gargantos).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -253,7 +253,7 @@ class VanillaModUnits {
                     return new SideEffect();
                 });
 
-        //
+        // Messenger Xinjian
         // Stalagmus
         new Stratified<Unit>(events.unit, Labels.unit_stalagmus).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -290,7 +290,7 @@ class VanillaModUnits {
         // Alaistar and Wurmdel
         // Mi'chalb Lightfoot
         // Illapa (Quechua for lightning)
-        //
+        // Manav
         // The Druid
         new Stratified<Unit>(events.unit, Labels.unit_druid).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -338,7 +338,7 @@ class VanillaModUnits {
                     return new SideEffect();
                 });
 
-        //
+        // Guindolyn
         // Condylure of the Star Nose
         new Stratified<Unit>(events.unit, Labels.unit_condylure_of_the_star_nose).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {

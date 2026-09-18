@@ -337,6 +337,7 @@ public class Labels {
      */
     public static final String ability_absorb = "Absorb";
     public static final String ability_acid_skin = "Acid Skin";
+    public static final String ability_armor = "Armor";
     public static final String ability_bite = "Bite";
     public static final String ability_blessing_of_natures_hand = "Blessing of Nature's Hand";
     public static final String ability_conservation_of_energy = "Conservation of Energy";
@@ -393,7 +394,6 @@ public class Labels {
     public static final String ability_plant_cushion = "Plant Cushion";
     public static final String ability_plant_forest = "Plant Forest";
     public static final String ability_plant_meadow = "Plant Meadow";
-    public static final String ability_plate_mail = "Plate Mail";
     public static final String ability_power_of_nature = "Power of Nature";
     public static final String ability_protective_spores = "Protective Spores";
     public static final String ability_raid_mine = "Raid Mine";

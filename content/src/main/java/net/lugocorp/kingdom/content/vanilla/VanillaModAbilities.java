@@ -70,6 +70,14 @@ class VanillaModAbilities {
                     return new SideEffect();
                 });
 
+        // Armor
+        new Stratified<Ability>(events.ability, Labels.ability_armor).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_defense);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
+                        (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
+
         // Bite
         new Stratified<Ability>(events.ability, Labels.ability_bite).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -881,14 +889,6 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_meadow,
                                 (Tile t) -> t.name.equals(Labels.tile_grass)));
-
-        // Plate Mail
-        new Stratified<Ability>(events.ability, Labels.ability_plate_mail).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_defense);
-                    return new SideEffect();
-                }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
-                        (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Power of Nature
         new Stratified<Ability>(events.ability, Labels.ability_power_of_nature).add(Events.GenerateAbilityEvent.class,
