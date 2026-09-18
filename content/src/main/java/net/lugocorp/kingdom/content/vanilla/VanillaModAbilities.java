@@ -305,19 +305,20 @@ class VanillaModAbilities {
                                 }
                                 return effects;
                             }
-                            final Set<Point> targets = Lambda.filter(
-                                    (Point p) -> receiver.wielder.combat.getDefaultTarget(view, p).isPresent(),
+                            final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                                    .flatMap((Tile t) -> t.getPriorityEntity()).isPresent(),
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
                             return receiver.wielder.getLeader().get().select(view, targets, "No targets available",
                                     (Point p) -> {
-                                        final Entity target = receiver.wielder.combat.getDefaultTarget(view, p).get();
+                                        final Entity target = view.game.world.getTile(p).get().getPriorityEntity()
+                                                .get();
                                         final SideEffect effects = new SideEffect()
                                                 .add(receiver.wielder.combat.attack(view, target, new Damage(3)))
                                                 .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                                         targets.remove(p);
                                         if (targets.size() > 0) {
                                             final Point p1 = Lambda.random(targets);
-                                            final Entity target1 = receiver.wielder.combat.getDefaultTarget(view, p1)
+                                            final Entity target1 = view.game.world.getTile(p1).get().getPriorityEntity()
                                                     .get();
                                             effects.add(receiver.wielder.combat.attack(view, target1, new Damage(2)));
                                         }

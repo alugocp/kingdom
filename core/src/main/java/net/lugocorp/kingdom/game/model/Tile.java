@@ -24,7 +24,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Represents a single hexagon in the game world and its corresponding
@@ -125,6 +127,16 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         if (this.userData.vision == 0) {
             this.placeholderBuildingModel = this.building.flatMap((Building b) -> b.getModelInstance());
         }
+    }
+
+    /**
+     * Returns all Entities on this Tile
+     */
+    public Set<Entity> getEntities() {
+        final Set<Entity> entities = new HashSet<>();
+        this.building.ifPresent((Building b) -> entities.add(b));
+        this.unit.ifPresent((Unit u) -> entities.add(u));
+        return entities;
     }
 
     /**

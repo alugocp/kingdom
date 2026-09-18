@@ -4,14 +4,11 @@ import net.lugocorp.kingdom.builtin.animation.AttackAnimation;
 import net.lugocorp.kingdom.builtin.animation.DamagedAnimation;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.layers.Entity;
-import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
-import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
-import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.HealthChangeOverlay;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -34,22 +31,6 @@ public class Combat {
      */
     public Combat() {
         this.bearer = null;
-    }
-
-    /**
-     * Returns the default target Entity at the given Point
-     */
-    public Optional<Entity> getDefaultTarget(GameView view, Point p) {
-        final Optional<Tile> t = view.game.world.getTile(p);
-        if (t.isPresent()) {
-            if (t.get().unit.map((Unit u) -> u.combat.health.isVulnerable()).orElse(false)) {
-                return Optional.of((Entity) t.get().unit.get());
-            }
-            if (t.get().building.map((Building b) -> b.combat.health.isVulnerable()).orElse(false)) {
-                return Optional.of((Entity) t.get().building.get());
-            }
-        }
-        return Optional.empty();
     }
 
     /**

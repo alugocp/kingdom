@@ -1,8 +1,10 @@
 package net.lugocorp.kingdom.ai;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
@@ -90,6 +92,17 @@ public class Analysis {
     public Priority itemConsumption(GameView view, Unit unit, Item item, Function<List<Event>, Priority> prioritize) {
         final int handle = EventLog.getHandle();
         item.handleEvent(view, new Events.ItemConsumedEvent(item, unit));
+        return prioritize.apply(EventLog.getEvents(handle));
+    }
+
+    /**
+     * Makes a Prediction for what will happen if the given Unit attacks the given
+     * target Entity
+     */
+    public Priority attack(GameView view, Unit attacker, Damage damage, Entity target,
+            Function<List<Event>, Priority> prioritize) {
+        final int handle = EventLog.getHandle();
+        attacker.combat.attack(view, target, damage);
         return prioritize.apply(EventLog.getEvents(handle));
     }
 }

@@ -27,6 +27,13 @@ public class Leadership {
     }
 
     /**
+     * Returns true if the Entity doesn't have a leader
+     */
+    public boolean belongsToNobody() {
+        return !this.get().isPresent();
+    }
+
+    /**
      * Returns true if this Unit belongs to the human Player
      */
     public boolean belongsToHuman() {
