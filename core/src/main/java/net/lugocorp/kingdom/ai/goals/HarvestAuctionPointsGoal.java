@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.ai.Decision;
 import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.DecisionClass;
 import net.lugocorp.kingdom.ai.Goal;
+import net.lugocorp.kingdom.ai.GoalUtils;
 import net.lugocorp.kingdom.ai.Priority;
 import net.lugocorp.kingdom.ai.behaviors.MoveUnitBehavior;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
@@ -11,7 +12,6 @@ import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
-import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.events.Event;
@@ -52,7 +52,8 @@ public class HarvestAuctionPointsGoal extends Goal {
             final Unit unit = channel.getUnit();
             final Optional<String> building = this.doesUnitGeneratePointsOnBuilding(view, player, unit);
             if (building.isPresent()) {
-                final Optional<Point> closest = this.findNearbyBuilding(view, player, unit.getPoint(), building.get());
+                final Optional<Point> closest = GoalUtils.findNearbyBuilding(view, player, unit.getPoint(),
+                        building.get());
                 if (closest.isPresent()) {
                     final Pathfinder pathfinder = new Pathfinder(unit);
                     final List<Point> path = pathfinder.getPath(view, closest.get());
@@ -68,25 +69,12 @@ public class HarvestAuctionPointsGoal extends Goal {
     }
 
     /**
-     * Optionally returns the closest Point where the target Building can be found
-     */
-    private Optional<Point> findNearbyBuilding(GameView view, CompPlayer player, Point focal, String building) {
-        return player.memory.getClosestKnownTileWhere(view, focal,
-                (Tile t) -> t.building.map((Building b) -> b.name.equals(building)).orElse(false));
-    }
-
-    /**
      * Returns the name of a Building that the given Unit generates auction points
      * on
      */
     private Optional<String> doesUnitGeneratePointsOnBuilding(GameView view, CompPlayer player, Unit unit) {
-        for (Ability passive : unit.abilities.getPassives()) {
-            final Optional<String> building = this.doesAbilityGeneratePointsOnBuilding(view, player, passive);
-            if (building.isPresent()) {
-                return building;
-            }
-        }
-        return Optional.empty();
+        return GoalUtils.checkUnitOnBuilding(unit,
+                (Ability passive) -> this.doesAbilityGeneratePointsOnBuilding(view, player, passive));
     }
 
     /**
@@ -95,27 +83,7 @@ public class HarvestAuctionPointsGoal extends Goal {
      */
     private Optional<String> doesAbilityGeneratePointsOnBuilding(GameView view, CompPlayer player, Ability ability) {
         // TODO cache the results of this so we don't rerun it every turn
-        final String[] buildings = {Labels.building_marketplace};
-        for (int a = 0; a < buildings.length; a++) {
-            final Optional<Point> override = view.game.world.findBuilding(buildings[a])
-                    .map((Building b) -> b.getPoint());
-            if (!override.isPresent()) {
-                continue;
-            }
-            final Events.RepeatedEvent event = new Events.RepeatedEvent("Tick", 0, false);
-            final Priority priority = player.actor.analyze.passiveAbility(view, ability, event, override.get(),
-                    (List<Event> log) -> {
-                        for (Event e : log) {
-                            if (e.getClass() == Events.GenerateAuctionPointsEvent.class) {
-                                return Priority.GOOD_IDEA;
-                            }
-                        }
-                        return Priority.FATAL;
-                    });
-            if (priority != Priority.FATAL) {
-                return Optional.of(buildings[a]);
-            }
-        }
-        return Optional.empty();
+        return GoalUtils.checkAbilityOnBuilding(view, player, ability, new String[]{Labels.building_marketplace},
+                (Event e) -> e.getClass() == Events.GenerateAuctionPointsEvent.class);
     }
 }

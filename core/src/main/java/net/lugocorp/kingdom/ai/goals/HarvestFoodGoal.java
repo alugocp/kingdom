@@ -3,7 +3,7 @@ import net.lugocorp.kingdom.ai.Decision;
 import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.ai.DecisionClass;
 import net.lugocorp.kingdom.ai.Goal;
-import net.lugocorp.kingdom.ai.Prioritized;
+import net.lugocorp.kingdom.ai.GoalUtils;
 import net.lugocorp.kingdom.ai.Priority;
 import net.lugocorp.kingdom.ai.behaviors.ActivateAbilityBehavior;
 import net.lugocorp.kingdom.ai.behaviors.ListBehavior;
@@ -13,7 +13,6 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Ability;
-import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -22,7 +21,6 @@ import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
-import net.lugocorp.kingdom.prediction.Prediction;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Chooser;
 import net.lugocorp.kingdom.utils.Lambda;
@@ -90,7 +88,8 @@ public class HarvestFoodGoal extends Goal {
             if (building.isPresent()) {
 
                 // Find a nearby Building that interacts with this Unit
-                final Optional<Point> closest = this.findNearbyBuilding(view, player, unit.getPoint(), building.get());
+                final Optional<Point> closest = GoalUtils.findNearbyBuilding(view, player, unit.getPoint(),
+                        building.get());
                 if (closest.isPresent()) {
 
                     // Check if there's a path to the closest Building
@@ -107,7 +106,7 @@ public class HarvestFoodGoal extends Goal {
                                 final Optional<Tuple<String, Path>> tile = this.doesAbilitySpawnBuildingOnTile(view,
                                         player, active, building.get());
                                 if (tile.isPresent()) {
-                                    final Optional<Point> dest = this.findNearbyTile(view, player, unit.getPoint(),
+                                    final Optional<Point> dest = GoalUtils.findNearbyTile(view, player, unit.getPoint(),
                                             tile.get().a);
                                     if (dest.isPresent()) {
                                         final List<Point> tilePath = pathfinder.getPath(view, dest.get());
@@ -164,21 +163,6 @@ public class HarvestFoodGoal extends Goal {
     }
 
     /**
-     * Optionally returns the closest Point where the target Building can be found
-     */
-    private Optional<Point> findNearbyBuilding(GameView view, CompPlayer player, Point focal, String building) {
-        return player.memory.getClosestKnownTileWhere(view, focal,
-                (Tile t) -> t.building.map((Building b) -> b.name.equals(building)).orElse(false));
-    }
-
-    /**
-     * Optionally returns the closest Point where the target Tile can be found
-     */
-    private Optional<Point> findNearbyTile(GameView view, CompPlayer player, Point focal, String tile) {
-        return player.memory.getClosestKnownTileWhere(view, focal, (Tile t) -> t.name.equals(tile));
-    }
-
-    /**
      * Returns the name of a Building that the given Unit generates a food Item on
      * for any of the given target Units
      */
@@ -198,13 +182,8 @@ public class HarvestFoodGoal extends Goal {
      * for the given target Unit
      */
     private Optional<String> doesUnitGenerateFoodOnBuilding(GameView view, CompPlayer player, Unit unit, Unit target) {
-        for (Ability passive : unit.abilities.getPassives()) {
-            final Optional<String> building = this.doesAbilityGenerateFoodOnBuilding(view, player, passive, target);
-            if (building.isPresent()) {
-                return building;
-            }
-        }
-        return Optional.empty();
+        return GoalUtils.checkUnitOnBuilding(unit,
+                (Ability passive) -> this.doesAbilityGenerateFoodOnBuilding(view, player, passive, target));
     }
 
     /**
@@ -214,32 +193,18 @@ public class HarvestFoodGoal extends Goal {
     private Optional<String> doesAbilityGenerateFoodOnBuilding(GameView view, CompPlayer player, Ability ability,
             Unit target) {
         // TODO cache the results of this so we don't rerun it every turn
-        final String[] buildings = {Labels.building_dense_forest, Labels.building_forest, Labels.building_meadow,
-                Labels.building_oasis, Labels.building_shrubland, Labels.building_mine};
-        for (int a = 0; a < buildings.length; a++) {
-            final Optional<Point> override = view.game.world.findBuilding(buildings[a])
-                    .map((Building b) -> b.getPoint());
-            if (!override.isPresent()) {
-                continue;
-            }
-            final Events.RepeatedEvent event = new Events.RepeatedEvent("Tick", 0, false);
-            final Priority priority = player.actor.analyze.passiveAbility(view, ability, event, override.get(),
-                    (List<Event> log) -> {
-                        for (Event e : log) {
-                            if (e.getClass() == Events.GenerateItemEvent.class) {
-                                final Item item = ((Events.GenerateItemEvent) e).blob;
-                                if (target.hunger.canEat(view, item)) {
-                                    return Priority.GOOD_IDEA;
-                                }
-                            }
+        return GoalUtils.checkAbilityOnBuilding(
+                view, player, ability, new String[]{Labels.building_dense_forest, Labels.building_forest,
+                        Labels.building_meadow, Labels.building_oasis, Labels.building_shrubland, Labels.building_mine},
+                (Event e) -> {
+                    if (e.getClass() == Events.GenerateItemEvent.class) {
+                        final Item item = ((Events.GenerateItemEvent) e).blob;
+                        if (target.hunger.canEat(view, item)) {
+                            return true;
                         }
-                        return Priority.FATAL;
-                    });
-            if (priority != Priority.FATAL) {
-                return Optional.of(buildings[a]);
-            }
-        }
-        return Optional.empty();
+                    }
+                    return false;
+                });
     }
 
     /**
@@ -254,20 +219,10 @@ public class HarvestFoodGoal extends Goal {
             if (!override.isPresent()) {
                 continue;
             }
-            final Optional<Prioritized<Path>> prioritized = player.actor.analyze.activeAbility(view, ability,
-                    override.get(), (Prediction prediction) -> {
-                        for (Event e : prediction.log) {
-                            if (e.getClass() == Events.GenerateBuildingEvent.class) {
-                                final Building building = ((Events.GenerateBuildingEvent) e).blob;
-                                if (building.name.equals(target)) {
-                                    return Priority.GOOD_IDEA;
-                                }
-                            }
-                        }
-                        return Priority.FATAL;
-                    });
-            if (prioritized.map((Prioritized<Path> p) -> p.priority != Priority.FATAL).orElse(false)) {
-                return Optional.of(new Tuple<String, Path>(tiles[a], prioritized.get().value));
+            final Optional<Path> selection = GoalUtils.canAbilitySpawnBuilding(view, player, ability, target,
+                    override.get());
+            if (selection.isPresent()) {
+                return Optional.of(new Tuple<String, Path>(tiles[a], selection.get()));
             }
         }
         return Optional.empty();
