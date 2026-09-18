@@ -45,6 +45,24 @@ public enum Priority {
         throw new RuntimeException("Could not decrement Priority value");
     }
 
+    /**
+     * Returns the Priority most closely associated with the given value
+     */
+    public static Priority getByValue(int value) {
+        if (value < Priority.FATAL.value) {
+            return Priority.FATAL;
+        }
+        if (value > Priority.NECESSITY.value) {
+            return Priority.NECESSITY;
+        }
+        for (Priority p : Priority.values()) {
+            if (value == p.value) {
+                return p;
+            }
+        }
+        return Priority.FATAL;
+    }
+
     /** {@inheritdoc} */
     @Override
     public String toString() {

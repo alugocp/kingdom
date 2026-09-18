@@ -28,6 +28,13 @@ public class Chooser<T> {
     }
 
     /**
+     * Returns the score associated wth the chosen value
+     */
+    public int getScore() {
+        return this.score;
+    }
+
+    /**
      * Makes a new comparison to calculate the best value
      */
     public Chooser<T> choice(T value, int score) {
