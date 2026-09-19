@@ -6,7 +6,9 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Chooser;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -50,18 +52,17 @@ public class RecruitUnitBehavior implements Behavior {
         }
 
         // Get the highest rated Unit option
-        Priority highest = Priority.FATAL;
-        Unit best = null;
+        final Chooser<Unit> chooser = new Chooser<>(
+                (Integer old, Integer next) -> next > old || (next == old && Math.random() < 0.3));
         for (Unit u : options) {
+            u.setLeader(Optional.of(this.player));
             final Priority p = this.criteria.apply(u);
-            if (p.value > highest.value || (p.value == highest.value && Math.random() < 0.3)) {
-                highest = p;
-                best = u;
-            }
+            chooser.choice(u, p.value);
+            u.setLeader(Optional.empty());
         }
 
         // Recruit that highest rated Unit
-        view.game.mechanics.recruitUnits.choose(view, this.player, best);
+        view.game.mechanics.recruitUnits.choose(view, this.player, chooser.get());
     }
 
     /** {@inheritdoc} */
