@@ -7,7 +7,6 @@ import net.lugocorp.kingdom.ai.GoalUtils;
 import net.lugocorp.kingdom.ai.Priority;
 import net.lugocorp.kingdom.ai.behaviors.AttackBehavior;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
-import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
@@ -23,22 +22,14 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * This causes the CompPlayer to attack enemy Buildings
+ * This causes the CompPlayer to attack enemy Units
  */
-public class AttackEnemyBuildingsGoal extends Goal {
-    private final Set<String> ignore = new HashSet<>();
-
-    public AttackEnemyBuildingsGoal() {
-        this.ignore.add(Labels.building_forest);
-        this.ignore.add(Labels.building_meadow);
-        this.ignore.add(Labels.building_oasis);
-        this.ignore.add(Labels.building_shrubland);
-    }
+public class AttackEnemyUnitsGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
     protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final Set<Building> targets = this.getPossibleTargets(view, player);
+        final Set<Unit> targets = this.getPossibleTargets(view, player);
 
         // Recruit unit handler (recruit a Battle Glyph Unit that is strong against
         // Buildings)
@@ -52,11 +43,11 @@ public class AttackEnemyBuildingsGoal extends Goal {
             }
             return new Decision(channel, this, priority, new RecruitUnitBehavior(player, Glyph.BATTLE, (Unit u) -> {
                 int bonus = 0;
-                for (Building b : targets) {
-                    if (GoalUtils.isWeakAgainst(view, player, u, b)) {
+                for (Unit u1 : targets) {
+                    if (GoalUtils.isWeakAgainst(view, player, u, u1)) {
                         bonus--;
                     }
-                    if (GoalUtils.isStrongAgainst(view, player, u, b)) {
+                    if (GoalUtils.isStrongAgainst(view, player, u, u1)) {
                         bonus++;
                     }
                 }
@@ -70,8 +61,8 @@ public class AttackEnemyBuildingsGoal extends Goal {
 
                 // Get the option that's the closest to any given target
                 final Chooser<Point> chooser = new Chooser<>((Integer old, Integer next) -> next < old);
-                for (Building b : targets) {
-                    Point p = b.getPoint();
+                for (Unit u : targets) {
+                    Point p = u.getPoint();
                     for (Point p1 : options) {
                         chooser.choice(p1, p.distance(p1));
                     }
@@ -85,19 +76,22 @@ public class AttackEnemyBuildingsGoal extends Goal {
             final Unit unit = channel.getUnit();
 
             if (unit.glyphs.has(Glyph.BATTLE) && targets.size() > 0) {
-                final Chooser<Building> chooser = new Chooser<>((Integer old, Integer next) -> next > old);
+                final Chooser<Unit> chooser = new Chooser<>((Integer old, Integer next) -> next > old);
                 final Point p = unit.getPoint();
-                for (Building b : targets) {
-                    final int dist = p.distance(b.getPoint());
-                    final int maxDamage = GoalUtils.getMaxDamage(view, player, unit, b);
+                for (Unit u : targets) {
+                    final Optional<Building> occupiedBuilding = view.game.world.getTile(u.getPoint()).get().building;
+                    final int maxDamage = GoalUtils.getMaxDamage(view, player, unit, u);
                     final int damageTaken = unit.combat.health.getMax() - unit.combat.health.get();
                     final int nearbyEnemies = GoalUtils.countNearbyUnits(view, player, unit.getPoint(), false);
-                    final boolean isTower = b.isEntityType(EntityType.TOWER);
-                    final int health = b.combat.health.get();
+                    final int nearbyAllies = GoalUtils.countNearbyUnits(view, player, unit.getPoint(), true);
+                    final int dist = p.distance(u.getPoint());
+                    final int health = u.combat.health.get();
 
-                    Priority priority = Priority.NEUTRAL;
-                    if (isTower) {
-                        priority = Priority.OPTIMAL;
+                    Priority priority = Priority.GOOD_IDEA;
+                    if (occupiedBuilding.map((Building b) -> b.isEntityType(EntityType.TOWER)).orElse(false)) {
+                        priority = priority.increment();
+                    } else if (occupiedBuilding.isPresent()) {
+                        priority = priority.decrement();
                     }
                     if (nearbyEnemies == 0) {
                         priority = priority.increment();
@@ -105,7 +99,9 @@ public class AttackEnemyBuildingsGoal extends Goal {
                         if (damageTaken > 0) {
                             priority = priority.decrement();
                         }
-                        if (nearbyEnemies > 2) {
+                        if (nearbyAllies > nearbyEnemies) {
+                            priority = priority.increment();
+                        } else if (nearbyEnemies > 2) {
                             priority = priority.decrement();
                             if (nearbyEnemies > 4) {
                                 priority = priority.decrement();
@@ -123,12 +119,12 @@ public class AttackEnemyBuildingsGoal extends Goal {
                             priority = priority.increment();
                         }
                     }
-                    chooser.choice(b, priority.value);
+                    chooser.choice(u, priority.value);
                 }
 
                 // Calculate the Priority and have our Unit attack the target
                 if (chooser.getScore() > Priority.FATAL.value) {
-                    final Building target = chooser.get();
+                    final Unit target = chooser.get();
                     final Priority priority = Priority.getByValue(chooser.getScore());
                     return new Decision(channel, this, priority, new AttackBehavior(player, unit, target));
                 }
@@ -140,18 +136,15 @@ public class AttackEnemyBuildingsGoal extends Goal {
     }
 
     /**
-     * Returns a set of enemy Buildings that the CompPlayer knows of
+     * Returns a set of enemy Units that the CompPlayer knows of
      */
-    private Set<Building> getPossibleTargets(GameView view, CompPlayer player) {
-        final Set<Building> targets = new HashSet<>();
+    private Set<Unit> getPossibleTargets(GameView view, CompPlayer player) {
+        final Set<Unit> targets = new HashSet<>();
         for (Point p : player.memory.getKnownCells()) {
             final Tile tile = view.game.world.getTile(p).get();
-            final Optional<Building> target = tile.building
-                    .flatMap((Building b) -> !b.leadership.belongsToNobody() && !b.leadership.belongsToPlayer(player)
-                            && b.combat.health.isVulnerable() && !this.ignore.contains(b.name)
-                                    ? Optional.of(b)
-                                    : Optional.empty());
-            target.ifPresent((Building b) -> targets.add(b));
+            final Optional<Unit> target = tile.unit
+                    .flatMap((Unit u) -> u.leadership.belongsToPlayer(player) ? Optional.empty() : Optional.of(u));
+            target.ifPresent((Unit u) -> targets.add(u));
         }
         return targets;
     }

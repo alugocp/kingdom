@@ -9,10 +9,12 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.prediction.Prediction;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.WrapInt;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -189,5 +191,54 @@ public class GoalUtils {
         final Priority result = player.actor.analyze.attack(view, attacker, dmg, target,
                 (List<Event> log) -> Priority.FATAL);
         return dmg.base < baseline;
+    }
+
+    /**
+     * Returns the max Damage that the given Unit could do against the give target
+     * Entity
+     */
+    public static int getMaxDamage(GameView view, CompPlayer player, Unit attacker, Entity target) {
+        int max = 0;
+        for (Ability ability : attacker.abilities.getActives()) {
+            for (Point override : Hexagons.getNeighbors(target.getPoint(), 3)) {
+                if (!view.game.world.isInBounds(override)) {
+                    continue;
+                }
+
+                final WrapInt damage = new WrapInt();
+                player.actor.analyze.activeAbility(view, ability, override, (Prediction prediction) -> {
+                    for (Event event : prediction.log) {
+                        if (event instanceof Events.TakeDamageEvent) {
+                            final Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
+                            if (e.target == target) {
+                                damage.add(e.dmg.total());
+                            }
+                        }
+                    }
+                    return Priority.FATAL;
+                });
+                if (damage.get() > max) {
+                    max = damage.get();
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * Returns the number of relevant allied or enemy Units present near the given
+     * focal Point
+     */
+    public static int countNearbyUnits(GameView view, CompPlayer player, Point focal, boolean allies) {
+        int count = 0;
+        for (Point p : Hexagons.getNeighbors(focal, 5)) {
+            if (view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
+                    .map((Unit u) -> (allies == u.leadership.belongsToPlayer(player)) && (u.glyphs.has(Glyph.BATTLE)
+                            || u.glyphs.has(Glyph.DEFENSE) || u.glyphs.has(Glyph.SUPPORT)))
+                    .orElse(false)) {
+                count++;
+            }
+        }
+        return count;
     }
 }
