@@ -150,6 +150,10 @@ public class KeepEntitiesHealedGoal extends Goal {
     private boolean canUnitHealTarget(GameView view, CompPlayer player, Unit healer, Entity target) {
         for (Ability active : healer.abilities.getActives()) {
             for (Point override : Hexagons.getNeighbors(target.getPoint(), 3)) {
+                if (!view.game.world.isInBounds(override)) {
+                    continue;
+                }
+
                 final Wrapped<Boolean> heals = new Wrapped<>(false);
                 player.actor.analyze.activeAbility(view, active, override, (Prediction prediction) -> {
                     for (Event event : prediction.log) {
