@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.ai.goals.FeedUnitsGoal;
 import net.lugocorp.kingdom.ai.goals.HarvestAuctionPointsGoal;
 import net.lugocorp.kingdom.ai.goals.HarvestFoodGoal;
 import net.lugocorp.kingdom.ai.goals.HarvestGoldGoal;
+import net.lugocorp.kingdom.ai.goals.KeepEntitiesHealedGoal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +30,7 @@ public class GoalSet implements Iterable<Goal> {
         this.goals.add(new HarvestGoldGoal());
         this.goals.add(new ExpandTerritoryGoal());
         this.goals.add(new AttackEnemyBuildingsGoal());
+        this.goals.add(new KeepEntitiesHealedGoal());
     }
 
     /**

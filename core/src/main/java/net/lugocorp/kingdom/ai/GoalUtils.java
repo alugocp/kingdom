@@ -14,7 +14,7 @@ import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.prediction.Prediction;
 import net.lugocorp.kingdom.ui.views.GameView;
-import net.lugocorp.kingdom.utils.WrapInt;
+import net.lugocorp.kingdom.utils.Wrapped;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,13 +205,13 @@ public class GoalUtils {
                     continue;
                 }
 
-                final WrapInt damage = new WrapInt();
+                final Wrapped<Integer> damage = new Wrapped<>(0);
                 player.actor.analyze.activeAbility(view, ability, override, (Prediction prediction) -> {
                     for (Event event : prediction.log) {
                         if (event instanceof Events.TakeDamageEvent) {
                             final Events.TakeDamageEvent e = (Events.TakeDamageEvent) event;
                             if (e.target == target) {
-                                damage.add(e.dmg.total());
+                                damage.set(damage.get() + e.dmg.total());
                             }
                         }
                     }
