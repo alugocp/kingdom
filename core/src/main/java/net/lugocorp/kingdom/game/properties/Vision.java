@@ -31,12 +31,16 @@ public class Vision {
      * Changes the focal point of the associated Unit/Building
      */
     public void translate(Player player, World world, HexSide direction) {
+        final Set<Point> newVision = new HashSet<>();
         for (Point p : this.vision) {
             final Point d = Hexagons.getDirectionTranslation(p, direction);
+            final Point p1 = new Point(p.x + d.x, p.y + d.y);
             world.getTile(p.x, p.y).ifPresent((Tile t) -> player.decrementVision(t));
-            p.set(p.x + d.x, p.y + d.y);
-            world.getTile(p.x, p.y).ifPresent((Tile t) -> player.incrementVision(t));
+            world.getTile(p1.x, p1.y).ifPresent((Tile t) -> player.incrementVision(t));
+            newVision.add(p1);
         }
+        this.vision.clear();
+        this.vision.addAll(newVision);
     }
 
     /**

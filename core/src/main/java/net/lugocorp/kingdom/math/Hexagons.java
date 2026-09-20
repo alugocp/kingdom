@@ -204,10 +204,10 @@ public class Hexagons {
      * and distance
      */
     public static Point followLine(Point origin, HexSide direction, int distance) {
-        final Point p = new Point(origin.x, origin.y);
+        final MutablePoint p = new MutablePoint(origin.x, origin.y);
         for (int a = 0; a < distance; a++) {
-            p.add(Hexagons.getDirectionTranslation(p, direction));
+            p.add(Hexagons.getDirectionTranslation(p.toPoint(), direction));
         }
-        return p;
+        return p.toPoint();
     }
 }

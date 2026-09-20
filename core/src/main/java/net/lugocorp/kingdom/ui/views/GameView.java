@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.serial.SaveLoad;
@@ -36,7 +37,7 @@ import java.util.function.Consumer;
  */
 public class GameView implements View {
     private final StartMenuView.Params params;
-    private Point frameBufferMappedPoint = new Point(-1, -1);
+    private MutablePoint frameBufferMappedPoint = new MutablePoint(-1, -1);
     private GameViewController controller;
     private PerspectiveCamera camera;
     private Environment environment;
@@ -93,7 +94,7 @@ public class GameView implements View {
      * FrameBuffer
      */
     public Point getFrameBufferMappedPoint() {
-        return this.frameBufferMappedPoint;
+        return this.frameBufferMappedPoint.toPoint();
     }
 
     /**

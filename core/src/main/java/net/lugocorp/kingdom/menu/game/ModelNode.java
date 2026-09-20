@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.menu.game;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.math.Coords;
-import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.utils.Tuple;
@@ -19,7 +19,7 @@ public class ModelNode implements MenuNode {
     private static final int MAX_H = 200;
     private static final int MARGIN = 10;
     private final Modellable model = new Modellable();
-    private final Point size = new Point();
+    private final MutablePoint size = new MutablePoint();
     private final Environment environment;
     private final Camera camera;
     private final String name;

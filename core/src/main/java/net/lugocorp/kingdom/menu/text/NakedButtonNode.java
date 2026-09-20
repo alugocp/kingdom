@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.menu.text;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.fonts.FontParam;
+import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.menu.Menu;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class NakedButtonNode extends TextNode {
     private final Runnable action;
     private Optional<String> ping = Optional.of("sfx/arrow");
-    private Point size = new Point(0, 0);
+    private MutablePoint size = new MutablePoint(0, 0);
     private boolean hovered = false;
 
     public NakedButtonNode(AudioVideo av, String message, Runnable action) {

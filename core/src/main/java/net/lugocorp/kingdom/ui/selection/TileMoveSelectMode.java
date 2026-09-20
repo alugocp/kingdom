@@ -84,7 +84,7 @@ class TileMoveSelectMode extends TileSelectMode {
     @Override
     final void hoverTile(GameView view, Point p) {
         // Calculate the movement path and remove existing shader flags
-        final List<Point> path = this.pathfinder.getPath(view, p.copy());
+        final List<Point> path = this.pathfinder.getPath(view, p);
         this.removeShaderData(view);
         if (path.size() == 0) {
             return;

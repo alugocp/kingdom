@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Chooser;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -295,24 +296,19 @@ public class WorldGenerator {
      * Calculates the domains for each Tower
      */
     private void calculateTowerDomains(Game g) {
-        final Point domainPoint = new Point(0, 0);
         final Map<Tower, Set<Point>> domains = new HashMap<>();
         for (Tower t : g.towers) {
             domains.put(t, new HashSet<Point>());
         }
         for (int a = 0; a < this.worldGenOpts.size.w; a++) {
             for (int b = 0; b < this.worldGenOpts.size.h; b++) {
-                Tower best = null;
-                int shortest = 0;
-                domainPoint.set(a, b);
+                final Chooser<Tower> chooser = new Chooser<>((Integer old, Integer next) -> next < old);
+                final Point domainPoint = new Point(a, b);
                 for (Tower t : g.towers) {
                     int dist = domainPoint.distance(t.getPoint());
-                    if (best == null || dist < shortest) {
-                        shortest = dist;
-                        best = t;
-                    }
+                    chooser.choice(t, dist);
                 }
-                domains.get(best).add(domainPoint.copy());
+                domains.get(chooser.get()).add(domainPoint);
             }
         }
         for (Tower tower : g.towers) {

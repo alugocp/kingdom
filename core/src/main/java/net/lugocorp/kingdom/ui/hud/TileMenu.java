@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
@@ -12,7 +13,7 @@ import java.util.Optional;
  * Handles any Menu that describes a Tile in the World
  */
 public class TileMenu extends Menu {
-    private final Point menuCoords = new Point();
+    private final MutablePoint menuCoords = new MutablePoint();
     private final GameView view;
 
     public TileMenu(GameView view) {
@@ -25,14 +26,14 @@ public class TileMenu extends Menu {
      * Returns this TileMenu's currently targeted Point
      */
     public Point get() {
-        return this.menuCoords;
+        return this.menuCoords.toPoint();
     }
 
     /**
      * Sets the Menu content for the given Tile
      */
     public void set(Point p) {
-        this.view.game.world.getTile(this.menuCoords).get().changeHovered(false);
+        this.view.game.world.getTile(this.menuCoords.toPoint()).get().changeHovered(false);
         this.view.game.world.getTile(p).ifPresent((Tile t) -> t.changeHovered(true));
         this.menuCoords.set(p.x, p.y);
         this.resetOffset();
@@ -43,11 +44,11 @@ public class TileMenu extends Menu {
      * Opens the Menu that is set in this View's recent memory
      */
     public void refresh() {
-        final Optional<Tile> t = this.view.game.world.getTile(this.menuCoords);
+        final Optional<Tile> t = this.view.game.world.getTile(this.menuCoords.toPoint());
         if (!t.isPresent()) {
             return;
         }
-        final MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords));
+        final MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords.toPoint()));
         this.closeMiniMenu();
         this.setRoot(node);
     }

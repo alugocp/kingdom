@@ -102,7 +102,7 @@ public class Movement {
                 parallel);
         effects.add(this.unit.handleEvent(view, before));
         effects.add(() -> {
-            final Point start = this.unit.getPoint().copy();
+            final Point start = this.unit.getPoint();
             final boolean wasOnUnit = view.hud.bot.tileMenu.get().equals(start);
             final AnimationChain chain = new AnimationChain();
             Point prev = start;

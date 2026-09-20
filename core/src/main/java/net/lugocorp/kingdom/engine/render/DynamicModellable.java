@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector3;
  * move about
  */
 public abstract class DynamicModellable extends Modellable {
-    private Point point = new Point();
     private float rotation = 0f;
     protected int x;
     protected int y;
@@ -57,8 +56,7 @@ public abstract class DynamicModellable extends Modellable {
      * Returns a Point representing this object's position in the World
      */
     public Point getPoint() {
-        this.point.set(this.x, this.y);
-        return this.point;
+        return new Point(this.x, this.y);
     }
 
     /**

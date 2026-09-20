@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
 import net.lugocorp.kingdom.math.Hexagons;
+import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
@@ -33,7 +34,7 @@ public class FollowAndCastBehavior implements Behavior {
     private final Entity target;
     private final Unit unit;
     private Optional<Path> selection = Optional.empty();
-    private Point dest = new Point(-1, -1);
+    private MutablePoint dest = new MutablePoint(-1, -1);
     private boolean kill = false;
 
     public FollowAndCastBehavior(CompPlayer player, Unit unit, Entity target, Supplier<Boolean> shouldKill,
@@ -73,7 +74,7 @@ public class FollowAndCastBehavior implements Behavior {
         // Move closer to the target otherwise
         if (!cast) {
             final Pathfinder pathfinder = new Pathfinder(this.unit);
-            final List<Point> path = pathfinder.getPath(view, this.dest);
+            final List<Point> path = pathfinder.getPath(view, this.dest.toPoint());
             if (path.size() == 0) {
                 this.kill = true;
                 return;

@@ -260,7 +260,7 @@ public class Game {
                         .map((Tile t) -> !t.unit.isPresent() && !t.getObstacle()
                                 && !t.building.map((Building bldg) -> bldg.getObstacle()).orElse(false))
                         .orElse(false)) {
-                    points.add(p.copy());
+                    points.add(p);
                 }
             }
         }

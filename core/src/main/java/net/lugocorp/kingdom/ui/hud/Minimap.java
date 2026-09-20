@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -15,7 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class Minimap {
     static final int MAX_W = 250;
     static final int MAX_H = 250;
-    private final Point pos = new Point();
+    private final MutablePoint pos = new MutablePoint();
     private int tilesPerPixelInOneDimension;
     private Color[][] thumbprint;
     private int scale;
