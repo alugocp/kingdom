@@ -6,18 +6,23 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Represents a 2D asset rising over the GameView in 3D space
  */
 public abstract class Overlay {
     private final Vector3 offset;
-    private final Point origin;
+    private final Supplier<Point> origin;
     private Optional<Runnable> callback = Optional.empty();
 
-    public Overlay(Point origin, Vector3 offset) {
+    public Overlay(Supplier<Point> origin, Vector3 offset) {
         this.offset = offset.add(Coords.raw.vector(0, Hexagons.HEIGHT, 0));
         this.origin = origin;
+    }
+
+    public Overlay(Point origin, Vector3 offset) {
+        this(() -> origin, offset);
     }
 
     /**
@@ -54,7 +59,7 @@ public abstract class Overlay {
      * Returns this Overlay's origin Point
      */
     Point getOrigin() {
-        return this.origin;
+        return this.origin.get();
     }
 
     /**
@@ -68,6 +73,6 @@ public abstract class Overlay {
      * Returns the current position of the Overlay
      */
     protected float[] getPosition(GameView view) {
-        return CameraLogic.getScreenPointFromTileOffset(this.origin, this.offset);
+        return CameraLogic.getScreenPointFromTileOffset(this.origin.get(), this.offset);
     }
 }

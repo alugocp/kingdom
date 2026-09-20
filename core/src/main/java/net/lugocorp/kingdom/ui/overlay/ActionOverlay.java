@@ -18,7 +18,7 @@ public class ActionOverlay extends Overlay {
     private float x = 0f;
 
     public ActionOverlay(GameView view, Unit u, char single) {
-        super(u.getPoint(), new Vector3(0f, view.av.loaders.models.getModelHeight(u.getModelName()), 0f));
+        super(() -> u.getPoint(), new Vector3(0f, view.av.loaders.models.getModelHeight(u.getModelName()), 0f));
         this.setChar(single);
     }
 

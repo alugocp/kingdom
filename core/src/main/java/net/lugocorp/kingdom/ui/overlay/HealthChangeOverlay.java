@@ -18,7 +18,7 @@ public class HealthChangeOverlay extends Overlay {
     private float progress = 0f;
 
     public HealthChangeOverlay(GameView view, Entity e, int start, int end) {
-        super(e.getPoint(), new Vector3(0f, view.av.loaders.models.getModelHeight(e.getModelName()), 0f));
+        super(() -> e.getPoint(), new Vector3(0f, view.av.loaders.models.getModelHeight(e.getModelName()), 0f));
         this.icon = new Drawable(view.av.loaders.sprites, "heart-icon");
         this.start = start;
         this.end = end;

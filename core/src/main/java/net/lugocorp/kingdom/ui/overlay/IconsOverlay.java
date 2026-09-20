@@ -20,7 +20,7 @@ public class IconsOverlay extends Overlay {
     private final Optional<Matrix4> recolor;
 
     IconsOverlay(GameView view, Entity e) {
-        super(e.getPoint(), new Vector3(0f, view.av.loaders.models.getModelHeight(e.getModelName()), 0f));
+        super(() -> e.getPoint(), new Vector3(0f, view.av.loaders.models.getModelHeight(e.getModelName()), 0f));
         if (e.getLeader().map((Player p) -> !p.isHumanPlayer()).orElse(false)) {
             this.icons.add(new Drawable(view.av.loaders.sprites, "skull-icon"));
             this.recolor = Optional
