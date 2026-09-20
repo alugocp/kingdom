@@ -86,6 +86,9 @@ public class AttackEnemyUnitsGoal extends Goal {
                     final int nearbyAllies = GoalUtils.countNearbyUnits(view, player, unit.getPoint(), true);
                     final int dist = p.distance(u.getPoint());
                     final int health = u.combat.health.get();
+                    if (maxDamage == 0) {
+                        continue;
+                    }
 
                     Priority priority = Priority.GOOD_IDEA;
                     if (occupiedBuilding.map((Building b) -> b.isEntityType(EntityType.TOWER)).orElse(false)) {

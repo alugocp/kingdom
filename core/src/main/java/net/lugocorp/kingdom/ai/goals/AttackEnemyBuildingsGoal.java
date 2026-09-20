@@ -94,6 +94,9 @@ public class AttackEnemyBuildingsGoal extends Goal {
                     final int nearbyEnemies = GoalUtils.countNearbyUnits(view, player, unit.getPoint(), false);
                     final boolean isTower = b.isEntityType(EntityType.TOWER);
                     final int health = b.combat.health.get();
+                    if (maxDamage == 0) {
+                        continue;
+                    }
 
                     Priority priority = Priority.NEUTRAL;
                     if (isTower) {
