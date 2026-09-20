@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.ai.GoalUtils;
 import net.lugocorp.kingdom.ai.Priority;
 import net.lugocorp.kingdom.ai.behaviors.MoveUnitBehavior;
 import net.lugocorp.kingdom.ai.behaviors.RecruitUnitBehavior;
+import net.lugocorp.kingdom.ai.behaviors.SkipTurnBehavior;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.glyph.Glyph;
@@ -55,6 +56,10 @@ public class HarvestAuctionPointsGoal extends Goal {
                 final Optional<Point> closest = GoalUtils.findNearbyBuilding(view, player, unit.getPoint(),
                         building.get());
                 if (closest.isPresent()) {
+                    if (unit.getPoint().equals(closest.get())) {
+                        return new Decision(channel, this, Priority.OPTIMAL, new SkipTurnBehavior(unit));
+                    }
+
                     final Pathfinder pathfinder = new Pathfinder(unit);
                     final List<Point> path = pathfinder.getPath(view, closest.get());
                     if (path.size() > 0) {

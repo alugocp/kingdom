@@ -24,6 +24,7 @@ public class MoveUnitBehavior implements Behavior {
     public void act(GameView view) {
         Log.log(LogSys.AI, "Moving %s along path %s", this.unit, this.path);
         this.unit.movement.move(view, this.path, true).execute();
+        // TODO must call action manager?
     }
 
     /** {@inheritdoc} */
