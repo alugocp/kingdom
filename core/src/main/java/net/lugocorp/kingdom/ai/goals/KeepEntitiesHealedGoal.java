@@ -79,12 +79,14 @@ public class KeepEntitiesHealedGoal extends Goal {
                 final Map<Unit, Set<Entity>> healMap = this.getHealMap(view, player, targets);
                 final Chooser<Entity> chooser = new Chooser<>((Integer old, Integer next) -> next > old);
                 final Point p = unit.getPoint();
-                for (Entity e : healMap.get(unit)) {
-                    final Point p1 = e.getPoint();
-                    final int nearbyEnemies = GoalUtils.countNearbyUnits(view, player, p1, false);
-                    final int score = (e.combat.health.getMax() - e.combat.health.get()) - (p.distance(p1) / 2)
-                            + nearbyEnemies;
-                    chooser.choice(e, score);
+                if (healMap.containsKey(unit)) {
+                    for (Entity e : healMap.get(unit)) {
+                        final Point p1 = e.getPoint();
+                        final int nearbyEnemies = GoalUtils.countNearbyUnits(view, player, p1, false);
+                        final int score = (e.combat.health.getMax() - e.combat.health.get()) - (p.distance(p1) / 2)
+                                + nearbyEnemies;
+                        chooser.choice(e, score);
+                    }
                 }
                 if (chooser.has()) {
                     final Entity target = chooser.get();
