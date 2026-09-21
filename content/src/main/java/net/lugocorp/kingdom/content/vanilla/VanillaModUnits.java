@@ -23,7 +23,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_blorp_the_burning).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A ravenous Plasmoid with an acidic body";
-                    e.blob.setModelInstance(view.av, "blob");
+                    e.blob.setModelInstance(view.av, "blorp");
                     e.blob.species = Defs.species_plasmoid;
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_slime_shot, Labels.ability_absorb);
