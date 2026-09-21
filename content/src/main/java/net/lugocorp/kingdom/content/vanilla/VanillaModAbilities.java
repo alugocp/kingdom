@@ -10,6 +10,7 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Stratified;
@@ -411,7 +412,7 @@ class VanillaModAbilities {
                                 () -> view.game.events.signals.addListener(Events.AfterUnitMovedEvent.class, receiver)))
                 .add(Events.AfterUnitMovedEvent.class,
                         (GameView view, Ability receiver, Events.AfterUnitMovedEvent e) -> {
-                            if (e.unit.name.equals(Labels.unit_necromancer)
+                            if (!receiver.wielder.combat.health.isDead() && e.unit.name.equals(Labels.unit_necromancer)
                                     && e.unit.leadership.sameLeader(receiver.wielder)) {
                                 receiver.wielder.movement.turnOffPreCheck();
                                 SideEffect se = receiver.wielder.movement.move(view, e.previous, e.parallel);
@@ -980,8 +981,12 @@ class VanillaModAbilities {
                             }
 
                             // Select a Tile to spawn the Unit on
-                            final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getTile(p)
-                                    .map((Tile t) -> !t.unit.isPresent()).orElse(false),
+                            final Set<Point> points = Lambda.filter(
+                                    (Point p) -> view.game.world.getTile(p)
+                                            .map((Tile t) -> !t.unit.isPresent() && t.building
+                                                    .map((Building b) -> !b.isEntityType(EntityType.PATRON))
+                                                    .orElse(true))
+                                            .orElse(false),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
                                     (Point p) -> {
