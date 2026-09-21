@@ -1,6 +1,5 @@
 package net.lugocorp.kingdom.utils;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -86,33 +85,13 @@ public class BatchCounter<T> {
      * length)
      */
     public Iterable<T> getBatch() {
-        final BatchCounter<T> that = this;
-        return new Iterable<T>() {
-            /** {@inheritdoc} */
-            @Override
-            public Iterator<T> iterator() {
-                return new Iterator<T>() {
-                    int counter = 0;
-
-                    /** {@inheritdoc} */
-                    @Override
-                    public boolean hasNext() {
-                        return this.counter > -1 && this.counter < that.getBatchSize();
-                    }
-
-                    /** {@inheritdoc} */
-                    @Override
-                    public T next() {
-                        this.counter++;
-                        final T element = that.data.get(that.index++);
-                        if (that.index == that.data.size()) {
-                            this.counter = -1;
-                            that.index = 0;
-                        }
-                        return element;
-                    }
-                };
-            }
-        };
+        final List<T> batch = new ArrayList<>();
+        for (int a = this.index; a < this.index + this.getBatchSize() && a < this.data.size(); a++) {
+            batch.add(this.data.get(a));
+        }
+        if (this.index == this.data.size()) {
+            this.index = 0;
+        }
+        return batch;
     }
 }

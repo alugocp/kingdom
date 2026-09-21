@@ -145,12 +145,11 @@ public class FutureEventManager {
         final int turn = this.game.mechanics.turns.getTurn().getCounter();
         if (this.futures.containsKey(turn)) {
             final BatchCounter<FutureTick> counter = this.futures.get(turn);
-            final boolean isLast = counter.isLastBatch();
             for (FutureTick ft : counter.getBatch()) {
                 this.processFutureTick(view, ft);
                 counter.removed(1);
             }
-            if (!isLast) {
+            if (!counter.isLastBatch()) {
                 return false;
             }
         }
