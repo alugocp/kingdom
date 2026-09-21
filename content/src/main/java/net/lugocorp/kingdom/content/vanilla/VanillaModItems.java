@@ -71,18 +71,6 @@ class VanillaModItems {
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect());
 
-        // Sacred seed
-        new Stratified<Item>(events.item, Labels.item_sacred_seed)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
-                    e.blob.desc = "Consume to generate extra favor";
-                    e.blob.icon = Optional.of(Labels.asset_seeds);
-                    e.blob.gold = 1;
-                    e.blob.tags.add(Labels.tag_natural);
-                    return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver, Events.ItemConsumedEvent e) -> {
-                    return e.consumer.abilities.addStatusEffect(view, Labels.status_effect_more_favor);
-                });
-
         // Flower
         new Stratified<Item>(events.item, Labels.item_flower)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
@@ -783,5 +771,17 @@ class VanillaModItems {
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect()
                                 .add(ItemLogic.food(view, e)).add(e.consumer.combat.heal(view, e.consumer, 1)));
+
+        // Pumpkin
+        new Stratified<Item>(events.item, Labels.item_pumpkin)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    e.blob.desc = "Consume to stave off hunger";
+                    e.blob.icon = Optional.of(Labels.asset_harvest_pumpkins);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_fruit);
+                    e.blob.tags.add(Labels.tag_natural);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver,
+                        Events.ItemConsumedEvent e) -> new SideEffect().add(ItemLogic.food(view, e)));
     }
 }

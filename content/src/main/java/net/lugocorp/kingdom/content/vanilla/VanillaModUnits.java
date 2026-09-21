@@ -307,22 +307,6 @@ class VanillaModUnits {
                 });
 
         // Dendra Ivy
-        // Pumpkin Boy
-        new Stratified<Unit>(events.unit, Labels.unit_pumpkin_boy).add(Events.GenerateUnitEvent.class,
-                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "He doesn't say much, he's just a little guy";
-                    e.blob.setModelInstance(view.av, "pumpkin-boy");
-                    e.blob.species = Defs.species_sprite;
-                    e.blob.glyphs.set(Glyph.NATURE);
-                    e.blob.abilities.setActive(view.game.generator, Labels.ability_plant_meadow, Labels.ability_hug);
-                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
-                            Labels.ability_regeneration, Labels.ability_running_through_nature,
-                            Labels.ability_sacred_seeds);
-                    UnitLogic.standardHealthPool(e.blob);
-                    UnitLogic.largeInventory(e.blob);
-                    return new SideEffect();
-                });
-
         // Barometz
         new Stratified<Unit>(events.unit, Labels.unit_barometz).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -404,6 +388,21 @@ class VanillaModUnits {
 
         // Soothing Gills
         // Melis the Honey Troll
+        // Pumpkin Boy
+        new Stratified<Unit>(events.unit, Labels.unit_pumpkin_boy).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "He doesn't say much, he's just a little guy";
+                    e.blob.setModelInstance(view.av, "pumpkin-boy");
+                    e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_hug, Labels.ability_plant_meadow);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast, Labels.ability_night_vision,
+                            Labels.ability_regeneration, Labels.ability_pious, Labels.ability_harvest_pumpkins);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
         // Passiflor
         // Oystermane
         // Wuraj the Blessed

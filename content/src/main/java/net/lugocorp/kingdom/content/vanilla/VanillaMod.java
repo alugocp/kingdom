@@ -197,6 +197,7 @@ public class VanillaMod implements GameMod {
         sprites.register(Labels.asset_defense_glyph, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 4, 9);
         sprites.register(Labels.asset_shield_bash, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 5, 9);
         sprites.register(Labels.asset_harvest_figs, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 6, 9);
+        sprites.register(Labels.asset_harvest_pumpkins, Labels.asset_abilities, ActionNode.SIDE, ActionNode.SIDE, 7, 9);
 
         // Artifact sprites
         sprites.register(Labels.asset_chos_sigil_of_haste, Labels.asset_artifacts, ArtifactNode.WIDTH,

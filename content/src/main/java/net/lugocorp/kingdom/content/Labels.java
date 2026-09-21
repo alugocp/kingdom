@@ -179,6 +179,7 @@ public class Labels {
     public static final String asset_defense_glyph = "defense glyph";
     public static final String asset_shield_bash = "shield bash";
     public static final String asset_harvest_figs = "harvest figs";
+    public static final String asset_harvest_pumpkins = "harvest pumpkins";
 
     /**
      * SECTION Tags
@@ -285,7 +286,7 @@ public class Labels {
     public static final String unit_garulax = "Garulax";
     public static final String unit_patagan = "Patagan";
     public static final String unit_iyart = "Iyart";
-    public static final String unit_moon_priestess = "moon priestess";
+    public static final String unit_priestess_aqbil = "Priestess Aq'bil";
     public static final String unit_badroch_the_pack_grue = "Badroch the Pack Grue";
     public static final String unit_lord_sakamoto = "Lord Sakamoto";
     public static final String unit_pelagma = "Pelagma";
@@ -293,26 +294,27 @@ public class Labels {
     public static final String unit_garudee = "Garudee";
     public static final String unit_defender_cuauhtli = "Defender Cuauhtli";
     public static final String unit_hunched_warlock = "The Hunched Warlock";
-    public static final String unit_guard_captain = "guard captain";
+    public static final String unit_amachaq = "Amachaq";
     public static final String unit_lost_golem = "Lost Golem";
     public static final String unit_golem_of_the_grotto = "Golem of the Grotto";
     public static final String unit_puffshroom = "Puffshroom";
-    public static final String unit_bigfoot = "bigfoot";
+    public static final String unit_kalteelk = "Kalteelk";
     public static final String unit_elder = "The Elder";
-    public static final String unit_water_woman = "water woman";
+    public static final String unit_neer = "Neer";
     public static final String unit_king_gargantos = "King Gargantos";
     public static final String unit_sir_rootbeard = "Sir Rootbeard";
+    public static final String unit_messenger_xinjian = "Messenger Xinjian";
     public static final String unit_stalagmus = "Stalagmus";
     public static final String unit_xella_the_accursed = "Xella the Accursed";
     public static final String unit_svelta_luktegress = "Svelta Luktegress";
     public static final String unit_alaistar_and_wurmdel = "Alaistar and Wurmdel";
     public static final String unit_michalb_lightfoot = "Mi'chalb Lightfoot";
     public static final String unit_illapa = "Illapa";
+    public static final String unit_manav = "Manav";
     public static final String unit_druid = "The Druid";
     public static final String unit_dendra_ivy = "Dendra Ivy";
-    public static final String unit_pumpkin_boy = "Pumpkin Boy";
     public static final String unit_barometz = "Barometz";
-    public static final String unit_druid_lady = "druid lady";
+    public static final String unit_guindolyn = "Guindolyn";
     public static final String unit_condylure_of_the_star_nose = "Condylure of the Star Nose";
     public static final String unit_photali = "Photali";
     public static final String unit_batatita = "Batatita";
@@ -320,6 +322,7 @@ public class Labels {
     public static final String unit_zen_hito_the_kappa = "Zen Hito the Kappa";
     public static final String unit_soothing_gills = "Soothing Gills";
     public static final String unit_melis_the_honey_troll = "Melis the Honey Troll";
+    public static final String unit_pumpkin_boy = "Pumpkin Boy";
     public static final String unit_passiflor = "Passiflor";
     public static final String unit_oystermane = "Oystermane";
     public static final String unit_wuraj_the_blessed = "Wuraj the Blessed";
@@ -328,8 +331,6 @@ public class Labels {
     public static final String unit_keeper_of_the_keys = "Keeper of the Keys";
     public static final String unit_wisp_walker = "Wisp Walker";
     public static final String unit_al_fikra = "Al-Fikra";
-    public static final String unit_unknown1 = "unknown1";
-    public static final String unit_unknown2 = "unknown2";
     public static final String unit_ghastly_thrall = "Ghastly Thrall";
 
     /**
@@ -366,6 +367,7 @@ public class Labels {
     public static final String ability_harvest_figs = "Harvest Figs";
     public static final String ability_harvest_mesquite = "Harvest Mesquite";
     public static final String ability_harvest_mushrooms = "Harvest Mushrooms";
+    public static final String ability_harvest_pumpkins = "Harvest Pumpkins";
     public static final String ability_harvest_truffles = "Harvest Truffles";
     public static final String ability_heal_wounds = "Heal Wounds";
     public static final String ability_healing_water = "Healing Water";
@@ -402,9 +404,7 @@ public class Labels {
     public static final String ability_regeneration = "Regeneration";
     public static final String ability_revenge_of_the_forest = "Revenge of the Forest";
     public static final String ability_rock_appetite = "Rock Appetite";
-    public static final String ability_running_through_nature = "Running Through Nature";
     public static final String ability_self_sacrifice = "Self Sacrifice";
-    public static final String ability_sacred_seeds = "Sacred Seeds";
     public static final String ability_scalding_skin = "Scalding Skin";
     public static final String ability_scratch = "Scratch";
     public static final String ability_shell_defense = "Shell Defense";
@@ -446,7 +446,6 @@ public class Labels {
     public static final String item_slime_armor = "Slime Armor";
     public static final String item_golden_spear = "Golden Spear";
     public static final String item_mushroom = "Mushroom";
-    public static final String item_sacred_seed = "Sacred Seed";
     public static final String item_flower = "Flower";
     public static final String item_fish = "Fish";
     public static final String item_gold_coin = "Gold Coin";
@@ -595,4 +594,5 @@ public class Labels {
     public static final String item_cacao = "Cacao";
     public static final String item_mesquite = "Mesquite";
     public static final String item_batata = "Batata";
+    public static final String item_pumpkin = "Pumpkin";
 }

@@ -535,6 +535,20 @@ class VanillaModAbilities {
                                 (Building b) -> b.name.equals(Labels.building_forest)
                                         || b.name.equals(Labels.building_mine)));
 
+        // Harvest Pumpkins
+        new Stratified<Ability>(events.ability, Labels.ability_harvest_pumpkins).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_harvest_pumpkins);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Harvests pumpkins from meadows every 4 turns"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
+                                view, receiver.wielder, Labels.item_pumpkin,
+                                (Building b) -> b.name.equals(Labels.building_meadow)));
+
         // Harvest Truffles
         new Stratified<Ability>(events.ability, Labels.ability_harvest_truffles).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1061,23 +1075,6 @@ class VanillaModAbilities {
                     return new SideEffect();
                 });
 
-        // Running Through Nature
-        new Stratified<Ability>(events.ability, Labels.ability_running_through_nature)
-                .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.setIcon(Labels.asset_running_through_nature);
-                            return new SideEffect();
-                        })
-                .add(AbilityLogic.desc("This unit is faster on buildings")).add(Events.UnitMoveDistanceEvent.class,
-                        (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
-                            boolean buildingIsPassive = view.game.world.getTile(e.unit.getPoint())
-                                    .flatMap((Tile t) -> t.building).isPresent();
-                            if (buildingIsPassive) {
-                                e.distance++;
-                            }
-                            return new SideEffect();
-                        });
-
         // Self Sacrifice
         new Stratified<Ability>(events.ability, Labels.ability_self_sacrifice).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1090,20 +1087,6 @@ class VanillaModAbilities {
                             return new SideEffect().add(AbilityLogic.healUnit(view, receiver.wielder, hitPoints))
                                     .add(() -> receiver.wielder.combat.health.set(1));
                         });
-
-        // Sacred Seeds
-        new Stratified<Ability>(events.ability, Labels.ability_sacred_seeds).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_deposit_seeds);
-                    return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests seeds from meadows that can be consumed to generate favor"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_sacred_seed,
-                                (Building b) -> b.name.equals(Labels.building_meadow)));
 
         // Scalding Skin
         new Stratified<Ability>(events.ability, Labels.ability_scalding_skin).add(Events.GenerateAbilityEvent.class,

@@ -173,7 +173,8 @@
             "harvest mesquite",
             "defense glyph",
             "shield bash",
-            "harvest figs"
+            "harvest figs",
+            "harvest pumpkins"
         ]
     },
     {
@@ -321,7 +322,6 @@
             "Manav",
             "The Druid",
             "Dendra Ivy",
-            "Pumpkin Boy",
             "Barometz",
             "Guindolyn",
             "Condylure of the Star Nose",
@@ -331,6 +331,7 @@
             "Zen Hito the Kappa",
             "Soothing Gills",
             "Melis the Honey Troll",
+            "Pumpkin Boy",
             "Passiflor",
             "Oystermane",
             "Wuraj the Blessed",
@@ -377,6 +378,7 @@
             "Harvest Figs",
             "Harvest Mesquite",
             "Harvest Mushrooms",
+            "Harvest Pumpkins",
             "Harvest Truffles",
             "Heal Wounds",
             "Healing Water",
@@ -413,9 +415,7 @@
             "Regeneration",
             "Revenge of the Forest",
             "Rock Appetite",
-            "Running Through Nature",
             "Self Sacrifice",
-            "Sacred Seeds",
             "Scalding Skin",
             "Scratch",
             "Shell Defense",
@@ -461,7 +461,6 @@
             "Slime Armor",
             "Golden Spear",
             "Mushroom",
-            "Sacred Seed",
             "Flower",
             "Fish",
             "Gold Coin",
@@ -609,7 +608,8 @@
             "Hero's Call",
             "Cacao",
             "Mesquite",
-            "Batata"
+            "Batata",
+            "Pumpkin"
         ]
     }
 ]}
