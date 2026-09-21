@@ -30,13 +30,20 @@ public class OverlayLayer {
     }
 
     /**
-     * Returns an EntityOverlay associated with he given Entity
+     * Returns an EntityOverlay associated with the given Entity
      */
     public EntityOverlay entity(Entity e) {
         if (!this.entityOverlays.containsKey(e)) {
             this.entityOverlays.put(e, new EntityOverlay());
         }
         return this.entityOverlays.get(e);
+    }
+
+    /**
+     * Removes an EntityOverlay associated with the given Entity
+     */
+    public void removeEntity(Entity e) {
+        this.entityOverlays.remove(e);
     }
 
     /**

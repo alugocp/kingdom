@@ -172,6 +172,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
             this.vision.remove(l, view.game.world);
             l.buildings.remove(this);
         });
+        view.overlays.removeEntity(this);
         view.game.world.getTile(this.getPoint()).get().building = Optional.empty();
         this.getMinimapColor().ifPresent((Color c) -> view.hud.bot.minimap.refresh(view.game.world));
         this.dispose();
