@@ -499,7 +499,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.GetSpeedCostEvent.class, (GameView view, Building receiver, Events.GetSpeedCostEvent e) -> {
-                    e.cost = 1;
+                    e.cost = 2;
                     return new SideEffect();
                 });
 
@@ -513,7 +513,7 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 })
                 .add(Events.GetSpeedCostEvent.class, (GameView view, Building receiver, Events.GetSpeedCostEvent e) -> {
-                    e.cost = 1;
+                    e.cost = 2;
                     return new SideEffect();
                 });
 

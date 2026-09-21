@@ -63,6 +63,7 @@ public class Movement {
         final SideEffect effects = new SideEffect();
 
         // Check the Unit's remaining move distance for this turn
+        final int maxMovementSpeed = this.getMaxDistance(view);
         final int maxDistance = Math.min(path.size(), view.game.actions.getRemainingMoveDistance(view, this.unit));
         if (maxDistance < 1) {
             if (this.unit.leadership.belongsToHuman()) {
@@ -76,7 +77,7 @@ public class Movement {
         int remainingDistance = maxDistance;
         for (int a = 0; a < maxDistance; a++) {
             remainingDistance -= this.getSpeedCost(view, view.game.world.getTile(path.get(a)).get());
-            if (remainingDistance >= 0) {
+            if (remainingDistance >= 0 || (maxDistance == maxMovementSpeed && overallDistance == 0)) {
                 overallDistance++;
             }
         }
@@ -193,6 +194,7 @@ public class Movement {
      */
     private int getSpeedCost(GameView view, Tile t) {
         final Events.GetSpeedCostEvent event = new Events.GetSpeedCostEvent(t);
+        t.building.ifPresent((Building b) -> b.handleEvent(view, event));
         this.unit.handleEvent(view, event);
         return event.cost;
     }
@@ -213,6 +215,9 @@ public class Movement {
             if (cost <= points || distance == 0) {
                 points -= cost;
                 distance++;
+            } else if (cost > points) {
+                points -= cost;
+                a--;
             }
             if (points <= 0 || a == path.size() - 1) {
                 lengths.add(distance);
