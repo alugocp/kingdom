@@ -113,6 +113,15 @@ class CleanAssetsTask extends DefaultTask {
     }
 
     /**
+     * Returns true if the given filename can be converted to g3db format
+     */
+    boolean canBeConverted(String filename) {
+        def matcher1 = filename =~ ~/.obj$/
+        def matcher2 = filename =~ ~/.fbx$/
+        return matcher1.find() || matcher2.find()
+    }
+
+    /**
      * This recursive function generates g3db files in the given folder
      */
     void iterateAssetsFolder(String filepath) {
@@ -122,16 +131,14 @@ class CleanAssetsTask extends DefaultTask {
                 this.iterateAssetsFolder(file.getPath())
                 continue
             }
-            def pattern = ~/.obj$/
-            def matcher = file.getName() =~ pattern
-            if (!matcher.find()) {
+            def srcFile = file.getName()
+            if (!this.canBeConverted(srcFile)) {
                 continue
             }
-            def objFile = file.getName()
             def g3dbFile = file.getName()[0..-4] + "g3db"
             def parent = file.getParent()
             println("Generating $g3dbFile ($parent)...")
-            "fbx-conv -f $parent/$objFile $parent/$g3dbFile".execute()
+            "fbx-conv -f $parent/$srcFile $parent/$g3dbFile".execute()
         }
     }
 }

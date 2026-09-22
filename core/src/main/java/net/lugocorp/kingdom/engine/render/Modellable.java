@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
  * position
  */
 public class Modellable {
+    private Optional<AnimationController> animation = Optional.empty();
     @FieldSerializer.Optional("models")
     private ModelLoader models;
     @FieldSerializer.Optional("textures")
@@ -83,6 +85,7 @@ public class Modellable {
         if (!this.model.isPresent()) {
             this.model = this.models.createModelInstance(this.modelName);
             this.model.ifPresent((ModelInstance model) -> {
+                this.animation = Optional.of(new AnimationController(model));
                 this.applyAlpha(model, false);
                 this.resetModelPosition();
                 this.setupModelInstance(model);
@@ -144,6 +147,17 @@ public class Modellable {
     protected void dispose() {
         this.models.checkForUnload(this.modelName);
         this.textureName.ifPresent((Tuple<Integer, String> t) -> this.textures.checkForUnload(t.b));
+    }
+
+    public void setAnimation(String key) {
+        this.animation.ifPresent((AnimationController a) -> a.setAnimation(key, 100));
+    }
+
+    /**
+     * Updates this instance's animation (if there is one)
+     */
+    public void updateAnimation(float delta) {
+        this.animation.ifPresent((AnimationController a) -> a.update(delta));
     }
 
     /**

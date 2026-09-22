@@ -230,6 +230,13 @@ public class GameView implements View {
         final Optional<Rect> visibleTilesBounds = Optional.of(this.calculateVisibleArea());
         final Array<ModelInstance> nonTileModels = this.game.world.getModelInstances(false, visibleTilesBounds);
 
+        // Update Unit animations
+        // TODO optimize this by only iterating over the on-screen subset
+        final float delta = Gdx.graphics.getDeltaTime();
+        for (Unit u : this.game.units) {
+            u.updateAnimation(delta);
+        }
+
         // Render normals to a FrameBuffer
         this.av.shaders.toon.setOutlineShader(this.av.settings.getOutlineShader());
         if (this.av.settings.getOutlineShader()) {
