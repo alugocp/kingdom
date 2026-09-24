@@ -1202,10 +1202,14 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit enters Stone Form at night or on rock tiles"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> AbilityLogic.checkStoneForm(view,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(AbilityLogic.checkStoneForm(view, receiver.wielder))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add(Events.UnitMovedEvent.class,
+                        (GameView view, Ability receiver, Events.UnitMovedEvent e) -> AbilityLogic.checkStoneForm(view,
                                 receiver.wielder))
-                .add(Events.UnitMovedEvent.class, (GameView view, Ability receiver,
-                        Events.UnitMovedEvent e) -> AbilityLogic.checkStoneForm(view, receiver.wielder));
+                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic
+                        .checkStoneForm(view, receiver.wielder));
 
         // Subterranean Potions
         new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions)
