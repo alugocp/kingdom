@@ -601,11 +601,15 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
                         (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
-                            final Events.GetVisionEvent event = new Events.GetVisionEvent(
-                                    receiver.wielder.getLeader().get());
-                            receiver.wielder.handleEvent(view, event);
+                            int currentVision = 4;
+                            if (receiver.wielder.getLeader().isPresent()) {
+                                final Events.GetVisionEvent event = new Events.GetVisionEvent(
+                                        receiver.wielder.getLeader().get());
+                                receiver.wielder.handleEvent(view, event);
+                                currentVision = event.radius;
+                            }
                             e.desc = String.format("This unit has 4 base vision (currently has %d vision)",
-                                    event.radius);
+                                    currentVision);
                             return new SideEffect();
                         })
                 .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
