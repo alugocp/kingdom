@@ -340,7 +340,15 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xff9525);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can normally move 3 spaces per turn"))
+                }).add(Events.GetDescriptionEvent.class,
+                        (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                            final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(
+                                    receiver.wielder);
+                            receiver.wielder.handleEvent(view, event);
+                            e.desc = String.format("This unit has 3 base speed (currently has %d speed)",
+                                    event.distance);
+                            return new SideEffect();
+                        })
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             e.distance = 3;
@@ -591,7 +599,15 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_night_vision, 0xa18f1e, 0xffffff);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can normally see in a 4 tile radius around it"))
+                }).add(Events.GetDescriptionEvent.class,
+                        (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                            final Events.GetVisionEvent event = new Events.GetVisionEvent(
+                                    receiver.wielder.getLeader().get());
+                            receiver.wielder.handleEvent(view, event);
+                            e.desc = String.format("This unit has 4 base vision (currently has %d vision)",
+                                    event.radius);
+                            return new SideEffect();
+                        })
                 .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
                     e.radius = 4;
                     return new SideEffect();
@@ -1150,7 +1166,15 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xffd9b1);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can normally move 1 space per turn"))
+                }).add(Events.GetDescriptionEvent.class,
+                        (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                            final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(
+                                    receiver.wielder);
+                            receiver.wielder.handleEvent(view, event);
+                            e.desc = String.format("This unit has 1 base speed (currently has %d speed)",
+                                    event.distance);
+                            return new SideEffect();
+                        })
                 .add(Events.UnitMoveDistanceEvent.class,
                         (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             e.distance = 1;
