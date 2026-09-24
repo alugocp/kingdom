@@ -19,6 +19,12 @@ public class DiceLoadingNode extends ModelNode {
 
     /** {@inheritdoc} */
     @Override
+    public int getHeight() {
+        return (ModelNode.MARGIN * 2) + (ModelNode.MAX_H * 2);
+    }
+
+    /** {@inheritdoc} */
+    @Override
     public void draw(AudioVideo av, Rect bounds) {
         super.draw(av, bounds);
         this.getModel().ifPresent((ModelInstance model) -> {
