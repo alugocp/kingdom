@@ -38,7 +38,8 @@ public class UnitOptionsNode extends ListNode {
             this.units.add(u.getMenuContent(view, Optional.empty()));
             this.buttons.add(new ButtonNode(view.av, "Choose", () -> click.accept(u)));
         }
-        this.add(new SpacerNode(false)).add(new DiceLoadingNode(view.av, this.camera, view.getEnvironment()))
+        this.add(new SpacerNode(false))
+                .add(new DiceLoadingNode(view.av, this.camera, view.getEnvironment()).hoverInMiddle())
                 .add(new SpacerNode(false));
     }
 

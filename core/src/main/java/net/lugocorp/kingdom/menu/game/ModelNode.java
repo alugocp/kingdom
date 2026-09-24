@@ -16,13 +16,14 @@ import java.util.Optional;
  * This MenuNode renders a ModelInstance in a Menu
  */
 public class ModelNode implements MenuNode {
-    private static final int MAX_H = 200;
-    private static final int MARGIN = 10;
+    protected static final int MAX_H = 200;
+    protected static final int MARGIN = 10;
     private final Modellable model = new Modellable();
     private final MutablePoint size = new MutablePoint();
     private final Environment environment;
     private final Camera camera;
     private final String name;
+    private boolean middle = false;
     private boolean loaded = false;
     private float modelHeight = 1f;
     private float modelWidth = 1f;
@@ -48,6 +49,14 @@ public class ModelNode implements MenuNode {
      */
     public Optional<ModelInstance> getModel() {
         return this.model.getModelInstance();
+    }
+
+    /**
+     * Causes the model to hover vertically in the middle
+     */
+    public ModelNode hoverInMiddle() {
+        this.middle = true;
+        return this;
     }
 
     /**
@@ -99,8 +108,9 @@ public class ModelNode implements MenuNode {
         // bottom-right (1, -1), so the middle of the screen is at (0, 0)
         final float halfw = Coords.SIZE.x / 2f;
         final float halfh = Coords.SIZE.y / 2f;
+        final int boundsH = this.middle ? (bounds.h / 2) : bounds.h;
         transform.setTranslation((bounds.x + (bounds.w / 2) - halfw) / halfw,
-                -(bounds.y + bounds.h - ModelNode.MARGIN - halfh) / halfh, 0f);
+                -(bounds.y + boundsH - ModelNode.MARGIN - halfh) / halfh, 0f);
 
         // Render the model preview
         av.shaders.preview.setProjViewMatrix(transform);
