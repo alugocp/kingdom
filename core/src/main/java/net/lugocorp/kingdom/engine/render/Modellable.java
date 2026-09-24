@@ -26,6 +26,7 @@ public class Modellable {
     @FieldSerializer.Optional("textures")
     private TextureLoader textures;
     private String modelName = "PLACEHOLDER";
+    private String animationName = "";
     private Optional<Tuple<Integer, String>> textureName = Optional.empty();
     private float alpha = 1f;
     @FieldSerializer.Optional("model")
@@ -89,6 +90,7 @@ public class Modellable {
                 this.applyAlpha(model, false);
                 this.resetModelPosition();
                 this.setupModelInstance(model);
+                this.setAnimation(this.animationName);
             });
         }
         // Load an override Texture if we've requested one and it's not present
@@ -149,8 +151,14 @@ public class Modellable {
         this.textureName.ifPresent((Tuple<Integer, String> t) -> this.textures.checkForUnload(t.b));
     }
 
+    /**
+     * Sets the current animation on this model
+     */
     public void setAnimation(String key) {
-        this.animation.ifPresent((AnimationController a) -> a.setAnimation(key, 100));
+        this.animationName = key;
+        if (this.model.map((ModelInstance m) -> m.getAnimation(key) != null).orElse(false)) {
+            this.animation.get().setAnimation(key, -1);
+        }
     }
 
     /**

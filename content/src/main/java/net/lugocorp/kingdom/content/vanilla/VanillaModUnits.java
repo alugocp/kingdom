@@ -33,7 +33,7 @@ class VanillaModUnits {
                     UnitLogic.largeHealthPool(e.blob);
                     e.blob.equipped.setMax(0);
                     e.blob.haul.setMax(3);
-                    // e.blob.setAnimation("Skull boneAction");
+                    // e.blob.setAnimation("Body bone|Body boneAction");
                     return new SideEffect();
                 });
 
