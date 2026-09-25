@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.engine.render;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.assets.ModelLoader;
 import net.lugocorp.kingdom.engine.assets.TextureLoader;
+import net.lugocorp.kingdom.utils.Log;
 import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public class Modellable {
     @FieldSerializer.Optional("textures")
     private TextureLoader textures;
     private String modelName = "PLACEHOLDER";
-    private String animationName = "";
+    private Optional<String> animationName = Optional.empty();
     private Optional<Tuple<Integer, String>> textureName = Optional.empty();
     private float alpha = 1f;
     @FieldSerializer.Optional("model")
@@ -90,7 +92,7 @@ public class Modellable {
                 this.applyAlpha(model, false);
                 this.resetModelPosition();
                 this.setupModelInstance(model);
-                this.setAnimation(this.animationName);
+                this.animationName.ifPresent((String animationName) -> this.setAnimation(animationName));
             });
         }
         // Load an override Texture if we've requested one and it's not present
@@ -155,10 +157,17 @@ public class Modellable {
      * Sets the current animation on this model
      */
     public void setAnimation(String key) {
-        this.animationName = key;
-        if (this.model.map((ModelInstance m) -> m.getAnimation(key) != null).orElse(false)) {
-            this.animation.get().setAnimation(key, -1);
-        }
+        this.animationName = Optional.of(key);
+        this.model.ifPresent((ModelInstance m) -> {
+            if (m.getAnimation(key) == null) {
+                Log.log("(%s) has no animation (%s). Try the following:", this.modelName, key);
+                for (Animation a : m.animations) {
+                    Log.log("• %s", a.id);
+                }
+            } else {
+                this.animation.get().setAnimation(key, -1);
+            }
+        });
     }
 
     /**
