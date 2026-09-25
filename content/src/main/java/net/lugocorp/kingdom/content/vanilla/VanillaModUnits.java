@@ -73,7 +73,7 @@ class VanillaModUnits {
         // Prismar
         new Stratified<Unit>(events.unit, Labels.unit_prismar).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.setModelInstance(view.av, Labels.asset_crystal);
+                    e.blob.setModelInstance(view.av, "prismar");
                     e.blob.desc = "This Gemstone can focus light into powerful attacks";
                     e.blob.species = Defs.species_gemstone;
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.MINING);
@@ -82,6 +82,7 @@ class VanillaModUnits {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_crystal_skin, Labels.ability_mine_gems, Labels.ability_rock_appetite);
                     UnitLogic.standardHealthPool(e.blob);
+                    // e.blob.setAnimation("Armature|Move");
                     return new SideEffect();
                 });
 
