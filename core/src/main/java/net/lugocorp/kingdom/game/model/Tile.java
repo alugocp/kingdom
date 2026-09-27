@@ -10,6 +10,8 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.HexSide;
+import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
@@ -193,8 +195,29 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     /**
      * Causes this Tile to recalculate its border color
      */
-    public void recolorBorder() {
-        this.userData.borderColor = this.getLeader().map((Player l) -> l.getColor()).orElse(Color.WHITE);
+    public void recolorBorder(GameView view) {
+        if (this.getLeader().isPresent()) {
+            final Player leader = this.getLeader().get();
+            final Point focal = this.getPoint();
+            for (Point p : Hexagons.getAdjacents(focal)) {
+                final Color color = view.game.world.getTile(p).map((Tile t) -> t.getLeader().equals(this.getLeader()))
+                        .orElse(false) ? Color.WHITE : leader.getColor();
+                final HexSide side = Hexagons.getDirection(focal, p).get();
+                if (side == HexSide.LEFT) {
+                    this.userData.borderColorLeft = color;
+                } else if (side == HexSide.RIGHT) {
+                    this.userData.borderColorRight = color;
+                } else if (side == HexSide.TOP_LEFT) {
+                    this.userData.borderColorTopLeft = color;
+                } else if (side == HexSide.TOP_RIGHT) {
+                    this.userData.borderColorTopRight = color;
+                } else if (side == HexSide.BOT_LEFT) {
+                    this.userData.borderColorBotLeft = color;
+                } else if (side == HexSide.BOT_RIGHT) {
+                    this.userData.borderColorBotRight = color;
+                }
+            }
+        }
     }
 
     /**

@@ -167,10 +167,16 @@ public class Game {
         // Set the Tower's leader
         tower.setLeader(op);
 
-        // Recolors all borders for the Domain's Tiles
+        // Recolors all borders for the Domain's Tiles (and any Tiles bordering the
+        // Domain)
         for (Point p : tower.domain.get()) {
             final Tile t = view.game.world.getTile(p).get();
-            t.recolorBorder();
+            t.recolorBorder(view);
+            for (Point p1 : Hexagons.getAdjacents(p)) {
+                if (view.game.world.isInBounds(p1) && !tower.domain.contains(p1)) {
+                    view.game.world.getTile(p1).get().recolorBorder(view);
+                }
+            }
         }
     }
 

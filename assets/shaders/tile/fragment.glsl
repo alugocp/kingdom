@@ -18,7 +18,12 @@ uniform sampler2D u_borderTexture1;
 uniform sampler2D u_borderTexture2;
 uniform vec4 u_diffuseUVTransform;
 uniform vec4 u_diffuseColor;
-uniform vec4 u_borderColor;
+uniform vec4 u_borderColorLeft;
+uniform vec4 u_borderColorRight;
+uniform vec4 u_borderColorTopLeft;
+uniform vec4 u_borderColorTopRight;
+uniform vec4 u_borderColorBotLeft;
+uniform vec4 u_borderColorBotRight;
 uniform float u_timer;
 uniform float u_nighttime;
 uniform float u_opacity;
@@ -35,6 +40,7 @@ varying vec3 v_normal;
 const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
+const vec4 SPECIAL_BORDER_TINT = vec4(1.0, 1.0, 1.0, 1.0);
 
 // (64.0 / 18.0) and (64.0 / 19.0) are special ratios based on the top face texture for tiles
 const float TEX_RATIO_X = 64.0 / 18.0;
@@ -45,7 +51,13 @@ int checkBorderColor(int border, vec4 color, sampler2D tex, int thresh, float x,
     if (border >= thresh) {
         vec4 value = texture2D(tex, vec2(x, y));
         if (value.a > 0.0) {
-            gl_FragColor = color;
+            if (color == SPECIAL_BORDER_TINT) {
+                gl_FragColor.x *= 0.75;
+                gl_FragColor.y *= 0.75;
+                gl_FragColor.z *= 0.75;
+            } else {
+                gl_FragColor = color;
+            }
         }
         return thresh;
     }
@@ -59,12 +71,21 @@ void applyBorder(int border, vec4 color, sampler2D texture1, sampler2D texture2)
     }
     float bx = v_diffuseUV.x * TEX_RATIO_X;
     float by = v_diffuseUV.y * TEX_RATIO_Y;
-    border -= checkBorderColor(border, color, texture2, 32, 1.0 - bx, by); // Bot right
-    border -= checkBorderColor(border, color, texture2, 16, bx, by); // Bot left
-    border -= checkBorderColor(border, color, texture2, 8, 1.0 - bx, 1.0 - by); // Top right
-    border -= checkBorderColor(border, color, texture2, 4, bx, 1.0 - by); // Top left
-    border -= checkBorderColor(border, color, texture1, 2, 1.0 - bx, by); // Right
-    border -= checkBorderColor(border, color, texture1, 1, bx, by); // Left
+    if (color == SPECIAL_BORDER_TINT) {
+        border -= checkBorderColor(border, u_borderColorBotRight, texture2, 32, 1.0 - bx, by); // Bot right
+        border -= checkBorderColor(border, u_borderColorBotLeft, texture2, 16, bx, by); // Bot left
+        border -= checkBorderColor(border, u_borderColorTopRight, texture2, 8, 1.0 - bx, 1.0 - by); // Top right
+        border -= checkBorderColor(border, u_borderColorTopLeft, texture2, 4, bx, 1.0 - by); // Top left
+        border -= checkBorderColor(border, u_borderColorRight, texture1, 2, 1.0 - bx, by); // Right
+        border -= checkBorderColor(border, u_borderColorLeft, texture1, 1, bx, by); // Left
+    } else {
+        border -= checkBorderColor(border, color, texture2, 32, 1.0 - bx, by); // Bot right
+        border -= checkBorderColor(border, color, texture2, 16, bx, by); // Bot left
+        border -= checkBorderColor(border, color, texture2, 8, 1.0 - bx, 1.0 - by); // Top right
+        border -= checkBorderColor(border, color, texture2, 4, bx, 1.0 - by); // Top left
+        border -= checkBorderColor(border, color, texture1, 2, 1.0 - bx, by); // Right
+        border -= checkBorderColor(border, color, texture1, 1, bx, by); // Left
+    }
 }
 
 vec2 getPathLabelOffset(int n) {
@@ -171,7 +192,8 @@ void main() {
 
         // These should not render on unseen tiles
         if (u_vision > NO_VISIBILITY) {
-            applyBorder(u_domainBorder, u_borderColor, u_borderTexture1, u_borderTexture2);
+            vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+            applyBorder(u_domainBorder, white, u_borderTexture1, u_borderTexture2);
         }
     }
 

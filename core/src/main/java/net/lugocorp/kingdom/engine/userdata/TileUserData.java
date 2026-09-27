@@ -11,7 +11,12 @@ public class TileUserData {
     public boolean wave = false;
 
     // Renders Domain borders
-    public Color borderColor = Color.WHITE;
+    public Color borderColorTopRight = Color.WHITE;
+    public Color borderColorTopLeft = Color.WHITE;
+    public Color borderColorBotRight = Color.WHITE;
+    public Color borderColorBotLeft = Color.WHITE;
+    public Color borderColorRight = Color.WHITE;
+    public Color borderColorLeft = Color.WHITE;
     public int borders = 0;
 
     // This int tracks which sides of the domain border should be extended
