@@ -23,8 +23,8 @@ public class ResourceBarsNode implements MenuNode {
     private int textWidth = 0;
 
     public ResourceBarsNode(AudioVideo av, ResourceBarsNode.Bar... bars) {
-        this.font = av.fonts
-                .getFont(new FontParam().setFont("Fontin-Bold").setSize(20).setColor(ColorScheme.TEXT.color));
+        this.font = av.fonts.getFont(new FontParam().setFont("Fontin-Bold").setSize(20).setColor(ColorScheme.TEXT.color)
+                .setBorder(ColorScheme.BLACK.color));
         this.bars = bars;
         this.av = av;
     }

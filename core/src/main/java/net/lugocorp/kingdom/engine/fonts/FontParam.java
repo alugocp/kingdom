@@ -75,7 +75,7 @@ public class FontParam {
     /** {@inheritdoc} */
     @Override
     public String toString() {
-        return String.format("(%d, %s, %s)", this.size, this.color.toString(), this.font);
+        return String.format("(%d, %s, %s, %s)", this.size, this.color.toString(), this.border.toString(), this.font);
     }
 
     /** {@inheritdoc} */
