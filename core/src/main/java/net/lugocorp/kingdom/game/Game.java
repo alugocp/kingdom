@@ -168,7 +168,7 @@ public class Game {
         tower.setLeader(op);
 
         // Recolors all borders for the Domain's Tiles (and any Tiles bordering the
-        // Domain)
+        // Domain), and also increments/decrements vision on every Tile
         for (Point p : tower.domain.get()) {
             final Tile t = view.game.world.getTile(p).get();
             t.recolorBorder(view);
@@ -177,6 +177,12 @@ public class Game {
                     view.game.world.getTile(p1).get().recolorBorder(view);
                 }
             }
+
+            // Handle Vision switch
+            op.ifPresent((Player player) -> {
+                player.incrementVision(t);
+                player.decrementVision(t);
+            });
         }
 
         // Refresh the Minimap with our new colors
