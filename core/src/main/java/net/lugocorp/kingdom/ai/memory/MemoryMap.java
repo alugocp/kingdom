@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.ai.memory;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.HashSet;
@@ -105,7 +107,11 @@ public class MemoryMap {
         this.getCell(t.getPoint()).ifPresent((MemoryCell cell) -> {
             cell.vision--;
             if (cell.vision == 0) {
-                cell.unit = Optional.empty();
+                if (t.building.map((Building b) -> b.isEntityType(EntityType.PATRON)).orElse(false)) {
+                    cell.vision = Math.max(cell.vision - 1, 1);
+                } else {
+                    cell.unit = Optional.empty();
+                }
             }
         });
     }

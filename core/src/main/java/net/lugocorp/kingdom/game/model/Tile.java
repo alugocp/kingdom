@@ -7,6 +7,7 @@ import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.layers.Governable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.math.Coords;
@@ -133,7 +134,11 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Removes a vision point (fog of war system)
      */
     public void decrementVision() {
-        this.userData.vision--;
+        if (this.building.map((Building b) -> b.isEntityType(EntityType.PATRON)).orElse(false)) {
+            this.userData.vision = Math.max(this.userData.vision - 1, 1);
+        } else {
+            this.userData.vision--;
+        }
         if (this.userData.vision == 0) {
             this.placeholderBuildingModel = this.building.flatMap((Building b) -> b.getModelInstance());
         }
