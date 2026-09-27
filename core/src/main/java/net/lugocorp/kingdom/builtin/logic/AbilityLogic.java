@@ -179,7 +179,19 @@ public class AbilityLogic {
         // Have the Player select which target to heal
         return healer.getLeader().get().select(view, points, "No heal targets are in range",
                 (Point p) -> new SideEffect().add(healer.combat.heal(view, targets.get(p), getHitPoints.apply(p)))
-                        .add(() -> view.game.actions.unitHasCastSpell(view, healer)));
+                        .add(() -> view.game.actions.unitHasCastSpell(view, healer)),
+                (Tile t) -> {
+                    final Point p = t.getPoint();
+                    if (!points.contains(p)) {
+                        return Optional.empty();
+                    }
+                    final Entity target = targets.get(p);
+                    final Events.HealEntityEvent e = new Events.HealEntityEvent(healer, target, getHitPoints.apply(p));
+                    healer.handleEvent(view, e);
+                    return Optional.of(new LabelOverlay(p,
+                            new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0x00ff00,
+                            String.format("+%d", e.amount)));
+                });
     }
 
     /**
