@@ -586,4 +586,11 @@ public class Events {
             this.ability = ability;
         }
     }
+
+    /**
+     * Used to determine what Building should replace another when it is destroyed
+     */
+    public static class ReplaceBuildingEvent extends Event {
+        public Optional<String> replacement = Optional.empty();
+    }
 }

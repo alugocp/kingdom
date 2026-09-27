@@ -436,7 +436,11 @@ public class VanillaMod implements GameMod {
                     e.blob.setMinimapColor(0x194D34);
                     e.blob.setObstacle(true);
                     return new SideEffect();
-                });
+                }).add(Events.ReplaceBuildingEvent.class,
+                        (GameView view, Building receiver, Events.ReplaceBuildingEvent e) -> {
+                            e.replacement = Optional.of(Labels.building_forest);
+                            return new SideEffect();
+                        });
 
         // Taiga
         new Stratified<Building>(events.building, Labels.building_taiga).add(Events.GenerateBuildingEvent.class,

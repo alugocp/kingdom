@@ -176,6 +176,11 @@ public class Building extends Entity implements MenuSubject, Spawnable {
         view.game.world.getTile(this.getPoint()).get().building = Optional.empty();
         this.getMinimapColor().ifPresent((Color c) -> view.hud.bot.minimap.refresh(view.game.world));
         this.dispose();
+
+        // Check for replacement Building after this one is destroyed
+        final Events.ReplaceBuildingEvent e = new Events.ReplaceBuildingEvent();
+        this.handleEvent(view, e).execute();
+        e.replacement.ifPresent((String name) -> view.game.generator.building(name, this.x, this.y).spawn(view));
     }
 
     /** {@inheritdoc} */
