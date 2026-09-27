@@ -178,6 +178,9 @@ public class Game {
                 }
             }
         }
+
+        // Refresh the Minimap with our new colors
+        view.hud.bot.minimap.refresh(this.world);
     }
 
     /**

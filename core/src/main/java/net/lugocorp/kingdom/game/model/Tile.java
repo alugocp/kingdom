@@ -78,10 +78,18 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
      * Returns the Minimap Color for this Tile
      */
     public Color getMinimapColor() {
-        return this.userData.hasBeenSeen
-                ? this.getLeader().map((Player l) -> l.getColor())
-                        .orElse(this.building.flatMap((Building b) -> b.getMinimapColor()).orElse(this.minimapColor))
-                : Color.BLACK;
+        if (this.userData.hasBeenSeen) {
+            if (this.getLeader().isPresent() && this.userData.borders > 0) {
+                final Color c = this.getLeader().get().getColor();
+                if (this.userData.borderColorLeft == c || this.userData.borderColorRight == c
+                        || this.userData.borderColorTopLeft == c || this.userData.borderColorTopRight == c
+                        || this.userData.borderColorBotLeft == c || this.userData.borderColorBotRight == c) {
+                    return c;
+                }
+            }
+            return this.building.flatMap((Building b) -> b.getMinimapColor()).orElse(this.minimapColor);
+        }
+        return Color.BLACK;
     }
 
     /**
