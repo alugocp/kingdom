@@ -40,7 +40,7 @@ public class HealthChangeOverlay extends Overlay {
     @Override
     public void render(GameView view) {
         final float[] pos = this.getPosition(view);
-        final int value = start + (int) ((end - start) * this.progress);
+        final int value = this.progress > 0.9 ? end : start + (int) ((end - start) * (this.progress / 0.9));
         final BitmapFont font = view.av.fonts.getFont(
                 new FontParam().setSize(30).setColor(ColorScheme.RED.color).setBorder(ColorScheme.BLACK.color));
 

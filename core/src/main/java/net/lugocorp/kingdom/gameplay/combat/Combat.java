@@ -114,8 +114,10 @@ public class Combat {
         if (this.bearer.getEntityType() == EntityType.UNIT) {
             effects.add(() -> view.animations.add(new DamagedAnimation((Unit) this.bearer, attacker.getPoint())));
         }
-        effects.add(() -> view.overlays.entity(this.bearer).add(new HealthChangeOverlay(view, this.bearer,
-                this.health.get(), this.health.get() - damageEvent.dmg.total())));
+        final int healthStart = this.health.get();
+        final int healthEnd = healthStart - damageEvent.dmg.total();
+        effects.add(() -> view.overlays.entity(this.bearer)
+                .add(new HealthChangeOverlay(view, this.bearer, healthStart, healthEnd)));
         if (!willDie) {
             effects.add(() -> view.overlays.entity(this.bearer).addRising(
                     new RisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
@@ -170,12 +172,13 @@ public class Combat {
     public SideEffect heal(GameView view, Entity target, int amount) {
         final SideEffect effects = new SideEffect();
         Events.HealEntityEvent heal = new Events.HealEntityEvent(this.bearer, target, amount);
+        final int healthStart = target.combat.health.get();
+        final int healthEnd = healthStart + heal.amount;
         return effects.add(this.bearer.handleEvent(view, heal)).add(() -> {
             final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
             target.combat.health.set(target.combat.health.get() + heal.amount);
             if (needsHealing) {
-                view.overlays.entity(target).add(new HealthChangeOverlay(view, target, target.combat.health.get(),
-                        target.combat.health.get() + heal.amount));
+                view.overlays.entity(target).add(new HealthChangeOverlay(view, target, healthStart, healthEnd));
             }
             view.overlays.entity(target).addRising(
                     new RisingOverlay(view, target, ColorScheme.GREEN.hex, String.format("+%d", heal.amount)));
