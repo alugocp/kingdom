@@ -218,7 +218,6 @@ public class Labels {
     public static final String building_hill = "Hill";
     public static final String building_bluff = "Bluff";
     public static final String building_healing_fountain = "Healing Fountain";
-    public static final String building_market_value_goo = "Market Value Goo";
 
     /**
      * SECTION Patrons

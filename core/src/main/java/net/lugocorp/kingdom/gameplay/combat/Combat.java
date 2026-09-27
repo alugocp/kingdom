@@ -81,8 +81,11 @@ public class Combat {
         final int result = this.health.get() - damageEvent.dmg.total();
         effects.add(() -> this.health.set(result));
         if (result > 0) {
-            effects.add(() -> view.overlays.entity(this.bearer).addRising(
-                    new RisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
+            effects.add(() -> {
+                view.overlays.entity(this.bearer).addRising(
+                        new RisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total())));
+                view.hud.logger.log("Your tower took damage due to insufficient gold");
+            });
         } else {
             if (this.bearer.leadership.belongsToHuman()) {
                 effects.add(() -> {

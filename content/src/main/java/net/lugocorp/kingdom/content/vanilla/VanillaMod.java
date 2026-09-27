@@ -358,7 +358,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_tower).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "tower");
-                    e.blob.desc = "Towers provide influence over the map";
+                    e.blob.desc = "Towers provide influence over the map and cost gold each turn. Players who have lost control of all their Towers lose the game.";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
                     e.blob.combat.health.setMaxAndValue(20);
                     e.blob.setMinimapColor(0x000000);
@@ -369,7 +369,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_mine).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "mine");
-                    e.blob.desc = "Units with mining abilities can generate gold or items when they occupy this building";
+                    e.blob.desc = "Units with mining abilities can generate gold or items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x555555);
                     return new SideEffect();
@@ -379,7 +379,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_cache).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "cache");
-                    e.blob.desc = "This building can store items";
+                    e.blob.desc = "This building can store items. But be careful, if the cache is destroyed then so are all the items inside!";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x000000);
@@ -390,7 +390,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_marketplace).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "marketplace");
-                    e.blob.desc = "Occupying units generate gold and sometimes an item";
+                    e.blob.desc = "Occupying units generate gold and sometimes an item.";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x000000);
                     return new SideEffect();
@@ -421,7 +421,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_forest).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "forest");
-                    e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
+                    e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x257d53);
                     return new SideEffect();
@@ -431,7 +431,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_dense_forest).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "dense-forest");
-                    e.blob.desc = "Many people consider these old-growth forests impossible to traverse";
+                    e.blob.desc = "Most units cannot traverse dense forests. They leave behind regular forests when they are destroyed.";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x194D34);
                     e.blob.setObstacle(true);
@@ -446,7 +446,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_taiga).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "forest");
-                    e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
+                    e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0xb4c3c7);
                     e.blob.setMaterial(Labels.asset_taiga);
@@ -457,7 +457,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_meadow).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "meadow");
-                    e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
+                    e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x4dd349);
                     return new SideEffect();
@@ -467,7 +467,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_oasis).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "oasis");
-                    e.blob.desc = "Units with harvest abilities can generate food when they occupy this building";
+                    e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x2c9965);
                     return new SideEffect();
@@ -477,7 +477,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_shrubland).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "shrubland");
-                    e.blob.desc = "Units with harvest abilities can generate items when they occupy this building";
+                    e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x4dd349);
                     return new SideEffect();
@@ -487,7 +487,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_mountain).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "mountain");
-                    e.blob.desc = "Most units cannot traverse mountains";
+                    e.blob.desc = "Most units cannot traverse mountains.";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x875f9a);
                     e.blob.setObstacle(true);
@@ -498,7 +498,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_hill).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "hill");
-                    e.blob.desc = "These rolling hills slow down travellers";
+                    e.blob.desc = "Units move slower on hills.";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x2c9965);
                     return new SideEffect();
@@ -512,7 +512,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_bluff).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance(view.av, "bluff");
-                    e.blob.desc = "These bluffs provide gorgeous views but are difficult to pass";
+                    e.blob.desc = "Units move slower on bluffs.";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x2c9965);
                     return new SideEffect();
@@ -527,7 +527,7 @@ public class VanillaMod implements GameMod {
                 .add(Events.GenerateBuildingEvent.class,
                         (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                             e.blob.setModelInstance(view.av, "fountain");
-                            e.blob.desc = "A unit that occupies this building gets healed a little each turn";
+                            e.blob.desc = "An occupying unit regains health each turn.";
                             e.blob.combat.health.setMaxAndValue(10);
                             e.blob.setMinimapColor(0x875f9a);
                             return new SideEffect();
@@ -537,30 +537,7 @@ public class VanillaMod implements GameMod {
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
-                    return u.isPresent() ? receiver.combat.heal(view, u.get(), 5) : new SideEffect();
-                });
-
-        // Market Value Goo
-        new Stratified<Building>(events.building, Labels.building_market_value_goo)
-                .add(Events.GenerateBuildingEvent.class,
-                        (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                            e.blob.setModelInstance(view.av, "goo");
-                            e.blob.desc = "This goo generates 3 auction points each turn for the next 2 turns";
-                            e.blob.combat.health.setMaxAndValue(2);
-                            e.blob.setMinimapColor(0x875f9a);
-                            return new SideEffect();
-                        })
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect().add(() -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty());
-                            view.game.future.addFutureTick("Remove", receiver, 3, false, Optional.empty());
-                        }))
-                .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
-                    return new SideEffect()
-                            .add(() -> view.game.mechanics.auction.addPoints(view, receiver.getPoint(), 3));
-                }).add("Remove", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
-                    return new SideEffect().add(() -> view.game.future.removeFutureTicks(receiver, "Tick"))
-                            .add(receiver.combat.takeDamage(view, new Damage(receiver.combat.health.get()), receiver));
+                    return u.isPresent() ? receiver.combat.heal(view, u.get(), 1) : new SideEffect();
                 });
 
         /**
