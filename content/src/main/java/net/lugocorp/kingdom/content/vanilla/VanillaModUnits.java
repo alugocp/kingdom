@@ -127,8 +127,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_patagan).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This battle mage is one of King Gargantos's most loyal subjects";
-                    // TODO add a real model
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "patagan");
                     e.blob.species = Defs.species_tortugan;
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.SUPPORT);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_fireball,
