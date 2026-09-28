@@ -81,6 +81,7 @@ public class ModelNode implements MenuNode {
         transform.scale(-(float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
                 (float) this.size.y * 2f / ((float) Coords.SIZE.y * this.modelHeight), 1f);
         transform.rotate(0f, 1f, 0f, 180f);
+        transform.rotate(-1f, 0f, 0f, 90f);
     }
 
     /** {@inheritdoc} */
