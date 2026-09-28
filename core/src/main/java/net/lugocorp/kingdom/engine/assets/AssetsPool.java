@@ -30,7 +30,9 @@ public abstract class AssetsPool<T> {
     protected Optional<T> getAsset(String name) {
         AssetManager assets = this.internal;
         String filename = this.getFilename(name);
-        assets.update();
+        if (!assets.isLoaded(filename)) {
+            assets.update();
+        }
         T asset = assets.get(filename, false);
         if (asset == null) {
             if (!assets.contains(filename, this.classInstance)) {
