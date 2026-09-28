@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.utils;
-import net.lugocorp.kingdom.FeatureFlags;
+import net.lugocorp.kingdom.DevOptions;
 import java.io.PrintStream;
 
 /**
@@ -7,7 +7,7 @@ import java.io.PrintStream;
  */
 public class Log {
     private static final PrintStream out = System.out;
-    private static final boolean debug = FeatureFlags.DEBUG;
+    private static final boolean debug = DevOptions.isDebugMode();
 
     /**
      * Logs the given message
@@ -34,8 +34,8 @@ public class Log {
      * Calls log(msg) but with the given LogSys
      */
     public static void log(LogSys sys, String msg) {
-        for (int a = 0; a < FeatureFlags.LOG_FILTER.length; a++) {
-            if (FeatureFlags.LOG_FILTER[a].equals(sys.label)) {
+        for (int a = 0; a < DevOptions.getLogFilter().length; a++) {
+            if (DevOptions.getLogFilter()[a].equals(sys.label)) {
                 return;
             }
         }
@@ -46,8 +46,8 @@ public class Log {
      * Calls log(format, ...args) but with the given LogSys
      */
     public static void log(LogSys sys, String format, Object... args) {
-        for (int a = 0; a < FeatureFlags.LOG_FILTER.length; a++) {
-            if (FeatureFlags.LOG_FILTER[a].equals(sys.label)) {
+        for (int a = 0; a < DevOptions.getLogFilter().length; a++) {
+            if (DevOptions.getLogFilter()[a].equals(sys.label)) {
                 return;
             }
         }
