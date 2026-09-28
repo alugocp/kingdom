@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
+import net.lugocorp.kingdom.DevOptions;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.DummyUnit;
@@ -33,7 +34,7 @@ public class GlyphPools {
             // Run the generation event without instantiating a new Unit object,
             // then add it to the GlyphPool
             g.generator.unitOptimal(u);
-            if (u.shouldAddToGlyphPool()) {
+            if (u.shouldAddToGlyphPool() && this.includeUnit(u)) {
                 this.add(name, u.glyphs.get());
                 for (Glyph g1 : u.glyphs.get()) {
                     this.originals.put(g1, this.originals.get(g1) + 1);
@@ -41,6 +42,13 @@ public class GlyphPools {
             }
             u.resetUnlistedStatus();
         }
+    }
+
+    /**
+     * Returns true if we can include the given Unit in this build of the game
+     */
+    private boolean includeUnit(Unit u) {
+        return DevOptions.isDebugMode() || !u.getModelName().equals("placeholder1");
     }
 
     /**
