@@ -146,7 +146,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_pelagma).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "She disintegrates minerals for sustenance using her molten body";
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "pelagma");
                     e.blob.species = Defs.species_elemental;
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.MINING);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_lava_bubble, Labels.ability_erupt);
@@ -375,8 +375,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_zen_hito_the_kappa).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "A wandering healer who never turns down a request for help";
-                    // TODO add a real model
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "zen-hito");
                     e.blob.species = Defs.species_kappa;
                     e.blob.glyphs.set(Glyph.SUPPORT);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_scratch,
