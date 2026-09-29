@@ -137,8 +137,9 @@ class CleanAssetsTask extends DefaultTask {
             }
             def g3dbFile = file.getName()[0..-4] + "g3db"
             def parent = file.getParent()
-            println("Generating $g3dbFile ($parent)...")
-            "fbx-conv -f $parent/$srcFile $parent/$g3dbFile".execute()
+            def command = "fbx-conv -f $parent/$srcFile $parent/$g3dbFile"
+            println(command)
+            command.execute()
         }
     }
 }
