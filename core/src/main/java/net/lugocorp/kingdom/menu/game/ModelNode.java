@@ -27,14 +27,20 @@ public class ModelNode implements MenuNode {
     private boolean loaded = false;
     private float modelHeight = 1f;
     private float modelWidth = 1f;
+    /**
+     * TODO remove this flag. It's only used for the old, Blockbench-based Unit
+     * models so they don't appear rotated in the Unit select screen
+     */
+    private final boolean oldModel;
 
     public ModelNode(AudioVideo av, Camera camera, Environment environment, String name,
-            Optional<Tuple<Integer, String>> material) {
+            Optional<Tuple<Integer, String>> material, boolean oldModel) {
         this.model.setModelInstance(av, name);
         material.ifPresent((Tuple<Integer, String> t) -> this.model.setMaterial(t.b, t.a));
         this.environment = environment;
         this.camera = camera;
         this.name = name;
+        this.oldModel = oldModel;
     }
 
     /**
@@ -81,7 +87,9 @@ public class ModelNode implements MenuNode {
         transform.scale(-(float) this.size.x * 2f / ((float) Coords.SIZE.x * this.modelWidth),
                 (float) this.size.y * 2f / ((float) Coords.SIZE.y * this.modelHeight), 1f);
         transform.rotate(0f, 1f, 0f, 180f);
-        transform.rotate(-1f, 0f, 0f, 90f);
+        if (!this.oldModel) {
+            transform.rotate(-1f, 0f, 0f, 90f);
+        }
     }
 
     /** {@inheritdoc} */

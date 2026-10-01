@@ -51,6 +51,7 @@ class VanillaModUnits {
                             Labels.ability_regeneration);
                     UnitLogic.hungry(view, e.blob);
                     UnitLogic.largeHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -67,6 +68,7 @@ class VanillaModUnits {
                             Labels.ability_combat_loot, Labels.ability_mine_gems, Labels.ability_regeneration);
                     UnitLogic.standardHealthPool(e.blob);
                     UnitLogic.largeInventory(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -100,6 +102,7 @@ class VanillaModUnits {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_hunt_fish,
                             Labels.ability_regeneration, Labels.ability_armor);
                     UnitLogic.standardHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -117,6 +120,7 @@ class VanillaModUnits {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_pick_apples,
                             Labels.ability_mine_gems);
                     UnitLogic.standardHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -169,6 +173,7 @@ class VanillaModUnits {
                             Labels.ability_swing_axe);
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_slow, Labels.ability_entrenched);
                     UnitLogic.largeHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -200,6 +205,7 @@ class VanillaModUnits {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_mountain_strider,
                             Labels.ability_regeneration, Labels.ability_life_finds_a_way);
                     UnitLogic.largeHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -215,6 +221,7 @@ class VanillaModUnits {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_defensive_bloom,
                             Labels.ability_harvest_mushrooms);
                     UnitLogic.largeHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -234,6 +241,7 @@ class VanillaModUnits {
                             Labels.ability_market_boom);
                     UnitLogic.largeHealthPool(e.blob);
                     UnitLogic.hungry(view, e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -267,6 +275,7 @@ class VanillaModUnits {
                             Labels.ability_rock_appetite, Labels.ability_stone_defense, Labels.ability_mine_gems,
                             Labels.ability_mine_gold, Labels.ability_subterranean_potions);
                     UnitLogic.standardHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -319,6 +328,7 @@ class VanillaModUnits {
                             Labels.ability_deposit_seeds);
                     UnitLogic.standardHealthPool(e.blob);
                     UnitLogic.largeInventory(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -335,6 +345,7 @@ class VanillaModUnits {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_mine_gems);
                     UnitLogic.standardHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -366,6 +377,7 @@ class VanillaModUnits {
                     e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
                             Labels.ability_life_aura);
                     UnitLogic.standardHealthPool(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -398,6 +410,7 @@ class VanillaModUnits {
                             Labels.ability_regeneration, Labels.ability_pious, Labels.ability_harvest_pumpkins);
                     UnitLogic.standardHealthPool(e.blob);
                     UnitLogic.largeInventory(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -433,6 +446,7 @@ class VanillaModUnits {
                             Labels.ability_harvest_truffles, Labels.ability_investment, Labels.ability_trade);
                     UnitLogic.standardHealthPool(e.blob);
                     UnitLogic.largeInventory(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
@@ -450,6 +464,7 @@ class VanillaModUnits {
                             Labels.ability_regeneration, Labels.ability_market_indicator);
                     UnitLogic.standardHealthPool(e.blob);
                     UnitLogic.largeInventory(e.blob);
+                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 

@@ -68,6 +68,11 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     private boolean existsInWorld = false;
     private boolean unlisted = false;
     public Species species = Species.UNKNOWN;
+    /**
+     * TODO remove this flag. It's only used for the old, Blockbench-based Unit
+     * models so they don't appear rotated in the Unit select screen
+     */
+    public boolean oldModel = false;
 
     public Unit(String name, int x, int y) {
         super(name, x, y);

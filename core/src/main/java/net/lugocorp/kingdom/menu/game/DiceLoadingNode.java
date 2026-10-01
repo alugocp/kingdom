@@ -14,7 +14,7 @@ public class DiceLoadingNode extends ModelNode {
     private final Vector3 axis = new Vector3(0f, 1f, 0f);
 
     public DiceLoadingNode(AudioVideo av, Camera camera, Environment environment) {
-        super(av, camera, environment, "models/d20", Optional.empty());
+        super(av, camera, environment, "models/d20", Optional.empty(), false);
     }
 
     /** {@inheritdoc} */
