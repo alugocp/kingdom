@@ -179,8 +179,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_lost_golem).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Golem guides those who wind up in the Lost Lands";
-                    // TODO add a real model
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "lost-golem");
                     e.blob.species = Defs.species_golem;
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_stomp, Labels.ability_plant_forest);
@@ -344,8 +343,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_batatita).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This small nature spirit communes with the hearty tubers that grow within caves";
-                    // TODO add a real model
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "batatita");
                     e.blob.species = Defs.species_sprite;
                     e.blob.glyphs.set(Glyph.SUPPORT, Glyph.MINING);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_medicinal_tuber,
