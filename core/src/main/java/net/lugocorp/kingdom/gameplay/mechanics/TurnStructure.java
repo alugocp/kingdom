@@ -88,7 +88,8 @@ public class TurnStructure {
             }
 
             // Choose a new Unit at the maximum unit points
-            if (this.turn.getPlayer().getUnitPoints() >= NewUnit.MAX_UNIT_POINTS) {
+            if (this.turn.getPlayer().getUnitPoints() >= NewUnit.MAX_UNIT_POINTS
+                    && view.game.mechanics.pools.remaining() > 0) {
                 view.hud.popups.add(view.game.mechanics.recruitUnits.getNewUnitMenu(view));
             }
 
@@ -123,7 +124,7 @@ public class TurnStructure {
             }
 
             // Handle CompPlayer Unit recruitment logic
-            if (comp.getUnitPoints() >= NewUnit.MAX_UNIT_POINTS) {
+            if (comp.getUnitPoints() >= NewUnit.MAX_UNIT_POINTS && view.game.mechanics.pools.remaining() > 0) {
                 comp.actor.enactDecision(view, DecisionChannel.recruitUnit());
             }
         }

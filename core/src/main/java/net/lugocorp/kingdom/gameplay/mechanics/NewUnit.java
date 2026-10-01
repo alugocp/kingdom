@@ -32,6 +32,7 @@ import java.util.Set;
  * This class manages the logic for new Unit acquisition
  */
 public class NewUnit {
+    public static final int MAX_OVERFLOW_UNIT_POINTS = 200;
     public static final int MAX_UNIT_POINTS = 100;
 
     /**
@@ -40,6 +41,9 @@ public class NewUnit {
     public void giveUnitPointsYield(GameView view, Player player) {
         final int tiles = player.getNumberTiles(view.game);
         final int points = (int) Math.floor(20f * (tiles - player.buildings.size()) / tiles);
+        if (player.getUnitPoints() >= NewUnit.MAX_OVERFLOW_UNIT_POINTS) {
+            return;
+        }
         if (!player.isHumanPlayer()) {
             player.addUnitPoints(view, points);
             return;

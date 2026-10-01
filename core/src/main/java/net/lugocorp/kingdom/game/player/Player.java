@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.gameplay.mechanics.NewUnit;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
@@ -124,7 +125,7 @@ public abstract class Player {
      * Changes this Player's current amount of unit points
      */
     public void addUnitPoints(GameView view, int amount) {
-        this.unitPoints += amount;
+        this.unitPoints = Math.min(this.unitPoints + amount, NewUnit.MAX_OVERFLOW_UNIT_POINTS);
         view.hud.top.update(view.game);
     }
 
@@ -132,7 +133,7 @@ public abstract class Player {
      * Changes this Player's current amount of unit points and adds an Overlay
      */
     public void addUnitPoints(GameView view, Point p, int amount) {
-        this.unitPoints += amount;
+        this.unitPoints = Math.min(this.unitPoints + amount, NewUnit.MAX_OVERFLOW_UNIT_POINTS);
         view.overlays.add(new ResourceOverlay(view, p, 0.14f, ColorScheme.GREEN.hex, amount)
                 .then(() -> view.hud.top.update(view.game)));
     }

@@ -59,6 +59,17 @@ public class GlyphPools {
     }
 
     /**
+     * Returns the remaining number of Unit names across all pools
+     */
+    public int remaining() {
+        int total = 0;
+        for (Glyph g : this.pools.keySet()) {
+            total += this.remaining(g);
+        }
+        return total;
+    }
+
+    /**
      * Returns the original number of Unit names in the pool of the given Glyph
      */
     public int total(Glyph g) {
