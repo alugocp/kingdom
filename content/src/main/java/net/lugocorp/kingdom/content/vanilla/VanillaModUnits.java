@@ -249,7 +249,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_sir_rootbeard).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "Sir Rootbeard is among the most respected Dwarves in all of Surgarde";
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "sir-rootbeard");
                     e.blob.species = Defs.species_dwarf;
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.TRADE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_shield_bash);
