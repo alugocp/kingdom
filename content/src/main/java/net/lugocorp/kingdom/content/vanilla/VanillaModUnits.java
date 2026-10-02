@@ -420,8 +420,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_wuraj_the_blessed).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Elven shaman has dedicated her life to the restoration of her ancestral forests";
-                    // TODO add a real model
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "wuraj");
                     e.blob.species = Defs.species_elf;
                     e.blob.glyphs.set(Glyph.SUPPORT, Glyph.NATURE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_power_of_nature,
