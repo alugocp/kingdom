@@ -37,25 +37,24 @@ public class Tutorial extends Menu {
         final int mid = (Coords.SIZE.y + this.view.hud.top.getHeight() - this.view.hud.bot.getHeight()) / 2;
         final int center = (Coords.SIZE.x / 2) - 150;
         this.add(
-                "Welcome to Legends of T'ahn! This is a small tutorial for beginners. You can turn this off in the settings menu located at the top right of the screen.",
+                "Welcome to Legends of T'ahn! This is a small tutorial for beginners. You can turn this off in the settings menu (click the gear icon located at the top right of the screen).",
                 TutorialArrow.NONE, center, mid);
         this.add(
-                "This is the unit/building/tile menu. You can click on the tabs below to view details on any unit, building, or tile in the game world.",
+                "This is the unit/building/tile menu. You can click on the tabs below to inspect any unit, building, or tile in the game world. You can assign actions to units or swap items between a building and its occupying unit.",
                 TutorialArrow.DOWN, center, bot);
         this.add(
-                "Speaking of which, this is the game world. You can click on any visible tile here to open its details in the menu below.",
+                "This is the game world. You can click on any visible tile here to inspect it in the unit/building/tile menu.",
                 TutorialArrow.DOWN, center, mid);
         this.add(
-                "This is the minimap. It gives you an overview of the entire game world. You'll see it change colors as your units explore the map and claim tiles in your name. You can also click on it to instantly move the camera.",
+                "This is the minimap. It gives you an overview of the entire game world. You'll see it fill out as your units explore the map and expand your influence. You can also click on it to instantly move the camera.",
                 TutorialArrow.DOWN, Coords.SIZE.x - 330, bot);
         this.add(
                 "Below the minimap is the finish turn button. Click this when you're ready to end your turn so the computer players can take theirs.",
                 TutorialArrow.DOWN, Coords.SIZE.x - 330, bot);
+        this.add("This is the overhead bar. You can view personal and global stats here.", TutorialArrow.UP, center,
+                top);
         this.add(
-                "This is the overhead bar. You can view personal and global stats here, as well as access the settings menu.",
-                TutorialArrow.UP, center, top);
-        this.add(
-                "There is one tower under your control. Grow your clan as you explore the game world to take your enemies' towers and claim victory.",
+                "There is one tower under your control. Grow your clan as you explore the game world and take all your enemies' towers to claim victory.",
                 TutorialArrow.NONE, center, mid);
         this.add("That's the basics! Click on the red arrow ability below to move your unit, or try another ability.",
                 TutorialArrow.DOWN, (Coords.SIZE.x / 3) - 150, bot);
