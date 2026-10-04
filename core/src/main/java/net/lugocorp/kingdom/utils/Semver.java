@@ -27,8 +27,8 @@ public class Semver {
      * Returns true if this Semver represents a newer version than the given Semver
      */
     public boolean isNewerThan(Semver s) {
-        return this.major > s.major || (this.major == s.major && (this.minor > s.minor || (this.minor == s.minor
-                && (this.patch > s.patch || (this.patch == s.patch && this.label > s.label)))));
+        return this.major > s.major
+                || (this.major == s.major && (this.minor > s.minor || (this.minor == s.minor && this.patch > s.patch)));
     }
 
     /** {@inheritdoc} */

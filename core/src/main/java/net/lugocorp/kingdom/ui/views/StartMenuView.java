@@ -40,8 +40,9 @@ class StartMenuView implements View {
                 .add(new ButtonNode(params.av, "Settings", () -> this.navigate.accept(new SettingsView(params))))
                 .add(new SpacerNode(false).half())
                 .add(new ButtonNode(params.av, "Credits", () -> this.navigate.accept(new CreditsView(params))))
-                .add(new SpacerNode(false).half())
-                .add(new ButtonNode(params.av, "Content", () -> this.navigate.accept(new ActiveModsView(params))))
+                // .add(new SpacerNode(false).half())
+                // .add(new ButtonNode(params.av, "Content", () -> this.navigate.accept(new
+                // ActiveModsView(params))))
                 .add(new SpacerNode(false))
                 .add(new TextNode(params.av, String.format("Version %s", Main.VERSION.toString())).center()))
                 .noBackground();

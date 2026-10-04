@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.engine.projection.ViewportLogic;
 import net.lugocorp.kingdom.settings.SettingsIO;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
+import net.lugocorp.kingdom.utils.Log;
 import net.lugocorp.kingdom.utils.Semver;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -15,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * This main class kicks off all game logic
  */
 public class Main implements ApplicationListener {
-    public static final Semver VERSION = new Semver(1, 0, 2, Semver.BETA);
+    public static final Semver VERSION = new Semver(0, 0, 0, Semver.BETA);
     public static Viewport viewport = null;
     private long prevTime = System.currentTimeMillis();
     private View view = null;
@@ -39,9 +40,8 @@ public class Main implements ApplicationListener {
         ViewportLogic.setViewport(vp);
 
         // Print out some window debug info
-        System.out.println(String.format("Screen size: (%d, %d)", vp.getScreenWidth(), vp.getScreenHeight()));
-        System.out.println(String.format("Back buffer: (%d, %d)", Gdx.graphics.getBackBufferWidth(),
-                Gdx.graphics.getBackBufferHeight()));
+        Log.log("Screen size: (%d, %d)", vp.getScreenWidth(), vp.getScreenHeight());
+        Log.log("Back buffer: (%d, %d)", Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
     }
 
     /** {@inheritdoc} */
