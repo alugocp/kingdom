@@ -90,7 +90,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_blessing_of_natures_hand)
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.setIcon(Labels.asset_bite);
+                            e.blob.setIcon(Labels.asset_blessing_of_natures_hand);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("+2 healing on forests or oases"))
