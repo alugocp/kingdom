@@ -284,7 +284,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_svelta_luktegress).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This Dwarven miner is well known throughout Helligdom";
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance(view.av, "svelta-luktegress");
                     e.blob.species = Defs.species_dwarf;
                     e.blob.glyphs.set(Glyph.MINING);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_swing_pickaxe,
