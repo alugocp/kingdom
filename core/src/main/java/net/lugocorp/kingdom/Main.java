@@ -37,6 +37,11 @@ public class Main implements ApplicationListener {
         vp.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         vp.apply();
         ViewportLogic.setViewport(vp);
+
+        // Print out some window debug info
+        System.out.println(String.format("Screen size: (%d, %d)", vp.getScreenWidth(), vp.getScreenHeight()));
+        System.out.println(String.format("Back buffer: (%d, %d)", Gdx.graphics.getBackBufferWidth(),
+                Gdx.graphics.getBackBufferHeight()));
     }
 
     /** {@inheritdoc} */
