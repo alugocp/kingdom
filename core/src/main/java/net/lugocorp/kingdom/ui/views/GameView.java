@@ -219,7 +219,7 @@ public class GameView implements View {
         Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL20.GL_CULL_FACE);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        this.controller.keys.performActions();
+        this.controller.keys.performActions(dt);
 
         // Update Animations and other Game state
         this.animations.update(this, dt);

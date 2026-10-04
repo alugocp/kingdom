@@ -1,12 +1,13 @@
 package net.lugocorp.kingdom.engine.controllers;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * This class keeps track of which keys are held down
  */
 public class KeyState {
-    private final Map<Integer, Runnable> keyActions = new HashMap<>();
+    private final Map<Integer, Consumer<Integer>> keyActions = new HashMap<>();
 
     /**
      * Runs some action when a key is typed
@@ -20,7 +21,7 @@ public class KeyState {
     /**
      * Adds a new key-based action to this instance
      */
-    void down(int held, int key, Runnable action) {
+    void down(int held, int key, Consumer<Integer> action) {
         if (held == key) {
             this.keyActions.put(key, action);
         }
@@ -36,9 +37,9 @@ public class KeyState {
     /**
      * Performs all actions associated with currently held keys
      */
-    public void performActions() {
-        for (Runnable r : this.keyActions.values()) {
-            r.run();
+    public void performActions(int dt) {
+        for (Consumer<Integer> a : this.keyActions.values()) {
+            a.accept(dt);
         }
     }
 }

@@ -20,7 +20,7 @@ import java.util.Optional;
  * Handles all user control input for the GameView
  */
 public class GameViewController implements InputProcessor {
-    private static final float SCROLL_SPEED = 2f;
+    private static final float SCROLL_SPEED = 3f;
     private static final float ZOOM_SPEED = 1f;
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
@@ -82,6 +82,13 @@ public class GameViewController implements InputProcessor {
         // Translate by correction amount
         this.camera.translate(dx, 0f, dz);
         this.camera.update();
+    }
+
+    /**
+     * Calls moveCamera() with respect to delta time
+     */
+    private void moveCameraByDeltaTime(int dt, float dx, float dz) {
+        this.moveCamera((float) dt * dx / 1000f, (float) dt * dz / 1000f);
     }
 
     /**
@@ -275,16 +282,24 @@ public class GameViewController implements InputProcessor {
         }
 
         // WASD
-        this.keys.down(keycode, Keys.W, () -> this.moveCamera(0, -GameViewController.SCROLL_SPEED));
-        this.keys.down(keycode, Keys.A, () -> this.moveCamera(-GameViewController.SCROLL_SPEED, 0));
-        this.keys.down(keycode, Keys.S, () -> this.moveCamera(0, GameViewController.SCROLL_SPEED));
-        this.keys.down(keycode, Keys.D, () -> this.moveCamera(GameViewController.SCROLL_SPEED, 0));
+        this.keys.down(keycode, Keys.W,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, 0, -GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.A,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, -GameViewController.SCROLL_SPEED, 0));
+        this.keys.down(keycode, Keys.S,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, 0, GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.D,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, GameViewController.SCROLL_SPEED, 0));
 
         // Arrow keys
-        this.keys.down(keycode, Keys.UP, () -> this.moveCamera(0, -GameViewController.SCROLL_SPEED));
-        this.keys.down(keycode, Keys.LEFT, () -> this.moveCamera(-GameViewController.SCROLL_SPEED, 0));
-        this.keys.down(keycode, Keys.DOWN, () -> this.moveCamera(0, GameViewController.SCROLL_SPEED));
-        this.keys.down(keycode, Keys.RIGHT, () -> this.moveCamera(GameViewController.SCROLL_SPEED, 0));
+        this.keys.down(keycode, Keys.UP,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, 0, -GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.LEFT,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, -GameViewController.SCROLL_SPEED, 0));
+        this.keys.down(keycode, Keys.DOWN,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, 0, GameViewController.SCROLL_SPEED));
+        this.keys.down(keycode, Keys.RIGHT,
+                (Integer dt) -> this.moveCameraByDeltaTime(dt, GameViewController.SCROLL_SPEED, 0));
         return false;
     }
 
