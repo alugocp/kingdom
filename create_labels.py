@@ -62,6 +62,7 @@ def generate_labels(*modkeys):
                     f'    public static final String {prefix}_{cleaned} = "{label}";',
                     file=file,
                 )
+                print(f"{label} -> {prefix}_{cleaned}")
 
         # Write the closing bracket
         print("}", file=file)

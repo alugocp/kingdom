@@ -1356,9 +1356,8 @@ public class VanillaMod implements GameMod {
                     // Remove the cooldown effect and reapply with fewer remaining turns (if
                     // applicable)
                     final int turns = number.length() == 0 ? 0 : Integer.parseInt(number);
-                    final SideEffect effects = new SideEffect().add(() -> {
-                        receiver.wielder.abilities.removeStatusEffect(view, receiver);
-                    });
+                    final SideEffect effects = new SideEffect()
+                            .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver));
                     if (turns > 1) {
                         final String ability = receiver.name.substring(Labels.status_effect_cooldown.length() + 2,
                                 receiver.name.length() - 1);
