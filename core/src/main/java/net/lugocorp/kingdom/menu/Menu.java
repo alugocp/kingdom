@@ -250,10 +250,8 @@ public class Menu {
         }
 
         // Draw Menu content
-        final int menuRatioX = (int) (Gdx.graphics.getBackBufferWidth() / (float) Gdx.graphics.getWidth());
-        final int menuRatioY = (int) (Gdx.graphics.getBackBufferHeight() / (float) Gdx.graphics.getHeight());
         final int[] s1 = ViewportLogic.project(bg.x, bg.y);
-        final int[] s2 = ViewportLogic.project(bg.x + (bg.w * menuRatioX), bg.y + (bg.h * menuRatioY));
+        final int[] s2 = ViewportLogic.project(bg.w, bg.h);
         Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
         Gdx.gl.glScissor(s1[0], s1[1], s2[0], s2[1]);
         if (this.renderBackground) {

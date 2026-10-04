@@ -30,8 +30,10 @@ public class ViewportLogic {
      * Returns the given "world units" (a LibGDX term) in screen coordinates
      */
     public static int[] project(int x, int y) {
-        final float scaleX = ViewportLogic.viewport.getScreenWidth() / (float) Coords.SIZE.x;
-        final float scaleY = ViewportLogic.viewport.getScreenHeight() / (float) Coords.SIZE.y;
+        final float bufferRatioX = Gdx.graphics.getBackBufferWidth() / (float) Gdx.graphics.getWidth();
+        final float bufferRatioY = Gdx.graphics.getBackBufferHeight() / (float) Gdx.graphics.getHeight();
+        final float scaleX = ViewportLogic.viewport.getScreenWidth() * bufferRatioX / (float) Coords.SIZE.x;
+        final float scaleY = ViewportLogic.viewport.getScreenHeight() * bufferRatioY / (float) Coords.SIZE.y;
         return new int[]{(int) ((x * scaleX) + ViewportLogic.viewport.getScreenX()),
                 (int) ((y * scaleY) + ViewportLogic.viewport.getScreenY())};
     }
