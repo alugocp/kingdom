@@ -41,8 +41,7 @@ class VanillaModUnits {
         new Stratified<Unit>(events.unit, Labels.unit_necromancer).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
                     e.blob.desc = "This fallen creature now terrorizes its once idyllic home";
-                    e.blob.setModelInstance(view.av, "druid");
-                    e.blob.setMaterial("necromancer");
+                    e.blob.setModelInstance(view.av, "the-necromancer");
                     e.blob.species = Defs.species_undead;
                     e.blob.glyphs.set(Glyph.BATTLE, Glyph.DEFENSE);
                     e.blob.abilities.setActive(view.game.generator, Labels.ability_necrotic_blast,
@@ -51,7 +50,6 @@ class VanillaModUnits {
                             Labels.ability_regeneration);
                     UnitLogic.hungry(view, e.blob);
                     UnitLogic.largeHealthPool(e.blob);
-                    e.blob.oldModel = true;
                     return new SideEffect();
                 });
 
