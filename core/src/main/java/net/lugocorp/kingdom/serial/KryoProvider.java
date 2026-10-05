@@ -57,11 +57,9 @@ public class KryoProvider {
 
         // net.lugocorp.kingdom.engine
         kryo.register(net.lugocorp.kingdom.engine.AudioVideo.class);
-        kryo.register(net.lugocorp.kingdom.engine.InverseRenderableSorter.class);
         kryo.register(net.lugocorp.kingdom.engine.animation.Animation.class);
         kryo.register(net.lugocorp.kingdom.engine.animation.AnimationChain.class);
         kryo.register(net.lugocorp.kingdom.engine.animation.AnimationQueue.class);
-        // kryo.register(net.lugocorp.kingdom.engine.animation.FrameType.class);
         kryo.register(net.lugocorp.kingdom.engine.animation.Tween.class);
         kryo.register(net.lugocorp.kingdom.engine.assets.AssetsPool.class);
         kryo.register(net.lugocorp.kingdom.engine.assets.ModelLoader.class);
@@ -73,7 +71,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.engine.controllers.KeyState.class);
         kryo.register(net.lugocorp.kingdom.engine.controllers.MenuController.class);
         kryo.register(net.lugocorp.kingdom.engine.controllers.Shortcut.class);
-        // kryo.register(net.lugocorp.kingdom.engine.controllers.TouchState.class);
         kryo.register(net.lugocorp.kingdom.engine.fonts.FontParam.class);
         kryo.register(net.lugocorp.kingdom.engine.fonts.FontService.class);
         kryo.register(net.lugocorp.kingdom.engine.projection.CameraLogic.class);
@@ -123,14 +120,12 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.game.unit.Hunger.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Movement.class);
         kryo.register(net.lugocorp.kingdom.game.unit.Sleep.class);
-        // kryo.register(net.lugocorp.kingdom.game.world.Biome.class);
         kryo.register(net.lugocorp.kingdom.game.world.World.class);
         kryo.register(net.lugocorp.kingdom.game.world.WorldGenerator.class);
         kryo.register(net.lugocorp.kingdom.game.world.WorldGenOptions.class);
         kryo.register(net.lugocorp.kingdom.game.world.WorldSize.class);
 
         // net.lugocorp.kingdom.gameplay
-        // kryo.register(net.lugocorp.kingdom.gameplay.actions.Action.class);
         kryo.register(net.lugocorp.kingdom.gameplay.actions.ActionManager.class);
         kryo.register(net.lugocorp.kingdom.gameplay.actions.ActionType.class);
         kryo.register(net.lugocorp.kingdom.gameplay.actions.ActivateAction.class);
@@ -189,8 +184,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.menu.input.OptionsNode.class);
         kryo.register(net.lugocorp.kingdom.menu.input.TextEntryNode.class);
         kryo.register(net.lugocorp.kingdom.menu.input.VolumeNode.class);
-        // kryo.register(net.lugocorp.kingdom.menu.structure.Column.class);
-        // kryo.register(net.lugocorp.kingdom.menu.structure.ColumnType.class);
         kryo.register(net.lugocorp.kingdom.menu.structure.GridNode.class);
         kryo.register(net.lugocorp.kingdom.menu.structure.ListNode.class);
         kryo.register(net.lugocorp.kingdom.menu.structure.MenuMenuNode.class);
@@ -217,7 +210,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.mods.ModProfile.class);
 
         // net.lugocorp.kingdom.pathfinding
-        // kryo.register(net.lugocorp.kingdom.pathfinding.PathData.class);
         kryo.register(net.lugocorp.kingdom.pathfinding.Pathfinder.class);
 
         // net.lugocorp.kingdom.serial
@@ -234,7 +226,6 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.ui.hud.DebugHud.class);
         kryo.register(net.lugocorp.kingdom.ui.hud.Hud.class);
         kryo.register(net.lugocorp.kingdom.ui.hud.Logger.class);
-        // kryo.register(net.lugocorp.kingdom.ui.hud.LogMessage.class);
         kryo.register(net.lugocorp.kingdom.ui.hud.Minimap.class);
         kryo.register(net.lugocorp.kingdom.ui.hud.Popups.class);
         kryo.register(net.lugocorp.kingdom.ui.hud.TileMenu.class);
@@ -246,23 +237,12 @@ public class KryoProvider {
         kryo.register(net.lugocorp.kingdom.ui.overlay.OverlayLayer.class);
         kryo.register(net.lugocorp.kingdom.ui.overlay.ResourceOverlay.class);
         kryo.register(net.lugocorp.kingdom.ui.overlay.RisingOverlay.class);
-        // kryo.register(net.lugocorp.kingdom.ui.selection.TileMenuSelectMode.class);
-        // kryo.register(net.lugocorp.kingdom.ui.selection.TileMoveSelectMode.class);
-        // kryo.register(net.lugocorp.kingdom.ui.selection.TileSelectMode.class);
         kryo.register(net.lugocorp.kingdom.ui.selection.TileSelector.class);
-        // kryo.register(net.lugocorp.kingdom.ui.selection.TileSetSelectMode.class);
         kryo.register(net.lugocorp.kingdom.ui.tutorial.Tutorial.class);
-        // kryo.register(net.lugocorp.kingdom.ui.tutorial.TutorialArrow.class);
-        // kryo.register(net.lugocorp.kingdom.ui.tutorial.TutorialPopup.class);
-        // kryo.register(net.lugocorp.kingdom.ui.views.ActiveModsView.class);
-        // kryo.register(net.lugocorp.kingdom.ui.views.CreditsView.class);
-        // kryo.register(net.lugocorp.kingdom.ui.views.GameCreationView.class);
         kryo.register(net.lugocorp.kingdom.ui.views.GameView.class);
         kryo.register(net.lugocorp.kingdom.ui.views.GenerateWorldView.class);
-        // kryo.register(net.lugocorp.kingdom.ui.views.LoadGameView.class);
         kryo.register(net.lugocorp.kingdom.ui.views.LoadingGameView.class);
         kryo.register(net.lugocorp.kingdom.ui.views.SettingsView.class);
-        // kryo.register(net.lugocorp.kingdom.ui.views.StartMenuView.class);
         kryo.register(net.lugocorp.kingdom.ui.views.ThreadedTaskView.class);
         kryo.register(net.lugocorp.kingdom.ui.View.class);
 
