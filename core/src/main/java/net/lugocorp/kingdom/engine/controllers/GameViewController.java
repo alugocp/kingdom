@@ -131,6 +131,14 @@ public class GameViewController implements InputProcessor {
         return !this.view.hud.popups.isDisplayed() || m.isMenu(this.view.hud.popups.get());
     }
 
+    /**
+     * Tells the user that we're waiting on Animations to finish before they can use
+     * the UI
+     */
+    private void waitingOnAnimations() {
+        this.view.hud.logger.error("Wait for animations to finish");
+    }
+
     /** {@inheritdoc} */
     @Override
     public boolean touchDown​(int x, int y, int pointer, int button) {
@@ -164,9 +172,14 @@ public class GameViewController implements InputProcessor {
     /** {@inheritdoc} */
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
+        final boolean animating = this.view.animations.inProgress();
+
         // Menu logic
         for (MenuController m : this.menus) {
-            if (m.touchUp(x, y, pointer, button)) {
+            if (animating && m.isInMenu(new Point(x, y))) {
+                this.waitingOnAnimations();
+                return false;
+            } else if (m.touchUp(x, y, pointer, button)) {
                 return true;
             }
         }
@@ -181,7 +194,7 @@ public class GameViewController implements InputProcessor {
 
         // Game World logic
         if (this.touch.isActive()) {
-            if (!this.touch.isDragging() && !this.view.animations.inProgress()) {
+            if (!this.touch.isDragging() && !animating) {
                 this.view.selector.click();
             }
             this.touch.reset();
@@ -307,6 +320,10 @@ public class GameViewController implements InputProcessor {
     @Override
     public boolean keyUp​(int keycode) {
         this.keys.up(keycode);
+        if (this.view.animations.inProgress()) {
+            this.waitingOnAnimations();
+            return false;
+        }
 
         // Unit selection
         if (!this.view.hud.popups.isDisplayed()) {
