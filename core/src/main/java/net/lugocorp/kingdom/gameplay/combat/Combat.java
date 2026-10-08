@@ -119,11 +119,16 @@ public class Combat {
         }
         final int healthStart = this.health.get();
         final int healthEnd = healthStart - damageEvent.dmg.total();
-        effects.add(() -> view.overlays.entity(this.bearer)
-                .add(new HealthChangeOverlay(view, this.bearer, healthStart, healthEnd)));
-        if (!willDie) {
-            effects.add(() -> view.overlays.entity(this.bearer).addRising(
-                    new RisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
+        if (healthStart == healthEnd) {
+            effects.add(() -> view.overlays.entity(this.bearer)
+                    .addRising(new RisingOverlay(view, this.bearer, ColorScheme.DISABLE.hex, "Immune")));
+        } else {
+            effects.add(() -> view.overlays.entity(this.bearer)
+                    .add(new HealthChangeOverlay(view, this.bearer, healthStart, healthEnd)));
+            if (!willDie) {
+                effects.add(() -> view.overlays.entity(this.bearer).addRising(
+                        new RisingOverlay(view, this.bearer, ColorScheme.RED.hex, String.format("-%d", dmg.total()))));
+            }
         }
         return effects;
     }
