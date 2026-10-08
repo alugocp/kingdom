@@ -40,7 +40,8 @@ public class NewUnit {
      */
     public void giveUnitPointsYield(GameView view, Player player) {
         final int tiles = player.getNumberTiles(view.game);
-        final int points = (int) Math.floor(20f * (tiles - player.buildings.size()) / tiles);
+        final int points = Math.min((int) Math.floor(20f * (tiles - player.buildings.size()) / tiles),
+                NewUnit.MAX_OVERFLOW_UNIT_POINTS - player.getUnitPoints());
         if (player.getUnitPoints() >= NewUnit.MAX_OVERFLOW_UNIT_POINTS) {
             return;
         }
@@ -56,6 +57,9 @@ public class NewUnit {
             if (view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()
                     && t.getLeader().map((Player p1) -> p1.equals(player)).orElse(false)).orElse(false)) {
                 candidates.add(p);
+            }
+            if (candidates.size() == points) {
+                break;
             }
         }
 
