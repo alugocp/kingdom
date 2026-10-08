@@ -132,10 +132,14 @@ public class Movement {
                         }
                     }
                 };
+
+                // Handle Animation
+                final MoveAnimation animation = new MoveAnimation(this.unit, prev, dest, logic);
                 if (parallel) {
                     logic.run();
+                    animation.applyRotation();
                 } else {
-                    chain.add(new MoveAnimation(this.unit, prev, dest, logic));
+                    chain.add(animation);
                 }
                 prev = dest;
             }

@@ -23,11 +23,18 @@ public class MoveAnimation extends Animation {
         this.unit = unit;
     }
 
+    /**
+     * Sets the Unit model's rotation
+     */
+    public void applyRotation() {
+        this.unit.setRotation(this.angle);
+    }
+
     /** {@inheritdoc} */
     @Override
     public void animate(float value) {
         if (this.isFirstFrame()) {
-            this.unit.setRotation(this.angle);
+            this.applyRotation();
         }
         this.unit.setModelPositionOffset(this.diff[0] * value, this.diff[1] * value);
     }
