@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.selection;
 import net.lugocorp.kingdom.engine.projection.CameraLogic;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Hexagons;
@@ -8,13 +9,16 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
 import com.badlogic.gdx.Gdx;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This TileSelector allows a Unit to move
  */
 class TileMoveSelectMode extends TileSelectMode {
+    private final Set<Building> intersecting = new HashSet<>();
     private final Pathfinder pathfinder;
     private final Unit unit;
     private Optional<List<Point>> existingPath = Optional.empty();
@@ -41,6 +45,10 @@ class TileMoveSelectMode extends TileSelectMode {
             }
             this.existingPath = Optional.empty();
         });
+        for (Building b : this.intersecting) {
+            b.setAlpha(1f);
+        }
+        this.intersecting.clear();
     }
 
     /** {@inheritdoc} */
@@ -88,6 +96,16 @@ class TileMoveSelectMode extends TileSelectMode {
         this.removeShaderData(view);
         if (path.size() == 0) {
             return;
+        }
+
+        // Makes intersecting Buildings transparent
+        for (Point p1 : path) {
+            view.game.world.getTile(p1).flatMap((Tile t) -> t.building).ifPresent((Building b) -> {
+                if (b.isFullyOpaque()) {
+                    this.intersecting.add(b);
+                    b.setAlpha(0.5f);
+                }
+            });
         }
 
         // Sets up Tile user data for the render pipeline

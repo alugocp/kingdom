@@ -127,6 +127,13 @@ public class Modellable {
     }
 
     /**
+     * Returns true if this Modellable has full transparency
+     */
+    public boolean isFullyOpaque() {
+        return this.alpha == 1f;
+    }
+
+    /**
      * Tells this object how transparent it should be
      */
     public void setAlpha(float alpha) {
