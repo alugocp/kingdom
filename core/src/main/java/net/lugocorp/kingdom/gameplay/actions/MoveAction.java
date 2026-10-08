@@ -15,11 +15,13 @@ public class MoveAction implements Action {
     @FieldSerializer.Optional("view")
     private GameView view;
     private int distance;
+    private int costSpent;
     private int max;
 
-    public MoveAction(GameView view, Unit unit, List<Point> path, int distance) {
+    public MoveAction(GameView view, Unit unit, List<Point> path, int distance, int costSpent) {
         this.max = unit.movement.getMaxDistance(view);
         this.distance = distance;
+        this.costSpent = costSpent;
         this.view = view;
         this.unit = unit;
         this.path.addAll(path);
@@ -29,6 +31,7 @@ public class MoveAction implements Action {
     public MoveAction() {
         this.max = 0;
         this.distance = 0;
+        this.costSpent = 0;
         this.view = null;
         this.unit = null;
     }
@@ -71,7 +74,7 @@ public class MoveAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean canBeFollowedBy(ActionType a) {
-        return this.distance == 0 || (a == ActionType.MOVE && this.distance < this.max);
+        return this.costSpent == 0 || (a == ActionType.MOVE && this.costSpent < this.max);
     }
 
     /** {@inheritdoc} */
@@ -87,6 +90,7 @@ public class MoveAction implements Action {
                 this.path.addAll(ma.path);
                 this.unshift(ma.distance);
                 this.distance += ma.distance;
+                this.costSpent += ma.costSpent;
                 return this;
             }
         }
@@ -113,12 +117,13 @@ public class MoveAction implements Action {
     public boolean endOfTurn() {
         // If there's more path to move on and we haven't hit max
         // distance yet this turn then do that now
-        if (this.path.size() > 0 && this.distance < this.max) {
+        if (this.path.size() > 0 && this.costSpent < this.max) {
             this.unit.movement.move(this.view, this.path, true).execute();
         }
 
         // Reset distance moved for the next turn
         this.distance = 0;
+        this.costSpent = 0;
         return this.path.size() > 0;
     }
 
@@ -129,7 +134,7 @@ public class MoveAction implements Action {
             return String.format("This unit plans to move %d more tile(s), but you can give it a different command",
                     this.path.size());
         }
-        return this.distance == this.max
+        return this.costSpent == this.max
                 ? "This unit has moved its maximum distance and has exhausted its actions this turn"
                 : "This unit has moved this turn but can still go further";
     }

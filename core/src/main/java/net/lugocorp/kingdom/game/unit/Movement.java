@@ -75,9 +75,13 @@ public class Movement {
         // Calculate distance with speed cost in mind
         int overallDistance = 0;
         int remainingDistance = maxDistance;
+        int costSpent = 0;
         for (int a = 0; a < maxDistance; a++) {
-            remainingDistance -= this.getSpeedCost(view, view.game.world.getTile(path.get(a)).get());
-            if (remainingDistance >= 0 || (maxDistance == maxMovementSpeed && overallDistance == 0)) {
+            final int cost = this.getSpeedCost(view, view.game.world.getTile(path.get(a)).get());
+            remainingDistance -= cost;
+            costSpent += cost;
+            if (remainingDistance >= 0 || (costSpent == 0 && maxDistance == Math.min(path.size(), maxMovementSpeed)
+                    && overallDistance == 0)) {
                 overallDistance++;
             }
         }
@@ -96,6 +100,7 @@ public class Movement {
         }
 
         // Do the actual movements
+        final int totalCostSpent = costSpent;
         final List<Point> previous = this.getPreviousPath(path, distance);
         final Events.UnitMovedEvent before = new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous,
                 parallel);
@@ -140,7 +145,8 @@ public class Movement {
             if (!parallel) {
                 view.animations.add(chain.get());
             }
-            view.game.actions.unitHasActed(view, this.unit, new MoveAction(view, this.unit, path, distance));
+            view.game.actions.unitHasActed(view, this.unit,
+                    new MoveAction(view, this.unit, path, distance, totalCostSpent));
         });
         return effects;
     }
