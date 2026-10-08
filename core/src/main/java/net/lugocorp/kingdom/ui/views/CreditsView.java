@@ -29,13 +29,13 @@ class CreditsView implements View {
         this.background = new Background(params.av);
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
                 new ListNode()
-                        .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
+                        .add(new ButtonNode(params.av, "Back",
+                                () -> this.navigate.accept(new StartMenuView(params))))
                         .add(new HeaderNode(params.av, "Credits").center()).add(new SpacerNode())
-                        .add(new RowNode()
-                                .add(new ListNode().add(new SubheaderNode(params.av, "Game Design"))
-                                        .add(new TextNode(params.av, "Alex Lugo")))
-                                .add(new ListNode().add(new SubheaderNode(params.av, "Programming"))
-                                        .add(new TextNode(params.av, "Alex Lugo"))))
+                        .add(new RowNode().add(new ListNode().add(new SubheaderNode(params.av, "Game Design"))
+                                .add(new TextNode(params.av, "Alex Lugo")).add(new TextNode(params.av, "Mr. X"))).add(
+                                        new ListNode().add(new SubheaderNode(params.av, "Programming"))
+                                                .add(new TextNode(params.av, "Alex Lugo"))))
                         .add(new SpacerNode()).add(
                                 new RowNode()
                                         .add(new ListNode().add(new SubheaderNode(params.av, "3D Modelling"))
@@ -43,11 +43,10 @@ class CreditsView implements View {
                                         .add(new ListNode().add(new SubheaderNode(params.av, "Character Design"))
                                                 .add(new TextNode(params.av, "Alex Lugo"))))
                         .add(new SpacerNode()).add(new SubheaderNode(params.av, "Game Testers"))
-                        .add(new RowNode()
-                                .add(new ListNode().add(new TextNode(params.av, "IT"))
-                                        .add(new TextNode(params.av, "JAG")).add(new TextNode(params.av, "Elliott S"))
-                                        .add(new TextNode(params.av, "Ken Possible"))
-                                        .add(new TextNode(params.av, "Rebecca Oss")))
+                        .add(new RowNode().add(new ListNode().add(new TextNode(params.av, "IT"))
+                                .add(new TextNode(params.av, "JAG")).add(new TextNode(params.av, "Elliott S"))
+                                .add(new TextNode(params.av, "Ken Possible"))
+                                .add(new TextNode(params.av, "Rebecca Oss")).add(new TextNode(params.av, "Mr. X")))
                                 .add(new ListNode().add(new TextNode(params.av, "Swol Stefan"))
                                         .add(new TextNode(params.av, "Rhys")).add(new TextNode(params.av, "Alec Lisy"))
                                         .add(new TextNode(params.av, "Sam Unger")))))
