@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.Wrapped;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,8 +65,8 @@ public class Movement {
 
         // Check the Unit's remaining move distance for this turn
         final int maxMovementSpeed = this.getMaxDistance(view);
-        final int maxDistance = Math.min(path.size(), view.game.actions.getRemainingMoveDistance(view, this.unit));
-        if (maxDistance < 1) {
+        final int maxCost = Math.min(path.size(), view.game.actions.getRemainingMoveDistance(view, this.unit));
+        if (maxCost < 1) {
             if (this.unit.leadership.belongsToHuman()) {
                 effects.add(() -> view.hud.logger.error("The unit cannot move anymore this turn"));
             }
@@ -74,14 +75,11 @@ public class Movement {
 
         // Calculate distance with speed cost in mind
         int overallDistance = 0;
-        int remainingDistance = maxDistance;
-        int costSpent = 0;
-        for (int a = 0; a < maxDistance; a++) {
-            final int cost = this.getSpeedCost(view, view.game.world.getTile(path.get(a)).get());
-            remainingDistance -= cost;
-            costSpent += cost;
-            if (remainingDistance >= 0 || (costSpent == 0 && maxDistance == Math.min(path.size(), maxMovementSpeed)
-                    && overallDistance == 0)) {
+        final Wrapped<Integer> costSpent = new Wrapped<>(0);
+        for (int a = 0; a < maxCost; a++) {
+            costSpent.set(costSpent.get() + this.getSpeedCost(view, view.game.world.getTile(path.get(a)).get()));
+            if (maxCost - costSpent.get() >= 0
+                    || (maxCost == Math.min(path.size(), maxMovementSpeed) && overallDistance == 0)) {
                 overallDistance++;
             }
         }
@@ -100,7 +98,6 @@ public class Movement {
         }
 
         // Do the actual movements
-        final int totalCostSpent = costSpent;
         final List<Point> previous = this.getPreviousPath(path, distance);
         final Events.UnitMovedEvent before = new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous,
                 parallel);
@@ -146,7 +143,7 @@ public class Movement {
                 view.animations.add(chain.get());
             }
             view.game.actions.unitHasActed(view, this.unit,
-                    new MoveAction(view, this.unit, path, distance, totalCostSpent));
+                    new MoveAction(view, this.unit, path, distance, costSpent.get()));
         });
         return effects;
     }
