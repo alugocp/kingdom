@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.structure.ListNode;
+import net.lugocorp.kingdom.menu.structure.TabsNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
 
@@ -51,5 +52,14 @@ public class TileMenu extends Menu {
         final MenuNode node = t.get().getMenuContent(this.view, Optional.of(this.menuCoords.toPoint()));
         this.closeMiniMenu();
         this.setRoot(node);
+    }
+
+    /**
+     * Moves to the next tab in the TileMenu (if it even has tabs)
+     */
+    public void nextTab() {
+        if (this.root instanceof TabsNode) {
+            ((TabsNode) this.root).nextTab();
+        }
     }
 }

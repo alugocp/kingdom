@@ -330,13 +330,17 @@ public class InventoryNode implements MenuNode {
                 // Building actions for this Item
                 if (this.canUnitTakeItem(InventoryType.EQUIP, Optional.empty())
                         && !this.itemIsConsumed(this.view, item)) {
-                    root.add(new ButtonNode(this.view.av, "Equip onto unit",
-                            () -> this.unitTakesItem(InventoryType.EQUIP, item)).setNoise("sfx/item-exchange"));
+                    root.add(new ButtonNode(this.view.av, "Equip onto unit", () -> {
+                        this.unitTakesItem(InventoryType.EQUIP, item);
+                        this.view.hud.bot.tileMenu.nextTab();
+                    }).setNoise("sfx/item-exchange"));
                     hasActions = true;
                 }
                 if (this.canUnitTakeItem(InventoryType.HAUL, Optional.empty())) {
-                    root.add(new ButtonNode(this.view.av, "Give to unit",
-                            () -> this.unitTakesItem(InventoryType.HAUL, item)).setNoise("sfx/item-exchange"));
+                    root.add(new ButtonNode(this.view.av, "Give to unit", () -> {
+                        this.unitTakesItem(InventoryType.HAUL, item);
+                        this.view.hud.bot.tileMenu.nextTab();
+                    }).setNoise("sfx/item-exchange"));
                     hasActions = true;
                 }
             } else {

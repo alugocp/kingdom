@@ -28,6 +28,15 @@ public class TabsNode implements MenuNode {
     }
 
     /**
+     * Skips to the next tab
+     */
+    public void nextTab() {
+        if (++this.selected >= this.data.size()) {
+            this.selected = 0;
+        }
+    }
+
+    /**
      * Adds a new tab with a label and content
      */
     public TabsNode add(String label, Optional<String> desc, MenuNode root) {
