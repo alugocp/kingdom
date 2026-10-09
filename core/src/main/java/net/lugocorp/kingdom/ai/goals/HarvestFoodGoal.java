@@ -22,6 +22,7 @@ import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Cache;
 import net.lugocorp.kingdom.utils.Chooser;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.Tuple;
@@ -35,6 +36,7 @@ import java.util.Set;
  * This causes the CompPlayer to gather food Items for its Units
  */
 public class HarvestFoodGoal extends Goal {
+    private final Cache<Tuple<Ability, Unit>, Optional<String>> abilitiesThatGenerateFood = new Cache<>();
 
     /** {@inheritdoc} */
     @Override
@@ -192,19 +194,19 @@ public class HarvestFoodGoal extends Goal {
      */
     private Optional<String> doesAbilityGenerateFoodOnBuilding(GameView view, CompPlayer player, Ability ability,
             Unit target) {
-        // TODO cache the results of this so we don't rerun it every turn
-        return GoalUtils.checkAbilityOnBuilding(
-                view, player, ability, new String[]{Labels.building_dense_forest, Labels.building_forest,
-                        Labels.building_meadow, Labels.building_oasis, Labels.building_shrubland, Labels.building_mine},
-                (Event e) -> {
-                    if (e.getClass() == Events.GenerateItemEvent.class) {
-                        final Item item = ((Events.GenerateItemEvent) e).blob;
-                        if (target.hunger.canEat(view, item)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
+        return this.abilitiesThatGenerateFood.get(new Tuple<Ability, Unit>(ability, target),
+                () -> GoalUtils.checkAbilityOnBuilding(view, player, ability,
+                        new String[]{Labels.building_dense_forest, Labels.building_forest, Labels.building_meadow,
+                                Labels.building_oasis, Labels.building_shrubland, Labels.building_mine},
+                        (Event e) -> {
+                            if (e.getClass() == Events.GenerateItemEvent.class) {
+                                final Item item = ((Events.GenerateItemEvent) e).blob;
+                                if (target.hunger.canEat(view, item)) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }));
     }
 
     /**
@@ -212,7 +214,6 @@ public class HarvestFoodGoal extends Goal {
      */
     private Optional<Tuple<String, Path>> doesAbilitySpawnBuildingOnTile(GameView view, CompPlayer player,
             Ability ability, String target) {
-        // TODO cache the results of this so we don't rerun it every turn
         final String[] tiles = {Labels.tile_grass, Labels.tile_rock, Labels.tile_sand, Labels.tile_snow};
         for (int a = 0; a < tiles.length; a++) {
             final Optional<Point> override = view.game.world.findTile(tiles[a]).map((Tile t) -> t.getPoint());

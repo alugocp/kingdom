@@ -19,6 +19,7 @@ import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Cache;
 import net.lugocorp.kingdom.utils.Lambda;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import java.util.Set;
  * This causes the CompPlayer to generate auction points from markets
  */
 public class HarvestAuctionPointsGoal extends Goal {
+    private final Cache<Ability, Optional<String>> abilitiesThatGeneratePoints = new Cache<>();
 
     /** {@inheritdoc} */
     @Override
@@ -87,8 +89,8 @@ public class HarvestAuctionPointsGoal extends Goal {
      * points on
      */
     private Optional<String> doesAbilityGeneratePointsOnBuilding(GameView view, CompPlayer player, Ability ability) {
-        // TODO cache the results of this so we don't rerun it every turn
-        return GoalUtils.checkAbilityOnBuilding(view, player, ability, new String[]{Labels.building_marketplace},
-                (Event e) -> e.getClass() == Events.GenerateAuctionPointsEvent.class);
+        return this.abilitiesThatGeneratePoints.get(ability,
+                () -> GoalUtils.checkAbilityOnBuilding(view, player, ability, new String[]{Labels.building_marketplace},
+                        (Event e) -> e.getClass() == Events.GenerateAuctionPointsEvent.class));
     }
 }

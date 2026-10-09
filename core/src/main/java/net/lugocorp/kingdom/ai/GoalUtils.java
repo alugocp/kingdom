@@ -99,7 +99,6 @@ public class GoalUtils {
      */
     public static Optional<Path> canAbilitySpawnBuilding(GameView view, CompPlayer player, Ability ability,
             String building, Point override) {
-        // TODO cache the results of this so we don't rerun it every turn
         final Optional<Prioritized<Path>> prioritized = player.actor.analyze.activeAbility(view, ability, override,
                 (Prediction prediction) -> {
                     for (Event event : prediction.log) {

@@ -22,6 +22,7 @@ import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Cache;
 import net.lugocorp.kingdom.utils.Chooser;
 import net.lugocorp.kingdom.utils.Lambda;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.Set;
  * This causes the CompPlayer to gather food Items for its Units
  */
 public class HarvestGoldGoal extends Goal {
+    private final Cache<Ability, Optional<String>> abilitiesThatGenerateGold = new Cache<>();
 
     /** {@inheritdoc} */
     @Override
@@ -169,8 +171,7 @@ public class HarvestGoldGoal extends Goal {
      * Returns the name of a Building that the given Ability generates gold on
      */
     private Optional<String> doesAbilityGenerateGoldOnBuilding(GameView view, CompPlayer player, Ability ability) {
-        // TODO cache the results of this so we don't rerun it every turn
-        return GoalUtils.checkAbilityOnBuilding(view, player, ability,
+        return this.abilitiesThatGenerateGold.get(ability, () -> GoalUtils.checkAbilityOnBuilding(view, player, ability,
                 new String[]{Labels.building_marketplace, Labels.building_mine}, (Event e) -> {
                     if (e.getClass() == Events.GenerateItemEvent.class) {
                         final Item item = ((Events.GenerateItemEvent) e).blob;
@@ -181,6 +182,6 @@ public class HarvestGoldGoal extends Goal {
                         return true;
                     }
                     return false;
-                });
+                }));
     }
 }
