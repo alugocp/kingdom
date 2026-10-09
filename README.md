@@ -1,5 +1,5 @@
 # Legends of T'ahn
-![Static Badge](https://img.shields.io/badge/Version-1.0.0--alpha-a?color=%23009900)
+![Static Badge](https://img.shields.io/badge/Version-0.0.0--beta-a?color=%23009900)
 
 Legends of T'ahn is a turn-based strategy game written in Java with the [libGDX](https://libgdx.com/) library.
 Manage resources and train units as you explore and maintain the game world.
@@ -33,21 +33,24 @@ This project uses [Gradle](https://gradle.org/) as a build system and dependency
 - `gradle exportGame`: copies the built standalone JAR file to the project root directory
 
 ## 3D Models
-You can create new models for this game using Blockbench and [fbx-conv](https://github.com/libgdx/fbx-conv).
-Export a Blockbench project as an `obj` file (this will also generate `mtl` and `png` files).
-Then, run `fbx-conv -f <filename>.obj <filename>.g3db` to make the model usable by the game code.
+You can create new models for this game using Blender and [fbx-conv](https://github.com/libgdx/fbx-conv).
+Export a Blender project as a `fbx` file.
+Then, run `fbx-conv -f <filename>.fbx <filename>.g3db` to make the model usable by the game code.
 You can also run `gradle cleanAssets` to convert all models at once.
+
+Alternatively, you can use Blockbench instead of Blender.
+Export a Blockbench project as an `obj` file (this will also generate `mtl` and `png` files), then run `gradle cleanAssets`.
 
 ## Modifying content
 If you change the 3D models then run `gradle cleanAssets` *before* rerunning `gradle build` or `gradle run`.
 
-If you want to add new content to an official mod, modify a `content/**/labels.json` file and then run the following:
+If you want to add new content to an official mod, modify a `content/assets/*.json` file and then run the following:
 
 ```bash
 python3 create_labels.py
 ```
 
-This will re-generate the `Labels` classes that each official mod uses.
+This will re-generate the `Labels` class that defines all in-game content.
 
 ## Notes
 - [libGDX JavaDocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/index.html)
