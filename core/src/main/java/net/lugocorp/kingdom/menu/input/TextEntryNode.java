@@ -28,6 +28,7 @@ public class TextEntryNode implements MenuNode {
     private int charsWindow = 10;
     private int cursor = 0;
     private int delta = 0;
+    private int blink = 0;
 
     public TextEntryNode(AudioVideo av, String initial, Consumer<String> entered) {
         this.builder = new StringBuilder(initial);
@@ -76,16 +77,22 @@ public class TextEntryNode implements MenuNode {
     /** {@inheritdoc} */
     @Override
     public void draw(AudioVideo av, Rect bounds) {
+        if (++this.blink > 60) {
+            this.blink = 0;
+        }
+
         // Draw the cursor
-        Rect flip2 = Coords.screen.flip(bounds.x + (this.charWidth * (this.cursor - this.delta)),
-                bounds.y + TextEntryNode.MARGIN, this.charWidth, bounds.h - (TextEntryNode.MARGIN * 2));
-        av.shapes.begin(ShapeType.Filled);
-        av.shapes.setColor(ColorScheme.BUTTON.color);
-        av.shapes.rect(flip2.x, flip2.y, flip2.w, flip2.h);
-        av.shapes.end();
+        if (this.selected && this.blink > 30) {
+            final Rect flip2 = Coords.screen.flip(bounds.x + (this.charWidth * (this.cursor - this.delta)),
+                    bounds.y + TextEntryNode.MARGIN, this.charWidth, bounds.h - (TextEntryNode.MARGIN * 2));
+            av.shapes.begin(ShapeType.Filled);
+            av.shapes.setColor(ColorScheme.BUTTON.color);
+            av.shapes.rect(flip2.x, flip2.y, flip2.w, flip2.h);
+            av.shapes.end();
+        }
 
         // Draw the selected highlight
-        Rect flip1 = Coords.screen.flip(bounds.x, bounds.y, bounds.w, bounds.h);
+        final Rect flip1 = Coords.screen.flip(bounds.x, bounds.y, bounds.w, bounds.h);
         av.shapes.begin(ShapeType.Line);
         av.shapes.setColor(this.selected ? ColorScheme.BUTTON.color : ColorScheme.OUTLINE.color);
         av.shapes.rect(flip1.x, flip1.y, flip1.w, flip1.h);
@@ -93,7 +100,7 @@ public class TextEntryNode implements MenuNode {
 
         // Draw the text
         av.sprites.begin();
-        String visible = this.getVisibleSubstring();
+        final String visible = this.getVisibleSubstring();
         for (int a = 0; a < visible.length(); a++) {
             this.font.draw(av.sprites, visible.substring(a, a + 1), bounds.x + (int) ((a + 0.25) * this.charWidth),
                     Coords.SIZE.y - bounds.y - TextEntryNode.MARGIN - 3);
