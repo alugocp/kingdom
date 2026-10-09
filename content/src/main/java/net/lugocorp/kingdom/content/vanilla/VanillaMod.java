@@ -1330,40 +1330,6 @@ public class VanillaMod implements GameMod {
          * SECTION Status Effects
          */
 
-        // Cooldown
-        new Stratified<Ability>(events.ability, Labels.status_effect_cooldown).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_stunned);
-                    return new SideEffect();
-                }).add(Events.CanUseAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.CanUseAbilityEvent e) -> {
-                            e.canUse = e.canUse && !receiver.name
-                                    .equals(String.format("%s (%s)", Labels.status_effect_cooldown, e.ability));
-                            return new SideEffect();
-                        })
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
-                    // Calculates the number of remaining turns on the cooldown
-                    final String desc = receiver.getDescription(view);
-                    String number = "";
-                    for (int a = 0; a < desc.length(); a++) {
-                        if (desc.charAt(a) >= '0' && desc.charAt(a) <= '9') {
-                            number += desc.charAt(a);
-                        }
-                    }
-
-                    // Remove the cooldown effect and reapply with fewer remaining turns (if
-                    // applicable)
-                    final int turns = number.length() == 0 ? 0 : Integer.parseInt(number);
-                    final SideEffect effects = new SideEffect()
-                            .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver));
-                    if (turns > 1) {
-                        final String ability = receiver.name.substring(Labels.status_effect_cooldown.length() + 2,
-                                receiver.name.length() - 1);
-                        effects.add(receiver.wielder.abilities.cooldown(view, ability, turns - 1));
-                    }
-                    return effects;
-                });
-
         // Stunned
         new Stratified<Ability>(events.ability, Labels.status_effect_stunned).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1471,23 +1437,6 @@ public class VanillaMod implements GameMod {
                             e.distance++;
                             return new SideEffect();
                         });
-
-        // Exhausted
-        new Stratified<Ability>(events.ability, Labels.status_effect_exhausted).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_stunned);
-                    return new SideEffect();
-                }).add(AbilityLogic.desc("The unit cannot act for 3 turns"))
-                .add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
-                                () -> view.game.future.addFutureTick("Tick", receiver, 3, false, e.unit.getLeader())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
-                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
-                .add(Events.IsStunnedEvent.class, (GameView view, Ability receiver, Events.IsStunnedEvent e) -> {
-                    e.isStunned = true;
-                    return new SideEffect();
-                });
 
         // Rally
         new Stratified<Ability>(events.ability, Labels.status_effect_rally).add(Events.GenerateAbilityEvent.class,

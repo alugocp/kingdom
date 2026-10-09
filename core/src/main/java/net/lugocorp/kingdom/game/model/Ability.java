@@ -18,11 +18,12 @@ import java.util.Optional;
  * A passive or active effect that Units, Buildings and Tiles can use
  */
 public class Ability implements EventReceiver, MenuSubject {
+    public final Unit wielder;
+    public final String name;
     private Optional<Shortcut> shortcut = Optional.empty();
     private Optional<Matrix4> recolor = Optional.empty();
     private String icon = "apple";
-    public final Unit wielder;
-    public final String name;
+    private int cooldown = 0;
 
     public Ability(Unit wielder, String name) {
         this.wielder = wielder;
@@ -38,12 +39,31 @@ public class Ability implements EventReceiver, MenuSubject {
     }
 
     /**
+     * Causes this Ability to go on cooldown for the given number of turns (we add 1
+     * because the cooldown is activated on the current turn)
+     */
+    public void goOnCooldown(int cooldown) {
+        this.cooldown = cooldown + 1;
+    }
+
+    /**
+     * Decrements this Ability's cooldown value
+     */
+    public void handleCooldown() {
+        if (this.cooldown > 0) {
+            this.cooldown--;
+        }
+    }
+
+    /**
      * Returns a description for this Ability
      */
     public String getDescription(GameView view) {
         final Events.GetDescriptionEvent e = new Events.GetDescriptionEvent();
         this.handleEvent(view, e);
-        if (!this.canUse(view)) {
+        if (this.cooldown > 0) {
+            return String.format("%s (on cooldown for %d more turns)", e.desc, this.cooldown);
+        } else if (!this.canUse(view)) {
             return String.format("%s (cannot use right now)", e.desc);
         }
         return e.desc;
@@ -53,6 +73,9 @@ public class Ability implements EventReceiver, MenuSubject {
      * Returns true if this Ability can currently be used
      */
     public boolean canUse(GameView view) {
+        if (this.cooldown > 0) {
+            return false;
+        }
         final Events.CanUseAbilityEvent e = new Events.CanUseAbilityEvent(this.name);
         this.wielder.handleEvent(view, e);
         return e.canUse;

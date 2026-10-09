@@ -282,8 +282,8 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
-                                e.consumer, Labels.building_meadow, (Tile t) -> t.name.equals(Labels.tile_grass)));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
+                                Labels.building_meadow, (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Arboreal Seeds
         new Stratified<Item>(events.item, Labels.item_arboreal_seeds)
@@ -295,8 +295,8 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
-                                e.consumer, Labels.building_forest, (Tile t) -> t.name.equals(Labels.tile_grass)));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
+                                Labels.building_forest, (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Arctic Seeds
         new Stratified<Item>(events.item, Labels.item_arctic_seeds)
@@ -308,8 +308,8 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
-                                e.consumer, Labels.building_taiga, (Tile t) -> t.name.equals(Labels.tile_snow)));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
+                                Labels.building_taiga, (Tile t) -> t.name.equals(Labels.tile_snow)));
 
         // Cactus Seeds
         new Stratified<Item>(events.item, Labels.item_cactus_seeds)
@@ -321,8 +321,8 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
-                                e.consumer, Labels.building_shrubland, (Tile t) -> t.name.equals(Labels.tile_sand)));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
+                                Labels.building_shrubland, (Tile t) -> t.name.equals(Labels.tile_sand)));
 
         // Pioneering Seeds
         new Stratified<Item>(events.item, Labels.item_pioneering_seeds)
@@ -334,8 +334,8 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
-                                e.consumer, Labels.building_oasis, (Tile t) -> t.name.equals(Labels.tile_sand)));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
+                                Labels.building_oasis, (Tile t) -> t.name.equals(Labels.tile_sand)));
 
         // Digging Kit
         new Stratified<Item>(events.item, Labels.item_digging_kit)
@@ -346,8 +346,8 @@ class VanillaModItems {
                     e.blob.gold = 10;
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> AbilityLogic.build(view,
-                                e.consumer, Labels.building_mine, (Tile t) -> true));
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
+                                Labels.building_mine, (Tile t) -> true));
 
         // Telescope
         // Ornate Boots

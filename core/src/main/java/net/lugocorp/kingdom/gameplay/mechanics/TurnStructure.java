@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.ai.DecisionChannel;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.game.model.Ability;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -65,6 +66,9 @@ public class TurnStructure {
         }
         view.hud.top.update(view.game);
         for (Unit u : this.turn.getPlayer().units) {
+            for (Ability a : u.abilities.getActives()) {
+                a.handleCooldown();
+            }
             view.overlays.entity(u).setIcons(view, u);
             u.sleep.wakeUpCheck(view);
         }

@@ -238,7 +238,8 @@ public class AbilityLogic {
     /**
      * Ability that spawns a building at the caster's location
      */
-    public static SideEffect build(GameView view, Unit caster, String building, Function<Tile, Boolean> criteria) {
+    public static SideEffect build(GameView view, Unit caster, Ability receiver, String building,
+            Function<Tile, Boolean> criteria) {
         Point p = caster.getPoint();
         if (view.game.world.getTile(p).isPresent()) {
             Tile t = view.game.world.getTile(p).get();
@@ -251,7 +252,7 @@ public class AbilityLogic {
                 return new SideEffect().add(() -> {
                     b.spawn(view);
                     view.game.actions.unitHasCastSpell(view, caster);
-                }).add(caster.abilities.addStatusEffect(view, Labels.status_effect_exhausted));
+                }).add(() -> receiver.goOnCooldown(2));
             }
             return new SideEffect().add(() -> view.hud.logger.error("Invalid tile for this ability"));
         }

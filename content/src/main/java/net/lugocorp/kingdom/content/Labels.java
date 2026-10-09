@@ -425,14 +425,12 @@ public class Labels {
     /**
      * SECTION Status Effects
      */
-    public static final String status_effect_cooldown = "Cooldown";
     public static final String status_effect_stunned = "Stunned";
     public static final String status_effect_more_favor = "More Favor";
     public static final String status_effect_proud_builder = "Proud Builder";
     public static final String status_effect_extra_defense = "Extra Defense";
     public static final String status_effect_poisoned = "Poisoned";
     public static final String status_effect_swift = "Swift";
-    public static final String status_effect_exhausted = "Exhausted";
     public static final String status_effect_rally = "Rally";
     public static final String status_effect_stone_form_active = "Stone Form Active";
     public static final String status_effect_conserved_energy = "Conserved Energy";

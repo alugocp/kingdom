@@ -138,7 +138,7 @@ class VanillaModAbilities {
                         })
                 .add(AbilityLogic.desc("Constructs a healing fountain")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, Labels.building_healing_fountain, (Tile t) -> true));
+                                receiver.wielder, receiver, Labels.building_healing_fountain, (Tile t) -> true));
 
         // Construct Marketplace
         new Stratified<Ability>(events.ability, Labels.ability_construct_marketplace)
@@ -149,7 +149,7 @@ class VanillaModAbilities {
                         })
                 .add(AbilityLogic.desc("Constructs a marketplace")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, Labels.building_marketplace, (Tile t) -> true));
+                                receiver.wielder, receiver, Labels.building_marketplace, (Tile t) -> true));
 
         // Collapse Structure
         new Stratified<Ability>(events.ability, Labels.ability_collapse_structure)
@@ -256,7 +256,8 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Constructs a Mine")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, Labels.building_mine, (Tile t) -> t.name.equals(Labels.tile_rock)));
+                                receiver.wielder, receiver, Labels.building_mine,
+                                (Tile t) -> t.name.equals(Labels.tile_rock)));
 
         // Dungeon Delve
         new Stratified<Ability>(events.ability, Labels.ability_dungeon_delve).add(Events.GenerateAbilityEvent.class,
@@ -929,7 +930,7 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Plants a Forest")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, Labels.building_forest,
+                                receiver.wielder, receiver, Labels.building_forest,
                                 (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Plant Meadow
@@ -939,7 +940,7 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Plants a Meadow")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, Labels.building_meadow,
+                                receiver.wielder, receiver, Labels.building_meadow,
                                 (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Power of Nature
@@ -1067,8 +1068,7 @@ class VanillaModAbilities {
                 .add(AbilityLogic.desc("+2 damage and +1 speed for all adjacent friendly units (cooldown for 2 turns)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final SideEffect effects = new SideEffect()
-                                    .add(receiver.wielder.abilities.cooldown(view, receiver, 2))
+                            final SideEffect effects = new SideEffect().add(() -> receiver.goOnCooldown(2))
                                     .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                             for (Point p : Hexagons.getAdjacents(receiver.wielder.getPoint())) {
                                 final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
@@ -1182,7 +1182,7 @@ class VanillaModAbilities {
                                                             Labels.status_effect_stunned)
                                                     : new SideEffect();
                                         })))
-                                .add(receiver.wielder.abilities.cooldown(view, receiver, 1)));
+                                .add(() -> receiver.goOnCooldown(1)));
 
         // Slime Shot
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,

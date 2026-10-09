@@ -1,10 +1,15 @@
 package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
+import net.lugocorp.kingdom.game.model.Tile;
+import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
+import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
+import java.util.function.Function;
 
 /**
  * This class contains utility functions for writing new Item effects
@@ -61,5 +66,25 @@ public class ItemLogic {
      */
     public static void boostHealing(Events.HealEntityEvent e, int boost, boolean criteria) {
         e.amount += criteria ? boost : 0;
+    }
+
+    /**
+     * Item that spawns a building at the user's location
+     */
+    public static SideEffect build(GameView view, Unit caster, String building, Function<Tile, Boolean> criteria) {
+        final Point p = caster.getPoint();
+        if (view.game.world.getTile(p).isPresent()) {
+            final Tile t = view.game.world.getTile(p).get();
+
+            if (t.building.isPresent()) {
+                return new SideEffect().add(() -> view.hud.logger.error("Cannot place another building here"));
+            }
+            if (criteria.apply(t)) {
+                final Building b = view.game.generator.building(building, p.x, p.y);
+                return new SideEffect().add(() -> b.spawn(view));
+            }
+            return new SideEffect().add(() -> view.hud.logger.error("Invalid tile for this item"));
+        }
+        return new SideEffect();
     }
 }
