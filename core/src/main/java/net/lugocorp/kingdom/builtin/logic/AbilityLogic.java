@@ -238,25 +238,37 @@ public class AbilityLogic {
     /**
      * Ability that spawns a building at the caster's location
      */
-    public static SideEffect build(GameView view, Unit caster, Ability receiver, String building,
-            Function<Tile, Boolean> criteria) {
-        Point p = caster.getPoint();
-        if (view.game.world.getTile(p).isPresent()) {
-            Tile t = view.game.world.getTile(p).get();
+    public static StratifiedPayload[] build(String building, String tileDesc, Function<Tile, Boolean> criteria) {
+        return new StratifiedPayload[]{
+                new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Point p = receiver.wielder.getPoint();
+                            if (view.game.world.getTile(p).isPresent()) {
+                                final Tile t = view.game.world.getTile(p).get();
+                                if (t.building.isPresent()) {
+                                    return new SideEffect()
+                                            .add(() -> view.hud.logger.error("Cannot place another building here"));
+                                }
+                                if (criteria.apply(t)) {
+                                    final Building b = view.game.generator.building(building, p.x, p.y);
+                                    return new SideEffect().add(() -> {
+                                        b.spawn(view);
+                                        view.game.actions.unitHasCastSpell(view, receiver.wielder);
+                                    }).add(() -> receiver.goOnCooldown(2));
+                                }
+                                return new SideEffect()
+                                        .add(() -> view.hud.logger.error("Invalid tile for this ability"));
+                            }
+                            return new SideEffect();
+                        }),
+                AbilityLogic.desc(String.format("Spawns a %s on %s (cooldown for 2 turns)", building, tileDesc))};
+    }
 
-            if (t.building.isPresent()) {
-                return new SideEffect().add(() -> view.hud.logger.error("Cannot place another building here"));
-            }
-            if (criteria.apply(t)) {
-                Building b = view.game.generator.building(building, p.x, p.y);
-                return new SideEffect().add(() -> {
-                    b.spawn(view);
-                    view.game.actions.unitHasCastSpell(view, caster);
-                }).add(() -> receiver.goOnCooldown(2));
-            }
-            return new SideEffect().add(() -> view.hud.logger.error("Invalid tile for this ability"));
-        }
-        return new SideEffect();
+    /**
+     * Calls into build() but it works on any Tile
+     */
+    public static StratifiedPayload[] build(String building) {
+        return AbilityLogic.build(building, "the currently occupied tile", (Tile t) -> true);
     }
 
     /**

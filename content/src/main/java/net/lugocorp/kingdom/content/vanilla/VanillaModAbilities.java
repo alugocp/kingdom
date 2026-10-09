@@ -130,26 +130,18 @@ class VanillaModAbilities {
                                         Labels.status_effect_conserved_energy)));
 
         // Construct Healing Fountain
-        new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain)
-                .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.setIcon(Labels.asset_build_healing_fountain);
-                            return new SideEffect();
-                        })
-                .add(AbilityLogic.desc("Constructs a healing fountain")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, receiver, Labels.building_healing_fountain, (Tile t) -> true));
+        new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain).add(
+                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_build_healing_fountain);
+                    return new SideEffect();
+                }).add(AbilityLogic.build(Labels.building_healing_fountain));
 
         // Construct Marketplace
-        new Stratified<Ability>(events.ability, Labels.ability_construct_marketplace)
-                .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.setIcon(Labels.asset_build_vault);
-                            return new SideEffect();
-                        })
-                .add(AbilityLogic.desc("Constructs a marketplace")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, receiver, Labels.building_marketplace, (Tile t) -> true));
+        new Stratified<Ability>(events.ability, Labels.ability_construct_marketplace).add(
+                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_build_vault);
+                    return new SideEffect();
+                }).add(AbilityLogic.build(Labels.building_marketplace));
 
         // Collapse Structure
         new Stratified<Ability>(events.ability, Labels.ability_collapse_structure)
@@ -254,10 +246,8 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dig_mine);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Constructs a Mine")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, receiver, Labels.building_mine,
-                                (Tile t) -> t.name.equals(Labels.tile_rock)));
+                }).add(AbilityLogic.build(Labels.building_mine, "a rock tile",
+                        (Tile t) -> t.name.equals(Labels.tile_rock)));
 
         // Dungeon Delve
         new Stratified<Ability>(events.ability, Labels.ability_dungeon_delve).add(Events.GenerateAbilityEvent.class,
@@ -928,20 +918,16 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_forest);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Plants a Forest")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, receiver, Labels.building_forest,
-                                (Tile t) -> t.name.equals(Labels.tile_grass)));
+                }).add(AbilityLogic.build(Labels.building_forest, "a grass tile",
+                        (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Plant Meadow
         new Stratified<Ability>(events.ability, Labels.ability_plant_meadow).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_meadow);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Plants a Meadow")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
-                                receiver.wielder, receiver, Labels.building_meadow,
-                                (Tile t) -> t.name.equals(Labels.tile_grass)));
+                }).add(AbilityLogic.build(Labels.building_meadow, "a grass tile",
+                        (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Power of Nature
         new Stratified<Ability>(events.ability, Labels.ability_power_of_nature).add(Events.GenerateAbilityEvent.class,
