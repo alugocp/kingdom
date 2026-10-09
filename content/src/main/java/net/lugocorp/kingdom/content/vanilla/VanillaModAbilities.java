@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * SECTION Abilities
@@ -973,23 +974,26 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 4 damage to the target mine and generates gold"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Set<Point> points = Lambda.filter(
-                                    (Point p) -> view.game.world.getTile(receiver.wielder.getPoint())
-                                            .flatMap((Tile t) -> t.building)
-                                            .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false),
+                            final Function<Point, Boolean> criteria = (Point p) -> view.game.world
+                                    .getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
+                                    .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false);
+                            final Set<Point> points = Lambda.filter(criteria,
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
                             return receiver.wielder.getLeader().get().select(view, points, "No mines are in range",
                                     (Point p) -> {
-                                        return new SideEffect()
-                                                .add(receiver.wielder.combat.attack(view,
-                                                        view.game.world.getTile(p).get().building.get(), new Damage(4)))
-                                                .add(() -> {
-                                                    if (!receiver.wielder.haul.isFull()) {
-                                                        receiver.wielder.haul
-                                                                .add(view.game.generator.item(Labels.item_bag_of_gold));
-                                                    }
-                                                })
-                                                .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
+                                        final SideEffect effects = new SideEffect();
+                                        if (criteria.apply(p)) {
+                                            effects.add(receiver.wielder.combat.attack(view,
+                                                    view.game.world.getTile(p).get().building.get(), new Damage(4)))
+                                                    .add(() -> {
+                                                        if (!receiver.wielder.haul.isFull()) {
+                                                            receiver.wielder.haul.add(
+                                                                    view.game.generator.item(Labels.item_bag_of_gold));
+                                                        }
+                                                    }).add(() -> view.game.actions.unitHasCastSpell(view,
+                                                            receiver.wielder));
+                                        }
+                                        return effects;
                                     });
                         });
 

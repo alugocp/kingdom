@@ -877,11 +877,10 @@ public class VanillaMod implements GameMod {
                     e.blob.desc = "Your patrons generate 3 unit points per turn";
                     e.blob.image = Optional.of(Labels.asset_shadas_flute);
                     return new SideEffect();
-                }).add(Events.ArtifactClaimedEvent.class,
-                        (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty());
-                            return new SideEffect();
-                        })
+                })
+                .add(Events.ArtifactClaimedEvent.class,
+                        (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
                     for (Patron patron : view.game.mechanics.patronage) {
                         if (receiver.getOwner().equals(patron.getFavoritePlayer())) {
@@ -1061,11 +1060,10 @@ public class VanillaMod implements GameMod {
                     e.blob.image = Optional.of(Labels.asset_gaias_effigy);
                     e.blob.chips = 3;
                     return new SideEffect();
-                }).add(Events.ArtifactClaimedEvent.class,
-                        (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty());
-                            return new SideEffect();
-                        })
+                })
+                .add(Events.ArtifactClaimedEvent.class,
+                        (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick", (GameView view, Artifact receiver, Events.RepeatedEvent e) -> {
                     receiver.getOwner().get().addUnitPoints(view, 8);
                     return new SideEffect();
@@ -1371,11 +1369,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stunned);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("The unit cannot act for 1 turn")).add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 1, false, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                }).add(AbilityLogic.desc("The unit cannot act for 1 turn"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 1, false, e.unit.getLeader())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
@@ -1404,11 +1401,10 @@ public class VanillaMod implements GameMod {
                             e.blob.setIcon(Labels.asset_proud_builder);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("+2 attack and defense for 2 turns")).add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                .add(AbilityLogic.desc("+2 attack and defense for 2 turns"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
@@ -1427,11 +1423,10 @@ public class VanillaMod implements GameMod {
                             e.blob.setIcon(Labels.asset_shield);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("+2 defense for 2 turns")).add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                .add(AbilityLogic.desc("+2 defense for 2 turns"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
@@ -1447,11 +1442,10 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit takes 1 damage each turn for 4 turns"))
                 .add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Remove", receiver, 4, false, e.unit.getLeader());
-                            view.game.future.addFutureTick("Poison", receiver, 1, true, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Remove", receiver, 4, false, e.unit.getLeader()))
+                                .add(() -> view.game.future.addFutureTick("Poison", receiver, 1, true,
+                                        e.unit.getLeader())))
                 .add("Remove",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.removeFutureTicks(receiver, "Poison"))
@@ -1467,10 +1461,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit can move an extra space for the next 2 turns"))
                 .add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
@@ -1485,11 +1477,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stunned);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("The unit cannot act for 3 turns")).add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 3, false, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                }).add(AbilityLogic.desc("The unit cannot act for 3 turns"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 3, false, e.unit.getLeader())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
@@ -1503,11 +1494,10 @@ public class VanillaMod implements GameMod {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bloodlust);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 damage and +1 speed for 2 turns")).add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                }).add(AbilityLogic.desc("+2 damage and +1 speed for 2 turns"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader())))
                 .add("Tick",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
@@ -1547,11 +1537,10 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit takes 1 damage each turn for 4 turns"))
                 .add(Events.StatusEffectAddedEvent.class,
-                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> {
-                            view.game.future.addFutureTick("Remove", receiver, 4, false, e.unit.getLeader());
-                            view.game.future.addFutureTick("Burn", receiver, 1, true, e.unit.getLeader());
-                            return new SideEffect();
-                        })
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Remove", receiver, 4, false, e.unit.getLeader()))
+                                .add(() -> view.game.future.addFutureTick("Burn", receiver, 1, true,
+                                        e.unit.getLeader())))
                 .add("Remove",
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.removeFutureTicks(receiver, "Burn"))

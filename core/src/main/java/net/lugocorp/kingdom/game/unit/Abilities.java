@@ -200,8 +200,7 @@ public class Abilities {
                         return String.format("On cooldown for the next %d turn(s)", turns);
                     }
                 });
-        return new SideEffect().add(this.addStatusEffect(view, effect)).add(() -> {
-            view.game.future.addFutureTick("Tick", effect, 1, false, Optional.empty());
-        });
+        return new SideEffect().add(this.addStatusEffect(view, effect))
+                .add(() -> view.game.future.addFutureTick("Tick", effect, 1, false, Optional.empty()));
     }
 }
