@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.selection;
+import net.lugocorp.kingdom.content.Labels;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -23,8 +24,14 @@ class TileMenuSelectMode extends TileSelectMode {
     /** {@inheritdoc} */
     @Override
     final void clickedValidPoint(GameView view, Point p) {
+        final boolean water = view.game.world.getTile(p).map((Tile t) -> t.name.equals(Labels.tile_water))
+                .orElse(false);
         final boolean unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit).isPresent();
-        view.av.loaders.sounds.play(unit ? "sfx/select-unit" : "sfx/select-tile");
+        if (unit) {
+            view.av.loaders.sounds.play("sfx/select-unit");
+        } else {
+            view.av.loaders.sounds.play(water ? "sfx/select-tile-water" : "sfx/select-tile");
+        }
         view.hud.bot.tileMenu.set(p);
     }
 
