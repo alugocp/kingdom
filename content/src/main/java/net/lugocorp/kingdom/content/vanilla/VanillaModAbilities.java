@@ -42,7 +42,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_drown, 0x318ec0, 0x38a736);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Consumes all hauled items to restore 5 health"))
+                }).add(AbilityLogic.desc("Consumes all hauled items to restore 3 health"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             if (!receiver.wielder.haul.hasItems()) {
@@ -53,7 +53,7 @@ class VanillaModAbilities {
                                 });
                             }
                             return new SideEffect().add(() -> receiver.wielder.haul.empty())
-                                    .add(receiver.wielder.combat.heal(view, receiver.wielder, 5));
+                                    .add(receiver.wielder.combat.heal(view, receiver.wielder, 3));
                         });
 
         // Acid Skin
@@ -61,7 +61,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Adjacent attackers take damage"))
+                }).add(AbilityLogic.desc("Adjacent attackers take 1 damage"))
                 .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit) {
                         Unit target = (Unit) e.target;
@@ -78,7 +78,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Bite
@@ -95,7 +95,7 @@ class VanillaModAbilities {
                             e.blob.setIcon(Labels.asset_blessing_of_natures_hand);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("+2 healing on forests or oases"))
+                .add(AbilityLogic.desc("+2 healing on Forests or Oases"))
                 .add(Events.HealEntityEvent.class, (GameView view, Ability receiver, Events.HealEntityEvent e) -> {
                     if (e.healer == receiver.wielder && view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building).map((Building b) -> b.name.equals(Labels.building_forest)
@@ -147,7 +147,7 @@ class VanillaModAbilities {
                             e.blob.setIcon(Labels.asset_build_vault);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("Builds a marketplace")).add(Events.AbilityActivatedEvent.class,
+                .add(AbilityLogic.desc("Constructs a marketplace")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_marketplace, (Tile t) -> true));
 
@@ -159,7 +159,7 @@ class VanillaModAbilities {
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc(
-                        "Deals 5 damage to an adjacent structure, 3 damage to any occupying unit, and 3 damage to the caster"))
+                        "Deals 5 damage to a target adjacent structure, 3 damage to an occupying unit (if there is one), and 3 damage to the caster"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
@@ -187,7 +187,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_combat_loot);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 damage if this unit has a stored item"))
+                }).add(AbilityLogic.desc("+2 damage if this unit is hauling an item"))
                 .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
                     if (receiver.wielder.haul.hasItems()) {
                         e.dmg.base += 2;
@@ -200,7 +200,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x318ec0);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Defensive Bloom
@@ -239,7 +239,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_deposit_seeds);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Chance to spawn a meadow when this unit moves"))
+                }).add(AbilityLogic.desc("10% chance to spawn a Meadow whenever this unit moves"))
                 .add(Events.UnitMovedEvent.class, (GameView view, Ability receiver, Events.UnitMovedEvent e) -> {
                     Point p = receiver.wielder.getPoint();
                     return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
@@ -254,7 +254,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dig_mine);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Digs a mine")).add(Events.AbilityActivatedEvent.class,
+                }).add(AbilityLogic.desc("Constructs a Mine")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_mine, (Tile t) -> t.name.equals(Labels.tile_rock)));
 
@@ -278,7 +278,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_edible);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates food"))
+                }).add(AbilityLogic.desc("Generates fruit every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -292,7 +292,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_local_defender);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 armor when on a building"))
+                }).add(AbilityLogic.desc("+2 defense when on a building"))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     final boolean isOnActiveBuilding = view.game.world.getTile(receiver.wielder.getPoint())
                             .map((Tile t) -> t.building).isPresent();
@@ -373,7 +373,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 2 damage (or 5 damage to a building)"))
+                }).add(AbilityLogic.desc("Deals 2 damage to the target unit or 5 damage to the target building"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .dynamicDamageAttack(view, receiver.wielder, 2,
@@ -386,7 +386,10 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_laser);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Damage up to 3 units in a line")).add(Events.AbilityActivatedEvent.class,
+                })
+                .add(AbilityLogic
+                        .desc("Deals 2 damage to each unit between the caster and the target tile in a straight line"))
+                .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Set<Point> targets = new HashSet<>();
                             final Map<Point, HexSide> sideToPoint = new HashMap<>();
@@ -420,7 +423,7 @@ class VanillaModAbilities {
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc(
-                        "This unit can only move to tiles adjacent to The Necromancer, and will follow The Necromancer as it moves"))
+                        "This unit can only move to tiles adjacent to The Necromancer, and will follow behind The Necromancer as they move"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
                                 () -> view.game.events.signals.addListener(Events.AfterUnitMovedEvent.class, receiver)))
@@ -472,7 +475,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_green_fortress);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Extra defense on forests"))
+                }).add(AbilityLogic.desc("+2 defense on Forests"))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     boolean isForest = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building).map((Building b) -> b.name.equals(Labels.building_forest))
@@ -485,7 +488,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_batatas);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests batatas from mines every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Batatas from Mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -499,7 +502,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_cacao);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests cacao from forests every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Cacao from Forests every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -513,7 +516,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_figs);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests figs from forests every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Figs from Forests every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -527,7 +530,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mesquite);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests mesquite from oases every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Mesquite from Oases every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -541,7 +544,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests mushrooms from forests and mines every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests mushroom items from Forests and Mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -556,7 +559,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_pumpkins);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests pumpkins from meadows every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Pumpkins from Meadows every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -570,7 +573,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom, 0xb16255, 0x57372c);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests truffles from forests every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Truffles from Forests every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -584,16 +587,16 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_heal_wounds);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Heals 5 damage"))
+                }).add(AbilityLogic.desc("Heals 2 damage"))
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 5));
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 2));
 
         // Healing Water
         new Stratified<Ability>(events.ability, Labels.ability_healing_water).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_subterranean_potions, 0xba3521, 0x318ec0);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates Health Potions from water tiles"))
+                }).add(AbilityLogic.desc("Generates Health Potions from water tiles every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -629,16 +632,18 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hug);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Heals the target adjacent unit for a few hit points"))
+                }).add(AbilityLogic.desc("Heals 1 hit point from the target adjacent unit"))
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 2));
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 1));
 
         // Hungry Frog Magic
         new Stratified<Ability>(events.ability, Labels.ability_hungry_frog_magic).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hungry_frog_magic);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Consumes all stored items and heals adjacent friendly units"))
+                })
+                .add(AbilityLogic
+                        .desc("Consumes all stored items and heals adjacent friendly units for 2 hit points each"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final SideEffect effects = new SideEffect().add(() -> receiver.wielder.haul.empty());
@@ -647,7 +652,7 @@ class VanillaModAbilities {
                                 Optional<Unit> u = view.game.world.getUnit(p);
                                 u.ifPresent((Unit u1) -> {
                                     if (u1.isFriendly(receiver.wielder)) {
-                                        effects.add(receiver.wielder.combat.heal(view, u1, 10));
+                                        effects.add(receiver.wielder.combat.heal(view, u1, 2));
                                     }
                                 });
                             }
@@ -659,7 +664,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hunt_fish);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests fish from water tiles"))
+                }).add(AbilityLogic.desc("Harvests Fish from water tiles every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -733,7 +738,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom, 0x417b80, 0x38a736);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates unit points when the unit is attacked"))
+                }).add(AbilityLogic.desc("Generates 5 unit points when the unit is attacked"))
                 .add(Events.AttackedEvent.class, (GameView view, Ability receiver,
                         Events.AttackedEvent e) -> new SideEffect().add(() -> receiver.wielder.getLeader()
                                 .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 5))));
@@ -761,7 +766,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_market_boom);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Attacks generate 4 auction points"))
+                }).add(AbilityLogic.desc("This unit generates 4 auction points whenever it attacks"))
                 .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> AbilityLogic
                         .generateAuctionPoints(view, receiver.wielder, 4));
 
@@ -770,7 +775,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_market_indicator);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates 3 auction points when adjacent to a marketplace"))
+                }).add(AbilityLogic.desc("This unit generates 3 auction points when adjacent to a marketplace"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
@@ -786,7 +791,9 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_spores);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Heals 2 damage (or 4 damage for a mining glyph unit)"))
+                })
+                .add(AbilityLogic
+                        .desc("Heals 2 damage from the target unit (or heals 4 damage if it is a mining glyph unit)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view,
                                 receiver.wielder, (Unit u) -> u.glyphs.has(Glyph.MINING) ? 4 : 2));
@@ -796,7 +803,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gems);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests gems from mines"))
+                }).add(AbilityLogic.desc("Harvests gem items from Mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -810,7 +817,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gold);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests gold coins from mines every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Gold Coins from Mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -824,7 +831,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mining_glyph);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit cannot move when in stone form but it harvests extra gems"))
+                }).add(AbilityLogic.desc("This unit cannot move when in stone form but it harvests twice as many gems"))
                 .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (receiver.wielder.abilities.hasStatusEffect(Labels.status_effect_stone_form_active)) {
                         e.canWalkOnBuilding = false;
@@ -865,7 +872,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_night_vision);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can see normally at night"))
+                }).add(AbilityLogic.desc("This unit does not lose vision at night"))
                 .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
                     e.canSeeAtNight = true;
                     return new SideEffect();
@@ -883,7 +890,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_pick_apples);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests apples from forests every 4 turns"))
+                }).add(AbilityLogic.desc("Harvests Apples from Forests every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -897,7 +904,8 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_worship_glyph);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit generates +1 favor")).add(Events.GenerateFavorEvent.class,
+                }).add(AbilityLogic.desc("This unit generates +1 favor with nearby patrons"))
+                .add(Events.GenerateFavorEvent.class,
                         (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
                             e.favor += 1;
                             return new SideEffect();
@@ -908,7 +916,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom, 0xe858d4, 0x38a736);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 defense if the unit has a natural item in their inventory"))
+                }).add(AbilityLogic.desc("+2 defense if the unit is hauling a natural item"))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver,
                         Events.TakeDamageEvent e) -> receiver.wielder.haul.hasItemWithTag(Labels.tag_natural)
                                 ? AbilityLogic.defense(e, 2)
@@ -919,7 +927,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_forest);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Plants a forest")).add(Events.AbilityActivatedEvent.class,
+                }).add(AbilityLogic.desc("Plants a Forest")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_forest,
                                 (Tile t) -> t.name.equals(Labels.tile_grass)));
@@ -929,7 +937,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_meadow);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Plants a meadow")).add(Events.AbilityActivatedEvent.class,
+                }).add(AbilityLogic.desc("Plants a Meadow")).add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.build(view,
                                 receiver.wielder, Labels.building_meadow,
                                 (Tile t) -> t.name.equals(Labels.tile_grass)));
@@ -939,7 +947,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_pick_flowers);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Consumes a natural item to deal 3 damage to the target in melee range"))
+                }).add(AbilityLogic.desc("Consumes a natural item to deal 3 damage to the adjacent target"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
@@ -980,7 +988,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dungeon_delve);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 4 damage to the target mine and generates gold"))
+                }).add(AbilityLogic.desc("Deals 4 damage to the target Mine and generates gold"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Function<Point, Boolean> criteria = (Point p) -> view.game.world
@@ -989,7 +997,7 @@ class VanillaModAbilities {
                             final Set<Point> points = Lambda.filter(criteria,
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
                             return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
-                                    "No mines are in range", (Point p) -> {
+                                    "No Mines are in range", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
                                         if (criteria.apply(p)) {
                                             Optional<Building> target = view.game.world.getTile(p)
@@ -1078,7 +1086,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_regeneration);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit heals a little each turn"))
+                }).add(AbilityLogic.desc("This unit heals 1 hit point each turn"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
@@ -1092,7 +1100,8 @@ class VanillaModAbilities {
                             e.blob.setIcon(Labels.asset_sword_slash, 0xffffff, 0x00ff00);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("Deals 2 damage (or 4 damage when on a forest)"))
+                .add(AbilityLogic
+                        .desc("Deals 2 damage to the target (or 4 damage when this unit is occupying a Forest)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver,
                                 Events.AbilityActivatedEvent e) -> AbilityLogic
@@ -1117,7 +1126,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_self_sacrifice);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Transfers all their health but 1 to the target unit"))
+                }).add(AbilityLogic.desc("This unit transfers all their health but 1 to the target unit"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final int hitPoints = receiver.wielder.combat.health.get() - 1;
@@ -1130,7 +1139,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0xba3521);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Adjacent attackers take damage"))
+                }).add(AbilityLogic.desc("Adjacent attackers take 1 damage"))
                 .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit) {
                         Unit target = (Unit) e.target;
@@ -1154,7 +1163,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Shield Bash
@@ -1237,7 +1246,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Extra defense")).add(Events.TakeDamageEvent.class,
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
                         (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Stone Form
@@ -1263,7 +1272,7 @@ class VanillaModAbilities {
                             e.blob.setIcon(Labels.asset_subterranean_potions);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("Generates Health Potions from Mines"))
+                .add(AbilityLogic.desc("Generates Health Potions from Mines every 4 turns"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
@@ -1277,7 +1286,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_swim);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can swim on water tiles"))
+                }).add(AbilityLogic.desc("This unit can traverse water tiles"))
                 .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (!e.canWalkOnTile && e.tile.name.equals(Labels.tile_water)) {
                         e.canWalkOnTile = true;
@@ -1297,7 +1306,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gold, 0xbed129, 0x802412);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Deals 2 damage, or 4 damage if the target has a gem in their inventory"))
+                }).add(AbilityLogic.desc("Deals 2 damage (or 4 damage if the target has a gem in their inventory)"))
                 .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
                         Events.AbilityActivatedEvent e) -> AbilityLogic.dynamicDamageAttack(view, receiver.wielder, 1,
                                 (Tile t) -> t.unit.map((Unit u) -> u.haul.hasItemWithTag(Labels.tag_gem)).orElse(false)
@@ -1327,7 +1336,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_trade);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests gold coins from a marketplace every other turn"))
+                }).add(AbilityLogic.desc("Harvests Gold Coins from a Marketplace every other turn"))
                 .add(Events.SpawnEvent.class,
                         (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
                                 .add(() -> view.game.future.addFutureTick("Tick", receiver, 2, true, Optional.empty())))
