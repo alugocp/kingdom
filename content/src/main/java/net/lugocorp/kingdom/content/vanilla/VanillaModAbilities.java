@@ -20,6 +20,7 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
+import net.lugocorp.kingdom.utils.Wrapped;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -164,20 +165,21 @@ class VanillaModAbilities {
                             Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
                                     .map((Tile t) -> t.building.isPresent()).orElse(false),
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
-                            return receiver.wielder.getLeader().get().select(view, targets, "No buildings in range",
-                                    (Point p) -> {
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, targets,
+                                    "No buildings in range", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
-                                        final Building target1 = view.game.world.getTile(p).get().building.get();
-                                        final Optional<Unit> target2 = view.game.world.getTile(p).get().unit;
+                                        final Optional<Building> target1 = view.game.world.getTile(p)
+                                                .flatMap((Tile t) -> t.building);
+                                        final Optional<Unit> target2 = view.game.world.getTile(p)
+                                                .flatMap((Tile t) -> t.unit);
                                         effects.add(
                                                 receiver.wielder.combat.attack(view, receiver.wielder, new Damage(3)));
-                                        effects.add(receiver.wielder.combat.attack(view, target1, new Damage(5)));
-                                        if (target2.isPresent()) {
-                                            effects.add(
-                                                    receiver.wielder.combat.attack(view, target2.get(), new Damage(3)));
-                                        }
+                                        target1.ifPresent((Building target) -> effects
+                                                .add(receiver.wielder.combat.attack(view, target, new Damage(5))));
+                                        target2.ifPresent((Unit target) -> effects
+                                                .add(receiver.wielder.combat.attack(view, target, new Damage(3))));
                                         return effects;
-                                    });
+                                    })).orElse(new SideEffect());
                         });
 
         // Combat Loot
@@ -318,22 +320,25 @@ class VanillaModAbilities {
                             final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
                                     .flatMap((Tile t) -> t.getPriorityEntity()).isPresent(),
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
-                            return receiver.wielder.getLeader().get().select(view, targets, "No targets available",
-                                    (Point p) -> {
-                                        final Entity target = view.game.world.getTile(p).get().getPriorityEntity()
-                                                .get();
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, targets,
+                                    "No targets available", (Point p) -> {
+                                        final Optional<Entity> target = view.game.world.getTile(p)
+                                                .flatMap((Tile t) -> t.getPriorityEntity());
                                         final SideEffect effects = new SideEffect()
-                                                .add(receiver.wielder.combat.attack(view, target, new Damage(3)))
                                                 .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
-                                        targets.remove(p);
+                                        target.ifPresent((Entity e1) -> {
+                                            effects.add(receiver.wielder.combat.attack(view, e1, new Damage(3)));
+                                            targets.remove(p);
+                                        });
                                         if (targets.size() > 0) {
                                             final Point p1 = Lambda.random(targets);
-                                            final Entity target1 = view.game.world.getTile(p1).get().getPriorityEntity()
-                                                    .get();
-                                            effects.add(receiver.wielder.combat.attack(view, target1, new Damage(2)));
+                                            final Optional<Entity> target1 = view.game.world.getTile(p1)
+                                                    .flatMap((Tile t) -> t.getPriorityEntity());
+                                            target1.ifPresent((Entity e1) -> effects
+                                                    .add(receiver.wielder.combat.attack(view, e1, new Damage(2))));
                                         }
                                         return effects;
-                                    });
+                                    })).orElse(new SideEffect());
                         });
 
         // Fast
@@ -390,8 +395,8 @@ class VanillaModAbilities {
                                 targets.add(dest);
                                 sideToPoint.put(dest, side);
                             }
-                            return receiver.wielder.getLeader().get().select(view, targets, "No targets available",
-                                    (Point p) -> {
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, targets,
+                                    "No targets available", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
                                         final HexSide side = sideToPoint.get(p);
                                         for (int a = 0; a < 3; a++) {
@@ -405,7 +410,7 @@ class VanillaModAbilities {
                                             effects.add(() -> view.hud.bot.tileMenu.refresh());
                                         }
                                         return effects;
-                                    });
+                                    })).orElse(new SideEffect());
                         });
 
         // Ghastly Thrall
@@ -452,9 +457,11 @@ class VanillaModAbilities {
                     if (e.target == receiver.wielder) {
                         for (Point p : Hexagons.getAdjacents(e.target.getPoint())) {
                             final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
-                            if (unit.map((Unit u) -> u.leadership.sameLeader(e.target)).orElse(false)) {
-                                effects.add(e.target.combat.heal(view, unit.get(), unit.get().combat.health.getMax()));
-                            }
+                            unit.ifPresent((Unit u) -> {
+                                if (u.leadership.sameLeader(e.target)) {
+                                    effects.add(e.target.combat.heal(view, u, u.combat.health.getMax()));
+                                }
+                            });
                         }
                     }
                     return effects;
@@ -602,15 +609,14 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
                         (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
-                            int currentVision = 4;
-                            if (receiver.wielder.getLeader().isPresent()) {
-                                final Events.GetVisionEvent event = new Events.GetVisionEvent(
-                                        receiver.wielder.getLeader().get());
+                            Wrapped<Integer> currentVision = new Wrapped<>(4);
+                            receiver.wielder.getLeader().ifPresent((Player player) -> {
+                                final Events.GetVisionEvent event = new Events.GetVisionEvent(player);
                                 receiver.wielder.handleEvent(view, event);
-                                currentVision = event.radius;
-                            }
+                                currentVision.set(event.radius);
+                            });
                             e.desc = String.format("This unit has 4 base vision (currently has %d vision)",
-                                    currentVision);
+                                    currentVision.get());
                             return new SideEffect();
                         })
                 .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
@@ -639,9 +645,11 @@ class VanillaModAbilities {
                             Set<Point> targets = Hexagons.getNeighbors(receiver.wielder.getPoint(), 1);
                             for (Point p : targets) {
                                 Optional<Unit> u = view.game.world.getUnit(p);
-                                if (u.map((Unit u1) -> u1.isFriendly(receiver.wielder)).orElse(false)) {
-                                    effects.add(receiver.wielder.combat.heal(view, u.get(), 10));
-                                }
+                                u.ifPresent((Unit u1) -> {
+                                    if (u1.isFriendly(receiver.wielder)) {
+                                        effects.add(receiver.wielder.combat.heal(view, u1, 10));
+                                    }
+                                });
                             }
                             return effects;
                         });
@@ -697,12 +705,13 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(view, receiver.wielder, new Damage(2), 3, Optional.of((Point p) -> {
                                     final SideEffect effects = new SideEffect();
-                                    final Optional<Unit> target = view.game.world.getTile(p).get().unit;
-                                    if (target
-                                            .map((Unit u) -> !u.abilities.hasStatusEffect(Labels.status_effect_burned))
-                                            .orElse(false)) {
-                                        target.get().abilities.addStatusEffect(view, Labels.status_effect_burned);
-                                    }
+                                    final Optional<Unit> target = view.game.world.getTile(p)
+                                            .flatMap((Tile t) -> t.unit);
+                                    target.ifPresent((Unit u) -> {
+                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_burned)) {
+                                            effects.add(u.abilities.addStatusEffect(view, Labels.status_effect_burned));
+                                        }
+                                    });
                                     return effects;
                                 })));
 
@@ -743,9 +752,8 @@ class VanillaModAbilities {
                 .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
-                    return b.isPresent()
-                            ? b.get().combat.takeDamage(view, new Damage(1), receiver.wielder)
-                            : new SideEffect();
+                    return b.map((Building b1) -> b1.combat.takeDamage(view, new Damage(1), receiver.wielder))
+                            .orElse(new SideEffect());
                 });
 
         // Market Boom
@@ -956,14 +964,15 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getUnit(p).isPresent(),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
-                            return receiver.wielder.getLeader().get().select(view, points,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
                                     "No valid targets for extra defense", (Point p) -> {
-                                        final Unit target = view.game.world.getUnit(p).get();
-                                        return new SideEffect()
-                                                .add(target.abilities.addStatusEffect(view,
-                                                        Labels.status_effect_extra_defense))
+                                        final Optional<Unit> target = view.game.world.getUnit(p);
+                                        final SideEffect effects = new SideEffect()
                                                 .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
-                                    });
+                                        target.ifPresent((Unit u) -> effects.add(
+                                                u.abilities.addStatusEffect(view, Labels.status_effect_extra_defense)));
+                                        return effects;
+                                    })).orElse(new SideEffect());
                         });
 
         // Raid Mine
@@ -979,22 +988,24 @@ class VanillaModAbilities {
                                     .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false);
                             final Set<Point> points = Lambda.filter(criteria,
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
-                            return receiver.wielder.getLeader().get().select(view, points, "No mines are in range",
-                                    (Point p) -> {
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
+                                    "No mines are in range", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
                                         if (criteria.apply(p)) {
-                                            effects.add(receiver.wielder.combat.attack(view,
-                                                    view.game.world.getTile(p).get().building.get(), new Damage(4)))
+                                            Optional<Building> target = view.game.world.getTile(p)
+                                                    .flatMap((Tile t) -> t.building);
+                                            target.ifPresent((Building b) -> effects
+                                                    .add(receiver.wielder.combat.attack(view, b, new Damage(4)))
                                                     .add(() -> {
                                                         if (!receiver.wielder.haul.isFull()) {
                                                             receiver.wielder.haul.add(
                                                                     view.game.generator.item(Labels.item_bag_of_gold));
                                                         }
                                                     }).add(() -> view.game.actions.unitHasCastSpell(view,
-                                                            receiver.wielder));
+                                                            receiver.wielder)));
                                         }
                                         return effects;
-                                    });
+                                    })).orElse(new SideEffect());
                         });
 
         // Raise Undead
@@ -1026,8 +1037,8 @@ class VanillaModAbilities {
                                                     .orElse(true))
                                             .orElse(false),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
-                            return receiver.wielder.getLeader().get().select(view, points, "Nowhere to spawn unit",
-                                    (Point p) -> {
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
+                                    "Nowhere to spawn unit", (Point p) -> {
                                         return new SideEffect().add(receiver.wielder.combat.takeDamage(view,
                                                 new Damage(5), receiver.wielder)).add(() -> {
                                                     view.game.actions.unitHasCastSpell(view, receiver.wielder);
@@ -1036,7 +1047,7 @@ class VanillaModAbilities {
                                                     u.spawn(view);
                                                     view.game.setLeader(view, u, receiver.wielder.getLeader());
                                                 });
-                                    });
+                                    })).orElse(new SideEffect());
                         });
 
         // Rallying Cry
@@ -1053,9 +1064,11 @@ class VanillaModAbilities {
                                     .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
                             for (Point p : Hexagons.getAdjacents(receiver.wielder.getPoint())) {
                                 final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
-                                if (unit.map((Unit u) -> u.leadership.sameLeader(receiver.wielder)).orElse(false)) {
-                                    effects.add(unit.get().abilities.addStatusEffect(view, Labels.status_effect_rally));
-                                }
+                                unit.ifPresent((Unit u) -> {
+                                    if (u.leadership.sameLeader(receiver.wielder)) {
+                                        effects.add(u.abilities.addStatusEffect(view, Labels.status_effect_rally));
+                                    }
+                                });
                             }
                             return effects;
                         });
