@@ -115,8 +115,9 @@ public class ActionManager {
      * Returns true if the given Unit can make an Action of the following type
      */
     public boolean canUnitDoThis(Unit u, ActionType type) {
-        return (type == ActionType.SKIP || !u.sleep.isSleeping())
-                && (!this.unitHasAssignedAction(u) || this.actions.get(u).canBeFollowedBy(type));
+        return u.sleep.isSleeping()
+                ? (type == ActionType.SKIP)
+                : (!this.unitHasAssignedAction(u) || this.actions.get(u).canBeFollowedBy(type));
     }
 
     /**

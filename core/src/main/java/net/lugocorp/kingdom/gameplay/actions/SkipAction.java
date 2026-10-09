@@ -28,7 +28,7 @@ public class SkipAction implements Action {
     /** {@inheritdoc} */
     @Override
     public boolean canBeFollowedBy(ActionType a) {
-        return true;
+        return a != ActionType.SKIP;
     }
 
     /** {@inheritdoc} */
