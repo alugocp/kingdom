@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.engine.projection.ViewportLogic;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Coords;
+import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.settings.Settings;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Handles all user control input for the GameView
  */
 public class GameViewController implements InputProcessor {
-    private static final float SCROLL_SPEED = 3f;
+    private static final float SCROLL_SPEED = 5f;
     private static final float ZOOM_SPEED = 1f;
     private static final float MAX_ZOOM = 3.0f;
     private static final float MIN_ZOOM = -2.0f;
@@ -51,10 +52,14 @@ public class GameViewController implements InputProcessor {
      * Internal function translates the camera while respecting World boundaries
      */
     private void moveCamera(float dx, float dz) {
+        final int botHudHeight = this.view.hud.bot.getHeight();
+
         // Check bottom-left Camera bounds
-        final Vector3 p1 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(0, Coords.SIZE.y))
+        final Vector3 p1 = CameraLogic
+                .getScreenPointOnSurface(ViewportLogic.project(0, Coords.SIZE.y - botHudHeight, false))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        final Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight() + 4);
+        final Vector3 botLeft = Coords.grid.vector(0, this.view.game.world.getHeight())
+                .add(Coords.raw.vector(-Hexagons.WIDTH / 2f, 0, Hexagons.DEPTH / 2f));
         if (p1.x < botLeft.x) {
             dx += botLeft.x - p1.x;
         }
@@ -63,18 +68,20 @@ public class GameViewController implements InputProcessor {
         }
 
         // Check bottom-right Camera bounds
-        final Vector3 p2 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(Coords.SIZE.x, Coords.SIZE.y))
+        final Vector3 p2 = CameraLogic
+                .getScreenPointOnSurface(ViewportLogic.project(Coords.SIZE.x, Coords.SIZE.y - botHudHeight, false))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        final Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(),
-                this.view.game.world.getHeight() + 4);
+        final Vector3 botRight = Coords.grid.vector(this.view.game.world.getWidth(), this.view.game.world.getHeight())
+                .add(Coords.raw.vector(Hexagons.WIDTH / 2f, 0, Hexagons.DEPTH / 2f));
         if (p2.x > botRight.x) {
             dx += botRight.x - p2.x;
         }
 
         // Check top-left Camera bounds
-        final Vector3 p3 = CameraLogic.getScreenPointOnSurface(ViewportLogic.project(0, this.view.hud.top.getHeight()))
+        final Vector3 p3 = CameraLogic
+                .getScreenPointOnSurface(ViewportLogic.project(0, this.view.hud.top.getHeight(), false))
                 .add(Coords.raw.vector(dx, 0f, dz));
-        final Vector3 topLeft = Coords.grid.vector(0, -8);
+        final Vector3 topLeft = Coords.grid.vector(0, -6).add(Coords.raw.vector(0, 0, -Hexagons.DEPTH / 2f));
         if (p3.z < topLeft.z) {
             dz += topLeft.z - p3.z;
         }
