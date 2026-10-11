@@ -151,6 +151,32 @@ class VanillaModItems {
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
 
+        // Walnut
+        new Stratified<Item>(events.item, Labels.item_walnut)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    // TODO add new icon
+                    e.blob.desc = "A tough nut rich in protein";
+                    e.blob.icon = Optional.of(Labels.asset_pick_apples);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_natural);
+                    e.blob.tags.add(Labels.tag_fruit);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+
+        // Nopal
+        new Stratified<Item>(events.item, Labels.item_nopal)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    // TODO add new icon
+                    e.blob.desc = "This cactus is very nutritious once you remove the thorns";
+                    e.blob.icon = Optional.of(Labels.asset_pick_apples);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_natural);
+                    e.blob.tags.add(Labels.tag_fruit);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+
         // Health Potion
         new Stratified<Item>(events.item, Labels.item_health_potion)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {

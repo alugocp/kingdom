@@ -124,6 +124,20 @@ class VanillaModUnits {
 
         // The Pumpkin King
         // Little Buck
+        new Stratified<Unit>(events.unit, Labels.unit_little_buck).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This little guy lives an ascetic life in the woods";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_kobold;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_arrow_shot);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast, Labels.ability_swim,
+                            Labels.ability_night_vision, Labels.ability_high_vision, Labels.ability_pick_walnuts,
+                            Labels.ability_harvest_pumpkins, Labels.ability_hunt_fish);
+                    UnitLogic.standardHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Garulax
         // Patagan
         new Stratified<Unit>(events.unit, Labels.unit_patagan).add(Events.GenerateUnitEvent.class,
@@ -144,6 +158,20 @@ class VanillaModUnits {
         // Priestess Aq'bil
         // Badroch the Pack Grue
         // Lord Sakamoto
+        new Stratified<Unit>(events.unit, Labels.unit_lord_sakamoto).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "He roams the hills of the Dawning Isles looking for the strongest warriors to grow his army";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_orc;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.TRADE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast, Labels.ability_armor,
+                            Labels.ability_looter, Labels.ability_investment, Labels.ability_trade);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.hungry(view, e.blob);
+                    return new SideEffect();
+                });
+
         // Pelagma
         new Stratified<Unit>(events.unit, Labels.unit_pelagma).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -413,6 +441,21 @@ class VanillaModUnits {
                 });
 
         // Passiflor
+        new Stratified<Unit>(events.unit, Labels.unit_passiflor).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "You can find this being deep in the forest, where he encourages all sorts of vines to grow";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_heal_wounds,
+                            Labels.ability_plant_forest);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast,
+                            Labels.ability_forage_passionfruit, Labels.ability_reincarnation,
+                            Labels.ability_regeneration);
+                    UnitLogic.standardHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Oystermane
         // Wuraj the Blessed
         new Stratified<Unit>(events.unit, Labels.unit_wuraj_the_blessed).add(Events.GenerateUnitEvent.class,
