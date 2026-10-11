@@ -239,12 +239,97 @@ public class AbilityLogic {
      * Effect that generates gold
      */
     public static SideEffect gold(GameView view, Unit unit, int gold) {
-        return new SideEffect.add(() -> {
+        return new SideEffect().add(() -> {
             view.overlays.entity(unit)
                     .addRising(new RisingOverlay(view, unit, ColorScheme.GOLD.hex, String.format("+%d gold", gold)));
             unit.getLeader().get().gold += gold;
             view.hud.top.update(view.game);
         });
+    }
+
+    /**
+     * Generates gold from some Tile every few turns
+     */
+    public static StratifiedPayload[] harvestGoldFromTile(int gold, int period, String tileDesc,
+            Function<Tile, Boolean> criteria) {
+        return new StratifiedPayload[]{
+                AbilityLogic.desc(String.format("Generates %d gold every %d turns on %s", gold, period, tileDesc)),
+                new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver,
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future
+                                        .addFutureTick("Tick", receiver, period, true, Optional.empty()))),
+                new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (view.game.world.getTile(receiver.wielder.getPoint()).map((Tile t) -> criteria.apply(t))
+                                    .orElse(false)) {
+                                effects.add(AbilityLogic.gold(view, receiver.wielder, gold));
+                            }
+                            return effects;
+                        }).setOverrideChannel("Tick")};
+    }
+
+    /**
+     * Generates gold from some Building every few turns
+     */
+    public static StratifiedPayload[] harvestGoldFromBuilding(int gold, int period, String buildingDesc,
+            Function<Building, Boolean> criteria) {
+        return AbilityLogic.harvestGoldFromTile(gold, period, buildingDesc,
+                (Tile t) -> t.building.map((Building b) -> criteria.apply(b)).orElse(false));
+    }
+
+    /**
+     * Harvests an Item from some Tile every few turns
+     */
+    public static StratifiedPayload[] harvestFromTile(Function<GameView, String> getItem, int period, String itemDesc,
+            String tileDesc, Function<Tile, Boolean> criteria) {
+        return new StratifiedPayload[]{
+                AbilityLogic.desc(String.format("Generates %s every %d turns on %s", itemDesc, period, tileDesc)),
+                new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver,
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future
+                                        .addFutureTick("Tick", receiver, period, true, Optional.empty()))),
+                new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (!receiver.wielder.haul.isFull() && view.game.world.getTile(receiver.wielder.getPoint())
+                                    .map((Tile t) -> criteria.apply(t)).orElse(false)) {
+                                final Item i = view.game.generator.item(getItem.apply(view));
+                                effects.add(() -> {
+                                    receiver.wielder.haul.add(i);
+                                    view.overlays.entity(receiver.wielder).addRising(
+                                            new RisingOverlay(view, receiver.wielder, ColorScheme.WHITE.hex, i.name));
+                                });
+                                effects.add(receiver.wielder.handleEvent(view,
+                                        new Events.HarvestEvent(receiver.wielder, i)));
+                            }
+                            return effects;
+                        }).setOverrideChannel("Tick")};
+    }
+
+    /**
+     * Harvests an Item from some Tile every few turns
+     */
+    public static StratifiedPayload[] harvestFromTile(String item, int period, String tileDesc,
+            Function<Tile, Boolean> criteria) {
+        return AbilityLogic.harvestFromTile((GameView view) -> item, period, item, tileDesc, criteria);
+    }
+
+    /**
+     * Harvests an Item from some Building every few turns
+     */
+    public static StratifiedPayload[] harvestFromBuilding(Function<GameView, String> getItem, int period,
+            String itemDesc, String buildingDesc, Function<Building, Boolean> criteria) {
+        return AbilityLogic.harvestFromTile(getItem, period, itemDesc, buildingDesc,
+                (Tile t) -> t.building.map((Building b) -> criteria.apply(b)).orElse(false));
+    }
+
+    /**
+     * Harvests an Item from some Building every few turns
+     */
+    public static StratifiedPayload[] harvestFromBuilding(String item, int period, String buildingDesc,
+            Function<Building, Boolean> criteria) {
+        return AbilityLogic.harvestFromBuilding((GameView view) -> item, period, item, buildingDesc, criteria);
     }
 
     /**
@@ -314,35 +399,6 @@ public class AbilityLogic {
             }
         }
         return new SideEffect();
-    }
-
-    /**
-     * Ability that harvests an Item from some Tile
-     */
-    public static SideEffect harvestFromTile(GameView view, Unit caster, String item,
-            Function<Tile, Boolean> criteria) {
-        return AbilityLogic.doOnTile(view, caster, criteria, () -> {
-            final SideEffect effects = new SideEffect();
-            if (!caster.haul.isFull()) {
-                Item i = view.game.generator.item(item);
-                effects.add(() -> {
-                    caster.haul.add(i);
-                    view.overlays.entity(caster)
-                            .addRising(new RisingOverlay(view, caster, ColorScheme.WHITE.hex, i.name));
-                });
-                effects.add(caster.handleEvent(view, new Events.HarvestEvent(caster, i)));
-            }
-            return effects;
-        });
-    }
-
-    /**
-     * Ability that harvests an Item from some Building
-     */
-    public static SideEffect harvestFromBuilding(GameView view, Unit caster, String item,
-            Function<Building, Boolean> criteria) {
-        return AbilityLogic.harvestFromTile(view, caster, item,
-                (Tile t) -> t.building.map((Building b) -> criteria.apply(b)).orElse(false));
     }
 
     /**

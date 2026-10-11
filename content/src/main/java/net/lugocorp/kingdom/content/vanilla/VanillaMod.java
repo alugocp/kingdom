@@ -402,12 +402,16 @@ public class VanillaMod implements GameMod {
                     final Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
                     final SideEffect effects = new SideEffect();
                     u.ifPresent((Unit unit) -> {
-                        effects.add(Math.random() < 0.05 ? () -> {
-                            final Item item = view.game.mechanics.loot.drop(view.game);
-                            view.overlays.entity(unit)
-                                    .addRising(new RisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
-                            unit.haul.add(item);
-                        } : AbilityLogic.gold(view, unit, 5));
+                        if (Math.random() < 0.05) {
+                            effects.add(() -> {
+                                final Item item = view.game.mechanics.loot.drop(view.game);
+                                view.overlays.entity(unit)
+                                        .addRising(new RisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
+                                unit.haul.add(item);
+                            });
+                        } else {
+                            effects.add(AbilityLogic.gold(view, unit, 5));
+                        }
                     });
                     return effects;
                 });

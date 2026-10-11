@@ -318,14 +318,10 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_edible);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates fruit every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
-                                receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_fruit),
-                                (Tile t) -> true));
+                })
+                .add(AbilityLogic.harvestFromTile(
+                        (GameView view) -> view.game.mechanics.loot.getByTag(Labels.tag_fruit), 3, "a fruit item",
+                        "any tile", (Tile t) -> true));
 
         // Elusive
         // Entrenched
@@ -460,21 +456,13 @@ class VanillaModAbilities {
                         });
 
         // Forage Passionfruit
-        new Stratified<Ability>(events.ability, Labels.ability_forage_passionfruit)
-                .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            // TODO add new icon
-                            e.blob.setIcon(Labels.asset_pick_apples);
-                            return new SideEffect();
-                        })
-                .add(AbilityLogic.desc("Harvests Passionfruit from Forests every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_passionfruit,
-                                (Building b) -> b.name.equals(Labels.building_forest)));
+        new Stratified<Ability>(events.ability, Labels.ability_forage_passionfruit).add(
+                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_passionfruit, 2, "forests",
+                        (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Frenzy
         // Ghastly Thrall
@@ -549,99 +537,59 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_batatas);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Batatas from Mines every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_batata,
-                                (Building b) -> b.name.equals(Labels.building_mine)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_batata, 3, "mines",
+                        (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Harvest Cacao
         new Stratified<Ability>(events.ability, Labels.ability_harvest_cacao).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_cacao);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Cacao from Forests every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_cacao,
-                                (Building b) -> b.name.equals(Labels.building_forest)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_cacao, 2, "forests",
+                        (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Harvest Figs
         new Stratified<Ability>(events.ability, Labels.ability_harvest_figs).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_figs);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Figs from Forests every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_fig,
-                                (Building b) -> b.name.equals(Labels.building_forest)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_fig, 2, "forests",
+                        (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Harvest Mesquite
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mesquite).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mesquite);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Mesquite from Oases every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_mesquite,
-                                (Building b) -> b.name.equals(Labels.building_oasis)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_mesquite, 2, "oases",
+                        (Building b) -> b.name.equals(Labels.building_oasis)));
 
         // Harvest Mushrooms
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mushrooms).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests mushroom items from Forests and Mines every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_mushroom),
-                                (Building b) -> b.name.equals(Labels.building_forest)
-                                        || b.name.equals(Labels.building_mine)));
+                })
+                .add(AbilityLogic.harvestFromBuilding(
+                        (GameView view) -> view.game.mechanics.loot.getByTag(Labels.tag_mushroom), 3, "mushroom items",
+                        "forests and mines",
+                        (Building b) -> b.name.equals(Labels.building_forest) || b.name.equals(Labels.building_mine)));
 
         // Harvest Pumpkins
         new Stratified<Ability>(events.ability, Labels.ability_harvest_pumpkins).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_pumpkins);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Pumpkins from Meadows every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_pumpkin,
-                                (Building b) -> b.name.equals(Labels.building_meadow)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_pumpkin, 2, "meadows",
+                        (Building b) -> b.name.equals(Labels.building_meadow)));
 
         // Harvest Truffles
         new Stratified<Ability>(events.ability, Labels.ability_harvest_truffles).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom, 0xb16255, 0x57372c);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Truffles from Forests every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_truffle,
-                                (Building b) -> b.name.equals(Labels.building_forest)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_truffle, 2, "forests",
+                        (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Heal Wounds
         new Stratified<Ability>(events.ability, Labels.ability_heal_wounds).add(Events.GenerateAbilityEvent.class,
@@ -657,14 +605,8 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_subterranean_potions, 0xba3521, 0x318ec0);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Generates Health Potions from water tiles every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
-                                receiver.wielder, Labels.item_health_potion,
-                                (Tile t) -> t.name.equals(Labels.tile_water)));
+                }).add(AbilityLogic.harvestFromTile(Labels.item_health_potion, 3, "water tiles",
+                        (Tile t) -> t.name.equals(Labels.tile_water)));
 
         // High Vision
         new Stratified<Ability>(events.ability, Labels.ability_high_vision).add(Events.GenerateAbilityEvent.class,
@@ -725,13 +667,8 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hunt_fish);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Fish from water tiles every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromTile(view,
-                                receiver.wielder, Labels.item_fish, (Tile t) -> t.name.equals(Labels.tile_water)));
+                }).add(AbilityLogic.harvestFromTile(Labels.item_fish, 3, "water tiles",
+                        (Tile t) -> t.name.equals(Labels.tile_water)));
 
         // Hurl Rock
         new Stratified<Ability>(events.ability, Labels.ability_hurl_rock).add(Events.GenerateAbilityEvent.class,
@@ -884,28 +821,18 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gems);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests gem items from Mines every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, view.game.mechanics.loot.getByTag(Labels.tag_gem),
-                                (Building b) -> b.name.equals(Labels.building_mine)));
+                })
+                .add(AbilityLogic.harvestFromBuilding(
+                        (GameView view) -> view.game.mechanics.loot.getByTag(Labels.tag_gem), 2, "gem items", "mines",
+                        (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Mine Gold
         new Stratified<Ability>(events.ability, Labels.ability_mine_gold).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gold);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Gold Coins from Mines every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_gold_coin,
-                                (Building b) -> b.name.equals(Labels.building_mine)));
+                }).add(AbilityLogic.harvestGoldFromBuilding(5, 2, "mines",
+                        (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Mining Stone Form
         new Stratified<Ability>(events.ability, Labels.ability_mining_stone_form).add(Events.GenerateAbilityEvent.class,
@@ -971,14 +898,8 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_pick_apples);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Apples from Forests every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_apple,
-                                (Building b) -> b.name.equals(Labels.building_forest)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_apple, 2, "forests",
+                        (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Pick Nopales
         new Stratified<Ability>(events.ability, Labels.ability_pick_nopales).add(Events.GenerateAbilityEvent.class,
@@ -986,14 +907,8 @@ class VanillaModAbilities {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_pick_apples);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Nopales from Shrublands every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_nopal,
-                                (Building b) -> b.name.equals(Labels.building_shrubland)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_nopal, 2, "shrublands",
+                        (Building b) -> b.name.equals(Labels.building_shrubland)));
 
         // Pick Walnuts
         new Stratified<Ability>(events.ability, Labels.ability_pick_walnuts).add(Events.GenerateAbilityEvent.class,
@@ -1001,14 +916,8 @@ class VanillaModAbilities {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_pick_apples);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Walnuts from Forests every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_walnut,
-                                (Building b) -> b.name.equals(Labels.building_forest)));
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_walnut, 2, "forests",
+                        (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Pious
         new Stratified<Ability>(events.ability, Labels.ability_pious).add(Events.GenerateAbilityEvent.class,
@@ -1401,20 +1310,12 @@ class VanillaModAbilities {
                         .checkStoneForm(view, receiver.wielder));
 
         // Subterranean Potions
-        new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions)
-                .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                            e.blob.setIcon(Labels.asset_subterranean_potions);
-                            return new SideEffect();
-                        })
-                .add(AbilityLogic.desc("Generates Health Potions from Mines every 4 turns"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 4, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_health_potion,
-                                (Building b) -> b.name.equals(Labels.building_mine)));
+        new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions).add(
+                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    e.blob.setIcon(Labels.asset_subterranean_potions);
+                    return new SideEffect();
+                }).add(AbilityLogic.harvestFromBuilding(Labels.item_health_potion, 2, "mines",
+                        (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Sucker Punch
         // Surprise Attack
@@ -1481,13 +1382,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_trade);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("Harvests Gold Coins from a Marketplace every other turn"))
-                .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 2, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.harvestFromBuilding(
-                                view, receiver.wielder, Labels.item_gold_coin,
-                                (Building b) -> b.name.equals(Labels.building_marketplace)));
+                }).add(AbilityLogic.harvestGoldFromBuilding(10, 2, "marketplaces",
+                        (Building b) -> b.name.equals(Labels.building_marketplace)));
     }
 }
