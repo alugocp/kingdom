@@ -236,6 +236,18 @@ public class AbilityLogic {
     }
 
     /**
+     * Effect that generates gold
+     */
+    public static SideEffect gold(GameView view, Unit unit, int gold) {
+        return new SideEffect.add(() -> {
+            view.overlays.entity(unit)
+                    .addRising(new RisingOverlay(view, unit, ColorScheme.GOLD.hex, String.format("+%d gold", gold)));
+            unit.getLeader().get().gold += gold;
+            view.hud.top.update(view.game);
+        });
+    }
+
+    /**
      * Ability that spawns a building at the caster's location
      */
     public static StratifiedPayload[] build(String building, String tileDesc, Function<Tile, Boolean> criteria) {

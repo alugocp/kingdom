@@ -116,6 +116,28 @@ class VanillaModAbilities {
 
         // Blessing of the Plains
         // Chuck Gem
+        new Stratified<Ability>(events.ability, Labels.ability_chuck_gem).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Consumes a gem and deals 3 damage to the target"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (!receiver.wielder.haul.hasItemWithTag(Labels.tag_gem)) {
+                                if (receiver.wielder.leadership.belongsToHuman()) {
+                                    effects.add(
+                                            () -> view.hud.logger.error("You have no gems to activate this ability"));
+                                }
+                                return effects;
+                            }
+                            effects.add(AbilityLogic.attackAndEffect(view, receiver.wielder, new Damage(3), 2,
+                                    Optional.of((Point p) -> new SideEffect()
+                                            .add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_gem)))));
+                            return effects;
+                        });
+
         // Conservation of Energy
         new Stratified<Ability>(events.ability, Labels.ability_conservation_of_energy)
                 .add(Events.GenerateAbilityEvent.class,
@@ -186,6 +208,20 @@ class VanillaModAbilities {
                         });
 
         // Collect Bounty
+        new Stratified<Ability>(events.ability, Labels.ability_collect_bounty).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("You get 30 gold when this unit kills another unit"))
+                .add(Events.KilledEntityEvent.class, (GameView view, Ability receiver, Events.KilledEntityEvent e) -> {
+                    final SideEffect effects = new SideEffect();
+                    if (e.killer == receiver.wielder && e.target.isEntityType(EntityType.UNIT)) {
+                        effects.add(AbilityLogic.gold(view, receiver.wielder, 30));
+                    }
+                    return effects;
+                });
+
         // Combat Loot
         new Stratified<Ability>(events.ability, Labels.ability_combat_loot).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -330,7 +366,8 @@ class VanillaModAbilities {
                                         final Optional<Entity> target = view.game.world.getTile(p)
                                                 .flatMap((Tile t) -> t.getPriorityEntity());
                                         final SideEffect effects = new SideEffect()
-                                                .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
+                                                .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder))
+                                                .add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_gem));
                                         target.ifPresent((Entity e1) -> {
                                             effects.add(receiver.wielder.combat.attack(view, e1, new Damage(3)));
                                             targets.remove(p);

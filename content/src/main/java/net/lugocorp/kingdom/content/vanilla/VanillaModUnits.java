@@ -323,6 +323,21 @@ class VanillaModUnits {
                 });
 
         // Alaistar and Wurmdel
+        new Stratified<Unit>(events.unit, Labels.unit_alaistar_and_wurmdel).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This duo travels through tunnels far beneath the surface. They always deliver packages and parcels on time";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_brownie;
+                    e.blob.glyphs.set(Glyph.MINING, Glyph.TRADE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_chuck_gem,
+                            Labels.ability_construct_mine);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast, Labels.ability_night_vision,
+                            Labels.ability_mine_gems, Labels.ability_mine_gold);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
         // Mi'chalb Lightfoot
         // Illapa (Quechua for lightning)
         // Manav
@@ -491,6 +506,21 @@ class VanillaModUnits {
                 });
 
         // Theressa the Rover
+        new Stratified<Unit>(events.unit, Labels.unit_theressa_the_rover).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "Theressa is known across Boidheach where she ferries goods between far flung villages";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_centaur;
+                    e.blob.glyphs.set(Glyph.SUPPORT, Glyph.TRADE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_arrow_shot,
+                            Labels.ability_heal_wounds);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_fast, Labels.ability_investment,
+                            Labels.ability_collect_bounty);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
         // Keeper of the Keys
         // Wisp Walker
         // Al-Fikra

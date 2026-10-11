@@ -407,12 +407,7 @@ public class VanillaMod implements GameMod {
                             view.overlays.entity(unit)
                                     .addRising(new RisingOverlay(view, unit, ColorScheme.WHITE.hex, item.name));
                             unit.haul.add(item);
-                        } : () -> {
-                            view.overlays.entity(unit)
-                                    .addRising(new RisingOverlay(view, unit, ColorScheme.GOLD.hex, "+5 gold"));
-                            unit.getLeader().get().gold += 5;
-                            view.hud.top.update(view.game);
-                        });
+                        } : AbilityLogic.gold(view, unit, 5));
                     });
                     return effects;
                 });
