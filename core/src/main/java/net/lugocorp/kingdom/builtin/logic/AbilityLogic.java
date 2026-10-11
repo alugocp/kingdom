@@ -42,6 +42,16 @@ public class AbilityLogic {
                 });
     }
 
+    public static StratifiedPayload[] traverse(String building) {
+        return new StratifiedPayload[]{new StratifiedPayload<Ability, Events.CanUnitMoveEvent>(
+                Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
+                    if (e.tile.building.map((Building b) -> b.name.equals(building)).orElse(false)) {
+                        e.canWalkOnBuilding = true;
+                    }
+                    return new SideEffect();
+                }), AbilityLogic.desc(String.format("This unit can traverse %ss", building))};
+    }
+
     /**
      * Attack ability with variable Damage based on the target
      */

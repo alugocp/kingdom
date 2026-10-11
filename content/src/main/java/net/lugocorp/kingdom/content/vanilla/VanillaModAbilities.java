@@ -290,6 +290,22 @@ class VanillaModAbilities {
                 });
 
         // Desert's Caress
+        new Stratified<Ability>(events.ability, Labels.ability_deserts_caress).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("This unit harvests extra items on sand tiles"))
+                .add(Events.HarvestEvent.class, (GameView view, Ability receiver, Events.HarvestEvent e) -> {
+                    final SideEffect effects = new SideEffect();
+                    if (!receiver.wielder.haul.isFull() && view.game.world.getTile(receiver.wielder.getPoint())
+                            .map((Tile t) -> t.name.equals(Labels.tile_sand)).orElse(false)) {
+                        final Item i = view.game.generator.item(e.item.name);
+                        effects.add(() -> e.unit.haul.add(i));
+                    }
+                    return effects;
+                });
+
         // Construct Mine
         new Stratified<Ability>(events.ability, Labels.ability_construct_mine).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -324,6 +340,13 @@ class VanillaModAbilities {
                         "any tile", (Tile t) -> true));
 
         // Elusive
+        new Stratified<Ability>(events.ability, Labels.ability_elusive).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.traverse(Labels.building_dense_forest));
+
         // Entrenched
         new Stratified<Ability>(events.ability, Labels.ability_entrenched).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -380,6 +403,20 @@ class VanillaModAbilities {
                         });
 
         // Evasive
+        new Stratified<Ability>(events.ability, Labels.ability_evasive).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Takes 1 less damage from adjacent attackers"))
+                .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
+                    if (e.attacker instanceof Unit
+                            && Hexagons.areNeighbors(e.attacker.getPoint(), e.target.getPoint())) {
+                        e.dmg.base--;
+                    }
+                    return new SideEffect();
+                });
+
         // Fast
         new Stratified<Ability>(events.ability, Labels.ability_fast).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -465,6 +502,19 @@ class VanillaModAbilities {
                         (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Frenzy
+        new Stratified<Ability>(events.ability, Labels.ability_frenzy).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("This unit deals +2 damage when they're below half health"))
+                .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
+                    if (e.attacker == receiver.wielder && e.attacker.combat.health.atOrBelowPercent(50)) {
+                        e.dmg.base += 2;
+                    }
+                    return new SideEffect();
+                });
+
         // Ghastly Thrall
         new Stratified<Ability>(events.ability, Labels.ability_ghastly_thrall).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -860,13 +910,7 @@ class VanillaModAbilities {
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mountain_strider);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can traverse mountains"))
-                .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
-                    if (e.tile.building.map((Building b) -> b.name.equals(Labels.building_mountain)).orElse(false)) {
-                        e.canWalkOnBuilding = true;
-                    }
-                    return new SideEffect();
-                });
+                }).add(AbilityLogic.traverse(Labels.building_mountain));
 
         // Necrotic Blast
         new Stratified<Ability>(events.ability, Labels.ability_necrotic_blast).add(Events.GenerateAbilityEvent.class,
@@ -1269,6 +1313,27 @@ class VanillaModAbilities {
                                 })));
 
         // Soothing Aura
+        new Stratified<Ability>(events.ability, Labels.ability_soothing_aura).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Heals adjacent friendly units for 1 hit point each turn"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                    final SideEffect effects = new SideEffect();
+                    final Set<Point> adjacents = Hexagons.getAdjacents(receiver.wielder.getPoint());
+                    for (Point p : adjacents) {
+                        final Optional<Unit> target = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                        if (target.map((Unit u) -> u.leadership.sameLeader(receiver.wielder)).orElse(false)) {
+                            effects.add(target.get().combat.heal(view, target.get(), 1));
+                        }
+                    }
+                    return effects;
+                });
+
         // Stipend
         // Stomp
         new Stratified<Ability>(events.ability, Labels.ability_stomp).add(Events.GenerateAbilityEvent.class,
@@ -1318,7 +1383,50 @@ class VanillaModAbilities {
                         (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Sucker Punch
+        new Stratified<Ability>(events.ability, Labels.ability_sucker_punch).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Deals 2 damage with a 25% chance to stun"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
+                                    final Optional<Unit> u = view.game.world.getUnit(p);
+                                    return u.isPresent() && Lambda.chance(25)
+                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
+                                            : new SideEffect();
+                                })));
+
         // Surprise Attack
+        new Stratified<Ability>(events.ability, Labels.ability_sucker_punch).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                })
+                .add(AbilityLogic.desc(
+                        "Deals 2 damage with a 25% chance to stun if occupying a forest (or 50% chance to stun on a dense forest)"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
+                                    final Optional<Unit> u = view.game.world.getUnit(p);
+                                    final Optional<Building> building = view.game.world
+                                            .getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building);
+                                    int chance = 0;
+                                    if (building.map((Building b) -> b.name.equals(Labels.building_forest))
+                                            .orElse(false)) {
+                                        chance = 25;
+                                    }
+                                    if (building.map((Building b) -> b.name.equals(Labels.building_dense_forest))
+                                            .orElse(false)) {
+                                        chance = 50;
+                                    }
+                                    return u.isPresent() && Lambda.chance(chance)
+                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
+                                            : new SideEffect();
+                                })));
+
         // Swim
         new Stratified<Ability>(events.ability, Labels.ability_swim).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {

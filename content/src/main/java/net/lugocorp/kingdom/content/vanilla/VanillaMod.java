@@ -662,7 +662,8 @@ public class VanillaMod implements GameMod {
                 .add(Events.HarvestEvent.class, (GameView view, Patron receiver, Events.HarvestEvent e) -> {
                     if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.MINING)
                             && !e.unit.haul.isFull() && Lambda.chance(20)) {
-                        return new SideEffect().add(() -> e.unit.haul.add(e.item));
+                        final Item i = view.game.generator.item(e.item.name);
+                        return new SideEffect().add(() -> e.unit.haul.add(i));
                     }
                     return new SideEffect();
                 });
@@ -685,7 +686,8 @@ public class VanillaMod implements GameMod {
                     return new SideEffect().add(() -> {
                         if (e.unit.getLeader().equals(receiver.getFavoritePlayer()) && e.unit.glyphs.has(Glyph.NATURE)
                                 && !e.unit.haul.isFull() && Lambda.chance(20)) {
-                            e.unit.haul.add(e.item);
+                            final Item i = view.game.generator.item(e.item.name);
+                            e.unit.haul.add(i);
                         }
                     });
                 });

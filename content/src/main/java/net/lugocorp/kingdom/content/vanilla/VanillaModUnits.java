@@ -252,6 +252,20 @@ class VanillaModUnits {
                 });
 
         // Kalteelk
+        new Stratified<Unit>(events.unit, Labels.unit_kalteelk).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_kobold;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_surprise_attack,
+                            Labels.ability_plant_forest);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_slow, Labels.ability_night_vision,
+                            Labels.ability_pick_walnuts, Labels.ability_evasive, Labels.ability_elusive);
+                    UnitLogic.standardHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // The Elder
         // Neer
         // King Gargantos
@@ -341,6 +355,20 @@ class VanillaModUnits {
         // Mi'chalb Lightfoot
         // Illapa (Quechua for lightning)
         // Manav
+        new Stratified<Unit>(events.unit, Labels.unit_manav).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_human;
+                    e.blob.glyphs.set(Glyph.NATURE, Glyph.MINING);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_hurl_rock,
+                            Labels.ability_plant_shrubland);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_deserts_caress,
+                            Labels.ability_mine_gems, Labels.ability_pick_nopales);
+                    UnitLogic.largeHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // The Druid
         new Stratified<Unit>(events.unit, Labels.unit_druid).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -438,6 +466,20 @@ class VanillaModUnits {
                 });
 
         // Soothing Gills
+        new Stratified<Unit>(events.unit, Labels.unit_soothing_gills).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_salamander;
+                    e.blob.glyphs.set(Glyph.SUPPORT);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_swing_staff,
+                            Labels.ability_heal_wounds);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_swim, Labels.ability_high_vision,
+                            Labels.ability_pious, Labels.ability_regeneration, Labels.ability_soothing_aura);
+                    UnitLogic.standardHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Melis the Honey Troll
         // Pumpkin Boy
         new Stratified<Unit>(events.unit, Labels.unit_pumpkin_boy).add(Events.GenerateUnitEvent.class,
