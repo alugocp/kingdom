@@ -372,7 +372,7 @@ public class InventoryNode implements MenuNode {
             }
         }
         if (!hasActions) {
-            root.add(new TextNode(this.view.av, "No actions available"));
+            root.add(new TextNode(this.view.av, "No actions available without an occupying unit"));
         }
         this.menu.setMiniMenu(root, p.x, p.y);
     }

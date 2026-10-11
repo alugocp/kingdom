@@ -152,6 +152,10 @@ public class Ability implements EventReceiver, MenuSubject {
         if (this.isActive(view)) {
             mode = (this.wielder.leadership.belongsToHuman() && view.game.mechanics.turns.canHumanPlayerAct()
                     && canUnitDoThis) ? ActionNode.MODE_ACTIVE : ActionNode.MODE_DISABLED;
+        } else {
+            mode = (this.wielder.leadership.belongsToHuman() && this.canUse(view))
+                    ? ActionNode.MODE_NOTHING
+                    : ActionNode.MODE_DISABLED;
         }
         return new ActionNode(view.av, this.name, this.icon, this.shortcut,
                 Optional.of(this.isActive(view) ? "Exhaustive action" : "Passive ability"),

@@ -75,7 +75,7 @@ public class AbilityLogic {
             return new SideEffect().add(attacker.combat.attack(view, targets.get(p), dmg))
                     .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
         }, (Tile t) -> {
-            if (!t.unit.isPresent() && !t.building.isPresent()) {
+            if (!t.unit.isPresent() && t.building.map((Building b) -> !b.combat.health.isVulnerable()).orElse(true)) {
                 return Optional.empty();
             }
             final Damage dmg = getDamage.apply(t);
@@ -128,7 +128,7 @@ public class AbilityLogic {
             }
             return effects;
         }, (Tile t) -> {
-            if (!t.unit.isPresent() && !t.building.isPresent()) {
+            if (!t.unit.isPresent() && t.building.map((Building b) -> !b.combat.health.isVulnerable()).orElse(true)) {
                 return Optional.empty();
             }
             final Damage dmgLabel = new Damage(dmg);
@@ -253,17 +253,19 @@ public class AbilityLogic {
     public static StratifiedPayload[] harvestGoldFromTile(int gold, int period, String tileDesc,
             Function<Tile, Boolean> criteria) {
         return new StratifiedPayload[]{
-                AbilityLogic.desc(String.format("Generates %d gold every %d turns on %s", gold, period, tileDesc)),
+                AbilityLogic.desc(period == 1
+                        ? String.format("Generates %d gold every turn on %s", gold, tileDesc)
+                        : String.format("Generates %d gold every %d turns on %s", gold, period, tileDesc)),
                 new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future
-                                        .addFutureTick("Tick", receiver, period, true, Optional.empty()))),
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
                 new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
-                            if (view.game.world.getTile(receiver.wielder.getPoint()).map((Tile t) -> criteria.apply(t))
-                                    .orElse(false)) {
+                            if (receiver.canUse(view) && view.game.world.getTile(receiver.wielder.getPoint())
+                                    .map((Tile t) -> criteria.apply(t)).orElse(false)) {
                                 effects.add(AbilityLogic.gold(view, receiver.wielder, gold));
+                                effects.add(() -> receiver.goOnCooldown(period - 1));
                             }
                             return effects;
                         }).setOverrideChannel("Tick")};
@@ -284,21 +286,24 @@ public class AbilityLogic {
     public static StratifiedPayload[] harvestFromTile(Function<GameView, String> getItem, int period, String itemDesc,
             String tileDesc, Function<Tile, Boolean> criteria) {
         return new StratifiedPayload[]{
-                AbilityLogic.desc(String.format("Generates %s every %d turns on %s", itemDesc, period, tileDesc)),
+                AbilityLogic.desc(period == 1
+                        ? String.format("Generates %s every turn on %s", itemDesc, tileDesc)
+                        : String.format("Generates %s every %d turns on %s", itemDesc, period, tileDesc)),
                 new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver,
-                                Events.SpawnEvent e) -> new SideEffect().add(() -> view.game.future
-                                        .addFutureTick("Tick", receiver, period, true, Optional.empty()))),
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
                 new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
                         (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
-                            if (!receiver.wielder.haul.isFull() && view.game.world.getTile(receiver.wielder.getPoint())
-                                    .map((Tile t) -> criteria.apply(t)).orElse(false)) {
+                            if (!receiver.wielder.haul.isFull() && receiver.canUse(view)
+                                    && view.game.world.getTile(receiver.wielder.getPoint())
+                                            .map((Tile t) -> criteria.apply(t)).orElse(false)) {
                                 final Item i = view.game.generator.item(getItem.apply(view));
                                 effects.add(() -> {
                                     receiver.wielder.haul.add(i);
                                     view.overlays.entity(receiver.wielder).addRising(
                                             new RisingOverlay(view, receiver.wielder, ColorScheme.WHITE.hex, i.name));
+                                    receiver.goOnCooldown(period - 1);
                                 });
                                 effects.add(receiver.wielder.handleEvent(view,
                                         new Events.HarvestEvent(receiver.wielder, i)));

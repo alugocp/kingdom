@@ -69,6 +69,9 @@ public class TurnStructure {
             for (Ability a : u.abilities.getActives()) {
                 a.handleCooldown();
             }
+            for (Ability a : u.abilities.getPassives()) {
+                a.handleCooldown();
+            }
             view.overlays.entity(u).setIcons(view, u);
             u.sleep.wakeUpCheck(view);
         }

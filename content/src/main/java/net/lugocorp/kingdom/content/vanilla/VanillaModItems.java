@@ -177,6 +177,19 @@ class VanillaModItems {
                 }).add(Events.ItemConsumedEvent.class,
                         (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
 
+        // Passionfruit
+        new Stratified<Item>(events.item, Labels.item_passionfruit)
+                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+                    // TODO add new icon
+                    e.blob.desc = "A sweet and sour fruit that grows on vines";
+                    e.blob.icon = Optional.of(Labels.asset_pick_apples);
+                    e.blob.gold = 1;
+                    e.blob.tags.add(Labels.tag_natural);
+                    e.blob.tags.add(Labels.tag_fruit);
+                    return new SideEffect();
+                }).add(Events.ItemConsumedEvent.class,
+                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+
         // Health Potion
         new Stratified<Item>(events.item, Labels.item_health_potion)
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
