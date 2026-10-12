@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.util.Optional;
 
@@ -39,6 +40,7 @@ public class ToonShader implements Shader {
     private int u_normalsTexture;
     private int u_projViewTrans;
     private int u_worldTrans;
+    private int u_normalMatrix;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
     private int u_diffuseColor;
@@ -62,6 +64,7 @@ public class ToonShader implements Shader {
         this.u_normalsTexture = this.program.getUniformLocation("u_normalsTexture");
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
+        this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
@@ -123,7 +126,9 @@ public class ToonShader implements Shader {
         this.program.setUniformi(this.u_normalsTexture, this.context.textureBinder.bind(normals));
 
         // Set object uniforms
+        Matrix3 normal = new Matrix3();
         this.program.setUniformMatrix(this.u_worldTrans, renderable.worldTransform);
+        this.program.setUniformMatrix(this.u_normalMatrix, normal.set(renderable.worldTransform).inv().transpose());
 
         // Set material uniform (texture attribute)
         final TextureAttribute diffuse = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);

@@ -20,6 +20,7 @@ uniform int u_vision;
 uniform bool u_lightOutline;
 uniform bool u_outlineShader;
 varying MED vec2 v_diffuseUV;
+varying vec3 v_normal;
 const int HALF_VISIBILITY = 1;
 const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
@@ -75,4 +76,10 @@ void main() {
         darker[3] = vec4(0.0, 0.0, 0.0, 1.0);
         gl_FragColor = darker * gl_FragColor;
     }
+
+    // Make the color darker for shading
+    float shadow = dot(v_normal, normalize(vec3(0.0, 1.0, 1.0)));
+    gl_FragColor.x *= shadow;
+    gl_FragColor.y *= shadow;
+    gl_FragColor.z *= shadow;
 }
