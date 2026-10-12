@@ -123,6 +123,20 @@ class VanillaModUnits {
                 });
 
         // The Pumpkin King
+        new Stratified<Unit>(events.unit, Labels.unit_pumpkin_king).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "His royal gourdness commands an entire kingdom of squash sprites in Eaglehaven";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_sprite;
+                    e.blob.glyphs.set(Glyph.BATTLE, Glyph.NATURE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_sword_slash,
+                            Labels.ability_blessing_of_the_plains);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_high_vision,
+                            Labels.ability_harvest_pumpkins);
+                    UnitLogic.largeHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Little Buck
         new Stratified<Unit>(events.unit, Labels.unit_little_buck).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -254,7 +268,7 @@ class VanillaModUnits {
         // Kalteelk
         new Stratified<Unit>(events.unit, Labels.unit_kalteelk).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "";
+                    e.blob.desc = "He roams the forests of Eaglehaven warding off those who would disrupt the balance";
                     e.blob.setModelInstance(view.av, "placeholder1");
                     e.blob.species = Defs.species_kobold;
                     e.blob.glyphs.set(Glyph.DEFENSE, Glyph.NATURE);
@@ -357,7 +371,7 @@ class VanillaModUnits {
         // Manav
         new Stratified<Unit>(events.unit, Labels.unit_manav).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "";
+                    e.blob.desc = "Her upbringing in the arid desert made her indomitable";
                     e.blob.setModelInstance(view.av, "placeholder1");
                     e.blob.species = Defs.species_human;
                     e.blob.glyphs.set(Glyph.NATURE, Glyph.MINING);
@@ -468,7 +482,7 @@ class VanillaModUnits {
         // Soothing Gills
         new Stratified<Unit>(events.unit, Labels.unit_soothing_gills).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
-                    e.blob.desc = "";
+                    e.blob.desc = "This elder's village relies on him to watch their young while they tend to the fields";
                     e.blob.setModelInstance(view.av, "placeholder1");
                     e.blob.species = Defs.species_salamander;
                     e.blob.glyphs.set(Glyph.SUPPORT);

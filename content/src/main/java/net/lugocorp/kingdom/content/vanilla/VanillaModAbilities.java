@@ -115,6 +115,37 @@ class VanillaModAbilities {
                 });
 
         // Blessing of the Plains
+        new Stratified<Ability>(events.ability, Labels.ability_blessing_of_the_plains)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            // TODO add new icon
+                            e.blob.setIcon(Labels.asset_pick_apples);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.desc("Heals the target unit on a meadow or hill, then buffs this unit's damage"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            Set<Point> targets = Lambda.filter(
+                                    (Point p) -> view.game.world.getTile(p)
+                                            .flatMap((Tile t) -> t.unit.map((Unit u) -> t))
+                                            .flatMap((Tile t) -> t.building)
+                                            .map((Building b) -> b.name.equals(Labels.building_hill)
+                                                    || b.name.equals(Labels.building_meadow))
+                                            .orElse(false),
+                                    Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
+                            return receiver.wielder.getLeader().map(
+                                    (Player player) -> player.select(view, targets, "No units in range", (Point p) -> {
+                                        final SideEffect effects = new SideEffect();
+                                        final Optional<Unit> target = view.game.world.getTile(p)
+                                                .flatMap((Tile t) -> t.unit);
+                                        target.ifPresent(
+                                                (Unit u) -> effects.add(receiver.wielder.combat.heal(view, u, 3)));
+                                        effects.add(receiver.wielder.abilities.addStatusEffect(view,
+                                                Labels.status_effect_extra_attack));
+                                        return effects;
+                                    })).orElse(new SideEffect());
+                        });
+
         // Chuck Gem
         new Stratified<Ability>(events.ability, Labels.ability_chuck_gem).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -187,7 +218,7 @@ class VanillaModAbilities {
                         "Deals 5 damage to a target adjacent structure, 3 damage to an occupying unit (if there is one), and 3 damage to the caster"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                            final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
                                     .map((Tile t) -> t.building.isPresent()).orElse(false),
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
                             return receiver.wielder.getLeader().map((Player player) -> player.select(view, targets,
@@ -1399,7 +1430,7 @@ class VanillaModAbilities {
                                 })));
 
         // Surprise Attack
-        new Stratified<Ability>(events.ability, Labels.ability_sucker_punch).add(Events.GenerateAbilityEvent.class,
+        new Stratified<Ability>(events.ability, Labels.ability_surprise_attack).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_pick_apples);

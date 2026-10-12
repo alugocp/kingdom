@@ -456,6 +456,7 @@ public class Labels {
     public static final String status_effect_more_favor = "More Favor";
     public static final String status_effect_proud_builder = "Proud Builder";
     public static final String status_effect_extra_defense = "Extra Defense";
+    public static final String status_effect_extra_attack = "Extra Attack";
     public static final String status_effect_poisoned = "Poisoned";
     public static final String status_effect_swift = "Swift";
     public static final String status_effect_rally = "Rally";

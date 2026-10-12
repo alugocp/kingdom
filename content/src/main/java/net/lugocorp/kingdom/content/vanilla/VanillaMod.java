@@ -1348,19 +1348,6 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 });
 
-        // More Favor
-        new Stratified<Ability>(events.ability, Labels.status_effect_more_favor).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_worship_glyph);
-                    return new SideEffect();
-                }).add(AbilityLogic.desc("+1 favor next time the unit generates it"))
-                .add(Events.GenerateFavorEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
-                            e.favor += 1;
-                            return new SideEffect()
-                                    .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver));
-                        });
-
         // Proud Builder
         new Stratified<Ability>(events.ability, Labels.status_effect_proud_builder)
                 .add(Events.GenerateAbilityEvent.class,
@@ -1399,6 +1386,26 @@ public class VanillaMod implements GameMod {
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
                     e.dmg.base -= 2;
+                    return new SideEffect();
+                });
+
+        // Extra Attack
+        new Stratified<Ability>(events.ability, Labels.status_effect_extra_attack)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            // TODO add new icon
+                            e.blob.setIcon(Labels.asset_pick_apples);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.desc("+2 damage for 2 turns"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Tick", receiver, 2, false, e.unit.getLeader())))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
+                .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
+                    e.dmg.base += 2;
                     return new SideEffect();
                 });
 
