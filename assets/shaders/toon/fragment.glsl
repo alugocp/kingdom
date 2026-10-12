@@ -11,6 +11,7 @@ precision mediump float;
 #endif
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_normalsTexture;
+uniform sampler2D u_shadingTexture;
 uniform vec4 u_diffuseColor;
 uniform float u_nighttime;
 uniform float u_opacity;
@@ -79,7 +80,15 @@ void main() {
 
     // Make the color darker for shading
     float shadow = dot(v_normal, normalize(vec3(0.0, 1.0, 1.0)));
-    gl_FragColor.x *= shadow;
-    gl_FragColor.y *= shadow;
-    gl_FragColor.z *= shadow;
+    if (shadow < 0.75) {
+        vec2 shadowCoords;
+        shadowCoords.x = mod(texCoords.x * 5.0, 5.0);
+        shadowCoords.y = mod(texCoords.y * 5.0, 5.0);
+        vec4 shading = texture2D(u_shadingTexture, shadowCoords);
+        if (shading.a > 0.0) {
+            gl_FragColor.x *= shading.x;
+            gl_FragColor.y *= shading.y;
+            gl_FragColor.z *= shading.z;
+        }
+    }
 }
