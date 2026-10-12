@@ -395,6 +395,21 @@ class VanillaModUnits {
                 });
 
         // Mi'chalb Lightfoot
+        new Stratified<Unit>(events.unit, Labels.unit_michalb_lightfoot).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "Mi'chalb spends her days mining the Dwarven caverns beneath northern Eaglehaven";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_dwarf;
+                    e.blob.glyphs.set(Glyph.MINING, Glyph.TRADE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_swing_pickaxe,
+                            Labels.ability_sucker_punch);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_mine_gems,
+                            Labels.ability_industrious, Labels.ability_stone_form, Labels.ability_defensive_stone_form);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
         // Illapa (Quechua for lightning)
         // Manav
         new Stratified<Unit>(events.unit, Labels.unit_manav).add(Events.GenerateUnitEvent.class,

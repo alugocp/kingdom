@@ -767,6 +767,30 @@ class VanillaModAbilities {
                                 })));
 
         // Industrious
+        new Stratified<Ability>(events.ability, Labels.ability_industrious).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                })
+                .add(AbilityLogic.desc(
+                        "This unit gets additional speed and also generates 2 auction points and 4 gold every turn on a mine"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
+                                receiver.wielder, (Building b) -> b.name.equals(Labels.building_mine), () -> {
+                                    final SideEffect effects = new SideEffect()
+                                            .add(AbilityLogic.gold(view, receiver.wielder, 4))
+                                            .add(AbilityLogic.generateAuctionPoints(view, receiver.wielder, 2));
+                                    if (!receiver.wielder.abilities.hasStatusEffect(Labels.status_effect_swift)) {
+                                        effects.add(receiver.wielder.abilities.addStatusEffect(view,
+                                                Labels.status_effect_swift));
+                                    }
+                                    return effects;
+                                }));
+
         // Investment
         new Stratified<Ability>(events.ability, Labels.ability_investment).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
