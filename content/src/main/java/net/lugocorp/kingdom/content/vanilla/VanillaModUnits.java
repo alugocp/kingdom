@@ -105,6 +105,19 @@ class VanillaModUnits {
                 });
 
         // Cenuok the Battle Grue
+        new Stratified<Unit>(events.unit, Labels.unit_beetlemoss).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "This beastly Grue has been enslaved by Fallen Elves, and now rampages across Xizhou as part of their schemes";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_grue;
+                    e.blob.glyphs.set(Glyph.BATTLE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_smash, Labels.ability_shove);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_regeneration,
+                            Labels.ability_frenzy);
+                    UnitLogic.largeHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // Sathra the Flame Caster
         // Beetlemoss
         new Stratified<Unit>(events.unit, Labels.unit_beetlemoss).add(Events.GenerateUnitEvent.class,
@@ -220,6 +233,21 @@ class VanillaModUnits {
         // Defender Cuauhtli
         // The Hunched Warlock
         // Amachaq
+        new Stratified<Unit>(events.unit, Labels.unit_amachaq).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "Captain Amachaq of the royal guard of Urqusuyu takes her job very seriously";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_human;
+                    e.blob.glyphs.set(Glyph.DEFENSE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_repel_invaders);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_keeping_watch,
+                            Labels.ability_stipend, Labels.ability_armor);
+                    UnitLogic.largeHealthPool(e.blob);
+                    UnitLogic.smallInventory(e.blob);
+                    UnitLogic.largeEquip(e.blob);
+                    return new SideEffect();
+                });
+
         // Lost Golem
         new Stratified<Unit>(events.unit, Labels.unit_lost_golem).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {

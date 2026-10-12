@@ -30,10 +30,24 @@ public class UnitLogic {
     }
 
     /**
-     * Sets the given Unit to have a large inventory
+     * Sets the given Unit to have a large haul inventory
      */
     public static void largeInventory(Unit unit) {
-        unit.haul.setMax(12);
+        unit.haul.setMax(8);
+    }
+
+    /**
+     * Sets the given Unit to have a small haul inventory
+     */
+    public static void smallInventory(Unit unit) {
+        unit.haul.setMax(2);
+    }
+
+    /**
+     * Sets the given Unit to have a large equip inventory
+     */
+    public static void largeEquip(Unit unit) {
+        unit.equipped.setMax(4);
     }
 
     /**

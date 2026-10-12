@@ -782,6 +782,20 @@ class VanillaModAbilities {
                                 () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
 
         // Keeping Watch
+        new Stratified<Ability>(events.ability, Labels.ability_keeping_watch).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("+2 vision on towers"))
+                .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
+                    if (view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
+                            .map((Building b) -> b.name.equals(Labels.building_tower)).orElse(false)) {
+                        e.radius += 2;
+                    }
+                    return new SideEffect();
+                });
+
         // Lava Bubble
         new Stratified<Ability>(events.ability, Labels.ability_lava_bubble).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1208,6 +1222,22 @@ class VanillaModAbilities {
 
         // Repair Structure
         // Repel Invaders
+        new Stratified<Ability>(events.ability, Labels.ability_repel_invaders).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO ad new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                })
+                .add(AbilityLogic
+                        .desc("Deals 2 damage to the target (or 4 damage when this unit is occupying a Tower)"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver,
+                                Events.AbilityActivatedEvent e) -> AbilityLogic
+                                        .dynamicDamageAttack(view, receiver.wielder, 1,
+                                                (Tile t) -> new Damage(t.building
+                                                        .map((Building b) -> b.name.equals(Labels.building_tower))
+                                                        .orElse(false) ? 4 : 2)));
+
         // Revenge of the Forest
         new Stratified<Ability>(events.ability, Labels.ability_revenge_of_the_forest)
                 .add(Events.GenerateAbilityEvent.class,
@@ -1301,6 +1331,28 @@ class VanillaModAbilities {
 
         // Shield Totem
         // Shove
+        new Stratified<Ability>(events.ability, Labels.ability_shove).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Deals 3 damage and knocks the target back by one tile"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(3), 1, Optional.of((Point p) -> {
+                                    final SideEffect effects = new SideEffect();
+                                    final Optional<Unit> u = view.game.world.getUnit(p);
+                                    final Optional<HexSide> direction = Hexagons
+                                            .getDirection(receiver.wielder.getPoint(), p);
+                                    final Optional<Point> p1 = direction
+                                            .map((HexSide d) -> Hexagons.followLine(p, d, 1));
+                                    if (u.isPresent() && p1.flatMap((Point p2) -> view.game.world.getTile(p2))
+                                            .map((Tile t) -> !t.unit.isPresent()).orElse(false)) {
+                                        effects.add(() -> u.get().movement.setPosition(view, p1.get().x, p1.get().y));
+                                    }
+                                    return effects;
+                                })));
+
         // Slime Shot
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1366,6 +1418,14 @@ class VanillaModAbilities {
                 });
 
         // Stipend
+        new Stratified<Ability>(events.ability, Labels.ability_stipend).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_pick_apples);
+                    return new SideEffect();
+                }).add(AbilityLogic.harvestGoldFromBuilding(2, 1, "towers",
+                        (Building b) -> b.name.equals(Labels.building_tower)));
+
         // Stomp
         new Stratified<Ability>(events.ability, Labels.ability_stomp).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
