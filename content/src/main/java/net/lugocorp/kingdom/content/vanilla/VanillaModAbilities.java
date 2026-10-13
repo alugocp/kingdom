@@ -207,6 +207,14 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.build(Labels.building_marketplace));
 
         // Construct Wall
+        new Stratified<Ability>(events.ability, Labels.ability_construct_wall).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_apple);
+                    return new SideEffect();
+                }).add(AbilityLogic.buildRemote(Labels.building_wall, 1, 2, "any tile without an occupying unit",
+                        (Tile t) -> !t.unit.isPresent()));
+
         // Collapse Structure
         new Stratified<Ability>(events.ability, Labels.ability_collapse_structure)
                 .add(Events.GenerateAbilityEvent.class,
@@ -898,6 +906,24 @@ class VanillaModAbilities {
                 });
 
         // Macuahuitl
+        new Stratified<Ability>(events.ability, Labels.ability_macuahuitl).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_apple);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Deals 2 damage and an additional 1 damage per turn for the next 3 turns"))
+                .add(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
+                                    final SideEffect effects = new SideEffect();
+                                    view.game.world.getTile(p).flatMap((Tile t) -> t.unit).ifPresent((Unit u) -> {
+                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_bleed)) {
+                                            effects.add(u.abilities.addStatusEffect(view, Labels.status_effect_bleed));
+                                        }
+                                    });
+                                    return effects;
+                                })));
+
         // Market Boom
         new Stratified<Ability>(events.ability, Labels.ability_market_boom).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1245,6 +1271,21 @@ class VanillaModAbilities {
                 });
 
         // Repair Structure
+        new Stratified<Ability>(events.ability, Labels.ability_repair_structure).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_apple);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("Heals 1 damage each turn to an occupied building"))
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                    Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
+                            .flatMap((Tile t) -> t.building);
+                    return b.map((Building b1) -> receiver.wielder.combat.heal(view, b1, 1)).orElse(new SideEffect());
+                });
+
         // Repel Invaders
         new Stratified<Ability>(events.ability, Labels.ability_repel_invaders).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
@@ -1354,6 +1395,13 @@ class VanillaModAbilities {
                                 .add(() -> receiver.goOnCooldown(1)));
 
         // Shield Totem
+        new Stratified<Ability>(events.ability, Labels.ability_shield_totem).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_apple);
+                    return new SideEffect();
+                }).add(AbilityLogic.buildRemote(Labels.building_shield_totem, 2, 4, "any tile", (Tile t) -> true));
+
         // Shove
         new Stratified<Ability>(events.ability, Labels.ability_shove).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {

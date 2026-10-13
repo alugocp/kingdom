@@ -24,6 +24,7 @@ import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.Stratified;
+import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
 import net.lugocorp.kingdom.menu.game.FateNode;
@@ -36,6 +37,7 @@ import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This mod defines all the content for version 1.0 of the base game
@@ -537,6 +539,53 @@ public class VanillaMod implements GameMod {
                 .add("Tick", (GameView view, Building receiver, Events.RepeatedEvent e) -> {
                     Optional<Unit> u = view.game.world.getTile(receiver.getPoint()).flatMap((Tile t) -> t.unit);
                     return u.isPresent() ? receiver.combat.heal(view, u.get(), 1) : new SideEffect();
+                });
+
+        // Wall
+        new Stratified<Building>(events.building, Labels.building_wall).add(Events.GenerateBuildingEvent.class,
+                (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                    // TODO add new model
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.desc = "Units cannot traverse this structure. It crumbles in 6 turns.";
+                    e.blob.combat.health.setMaxAndValue(10);
+                    e.blob.setMinimapColor(0x875f9a);
+                    e.blob.setObstacle(true);
+                    return new SideEffect();
+                })
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Cleanup", receiver, 6, true, Optional.empty())))
+                .add("Cleanup", (GameView view, Building receiver, Events.RepeatedEvent e) -> new SideEffect()
+                        .add(() -> receiver.deactivate(view)));
+
+        // Shield Totem
+        new Stratified<Building>(events.building, Labels.building_shield_totem).add(Events.GenerateBuildingEvent.class,
+                (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
+                    // TODO add new model
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.desc = "All friendly units within a 1 tile radius get +1 defense. This structure will collapse in 4 turns.";
+                    e.blob.combat.health.invulnerable();
+                    e.blob.setMinimapColor(0x875f9a);
+                    return new SideEffect();
+                })
+                .add(Events.SpawnEvent.class,
+                        (GameView view, Building receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Cleanup", receiver, 4, true, Optional.empty()))
+                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))
+                                .add(() -> view.game.events.signals.addListener(Events.TakeDamageEvent.class,
+                                        receiver)))
+                .add("Cleanup",
+                        (GameView view, Building receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> receiver.deactivate(view)))
+                .add(Events.TakeDamageEvent.class, (GameView view, Building receiver, Events.TakeDamageEvent e) -> {
+                    if (e.target.isEntityType(EntityType.UNIT) && e.target.leadership.sameLeader(e.target)) {
+                        final Set<Point> adjacents = Hexagons.getAdjacents(receiver.getPoint());
+                        final Point p = e.target.getPoint();
+                        if (p.equals(receiver.getPoint()) || adjacents.contains(p)) {
+                            e.dmg.base--;
+                        }
+                    }
+                    return new SideEffect();
                 });
 
         /**
@@ -1503,6 +1552,26 @@ public class VanillaMod implements GameMod {
                                 .add(() -> view.game.future.removeFutureTicks(receiver, "Burn"))
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
                 .add("Burn", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                    return receiver.wielder.combat.takeDamage(view, new Damage(1), receiver.wielder);
+                });
+
+        // Bleed
+        new Stratified<Ability>(events.ability, Labels.status_effect_bleed).add(Events.GenerateAbilityEvent.class,
+                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                    // TODO add new icon
+                    e.blob.setIcon(Labels.asset_apple);
+                    return new SideEffect();
+                }).add(AbilityLogic.desc("The unit takes 1 damage each turn for 3 turns"))
+                .add(Events.StatusEffectAddedEvent.class,
+                        (GameView view, Ability receiver, Events.StatusEffectAddedEvent e) -> new SideEffect().add(
+                                () -> view.game.future.addFutureTick("Remove", receiver, 3, false, e.unit.getLeader()))
+                                .add(() -> view.game.future.addFutureTick("Bleed", receiver, 1, true,
+                                        e.unit.getLeader())))
+                .add("Remove",
+                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                                .add(() -> view.game.future.removeFutureTicks(receiver, "Bleed"))
+                                .add(() -> receiver.wielder.abilities.removeStatusEffect(view, receiver)))
+                .add("Bleed", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
                     return receiver.wielder.combat.takeDamage(view, new Damage(1), receiver.wielder);
                 });
     }

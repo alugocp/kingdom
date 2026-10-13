@@ -215,6 +215,21 @@ class VanillaModUnits {
                 });
 
         // Ushaptimun
+        new Stratified<Unit>(events.unit, Labels.unit_ushaptimun).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "Ushaptimun studied the ancient Kudian art of geomancy from a young age. His command over the sands and stone rivals that of the great Lady Nubada herself.";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_human;
+                    e.blob.glyphs.set(Glyph.DEFENSE, Glyph.MINING);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_hurl_rock,
+                            Labels.ability_construct_wall);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_night_vision,
+                            Labels.ability_mine_gems, Labels.ability_repair_structure);
+                    UnitLogic.standardHealthPool(e.blob);
+                    UnitLogic.largeInventory(e.blob);
+                    return new SideEffect();
+                });
+
         // Garudee
         new Stratified<Unit>(events.unit, Labels.unit_garudee).add(Events.GenerateUnitEvent.class,
                 (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
@@ -231,6 +246,20 @@ class VanillaModUnits {
                 });
 
         // Defender Cuauhtli
+        new Stratified<Unit>(events.unit, Labels.unit_defender_cuauhtli).add(Events.GenerateUnitEvent.class,
+                (GameView view, Unit receiver, Events.GenerateUnitEvent e) -> {
+                    e.blob.desc = "Cuauhtli is a stalwart defender of Tonatlan. The youth of the city collect his fallen feathers in adoration.";
+                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.species = Defs.species_garuda;
+                    e.blob.glyphs.set(Glyph.DEFENSE);
+                    e.blob.abilities.setActive(view.game.generator, Labels.ability_macuahuitl,
+                            Labels.ability_shield_totem);
+                    e.blob.abilities.setPassive(view.game.generator, Labels.ability_high_vision, Labels.ability_pious,
+                            Labels.ability_trade);
+                    UnitLogic.largeHealthPool(e.blob);
+                    return new SideEffect();
+                });
+
         // The Hunched Warlock
         // Amachaq
         new Stratified<Unit>(events.unit, Labels.unit_amachaq).add(Events.GenerateUnitEvent.class,

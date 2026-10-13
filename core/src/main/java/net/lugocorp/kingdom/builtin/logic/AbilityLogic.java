@@ -8,6 +8,7 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
@@ -16,6 +17,7 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.math.Vector3;
 import java.util.HashMap;
@@ -381,6 +383,35 @@ public class AbilityLogic {
      */
     public static StratifiedPayload[] build(String building) {
         return AbilityLogic.build(building, "the currently occupied tile", (Tile t) -> true);
+    }
+
+    /**
+     * Ability that spawns a Building within some range of the caster
+     */
+    public static StratifiedPayload[] buildRemote(String building, int range, int cooldown, String tileDesc,
+            Function<Tile, Boolean> criteria) {
+        return new StratifiedPayload[]{
+                new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
+                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                                    .map((Tile t) -> !t.building.isPresent() && criteria.apply(t)).orElse(false),
+                                    Hexagons.getNeighbors(receiver.wielder.getPoint(), range));
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
+                                    String.format("No valid location to place a %s", building), (Point p) -> {
+                                        final SideEffect effects = new SideEffect();
+                                        if (view.game.world.getTile(p)
+                                                .map((Tile t) -> !t.building.isPresent() && criteria.apply(t))
+                                                .orElse(false)) {
+                                            final Building b = view.game.generator.building(building, p.x, p.y);
+                                            effects.add(
+                                                    () -> view.game.actions.unitHasCastSpell(view, receiver.wielder))
+                                                    .add(() -> receiver.goOnCooldown(2)).add(() -> b.spawn(view));
+                                        }
+                                        return effects;
+                                    })).orElse(new SideEffect());
+                        }),
+                AbilityLogic.desc(
+                        String.format("Spawns a %s on %s (cooldown for %d turns)", building, tileDesc, cooldown))};
     }
 
     /**

@@ -218,6 +218,8 @@ public class Labels {
     public static final String building_hill = "Hill";
     public static final String building_bluff = "Bluff";
     public static final String building_healing_fountain = "Healing Fountain";
+    public static final String building_wall = "Wall";
+    public static final String building_shield_totem = "Shield Totem";
 
     /**
      * SECTION Patrons
@@ -463,6 +465,7 @@ public class Labels {
     public static final String status_effect_stone_form_active = "Stone Form Active";
     public static final String status_effect_conserved_energy = "Conserved Energy";
     public static final String status_effect_burned = "Burned";
+    public static final String status_effect_bleed = "Bleed";
 
     /**
      * SECTION Items

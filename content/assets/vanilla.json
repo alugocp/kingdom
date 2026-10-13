@@ -218,7 +218,9 @@
             "Mountain",
             "Hill",
             "Bluff",
-            "Healing Fountain"
+            "Healing Fountain",
+            "Wall",
+            "Shield Totem"
         ]
     },
     {
@@ -475,7 +477,8 @@
             "Rally",
             "Stone Form Active",
             "Conserved Energy",
-            "Burned"
+            "Burned",
+            "Bleed"
         ]
     },
     {
