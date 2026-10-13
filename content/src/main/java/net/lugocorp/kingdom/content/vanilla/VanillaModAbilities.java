@@ -85,7 +85,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_arrow_shot).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 3));
 
@@ -119,7 +119,7 @@ class VanillaModAbilities {
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             // TODO add new icon
-                            e.blob.setIcon(Labels.asset_pick_apples);
+                            e.blob.setIcon(Labels.asset_apple);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("Heals the target unit on a meadow or hill, then buffs this unit's damage"))
@@ -150,7 +150,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_chuck_gem).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Consumes a gem and deals 3 damage to the target"))
                 .add(Events.AbilityActivatedEvent.class,
@@ -242,7 +242,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_collect_bounty).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("You get 30 gold when this unit kills another unit"))
                 .add(Events.KilledEntityEvent.class, (GameView view, Ability receiver, Events.KilledEntityEvent e) -> {
@@ -324,7 +324,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_deserts_caress).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit harvests extra items on sand tiles"))
                 .add(Events.HarvestEvent.class, (GameView view, Ability receiver, Events.HarvestEvent e) -> {
@@ -374,7 +374,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_elusive).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.traverse(Labels.building_dense_forest));
 
@@ -437,7 +437,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_evasive).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Takes 1 less damage from adjacent attackers"))
                 .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
@@ -527,7 +527,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_forage_passionfruit).add(
                 Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_passionfruit, 2, "forests",
                         (Building b) -> b.name.equals(Labels.building_forest)));
@@ -536,7 +536,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_frenzy).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit deals +2 damage when they're below half health"))
                 .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
@@ -770,7 +770,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_industrious).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc(
@@ -809,7 +809,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_keeping_watch).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 vision on towers"))
                 .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
@@ -884,7 +884,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_looter).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit receives an item whenever it destroys a building or tower"))
                 .add(Events.KilledEntityEvent.class, (GameView view, Ability receiver, Events.KilledEntityEvent e) -> {
@@ -1018,7 +1018,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_pick_nopales).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_nopal, 2, "shrublands",
                         (Building b) -> b.name.equals(Labels.building_shrubland)));
@@ -1027,7 +1027,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_pick_walnuts).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_walnut, 2, "forests",
                         (Building b) -> b.name.equals(Labels.building_forest)));
@@ -1075,7 +1075,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_plant_shrubland).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.build(Labels.building_shrubland, "a sand tile",
                         (Tile t) -> t.name.equals(Labels.tile_sand)));
@@ -1234,7 +1234,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_reincarnation).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(Events.EntityDiedEvent.class, (GameView view, Ability receiver, Events.EntityDiedEvent e) -> {
                     final SideEffect effects = new SideEffect();
@@ -1249,7 +1249,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_repel_invaders).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO ad new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 })
                 .add(AbilityLogic
@@ -1358,7 +1358,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_shove).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage and knocks the target back by one tile"))
                 .add(Events.AbilityActivatedEvent.class,
@@ -1423,7 +1423,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_soothing_aura).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Heals adjacent friendly units for 1 hit point each turn"))
                 .add(Events.SpawnEvent.class,
@@ -1445,7 +1445,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_stipend).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestGoldFromBuilding(2, 1, "towers",
                         (Building b) -> b.name.equals(Labels.building_tower)));
@@ -1501,7 +1501,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_sucker_punch).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage with a 25% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
@@ -1517,7 +1517,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_surprise_attack).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc(
@@ -1578,7 +1578,7 @@ class VanillaModAbilities {
         new Stratified<Ability>(events.ability, Labels.ability_swing_staff).add(Events.GenerateAbilityEvent.class,
                 (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
-                    e.blob.setIcon(Labels.asset_pick_apples);
+                    e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(1), 1));
 

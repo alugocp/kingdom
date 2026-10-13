@@ -1394,7 +1394,7 @@ public class VanillaMod implements GameMod {
                 .add(Events.GenerateAbilityEvent.class,
                         (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             // TODO add new icon
-                            e.blob.setIcon(Labels.asset_pick_apples);
+                            e.blob.setIcon(Labels.asset_apple);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("+2 damage for 2 turns"))

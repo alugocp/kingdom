@@ -156,7 +156,7 @@ class VanillaModItems {
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "A tough nut rich in protein";
-                    e.blob.icon = Optional.of(Labels.asset_pick_apples);
+                    e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
@@ -169,7 +169,7 @@ class VanillaModItems {
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "This cactus is very nutritious once you remove the thorns";
-                    e.blob.icon = Optional.of(Labels.asset_pick_apples);
+                    e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
@@ -182,7 +182,7 @@ class VanillaModItems {
                 .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "A sweet and sour fruit that grows on vines";
-                    e.blob.icon = Optional.of(Labels.asset_pick_apples);
+                    e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
