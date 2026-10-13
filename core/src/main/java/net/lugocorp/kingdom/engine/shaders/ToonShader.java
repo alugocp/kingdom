@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.engine.shaders;
-import net.lugocorp.kingdom.engine.assets.TextureLoader;
 import net.lugocorp.kingdom.engine.userdata.CoordUserData;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
@@ -18,7 +17,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -33,7 +31,6 @@ import java.util.Optional;
 public class ToonShader implements Shader {
     public final FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, Coords.SIZE.x, Coords.SIZE.y, true);
     private Optional<TileSelector> tileSelector = Optional.empty();
-    private Optional<TextureLoader> textures = Optional.empty();
     private ShaderProgram program;
     private RenderContext context;
     private boolean outlineShader = false;
@@ -41,8 +38,6 @@ public class ToonShader implements Shader {
 
     // Shader uniforms
     private int u_normalsTexture;
-    private int u_shadingTexture1;
-    private int u_shadingTexture2;
     private int u_projViewTrans;
     private int u_worldTrans;
     private int u_normalMatrix;
@@ -67,8 +62,6 @@ public class ToonShader implements Shader {
             throw new GdxRuntimeException(this.program.getLog());
         }
         this.u_normalsTexture = this.program.getUniformLocation("u_normalsTexture");
-        this.u_shadingTexture1 = this.program.getUniformLocation("u_shadingTexture1");
-        this.u_shadingTexture2 = this.program.getUniformLocation("u_shadingTexture2");
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
         this.u_worldTrans = this.program.getUniformLocation("u_worldTrans");
         this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
@@ -95,13 +88,6 @@ public class ToonShader implements Shader {
      */
     public void setNighttime(boolean nighttime) {
         this.nighttime = nighttime;
-    }
-
-    /**
-     * Sets this Shader's TextureLoader instance
-     */
-    public void setTextureLoader(TextureLoader textures) {
-        this.textures = Optional.of(textures);
     }
 
     /**
@@ -138,14 +124,6 @@ public class ToonShader implements Shader {
         // Set normals texture (to render outlines)
         Texture normals = this.frameBuffer.getColorBufferTexture();
         this.program.setUniformi(this.u_normalsTexture, this.context.textureBinder.bind(normals));
-
-        // Set shading texture
-        Optional<TextureDescriptor> tdesc1 = this.textures.get().getTextureDescriptor("textures/dot-hatch1");
-        Optional<TextureDescriptor> tdesc2 = this.textures.get().getTextureDescriptor("textures/dot-hatch2");
-        if (tdesc1.isPresent() && tdesc2.isPresent()) {
-            this.program.setUniformi(this.u_shadingTexture1, this.context.textureBinder.bind(tdesc1.get()));
-            this.program.setUniformi(this.u_shadingTexture2, this.context.textureBinder.bind(tdesc2.get()));
-        }
 
         // Set object uniforms
         Matrix3 normal = new Matrix3();

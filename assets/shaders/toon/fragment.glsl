@@ -11,8 +11,6 @@ precision mediump float;
 #endif
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_normalsTexture;
-uniform sampler2D u_shadingTexture1;
-uniform sampler2D u_shadingTexture2;
 uniform vec4 u_diffuseColor;
 uniform vec4 u_diffuseUVTransform;
 uniform float u_nighttime;
@@ -22,7 +20,6 @@ uniform float u_frameBufferQueryRatioY;
 uniform int u_vision;
 uniform bool u_lightOutline;
 uniform bool u_outlineShader;
-varying vec2 v_shadowCoords;
 varying MED vec2 v_diffuseUV;
 varying vec3 v_normal;
 const int HALF_VISIBILITY = 1;
@@ -82,18 +79,11 @@ void main() {
     }
 
     // Make the color darker for shading
-    float shadow = dot(v_normal, normalize(vec3(0.0, 0.5, 1.0)));
+    float shadow = dot(v_normal, normalize(vec3(0.0, 1.0, 0.5)));
     if (shadow < 0.5) {
-        vec4 shading;
-        if (shadow < 0.25) {
-            shading = texture2D(u_shadingTexture2, v_shadowCoords);
-        } else {
-            shading = texture2D(u_shadingTexture1, v_shadowCoords);
-        }
-        if (shading.a > 0.0) {
-            gl_FragColor.x *= shading.x;
-            gl_FragColor.y *= shading.y;
-            gl_FragColor.z *= shading.z;
-        }
+        float coeff = shadow < 0.25 ? 0.75 : 0.9;
+        gl_FragColor.x *= coeff;
+        gl_FragColor.y *= coeff;
+        gl_FragColor.z *= coeff;
     }
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -23,6 +24,7 @@ public class PreviewShader implements Shader {
     private RenderContext context;
     private Matrix4 matrix;
     private int u_projViewTrans;
+    private int u_normalMatrix;
     private int u_diffuseUVTransform;
     private int u_diffuseTexture;
     private int u_diffuseColor;
@@ -38,6 +40,7 @@ public class PreviewShader implements Shader {
             throw new GdxRuntimeException(this.program.getLog());
         }
         this.u_projViewTrans = this.program.getUniformLocation("u_projViewTrans");
+        this.u_normalMatrix = this.program.getUniformLocation("u_normalMatrix");
         this.u_diffuseUVTransform = this.program.getUniformLocation("u_diffuseUVTransform");
         this.u_diffuseTexture = this.program.getUniformLocation("u_diffuseTexture");
         this.u_diffuseColor = this.program.getUniformLocation("u_diffuseColor");
@@ -68,12 +71,21 @@ public class PreviewShader implements Shader {
     /** {@inheritdoc} */
     @Override
     public void render(Renderable renderable) {
+        // Set object uniforms
+        Matrix3 normal = new Matrix3();
+        this.program.setUniformMatrix(this.u_normalMatrix, normal.set(renderable.worldTransform).inv().transpose());
+
+        // Set material uniform (texture attribute)
         TextureAttribute diffuse = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
         this.program.setUniformi(this.u_diffuseTexture, this.context.textureBinder.bind(diffuse.textureDescription));
         this.program.setUniformf(this.u_diffuseUVTransform, diffuse.offsetU, diffuse.offsetV, diffuse.scaleU,
                 diffuse.scaleV);
+
+        // Set material uniform (color attribute)
         ColorAttribute color = (ColorAttribute) renderable.material.get(ColorAttribute.Diffuse);
         this.program.setUniformf(this.u_diffuseColor, color.color);
+
+        // Set material uniform (blending attribute)
         BlendingAttribute blend = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
         this.program.setUniformf(this.u_opacity, 1f);
         if (blend != null) {
