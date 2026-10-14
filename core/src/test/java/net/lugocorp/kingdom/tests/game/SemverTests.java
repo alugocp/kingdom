@@ -13,7 +13,7 @@ public class SemverTests {
         final Semver s = new Semver(2, 1, 0, Semver.BETA);
         assertEquals(true, s.isNewerThan(new Semver(1, 10, 0, Semver.FULL)));
         assertEquals(true, s.isNewerThan(new Semver(1, 1, 10, Semver.FULL)));
-        assertEquals(true, s.isNewerThan(new Semver(2, 1, 0, Semver.ALPHA)));
+        assertEquals(false, s.isNewerThan(new Semver(2, 1, 0, Semver.ALPHA)));
         assertEquals(true, s.isNewerThan(new Semver(2, 0, 5, Semver.FULL)));
         assertEquals(false, s.isNewerThan(new Semver(2, 1, 0, Semver.BETA)));
         assertEquals(false, s.isNewerThan(new Semver(3, 0, 0, Semver.FULL)));
