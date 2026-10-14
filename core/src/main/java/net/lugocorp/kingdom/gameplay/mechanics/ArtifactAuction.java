@@ -24,7 +24,6 @@ import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.overlay.ResourceOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,17 +36,9 @@ import java.util.Set;
 public class ArtifactAuction {
     public static final int MAX_AUCTION_POINTS = 100;
     private final List<Artifact> artifacts = new ArrayList<>();
-    @FieldSerializer.Optional("random")
     private Random random = new Random();
     private Optional<Auction> auction = Optional.empty();
     private int points = 0;
-
-    /**
-     * Call this when we're reloading this instance from saved game state
-     */
-    public void rehydrateFromKryo() {
-        this.random = new Random();
-    }
 
     /**
      * Generates all registered Artifacts at the start of the Game

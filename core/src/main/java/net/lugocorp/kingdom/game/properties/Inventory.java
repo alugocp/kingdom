@@ -29,15 +29,6 @@ public class Inventory implements MenuSubject, Iterable<Item> {
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Inventory() {
-        this.items = null;
-        this.type = InventoryType.HAUL;
-        this.max = 0;
-    }
-
-    /**
      * Returns an Iterator for the Items in this Inventory
      */
     @Override

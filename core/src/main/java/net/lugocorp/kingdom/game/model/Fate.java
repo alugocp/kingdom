@@ -27,13 +27,6 @@ public class Fate implements EventReceiver {
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Fate() {
-        this.name = null;
-    }
-
-    /**
      * Returns the Player that this Fate is associated with
      */
     public Player getPlayer() {

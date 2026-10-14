@@ -2,11 +2,9 @@ package net.lugocorp.kingdom.game;
 import net.lugocorp.kingdom.DevOptions;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorPool;
-import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Generator;
-import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
@@ -22,7 +20,6 @@ import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.time.OffsetTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,7 +42,6 @@ public class Game {
     public final World world = new World();
     public final OffsetTime startTime;
     public final HumanPlayer human;
-    @FieldSerializer.Optional("events")
     public AllEventHandlers events;
 
     public Game(AllEventHandlers events, OffsetTime startTime) {
@@ -55,47 +51,11 @@ public class Game {
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Game() {
-        this.startTime = null;
-        this.human = null;
-    }
-
-    /**
      * Post-constructor initialization of Game state
      */
     public void init(GameView view) {
         this.generator.setGameView(view);
         this.mechanics.init(this);
-    }
-
-    /**
-     * Call this function on a Game that has been saved to a file and must now be
-     * reloaded
-     */
-    public void rehydrateFromKryo(GameView view, AudioVideo av, AllEventHandlers events) {
-        this.events = events;
-        this.generator.setGameView(view);
-        this.actions.rehydrateFromKryo(view);
-        this.mechanics.auction.rehydrateFromKryo();
-        for (int x = 0; x < this.world.getWidth(); x++) {
-            for (int y = 0; y < this.world.getHeight(); y++) {
-                final Tile t = this.world.getTile(x, y).get();
-                t.rehydrateFromKryo(av);
-                t.unit.ifPresent((Unit u) -> {
-                    u.rehydrateFromKryo(av);
-                    u.rehydrateUnitFromKryo();
-                });
-                t.building.ifPresent((Building b) -> {
-                    b.rehydrateFromKryo(av);
-                    b.rehydrateBuildingFromKryo(() -> t);
-                });
-            }
-        }
-        for (Patron p : this.mechanics.patronage) {
-            p.rehydratePatronFromKryo(this);
-        }
     }
 
     /**

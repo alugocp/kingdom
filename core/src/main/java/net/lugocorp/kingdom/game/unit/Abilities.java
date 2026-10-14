@@ -27,11 +27,6 @@ public class Abilities {
         this.unit = unit;
     }
 
-    // This is for Kryo purposes only
-    public Abilities() {
-        this.unit = null;
-    }
-
     /**
      * Sets the active Abilities on this instance
      */

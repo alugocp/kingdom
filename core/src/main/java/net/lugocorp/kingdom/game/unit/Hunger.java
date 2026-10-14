@@ -19,11 +19,6 @@ public class Hunger {
         this.unit = unit;
     }
 
-    // This is for Kryo purposes only
-    public Hunger() {
-        this.unit = null;
-    }
-
     /**
      * Returns true if this instance's Unit can eat the given Item
      */

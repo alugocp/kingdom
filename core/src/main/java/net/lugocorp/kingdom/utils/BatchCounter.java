@@ -19,11 +19,6 @@ public class BatchCounter<T> {
         this(max, new ArrayList<>());
     }
 
-    // This constructor is only used for Kryo
-    public BatchCounter() {
-        this(1);
-    }
-
     /**
      * Sets the index on this BatchCounter back to the beginning
      */

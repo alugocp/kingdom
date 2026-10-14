@@ -10,11 +10,4 @@ public class WorldGenOptions {
     public WorldGenOptions(long seed) {
         this.seed = seed;
     }
-
-    /**
-     * For use only with Kryo rehydration
-     */
-    public WorldGenOptions() {
-        this.seed = 0;
-    }
 }

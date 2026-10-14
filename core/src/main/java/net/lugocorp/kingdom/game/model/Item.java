@@ -26,13 +26,6 @@ public class Item implements EventReceiver {
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Item() {
-        this.name = null;
-    }
-
-    /**
      * Gets this Item's recolor matrix
      */
     public Optional<Matrix4> getRecolor() {

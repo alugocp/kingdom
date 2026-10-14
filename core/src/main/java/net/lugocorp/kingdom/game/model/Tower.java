@@ -21,13 +21,6 @@ public class Tower extends Building implements IndependentGovernable {
         super("Tower", x, y, getTile);
     }
 
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Tower() {
-        super(null, 0, 0, null);
-    }
-
     /** {@inheritdoc} */
     @Override
     public EntityType getEntityType() {

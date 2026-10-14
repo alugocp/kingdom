@@ -2,7 +2,6 @@ package net.lugocorp.kingdom.gameplay.actions;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import java.util.List;
 public class MoveAction implements Action {
     private final List<Point> path = new ArrayList<>();
     private final Unit unit;
-    @FieldSerializer.Optional("view")
     private GameView view;
     private int distance;
     private int costSpent;
@@ -25,22 +23,6 @@ public class MoveAction implements Action {
         this.view = view;
         this.unit = unit;
         this.path.addAll(path);
-    }
-
-    // Should only be used in conjunction with the Kryo system
-    public MoveAction() {
-        this.max = 0;
-        this.distance = 0;
-        this.costSpent = 0;
-        this.view = null;
-        this.unit = null;
-    }
-
-    /**
-     * Call this when we're reloading this instance from saved game state
-     */
-    public void rehydrateFromKryo(GameView view) {
-        this.view = view;
     }
 
     /**

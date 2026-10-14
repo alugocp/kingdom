@@ -31,14 +31,6 @@ public class Ability implements EventReceiver, MenuSubject {
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Ability() {
-        this.wielder = null;
-        this.name = null;
-    }
-
-    /**
      * Causes this Ability to go on cooldown for the given number of turns (we add 1
      * because the cooldown is activated on the current turn)
      */

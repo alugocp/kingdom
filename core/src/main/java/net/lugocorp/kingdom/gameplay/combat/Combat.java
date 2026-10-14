@@ -27,13 +27,6 @@ public class Combat {
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Combat() {
-        this.bearer = null;
-    }
-
-    /**
      * This method gets called when a combatant is killed in battle
      */
     private SideEffect onDeath(GameView view, Entity attacker) {

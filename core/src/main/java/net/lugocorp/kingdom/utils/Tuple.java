@@ -12,12 +12,6 @@ public class Tuple<A, B> {
         this.b = b;
     }
 
-    // This is for Kryo purposes only
-    public Tuple() {
-        this.a = null;
-        this.b = null;
-    }
-
     /** {@inheritdoc} */
     @Override
     public int hashCode() {

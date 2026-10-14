@@ -58,7 +58,7 @@ class LoadGameView implements View {
                         try {
                             Game game = this.params.serial.loadGame(savedGame);
                             GameView view = new GameView(this.params, game);
-                            game.rehydrateFromKryo(view, this.params.av, this.params.events);
+                            // TODO rehydrate or something
                             this.navigate.accept(view);
                         } catch (Exception e) {
                             e.printStackTrace();

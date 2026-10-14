@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.function.Supplier;
 
 /**
@@ -9,7 +8,6 @@ import java.util.function.Supplier;
  * relevant generator Events to instantiate each new object.
  */
 public class Generator {
-    @FieldSerializer.Optional("GameView")
     private GameView view = null;
 
     public void setGameView(GameView view) {

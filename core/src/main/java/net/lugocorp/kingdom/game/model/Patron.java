@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.ColorScheme;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Domain;
 import net.lugocorp.kingdom.game.properties.EntityType;
@@ -22,7 +21,6 @@ import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +36,6 @@ import java.util.function.Supplier;
 public class Patron extends Building {
     private static final int MIN_FAVOR = 1;
     private final Map<Player, Integer> favor = new HashMap<>();
-    @FieldSerializer.Optional("isPreferredUnitType")
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
     private Optional<Player> favorite = Optional.empty();
     private String preferenceIcon = "apple";
@@ -50,20 +47,6 @@ public class Patron extends Building {
         super(name, x, y, getTile);
         this.combat.health.invulnerable();
         super.setMinimapColor(ColorScheme.BLACK.hex);
-    }
-
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Patron() {
-        super(null, 0, 0, null);
-    }
-
-    /**
-     * Call this when we're reloading this instance from saved game state
-     */
-    public void rehydratePatronFromKryo(Game game) {
-        this.isPreferredUnitType = game.generator.patronDryRun(this.name, 0, 0).isPreferredUnitType;
     }
 
     /** {@inheritdoc} */

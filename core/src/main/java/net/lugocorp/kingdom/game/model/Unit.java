@@ -79,20 +79,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Unit() {
-        super(null, 0, 0);
-    }
-
-    /**
-     * Call this when we're reloading this instance from saved game state
-     */
-    public void rehydrateUnitFromKryo() {
-        this.userData.rehydrateFromKryo(() -> false);
-    }
-
-    /**
      * Returns true if this Unit should be acessible from the recruitment Menu
      */
     public boolean shouldAddToGlyphPool() {

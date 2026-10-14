@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.Optional;
 
 /**
@@ -23,26 +22,14 @@ import java.util.Optional;
  */
 public class Modellable {
     private Optional<AnimationController> animation = Optional.empty();
-    @FieldSerializer.Optional("models")
     private ModelLoader models;
-    @FieldSerializer.Optional("textures")
     private TextureLoader textures;
     private String modelName = "PLACEHOLDER";
     private Optional<String> animationName = Optional.empty();
     private Optional<Tuple<Integer, String>> textureName = Optional.empty();
     private float alpha = 1f;
-    @FieldSerializer.Optional("model")
     protected Optional<ModelInstance> model = Optional.empty();
-    @FieldSerializer.Optional("textureOverride")
     protected Optional<Texture> textureOverride = Optional.empty();
-
-    /**
-     * Called when this Modellable is loaded from a saved Game file
-     */
-    public void rehydrateFromKryo(AudioVideo av) {
-        this.textures = av.loaders.textures;
-        this.models = av.loaders.models;
-    }
 
     /**
      * Sets the overriding Material associated with this Modellable

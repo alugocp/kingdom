@@ -24,16 +24,4 @@ public class FutureTick {
         this.repeat = repeat;
         this.turn = turn;
     }
-
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public FutureTick() {
-        this.playersTurn = Optional.empty();
-        this.receiver = null;
-        this.interval = 0;
-        this.channel = null;
-        this.repeat = false;
-        this.turn = 0;
-    }
 }

@@ -25,15 +25,6 @@ public abstract class Entity extends DynamicModellable implements EventReceiver,
     }
 
     /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Entity() {
-        super(0, 0);
-        this.combat = null;
-        this.name = null;
-    }
-
-    /**
      * Returns true if this Entity has the given EntityType
      */
     public boolean isEntityType(EntityType type) {

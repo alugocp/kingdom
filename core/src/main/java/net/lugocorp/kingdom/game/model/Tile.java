@@ -26,7 +26,6 @@ import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -37,7 +36,6 @@ import java.util.Set;
  */
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject, Spawnable, Governable {
     private final TileUserData userData = new TileUserData();
-    @FieldSerializer.Optional("placeholderBuildingModel")
     private Optional<ModelInstance> placeholderBuildingModel = Optional.empty();
     private Color minimapColor = Color.BLACK;
     private Tower domainCenter = null;
@@ -51,14 +49,6 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     Tile(String name, int x, int y) {
         super(x, y);
         this.name = name;
-    }
-
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Tile() {
-        super(0, 0);
-        this.name = null;
     }
 
     /**

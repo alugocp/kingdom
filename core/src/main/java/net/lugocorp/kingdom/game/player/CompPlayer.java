@@ -35,11 +35,6 @@ public class CompPlayer extends Player {
         this.getFate().setPlayer(this);
     }
 
-    // This is for Kryo purposes only
-    public CompPlayer() {
-        super("", null, null);
-    }
-
     /**
      * Runs the CompPlayer's decision-making logic and returns false when complete
      */

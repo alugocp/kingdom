@@ -12,10 +12,4 @@ public class ColorPoint {
         this.color = Colors.fromHex(hex);
         this.hex = hex;
     }
-
-    // Should only be used in conjunction with the Kryo system
-    public ColorPoint() {
-        this.color = null;
-        this.hex = 0;
-    }
 }

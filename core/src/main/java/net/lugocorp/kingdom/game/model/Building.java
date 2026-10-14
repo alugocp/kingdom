@@ -26,7 +26,6 @@ import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -35,7 +34,6 @@ import java.util.function.Supplier;
  */
 public class Building extends Entity implements MenuSubject, Spawnable {
     private final CoordUserData userData;
-    @FieldSerializer.Optional("getTile")
     private Supplier<Tile> getTile;
     private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;
@@ -47,23 +45,6 @@ public class Building extends Entity implements MenuSubject, Spawnable {
         this.userData = new CoordUserData(() -> !this.getTile.get().isVisible());
         this.userData.point.x = x;
         this.userData.point.y = y;
-    }
-
-    /**
-     * This should only be used in conjunction with Kryo rehydration
-     */
-    public Building() {
-        super(null, 0, 0);
-        this.userData = null;
-        this.getTile = null;
-    }
-
-    /**
-     * Call this when we're reloading this instance from saved game state
-     */
-    public void rehydrateBuildingFromKryo(Supplier<Tile> getTile) {
-        this.getTile = getTile;
-        this.userData.rehydrateFromKryo(() -> !this.getTile.get().isVisible());
     }
 
     /** {@inheritdoc} */

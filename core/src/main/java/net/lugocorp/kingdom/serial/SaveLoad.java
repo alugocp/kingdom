@@ -1,12 +1,7 @@
 package net.lugocorp.kingdom.serial;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.utils.Files;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +34,9 @@ public class SaveLoad {
      */
     public Game loadGame(Path path) throws Exception {
         Files.ensureExistence();
-        final Kryo kryo = KryoProvider.getKryo();
         final File file = path.toFile();
-        final Input input = new Input(new FileInputStream(file));
-        final Game game = kryo.readObject(input, Game.class);
-        input.close();
-        return game;
+        // TODO read from file and return
+        return null;
     }
 
     /**
@@ -52,13 +44,10 @@ public class SaveLoad {
      */
     public void saveGame(Game game) throws Exception {
         Files.ensureExistence();
-        final Kryo kryo = KryoProvider.getKryo();
         final String filename = game.startTime.toString();
         final File file = Files.getFile(filename).file();
         try {
-            final Output output = new Output(new FileOutputStream(file));
-            kryo.writeObject(output, game);
-            output.close();
+            // TODO write to output file
         } catch (Exception e) {
             e.printStackTrace();
             if (file.exists()) {

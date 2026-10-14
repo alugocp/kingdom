@@ -14,11 +14,6 @@ public class Sleep {
         this.unit = unit;
     }
 
-    // This is for Kryo purposes only
-    public Sleep() {
-        this.unit = null;
-    }
-
     /**
      * Returns true if we're in a sleep state
      */
