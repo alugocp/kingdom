@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  */
 public class SaveLoad {
     private static final String EXT = "game";
+    private static final Deserializer<Serial<Game>, ?> deserializer = null;
 
     /**
      * Returns a list of paths that have saved games
