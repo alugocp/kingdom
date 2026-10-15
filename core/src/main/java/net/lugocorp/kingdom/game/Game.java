@@ -18,6 +18,8 @@ import net.lugocorp.kingdom.gameplay.future.FutureEventManager;
 import net.lugocorp.kingdom.gameplay.mechanics.Mechanics;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.serial.Serializable;
+import net.lugocorp.kingdom.serial.v1d0d0.GameSerial;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import java.time.OffsetTime;
@@ -30,7 +32,7 @@ import java.util.Set;
 /**
  * Stores all the data for a single ongoing game
  */
-public class Game {
+public class Game implements Serializable<GameSerial> {
     public final FutureEventManager future = new FutureEventManager(this);
     public final ActionManager actions = new ActionManager();
     public final ColorPool colorPool = new ColorPool();
@@ -48,6 +50,12 @@ public class Game {
         this.events = events;
         this.startTime = startTime;
         this.human = new HumanPlayer(this.colorPool.getFromPool());
+    }
+
+    /** {@inheritdoc} */
+    public GameSerial serialize() {
+        // TODO serial
+        return null;
     }
 
     /**

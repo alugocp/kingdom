@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.serial;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.serial.v1d0d0.V1d0d0Deserializer;
 import net.lugocorp.kingdom.utils.Files;
 import java.io.File;
 import java.nio.file.Path;
@@ -13,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class SaveLoad {
     private static final String EXT = "game";
-    private static final Deserializer<Serial<Game>, ?> deserializer = null;
+    private static final V1d0d0Deserializer deserializer = new V1d0d0Deserializer();
 
     /**
      * Returns a list of paths that have saved games
@@ -47,7 +48,7 @@ public class SaveLoad {
     public Game loadGame(Path path) throws Exception {
         Files.ensureExistence();
         final File file = path.toFile();
-        // TODO read from file and return
+        // TODO serial read from file and return
         return null;
     }
 
@@ -59,7 +60,7 @@ public class SaveLoad {
         final String filename = String.format("%s.%s", game.startTime.toString(), SaveLoad.EXT);
         final File file = Files.getFile(filename).file();
         try {
-            // TODO write to output file
+            // TODO serial write to output file
         } catch (Exception e) {
             e.printStackTrace();
             if (file.exists()) {
