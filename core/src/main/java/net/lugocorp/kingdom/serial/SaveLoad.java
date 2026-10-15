@@ -1,11 +1,13 @@
 package net.lugocorp.kingdom.serial;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.serial.v1d0d0.GameSerial;
 import net.lugocorp.kingdom.serial.v1d0d0.V1d0d0Deserializer;
 import net.lugocorp.kingdom.utils.Files;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,11 +47,15 @@ public class SaveLoad {
     /**
      * Loads a Game from the given Path
      */
-    public Game loadGame(Path path) throws Exception {
-        Files.ensureExistence();
+    public Optional<Game> loadGame(Path path) {
+        try {
+            Files.ensureExistence();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
         final File file = path.toFile();
-        // TODO serial read from file and return
-        return null;
+        return this.deserializer.deserialize(file).map((GameSerial g) -> g.deserialize());
     }
 
     /**
@@ -60,6 +66,7 @@ public class SaveLoad {
         final String filename = String.format("%s.%s", game.startTime.toString(), SaveLoad.EXT);
         final File file = Files.getFile(filename).file();
         try {
+            final GameSerial serial = game.serialize();
             // TODO serial write to output file
         } catch (Exception e) {
             e.printStackTrace();

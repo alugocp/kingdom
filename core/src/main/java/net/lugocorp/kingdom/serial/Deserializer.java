@@ -8,25 +8,13 @@ import java.util.Optional;
  * Handles the deserialization logic required to rehydrate an entire Game
  * instance
  */
-public abstract class Deserializer<V extends Serial<Game>, P extends Serial<Game>> {
-    protected final Optional<Deserializer<P, ?>> prev;
-    protected final Semver version;
+public abstract class Deserializer<V extends Serial<Game>, P extends Serial<Game>> extends BaseDeserializer<V> {
+    protected final Optional<BaseDeserializer<P>> prev;
 
-    protected Deserializer(Semver version, Optional<Deserializer<P, ?>> prev) {
-        this.version = version;
+    protected Deserializer(Semver version, Optional<BaseDeserializer<P>> prev) {
+        super(version);
         this.prev = prev;
     }
-
-    /**
-     * Extracts a Semver from the given File (if it can be read by this
-     * Deserializer)
-     */
-    protected abstract Optional<Semver> getFileVersion(File file);
-
-    /**
-     * Extracts a Serial<Game> from the given File
-     */
-    protected abstract V getGameSerial(File file);
 
     /**
      * Migrates a previous version of Serial<Game> to the curent version
@@ -36,26 +24,17 @@ public abstract class Deserializer<V extends Serial<Game>, P extends Serial<Game
     /**
      * Attempts to deserialize the given File under this version of the Deserializer
      */
-    public Optional<Game> deserialize(File file) {
-        // The loaded file is handled by this Deserializer
-        if (this.getFileVersion(file).map((Semver v) -> v.isNewerThan(this.version)).orElse(false)) {
-            try {
-                final V v = this.getGameSerial(file);
-                final Game game = v.deserialize();
-                return Optional.of(game);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Optional.empty();
-            }
+    public Optional<V> deserialize(File file) {
+        final Optional<V> v = super.deserialize(file);
+        if (v.isPresent()) {
+            return v;
         }
 
         // The loaded file is handled by an older version
-        return this.prev.flatMap((Deserializer<P, ?> previous) -> {
+        return this.prev.flatMap((BaseDeserializer<P> previous) -> {
             try {
-                final P p = previous.getGameSerial(file);
-                final V v = this.migrateSerial(p);
-                final Game game = v.deserialize();
-                return Optional.of(game);
+                final Optional<P> p = previous.deserialize(file);
+                return p.map((P p1) -> this.migrateSerial(p1));
             } catch (Exception e) {
                 e.printStackTrace();
                 return Optional.empty();

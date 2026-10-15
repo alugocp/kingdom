@@ -55,13 +55,13 @@ class LoadGameView implements View {
         for (Path savedGame : savedGames) {
             this.content.add(new RowNode().add(new TextNode(this.params.av, savedGame.getFileName().toString()))
                     .add(new ButtonNode(this.params.av, "Choose", () -> {
-                        try {
-                            Game game = this.params.serial.loadGame(savedGame);
-                            GameView view = new GameView(this.params, game);
-                            // TODO rehydrate or something
+                        final Optional<Game> game = this.params.serial.loadGame(savedGame);
+                        if (game.isPresent()) {
+                            final GameView view = new GameView(this.params, game.get());
+                            // TODO serial rehydrate or something
                             this.navigate.accept(view);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } else {
+                            // TODO serial give some error message to the player
                         }
                     })));
         }
