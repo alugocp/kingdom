@@ -1161,33 +1161,25 @@ public class VanillaMod implements GameMod {
                     return new SideEffect();
                 });
 
-        // Cask of Amonitor
-        new Stratified<Artifact>(events.artifact, Labels.artifact_cask_of_amontior)
-                .add(Events.GenerateArtifactEvent.class,
-                        (GameView view, Artifact receiver, Events.GenerateArtifactEvent e) -> {
-                            e.blob.desc = "Your unoccupied tiles in a patron's domain provide +1 favor";
-                            e.blob.image = Optional.of(Labels.asset_cask_of_amontior);
-                            e.blob.chips = 3;
-                            return new SideEffect();
-                        })
-                .add(Events.ArtifactClaimedEvent.class,
-                        (GameView view, Artifact receiver, Events.ArtifactClaimedEvent e) -> {
-                            view.game.events.signals.addListener(Events.CalculateFavorEvent.class, e.artifact);
-                            return new SideEffect();
-                        })
-                .add(Events.CalculateFavorEvent.class,
-                        (GameView view, Artifact receiver, Events.CalculateFavorEvent e) -> {
-                            if (receiver.isClaimedByPlayer(e.player)) {
-                                for (Point p : e.patron.getHostDomain(view).get()) {
-                                    Tile t = view.game.world.getTile(p).get();
-                                    if (t.getLeader().map((Player p1) -> p1.equals(e.player)).orElse(false)
-                                            && !t.unit.isPresent()) {
-                                        e.favor++;
-                                    }
-                                }
-                            }
-                            return new SideEffect();
-                        });
+        // Cask of Amontior
+        // TODO completely rework Cask of Amontior
+        /*
+         * new Stratified<Artifact>(events.artifact, Labels.artifact_cask_of_amontior)
+         * .add(Events.GenerateArtifactEvent.class, (GameView view, Artifact receiver,
+         * Events.GenerateArtifactEvent e) -> { e.blob.desc =
+         * "Your unoccupied tiles in a patron's domain provide +1 favor"; e.blob.image =
+         * Optional.of(Labels.asset_cask_of_amontior); e.blob.chips = 3; return new
+         * SideEffect(); }) .add(Events.ArtifactClaimedEvent.class, (GameView view,
+         * Artifact receiver, Events.ArtifactClaimedEvent e) -> {
+         * view.game.events.signals.addListener(Events.CalculateFavorEvent.class,
+         * e.artifact); return new SideEffect(); })
+         * .add(Events.CalculateFavorEvent.class, (GameView view, Artifact receiver,
+         * Events.CalculateFavorEvent e) -> { if (receiver.isClaimedByPlayer(e.player))
+         * { for (Point p : e.patron.getHostDomain(view).get()) { Tile t =
+         * view.game.world.getTile(p).get(); if (t.getLeader().map((Player p1) ->
+         * p1.equals(e.player)).orElse(false) && !t.unit.isPresent()) { e.favor++; } } }
+         * return new SideEffect(); });
+         */
 
         /**
          * SECTION Fates
