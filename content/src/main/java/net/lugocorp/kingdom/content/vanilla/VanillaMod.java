@@ -293,7 +293,7 @@ public class VanillaMod implements GameMod {
         // Grass
         new Stratified<Tile>(events.tile, Labels.tile_grass).add(Events.GenerateTileEvent.class,
                 (GameView view, Tile receiver, Events.GenerateTileEvent e) -> {
-                    e.blob.setModelInstance(view.av, Labels.asset_grass);
+                    e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0x2c9965);
                     e.blob.desc = "The seeds to spring new life lay dormant beneath this place";
                     return new SideEffect();
@@ -302,7 +302,7 @@ public class VanillaMod implements GameMod {
         // Rock
         new Stratified<Tile>(events.tile, Labels.tile_rock).add(Events.GenerateTileEvent.class,
                 (GameView view, Tile receiver, Events.GenerateTileEvent e) -> {
-                    e.blob.setModelInstance(view.av, Labels.asset_grass);
+                    e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0x666666);
                     e.blob.setMaterial(Labels.asset_rock);
                     e.blob.desc = "The rocky mountainscape is home to many creatures";
@@ -312,7 +312,7 @@ public class VanillaMod implements GameMod {
         // Sand
         new Stratified<Tile>(events.tile, Labels.tile_sand).add(Events.GenerateTileEvent.class,
                 (GameView view, Tile receiver, Events.GenerateTileEvent e) -> {
-                    e.blob.setModelInstance(view.av, Labels.asset_grass);
+                    e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0xc7c567);
                     e.blob.setMaterial(Labels.asset_sand);
                     e.blob.desc = "The hot sands seem to stretch on forever";
@@ -322,7 +322,7 @@ public class VanillaMod implements GameMod {
         // Snow
         new Stratified<Tile>(events.tile, Labels.tile_snow).add(Events.GenerateTileEvent.class,
                 (GameView view, Tile receiver, Events.GenerateTileEvent e) -> {
-                    e.blob.setModelInstance(view.av, Labels.asset_grass);
+                    e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0xffffff);
                     e.blob.setMaterial(Labels.asset_snow);
                     e.blob.desc = "Dense and cold";
@@ -332,7 +332,7 @@ public class VanillaMod implements GameMod {
         // Water
         new Stratified<Tile>(events.tile, Labels.tile_water).add(Events.GenerateTileEvent.class,
                 (GameView view, Tile receiver, Events.GenerateTileEvent e) -> {
-                    e.blob.setModelInstance(view.av, Labels.asset_water);
+                    e.blob.setModelInstance(Labels.asset_water);
                     e.blob.setMinimapColor(0x20c7f7);
                     e.blob.setObstacle(true);
                     e.blob.setWave(true);
@@ -343,7 +343,7 @@ public class VanillaMod implements GameMod {
         // Lava
         new Stratified<Tile>(events.tile, Labels.tile_lava).add(Events.GenerateTileEvent.class,
                 (GameView view, Tile receiver, Events.GenerateTileEvent e) -> {
-                    e.blob.setModelInstance(view.av, Labels.asset_water);
+                    e.blob.setModelInstance(Labels.asset_water);
                     e.blob.setMinimapColor(0xcf3b23);
                     e.blob.setMaterial(Labels.asset_lava);
                     e.blob.setObstacle(true);
@@ -359,7 +359,7 @@ public class VanillaMod implements GameMod {
         // Tower
         new Stratified<Building>(events.building, Labels.building_tower).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "tower");
+                    e.blob.setModelInstance("tower");
                     e.blob.desc = "Towers provide influence over the map and cost gold each turn. Players who have lost control of all their Towers lose the game.";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
                     e.blob.combat.health.setMaxAndValue(20);
@@ -370,7 +370,7 @@ public class VanillaMod implements GameMod {
         // Mine
         new Stratified<Building>(events.building, Labels.building_mine).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "mine");
+                    e.blob.setModelInstance("mine");
                     e.blob.desc = "Units with mining abilities can generate gold or items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x555555);
@@ -380,7 +380,7 @@ public class VanillaMod implements GameMod {
         // Cache
         new Stratified<Building>(events.building, Labels.building_cache).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "cache");
+                    e.blob.setModelInstance("cache");
                     e.blob.desc = "This building can store items. But be careful, if the cache is destroyed then so are all the items inside!";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
                     e.blob.combat.health.setMaxAndValue(5);
@@ -391,7 +391,7 @@ public class VanillaMod implements GameMod {
         // Marketplace
         new Stratified<Building>(events.building, Labels.building_marketplace).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "marketplace");
+                    e.blob.setModelInstance("marketplace");
                     e.blob.desc = "Occupying units generate gold and sometimes an item.";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x000000);
@@ -421,7 +421,7 @@ public class VanillaMod implements GameMod {
         // Forest
         new Stratified<Building>(events.building, Labels.building_forest).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "forest");
+                    e.blob.setModelInstance("forest");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x257d53);
@@ -431,7 +431,7 @@ public class VanillaMod implements GameMod {
         // Dense Forest
         new Stratified<Building>(events.building, Labels.building_dense_forest).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "dense-forest");
+                    e.blob.setModelInstance("dense-forest");
                     e.blob.desc = "Most units cannot traverse dense forests. They leave behind regular forests when they are destroyed.";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x194D34);
@@ -446,7 +446,7 @@ public class VanillaMod implements GameMod {
         // Taiga
         new Stratified<Building>(events.building, Labels.building_taiga).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "forest");
+                    e.blob.setModelInstance("forest");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0xb4c3c7);
@@ -457,7 +457,7 @@ public class VanillaMod implements GameMod {
         // Meadow
         new Stratified<Building>(events.building, Labels.building_meadow).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "meadow");
+                    e.blob.setModelInstance("meadow");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x4dd349);
@@ -467,7 +467,7 @@ public class VanillaMod implements GameMod {
         // Oasis
         new Stratified<Building>(events.building, Labels.building_oasis).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "oasis");
+                    e.blob.setModelInstance("oasis");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x2c9965);
@@ -477,7 +477,7 @@ public class VanillaMod implements GameMod {
         // Shrubland
         new Stratified<Building>(events.building, Labels.building_shrubland).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "shrubland");
+                    e.blob.setModelInstance("shrubland");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
                     e.blob.setMinimapColor(0x4dd349);
@@ -487,7 +487,7 @@ public class VanillaMod implements GameMod {
         // Mountain
         new Stratified<Building>(events.building, Labels.building_mountain).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "mountain");
+                    e.blob.setModelInstance("mountain");
                     e.blob.desc = "Most units cannot traverse mountains.";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x875f9a);
@@ -498,7 +498,7 @@ public class VanillaMod implements GameMod {
         // Hill
         new Stratified<Building>(events.building, Labels.building_hill).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "hill");
+                    e.blob.setModelInstance("hill");
                     e.blob.desc = "Units move slower on hills.";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x2c9965);
@@ -512,7 +512,7 @@ public class VanillaMod implements GameMod {
         // Bluff
         new Stratified<Building>(events.building, Labels.building_bluff).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                    e.blob.setModelInstance(view.av, "bluff");
+                    e.blob.setModelInstance("bluff");
                     e.blob.desc = "Units move slower on bluffs.";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x2c9965);
@@ -527,7 +527,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_healing_fountain)
                 .add(Events.GenerateBuildingEvent.class,
                         (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
-                            e.blob.setModelInstance(view.av, "fountain");
+                            e.blob.setModelInstance("fountain");
                             e.blob.desc = "An occupying unit regains health each turn.";
                             e.blob.combat.health.setMaxAndValue(10);
                             e.blob.setMinimapColor(0x875f9a);
@@ -545,7 +545,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_wall).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     // TODO add new model
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance("placeholder1");
                     e.blob.desc = "Units cannot traverse this structure. It crumbles in 6 turns.";
                     e.blob.combat.health.setMaxAndValue(10);
                     e.blob.setMinimapColor(0x875f9a);
@@ -562,7 +562,7 @@ public class VanillaMod implements GameMod {
         new Stratified<Building>(events.building, Labels.building_shield_totem).add(Events.GenerateBuildingEvent.class,
                 (GameView view, Building receiver, Events.GenerateBuildingEvent e) -> {
                     // TODO add new model
-                    e.blob.setModelInstance(view.av, "placeholder1");
+                    e.blob.setModelInstance("placeholder1");
                     e.blob.desc = "All friendly units within a 1 tile radius get +1 defense. This structure will collapse in 4 turns.";
                     e.blob.combat.health.invulnerable();
                     e.blob.setMinimapColor(0x875f9a);
@@ -595,7 +595,7 @@ public class VanillaMod implements GameMod {
         // Joyous Reaper
         new Stratified<Patron>(events.patron, Labels.patron_joyous_reaper).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "joyous-reaper");
+                    e.blob.setModelInstance("joyous-reaper");
                     e.blob.desc = "This spirit ferries the souls of warriors to the afterlife. Sometimes it appears before mortals as an omen of encroaching death.";
                     e.blob.effect = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit is reincarnated (returns as a unit recruitment option).";
                     e.blob.preference = "Battle glyph units";
@@ -633,7 +633,7 @@ public class VanillaMod implements GameMod {
         // The Pond Troll
         new Stratified<Patron>(events.patron, Labels.patron_pond_troll).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "pond-troll");
+                    e.blob.setModelInstance("pond-troll");
                     e.blob.desc = "This ancient Troll made a pact with water spirits to save her village. In return she was forced to become a spirit herself, and now watches over those who seek to cross bodies of water.";
                     e.blob.effect = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
                     e.blob.preference = "Units that cannot swim";
@@ -664,7 +664,7 @@ public class VanillaMod implements GameMod {
         // Flutterwing
         new Stratified<Patron>(events.patron, Labels.patron_flutterwing).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "flutterwing");
+                    e.blob.setModelInstance("flutterwing");
                     e.blob.desc = "This great spirit dances upon the bodies of freshly slain warriors. It recycles their fleeting essence into new life to sustain the great cycle.";
                     e.blob.effect = "Your battle glyph units have +20% critical hit chance and generate 5 unit points when they kill another unit";
                     e.blob.preference = "Battle glyph units";
@@ -697,7 +697,7 @@ public class VanillaMod implements GameMod {
         // Wise Mountain
         new Stratified<Patron>(events.patron, Labels.patron_wise_mountain).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "wise-mountain");
+                    e.blob.setModelInstance("wise-mountain");
                     e.blob.desc = "This mountain has watched over villages at its base for thousands upon thousands of years. It has witnessed the rise and fall of dynasties, the crashing wake of invading armies, and the birth of new forms of magic.";
                     e.blob.effect = "Your mining glyph units' harvest abilities have a 20% chance to generate an additional item";
                     e.blob.preference = "Mining glyph units";
@@ -720,7 +720,7 @@ public class VanillaMod implements GameMod {
         // Wise Oak
         new Stratified<Patron>(events.patron, Labels.patron_wise_oak).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "wise-oak");
+                    e.blob.setModelInstance("wise-oak");
                     e.blob.desc = "This elder communes with the surrounding forest through a complex network of underground fungal helpers. It knows the names of all the trees and flowers and shrubs that have existed on the continent for the past several hundred years.";
                     e.blob.effect = "Your nature glyph units' harvest abilities have a 20% chance to generate an additional item";
                     e.blob.preference = "Nature glyph units";
@@ -745,7 +745,7 @@ public class VanillaMod implements GameMod {
         // The Shining Eyes
         new Stratified<Patron>(events.patron, Labels.patron_shining_eyes).add(Events.GeneratePatronEvent.class,
                 (GameView view, Patron receiver, Events.GeneratePatronEvent e) -> {
-                    e.blob.setModelInstance(view.av, "shining-eyes");
+                    e.blob.setModelInstance("shining-eyes");
                     e.blob.desc = "A mysterious being from some upper realm. The light that irradiates from its otherworldly form nurtures the soul and heals fatal wounds. Many believe its true form is far more strange than how it normally depicts itself.";
                     e.blob.effect = "Heals 4 random units of its favorite player each turn";
                     e.blob.preference = "Support glyph units";

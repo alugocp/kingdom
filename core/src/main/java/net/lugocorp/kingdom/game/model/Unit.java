@@ -65,7 +65,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     public final Inventory equipped = new Inventory(InventoryType.EQUIP, 2);
     public final Inventory haul = new Inventory(InventoryType.HAUL, 4);
     private Optional<Player> leader = Optional.empty();
-    private boolean existsInWorld = false;
     private boolean unlisted = false;
     public Species species = Species.UNKNOWN;
     /**
@@ -99,13 +98,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
         this.unlisted = false;
     }
 
-    /**
-     * Returns true if this Unit currently exists in the World
-     */
-    public boolean doesExistInWorld() {
-        return this.existsInWorld;
-    }
-
     /** {@inheritdoc} */
     @Override
     public String toString() {
@@ -115,11 +107,11 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     /** {@inheritdoc} */
     @Override
     public void spawn(GameView view) {
+        this.setLoaders(view.av);
         this.movement.setPosition(view, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Unit>(this)).execute();
         this.hunger.eat(view, false);
         view.game.units.add(this);
-        this.existsInWorld = true;
     }
 
     /** {@inheritdoc} */
@@ -184,7 +176,6 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
         view.game.actions.removeUnitInfo(this);
         this.movement.removeFromPosition(view.game);
         this.dispose();
-        this.existsInWorld = false;
     }
 
     /** {@inheritdoc} */

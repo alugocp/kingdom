@@ -22,14 +22,22 @@ import java.util.Optional;
  */
 public class Modellable {
     private Optional<AnimationController> animation = Optional.empty();
-    private ModelLoader models;
-    private TextureLoader textures;
+    private Optional<ModelLoader> models = Optional.empty();
+    private Optional<TextureLoader> textures = Optional.empty();
     private String modelName = "PLACEHOLDER";
     private Optional<String> animationName = Optional.empty();
     private Optional<Tuple<Integer, String>> textureName = Optional.empty();
     private float alpha = 1f;
     protected Optional<ModelInstance> model = Optional.empty();
     protected Optional<Texture> textureOverride = Optional.empty();
+
+    /**
+     * Sets fields so we can load model/texture data
+     */
+    public void setLoaders(AudioVideo av) {
+        this.textures = Optional.of(av.loaders.textures);
+        this.models = Optional.of(av.loaders.models);
+    }
 
     /**
      * Sets the overriding Material associated with this Modellable
@@ -73,7 +81,7 @@ public class Modellable {
     public Optional<ModelInstance> getModelInstance() {
         // Load the ModelInstance if it's not present
         if (!this.model.isPresent()) {
-            this.model = this.models.createModelInstance(this.modelName);
+            this.model = this.models.flatMap((ModelLoader models) -> models.createModelInstance(this.modelName));
             this.model.ifPresent((ModelInstance model) -> {
                 this.animation = Optional.of(new AnimationController(model));
                 this.applyAlpha(model, false);
@@ -85,7 +93,7 @@ public class Modellable {
         // Load an override Texture if we've requested one and it's not present
         if (this.model.isPresent() && this.textureName.isPresent() && !this.textureOverride.isPresent()) {
             final Tuple<Integer, String> texture = this.textureName.get();
-            this.textureOverride = this.textures.getTexture(texture.b);
+            this.textureOverride = this.textures.flatMap((TextureLoader textures) -> textures.getTexture(texture.b));
             if (this.textureOverride.isPresent()) {
                 this.model.get().materials.get(texture.a)
                         .set(new TextureAttribute(TextureAttribute.Diffuse, this.textureOverride.get()));
@@ -99,11 +107,9 @@ public class Modellable {
     /**
      * Triggers a new Model load request for this object
      */
-    public void setModelInstance(AudioVideo av, String name) {
+    public void setModelInstance(String name) {
         this.model = Optional.empty();
         this.modelName = name;
-        this.models = av.loaders.models;
-        this.textures = av.loaders.textures;
     }
 
     /**
@@ -143,8 +149,9 @@ public class Modellable {
      * Unloads the assets associated with this object if they are no longer needed
      */
     protected void dispose() {
-        this.models.checkForUnload(this.modelName);
-        this.textureName.ifPresent((Tuple<Integer, String> t) -> this.textures.checkForUnload(t.b));
+        this.models.ifPresent((ModelLoader models) -> models.checkForUnload(this.modelName));
+        this.textureName.ifPresent((Tuple<Integer, String> t) -> this.textures
+                .ifPresent((TextureLoader textures) -> textures.checkForUnload(t.b)));
     }
 
     /**

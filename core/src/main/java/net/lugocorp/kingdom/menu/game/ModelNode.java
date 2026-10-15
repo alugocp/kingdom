@@ -33,9 +33,9 @@ public class ModelNode implements MenuNode {
      */
     private final boolean oldModel;
 
-    public ModelNode(AudioVideo av, Camera camera, Environment environment, String name,
-            Optional<Tuple<Integer, String>> material, boolean oldModel) {
-        this.model.setModelInstance(av, name);
+    public ModelNode(Camera camera, Environment environment, String name, Optional<Tuple<Integer, String>> material,
+            boolean oldModel) {
+        this.model.setModelInstance(name);
         material.ifPresent((Tuple<Integer, String> t) -> this.model.setMaterial(t.b, t.a));
         this.environment = environment;
         this.camera = camera;

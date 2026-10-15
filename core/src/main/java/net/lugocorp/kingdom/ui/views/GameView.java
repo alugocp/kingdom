@@ -62,13 +62,6 @@ public class GameView implements View {
     }
 
     /**
-     * Returns the PerspectiveCamera object
-     */
-    public PerspectiveCamera getCamera() {
-        return this.camera;
-    }
-
-    /**
      * Returns the Environment object
      */
     public Environment getEnvironment() {

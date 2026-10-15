@@ -164,6 +164,7 @@ public class Patron extends Building {
     /** {@inheritdoc} */
     @Override
     public void spawn(GameView view) {
+        this.setLoaders(view.av);
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
         });

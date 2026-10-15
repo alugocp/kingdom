@@ -267,6 +267,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     /** {@inheritdoc} */
     @Override
     public void spawn(GameView view) {
+        this.setLoaders(view.av);
         view.game.world.setTile(this, this.x, this.y);
         this.handleEvent(view, new Events.SpawnEvent<Tile>(this)).execute();
     }
