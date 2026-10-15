@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.serial.v1d0d0;
+package net.lugocorp.kingdom.serial.v0d0d0;
 import net.lugocorp.kingdom.serial.BaseDeserializer;
 import net.lugocorp.kingdom.utils.Semver;
 import java.io.File;
@@ -7,9 +7,9 @@ import java.util.Optional;
 /**
  * Deserializer implementation for v1.0.0
  */
-public class V1d0d0Deserializer extends BaseDeserializer<GameSerial> {
+public class V0d0d0Deserializer extends BaseDeserializer<GameSerial> {
 
-    public V1d0d0Deserializer() {
+    public V0d0d0Deserializer() {
         super(new Semver(1, 0, 0));
     }
 

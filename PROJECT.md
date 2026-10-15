@@ -51,7 +51,7 @@ This file explains all the code folders inside this repository.
     - `pathfinding` implements pathfinding algorithms for the game UI
     - `prediction` contains logic to predict cause and effect of the game rules
     - `serial` allows us to save and load game state
-        - `v1d0d0` defines the deserializer for v1.0.0
+        - `v0d0d0` defines the deserializer for v1.0.0
     - `settings` allows us to load and save game settings
     - `ui` contains all logic for game UI
         - `hud` handles the heads-up display in the game view

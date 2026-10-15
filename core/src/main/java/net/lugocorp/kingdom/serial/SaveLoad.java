@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.serial;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.serial.v1d0d0.GameSerial;
-import net.lugocorp.kingdom.serial.v1d0d0.V1d0d0Deserializer;
+import net.lugocorp.kingdom.serial.v0d0d0.GameSerial;
+import net.lugocorp.kingdom.serial.v0d0d0.V0d0d0Deserializer;
 import net.lugocorp.kingdom.utils.Files;
 import java.io.File;
 import java.nio.file.Path;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  */
 public class SaveLoad {
     private static final String EXT = "game";
-    private static final V1d0d0Deserializer deserializer = new V1d0d0Deserializer();
+    private static final V0d0d0Deserializer deserializer = new V0d0d0Deserializer();
 
     /**
      * Returns a list of paths that have saved games

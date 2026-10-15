@@ -1,4 +1,4 @@
-package net.lugocorp.kingdom.serial.v1d0d0;
+package net.lugocorp.kingdom.serial.v0d0d0;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.serial.Serial;
 
