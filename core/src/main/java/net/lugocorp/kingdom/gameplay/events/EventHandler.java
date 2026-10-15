@@ -9,11 +9,4 @@ import java.io.Serializable;
  */
 public interface EventHandler<T extends EventReceiver> extends Serializable {
     public SideEffect handle(GameView view, T receiver, Event event);
-
-    /**
-     * This function allows us to serialize this lambda
-     */
-    public default Object writeReplace() {
-        return this;
-    }
 }

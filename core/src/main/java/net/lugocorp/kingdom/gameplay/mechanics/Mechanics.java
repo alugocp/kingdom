@@ -19,6 +19,7 @@ public class Mechanics {
      * Initializes mechanics that require GameView to be initialized
      */
     public void init(Game game) {
+        // TODO serial remove the init functions once Generator no longer needs GameView
         this.auction.init(game);
         this.pools.init(game);
         this.loot.init(game);

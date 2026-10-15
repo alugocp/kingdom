@@ -8,6 +8,7 @@ import java.util.function.Supplier;
  * relevant generator Events to instantiate each new object.
  */
 public class Generator {
+    // TODO serial remove dependence on GameView
     private GameView view = null;
 
     public void setGameView(GameView view) {

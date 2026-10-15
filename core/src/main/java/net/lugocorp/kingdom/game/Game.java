@@ -62,6 +62,7 @@ public class Game implements Serializable<GameSerial> {
      * Post-constructor initialization of Game state
      */
     public void init(GameView view) {
+        // TODO serial remove this init function once Generator no longer needs GameView
         this.generator.setGameView(view);
         this.mechanics.init(this);
     }
