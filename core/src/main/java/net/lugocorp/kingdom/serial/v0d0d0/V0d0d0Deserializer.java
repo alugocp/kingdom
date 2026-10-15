@@ -5,12 +5,12 @@ import java.io.File;
 import java.util.Optional;
 
 /**
- * Deserializer implementation for v1.0.0
+ * Deserializer implementation for v0.0.0
  */
 public class V0d0d0Deserializer extends BaseDeserializer<GameSerial> {
 
     public V0d0d0Deserializer() {
-        super(new Semver(1, 0, 0));
+        super(new Semver(0, 0, 0));
     }
 
     /** {@inheritdoc} */

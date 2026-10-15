@@ -3,7 +3,7 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.serial.Serial;
 
 /**
- * Serial<Game> implementation for v1.0.0
+ * Serial<Game> implementation for v0.0.0
  */
 public class GameSerial implements Serial<Game> {
 
