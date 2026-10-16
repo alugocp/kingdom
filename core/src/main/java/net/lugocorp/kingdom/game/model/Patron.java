@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Represents a local spirit that Players can compete for favor with
@@ -45,8 +44,8 @@ public class Patron extends Building {
     public String preference = "";
     public String effect = "";
 
-    Patron(String name, int x, int y, Supplier<Tile> getTile) {
-        super(name, x, y, getTile);
+    Patron(String name, int x, int y) {
+        super(name, x, y);
         this.combat.health.invulnerable();
         super.setMinimapColor(ColorScheme.BLACK.hex);
     }
@@ -169,6 +168,7 @@ public class Patron extends Building {
         this.setLoaders(view.av);
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
+            this.tile = Optional.of(t);
         });
         this.handleEvent(new Events.SpawnEvent(this)).execute();
     }

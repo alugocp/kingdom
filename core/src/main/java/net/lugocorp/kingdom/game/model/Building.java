@@ -29,22 +29,20 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends Entity implements MenuSubject, Spawnable {
     private final CoordUserData userData;
-    private Supplier<Tile> getTile;
     private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;
     public Optional<Inventory> items = Optional.empty();
+    protected Optional<Tile> tile = Optional.empty();
 
-    Building(String name, int x, int y, Supplier<Tile> getTile) {
+    Building(String name, int x, int y) {
         super(name, x, y);
-        this.getTile = getTile;
-        this.userData = new CoordUserData(() -> !this.getTile.get().isVisible());
+        this.userData = new CoordUserData(() -> this.tile.map((Tile t) -> !t.isVisible()).orElse(true));
         this.userData.point.x = x;
         this.userData.point.y = y;
     }
@@ -58,7 +56,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public Optional<Player> getLeader() {
-        return this.getTile.get().getLeader();
+        return this.tile.flatMap((Tile t) -> t.getLeader());
     }
 
     /**
@@ -118,6 +116,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
         this.setLoaders(view.av);
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
+            this.tile = Optional.of(t);
             if (t.unit.isPresent()) {
                 this.setAlpha(0.5f);
             }

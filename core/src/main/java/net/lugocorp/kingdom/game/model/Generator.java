@@ -1,7 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
-import java.util.function.Supplier;
 
 /**
  * This class is like a factory class for all game objects. It calls the
@@ -47,8 +46,7 @@ public class Generator {
      * Generates a new Building
      */
     public Building building(String name, int x, int y) {
-        final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
-        final Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(new Building(name, x, y, getTile));
+        final Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(new Building(name, x, y));
         this.view.game.events.building.handle(e.blob, e);
         return e.blob;
     }
@@ -57,8 +55,7 @@ public class Generator {
      * Generates a new Tower
      */
     public Tower tower(int x, int y) {
-        final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
-        final Tower t = new Tower(x, y, getTile);
+        final Tower t = new Tower(x, y);
         final Events.GenerateBuildingEvent e = new Events.GenerateBuildingEvent(t);
         this.view.game.events.building.handle(e.blob, e);
         return t;
@@ -77,8 +74,7 @@ public class Generator {
      * Generates a new Patron without registering them to the Patron index
      */
     public Patron patronDryRun(String name, int x, int y) {
-        final Supplier<Tile> getTile = () -> this.view.game.world.getTile(x, y).get();
-        final Events.GeneratePatronEvent e = new Events.GeneratePatronEvent(new Patron(name, x, y, getTile));
+        final Events.GeneratePatronEvent e = new Events.GeneratePatronEvent(new Patron(name, x, y));
         this.view.game.events.patron.handle(e.blob, e);
         return e.blob;
     }
