@@ -264,7 +264,7 @@ public class VanillaMod implements GameMod {
 
         // GetsHungry (TODO find a way to remove this)
         events.unit.setDefaultHandler("GetsHungry", (GameViewContext ctx, Unit receiver,
-                Event event) -> new SideEffect().add(() -> receiver.hunger.gotHungry(ctx.view)));
+                Event event) -> new SideEffect().add(() -> receiver.hunger.gotHungry(ctx)));
 
         /**
          * SECTION Tiles
@@ -1477,7 +1477,7 @@ public class VanillaMod implements GameMod {
                                 .add(() -> ctx.view.game.future.removeFutureTicks(receiver, "Poison"))
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(ctx.view, receiver)))
                 .add("Poison", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
-                    return receiver.wielder.combat.takeDamage(ctx.view, new Damage(1), receiver.wielder);
+                    return receiver.wielder.combat.takeDamage(ctx, new Damage(1), receiver.wielder);
                 });
 
         // Swift
@@ -1560,7 +1560,7 @@ public class VanillaMod implements GameMod {
                                 .add(() -> ctx.view.game.future.removeFutureTicks(receiver, "Burn"))
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(ctx.view, receiver)))
                 .add("Burn", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
-                    return receiver.wielder.combat.takeDamage(ctx.view, new Damage(1), receiver.wielder);
+                    return receiver.wielder.combat.takeDamage(ctx, new Damage(1), receiver.wielder);
                 });
 
         // Bleed
@@ -1581,7 +1581,7 @@ public class VanillaMod implements GameMod {
                                 .add(() -> ctx.view.game.future.removeFutureTicks(receiver, "Bleed"))
                                 .add(() -> receiver.wielder.abilities.removeStatusEffect(ctx.view, receiver)))
                 .add("Bleed", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
-                    return receiver.wielder.combat.takeDamage(ctx.view, new Damage(1), receiver.wielder);
+                    return receiver.wielder.combat.takeDamage(ctx, new Damage(1), receiver.wielder);
                 });
     }
 }

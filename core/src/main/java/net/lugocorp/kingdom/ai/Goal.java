@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ai;
 import net.lugocorp.kingdom.game.player.CompPlayer;
-import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 
 /**
  * A Goal is an abstract effort that the CompPlayers strive towards
@@ -25,8 +25,8 @@ public abstract class Goal {
     /**
      * Returns a Decision for the given Actor and DecisionChannel
      */
-    public Decision getDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final Decision d = this.makeDecision(view, player, channel);
+    public Decision getDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final Decision d = this.makeDecision(ctx, player, channel);
         if (d.priority.value > this.highestPriorityThisTurn.value) {
             this.highestPriorityThisTurn = d.priority;
         }
@@ -45,5 +45,5 @@ public abstract class Goal {
     /**
      * Generates a Decision for the given Actor and DecisionChannel
      */
-    protected abstract Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel);
+    protected abstract Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel);
 }

@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.Inventory;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -27,13 +28,14 @@ public class FeedUnitsGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
         // UNIT handler
         if (channel.is(DecisionClass.UNIT)) {
             final Unit unit = channel.getUnit();
-            final int hunger = unit.hunger.get(view);
-            final int speed = unit.movement.getMaxDistance(view);
-            if (hunger > unit.hunger.getTurnsBeforeHunger() / 2 || unit.haul.getEdibleItems(view, unit).size() > 0) {
+            final int hunger = unit.hunger.get(ctx.view);
+            final int speed = unit.movement.getMaxDistance(ctx.view);
+            if (hunger > unit.hunger.getTurnsBeforeHunger() / 2
+                    || unit.haul.getEdibleItems(ctx.view, unit).size() > 0) {
                 return this.noDecision(channel);
             }
 
@@ -42,13 +44,13 @@ public class FeedUnitsGoal extends Goal {
             Entity best = null;
             final Pathfinder pathfinder = new Pathfinder(unit);
             for (Building b : player.buildings) {
-                final Set<Item> food = b.items.map((Inventory i) -> i.getEdibleItems(view, unit))
+                final Set<Item> food = b.items.map((Inventory i) -> i.getEdibleItems(ctx.view, unit))
                         .orElse(new HashSet<Item>());
                 if (food.size() > 0) {
-                    final List<Point> path = pathfinder.getPathOrAdjacent(view, b.getPoint());
+                    final List<Point> path = pathfinder.getPathOrAdjacent(ctx.view, b.getPoint());
                     if (path.size() > 0 && path.size() < speed * (hunger - 1)) {
                         if (path.size() <= speed) {
-                            return this.getFeedDecision(view, channel, unit, b);
+                            return this.getFeedDecision(ctx.view, channel, unit, b);
                         }
                         if (best == null || path.size() < distance) {
                             distance = path.size();
@@ -63,9 +65,9 @@ public class FeedUnitsGoal extends Goal {
                 if (u == unit) {
                     continue;
                 }
-                final Set<Item> food = u.haul.getEdibleItems(view, unit);
+                final Set<Item> food = u.haul.getEdibleItems(ctx.view, unit);
                 if (food.size() > 0) {
-                    final List<Point> path = pathfinder.getPathOrAdjacent(view, u.getPoint());
+                    final List<Point> path = pathfinder.getPathOrAdjacent(ctx.view, u.getPoint());
                     if (path.size() > 0 && path.size() < speed * (hunger - 3)) {
                         if (best == null || path.size() < distance) {
                             distance = path.size();
@@ -75,7 +77,7 @@ public class FeedUnitsGoal extends Goal {
                 }
             }
             if (best != null) {
-                return this.getFeedDecision(view, channel, unit, best);
+                return this.getFeedDecision(ctx.view, channel, unit, best);
             }
         }
 

@@ -12,16 +12,16 @@ public interface EventReceiver {
     /**
      * API sugar to handle an Event
      */
-    public default SideEffect handleEvent(GameViewContext ctx, Event e) {
+    public default SideEffect handleEvent(Event e) {
         EventLog.log(e, this);
-        return new SideEffect().add(e).add(this.handleEventWithoutSignalBooster(ctx, e))
-                .add(ctx.view.game.events.signals.propagate(ctx, this, e));
+        return new SideEffect().add(e).add(this.handleEventWithoutSignalBooster(e))
+                .add(AllEventHandlers.instance.signals.propagate(this, e));
     }
 
     /**
      * Handles Events without calling the SignalBooster
      */
-    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e);
+    public SideEffect handleEventWithoutSignalBooster(Event e);
 
     /**
      * Returns a key that helps determine which EventHandler to use in an

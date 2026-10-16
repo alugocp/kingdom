@@ -68,7 +68,7 @@ class VanillaModAbilities {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
-                                ? attacker.combat.takeDamage(ctx.view, new Damage(1), target)
+                                ? attacker.combat.takeDamage(ctx, new Damage(1), target)
                                 : new SideEffect();
                     }
                     return new SideEffect();
@@ -165,7 +165,7 @@ class VanillaModAbilities {
                                 }
                                 return effects;
                             }
-                            effects.add(AbilityLogic.attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 2,
+                            effects.add(AbilityLogic.attackAndEffect(ctx, receiver.wielder, new Damage(3), 2,
                                     Optional.of((Point p) -> new SideEffect()
                                             .add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_gem)))));
                             return effects;
@@ -241,12 +241,12 @@ class VanillaModAbilities {
                                                 .flatMap((Tile t) -> t.building);
                                         final Optional<Unit> target2 = ctx.view.game.world.getTile(p)
                                                 .flatMap((Tile t) -> t.unit);
-                                        effects.add(receiver.wielder.combat.attack(ctx.view, receiver.wielder,
-                                                new Damage(3)));
+                                        effects.add(
+                                                receiver.wielder.combat.attack(ctx, receiver.wielder, new Damage(3)));
                                         target1.ifPresent((Building target) -> effects
-                                                .add(receiver.wielder.combat.attack(ctx.view, target, new Damage(5))));
+                                                .add(receiver.wielder.combat.attack(ctx, target, new Damage(5))));
                                         target2.ifPresent((Unit target) -> effects
-                                                .add(receiver.wielder.combat.attack(ctx.view, target, new Damage(3))));
+                                                .add(receiver.wielder.combat.attack(ctx, target, new Damage(3))));
                                         return effects;
                                     })).orElse(new SideEffect());
                         });
@@ -366,7 +366,7 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage and generates loot if targeting a tile with a building"))
                 .add(Events.AbilityActivatedEvent.class, (GameViewContext ctx, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.attackAndEffect(ctx.view, receiver.wielder,
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.attackAndEffect(ctx, receiver.wielder,
                                 new Damage(3), 1,
                                 Optional.of((Point p) -> !receiver.wielder.haul.isFull()
                                         && ctx.view.game.world.getTile(p).map((Tile t) -> t.building).isPresent()
@@ -435,7 +435,7 @@ class VanillaModAbilities {
                                                         receiver.wielder))
                                                 .add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_gem));
                                         target.ifPresent((Entity e1) -> {
-                                            effects.add(receiver.wielder.combat.attack(ctx.view, e1, new Damage(3)));
+                                            effects.add(receiver.wielder.combat.attack(ctx, e1, new Damage(3)));
                                             targets.remove(p);
                                         });
                                         if (targets.size() > 0) {
@@ -443,7 +443,7 @@ class VanillaModAbilities {
                                             final Optional<Entity> target1 = ctx.view.game.world.getTile(p1)
                                                     .flatMap((Tile t) -> t.getPriorityEntity());
                                             target1.ifPresent((Entity e1) -> effects
-                                                    .add(receiver.wielder.combat.attack(ctx.view, e1, new Damage(2))));
+                                                    .add(receiver.wielder.combat.attack(ctx, e1, new Damage(2))));
                                         }
                                         return effects;
                                     })).orElse(new SideEffect());
@@ -473,7 +473,7 @@ class VanillaModAbilities {
                         (GameViewContext ctx, Ability receiver, Events.GetDescriptionEvent e) -> {
                             final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(
                                     receiver.wielder);
-                            receiver.wielder.handleEvent(ctx, event);
+                            receiver.wielder.handleEvent(event);
                             e.desc = String.format("This unit has 3 base speed (currently has %d speed)",
                                     event.distance);
                             return new SideEffect();
@@ -499,7 +499,7 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 2 damage to the target unit or 5 damage to the target building"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .dynamicDamageAttack(ctx.view, receiver.wielder, 2,
+                                .dynamicDamageAttack(ctx, receiver.wielder, 2,
                                         (Tile t) -> t.building.isPresent() && !t.unit.isPresent()
                                                 ? new Damage(5)
                                                 : new Damage(2)));
@@ -528,8 +528,8 @@ class VanillaModAbilities {
                                         for (int a = 0; a < 3; a++) {
                                             Point p1 = Hexagons.followLine(receiver.wielder.getPoint(), side, a + 1);
                                             ctx.view.game.world.getTile(p1).flatMap((Tile t) -> t.unit)
-                                                    .ifPresent((Unit u) -> effects.add(receiver.wielder.combat
-                                                            .attack(ctx.view, u, new Damage(2))));
+                                                    .ifPresent((Unit u) -> effects.add(
+                                                            receiver.wielder.combat.attack(ctx, u, new Damage(2))));
                                         }
                                         effects.add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view,
                                                 receiver.wielder));
@@ -722,7 +722,7 @@ class VanillaModAbilities {
                             Wrapped<Integer> currentVision = new Wrapped<>(4);
                             receiver.wielder.getLeader().ifPresent((Player player) -> {
                                 final Events.GetVisionEvent event = new Events.GetVisionEvent(player, receiver.wielder);
-                                receiver.wielder.handleEvent(ctx, event);
+                                receiver.wielder.handleEvent(event);
                                 currentVision.set(event.radius);
                             });
                             e.desc = String.format("This unit has 4 base vision (currently has %d vision)",
@@ -782,14 +782,12 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 2,
-                                        Optional.of((Point p) -> {
-                                            Optional<Unit> u = ctx.view.game.world.getUnit(p);
-                                            return u.isPresent() && Lambda.chance(15)
-                                                    ? u.get().abilities.addStatusEffect(ctx.view,
-                                                            Labels.status_effect_stunned)
-                                                    : new SideEffect();
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(2), 2, Optional.of((Point p) -> {
+                                    Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                    return u.isPresent() && Lambda.chance(15)
+                                            ? u.get().abilities.addStatusEffect(ctx.view, Labels.status_effect_stunned)
+                                            : new SideEffect();
+                                })));
 
         // Industrious
         new Stratified<Ability>(events.ability, Labels.ability_industrious).add(Events.GenerateAbilityEvent.class,
@@ -852,19 +850,18 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage and burns the target")).add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 3,
-                                        Optional.of((Point p) -> {
-                                            final SideEffect effects = new SideEffect();
-                                            final Optional<Unit> target = ctx.view.game.world.getTile(p)
-                                                    .flatMap((Tile t) -> t.unit);
-                                            target.ifPresent((Unit u) -> {
-                                                if (!u.abilities.hasStatusEffect(Labels.status_effect_burned)) {
-                                                    effects.add(u.abilities.addStatusEffect(ctx.view,
-                                                            Labels.status_effect_burned));
-                                                }
-                                            });
-                                            return effects;
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(2), 3, Optional.of((Point p) -> {
+                                    final SideEffect effects = new SideEffect();
+                                    final Optional<Unit> target = ctx.view.game.world.getTile(p)
+                                            .flatMap((Tile t) -> t.unit);
+                                    target.ifPresent((Unit u) -> {
+                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_burned)) {
+                                            effects.add(
+                                                    u.abilities.addStatusEffect(ctx.view, Labels.status_effect_burned));
+                                        }
+                                    });
+                                    return effects;
+                                })));
 
         // Life Aura
         new Stratified<Ability>(events.ability, Labels.ability_life_aura).add(Events.GenerateAbilityEvent.class,
@@ -903,7 +900,7 @@ class VanillaModAbilities {
                 .add("Tick", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
                     Optional<Building> b = ctx.view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
-                    return b.map((Building b1) -> b1.combat.takeDamage(ctx.view, new Damage(1), receiver.wielder))
+                    return b.map((Building b1) -> b1.combat.takeDamage(ctx, new Damage(1), receiver.wielder))
                             .orElse(new SideEffect());
                 });
 
@@ -934,18 +931,16 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 2 damage and an additional 1 damage per turn for the next 3 turns"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
-                                        Optional.of((Point p) -> {
-                                            final SideEffect effects = new SideEffect();
-                                            ctx.view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
-                                                    .ifPresent((Unit u) -> {
-                                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_bleed)) {
-                                                            effects.add(u.abilities.addStatusEffect(ctx.view,
-                                                                    Labels.status_effect_bleed));
-                                                        }
-                                                    });
-                                            return effects;
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
+                                    final SideEffect effects = new SideEffect();
+                                    ctx.view.game.world.getTile(p).flatMap((Tile t) -> t.unit).ifPresent((Unit u) -> {
+                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_bleed)) {
+                                            effects.add(
+                                                    u.abilities.addStatusEffect(ctx.view, Labels.status_effect_bleed));
+                                        }
+                                    });
+                                    return effects;
+                                })));
 
         // Market Boom
         new Stratified<Ability>(events.ability, Labels.ability_market_boom).add(Events.GenerateAbilityEvent.class,
@@ -1142,7 +1137,7 @@ class VanillaModAbilities {
                             final SideEffect effects = new SideEffect();
                             if (receiver.wielder.haul.hasItemWithTag(Labels.tag_natural)) {
                                 effects.add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_natural));
-                                effects.add(AbilityLogic.attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
+                                effects.add(AbilityLogic.attackAndEffect(ctx, receiver.wielder, new Damage(3), 1,
                                         Optional.empty()));
                             } else if (receiver.wielder.leadership.belongsToHuman()) {
                                 effects.add(() -> ctx.view.hud.logger
@@ -1193,7 +1188,7 @@ class VanillaModAbilities {
                                             Optional<Building> target = ctx.view.game.world.getTile(p)
                                                     .flatMap((Tile t) -> t.building);
                                             target.ifPresent((Building b) -> effects
-                                                    .add(receiver.wielder.combat.attack(ctx.view, b, new Damage(4)))
+                                                    .add(receiver.wielder.combat.attack(ctx, b, new Damage(4)))
                                                     .add(() -> {
                                                         if (!receiver.wielder.haul.isFull()) {
                                                             receiver.wielder.haul.add(ctx.view.game.generator
@@ -1237,7 +1232,7 @@ class VanillaModAbilities {
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
                             return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, points,
                                     "Nowhere to spawn unit", (Point p) -> {
-                                        return new SideEffect().add(receiver.wielder.combat.takeDamage(ctx.view,
+                                        return new SideEffect().add(receiver.wielder.combat.takeDamage(ctx,
                                                 new Damage(5), receiver.wielder)).add(() -> {
                                                     ctx.view.game.actions.unitHasCastSpell(ctx.view, receiver.wielder);
                                                     final Unit u = ctx.view.game.generator
@@ -1326,7 +1321,7 @@ class VanillaModAbilities {
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver,
                                 Events.AbilityActivatedEvent e) -> AbilityLogic
-                                        .dynamicDamageAttack(ctx.view, receiver.wielder, 1,
+                                        .dynamicDamageAttack(ctx, receiver.wielder, 1,
                                                 (Tile t) -> new Damage(t.building
                                                         .map((Building b) -> b.name.equals(Labels.building_tower))
                                                         .orElse(false) ? 4 : 2)));
@@ -1343,7 +1338,7 @@ class VanillaModAbilities {
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver,
                                 Events.AbilityActivatedEvent e) -> AbilityLogic
-                                        .dynamicDamageAttack(ctx.view, receiver.wielder, 1,
+                                        .dynamicDamageAttack(ctx, receiver.wielder, 1,
                                                 (Tile t) -> new Damage(t.building
                                                         .map((Building b) -> b.name.equals(Labels.building_forest))
                                                         .orElse(false) ? 4 : 2)));
@@ -1383,7 +1378,7 @@ class VanillaModAbilities {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
-                                ? attacker.combat.takeDamage(ctx.view, new Damage(1), target)
+                                ? attacker.combat.takeDamage(ctx, new Damage(1), target)
                                 : new SideEffect();
                     }
                     return new SideEffect();
@@ -1412,7 +1407,7 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 3 damage with a 25% chance to stun (1 turn cooldown)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> new SideEffect()
-                                .add(AbilityLogic.attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
+                                .add(AbilityLogic.attackAndEffect(ctx, receiver.wielder, new Damage(3), 1,
                                         Optional.of((Point p) -> {
                                             Optional<Unit> u = ctx.view.game.world.getUnit(p);
                                             return u.isPresent() && Lambda.chance(25)
@@ -1439,22 +1434,20 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 3 damage and knocks the target back by one tile"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
-                                        Optional.of((Point p) -> {
-                                            final SideEffect effects = new SideEffect();
-                                            final Optional<Unit> u = ctx.view.game.world.getUnit(p);
-                                            final Optional<HexSide> direction = Hexagons
-                                                    .getDirection(receiver.wielder.getPoint(), p);
-                                            final Optional<Point> p1 = direction
-                                                    .map((HexSide d) -> Hexagons.followLine(p, d, 1));
-                                            if (u.isPresent()
-                                                    && p1.flatMap((Point p2) -> ctx.view.game.world.getTile(p2))
-                                                            .map((Tile t) -> !t.unit.isPresent()).orElse(false)) {
-                                                effects.add(() -> u.get().movement.setPosition(ctx.view, p1.get().x,
-                                                        p1.get().y));
-                                            }
-                                            return effects;
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(3), 1, Optional.of((Point p) -> {
+                                    final SideEffect effects = new SideEffect();
+                                    final Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                    final Optional<HexSide> direction = Hexagons
+                                            .getDirection(receiver.wielder.getPoint(), p);
+                                    final Optional<Point> p1 = direction
+                                            .map((HexSide d) -> Hexagons.followLine(p, d, 1));
+                                    if (u.isPresent() && p1.flatMap((Point p2) -> ctx.view.game.world.getTile(p2))
+                                            .map((Tile t) -> !t.unit.isPresent()).orElse(false)) {
+                                        effects.add(
+                                                () -> u.get().movement.setPosition(ctx.view, p1.get().x, p1.get().y));
+                                    }
+                                    return effects;
+                                })));
 
         // Slime Shot
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,
@@ -1472,7 +1465,7 @@ class VanillaModAbilities {
                         (GameViewContext ctx, Ability receiver, Events.GetDescriptionEvent e) -> {
                             final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(
                                     receiver.wielder);
-                            receiver.wielder.handleEvent(ctx, event);
+                            receiver.wielder.handleEvent(event);
                             e.desc = String.format("This unit has 1 base speed (currently has %d speed)",
                                     event.distance);
                             return new SideEffect();
@@ -1491,14 +1484,12 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 3 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
-                                        Optional.of((Point p) -> {
-                                            Optional<Unit> u = ctx.view.game.world.getUnit(p);
-                                            return u.isPresent() && Lambda.chance(15)
-                                                    ? u.get().abilities.addStatusEffect(ctx.view,
-                                                            Labels.status_effect_stunned)
-                                                    : new SideEffect();
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(3), 1, Optional.of((Point p) -> {
+                                    Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                    return u.isPresent() && Lambda.chance(15)
+                                            ? u.get().abilities.addStatusEffect(ctx.view, Labels.status_effect_stunned)
+                                            : new SideEffect();
+                                })));
 
         // Soothing Aura
         new Stratified<Ability>(events.ability, Labels.ability_soothing_aura).add(Events.GenerateAbilityEvent.class,
@@ -1539,14 +1530,12 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
-                                        Optional.of((Point p) -> {
-                                            Optional<Unit> u = ctx.view.game.world.getUnit(p);
-                                            return u.isPresent() && Lambda.chance(15)
-                                                    ? u.get().abilities.addStatusEffect(ctx.view,
-                                                            Labels.status_effect_stunned)
-                                                    : new SideEffect();
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
+                                    Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                    return u.isPresent() && Lambda.chance(15)
+                                            ? u.get().abilities.addStatusEffect(ctx.view, Labels.status_effect_stunned)
+                                            : new SideEffect();
+                                })));
 
         // Stone Defense
         new Stratified<Ability>(events.ability, Labels.ability_stone_defense).add(Events.GenerateAbilityEvent.class,
@@ -1592,14 +1581,12 @@ class VanillaModAbilities {
                 }).add(AbilityLogic.desc("Deals 2 damage with a 25% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
-                                        Optional.of((Point p) -> {
-                                            final Optional<Unit> u = ctx.view.game.world.getUnit(p);
-                                            return u.isPresent() && Lambda.chance(25)
-                                                    ? u.get().abilities.addStatusEffect(ctx.view,
-                                                            Labels.status_effect_stunned)
-                                                    : new SideEffect();
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
+                                    final Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                    return u.isPresent() && Lambda.chance(25)
+                                            ? u.get().abilities.addStatusEffect(ctx.view, Labels.status_effect_stunned)
+                                            : new SideEffect();
+                                })));
 
         // Surprise Attack
         new Stratified<Ability>(events.ability, Labels.ability_surprise_attack).add(Events.GenerateAbilityEvent.class,
@@ -1612,27 +1599,23 @@ class VanillaModAbilities {
                         "Deals 2 damage with a 25% chance to stun if occupying a forest (or 50% chance to stun on a dense forest)"))
                 .add(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
-                                        Optional.of((Point p) -> {
-                                            final Optional<Unit> u = ctx.view.game.world.getUnit(p);
-                                            final Optional<Building> building = ctx.view.game.world
-                                                    .getTile(receiver.wielder.getPoint())
-                                                    .flatMap((Tile t) -> t.building);
-                                            int chance = 0;
-                                            if (building.map((Building b) -> b.name.equals(Labels.building_forest))
-                                                    .orElse(false)) {
-                                                chance = 25;
-                                            }
-                                            if (building
-                                                    .map((Building b) -> b.name.equals(Labels.building_dense_forest))
-                                                    .orElse(false)) {
-                                                chance = 50;
-                                            }
-                                            return u.isPresent() && Lambda.chance(chance)
-                                                    ? u.get().abilities.addStatusEffect(ctx.view,
-                                                            Labels.status_effect_stunned)
-                                                    : new SideEffect();
-                                        })));
+                                .attackAndEffect(ctx, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
+                                    final Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                    final Optional<Building> building = ctx.view.game.world
+                                            .getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building);
+                                    int chance = 0;
+                                    if (building.map((Building b) -> b.name.equals(Labels.building_forest))
+                                            .orElse(false)) {
+                                        chance = 25;
+                                    }
+                                    if (building.map((Building b) -> b.name.equals(Labels.building_dense_forest))
+                                            .orElse(false)) {
+                                        chance = 50;
+                                    }
+                                    return u.isPresent() && Lambda.chance(chance)
+                                            ? u.get().abilities.addStatusEffect(ctx.view, Labels.status_effect_stunned)
+                                            : new SideEffect();
+                                })));
 
         // Swim
         new Stratified<Ability>(events.ability, Labels.ability_swim).add(Events.GenerateAbilityEvent.class,
@@ -1661,8 +1644,7 @@ class VanillaModAbilities {
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage (or 4 damage if the target has a gem in their inventory)"))
                 .add(Events.AbilityActivatedEvent.class, (GameViewContext ctx, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.dynamicDamageAttack(ctx.view, receiver.wielder,
-                                1,
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.dynamicDamageAttack(ctx, receiver.wielder, 1,
                                 (Tile t) -> t.unit.map((Unit u) -> u.haul.hasItemWithTag(Labels.tag_gem)).orElse(false)
                                         ? new Damage(4)
                                         : new Damage(2)));

@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.gameplay.events;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +15,7 @@ public class SignalBooster {
     /**
      * Broadcasts an Event with all listening EventReceivers
      */
-    public SideEffect propagate(GameViewContext ctx, EventReceiver original, Event e) {
+    public SideEffect propagate(EventReceiver original, Event e) {
         final SideEffect effects = new SideEffect();
         if (this.receivers.containsKey(e.channel)) {
             for (EventReceiver r : receivers.get(e.channel)) {
@@ -24,7 +23,7 @@ public class SignalBooster {
                     // Prevent infinite loops
                     continue;
                 }
-                effects.add(r.handleEventWithoutSignalBooster(ctx, e));
+                effects.add(r.handleEventWithoutSignalBooster(e));
             }
         }
         return effects;

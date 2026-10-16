@@ -15,6 +15,7 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.prediction.Prediction;
@@ -34,12 +35,12 @@ public class KeepEntitiesHealedGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final Set<Entity> targets = this.getPossibleTargets(view, player);
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final Set<Entity> targets = this.getPossibleTargets(ctx.view, player);
 
         // Recruit unit handler (recruit a Support Glyph Unit that has a healing spell)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
-            final Map<Unit, Set<Entity>> healMap = this.getHealMap(view, player, targets);
+            final Map<Unit, Set<Entity>> healMap = this.getHealMap(ctx.view, player, targets);
             Priority priority = Priority.NEUTRAL;
             if (targets.size() > 0 && healMap.size() == 0) {
                 priority = Priority.NECESSITY;
@@ -48,7 +49,7 @@ public class KeepEntitiesHealedGoal extends Goal {
             }
             return new Decision(channel, this, priority, new RecruitUnitBehavior(player, Glyph.SUPPORT, (Unit u) -> {
                 for (Entity e : targets) {
-                    if (this.canUnitHealTarget(view, player, u, e)) {
+                    if (this.canUnitHealTarget(ctx.view, player, u, e)) {
                         return Priority.GOOD_IDEA;
                     }
                 }
@@ -76,13 +77,13 @@ public class KeepEntitiesHealedGoal extends Goal {
             final Unit unit = channel.getUnit();
 
             if (unit.glyphs.has(Glyph.SUPPORT) && targets.size() > 0) {
-                final Map<Unit, Set<Entity>> healMap = this.getHealMap(view, player, targets);
+                final Map<Unit, Set<Entity>> healMap = this.getHealMap(ctx.view, player, targets);
                 final Chooser<Entity> chooser = new Chooser<>((Integer old, Integer next) -> next > old);
                 final Point p = unit.getPoint();
                 if (healMap.containsKey(unit)) {
                     for (Entity e : healMap.get(unit)) {
                         final Point p1 = e.getPoint();
-                        final int nearbyEnemies = GoalUtils.countNearbyUnits(view, player, p1, false);
+                        final int nearbyEnemies = GoalUtils.countNearbyUnits(ctx.view, player, p1, false);
                         final int score = (e.combat.health.getMax() - e.combat.health.get()) - (p.distance(p1) / 2)
                                 + nearbyEnemies;
                         chooser.choice(e, score);

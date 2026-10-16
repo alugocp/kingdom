@@ -58,7 +58,7 @@ public class AbilityLogic {
     /**
      * Attack ability with variable Damage based on the target
      */
-    public static SideEffect dynamicDamageAttack(GameView view, Unit attacker, int range,
+    public static SideEffect dynamicDamageAttack(GameViewContext ctx, Unit attacker, int range,
             Function<Tile, Damage> getDamage) {
         Map<Point, Entity> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
@@ -66,7 +66,7 @@ public class AbilityLogic {
         // Grab every possible attack target within range
         Set<Point> unfiltered = Hexagons.getNeighbors(attacker.getPoint(), range);
         for (Point p : unfiltered) {
-            Optional<Tile> tile = view.game.world.getTile(p);
+            Optional<Tile> tile = ctx.view.game.world.getTile(p);
             if (!tile.isPresent()) {
                 continue;
             }
@@ -83,10 +83,10 @@ public class AbilityLogic {
         }
 
         // Use overridden method from Player to determine how targets are selected
-        return attacker.getLeader().get().select(view, points, "No attack targets are in range", (Point p) -> {
-            final Damage dmg = getDamage.apply(view.game.world.getTile(p).get());
-            return new SideEffect().add(attacker.combat.attack(view, targets.get(p), dmg))
-                    .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
+        return attacker.getLeader().get().select(ctx.view, points, "No attack targets are in range", (Point p) -> {
+            final Damage dmg = getDamage.apply(ctx.view.game.world.getTile(p).get());
+            return new SideEffect().add(attacker.combat.attack(ctx, targets.get(p), dmg))
+                    .add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view, attacker));
         }, (Tile t) -> {
             if (!t.unit.isPresent() && t.building.map((Building b) -> !b.combat.health.isVulnerable()).orElse(true)) {
                 return Optional.empty();
@@ -95,7 +95,7 @@ public class AbilityLogic {
             final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
             attacker.handleEvent(new Events.AttackEvent(attacker, target, dmg));
             return Optional.of(new LabelOverlay(t.getPoint(),
-                    new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
+                    new Vector3(0f, ctx.view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
                     dmg.toString()));
         });
     }
@@ -104,7 +104,7 @@ public class AbilityLogic {
      * Convenience wrapper for an active Ability that implements an attack and maybe
      * an additional effect
      */
-    public static SideEffect attackAndEffect(GameView view, Unit attacker, Damage dmg, int range,
+    public static SideEffect attackAndEffect(GameViewContext ctx, Unit attacker, Damage dmg, int range,
             Optional<Function<Point, SideEffect>> effect) {
         Map<Point, Entity> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
@@ -112,7 +112,7 @@ public class AbilityLogic {
         // Grab every possible attack target within range
         Set<Point> unfiltered = Hexagons.getNeighbors(attacker.getPoint(), range);
         for (Point p : unfiltered) {
-            Optional<Tile> tile = view.game.world.getTile(p);
+            Optional<Tile> tile = ctx.view.game.world.getTile(p);
             if (!tile.isPresent()) {
                 continue;
             }
@@ -129,14 +129,14 @@ public class AbilityLogic {
         }
 
         // Use overridden method from Player to determine how targets are selected
-        return attacker.getLeader().get().select(view, points, "No attack targets are in range", (Point p) -> {
+        return attacker.getLeader().get().select(ctx.view, points, "No attack targets are in range", (Point p) -> {
             final SideEffect effects = new SideEffect();
             if (targets.get(p) != null) {
-                effects.add(attacker.combat.attack(view, targets.get(p), dmg))
+                effects.add(attacker.combat.attack(ctx, targets.get(p), dmg))
                         .add(effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(new SideEffect()))
-                        .add(() -> view.game.actions.unitHasCastSpell(view, attacker));
+                        .add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view, attacker));
                 if (attacker.leadership.belongsToHuman()) {
-                    effects.add(() -> view.hud.bot.tileMenu.refresh());
+                    effects.add(() -> ctx.view.hud.bot.tileMenu.refresh());
                 }
             }
             return effects;
@@ -148,7 +148,7 @@ public class AbilityLogic {
             final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
             attacker.handleEvent(new Events.AttackEvent(attacker, target, dmgLabel));
             return Optional.of(new LabelOverlay(t.getPoint(),
-                    new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
+                    new Vector3(0f, ctx.view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
                     dmgLabel.toString()));
         });
     }
@@ -160,7 +160,7 @@ public class AbilityLogic {
         return new StratifiedPayload[]{
                 new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(ctx.view, receiver.wielder, dmg, range, Optional.empty())),
+                                .attackAndEffect(ctx, receiver.wielder, dmg, range, Optional.empty())),
                 AbilityLogic.desc(String.format("Deals %s to %s", dmg,
                         range == 1
                                 ? "a select melee target"
@@ -318,8 +318,7 @@ public class AbilityLogic {
                                             receiver.wielder, ColorScheme.WHITE.hex, i.name));
                                     receiver.goOnCooldown(period - 1);
                                 });
-                                effects.add(receiver.wielder.handleEvent(ctx,
-                                        new Events.HarvestEvent(receiver.wielder, i)));
+                                effects.add(receiver.wielder.handleEvent(new Events.HarvestEvent(receiver.wielder, i)));
                             }
                             return effects;
                         }).setOverrideChannel("Tick")};

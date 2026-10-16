@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.prediction.EventLog;
 import net.lugocorp.kingdom.prediction.SelectionTree;
@@ -38,16 +39,16 @@ public class CompPlayer extends Player {
     /**
      * Runs the CompPlayer's decision-making logic and returns false when complete
      */
-    public boolean makeUnitDecisions(GameView view) {
-        final List<Unit> units = view.game.actions.getUnitsWithAndWithoutActions(this).b;
+    public boolean makeUnitDecisions(GameViewContext ctx) {
+        final List<Unit> units = ctx.view.game.actions.getUnitsWithAndWithoutActions(this).b;
 
         // Assign and enact a Behavior to all Units without an Action
         Log.log(LogSys.AI, "Making unit decisions");
-        this.actor.makeDecisions(view, this, GoalSet.singleton, units);
+        this.actor.makeDecisions(ctx, this, GoalSet.singleton, units);
         for (Unit u : units) {
             Log.log(LogSys.AI, "Enacting decision for %s", u);
-            if (!this.actor.enactDecision(view, DecisionChannel.unit(u))) {
-                view.game.actions.unitHasActed(view, u,
+            if (!this.actor.enactDecision(ctx.view, DecisionChannel.unit(u))) {
+                ctx.view.game.actions.unitHasActed(ctx.view, u,
                         new SkipAction("There is no behavior set for this unit", () -> true));
             }
         }
@@ -55,7 +56,7 @@ public class CompPlayer extends Player {
         // Return true if we can still act again
         for (Unit u : units) {
             // TODO replace with canUnitDoThis() so that we support double actions
-            if (!view.game.actions.unitHasAssignedAction(u)) {
+            if (!ctx.view.game.actions.unitHasAssignedAction(u)) {
                 Log.log(LogSys.AI, "Will make more decisions next turn");
                 return true;
             }

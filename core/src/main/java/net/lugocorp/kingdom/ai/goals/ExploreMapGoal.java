@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -27,10 +28,10 @@ public class ExploreMapGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final World world = view.game.world;
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final World world = ctx.view.game.world;
         final float ratio = (float) player.memory.getKnownCells().size() / (float) world.getSize();
-        final int fastUnits = Lambda.count(player.units, (Unit u) -> UnitAnalysis.isFast(view, u));
+        final int fastUnits = Lambda.count(player.units, (Unit u) -> UnitAnalysis.isFast(ctx.view, u));
 
         // Recruit unit handler (recruit a fast Trade Glyph Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
@@ -46,13 +47,13 @@ public class ExploreMapGoal extends Goal {
             }
             return new Decision(channel, this, p,
                     new RecruitUnitBehavior(player, Glyph.TRADE,
-                            (Unit u) -> u.movement.getMaxDistance(view) > 2 ? Priority.GOOD_IDEA : Priority.NEUTRAL,
+                            (Unit u) -> u.movement.getMaxDistance(ctx.view) > 2 ? Priority.GOOD_IDEA : Priority.NEUTRAL,
                             (Set<Point> options) -> options.size() > 0 ? Lambda.random(options) : null));
         }
 
         // Unit handler
         if (channel.is(DecisionClass.UNIT)) {
-            final int max = channel.getUnit().movement.getMaxDistance(view);
+            final int max = channel.getUnit().movement.getMaxDistance(ctx.view);
 
             // Slow Units
             if (max < 2) {
@@ -60,7 +61,7 @@ public class ExploreMapGoal extends Goal {
                 if (fastUnits > 0) {
                     p = p.decrement();
                 }
-                return this.getExplorationDecision(view, player, channel, p);
+                return this.getExplorationDecision(ctx.view, player, channel, p);
             }
 
             // Fast Units
@@ -77,7 +78,7 @@ public class ExploreMapGoal extends Goal {
                 if (fastUnits > 2) {
                     p = p.decrement();
                 }
-                return this.getExplorationDecision(view, player, channel, p);
+                return this.getExplorationDecision(ctx.view, player, channel, p);
             }
 
             // Average Units
@@ -85,7 +86,7 @@ public class ExploreMapGoal extends Goal {
             if (fastUnits > 1) {
                 p = p.decrement();
             }
-            return this.getExplorationDecision(view, player, channel, p);
+            return this.getExplorationDecision(ctx.view, player, channel, p);
         }
 
         // No decision fallback

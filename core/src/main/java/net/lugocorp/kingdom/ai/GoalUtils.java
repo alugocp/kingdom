@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
@@ -173,10 +174,10 @@ public class GoalUtils {
     /**
      * Returns true if the given Unit deals extra Damage to the given Entity
      */
-    public static boolean isStrongAgainst(GameView view, CompPlayer player, Unit attacker, Entity target) {
+    public static boolean isStrongAgainst(GameViewContext ctx, CompPlayer player, Unit attacker, Entity target) {
         final int baseline = 5;
         final Damage dmg = new Damage(baseline);
-        final Priority result = player.actor.analyze.attack(view, attacker, dmg, target,
+        final Priority result = player.actor.analyze.attack(ctx, attacker, dmg, target,
                 (List<Event> log) -> Priority.FATAL);
         return dmg.base > baseline;
     }
@@ -184,10 +185,10 @@ public class GoalUtils {
     /**
      * Returns true if the given Unit deals less Damage to the given Entity
      */
-    public static boolean isWeakAgainst(GameView view, CompPlayer player, Unit attacker, Entity target) {
+    public static boolean isWeakAgainst(GameViewContext ctx, CompPlayer player, Unit attacker, Entity target) {
         final int baseline = 5;
         final Damage dmg = new Damage(baseline);
-        final Priority result = player.actor.analyze.attack(view, attacker, dmg, target,
+        final Priority result = player.actor.analyze.attack(ctx, attacker, dmg, target,
                 (List<Event> log) -> Priority.FATAL);
         return dmg.base < baseline;
     }

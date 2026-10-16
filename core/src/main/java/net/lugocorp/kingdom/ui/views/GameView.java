@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Point;
@@ -216,7 +217,7 @@ public class GameView implements View {
 
         // Update Animations and other Game state
         this.animations.update(this, dt);
-        this.game.mechanics.turns.processTurnByFrame(this);
+        this.game.mechanics.turns.processTurnByFrame(AllEventHandlers.instance.getContext());
         this.hud.popups.handleTransition();
 
         // Calculate which models to display

@@ -7,15 +7,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Handles arbitrary incoming Events on arbitrary members of some group
+ * Handles arbitrary incoming Events on an single type of EventReceiver
  */
 public class EventHandlerBundle<T extends EventReceiver> {
-    private Map<String, List<EventHandler<T, Event>>> handlers = new HashMap<>();
-    private Map<String, EventHandler<T, Event>> defaults = new HashMap<>();
+    private final Map<String, List<EventHandler<T, Event>>> handlers = new HashMap<>();
+    private final Map<String, EventHandler<T, Event>> defaults = new HashMap<>();
+    private final Supplier<GameViewContext> getContext;
+
+    EventHandlerBundle(Supplier<GameViewContext> getContext) {
+        this.getContext = getContext;
+    }
 
     /**
      * Formats the lookup key used in this.handlers
@@ -28,10 +34,10 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * Returns all registered stratifiers associated with Generate*Event channels
      */
     public Set<String> getStratifiers() {
-        Pattern p = Pattern.compile("(.+)\\.Generate[\\w]+Event", Pattern.CASE_INSENSITIVE);
-        Set<String> stratifiers = new HashSet<>();
+        final Pattern p = Pattern.compile("(.+)\\.Generate[\\w]+Event", Pattern.CASE_INSENSITIVE);
+        final Set<String> stratifiers = new HashSet<>();
         for (String key : this.handlers.keySet()) {
-            Matcher m = p.matcher(key);
+            final Matcher m = p.matcher(key);
             if (m.matches()) {
                 stratifiers.add(m.group(1));
             }
@@ -98,14 +104,17 @@ public class EventHandlerBundle<T extends EventReceiver> {
     /**
      * Runs the relevant EventHandler logic for a given name and Event
      */
-    public <E extends Event> SideEffect handle(GameViewContext ctx, T receiver, E e) {
-        String key = this.getKey(receiver.getStratifier(), e.channel);
-        boolean hasHandler = this.handlers.containsKey(key);
-        boolean hasDefault = this.defaults.containsKey(e.channel);
+    public <E extends Event> SideEffect handle(T receiver, E e) {
+        final GameViewContext ctx = this.getContext.get();
+        final String key = this.getKey(receiver.getStratifier(), e.channel);
+        final boolean hasHandler = this.handlers.containsKey(key);
+        final boolean hasDefault = this.defaults.containsKey(e.channel);
         if (e.panic && !(hasHandler || hasDefault)) {
             throw new RuntimeException(
                     String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
+
+        // Run the actual handler and collect side effects
         final SideEffect effects = new SideEffect();
         if (hasHandler) {
             for (EventHandler<T, Event> handler : this.handlers.get(key)) {

@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Domain;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
@@ -174,8 +175,8 @@ public class Patron extends Building {
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
-        return ctx.view.game.events.patron.handle(ctx, this, e);
+    public SideEffect handleEventWithoutSignalBooster(Event e) {
+        return AllEventHandlers.instance.patron.handle(this, e);
     }
 
     /** {@inheritdoc} */

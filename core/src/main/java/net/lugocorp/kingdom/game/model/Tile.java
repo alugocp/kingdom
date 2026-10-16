@@ -8,9 +8,9 @@ import net.lugocorp.kingdom.game.layers.Governable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
@@ -255,8 +255,8 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
-        return ctx.view.game.events.tile.handle(ctx, this, e);
+    public SideEffect handleEventWithoutSignalBooster(Event e) {
+        return AllEventHandlers.instance.tile.handle(this, e);
     }
 
     /** {@inheritdoc} */

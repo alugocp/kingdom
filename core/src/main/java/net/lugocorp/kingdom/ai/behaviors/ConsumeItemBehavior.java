@@ -22,7 +22,7 @@ public class ConsumeItemBehavior implements Behavior {
     public void act(GameView view) {
         if (this.unit.haul.has(this.item)) {
             final Events.ItemConsumedEvent event = new Events.ItemConsumedEvent(this.item, this.unit);
-            this.item.handleEvent(view, event).execute();
+            this.item.handleEvent(event).execute();
             if (event.consumed) {
                 this.unit.haul.remove(item);
             }

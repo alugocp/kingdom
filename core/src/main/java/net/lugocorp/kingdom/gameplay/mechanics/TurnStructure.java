@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
@@ -196,21 +197,22 @@ public class TurnStructure {
     /**
      * Performs some action each frame to keep the TurnStructure flowing
      */
-    public void processTurnByFrame(GameView view) {
+    public void processTurnByFrame(GameViewContext ctx) {
         if (this.turn.getState() == TurnState.TRANSITION) {
             // Logic for in between turns
-            if (view.game.future.checkFutureTicks(view) && !view.animations.inProgress()) {
+            if (ctx.view.game.future.checkFutureTicks(ctx.view) && !ctx.view.animations.inProgress()) {
                 this.turn.activate();
-                view.hud.bot.tileMenu.refresh();
+                ctx.view.hud.bot.tileMenu.refresh();
                 if (this.turn.getPlayer().isHumanPlayer()) {
-                    view.hud.bot.turnButton.update(true, false);
+                    ctx.view.hud.bot.turnButton.update(true, false);
                 }
             }
             this.shouldCheckForAutoTurnEnd = true;
         } else if (this.turn.getPlayer().isHumanPlayer()) {
             // Check for auto turn end with the HumanPlayer
-            if (this.shouldCheckForAutoTurnEnd && view.av.settings.getAutoComplete() && this.checkAutoTurnEnd(view)) {
-                view.hud.bot.turnButton.finishTurn(view, false);
+            if (this.shouldCheckForAutoTurnEnd && ctx.view.av.settings.getAutoComplete()
+                    && this.checkAutoTurnEnd(ctx.view)) {
+                ctx.view.hud.bot.turnButton.finishTurn(ctx.view, false);
                 this.shouldCheckForAutoTurnEnd = false;
             }
         } else {
@@ -219,10 +221,10 @@ public class TurnStructure {
             // TODO re-implement decision making for non-Unit DecisionChannels (do it in the
             // relevant mechanics classes)
             Log.log(LogSys.AI, "Start decision making for %s", player);
-            if (!player.makeUnitDecisions(view)) {
+            if (!player.makeUnitDecisions(ctx)) {
                 Log.log(LogSys.AI, "End decision making for %s", player);
-                view.hud.bot.tileMenu.refresh();
-                this.nextTurn(view);
+                ctx.view.hud.bot.tileMenu.refresh();
+                this.nextTurn(ctx.view);
             }
         }
     }

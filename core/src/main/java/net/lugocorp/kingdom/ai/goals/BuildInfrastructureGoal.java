@@ -18,6 +18,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
@@ -37,13 +38,13 @@ public class BuildInfrastructureGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
         // Recruit unit handler (recruit a support Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
             return new Decision(channel, this, Priority.GOOD_IDEA, new RecruitUnitBehavior(player, Glyph.SUPPORT,
                     (Unit u) -> Priority.NEUTRAL, (Set<Point> options) -> {
-                        final Set<Point> undeveloped = Lambda
-                                .filter((Point p) -> !view.game.world.getTile(p).get().building.isPresent(), options);
+                        final Set<Point> undeveloped = Lambda.filter(
+                                (Point p) -> !ctx.view.game.world.getTile(p).get().building.isPresent(), options);
                         return undeveloped.size() > 0 ? Lambda.random(undeveloped) : Lambda.random(options);
                     }));
         }
@@ -52,9 +53,9 @@ public class BuildInfrastructureGoal extends Goal {
         if (channel.is(DecisionClass.UNIT)) {
             final Unit unit = channel.getUnit();
             final Consideration<Behavior> consideration = new Consideration<>();
-            final Optional<Tuple<Point, List<Point>>> override = this.getOverridePoint(view, unit);
+            final Optional<Tuple<Point, List<Point>>> override = this.getOverridePoint(ctx.view, unit);
             for (Ability ability : unit.abilities.getActives()) {
-                final Optional<Prioritized<Path>> best = player.actor.analyze.activeAbility(view, ability,
+                final Optional<Prioritized<Path>> best = player.actor.analyze.activeAbility(ctx.view, ability,
                         override.map((Tuple<Point, List<Point>> t) -> t.a).orElse(unit.getPoint()),
                         (Prediction prediction) -> {
                             for (Event event : prediction.log) {

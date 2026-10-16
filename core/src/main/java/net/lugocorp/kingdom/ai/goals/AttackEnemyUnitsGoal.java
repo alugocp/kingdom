@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Chooser;
@@ -28,8 +29,8 @@ public class AttackEnemyUnitsGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final Set<Unit> targets = this.getPossibleTargets(view, player);
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final Set<Unit> targets = this.getPossibleTargets(ctx.view, player);
 
         // Recruit unit handler (recruit a Battle Glyph Unit that is strong against
         // Buildings)
@@ -44,10 +45,10 @@ public class AttackEnemyUnitsGoal extends Goal {
             return new Decision(channel, this, priority, new RecruitUnitBehavior(player, Glyph.BATTLE, (Unit u) -> {
                 int bonus = 0;
                 for (Unit u1 : targets) {
-                    if (GoalUtils.isWeakAgainst(view, player, u, u1)) {
+                    if (GoalUtils.isWeakAgainst(ctx, player, u, u1)) {
                         bonus--;
                     }
-                    if (GoalUtils.isStrongAgainst(view, player, u, u1)) {
+                    if (GoalUtils.isStrongAgainst(ctx, player, u, u1)) {
                         bonus++;
                     }
                 }
@@ -79,11 +80,12 @@ public class AttackEnemyUnitsGoal extends Goal {
                 final Chooser<Unit> chooser = new Chooser<>((Integer old, Integer next) -> next > old);
                 final Point p = unit.getPoint();
                 for (Unit u : targets) {
-                    final Optional<Building> occupiedBuilding = view.game.world.getTile(u.getPoint()).get().building;
-                    final int maxDamage = GoalUtils.getMaxDamage(view, player, unit, u);
+                    final Optional<Building> occupiedBuilding = ctx.view.game.world.getTile(u.getPoint())
+                            .get().building;
+                    final int maxDamage = GoalUtils.getMaxDamage(ctx.view, player, unit, u);
                     final int damageTaken = unit.combat.health.getMax() - unit.combat.health.get();
-                    final int nearbyEnemies = GoalUtils.countNearbyUnits(view, player, unit.getPoint(), false);
-                    final int nearbyAllies = GoalUtils.countNearbyUnits(view, player, unit.getPoint(), true);
+                    final int nearbyEnemies = GoalUtils.countNearbyUnits(ctx.view, player, unit.getPoint(), false);
+                    final int nearbyAllies = GoalUtils.countNearbyUnits(ctx.view, player, unit.getPoint(), true);
                     final int dist = p.distance(u.getPoint());
                     final int health = u.combat.health.get();
                     if (maxDamage == 0) {

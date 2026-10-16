@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Chooser;
@@ -29,8 +30,8 @@ public class ExpandTerritoryGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final Set<Tower> targets = this.getPossibleTargets(view, player);
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final Set<Tower> targets = this.getPossibleTargets(ctx.view, player);
 
         // Recruit unit handler (recruit a Battle Glyph Unit that is strong against
         // Towers)
@@ -45,10 +46,10 @@ public class ExpandTerritoryGoal extends Goal {
             return new Decision(channel, this, priority, new RecruitUnitBehavior(player, Glyph.BATTLE, (Unit u) -> {
                 int bonus = 0;
                 for (Tower t : targets) {
-                    if (GoalUtils.isWeakAgainst(view, player, u, t)) {
+                    if (GoalUtils.isWeakAgainst(ctx, player, u, t)) {
                         bonus--;
                     }
-                    if (GoalUtils.isStrongAgainst(view, player, u, t)) {
+                    if (GoalUtils.isStrongAgainst(ctx, player, u, t)) {
                         bonus++;
                     }
                 }
@@ -86,9 +87,9 @@ public class ExpandTerritoryGoal extends Goal {
                 // Calculate the Priority and have our Unit attack the target
                 final Tower target = chooser.get();
                 Priority priority = Priority.GOOD_IDEA;
-                if (GoalUtils.isStrongAgainst(view, player, unit, target)) {
+                if (GoalUtils.isStrongAgainst(ctx, player, unit, target)) {
                     priority = Priority.OPTIMAL;
-                } else if (GoalUtils.isWeakAgainst(view, player, unit, target)) {
+                } else if (GoalUtils.isWeakAgainst(ctx, player, unit, target)) {
                     priority = Priority.NEUTRAL;
                 }
                 return new Decision(channel, this, priority, new AttackBehavior(player, unit, target));

@@ -16,6 +16,7 @@ import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -33,17 +34,17 @@ public class HarvestAuctionPointsGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
         // Recruit unit handler (recruit a Trade Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
             return new Decision(channel, this, Priority.GOOD_IDEA,
                     new RecruitUnitBehavior(player, Glyph.TRADE,
-                            (Unit u) -> this.doesUnitGeneratePointsOnBuilding(view, player, u).isPresent()
+                            (Unit u) -> this.doesUnitGeneratePointsOnBuilding(ctx.view, player, u).isPresent()
                                     ? Priority.GOOD_IDEA
                                     : Priority.NEUTRAL,
                             (Set<Point> options) -> {
                                 final Set<Point> marketplaces = Lambda
-                                        .filter((Point p) -> view.game.world.getTile(p).get().building
+                                        .filter((Point p) -> ctx.view.game.world.getTile(p).get().building
                                                 .map((Building b) -> b.name.equals(Labels.building_marketplace))
                                                 .orElse(false), options);
                                 return marketplaces.size() > 0 ? Lambda.random(marketplaces) : Lambda.random(options);
@@ -53,9 +54,9 @@ public class HarvestAuctionPointsGoal extends Goal {
         // Unit handler
         if (channel.is(DecisionClass.UNIT)) {
             final Unit unit = channel.getUnit();
-            final Optional<String> building = this.doesUnitGeneratePointsOnBuilding(view, player, unit);
+            final Optional<String> building = this.doesUnitGeneratePointsOnBuilding(ctx.view, player, unit);
             if (building.isPresent()) {
-                final Optional<Point> closest = GoalUtils.findNearbyBuilding(view, player, unit.getPoint(),
+                final Optional<Point> closest = GoalUtils.findNearbyBuilding(ctx.view, player, unit.getPoint(),
                         building.get());
                 if (closest.isPresent()) {
                     if (unit.getPoint().equals(closest.get())) {
@@ -63,7 +64,7 @@ public class HarvestAuctionPointsGoal extends Goal {
                     }
 
                     final Pathfinder pathfinder = new Pathfinder(unit);
-                    final List<Point> path = pathfinder.getPath(view, closest.get());
+                    final List<Point> path = pathfinder.getPath(ctx.view, closest.get());
                     if (path.size() > 0) {
                         return new Decision(channel, this, Priority.OPTIMAL, new MoveUnitBehavior(unit, path));
                     }

@@ -7,18 +7,29 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 
 /**
  * A neat package to contain all of our EventHandlerBundles
  */
 public class AllEventHandlers {
+    public static final AllEventHandlers instance = new AllEventHandlers();
     public final SignalBooster signals = new SignalBooster();
-    public final EventHandlerBundle<Building> building = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Artifact> artifact = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Ability> ability = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Patron> patron = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Item> item = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Unit> unit = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Tile> tile = new EventHandlerBundle<>();
-    public final EventHandlerBundle<Fate> fate = new EventHandlerBundle<>();
+    public final EventHandlerBundle<Building> building = new EventHandlerBundle<>(() -> this.ctx);
+    public final EventHandlerBundle<Artifact> artifact = new EventHandlerBundle<>(() -> this.ctx);
+    public final EventHandlerBundle<Ability> ability = new EventHandlerBundle<>(() -> this.ctx);
+    public final EventHandlerBundle<Patron> patron = new EventHandlerBundle<>(() -> this.ctx);
+    public final EventHandlerBundle<Item> item = new EventHandlerBundle<>(() -> this.ctx);
+    public final EventHandlerBundle<Unit> unit = new EventHandlerBundle<>(() -> this.ctx);
+    public final EventHandlerBundle<Tile> tile = new EventHandlerBundle<>(() -> this.ctx);
+    public final EventHandlerBundle<Fate> fate = new EventHandlerBundle<>(() -> this.ctx);
+    private GameViewContext ctx = null;
+
+    public void setContext(GameViewContext ctx) {
+        this.ctx = ctx;
+    }
+
+    public GameViewContext getContext() {
+        return this.ctx;
+    }
 }

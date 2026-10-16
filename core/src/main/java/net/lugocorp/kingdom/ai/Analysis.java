@@ -71,10 +71,9 @@ public class Analysis {
      * Predicts the outcome of the given Event on the given Ability, and assigns a
      * Priority to the outcome
      */
-    public Priority passiveAbility(GameViewContext ctx, Ability ability, Event event,
-            Function<List<Event>, Priority> prioritize) {
+    public Priority passiveAbility(Ability ability, Event event, Function<List<Event>, Priority> prioritize) {
         final int handle = EventLog.getHandle();
-        ability.handleEvent(ctx, event);
+        ability.handleEvent(event);
         return prioritize.apply(EventLog.getEvents(handle));
     }
 
@@ -83,17 +82,16 @@ public class Analysis {
      */
     public Priority passiveAbility(GameView view, Ability ability, Event event, Point p,
             Function<List<Event>, Priority> prioritize) {
-        return this.spoofUnitPosition(ability.wielder, p, () -> this.passiveAbility(view, ability, event, prioritize));
+        return this.spoofUnitPosition(ability.wielder, p, () -> this.passiveAbility(ability, event, prioritize));
     }
 
     /**
      * Makes a Prediction for what will happen if the given Unit consumes the given
      * Item
      */
-    public Priority itemConsumption(GameViewContext ctx, Unit unit, Item item,
-            Function<List<Event>, Priority> prioritize) {
+    public Priority itemConsumption(Unit unit, Item item, Function<List<Event>, Priority> prioritize) {
         final int handle = EventLog.getHandle();
-        item.handleEvent(ctx, new Events.ItemConsumedEvent(item, unit));
+        item.handleEvent(new Events.ItemConsumedEvent(item, unit));
         return prioritize.apply(EventLog.getEvents(handle));
     }
 
@@ -101,10 +99,10 @@ public class Analysis {
      * Makes a Prediction for what will happen if the given Unit attacks the given
      * target Entity
      */
-    public Priority attack(GameView view, Unit attacker, Damage damage, Entity target,
+    public Priority attack(GameViewContext ctx, Unit attacker, Damage damage, Entity target,
             Function<List<Event>, Priority> prioritize) {
         final int handle = EventLog.getHandle();
-        attacker.combat.attack(view, target, damage);
+        attacker.combat.attack(ctx, target, damage);
         return prioritize.apply(EventLog.getEvents(handle));
     }
 }

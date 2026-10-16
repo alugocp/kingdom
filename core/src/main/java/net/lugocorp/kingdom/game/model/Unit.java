@@ -19,6 +19,7 @@ import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
@@ -147,18 +148,18 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
+    public SideEffect handleEventWithoutSignalBooster(Event e) {
         final SideEffect effects = new SideEffect();
-        effects.add(ctx.view.game.events.unit.handle(ctx, this, e));
+        effects.add(AllEventHandlers.instance.unit.handle(this, e));
         if (e.propagate) {
             for (Ability a : this.abilities.getActives()) {
-                effects.add(a.handleEventWithoutSignalBooster(ctx, e));
+                effects.add(a.handleEventWithoutSignalBooster(e));
             }
             for (Ability a : this.abilities.getPassives()) {
-                effects.add(a.handleEventWithoutSignalBooster(ctx, e));
+                effects.add(a.handleEventWithoutSignalBooster(e));
             }
             for (Item i : this.equipped) {
-                effects.add(i.handleEventWithoutSignalBooster(ctx, e));
+                effects.add(i.handleEventWithoutSignalBooster(e));
             }
         }
         return effects;

@@ -13,9 +13,9 @@ import net.lugocorp.kingdom.game.model.Tower;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
-import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import java.util.List;
 import java.util.Set;
@@ -27,9 +27,9 @@ public class DefendBuildingsGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final int defensiveUnits = Lambda.count(player.units, (Unit u) -> UnitAnalysis.isDefensive(view, u));
-        final int towers = Lambda.count(view.game.towers, (Tower t) -> t.leadership.belongsToPlayer(player));
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final int defensiveUnits = Lambda.count(player.units, (Unit u) -> UnitAnalysis.isDefensive(ctx.view, u));
+        final int towers = Lambda.count(ctx.view.game.towers, (Tower t) -> t.leadership.belongsToPlayer(player));
 
         // Recruit unit handler (recruit a defensive Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
@@ -45,7 +45,7 @@ public class DefendBuildingsGoal extends Goal {
                     (Unit u) -> Priority.NEUTRAL, (Set<Point> options) -> {
                         // If one of the spawn points is a Tower, then spawn there
                         for (Point p : options) {
-                            final Tower tower = view.game.world.getTile(p).get().getDomainCenter();
+                            final Tower tower = ctx.view.game.world.getTile(p).get().getDomainCenter();
                             if (tower.getPoint().equals(p)) {
                                 return p;
                             }
@@ -64,20 +64,20 @@ public class DefendBuildingsGoal extends Goal {
             for (Building b : player.buildings) {
                 // Skip if there is already a defender
                 final Point p = b.getPoint();
-                if (view.game.world.getTile(p).get().unit.isPresent()) {
+                if (ctx.view.game.world.getTile(p).get().unit.isPresent()) {
                     continue;
                 }
 
                 // Make an assessment for the Priority of moving this Unit
                 final boolean isDire = b.isEntityType(EntityType.TOWER) || b.combat.health.atOrBelowPercent(60);
-                final List<Point> path = pathfinder.getPath(view, p);
-                final boolean defensive = UnitAnalysis.isDefensive(view, unit);
+                final List<Point> path = pathfinder.getPath(ctx.view, p);
+                final boolean defensive = UnitAnalysis.isDefensive(ctx.view, unit);
                 Priority priority = defensive ? Priority.GOOD_IDEA : Priority.NEUTRAL;
                 if (path.size() > 0) {
                     if (isDire) {
                         priority = priority.increment();
                     }
-                    if (path.size() > unit.movement.getMaxDistance(view) * 2) {
+                    if (path.size() > unit.movement.getMaxDistance(ctx.view) * 2) {
                         priority = priority.decrement();
                     }
                     return new Decision(channel, this, priority, new MoveUnitBehavior(unit, path));

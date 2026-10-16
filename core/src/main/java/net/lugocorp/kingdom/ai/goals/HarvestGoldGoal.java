@@ -18,6 +18,7 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
@@ -38,7 +39,7 @@ public class HarvestGoldGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
 
         // Recruit unit handler (recruit a Trade or Mining Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
@@ -49,7 +50,7 @@ public class HarvestGoldGoal extends Goal {
             if (mines < 2 || mines < unitsByGlyph.get(Glyph.MINING)) {
                 return new Decision(channel, this, mines < 2 ? Priority.OPTIMAL : Priority.GOOD_IDEA,
                         new RecruitUnitBehavior(player, Glyph.MINING,
-                                (Unit u) -> GoalUtils.canUnitSpawnBuilding(view, player, u, Labels.building_mine)
+                                (Unit u) -> GoalUtils.canUnitSpawnBuilding(ctx.view, player, u, Labels.building_mine)
                                         ? Priority.GOOD_IDEA
                                         : Priority.NEUTRAL,
                                 (Set<Point> options) -> Lambda.random(options)));
@@ -67,13 +68,13 @@ public class HarvestGoldGoal extends Goal {
             return new Decision(channel, this, priority,
                     new RecruitUnitBehavior(player,
                             unitsByGlyph.get(Glyph.TRADE) < unitsByGlyph.get(Glyph.MINING) ? Glyph.TRADE : Glyph.MINING,
-                            (Unit u) -> this.doesUnitGenerateGoldOnBuilding(view, player, u).isPresent()
+                            (Unit u) -> this.doesUnitGenerateGoldOnBuilding(ctx.view, player, u).isPresent()
                                     ? Priority.GOOD_IDEA
                                     : Priority.NEUTRAL,
                             (Set<Point> options) -> {
                                 final Chooser<Point> chooser = new Chooser<>((Integer old, Integer next) -> next < old);
                                 for (Point p : options) {
-                                    final Optional<Point> mine = GoalUtils.findNearbyBuilding(view, player, p,
+                                    final Optional<Point> mine = GoalUtils.findNearbyBuilding(ctx.view, player, p,
                                             Labels.building_mine);
                                     mine.ifPresent((Point p1) -> {
                                         chooser.choice(p, p.distance(p1));
@@ -89,10 +90,10 @@ public class HarvestGoldGoal extends Goal {
 
             // Consume any valuable Items in this Unit's haul Inventory
             for (Item item : unit.haul) {
-                if (unit.hunger.canEat(view, item)) {
+                if (unit.hunger.canEat(ctx.view, item)) {
                     continue;
                 }
-                final Priority priority = player.actor.analyze.itemConsumption(view, unit, item, (List<Event> log) -> {
+                final Priority priority = player.actor.analyze.itemConsumption(unit, item, (List<Event> log) -> {
                     for (Event e : log) {
                         if (e.getClass() == Events.YieldGoldEvent.class) {
                             return Priority.GOOD_IDEA;
@@ -106,17 +107,17 @@ public class HarvestGoldGoal extends Goal {
             }
 
             // Move the Unit to a Mine (or build a Mine)
-            final Optional<String> building = this.doesUnitGenerateGoldOnBuilding(view, player, unit);
+            final Optional<String> building = this.doesUnitGenerateGoldOnBuilding(ctx.view, player, unit);
             if (building.isPresent()) {
 
                 // Find a nearby Building that interacts with this Unit
-                final Optional<Point> closest = GoalUtils.findNearbyBuilding(view, player, unit.getPoint(),
+                final Optional<Point> closest = GoalUtils.findNearbyBuilding(ctx.view, player, unit.getPoint(),
                         building.get());
                 if (closest.isPresent()) {
 
                     // Check if there's a path to the closest Building
                     final Pathfinder pathfinder = new Pathfinder(unit);
-                    final List<Point> path = pathfinder.getPath(view, closest.get());
+                    final List<Point> path = pathfinder.getPath(ctx.view, closest.get());
                     if (path.size() > 0) {
 
                         // We can go to the Building if it's close by
@@ -125,13 +126,13 @@ public class HarvestGoldGoal extends Goal {
                         } else {
                             // Try to spawn the Building if one is not close enough
                             for (Ability active : unit.abilities.getActives()) {
-                                final Optional<Path> selections = GoalUtils.canAbilitySpawnBuilding(view, player,
+                                final Optional<Path> selections = GoalUtils.canAbilitySpawnBuilding(ctx.view, player,
                                         active, Labels.building_mine);
                                 if (selections.isPresent()) {
-                                    final Optional<Point> dest = GoalUtils.findNearbyEmptyTile(view, player,
+                                    final Optional<Point> dest = GoalUtils.findNearbyEmptyTile(ctx.view, player,
                                             unit.getPoint());
                                     if (dest.isPresent()) {
-                                        final List<Point> tilePath = pathfinder.getPath(view, dest.get());
+                                        final List<Point> tilePath = pathfinder.getPath(ctx.view, dest.get());
                                         if (dest.get().equals(unit.getPoint())
                                                 || (tilePath.size() > 0 && tilePath.size() < 6)) {
                                             return new Decision(channel, this, Priority.OPTIMAL, new ListBehavior(

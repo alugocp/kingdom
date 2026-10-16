@@ -23,7 +23,7 @@ import java.util.List;
  * View for when we're loading a new game
  */
 public class LoadingGameView extends ThreadedTaskView {
-    private final AllEventHandlers events = new AllEventHandlers();
+    private final AllEventHandlers events = AllEventHandlers.instance;
     private final List<GameMod> mods = new ArrayList<>();
 
     public LoadingGameView(AudioVideo av) {

@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.ai;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
 import net.lugocorp.kingdom.utils.LogSys;
@@ -26,7 +27,7 @@ public class Actor {
      * Assigns Decisions for each DecisionChannel associated with this Actor's
      * CompPlayer
      */
-    public void makeDecisions(GameView view, CompPlayer player, GoalSet goals, List<Unit> units) {
+    public void makeDecisions(GameViewContext ctx, CompPlayer player, GoalSet goals, List<Unit> units) {
         // Make Decisions regarding Units
         for (Unit unit : units) {
             final DecisionChannel channel = DecisionChannel.unit(unit);
@@ -36,7 +37,7 @@ public class Actor {
 
             final Consideration<Decision> consideration = new Consideration<>();
             for (Goal goal : goals) {
-                final Decision d = goal.getDecision(view, player, channel);
+                final Decision d = goal.getDecision(ctx, player, channel);
                 consideration.consider(d.priority, d);
             }
             consideration.getValue().ifPresent((Decision d) -> {
@@ -55,7 +56,7 @@ public class Actor {
 
             final Consideration<Decision> consideration = new Consideration<>();
             for (Goal goal : goals) {
-                final Decision d = goal.getDecision(view, player, channel);
+                final Decision d = goal.getDecision(ctx, player, channel);
                 consideration.consider(d.priority, d);
             }
             consideration.getValue().ifPresent((Decision d) -> {

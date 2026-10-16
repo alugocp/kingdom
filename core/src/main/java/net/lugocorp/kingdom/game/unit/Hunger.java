@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.UnitDefaults;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;
@@ -45,14 +46,15 @@ public class Hunger {
      * Tells this instance to find an edible hauled Item and eat it. If there is no
      * such Item then hunger begins to strike the Unit.
      */
-    public void gotHungry(GameView view) {
-        if (!this.autoEatCheck(view)) {
+    public void gotHungry(GameViewContext ctx) {
+        if (!this.autoEatCheck(ctx.view)) {
             if (this.unit.leadership.belongsToHuman()) {
-                view.hud.logger.log(String.format("%s got hungry and abandoned your cause", this.unit.name));
+                ctx.view.hud.logger.log(String.format("%s got hungry and abandoned your cause", this.unit.name));
             }
-            view.overlays.entity(this.unit).addRising(new RisingOverlay(view, this.unit, 0x7d4513, "Hunger strikes"));
-            view.game.mechanics.pools.reincarnate(this.unit);
-            this.unit.deactivate(view);
+            ctx.view.overlays.entity(this.unit)
+                    .addRising(new RisingOverlay(ctx.view, this.unit, 0x7d4513, "Hunger strikes"));
+            ctx.view.game.mechanics.pools.reincarnate(this.unit);
+            this.unit.deactivate(ctx);
         }
     }
 

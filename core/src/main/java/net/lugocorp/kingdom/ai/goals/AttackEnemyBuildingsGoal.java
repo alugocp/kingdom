@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.properties.EntityType;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Chooser;
@@ -37,8 +38,8 @@ public class AttackEnemyBuildingsGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final Set<Building> targets = this.getPossibleTargets(view, player);
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final Set<Building> targets = this.getPossibleTargets(ctx.view, player);
 
         // Recruit unit handler (recruit a Battle Glyph Unit that is strong against
         // Buildings)
@@ -53,10 +54,10 @@ public class AttackEnemyBuildingsGoal extends Goal {
             return new Decision(channel, this, priority, new RecruitUnitBehavior(player, Glyph.BATTLE, (Unit u) -> {
                 int bonus = 0;
                 for (Building b : targets) {
-                    if (GoalUtils.isWeakAgainst(view, player, u, b)) {
+                    if (GoalUtils.isWeakAgainst(ctx, player, u, b)) {
                         bonus--;
                     }
-                    if (GoalUtils.isStrongAgainst(view, player, u, b)) {
+                    if (GoalUtils.isStrongAgainst(ctx, player, u, b)) {
                         bonus++;
                     }
                 }
@@ -89,9 +90,9 @@ public class AttackEnemyBuildingsGoal extends Goal {
                 final Point p = unit.getPoint();
                 for (Building b : targets) {
                     final int dist = p.distance(b.getPoint());
-                    final int maxDamage = GoalUtils.getMaxDamage(view, player, unit, b);
+                    final int maxDamage = GoalUtils.getMaxDamage(ctx.view, player, unit, b);
                     final int damageTaken = unit.combat.health.getMax() - unit.combat.health.get();
-                    final int nearbyEnemies = GoalUtils.countNearbyUnits(view, player, unit.getPoint(), false);
+                    final int nearbyEnemies = GoalUtils.countNearbyUnits(ctx.view, player, unit.getPoint(), false);
                     final boolean isTower = b.isEntityType(EntityType.TOWER);
                     final int health = b.combat.health.get();
                     if (maxDamage == 0) {

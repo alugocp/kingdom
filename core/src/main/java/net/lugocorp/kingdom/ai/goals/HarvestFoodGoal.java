@@ -18,6 +18,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.pathfinding.Pathfinder;
@@ -40,12 +41,12 @@ public class HarvestFoodGoal extends Goal {
 
     /** {@inheritdoc} */
     @Override
-    protected Decision makeDecision(GameView view, CompPlayer player, DecisionChannel channel) {
-        final Set<Unit> hungryUnits = this.getHungryUnits(view, player);
+    protected Decision makeDecision(GameViewContext ctx, CompPlayer player, DecisionChannel channel) {
+        final Set<Unit> hungryUnits = this.getHungryUnits(ctx.view, player);
 
         // Recruit unit handler (recruit a Nature or Mining Unit)
         if (channel.is(DecisionClass.RECRUIT_UNIT)) {
-            final Map<Unit, Integer> support = this.getHarvesterSupport(view, player, hungryUnits);
+            final Map<Unit, Integer> support = this.getHarvesterSupport(ctx.view, player, hungryUnits);
 
             // Get the correct Glyph and Priority for our ideal harvester
             Optional<Glyph> targetGlyph = Optional.empty();
@@ -69,34 +70,35 @@ public class HarvestFoodGoal extends Goal {
             // Return our Decision if there is indeed an ideal harvester
             if (targetGlyph.isPresent()) {
                 final Unit finalTargetUnit = targetUnit.get();
-                return new Decision(channel, this, priority, new RecruitUnitBehavior(player, targetGlyph.get(),
-                        (Unit u) -> this.doesUnitGenerateFoodOnBuilding(view, player, u, finalTargetUnit).isPresent()
-                                ? Priority.GOOD_IDEA
-                                : Priority.NEUTRAL,
-                        (Set<Point> options) -> {
-                            final Chooser<Point> chooser = new Chooser<>((Integer old, Integer next) -> next < old);
-                            for (Point p : options) {
-                                chooser.choice(p, finalTargetUnit.getPoint().distance(p));
-                            }
-                            return chooser.get();
-                        }));
+                return new Decision(channel, this, priority,
+                        new RecruitUnitBehavior(player, targetGlyph.get(),
+                                (Unit u) -> this.doesUnitGenerateFoodOnBuilding(ctx.view, player, u, finalTargetUnit)
+                                        .isPresent() ? Priority.GOOD_IDEA : Priority.NEUTRAL,
+                                (Set<Point> options) -> {
+                                    final Chooser<Point> chooser = new Chooser<>(
+                                            (Integer old, Integer next) -> next < old);
+                                    for (Point p : options) {
+                                        chooser.choice(p, finalTargetUnit.getPoint().distance(p));
+                                    }
+                                    return chooser.get();
+                                }));
             }
         }
 
         // Unit handler
         if (channel.is(DecisionClass.UNIT)) {
             final Unit unit = channel.getUnit();
-            final Optional<String> building = this.doesUnitGenerateFoodOnBuilding(view, player, unit, hungryUnits);
+            final Optional<String> building = this.doesUnitGenerateFoodOnBuilding(ctx.view, player, unit, hungryUnits);
             if (building.isPresent()) {
 
                 // Find a nearby Building that interacts with this Unit
-                final Optional<Point> closest = GoalUtils.findNearbyBuilding(view, player, unit.getPoint(),
+                final Optional<Point> closest = GoalUtils.findNearbyBuilding(ctx.view, player, unit.getPoint(),
                         building.get());
                 if (closest.isPresent()) {
 
                     // Check if there's a path to the closest Building
                     final Pathfinder pathfinder = new Pathfinder(unit);
-                    final List<Point> path = pathfinder.getPath(view, closest.get());
+                    final List<Point> path = pathfinder.getPath(ctx.view, closest.get());
                     if (path.size() > 0) {
 
                         // We can go to the Building if it's close by
@@ -105,13 +107,13 @@ public class HarvestFoodGoal extends Goal {
                         } else {
                             // Try to spawn the Building if one is not close enough
                             for (Ability active : unit.abilities.getActives()) {
-                                final Optional<Tuple<String, Path>> tile = this.doesAbilitySpawnBuildingOnTile(view,
+                                final Optional<Tuple<String, Path>> tile = this.doesAbilitySpawnBuildingOnTile(ctx.view,
                                         player, active, building.get());
                                 if (tile.isPresent()) {
-                                    final Optional<Point> dest = GoalUtils.findNearbyTile(view, player, unit.getPoint(),
-                                            tile.get().a);
+                                    final Optional<Point> dest = GoalUtils.findNearbyTile(ctx.view, player,
+                                            unit.getPoint(), tile.get().a);
                                     if (dest.isPresent()) {
-                                        final List<Point> tilePath = pathfinder.getPath(view, dest.get());
+                                        final List<Point> tilePath = pathfinder.getPath(ctx.view, dest.get());
                                         if (dest.get().equals(unit.getPoint())
                                                 || (tilePath.size() > 0 && tilePath.size() < 6)) {
                                             return new Decision(channel, this, Priority.OPTIMAL,
