@@ -36,7 +36,7 @@ public class ActivateAction implements Action {
 
     /** {@inheritdoc} */
     @Override
-    public boolean endOfTurn() {
+    public boolean endOfTurn(GameView view) {
         return false;
     }
 

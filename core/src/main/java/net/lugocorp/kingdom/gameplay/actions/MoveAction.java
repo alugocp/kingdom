@@ -11,7 +11,6 @@ import java.util.List;
 public class MoveAction implements Action {
     private final List<Point> path = new ArrayList<>();
     private final Unit unit;
-    private GameView view;
     private int distance;
     private int costSpent;
     private int max;
@@ -20,7 +19,6 @@ public class MoveAction implements Action {
         this.max = unit.movement.getMaxDistance(view);
         this.distance = distance;
         this.costSpent = costSpent;
-        this.view = view;
         this.unit = unit;
         this.path.addAll(path);
     }
@@ -81,13 +79,13 @@ public class MoveAction implements Action {
 
     /** {@inheritdoc} */
     @Override
-    public boolean startOfTurn() {
+    public boolean startOfTurn(GameView view) {
         // Recalculate the max distance we can travel this turn
-        this.max = this.unit.movement.getMaxDistance(this.view);
+        this.max = this.unit.movement.getMaxDistance(view);
 
         // Drop this Action if any Point becomes inaccessible to the Unit
         for (Point p : this.path) {
-            if (!this.unit.movement.canMoveToPoint(this.view, p)) {
+            if (!this.unit.movement.canMoveToPoint(view, p)) {
                 return false;
             }
         }
@@ -96,11 +94,11 @@ public class MoveAction implements Action {
 
     /** {@inheritdoc} */
     @Override
-    public boolean endOfTurn() {
+    public boolean endOfTurn(GameView view) {
         // If there's more path to move on and we haven't hit max
         // distance yet this turn then do that now
         if (this.path.size() > 0 && this.costSpent < this.max) {
-            this.unit.movement.move(this.view, this.path, true).execute();
+            this.unit.movement.move(view, this.path, true).execute();
         }
 
         // Reset distance moved for the next turn

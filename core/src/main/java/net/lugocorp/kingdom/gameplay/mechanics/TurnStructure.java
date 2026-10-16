@@ -52,7 +52,7 @@ public class TurnStructure {
             view.hud.bot.turnButton.update(false, true);
         }
         this.turn.next();
-        view.game.actions.turnTransition(prev, this.turn.getPlayer());
+        view.game.actions.turnTransition(view, prev, this.turn.getPlayer());
         this.startOfTurn(view);
     }
 

@@ -23,14 +23,15 @@ public class ActionManager {
     /**
      * Run this function at the end of the turn (purges stale Actions)
      */
-    public void turnTransition(Player ending, Player starting) {
+    public void turnTransition(GameView view, Player ending, Player starting) {
         final Set<Unit> acted = new HashSet<>();
         acted.addAll(this.actions.keySet());
         for (Unit u : acted) {
             final boolean atEnd = u.leadership.belongsToPlayer(ending);
             final boolean atStart = u.leadership.belongsToPlayer(starting);
             if (atEnd || atStart) {
-                if ((atStart && this.actions.get(u).startOfTurn()) || (atEnd && this.actions.get(u).endOfTurn())) {
+                if ((atStart && this.actions.get(u).startOfTurn(view))
+                        || (atEnd && this.actions.get(u).endOfTurn(view))) {
                     this.overlays.get(u).setChar(this.getActionOverlayChar(u));
                 } else {
                     this.removeUnitInfo(u);

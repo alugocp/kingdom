@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.actions;
+import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.function.Supplier;
 
 /**
@@ -33,7 +34,7 @@ public class SkipAction implements Action {
 
     /** {@inheritdoc} */
     @Override
-    public boolean endOfTurn() {
+    public boolean endOfTurn(GameView view) {
         return !this.readyToDrop.get();
     }
 

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.actions;
+import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
  * Represents an Action that a Unit can take in a turn (selected from the UI)
@@ -31,7 +32,7 @@ public interface Action {
      * Runs this method at the start of the turn (returns true if this Action should
      * remain active)
      */
-    public default boolean startOfTurn() {
+    public default boolean startOfTurn(GameView view) {
         return true;
     }
 
@@ -39,7 +40,7 @@ public interface Action {
      * Runs this method at the end of the turn (returns true if this Action should
      * remain active)
      */
-    public boolean endOfTurn();
+    public boolean endOfTurn(GameView view);
 
     /**
      * Returns a String explaining this Action to the player
