@@ -23,9 +23,8 @@ public class EventTests {
 
         // Add some EventHandlers
         bundle.addEventHandler(stratifier, event1, (GameView view, Unit receiver, Event event) -> new SideEffect());
-        bundle.setDefaultHandler(event2, (GameView view, Unit receiver, Event event) -> new SideEffect());
         assertEquals(bundle.hasEventHandler(stratifier, event1), true);
-        assertEquals(bundle.hasEventHandler(stratifier, event2), true);
+        assertEquals(bundle.hasEventHandler(stratifier, event2), false);
 
         // Check registered data
         // TODO include default handlers in the channel list here (if we don't remove

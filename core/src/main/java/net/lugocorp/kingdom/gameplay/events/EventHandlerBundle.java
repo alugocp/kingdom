@@ -104,6 +104,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * Registers a new default EventHandler to some channel on this EventReceiver
      */
     public void setDefaultHandler(String channel, EventHandler<T> handler) {
+        // TODO find a way to remove this
         this.defaults.put(channel, handler);
     }
 
@@ -111,6 +112,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * Calls into setDefaultHandler() with an Event class
      */
     public <E extends Event> void setDefaultHandler(Class<E> channel, SingleEventHandler<T, E> handler) {
+        // TODO find a way to remove this
         this.setDefaultHandler(channel.getSimpleName(),
                 (GameView view, T receiver, Event event) -> handler.handle(view, receiver, (E) event));
     }

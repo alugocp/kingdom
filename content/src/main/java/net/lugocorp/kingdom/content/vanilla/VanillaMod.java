@@ -14,7 +14,6 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.game.model.UnitDefaults;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
@@ -263,28 +262,9 @@ public class VanillaMod implements GameMod {
          * SECTION Default handlers
          */
 
-        // GetVisionEvent
-        events.unit.setDefaultHandler(Events.GetVisionEvent.class,
-                (GameView view, Unit receiver, Events.GetVisionEvent e) -> {
-                    e.radius = UnitDefaults.VISION;
-                    return new SideEffect();
-                });
-        events.building.setDefaultHandler(Events.GetVisionEvent.class,
-                (GameView view, Building receiver, Events.GetVisionEvent e) -> {
-                    e.radius = 0;
-                    return new SideEffect();
-                });
-
-        // GetsHungry
+        // GetsHungry (TODO find a way to remove this)
         events.unit.setDefaultHandler("GetsHungry", (GameView view, Unit receiver, Event event) -> new SideEffect()
                 .add(() -> receiver.hunger.gotHungry(view)));
-
-        // UnitMoveDistanceEvent
-        events.unit.setDefaultHandler(Events.UnitMoveDistanceEvent.class,
-                (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
-                    e.distance = UnitDefaults.SPEED;
-                    return new SideEffect();
-                });
 
         /**
          * SECTION Tiles

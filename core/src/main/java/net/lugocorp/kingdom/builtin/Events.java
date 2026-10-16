@@ -11,7 +11,9 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Patron;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.game.model.UnitDefaults;
 import net.lugocorp.kingdom.game.player.Player;
+import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.math.Point;
@@ -138,12 +140,15 @@ public class Events {
      */
     public static class GetVisionEvent extends Event {
         public final Player player;
+        public final Entity entity;
         public boolean canSeeAtNight = false;
-        public int radius = 1;
+        public int radius;
 
-        public GetVisionEvent(Player player) {
+        public GetVisionEvent(Player player, Entity entity) {
             super();
+            this.radius = entity.isEntityType(EntityType.UNIT) ? UnitDefaults.VISION : 0;
             this.player = player;
+            this.entity = entity;
         }
 
         /**
@@ -198,7 +203,7 @@ public class Events {
      */
     public static class UnitMoveDistanceEvent extends Event {
         public final Unit unit;
-        public int distance = 1;
+        public int distance = UnitDefaults.SPEED;
 
         public UnitMoveDistanceEvent(Unit unit) {
             super();

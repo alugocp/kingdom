@@ -706,7 +706,7 @@ class VanillaModAbilities {
                         (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
                             Wrapped<Integer> currentVision = new Wrapped<>(4);
                             receiver.wielder.getLeader().ifPresent((Player player) -> {
-                                final Events.GetVisionEvent event = new Events.GetVisionEvent(player);
+                                final Events.GetVisionEvent event = new Events.GetVisionEvent(player, receiver.wielder);
                                 receiver.wielder.handleEvent(view, event);
                                 currentVision.set(event.radius);
                             });

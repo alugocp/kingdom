@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.game.properties;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
-import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -20,8 +20,8 @@ public class Vision {
     /**
      * Returns the associated Unit's vision radius
      */
-    public int get(GameView view, Player player, EventReceiver receiver) {
-        final Events.GetVisionEvent event = new Events.GetVisionEvent(player);
+    public int get(GameView view, Player player, Entity receiver) {
+        final Events.GetVisionEvent event = new Events.GetVisionEvent(player, receiver);
         final boolean isNight = view.game.mechanics.dayNight.isNight();
         receiver.handleEvent(view, event);
         return Math.max(0, event.cumulative(isNight));
@@ -46,7 +46,7 @@ public class Vision {
     /**
      * Changes how far the associated Unit/Building can see
      */
-    public void set(GameView view, Player player, EventReceiver receiver, Point center) {
+    public void set(GameView view, Player player, Entity receiver, Point center) {
         final int radius = this.get(view, player, receiver);
         this.remove(player, view.game.world);
         if (radius > 0) {
