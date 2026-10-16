@@ -16,6 +16,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +30,11 @@ public class Events {
     /**
      * Template for the generator Events
      */
-    private static abstract class GenerateBlobEventTemplate<T> extends Event {
+    private static abstract class GenerateBlobEventTemplate<T> extends Event<GameViewContext> {
         public final T blob;
 
         private GenerateBlobEventTemplate(T blob) {
-            super(false, true);
+            super(GameViewContext.class, false, true);
             this.blob = blob;
         }
     }
@@ -113,17 +114,17 @@ public class Events {
     /**
      * Generic repeatable Event with customizable channel name
      */
-    public static class RepeatedEvent extends Event {
+    public static class RepeatedEvent extends Event<GameViewContext> {
         public int interval;
         public boolean repeat;
 
         public RepeatedEvent(String channel, int interval, boolean repeat) {
-            super(channel, false, false);
+            super(channel, GameViewContext.class, false, false);
             this.interval = interval;
             this.repeat = repeat;
         }
 
-        public <E extends Event> RepeatedEvent(Class<E> channel, int interval, boolean repeat) {
+        public <E extends Event<GameViewContext>> RepeatedEvent(Class<E> channel, int interval, boolean repeat) {
             this(channel.getSimpleName(), interval, repeat);
         }
     }
@@ -131,21 +132,25 @@ public class Events {
     /**
      * Generates the description for any given EventReceiver
      */
-    public static class GetDescriptionEvent extends Event {
+    public static class GetDescriptionEvent extends Event<GameViewContext> {
         public String desc = "";
+
+        public GetDescriptionEvent() {
+            super(GameViewContext.class);
+        }
     }
 
     /**
      * Collects how far a Unit or Building can see
      */
-    public static class GetVisionEvent extends Event {
+    public static class GetVisionEvent extends Event<GameViewContext> {
         public final Player player;
         public final Entity entity;
         public boolean canSeeAtNight = false;
         public int radius;
 
         public GetVisionEvent(Player player, Entity entity) {
-            super();
+            super(GameViewContext.class);
             this.radius = entity.isEntityType(EntityType.UNIT) ? UnitDefaults.VISION : 0;
             this.player = player;
             this.entity = entity;
@@ -163,14 +168,14 @@ public class Events {
      * This event is fired whenever a Unit calculates whether it can move onto some
      * Tile
      */
-    public static class CanUnitMoveEvent extends Event {
+    public static class CanUnitMoveEvent extends Event<GameViewContext> {
         public final Unit unit;
         public final Tile tile;
         public boolean canWalkOnTile;
         public boolean canWalkOnBuilding;
 
         public CanUnitMoveEvent(Unit unit, Tile tile) {
-            super();
+            super(GameViewContext.class);
             this.unit = unit;
             this.tile = tile;
             this.canWalkOnTile = !tile.getObstacle();
@@ -188,12 +193,12 @@ public class Events {
     /**
      * Returns the speed cost associated with traversing the given Tile
      */
-    public static class GetSpeedCostEvent extends Event {
+    public static class GetSpeedCostEvent extends Event<GameViewContext> {
         public final Tile tile;
         public int cost = 1;
 
         public GetSpeedCostEvent(Tile tile) {
-            super();
+            super(GameViewContext.class);
             this.tile = tile;
         }
     }
@@ -201,12 +206,12 @@ public class Events {
     /**
      * Calculates how far a Unit can move
      */
-    public static class UnitMoveDistanceEvent extends Event {
+    public static class UnitMoveDistanceEvent extends Event<GameViewContext> {
         public final Unit unit;
         public int distance = UnitDefaults.SPEED;
 
         public UnitMoveDistanceEvent(Unit unit) {
-            super();
+            super(GameViewContext.class);
             this.unit = unit;
         }
     }
@@ -214,14 +219,14 @@ public class Events {
     /**
      * Triggered whenever a Unit moves
      */
-    public static class UnitMovedEvent extends Event {
+    public static class UnitMovedEvent extends Event<GameViewContext> {
         public final List<Point> previous;
         public final boolean parallel;
         public final Point current;
         public final Unit unit;
 
         public UnitMovedEvent(Unit unit, Point current, List<Point> previous, boolean parallel) {
-            super();
+            super(GameViewContext.class);
             this.parallel = parallel;
             this.previous = previous;
             this.current = current;
@@ -241,12 +246,12 @@ public class Events {
     /**
      * Triggered when a Player claims an Artifact
      */
-    public static class ArtifactClaimedEvent extends Event {
+    public static class ArtifactClaimedEvent extends Event<GameViewContext> {
         public final Artifact artifact;
         public final Player player;
 
         public ArtifactClaimedEvent(Artifact artifact, Player player) {
-            super();
+            super(GameViewContext.class);
             this.artifact = artifact;
             this.player = player;
         }
@@ -255,13 +260,13 @@ public class Events {
     /**
      * Triggered when an Item is consumed
      */
-    public static class ItemConsumedEvent extends Event {
+    public static class ItemConsumedEvent extends Event<GameViewContext> {
         public final Item item;
         public final Unit consumer;
         public boolean consumed = true;
 
         public ItemConsumedEvent(Item item, Unit consumer) {
-            super();
+            super(GameViewContext.class);
             this.consumer = consumer;
             this.item = item;
         }
@@ -270,12 +275,12 @@ public class Events {
     /**
      * Triggered when the Unit yields gold
      */
-    public static class YieldGoldEvent extends Event {
+    public static class YieldGoldEvent extends Event<GameViewContext> {
         public final Unit unit;
         public final int gold;
 
         public YieldGoldEvent(Unit unit, int gold) {
-            super();
+            super(GameViewContext.class);
             this.unit = unit;
             this.gold = gold;
         }
@@ -284,11 +289,11 @@ public class Events {
     /**
      * Triggered when an Ability is activated
      */
-    public static class AbilityActivatedEvent extends Event {
+    public static class AbilityActivatedEvent extends Event<GameViewContext> {
         public final Ability ability;
 
         public AbilityActivatedEvent(Ability ability) {
-            super();
+            super(GameViewContext.class);
             this.ability = ability;
         }
     }
@@ -296,12 +301,12 @@ public class Events {
     /**
      * Triggered when some target takes Damage
      */
-    public static class TakeDamageEvent extends Event {
+    public static class TakeDamageEvent extends Event<GameViewContext> {
         public final Entity target;
         public final Damage dmg;
 
         public TakeDamageEvent(Entity target, Damage dmg) {
-            super();
+            super(GameViewContext.class);
             this.target = target;
             this.dmg = dmg;
         }
@@ -310,13 +315,13 @@ public class Events {
     /**
      * Triggered when some object attacks another
      */
-    public static class AttackEvent extends Event {
+    public static class AttackEvent extends Event<GameViewContext> {
         public final Entity attacker;
         public final Entity target;
         public final Damage dmg;
 
         public AttackEvent(Entity attacker, Entity target, Damage dmg) {
-            super();
+            super(GameViewContext.class);
             this.attacker = attacker;
             this.target = target;
             this.dmg = dmg;
@@ -326,13 +331,13 @@ public class Events {
     /**
      * Triggered when some object attacks another
      */
-    public static class AttackedEvent extends Event {
+    public static class AttackedEvent extends Event<GameViewContext> {
         public final Entity attacker;
         public final Entity target;
         public final Damage dmg;
 
         public AttackedEvent(Entity target, Entity attacker, Damage dmg) {
-            super();
+            super(GameViewContext.class);
             this.attacker = attacker;
             this.target = target;
             this.dmg = dmg;
@@ -342,13 +347,13 @@ public class Events {
     /**
      * Triggered when we need to calculate a Unit's critical hit chance
      */
-    public static class CheckCriticalHitEvent extends Event {
+    public static class CheckCriticalHitEvent extends Event<GameViewContext> {
         public final Entity entity;
         public float multiplier = 1.25f;
         public int chance = 5;
 
         public CheckCriticalHitEvent(Entity entity) {
-            super();
+            super(GameViewContext.class);
             this.entity = entity;
         }
     }
@@ -356,12 +361,12 @@ public class Events {
     /**
      * Triggered when an Entity dies
      */
-    public static class EntityDiedEvent extends Event {
+    public static class EntityDiedEvent extends Event<GameViewContext> {
         public final Entity target;
         public final Entity killer;
 
         public EntityDiedEvent(Entity target, Entity killer) {
-            super();
+            super(GameViewContext.class);
             this.killer = killer;
             this.target = target;
         }
@@ -370,12 +375,12 @@ public class Events {
     /**
      * Triggered when an Entity kills another Entity
      */
-    public static class KilledEntityEvent extends Event {
+    public static class KilledEntityEvent extends Event<GameViewContext> {
         public final Entity killer;
         public final Entity target;
 
         public KilledEntityEvent(Entity killer, Entity target) {
-            super();
+            super(GameViewContext.class);
             this.target = target;
             this.killer = killer;
         }
@@ -384,13 +389,13 @@ public class Events {
     /**
      * Triggered when an Entity heals another Enttiy
      */
-    public static class HealEntityEvent extends Event {
+    public static class HealEntityEvent extends Event<GameViewContext> {
         public final Entity healer;
         public final Entity target;
         public int amount;
 
         public HealEntityEvent(Entity healer, Entity target, int amount) {
-            super();
+            super(GameViewContext.class);
             this.healer = healer;
             this.target = target;
             this.amount = amount;
@@ -400,11 +405,11 @@ public class Events {
     /**
      * Triggered whenever a Modellable is spawned into the World
      */
-    public static class SpawnEvent<T extends Modellable> extends Event {
+    public static class SpawnEvent<T extends Modellable> extends Event<GameViewContext> {
         public final T spawned;
 
         public SpawnEvent(T spawned) {
-            super();
+            super(GameViewContext.class);
             this.spawned = spawned;
         }
     }
@@ -413,12 +418,12 @@ public class Events {
      * Triggered when we need to check if the Unit is stunned (they cannot act in
      * such a case)
      */
-    public static class IsStunnedEvent extends Event {
+    public static class IsStunnedEvent extends Event<GameViewContext> {
         public final Unit unit;
         public boolean isStunned = false;
 
         public IsStunnedEvent(Unit unit) {
-            super();
+            super(GameViewContext.class);
             this.unit = unit;
         }
     }
@@ -426,12 +431,12 @@ public class Events {
     /**
      * Triggered when a status effect (Ability) is added to a Unit
      */
-    public static class StatusEffectAddedEvent extends Event {
+    public static class StatusEffectAddedEvent extends Event<GameViewContext> {
         public final Ability status;
         public final Unit unit;
 
         public StatusEffectAddedEvent(Ability status, Unit unit) {
-            super();
+            super(GameViewContext.class);
             this.status = status;
             this.unit = unit;
         }
@@ -440,13 +445,13 @@ public class Events {
     /**
      * Triggered after a Patron calculates their favor for a given Player
      */
-    public static class CalculateFavorEvent extends Event {
+    public static class CalculateFavorEvent extends Event<GameViewContext> {
         public final Patron patron;
         public final Player player;
         public int favor;
 
         public CalculateFavorEvent(Patron patron, Player player, int favor) {
-            super();
+            super(GameViewContext.class);
             this.patron = patron;
             this.player = player;
             this.favor = favor;
@@ -456,13 +461,13 @@ public class Events {
     /**
      * Triggered when a Unit generates favor for a Patron
      */
-    public static class GenerateFavorEvent extends Event {
+    public static class GenerateFavorEvent extends Event<GameViewContext> {
         public final Patron patron;
         public final Unit unit;
         public int favor;
 
         public GenerateFavorEvent(Patron patron, Unit unit, int favor) {
-            super();
+            super(GameViewContext.class);
             this.patron = patron;
             this.favor = favor;
             this.unit = unit;
@@ -472,12 +477,12 @@ public class Events {
     /**
      * Triggered when a Unit generates auction points
      */
-    public static class GenerateAuctionPointsEvent extends Event {
+    public static class GenerateAuctionPointsEvent extends Event<GameViewContext> {
         public final Unit unit;
         public int points;
 
         public GenerateAuctionPointsEvent(Unit unit, int points) {
-            super();
+            super(GameViewContext.class);
             this.points = points;
             this.unit = unit;
         }
@@ -486,12 +491,12 @@ public class Events {
     /**
      * Triggers whenever a Unit harvests an Item
      */
-    public static class HarvestEvent extends Event {
+    public static class HarvestEvent extends Event<GameViewContext> {
         public final Unit unit;
         public final Item item;
 
         public HarvestEvent(Unit unit, Item item) {
-            super();
+            super(GameViewContext.class);
             this.unit = unit;
             this.item = item;
         }
@@ -501,17 +506,22 @@ public class Events {
      * Triggers when a Player is spawning its initial Unit, so we can control which
      * Glyph it comes from
      */
-    public static class GetInitialGlyphEvent extends Event {
+    public static class GetInitialGlyphEvent extends Event<GameViewContext> {
         public Optional<Glyph> glyph = Optional.empty();
+
+        public GetInitialGlyphEvent() {
+            super(GameViewContext.class);
+        }
     }
 
     /**
      * Triggers when the Game starts
      */
-    public static class GameStartEvent extends Event {
+    public static class GameStartEvent extends Event<GameViewContext> {
         public final Player player;
 
         public GameStartEvent(Player player) {
+            super(GameViewContext.class);
             this.player = player;
         }
     }
@@ -519,10 +529,11 @@ public class Events {
     /**
      * Triggers when the given Player wins an auction
      */
-    public static class WonAuctionEvent extends Event {
+    public static class WonAuctionEvent extends Event<GameViewContext> {
         public final Player player;
 
         public WonAuctionEvent(Player player) {
+            super(GameViewContext.class);
             this.player = player;
         }
     }
@@ -530,10 +541,11 @@ public class Events {
     /**
      * Triggers when the given Player loses an auction
      */
-    public static class LostAuctionEvent extends Event {
+    public static class LostAuctionEvent extends Event<GameViewContext> {
         public final Player player;
 
         public LostAuctionEvent(Player player) {
+            super(GameViewContext.class);
             this.player = player;
         }
     }
@@ -541,10 +553,11 @@ public class Events {
     /**
      * Triggers when a Player recruits a Unit using unit points
      */
-    public static class RecruitNewUnitEvent extends Event {
+    public static class RecruitNewUnitEvent extends Event<GameViewContext> {
         public final Unit unit;
 
         public RecruitNewUnitEvent(Unit unit) {
+            super(GameViewContext.class);
             this.unit = unit;
         }
     }
@@ -552,17 +565,21 @@ public class Events {
     /**
      * Triggers when a Player's turn ends
      */
-    public static class EndOfTurnEvent extends Event {
+    public static class EndOfTurnEvent extends Event<GameViewContext> {
+        public EndOfTurnEvent() {
+            super(GameViewContext.class);
+        }
     }
 
     /**
      * Tells us how many spells the given Unit can cast in a turn
      */
-    public static class GetMaxActivationsEvent extends Event {
+    public static class GetMaxActivationsEvent extends Event<GameViewContext> {
         public final Unit unit;
         public int max = 1;
 
         public GetMaxActivationsEvent(Unit unit) {
+            super(GameViewContext.class);
             this.unit = unit;
         }
     }
@@ -570,11 +587,12 @@ public class Events {
     /**
      * Used to figure out what Items a Unit can eat
      */
-    public static class CanEatItemEvent extends Event {
+    public static class CanEatItemEvent extends Event<GameViewContext> {
         public final Item item;
         public boolean edible;
 
         public CanEatItemEvent(Item item) {
+            super(GameViewContext.class);
             this.edible = item.tags.has(Labels.tag_fruit) || item.tags.has(Labels.tag_meat);
             this.item = item;
         }
@@ -583,11 +601,12 @@ public class Events {
     /**
      * Used to determine whether or not we can use the given Ability (by its name)
      */
-    public static class CanUseAbilityEvent extends Event {
+    public static class CanUseAbilityEvent extends Event<GameViewContext> {
         public final String ability;
         public boolean canUse = true;
 
         public CanUseAbilityEvent(String ability) {
+            super(GameViewContext.class);
             this.ability = ability;
         }
     }
@@ -595,7 +614,11 @@ public class Events {
     /**
      * Used to determine what Building should replace another when it is destroyed
      */
-    public static class ReplaceBuildingEvent extends Event {
+    public static class ReplaceBuildingEvent extends Event<GameViewContext> {
         public Optional<String> replacement = Optional.empty();
+
+        public ReplaceBuildingEvent() {
+            super(GameViewContext.class);
+        }
     }
 }

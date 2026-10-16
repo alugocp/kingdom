@@ -4,12 +4,12 @@ import java.util.Optional;
 /**
  * This class makes Stratified.add() calls more flexible
  */
-public class StratifiedPayload<T extends EventReceiver, E extends Event> {
-    final EventHandler<T, E> handler;
+public class StratifiedPayload<C extends Context, T extends EventReceiver, E extends Event<C>> {
+    final EventHandler<C, T, E> handler;
     final Class<E> eventClass;
     Optional<String> overrideChannel = Optional.empty();
 
-    public StratifiedPayload(Class<E> eventClass, EventHandler<T, E> handler) {
+    public StratifiedPayload(Class<E> eventClass, EventHandler<C, T, E> handler) {
         this.eventClass = eventClass;
         this.handler = handler;
     }

@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
  * Handles arbitrary incoming Events on an single type of EventReceiver
  */
 public class EventHandlerBundle<T extends EventReceiver> {
-    private final Map<String, List<EventHandler<T, Event>>> handlers = new HashMap<>();
-    private final Map<String, EventHandler<T, Event>> defaults = new HashMap<>();
+    private final Map<String, List<EventHandler<Context, T, Event<Context>>>> handlers = new HashMap<>();
+    private final Map<String, EventHandler<Context, T, Event<Context>>> defaults = new HashMap<>();
     private final Supplier<GameViewContext> getContext;
 
     EventHandlerBundle(Supplier<GameViewContext> getContext) {
@@ -64,41 +64,43 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * Returns true if the EventReceiver with the given stratifier has an
      * EventHandler that listens on the given channel
      */
-    public <E extends Event> boolean hasEventHandler(String stratifier, String channel) {
+    public boolean hasEventHandler(String stratifier, String channel) {
         return this.handlers.containsKey(this.getKey(stratifier, channel)) || this.defaults.containsKey(channel);
     }
 
     /**
      * Calls into hasEventHandler() with an Event class
      */
-    public <E extends Event> boolean hasEventHandler(String stratifier, Class<E> eventClass) {
+    public <E extends Event<?>> boolean hasEventHandler(String stratifier, Class<E> eventClass) {
         return this.hasEventHandler(stratifier, eventClass.getSimpleName());
     }
 
     /**
      * Registers a new EventHandler to some name and channel on this EventReceiver
      */
-    <E extends Event> void addEventHandler(String stratifier, String channel, EventHandler<T, E> handler) {
+    <C extends Context, E extends Event<C>> void addEventHandler(String stratifier, String channel,
+            EventHandler<C, T, E> handler) {
         String key = this.getKey(stratifier, channel);
         if (!this.handlers.containsKey(key)) {
-            this.handlers.put(key, new ArrayList<EventHandler<T, Event>>());
+            this.handlers.put(key, new ArrayList<EventHandler<Context, T, Event<Context>>>());
         }
-        this.handlers.get(key).add((EventHandler<T, Event>) handler);
+        this.handlers.get(key).add((EventHandler<Context, T, Event<Context>>) handler);
     }
 
     /**
      * Registers a new default EventHandler to some channel on this EventReceiver
      */
-    public <E extends Event> void setDefaultHandler(String channel, EventHandler<T, E> handler) {
+    public <C extends Context, E extends Event<C>> void setDefaultHandler(String channel,
+            EventHandler<C, T, E> handler) {
         // TODO find a way to remove this
-        this.defaults.put(channel, (EventHandler<T, Event>) handler);
+        this.defaults.put(channel, (EventHandler<Context, T, Event<Context>>) handler);
     }
 
     /**
      * Runs the relevant EventHandler logic for a given name and Event
      */
-    public <E extends Event> SideEffect handle(T receiver, E e) {
-        final GameViewContext ctx = this.getContext.get();
+    public <C extends Context, E extends Event<C>> SideEffect handle(T receiver, E e) {
+        final Context ctx = AllEventHandlers.instance.getContext();
         final String key = this.getKey(receiver.getStratifier(), e.channel);
         final boolean hasHandler = this.handlers.containsKey(key);
         final boolean hasDefault = this.defaults.containsKey(e.channel);
@@ -106,15 +108,18 @@ public class EventHandlerBundle<T extends EventReceiver> {
             throw new RuntimeException(
                     String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
+        if (!ctx.canHandle(e)) {
+            throw new RuntimeException(String.format("Cannot handle %s events under %s context", e.channel, ctx.name));
+        }
 
         // Run the actual handler and collect side effects
         final SideEffect effects = new SideEffect();
         if (hasHandler) {
-            for (EventHandler<T, Event> handler : this.handlers.get(key)) {
-                effects.add(handler.handle(ctx, receiver, e));
+            for (EventHandler<Context, T, Event<Context>> handler : this.handlers.get(key)) {
+                effects.add(handler.handle(ctx, receiver, (Event<Context>) e));
             }
         } else if (hasDefault) {
-            return this.defaults.get(e.channel).handle(ctx, receiver, e);
+            return this.defaults.get(e.channel).handle(ctx, receiver, (Event<Context>) e);
         }
         return effects;
     }

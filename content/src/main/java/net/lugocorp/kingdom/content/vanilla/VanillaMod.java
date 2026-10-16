@@ -264,7 +264,7 @@ public class VanillaMod implements GameMod {
 
         // GetsHungry (TODO find a way to remove this)
         events.unit.setDefaultHandler("GetsHungry", (GameViewContext ctx, Unit receiver,
-                Event event) -> new SideEffect().add(() -> receiver.hunger.gotHungry(ctx)));
+                Event<GameViewContext> event) -> new SideEffect().add(() -> receiver.hunger.gotHungry(ctx)));
 
         /**
          * SECTION Tiles

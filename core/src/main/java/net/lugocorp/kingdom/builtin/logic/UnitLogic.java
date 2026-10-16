@@ -22,7 +22,7 @@ public class UnitLogic {
     /**
      * Changes this Unit's speed
      */
-    public static StratifiedPayload<Unit, Events.UnitMoveDistanceEvent> speed(int distance) {
+    public static StratifiedPayload<GameViewContext, Unit, Events.UnitMoveDistanceEvent> speed(int distance) {
         return new StratifiedPayload<>(Events.UnitMoveDistanceEvent.class,
                 (GameViewContext ctx, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
                     e.distance = distance;

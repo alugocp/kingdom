@@ -20,7 +20,7 @@ public class ItemLogic {
     /**
      * Item that can be consumed to increase the Player's gold
      */
-    public static StratifiedPayload<Item, Events.ItemConsumedEvent> valuable() {
+    public static StratifiedPayload<GameViewContext, Item, Events.ItemConsumedEvent> valuable() {
         return new StratifiedPayload<>(Events.ItemConsumedEvent.class,
                 (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> {
                     e.consumer.getLeader().get().gold += e.item.gold;

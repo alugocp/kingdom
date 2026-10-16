@@ -13,7 +13,7 @@ public class BuildingLogic {
     /**
      * Changes this Building's vision
      */
-    public static StratifiedPayload<Building, Events.GetVisionEvent> vision(int radius) {
+    public static StratifiedPayload<GameViewContext, Building, Events.GetVisionEvent> vision(int radius) {
         return new StratifiedPayload<>(Events.GetVisionEvent.class,
                 (GameViewContext ctx, Building receiver, Events.GetVisionEvent e) -> {
                     e.radius = radius;

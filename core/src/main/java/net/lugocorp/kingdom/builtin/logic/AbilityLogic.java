@@ -37,7 +37,7 @@ public class AbilityLogic {
     /**
      * Sets the Ability's description to a flat string
      */
-    public static StratifiedPayload<Ability, Events.GetDescriptionEvent> desc(String desc) {
+    public static StratifiedPayload<GameViewContext, Ability, Events.GetDescriptionEvent> desc(String desc) {
         return new StratifiedPayload<>(Events.GetDescriptionEvent.class,
                 (GameViewContext ctx, Ability receiver, Events.GetDescriptionEvent e) -> {
                     e.desc = desc;
@@ -46,7 +46,7 @@ public class AbilityLogic {
     }
 
     public static StratifiedPayload[] traverse(String building) {
-        return new StratifiedPayload[]{new StratifiedPayload<Ability, Events.CanUnitMoveEvent>(
+        return new StratifiedPayload[]{new StratifiedPayload<GameViewContext, Ability, Events.CanUnitMoveEvent>(
                 Events.CanUnitMoveEvent.class, (GameViewContext ctx, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (e.tile.building.map((Building b) -> b.name.equals(building)).orElse(false)) {
                         e.canWalkOnBuilding = true;
@@ -158,7 +158,8 @@ public class AbilityLogic {
      */
     public static StratifiedPayload[] attack(Damage dmg, int range) {
         return new StratifiedPayload[]{
-                new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
+                new StratifiedPayload<GameViewContext, Ability, Events.AbilityActivatedEvent>(
+                        Events.AbilityActivatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
                                 .attackAndEffect(ctx, receiver.wielder, dmg, range, Optional.empty())),
                 AbilityLogic.desc(String.format("Deals %s to %s", dmg,
@@ -269,10 +270,10 @@ public class AbilityLogic {
                 AbilityLogic.desc(period == 1
                         ? String.format("Generates %d gold every turn on %s", gold, tileDesc)
                         : String.format("Generates %d gold every %d turns on %s", gold, period, tileDesc)),
-                new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
+                new StratifiedPayload<GameViewContext, Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
                                 () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
-                new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
+                new StratifiedPayload<GameViewContext, Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
                             if (receiver.canUse(ctx.view) && ctx.view.game.world.getTile(receiver.wielder.getPoint())
@@ -302,10 +303,10 @@ public class AbilityLogic {
                 AbilityLogic.desc(period == 1
                         ? String.format("Generates %s every turn on %s", itemDesc, tileDesc)
                         : String.format("Generates %s every %d turns on %s", itemDesc, period, tileDesc)),
-                new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
+                new StratifiedPayload<GameViewContext, Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
                                 () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
-                new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
+                new StratifiedPayload<GameViewContext, Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
                         (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
                             if (!receiver.wielder.haul.isFull() && receiver.canUse(ctx.view)
@@ -353,29 +354,27 @@ public class AbilityLogic {
      * Ability that spawns a building at the caster's location
      */
     public static StratifiedPayload[] build(String building, String tileDesc, Function<Tile, Boolean> criteria) {
-        return new StratifiedPayload[]{
-                new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
-                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Point p = receiver.wielder.getPoint();
-                            if (ctx.view.game.world.getTile(p).isPresent()) {
-                                final Tile t = ctx.view.game.world.getTile(p).get();
-                                if (t.building.isPresent()) {
-                                    return new SideEffect()
-                                            .add(() -> ctx.view.hud.logger.error("Cannot place another building here"));
-                                }
-                                if (criteria.apply(t)) {
-                                    final Building b = ctx.view.game.generator.building(building, p.x, p.y);
-                                    return new SideEffect().add(() -> {
-                                        b.spawn(ctx.view);
-                                        ctx.view.game.actions.unitHasCastSpell(ctx.view, receiver.wielder);
-                                    }).add(() -> receiver.goOnCooldown(2));
-                                }
-                                return new SideEffect()
-                                        .add(() -> ctx.view.hud.logger.error("Invalid tile for this ability"));
-                            }
-                            return new SideEffect();
-                        }),
-                AbilityLogic.desc(String.format("Spawns a %s on %s (cooldown for 2 turns)", building, tileDesc))};
+        return new StratifiedPayload[]{new StratifiedPayload<GameViewContext, Ability, Events.AbilityActivatedEvent>(
+                Events.AbilityActivatedEvent.class,
+                (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                    final Point p = receiver.wielder.getPoint();
+                    if (ctx.view.game.world.getTile(p).isPresent()) {
+                        final Tile t = ctx.view.game.world.getTile(p).get();
+                        if (t.building.isPresent()) {
+                            return new SideEffect()
+                                    .add(() -> ctx.view.hud.logger.error("Cannot place another building here"));
+                        }
+                        if (criteria.apply(t)) {
+                            final Building b = ctx.view.game.generator.building(building, p.x, p.y);
+                            return new SideEffect().add(() -> {
+                                b.spawn(ctx.view);
+                                ctx.view.game.actions.unitHasCastSpell(ctx.view, receiver.wielder);
+                            }).add(() -> receiver.goOnCooldown(2));
+                        }
+                        return new SideEffect().add(() -> ctx.view.hud.logger.error("Invalid tile for this ability"));
+                    }
+                    return new SideEffect();
+                }), AbilityLogic.desc(String.format("Spawns a %s on %s (cooldown for 2 turns)", building, tileDesc))};
     }
 
     /**
@@ -390,27 +389,26 @@ public class AbilityLogic {
      */
     public static StratifiedPayload[] buildRemote(String building, int range, int cooldown, String tileDesc,
             Function<Tile, Boolean> criteria) {
-        return new StratifiedPayload[]{
-                new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
-                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Set<Point> points = Lambda.filter((Point p) -> ctx.view.game.world.getTile(p)
+        return new StratifiedPayload[]{new StratifiedPayload<GameViewContext, Ability, Events.AbilityActivatedEvent>(
+                Events.AbilityActivatedEvent.class,
+                (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                    final Set<Point> points = Lambda.filter(
+                            (Point p) -> ctx.view.game.world.getTile(p)
                                     .map((Tile t) -> !t.building.isPresent() && criteria.apply(t)).orElse(false),
-                                    Hexagons.getNeighbors(receiver.wielder.getPoint(), range));
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, points,
-                                    String.format("No valid location to place a %s", building), (Point p) -> {
-                                        final SideEffect effects = new SideEffect();
-                                        if (ctx.view.game.world.getTile(p)
-                                                .map((Tile t) -> !t.building.isPresent() && criteria.apply(t))
-                                                .orElse(false)) {
-                                            final Building b = ctx.view.game.generator.building(building, p.x, p.y);
-                                            effects.add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view,
-                                                    receiver.wielder)).add(() -> receiver.goOnCooldown(2))
-                                                    .add(() -> b.spawn(ctx.view));
-                                        }
-                                        return effects;
-                                    })).orElse(new SideEffect());
-                        }),
-                AbilityLogic.desc(
+                            Hexagons.getNeighbors(receiver.wielder.getPoint(), range));
+                    return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, points,
+                            String.format("No valid location to place a %s", building), (Point p) -> {
+                                final SideEffect effects = new SideEffect();
+                                if (ctx.view.game.world.getTile(p)
+                                        .map((Tile t) -> !t.building.isPresent() && criteria.apply(t)).orElse(false)) {
+                                    final Building b = ctx.view.game.generator.building(building, p.x, p.y);
+                                    effects.add(
+                                            () -> ctx.view.game.actions.unitHasCastSpell(ctx.view, receiver.wielder))
+                                            .add(() -> receiver.goOnCooldown(2)).add(() -> b.spawn(ctx.view));
+                                }
+                                return effects;
+                            })).orElse(new SideEffect());
+                }), AbilityLogic.desc(
                         String.format("Spawns a %s on %s (cooldown for %d turns)", building, tileDesc, cooldown))};
     }
 
