@@ -111,7 +111,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     public void spawn(GameView view) {
         this.setLoaders(view.av);
         this.movement.setPosition(view, this.x, this.y);
-        this.handleEvent(new Events.SpawnEvent<Unit>(this)).execute();
+        this.handleEvent(new Events.SpawnEvent(this)).execute();
         this.hunger.eat(view, false);
         view.game.units.add(this);
     }

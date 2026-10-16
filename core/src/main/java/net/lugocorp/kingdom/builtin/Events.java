@@ -405,10 +405,10 @@ public class Events {
     /**
      * Triggered whenever a Modellable is spawned into the World
      */
-    public static class SpawnEvent<T extends Modellable> extends Event<GameViewContext> {
-        public final T spawned;
+    public static class SpawnEvent extends Event<GameViewContext> {
+        public final Modellable spawned;
 
-        public SpawnEvent(T spawned) {
+        public SpawnEvent(Modellable spawned) {
             super(GameViewContext.class);
             this.spawned = spawned;
         }

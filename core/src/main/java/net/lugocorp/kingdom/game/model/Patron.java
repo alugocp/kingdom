@@ -170,7 +170,7 @@ public class Patron extends Building {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
         });
-        this.handleEvent(new Events.SpawnEvent<Patron>(this)).execute();
+        this.handleEvent(new Events.SpawnEvent(this)).execute();
     }
 
     /** {@inheritdoc} */
