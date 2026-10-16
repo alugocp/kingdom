@@ -3,6 +3,15 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
 
 /**
+ * TODO
+ * 1) add a CreationContext for pre-GameView stuff (just support Generate*Events so we can use them in the Deserializer);
+ * 2) Move the AllEventHandlers instance to CreationContext or something (GameViewContext should be a subclass of it);
+ * 3) Remove the mechanics init stuff / instantiating GameView before game.init() (remove game.init) now that CreationContext can handle Generate*Events;
+ * 4) No, make Context globally accessible and move AllEventHandlers into CreationContext
+ * 5) Create a NullContext for before we load game content?
+ */
+
+/**
  * This class is like a factory class for all game objects. It calls the
  * relevant generator Events to instantiate each new object.
  */
