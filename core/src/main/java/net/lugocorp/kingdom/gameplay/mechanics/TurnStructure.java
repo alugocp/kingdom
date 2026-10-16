@@ -47,7 +47,7 @@ public class TurnStructure {
      */
     public void nextTurn(GameView view) {
         final Player prev = this.turn.getPlayer();
-        prev.getFate().handleEvent(view, new Events.EndOfTurnEvent()).execute();
+        prev.getFate().handleEvent(new Events.EndOfTurnEvent()).execute();
         if (prev.isHumanPlayer()) {
             view.hud.bot.turnButton.update(false, true);
         }
@@ -144,7 +144,7 @@ public class TurnStructure {
         // Very first turn setup
         if (this.turn.getCounter() == 1) {
             for (Player p : view.game.getAllPlayers()) {
-                p.getFate().handleEvent(view, new Events.GameStartEvent(p)).execute();
+                p.getFate().handleEvent(new Events.GameStartEvent(p)).execute();
             }
         }
 

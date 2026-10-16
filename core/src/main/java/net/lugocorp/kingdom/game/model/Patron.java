@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Domain;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
@@ -97,7 +98,7 @@ public class Patron extends Building {
             final Unit u = unit.get();
             final Events.GenerateFavorEvent event = new Events.GenerateFavorEvent(this, u,
                     this.isPreferredUnitType.apply(u) ? Patron.MIN_FAVOR * 2 : Patron.MIN_FAVOR);
-            u.handleEvent(view, event);
+            u.handleEvent(event);
             if (event.favor <= 0) {
                 continue;
             }
@@ -117,7 +118,7 @@ public class Patron extends Building {
         for (Player p : view.game.getAllPlayers()) {
             final Events.CalculateFavorEvent event = new Events.CalculateFavorEvent(this, p,
                     this.favor.getOrDefault(p, 0));
-            this.handleEvent(view, event);
+            this.handleEvent(event);
             this.favor.put(p, event.favor);
         }
 
@@ -168,18 +169,18 @@ public class Patron extends Building {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
         });
-        this.handleEvent(view, new Events.SpawnEvent<Patron>(this)).execute();
+        this.handleEvent(new Events.SpawnEvent<Patron>(this)).execute();
     }
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        return view.game.events.patron.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
+        return ctx.view.game.events.patron.handle(ctx, this, e);
     }
 
     /** {@inheritdoc} */
     @Override
-    public void deactivate(GameView view) {
+    public void deactivate(GameViewContext ctx) {
         throw new RuntimeException("Should never call decativate() on a Patron");
     }
 

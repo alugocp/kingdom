@@ -46,7 +46,7 @@ public class Tower extends Building implements IndependentGovernable {
         view.game.world.getTile(this.x, this.y).ifPresent((Tile t) -> {
             t.building = Optional.of(this);
         });
-        this.handleEvent(view, new Events.SpawnEvent<Building>(this)).execute();
+        this.handleEvent(new Events.SpawnEvent<Building>(this)).execute();
         this.getMinimapColor().ifPresent((Color c) -> view.hud.bot.minimap.refresh(view.game.world));
     }
 }

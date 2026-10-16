@@ -5,6 +5,7 @@ import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
@@ -52,7 +53,7 @@ public class Ability implements EventReceiver, MenuSubject {
      */
     public String getDescription(GameView view) {
         final Events.GetDescriptionEvent e = new Events.GetDescriptionEvent();
-        this.handleEvent(view, e);
+        this.handleEvent(e);
         if (this.cooldown > 0) {
             return String.format("%s (on cooldown for %d more turns)", e.desc, this.cooldown);
         } else if (!this.canUse(view)) {
@@ -69,7 +70,7 @@ public class Ability implements EventReceiver, MenuSubject {
             return false;
         }
         final Events.CanUseAbilityEvent e = new Events.CanUseAbilityEvent(this.name);
-        this.wielder.handleEvent(view, e);
+        this.wielder.handleEvent(e);
         return e.canUse;
     }
 
@@ -99,7 +100,7 @@ public class Ability implements EventReceiver, MenuSubject {
      * Activates this Ability (only does something if it's active)
      */
     public SideEffect activate(GameView view) {
-        return this.handleEvent(view, new Events.AbilityActivatedEvent(this));
+        return this.handleEvent(new Events.AbilityActivatedEvent(this));
     }
 
     /**
@@ -125,8 +126,8 @@ public class Ability implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        return view.game.events.ability.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
+        return ctx.view.game.events.ability.handle(ctx, this, e);
     }
 
     /** {@inheritdoc} */

@@ -12,6 +12,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.overlay.LabelOverlay;
@@ -38,7 +39,7 @@ public class AbilityLogic {
      */
     public static StratifiedPayload<Ability, Events.GetDescriptionEvent> desc(String desc) {
         return new StratifiedPayload<>(Events.GetDescriptionEvent.class,
-                (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GetDescriptionEvent e) -> {
                     e.desc = desc;
                     return new SideEffect();
                 });
@@ -46,7 +47,7 @@ public class AbilityLogic {
 
     public static StratifiedPayload[] traverse(String building) {
         return new StratifiedPayload[]{new StratifiedPayload<Ability, Events.CanUnitMoveEvent>(
-                Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
+                Events.CanUnitMoveEvent.class, (GameViewContext ctx, Ability receiver, Events.CanUnitMoveEvent e) -> {
                     if (e.tile.building.map((Building b) -> b.name.equals(building)).orElse(false)) {
                         e.canWalkOnBuilding = true;
                     }
@@ -92,7 +93,7 @@ public class AbilityLogic {
             }
             final Damage dmg = getDamage.apply(t);
             final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
-            attacker.handleEvent(view, new Events.AttackEvent(attacker, target, dmg));
+            attacker.handleEvent(new Events.AttackEvent(attacker, target, dmg));
             return Optional.of(new LabelOverlay(t.getPoint(),
                     new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
                     dmg.toString()));
@@ -145,7 +146,7 @@ public class AbilityLogic {
             }
             final Damage dmgLabel = new Damage(dmg);
             final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
-            attacker.handleEvent(view, new Events.AttackEvent(attacker, target, dmgLabel));
+            attacker.handleEvent(new Events.AttackEvent(attacker, target, dmgLabel));
             return Optional.of(new LabelOverlay(t.getPoint(),
                     new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
                     dmgLabel.toString()));
@@ -158,8 +159,8 @@ public class AbilityLogic {
     public static StratifiedPayload[] attack(Damage dmg, int range) {
         return new StratifiedPayload[]{
                 new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, dmg, range, Optional.empty())),
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, dmg, range, Optional.empty())),
                 AbilityLogic.desc(String.format("Deals %s to %s", dmg,
                         range == 1
                                 ? "a select melee target"
@@ -199,7 +200,7 @@ public class AbilityLogic {
                     }
                     final Entity target = targets.get(p);
                     final Events.HealEntityEvent e = new Events.HealEntityEvent(healer, target, getHitPoints.apply(p));
-                    healer.handleEvent(view, e);
+                    healer.handleEvent(e);
                     return Optional.of(new LabelOverlay(p,
                             new Vector3(0f, view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0x00ff00,
                             String.format("+%d", e.amount)));
@@ -269,14 +270,14 @@ public class AbilityLogic {
                         ? String.format("Generates %d gold every turn on %s", gold, tileDesc)
                         : String.format("Generates %d gold every %d turns on %s", gold, period, tileDesc)),
                 new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
-                                () -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
                 new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
-                            if (receiver.canUse(view) && view.game.world.getTile(receiver.wielder.getPoint())
+                            if (receiver.canUse(ctx.view) && ctx.view.game.world.getTile(receiver.wielder.getPoint())
                                     .map((Tile t) -> criteria.apply(t)).orElse(false)) {
-                                effects.add(AbilityLogic.gold(view, receiver.wielder, gold));
+                                effects.add(AbilityLogic.gold(ctx.view, receiver.wielder, gold));
                                 effects.add(() -> receiver.goOnCooldown(period - 1));
                             }
                             return effects;
@@ -302,22 +303,22 @@ public class AbilityLogic {
                         ? String.format("Generates %s every turn on %s", itemDesc, tileDesc)
                         : String.format("Generates %s every %d turns on %s", itemDesc, period, tileDesc)),
                 new StratifiedPayload<Ability, Events.SpawnEvent>(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
-                                () -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty()))),
                 new StratifiedPayload<Ability, Events.RepeatedEvent>(Events.RepeatedEvent.class,
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
-                            if (!receiver.wielder.haul.isFull() && receiver.canUse(view)
-                                    && view.game.world.getTile(receiver.wielder.getPoint())
+                            if (!receiver.wielder.haul.isFull() && receiver.canUse(ctx.view)
+                                    && ctx.view.game.world.getTile(receiver.wielder.getPoint())
                                             .map((Tile t) -> criteria.apply(t)).orElse(false)) {
-                                final Item i = view.game.generator.item(getItem.apply(view));
+                                final Item i = ctx.view.game.generator.item(getItem.apply(ctx.view));
                                 effects.add(() -> {
                                     receiver.wielder.haul.add(i);
-                                    view.overlays.entity(receiver.wielder).addRising(
-                                            new RisingOverlay(view, receiver.wielder, ColorScheme.WHITE.hex, i.name));
+                                    ctx.view.overlays.entity(receiver.wielder).addRising(new RisingOverlay(ctx.view,
+                                            receiver.wielder, ColorScheme.WHITE.hex, i.name));
                                     receiver.goOnCooldown(period - 1);
                                 });
-                                effects.add(receiver.wielder.handleEvent(view,
+                                effects.add(receiver.wielder.handleEvent(ctx,
                                         new Events.HarvestEvent(receiver.wielder, i)));
                             }
                             return effects;
@@ -355,23 +356,23 @@ public class AbilityLogic {
     public static StratifiedPayload[] build(String building, String tileDesc, Function<Tile, Boolean> criteria) {
         return new StratifiedPayload[]{
                 new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Point p = receiver.wielder.getPoint();
-                            if (view.game.world.getTile(p).isPresent()) {
-                                final Tile t = view.game.world.getTile(p).get();
+                            if (ctx.view.game.world.getTile(p).isPresent()) {
+                                final Tile t = ctx.view.game.world.getTile(p).get();
                                 if (t.building.isPresent()) {
                                     return new SideEffect()
-                                            .add(() -> view.hud.logger.error("Cannot place another building here"));
+                                            .add(() -> ctx.view.hud.logger.error("Cannot place another building here"));
                                 }
                                 if (criteria.apply(t)) {
-                                    final Building b = view.game.generator.building(building, p.x, p.y);
+                                    final Building b = ctx.view.game.generator.building(building, p.x, p.y);
                                     return new SideEffect().add(() -> {
-                                        b.spawn(view);
-                                        view.game.actions.unitHasCastSpell(view, receiver.wielder);
+                                        b.spawn(ctx.view);
+                                        ctx.view.game.actions.unitHasCastSpell(ctx.view, receiver.wielder);
                                     }).add(() -> receiver.goOnCooldown(2));
                                 }
                                 return new SideEffect()
-                                        .add(() -> view.hud.logger.error("Invalid tile for this ability"));
+                                        .add(() -> ctx.view.hud.logger.error("Invalid tile for this ability"));
                             }
                             return new SideEffect();
                         }),
@@ -392,20 +393,20 @@ public class AbilityLogic {
             Function<Tile, Boolean> criteria) {
         return new StratifiedPayload[]{
                 new StratifiedPayload<Ability, Events.AbilityActivatedEvent>(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Set<Point> points = Lambda.filter((Point p) -> ctx.view.game.world.getTile(p)
                                     .map((Tile t) -> !t.building.isPresent() && criteria.apply(t)).orElse(false),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), range));
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, points,
                                     String.format("No valid location to place a %s", building), (Point p) -> {
                                         final SideEffect effects = new SideEffect();
-                                        if (view.game.world.getTile(p)
+                                        if (ctx.view.game.world.getTile(p)
                                                 .map((Tile t) -> !t.building.isPresent() && criteria.apply(t))
                                                 .orElse(false)) {
-                                            final Building b = view.game.generator.building(building, p.x, p.y);
-                                            effects.add(
-                                                    () -> view.game.actions.unitHasCastSpell(view, receiver.wielder))
-                                                    .add(() -> receiver.goOnCooldown(2)).add(() -> b.spawn(view));
+                                            final Building b = ctx.view.game.generator.building(building, p.x, p.y);
+                                            effects.add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view,
+                                                    receiver.wielder)).add(() -> receiver.goOnCooldown(2))
+                                                    .add(() -> b.spawn(ctx.view));
                                         }
                                         return effects;
                                     })).orElse(new SideEffect());
@@ -453,7 +454,7 @@ public class AbilityLogic {
     public static SideEffect generateAuctionPoints(GameView view, Unit caster, int points) {
         final SideEffect effects = new SideEffect();
         Events.GenerateAuctionPointsEvent event = new Events.GenerateAuctionPointsEvent(caster, points);
-        return effects.add(caster.handleEvent(view, event))
+        return effects.add(caster.handleEvent(event))
                 .add(() -> view.game.mechanics.auction.addPoints(view, caster.getPoint(), event.points));
     }
 

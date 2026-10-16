@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.gameplay.events;
-import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,7 +98,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
     /**
      * Runs the relevant EventHandler logic for a given name and Event
      */
-    public <E extends Event> SideEffect handle(GameView view, T receiver, E e) {
+    public <E extends Event> SideEffect handle(GameViewContext ctx, T receiver, E e) {
         String key = this.getKey(receiver.getStratifier(), e.channel);
         boolean hasHandler = this.handlers.containsKey(key);
         boolean hasDefault = this.defaults.containsKey(e.channel);
@@ -109,10 +109,10 @@ public class EventHandlerBundle<T extends EventReceiver> {
         final SideEffect effects = new SideEffect();
         if (hasHandler) {
             for (EventHandler<T, Event> handler : this.handlers.get(key)) {
-                effects.add(handler.handle(view, receiver, e));
+                effects.add(handler.handle(ctx, receiver, e));
             }
         } else if (hasDefault) {
-            return this.defaults.get(e.channel).handle(view, receiver, e);
+            return this.defaults.get(e.channel).handle(ctx, receiver, e);
         }
         return effects;
     }

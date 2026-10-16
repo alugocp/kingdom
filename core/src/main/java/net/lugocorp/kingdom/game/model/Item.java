@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.game.properties.Tags;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.math.Matrix4;
@@ -48,8 +49,8 @@ public class Item implements EventReceiver {
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        return view.game.events.item.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
+        return ctx.view.game.events.item.handle(ctx, this, e);
     }
 
     /** {@inheritdoc} */

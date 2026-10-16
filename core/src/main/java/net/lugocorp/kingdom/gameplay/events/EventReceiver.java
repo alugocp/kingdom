@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.gameplay.events;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.prediction.EventLog;
-import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
@@ -12,16 +12,16 @@ public interface EventReceiver {
     /**
      * API sugar to handle an Event
      */
-    public default SideEffect handleEvent(GameView view, Event e) {
+    public default SideEffect handleEvent(GameViewContext ctx, Event e) {
         EventLog.log(e, this);
-        return new SideEffect().add(e).add(this.handleEventWithoutSignalBooster(view, e))
-                .add(view.game.events.signals.propagate(view, this, e));
+        return new SideEffect().add(e).add(this.handleEventWithoutSignalBooster(ctx, e))
+                .add(ctx.view.game.events.signals.propagate(ctx, this, e));
     }
 
     /**
      * Handles Events without calling the SignalBooster
      */
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e);
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e);
 
     /**
      * Returns a key that helps determine which EventHandler to use in an
@@ -32,9 +32,9 @@ public interface EventReceiver {
     /**
      * Call this function when the EventReceiver should no longer listen for Events
      */
-    public default void deactivate(GameView view) {
-        view.game.future.removeFutureTicks(this);
-        view.game.events.signals.deactivateListener(this);
-        view.hud.bot.tileMenu.refresh();
+    public default void deactivate(GameViewContext ctx) {
+        ctx.view.game.future.removeFutureTicks(this);
+        ctx.view.game.events.signals.deactivateListener(this);
+        ctx.view.hud.bot.tileMenu.refresh();
     }
 }

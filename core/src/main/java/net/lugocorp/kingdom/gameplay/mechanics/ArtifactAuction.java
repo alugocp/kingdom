@@ -191,9 +191,9 @@ public class ArtifactAuction {
             final boolean humanPlayerWon = winner.map((Player p) -> p.isHumanPlayer()).orElse(false);
             for (Player p : view.game.getAllPlayers()) {
                 if (winner.map((Player p1) -> p.equals(p1)).orElse(false)) {
-                    p.getFate().handleEvent(view, new Events.WonAuctionEvent(p)).execute();
+                    p.getFate().handleEvent(new Events.WonAuctionEvent(p)).execute();
                 } else {
-                    p.getFate().handleEvent(view, new Events.LostAuctionEvent(p)).execute();
+                    p.getFate().handleEvent(new Events.LostAuctionEvent(p)).execute();
                 }
                 // TODO remove all Items from the bidding Units' hauls
             }

@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -124,7 +125,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
                 p.buildings.add(this);
             });
         });
-        this.handleEvent(view, new Events.SpawnEvent<Building>(this)).execute();
+        this.handleEvent(new Events.SpawnEvent<Building>(this)).execute();
         this.getMinimapColor().ifPresent((Color c) -> view.hud.bot.minimap.refresh(view.game.world));
     }
 
@@ -142,27 +143,28 @@ public class Building extends Entity implements MenuSubject, Spawnable {
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        return view.game.events.building.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
+        return ctx.view.game.events.building.handle(ctx, this, e);
     }
 
     /** {@inheritdoc} */
     @Override
-    public void deactivate(GameView view) {
-        super.deactivate(view);
+    public void deactivate(GameViewContext ctx) {
+        super.deactivate(ctx);
         this.getLeader().ifPresent((Player l) -> {
-            this.vision.remove(l, view.game.world);
+            this.vision.remove(l, ctx.view.game.world);
             l.buildings.remove(this);
         });
-        view.overlays.removeEntity(this);
-        view.game.world.getTile(this.getPoint()).get().building = Optional.empty();
-        this.getMinimapColor().ifPresent((Color c) -> view.hud.bot.minimap.refresh(view.game.world));
+        ctx.view.overlays.removeEntity(this);
+        ctx.view.game.world.getTile(this.getPoint()).get().building = Optional.empty();
+        this.getMinimapColor().ifPresent((Color c) -> ctx.view.hud.bot.minimap.refresh(ctx.view.game.world));
         this.dispose();
 
         // Check for replacement Building after this one is destroyed
         final Events.ReplaceBuildingEvent e = new Events.ReplaceBuildingEvent();
-        this.handleEvent(view, e).execute();
-        e.replacement.ifPresent((String name) -> view.game.generator.building(name, this.x, this.y).spawn(view));
+        this.handleEvent(ctx, e).execute();
+        e.replacement
+                .ifPresent((String name) -> ctx.view.game.generator.building(name, this.x, this.y).spawn(ctx.view));
     }
 
     /** {@inheritdoc} */

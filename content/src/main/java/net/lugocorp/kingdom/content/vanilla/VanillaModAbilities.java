@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Stratified;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -39,35 +40,35 @@ class VanillaModAbilities {
     static void registerEvents(AllEventHandlers events) {
         // Absorb
         new Stratified<Ability>(events.ability, Labels.ability_absorb).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_drown, 0x318ec0, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Consumes all hauled items to restore 3 health"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             if (!receiver.wielder.haul.hasItems()) {
                                 return new SideEffect().add(() -> {
                                     if (receiver.wielder.leadership.belongsToHuman()) {
-                                        view.hud.logger.error("You must have hauled items in order to cast Absorb");
+                                        ctx.view.hud.logger.error("You must have hauled items in order to cast Absorb");
                                     }
                                 });
                             }
                             return new SideEffect().add(() -> receiver.wielder.haul.empty())
-                                    .add(receiver.wielder.combat.heal(view, receiver.wielder, 3));
+                                    .add(receiver.wielder.combat.heal(ctx.view, receiver.wielder, 3));
                         });
 
         // Acid Skin
         new Stratified<Ability>(events.ability, Labels.ability_acid_skin).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Adjacent attackers take 1 damage"))
-                .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
+                .add(Events.AttackedEvent.class, (GameViewContext ctx, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit) {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
-                                ? attacker.combat.takeDamage(view, new Damage(1), target)
+                                ? attacker.combat.takeDamage(ctx.view, new Damage(1), target)
                                 : new SideEffect();
                     }
                     return new SideEffect();
@@ -75,15 +76,15 @@ class VanillaModAbilities {
 
         // Armor
         new Stratified<Ability>(events.ability, Labels.ability_armor).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
-                        (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
+                        Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Arrow Shot
         new Stratified<Ability>(events.ability, Labels.ability_arrow_shot).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -91,7 +92,7 @@ class VanillaModAbilities {
 
         // Bite
         new Stratified<Ability>(events.ability, Labels.ability_bite).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bite);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 1));
@@ -99,48 +100,49 @@ class VanillaModAbilities {
         // Blessing of Nature's Hand
         new Stratified<Ability>(events.ability, Labels.ability_blessing_of_natures_hand)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_blessing_of_natures_hand);
                             return new SideEffect();
                         })
-                .add(AbilityLogic.desc("+2 healing on Forests or Oases"))
-                .add(Events.HealEntityEvent.class, (GameView view, Ability receiver, Events.HealEntityEvent e) -> {
-                    if (e.healer == receiver.wielder && view.game.world.getTile(receiver.wielder.getPoint())
-                            .flatMap((Tile t) -> t.building).map((Building b) -> b.name.equals(Labels.building_forest)
-                                    || b.name.equals(Labels.building_oasis))
-                            .orElse(false)) {
-                        e.amount += 2;
-                    }
-                    return new SideEffect();
-                });
+                .add(AbilityLogic.desc("+2 healing on Forests or Oases")).add(Events.HealEntityEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.HealEntityEvent e) -> {
+                            if (e.healer == receiver.wielder && ctx.view.game.world.getTile(receiver.wielder.getPoint())
+                                    .flatMap((Tile t) -> t.building)
+                                    .map((Building b) -> b.name.equals(Labels.building_forest)
+                                            || b.name.equals(Labels.building_oasis))
+                                    .orElse(false)) {
+                                e.amount += 2;
+                            }
+                            return new SideEffect();
+                        });
 
         // Blessing of the Plains
         new Stratified<Ability>(events.ability, Labels.ability_blessing_of_the_plains)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             // TODO add new icon
                             e.blob.setIcon(Labels.asset_apple);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("Heals the target unit on a meadow or hill, then buffs this unit's damage"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             Set<Point> targets = Lambda.filter(
-                                    (Point p) -> view.game.world.getTile(p)
+                                    (Point p) -> ctx.view.game.world.getTile(p)
                                             .flatMap((Tile t) -> t.unit.map((Unit u) -> t))
                                             .flatMap((Tile t) -> t.building)
                                             .map((Building b) -> b.name.equals(Labels.building_hill)
                                                     || b.name.equals(Labels.building_meadow))
                                             .orElse(false),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 2));
-                            return receiver.wielder.getLeader().map(
-                                    (Player player) -> player.select(view, targets, "No units in range", (Point p) -> {
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, targets,
+                                    "No units in range", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
-                                        final Optional<Unit> target = view.game.world.getTile(p)
+                                        final Optional<Unit> target = ctx.view.game.world.getTile(p)
                                                 .flatMap((Tile t) -> t.unit);
                                         target.ifPresent(
-                                                (Unit u) -> effects.add(receiver.wielder.combat.heal(view, u, 3)));
-                                        effects.add(receiver.wielder.abilities.addStatusEffect(view,
+                                                (Unit u) -> effects.add(receiver.wielder.combat.heal(ctx.view, u, 3)));
+                                        effects.add(receiver.wielder.abilities.addStatusEffect(ctx.view,
                                                 Labels.status_effect_extra_attack));
                                         return effects;
                                     })).orElse(new SideEffect());
@@ -148,22 +150,22 @@ class VanillaModAbilities {
 
         // Chuck Gem
         new Stratified<Ability>(events.ability, Labels.ability_chuck_gem).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Consumes a gem and deals 3 damage to the target"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
                             if (!receiver.wielder.haul.hasItemWithTag(Labels.tag_gem)) {
                                 if (receiver.wielder.leadership.belongsToHuman()) {
-                                    effects.add(
-                                            () -> view.hud.logger.error("You have no gems to activate this ability"));
+                                    effects.add(() -> ctx.view.hud.logger
+                                            .error("You have no gems to activate this ability"));
                                 }
                                 return effects;
                             }
-                            effects.add(AbilityLogic.attackAndEffect(view, receiver.wielder, new Damage(3), 2,
+                            effects.add(AbilityLogic.attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 2,
                                     Optional.of((Point p) -> new SideEffect()
                                             .add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_gem)))));
                             return effects;
@@ -172,43 +174,46 @@ class VanillaModAbilities {
         // Conservation of Energy
         new Stratified<Ability>(events.ability, Labels.ability_conservation_of_energy)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_regeneration, 0x00ff10, 0x00a9ff);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("Gains +1 defense each turn (up to +2 max) until the unit moves"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
-                .add("Tick",
-                        (GameView view, Ability receiver,
-                                Events.RepeatedEvent e) -> receiver.wielder.abilities
-                                        .getStatusEffectStackCount(Labels.status_effect_conserved_energy) < 2
-                                                ? new SideEffect().add(receiver.wielder.abilities.addStatusEffect(view,
-                                                        Labels.status_effect_conserved_energy))
-                                                : new SideEffect())
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameViewContext ctx, Ability receiver,
+                        Events.RepeatedEvent e) -> receiver.wielder.abilities
+                                .getStatusEffectStackCount(Labels.status_effect_conserved_energy) < 2
+                                        ? new SideEffect().add(receiver.wielder.abilities.addStatusEffect(ctx.view,
+                                                Labels.status_effect_conserved_energy))
+                                        : new SideEffect())
                 .add(Events.UnitMovedEvent.class,
-                        (GameView view, Ability receiver, Events.UnitMovedEvent e) -> new SideEffect()
-                                .add(() -> receiver.wielder.abilities.clearStatusEffect(view,
+                        (GameViewContext ctx, Ability receiver, Events.UnitMovedEvent e) -> new SideEffect()
+                                .add(() -> receiver.wielder.abilities.clearStatusEffect(ctx.view,
                                         Labels.status_effect_conserved_energy)));
 
         // Construct Healing Fountain
-        new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain).add(
-                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_build_healing_fountain);
-                    return new SideEffect();
-                }).add(AbilityLogic.build(Labels.building_healing_fountain));
+        new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            e.blob.setIcon(Labels.asset_build_healing_fountain);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.build(Labels.building_healing_fountain));
 
         // Construct Marketplace
-        new Stratified<Ability>(events.ability, Labels.ability_construct_marketplace).add(
-                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_build_vault);
-                    return new SideEffect();
-                }).add(AbilityLogic.build(Labels.building_marketplace));
+        new Stratified<Ability>(events.ability, Labels.ability_construct_marketplace)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            e.blob.setIcon(Labels.asset_build_vault);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.build(Labels.building_marketplace));
 
         // Construct Wall
         new Stratified<Ability>(events.ability, Labels.ability_construct_wall).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -218,56 +223,57 @@ class VanillaModAbilities {
         // Collapse Structure
         new Stratified<Ability>(events.ability, Labels.ability_collapse_structure)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_collapse_mine);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc(
                         "Deals 5 damage to a target adjacent structure, 3 damage to an occupying unit (if there is one), and 3 damage to the caster"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Set<Point> targets = Lambda.filter((Point p) -> ctx.view.game.world.getTile(p)
                                     .map((Tile t) -> t.building.isPresent()).orElse(false),
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, targets,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, targets,
                                     "No buildings in range", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
-                                        final Optional<Building> target1 = view.game.world.getTile(p)
+                                        final Optional<Building> target1 = ctx.view.game.world.getTile(p)
                                                 .flatMap((Tile t) -> t.building);
-                                        final Optional<Unit> target2 = view.game.world.getTile(p)
+                                        final Optional<Unit> target2 = ctx.view.game.world.getTile(p)
                                                 .flatMap((Tile t) -> t.unit);
-                                        effects.add(
-                                                receiver.wielder.combat.attack(view, receiver.wielder, new Damage(3)));
+                                        effects.add(receiver.wielder.combat.attack(ctx.view, receiver.wielder,
+                                                new Damage(3)));
                                         target1.ifPresent((Building target) -> effects
-                                                .add(receiver.wielder.combat.attack(view, target, new Damage(5))));
+                                                .add(receiver.wielder.combat.attack(ctx.view, target, new Damage(5))));
                                         target2.ifPresent((Unit target) -> effects
-                                                .add(receiver.wielder.combat.attack(view, target, new Damage(3))));
+                                                .add(receiver.wielder.combat.attack(ctx.view, target, new Damage(3))));
                                         return effects;
                                     })).orElse(new SideEffect());
                         });
 
         // Collect Bounty
         new Stratified<Ability>(events.ability, Labels.ability_collect_bounty).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("You get 30 gold when this unit kills another unit"))
-                .add(Events.KilledEntityEvent.class, (GameView view, Ability receiver, Events.KilledEntityEvent e) -> {
-                    final SideEffect effects = new SideEffect();
-                    if (e.killer == receiver.wielder && e.target.isEntityType(EntityType.UNIT)) {
-                        effects.add(AbilityLogic.gold(view, receiver.wielder, 30));
-                    }
-                    return effects;
-                });
+                .add(Events.KilledEntityEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.KilledEntityEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (e.killer == receiver.wielder && e.target.isEntityType(EntityType.UNIT)) {
+                                effects.add(AbilityLogic.gold(ctx.view, receiver.wielder, 30));
+                            }
+                            return effects;
+                        });
 
         // Combat Loot
         new Stratified<Ability>(events.ability, Labels.ability_combat_loot).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_combat_loot);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 damage if this unit is hauling an item"))
-                .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
+                .add(Events.AttackEvent.class, (GameViewContext ctx, Ability receiver, Events.AttackEvent e) -> {
                     if (receiver.wielder.haul.hasItems()) {
                         e.dmg.base += 2;
                     }
@@ -276,37 +282,37 @@ class VanillaModAbilities {
 
         // Crystal Skin
         new Stratified<Ability>(events.ability, Labels.ability_crystal_skin).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x318ec0);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
-                        (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
+                        Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Defensive Bloom
         new Stratified<Ability>(events.ability, Labels.ability_defensive_bloom).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("15% chance to generate a natural item when the unit is attacked"))
-                .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
+                .add(Events.AttackedEvent.class, (GameViewContext ctx, Ability receiver, Events.AttackedEvent e) -> {
                     return !receiver.wielder.haul.isFull() && Lambda.chance(15)
                             ? new SideEffect().add(() -> receiver.wielder.haul
-                                    .add(view.game.mechanics.loot.dropByTag(view.game, Labels.tag_natural)))
+                                    .add(ctx.view.game.mechanics.loot.dropByTag(ctx.view.game, Labels.tag_natural)))
                             : new SideEffect();
                 });
 
         // Defensive Stone Form
         new Stratified<Ability>(events.ability, Labels.ability_defensive_stone_form)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_defense_glyph);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("This unit has +1 defense but -1 damage when in stone form"))
-                .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver,
+                .add(Events.TakeDamageEvent.class, (GameViewContext ctx, Ability receiver,
                         Events.TakeDamageEvent e) -> receiver.wielder.abilities.hasStatusEffect(
                                 Labels.status_effect_stone_form_active) ? AbilityLogic.defense(e, 1) : new SideEffect())
-                .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
+                .add(Events.AttackEvent.class, (GameViewContext ctx, Ability receiver, Events.AttackEvent e) -> {
                     if (receiver.wielder.abilities.hasStatusEffect(Labels.status_effect_stone_form_active)) {
                         e.dmg.base -= 1;
                     }
@@ -315,31 +321,31 @@ class VanillaModAbilities {
 
         // Deposit Seeds
         new Stratified<Ability>(events.ability, Labels.ability_deposit_seeds).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_deposit_seeds);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("10% chance to spawn a Meadow whenever this unit moves"))
-                .add(Events.UnitMovedEvent.class, (GameView view, Ability receiver, Events.UnitMovedEvent e) -> {
+                .add(Events.UnitMovedEvent.class, (GameViewContext ctx, Ability receiver, Events.UnitMovedEvent e) -> {
                     Point p = receiver.wielder.getPoint();
-                    return view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
+                    return ctx.view.game.world.getTile(p).map((Tile t) -> !t.building.isPresent()).orElse(false)
                             && Lambda.chance(10)
-                                    ? new SideEffect().add(() -> view.game.generator
-                                            .building(Labels.building_meadow, p.x, p.y).spawn(view))
+                                    ? new SideEffect().add(() -> ctx.view.game.generator
+                                            .building(Labels.building_meadow, p.x, p.y).spawn(ctx.view))
                                     : new SideEffect();
                 });
 
         // Desert's Caress
         new Stratified<Ability>(events.ability, Labels.ability_deserts_caress).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit harvests extra items on sand tiles"))
-                .add(Events.HarvestEvent.class, (GameView view, Ability receiver, Events.HarvestEvent e) -> {
+                .add(Events.HarvestEvent.class, (GameViewContext ctx, Ability receiver, Events.HarvestEvent e) -> {
                     final SideEffect effects = new SideEffect();
-                    if (!receiver.wielder.haul.isFull() && view.game.world.getTile(receiver.wielder.getPoint())
+                    if (!receiver.wielder.haul.isFull() && ctx.view.game.world.getTile(receiver.wielder.getPoint())
                             .map((Tile t) -> t.name.equals(Labels.tile_sand)).orElse(false)) {
-                        final Item i = view.game.generator.item(e.item.name);
+                        final Item i = ctx.view.game.generator.item(e.item.name);
                         effects.add(() -> e.unit.haul.add(i));
                     }
                     return effects;
@@ -347,7 +353,7 @@ class VanillaModAbilities {
 
         // Construct Mine
         new Stratified<Ability>(events.ability, Labels.ability_construct_mine).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dig_mine);
                     return new SideEffect();
                 }).add(AbilityLogic.build(Labels.building_mine, "a rock tile",
@@ -355,22 +361,22 @@ class VanillaModAbilities {
 
         // Dungeon Delve
         new Stratified<Ability>(events.ability, Labels.ability_dungeon_delve).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dungeon_delve);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage and generates loot if targeting a tile with a building"))
-                .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(3), 1,
-                                        Optional.of((Point p) -> !receiver.wielder.haul.isFull()
-                                                && view.game.world.getTile(p).map((Tile t) -> t.building).isPresent()
-                                                        ? new SideEffect().add(() -> receiver.wielder.haul
-                                                                .add(view.game.mechanics.loot.drop(view.game)))
-                                                        : new SideEffect())));
+                .add(Events.AbilityActivatedEvent.class, (GameViewContext ctx, Ability receiver,
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.attackAndEffect(ctx.view, receiver.wielder,
+                                new Damage(3), 1,
+                                Optional.of((Point p) -> !receiver.wielder.haul.isFull()
+                                        && ctx.view.game.world.getTile(p).map((Tile t) -> t.building).isPresent()
+                                                ? new SideEffect().add(() -> receiver.wielder.haul
+                                                        .add(ctx.view.game.mechanics.loot.drop(ctx.view.game)))
+                                                : new SideEffect())));
 
         // Edible
         new Stratified<Ability>(events.ability, Labels.ability_edible).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_edible);
                     return new SideEffect();
                 })
@@ -380,7 +386,7 @@ class VanillaModAbilities {
 
         // Elusive
         new Stratified<Ability>(events.ability, Labels.ability_elusive).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -388,54 +394,56 @@ class VanillaModAbilities {
 
         // Entrenched
         new Stratified<Ability>(events.ability, Labels.ability_entrenched).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_local_defender);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 defense when on a building"))
-                .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
-                    final boolean isOnActiveBuilding = view.game.world.getTile(receiver.wielder.getPoint())
-                            .map((Tile t) -> t.building).isPresent();
-                    return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : new SideEffect();
-                });
+                }).add(AbilityLogic.desc("+2 defense when on a building")).add(Events.TakeDamageEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.TakeDamageEvent e) -> {
+                            final boolean isOnActiveBuilding = ctx.view.game.world.getTile(receiver.wielder.getPoint())
+                                    .map((Tile t) -> t.building).isPresent();
+                            return isOnActiveBuilding ? AbilityLogic.defense(e, 2) : new SideEffect();
+                        });
 
         // Erupt
         new Stratified<Ability>(events.ability, Labels.ability_erupt).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_erupt);
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc(
                         "Consumes a gem and deals 3 damage to the target, plus 2 damage to a random adjacent target"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             if (!receiver.wielder.haul.hasItemWithTag(Labels.tag_gem)) {
                                 final SideEffect effects = new SideEffect();
                                 if (receiver.wielder.leadership.belongsToHuman()) {
-                                    effects.add(
-                                            () -> view.hud.logger.error("You have no gems to activate this ability"));
+                                    effects.add(() -> ctx.view.hud.logger
+                                            .error("You have no gems to activate this ability"));
                                 }
                                 return effects;
                             }
-                            final Set<Point> targets = Lambda.filter((Point p) -> view.game.world.getTile(p)
-                                    .flatMap((Tile t) -> t.getPriorityEntity()).isPresent(),
+                            final Set<Point> targets = Lambda.filter(
+                                    (Point p) -> ctx.view.game.world.getTile(p)
+                                            .flatMap((Tile t) -> t.getPriorityEntity()).isPresent(),
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, targets,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, targets,
                                     "No targets available", (Point p) -> {
-                                        final Optional<Entity> target = view.game.world.getTile(p)
+                                        final Optional<Entity> target = ctx.view.game.world.getTile(p)
                                                 .flatMap((Tile t) -> t.getPriorityEntity());
                                         final SideEffect effects = new SideEffect()
-                                                .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder))
+                                                .add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view,
+                                                        receiver.wielder))
                                                 .add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_gem));
                                         target.ifPresent((Entity e1) -> {
-                                            effects.add(receiver.wielder.combat.attack(view, e1, new Damage(3)));
+                                            effects.add(receiver.wielder.combat.attack(ctx.view, e1, new Damage(3)));
                                             targets.remove(p);
                                         });
                                         if (targets.size() > 0) {
                                             final Point p1 = Lambda.random(targets);
-                                            final Optional<Entity> target1 = view.game.world.getTile(p1)
+                                            final Optional<Entity> target1 = ctx.view.game.world.getTile(p1)
                                                     .flatMap((Tile t) -> t.getPriorityEntity());
                                             target1.ifPresent((Entity e1) -> effects
-                                                    .add(receiver.wielder.combat.attack(view, e1, new Damage(2))));
+                                                    .add(receiver.wielder.combat.attack(ctx.view, e1, new Damage(2))));
                                         }
                                         return effects;
                                     })).orElse(new SideEffect());
@@ -443,12 +451,12 @@ class VanillaModAbilities {
 
         // Evasive
         new Stratified<Ability>(events.ability, Labels.ability_evasive).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Takes 1 less damage from adjacent attackers"))
-                .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
+                .add(Events.AttackedEvent.class, (GameViewContext ctx, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit
                             && Hexagons.areNeighbors(e.attacker.getPoint(), e.target.getPoint())) {
                         e.dmg.base--;
@@ -458,54 +466,54 @@ class VanillaModAbilities {
 
         // Fast
         new Stratified<Ability>(events.ability, Labels.ability_fast).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xff9525);
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
-                        (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GetDescriptionEvent e) -> {
                             final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(
                                     receiver.wielder);
-                            receiver.wielder.handleEvent(view, event);
+                            receiver.wielder.handleEvent(ctx, event);
                             e.desc = String.format("This unit has 3 base speed (currently has %d speed)",
                                     event.distance);
                             return new SideEffect();
                         })
                 .add(Events.UnitMoveDistanceEvent.class,
-                        (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             e.distance = 3;
                             return new SideEffect();
                         });
 
         // Fireball
         new Stratified<Ability>(events.ability, Labels.ability_fireball).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 3));
 
         // Fire Cannon
         new Stratified<Ability>(events.ability, Labels.ability_fire_cannon).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage to the target unit or 5 damage to the target building"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .dynamicDamageAttack(view, receiver.wielder, 2,
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .dynamicDamageAttack(ctx.view, receiver.wielder, 2,
                                         (Tile t) -> t.building.isPresent() && !t.unit.isPresent()
                                                 ? new Damage(5)
                                                 : new Damage(2)));
 
         // Fire Laser
         new Stratified<Ability>(events.ability, Labels.ability_fire_laser).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_laser);
                     return new SideEffect();
                 })
                 .add(AbilityLogic
                         .desc("Deals 2 damage to each unit between the caster and the target tile in a straight line"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final Set<Point> targets = new HashSet<>();
                             final Map<Point, HexSide> sideToPoint = new HashMap<>();
                             for (HexSide side : HexSide.values()) {
@@ -513,41 +521,44 @@ class VanillaModAbilities {
                                 targets.add(dest);
                                 sideToPoint.put(dest, side);
                             }
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, targets,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, targets,
                                     "No targets available", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
                                         final HexSide side = sideToPoint.get(p);
                                         for (int a = 0; a < 3; a++) {
                                             Point p1 = Hexagons.followLine(receiver.wielder.getPoint(), side, a + 1);
-                                            view.game.world.getTile(p1).flatMap((Tile t) -> t.unit)
-                                                    .ifPresent((Unit u) -> effects.add(
-                                                            receiver.wielder.combat.attack(view, u, new Damage(2))));
+                                            ctx.view.game.world.getTile(p1).flatMap((Tile t) -> t.unit)
+                                                    .ifPresent((Unit u) -> effects.add(receiver.wielder.combat
+                                                            .attack(ctx.view, u, new Damage(2))));
                                         }
-                                        effects.add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
+                                        effects.add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view,
+                                                receiver.wielder));
                                         if (receiver.wielder.leadership.belongsToHuman()) {
-                                            effects.add(() -> view.hud.bot.tileMenu.refresh());
+                                            effects.add(() -> ctx.view.hud.bot.tileMenu.refresh());
                                         }
                                         return effects;
                                     })).orElse(new SideEffect());
                         });
 
         // Forage Passionfruit
-        new Stratified<Ability>(events.ability, Labels.ability_forage_passionfruit).add(
-                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    // TODO add new icon
-                    e.blob.setIcon(Labels.asset_apple);
-                    return new SideEffect();
-                }).add(AbilityLogic.harvestFromBuilding(Labels.item_passionfruit, 2, "forests",
+        new Stratified<Ability>(events.ability, Labels.ability_forage_passionfruit)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            // TODO add new icon
+                            e.blob.setIcon(Labels.asset_apple);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.harvestFromBuilding(Labels.item_passionfruit, 2, "forests",
                         (Building b) -> b.name.equals(Labels.building_forest)));
 
         // Frenzy
         new Stratified<Ability>(events.ability, Labels.ability_frenzy).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit deals +2 damage when they're below half health"))
-                .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> {
+                .add(Events.AttackEvent.class, (GameViewContext ctx, Ability receiver, Events.AttackEvent e) -> {
                     if (e.attacker == receiver.wielder && e.attacker.combat.health.atOrBelowPercent(50)) {
                         e.dmg.base += 2;
                     }
@@ -556,74 +567,78 @@ class VanillaModAbilities {
 
         // Ghastly Thrall
         new Stratified<Ability>(events.ability, Labels.ability_ghastly_thrall).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_raise_undead);
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc(
                         "This unit can only move to tiles adjacent to The Necromancer, and will follow behind The Necromancer as they move"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
-                                () -> view.game.events.signals.addListener(Events.AfterUnitMovedEvent.class, receiver)))
+                        (GameViewContext ctx, Ability receiver,
+                                Events.SpawnEvent e) -> new SideEffect().add(() -> ctx.view.game.events.signals
+                                        .addListener(Events.AfterUnitMovedEvent.class, receiver)))
                 .add(Events.AfterUnitMovedEvent.class,
-                        (GameView view, Ability receiver, Events.AfterUnitMovedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AfterUnitMovedEvent e) -> {
                             if (!receiver.wielder.combat.health.isDead() && e.unit.name.equals(Labels.unit_necromancer)
                                     && e.unit.leadership.sameLeader(receiver.wielder)) {
                                 receiver.wielder.movement.turnOffPreCheck();
-                                SideEffect se = receiver.wielder.movement.move(view, e.previous, e.parallel);
+                                SideEffect se = receiver.wielder.movement.move(ctx.view, e.previous, e.parallel);
                                 receiver.wielder.movement.turnOnPreCheck();
                                 return se;
                             }
                             return new SideEffect();
                         })
-                .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
-                    final Set<Point> radius = Lambda.filter(
-                            (Point p) -> view.game.world.getUnit(p)
-                                    .map((Unit u) -> u.name.equals(Labels.unit_necromancer)).orElse(false),
-                            Hexagons.getNeighbors(e.tile.getPoint(), 1));
-                    if (radius.size() == 0) {
-                        e.canWalkOnBuilding = false;
-                    }
-                    return new SideEffect();
-                });
+                .add(Events.CanUnitMoveEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.CanUnitMoveEvent e) -> {
+                            final Set<Point> radius = Lambda.filter(
+                                    (Point p) -> ctx.view.game.world.getUnit(p)
+                                            .map((Unit u) -> u.name.equals(Labels.unit_necromancer)).orElse(false),
+                                    Hexagons.getNeighbors(e.tile.getPoint(), 1));
+                            if (radius.size() == 0) {
+                                e.canWalkOnBuilding = false;
+                            }
+                            return new SideEffect();
+                        });
 
         // Great Cycle
         new Stratified<Ability>(events.ability, Labels.ability_great_cycle).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_great_cycle);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Fully heals friendly adjacent units on death"))
-                .add(Events.EntityDiedEvent.class, (GameView view, Ability receiver, Events.EntityDiedEvent e) -> {
-                    final SideEffect effects = new SideEffect();
-                    if (e.target == receiver.wielder) {
-                        for (Point p : Hexagons.getAdjacents(e.target.getPoint())) {
-                            final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
-                            unit.ifPresent((Unit u) -> {
-                                if (u.leadership.sameLeader(e.target)) {
-                                    effects.add(e.target.combat.heal(view, u, u.combat.health.getMax()));
+                .add(Events.EntityDiedEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.EntityDiedEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (e.target == receiver.wielder) {
+                                for (Point p : Hexagons.getAdjacents(e.target.getPoint())) {
+                                    final Optional<Unit> unit = ctx.view.game.world.getTile(p)
+                                            .flatMap((Tile t) -> t.unit);
+                                    unit.ifPresent((Unit u) -> {
+                                        if (u.leadership.sameLeader(e.target)) {
+                                            effects.add(e.target.combat.heal(ctx.view, u, u.combat.health.getMax()));
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                    }
-                    return effects;
-                });
+                            }
+                            return effects;
+                        });
 
         // Green Fortress
         new Stratified<Ability>(events.ability, Labels.ability_green_fortress).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_green_fortress);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 defense on Forests"))
-                .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver, Events.TakeDamageEvent e) -> {
-                    boolean isForest = view.game.world.getTile(receiver.wielder.getPoint())
-                            .flatMap((Tile t) -> t.building).map((Building b) -> b.name.equals(Labels.building_forest))
-                            .orElse(false);
-                    return isForest ? AbilityLogic.defense(e, 2) : new SideEffect();
-                });
+                }).add(AbilityLogic.desc("+2 defense on Forests")).add(Events.TakeDamageEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.TakeDamageEvent e) -> {
+                            boolean isForest = ctx.view.game.world.getTile(receiver.wielder.getPoint())
+                                    .flatMap((Tile t) -> t.building)
+                                    .map((Building b) -> b.name.equals(Labels.building_forest)).orElse(false);
+                            return isForest ? AbilityLogic.defense(e, 2) : new SideEffect();
+                        });
 
         // Harvest Batatas
         new Stratified<Ability>(events.ability, Labels.ability_harvest_batatas).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_batatas);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_batata, 3, "mines",
@@ -631,7 +646,7 @@ class VanillaModAbilities {
 
         // Harvest Cacao
         new Stratified<Ability>(events.ability, Labels.ability_harvest_cacao).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_cacao);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_cacao, 2, "forests",
@@ -639,7 +654,7 @@ class VanillaModAbilities {
 
         // Harvest Figs
         new Stratified<Ability>(events.ability, Labels.ability_harvest_figs).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_figs);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_fig, 2, "forests",
@@ -647,7 +662,7 @@ class VanillaModAbilities {
 
         // Harvest Mesquite
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mesquite).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mesquite);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_mesquite, 2, "oases",
@@ -655,7 +670,7 @@ class VanillaModAbilities {
 
         // Harvest Mushrooms
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mushrooms).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom);
                     return new SideEffect();
                 })
@@ -666,7 +681,7 @@ class VanillaModAbilities {
 
         // Harvest Pumpkins
         new Stratified<Ability>(events.ability, Labels.ability_harvest_pumpkins).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_pumpkins);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_pumpkin, 2, "meadows",
@@ -674,7 +689,7 @@ class VanillaModAbilities {
 
         // Harvest Truffles
         new Stratified<Ability>(events.ability, Labels.ability_harvest_truffles).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom, 0xb16255, 0x57372c);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_truffle, 2, "forests",
@@ -682,16 +697,16 @@ class VanillaModAbilities {
 
         // Heal Wounds
         new Stratified<Ability>(events.ability, Labels.ability_heal_wounds).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_heal_wounds);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Heals 2 damage"))
-                .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 2));
+                .add(Events.AbilityActivatedEvent.class, (GameViewContext ctx, Ability receiver,
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(ctx.view, receiver.wielder, 2));
 
         // Healing Water
         new Stratified<Ability>(events.ability, Labels.ability_healing_water).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_subterranean_potions, 0xba3521, 0x318ec0);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromTile(Labels.item_health_potion, 3, "water tiles",
@@ -699,52 +714,52 @@ class VanillaModAbilities {
 
         // High Vision
         new Stratified<Ability>(events.ability, Labels.ability_high_vision).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_night_vision, 0xa18f1e, 0xffffff);
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
-                        (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GetDescriptionEvent e) -> {
                             Wrapped<Integer> currentVision = new Wrapped<>(4);
                             receiver.wielder.getLeader().ifPresent((Player player) -> {
                                 final Events.GetVisionEvent event = new Events.GetVisionEvent(player, receiver.wielder);
-                                receiver.wielder.handleEvent(view, event);
+                                receiver.wielder.handleEvent(ctx, event);
                                 currentVision.set(event.radius);
                             });
                             e.desc = String.format("This unit has 4 base vision (currently has %d vision)",
                                     currentVision.get());
                             return new SideEffect();
                         })
-                .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
+                .add(Events.GetVisionEvent.class, (GameViewContext ctx, Ability receiver, Events.GetVisionEvent e) -> {
                     e.radius = 4;
                     return new SideEffect();
                 });
 
         // Hug
         new Stratified<Ability>(events.ability, Labels.ability_hug).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hug);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Heals 1 hit point from the target adjacent unit"))
-                .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view, receiver.wielder, 1));
+                .add(Events.AbilityActivatedEvent.class, (GameViewContext ctx, Ability receiver,
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(ctx.view, receiver.wielder, 1));
 
         // Hungry Frog Magic
         new Stratified<Ability>(events.ability, Labels.ability_hungry_frog_magic).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hungry_frog_magic);
                     return new SideEffect();
                 })
                 .add(AbilityLogic
                         .desc("Consumes all stored items and heals adjacent friendly units for 2 hit points each"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final SideEffect effects = new SideEffect().add(() -> receiver.wielder.haul.empty());
                             Set<Point> targets = Hexagons.getNeighbors(receiver.wielder.getPoint(), 1);
                             for (Point p : targets) {
-                                Optional<Unit> u = view.game.world.getUnit(p);
+                                Optional<Unit> u = ctx.view.game.world.getUnit(p);
                                 u.ifPresent((Unit u1) -> {
                                     if (u1.isFriendly(receiver.wielder)) {
-                                        effects.add(receiver.wielder.combat.heal(view, u1, 2));
+                                        effects.add(receiver.wielder.combat.heal(ctx.view, u1, 2));
                                     }
                                 });
                             }
@@ -753,7 +768,7 @@ class VanillaModAbilities {
 
         // Hunt Fish
         new Stratified<Ability>(events.ability, Labels.ability_hunt_fish).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hunt_fish);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromTile(Labels.item_fish, 3, "water tiles",
@@ -761,22 +776,24 @@ class VanillaModAbilities {
 
         // Hurl Rock
         new Stratified<Ability>(events.ability, Labels.ability_hurl_rock).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(2), 2, Optional.of((Point p) -> {
-                                    Optional<Unit> u = view.game.world.getUnit(p);
-                                    return u.isPresent() && Lambda.chance(15)
-                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : new SideEffect();
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 2,
+                                        Optional.of((Point p) -> {
+                                            Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                            return u.isPresent() && Lambda.chance(15)
+                                                    ? u.get().abilities.addStatusEffect(ctx.view,
+                                                            Labels.status_effect_stunned)
+                                                    : new SideEffect();
+                                        })));
 
         // Industrious
         new Stratified<Ability>(events.ability, Labels.ability_industrious).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -784,16 +801,16 @@ class VanillaModAbilities {
                 .add(AbilityLogic.desc(
                         "This unit gets additional speed and also generates 2 auction points and 4 gold every turn on a mine"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
-                                receiver.wielder, (Building b) -> b.name.equals(Labels.building_mine), () -> {
+                        (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(
+                                ctx.view, receiver.wielder, (Building b) -> b.name.equals(Labels.building_mine), () -> {
                                     final SideEffect effects = new SideEffect()
-                                            .add(AbilityLogic.gold(view, receiver.wielder, 4))
-                                            .add(AbilityLogic.generateAuctionPoints(view, receiver.wielder, 2));
+                                            .add(AbilityLogic.gold(ctx.view, receiver.wielder, 4))
+                                            .add(AbilityLogic.generateAuctionPoints(ctx.view, receiver.wielder, 2));
                                     if (!receiver.wielder.abilities.hasStatusEffect(Labels.status_effect_swift)) {
-                                        effects.add(receiver.wielder.abilities.addStatusEffect(view,
+                                        effects.add(receiver.wielder.abilities.addStatusEffect(ctx.view,
                                                 Labels.status_effect_swift));
                                     }
                                     return effects;
@@ -801,27 +818,27 @@ class VanillaModAbilities {
 
         // Investment
         new Stratified<Ability>(events.ability, Labels.ability_investment).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_economic_activity);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates 3 auction points on a marketplace"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(view,
-                                receiver.wielder, (Building b) -> b.name.equals(Labels.building_marketplace),
-                                () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
+                        (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doOnBuilding(
+                                ctx.view, receiver.wielder, (Building b) -> b.name.equals(Labels.building_marketplace),
+                                () -> AbilityLogic.generateAuctionPoints(ctx.view, receiver.wielder, 3)));
 
         // Keeping Watch
         new Stratified<Ability>(events.ability, Labels.ability_keeping_watch).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 vision on towers"))
-                .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
-                    if (view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
+                .add(Events.GetVisionEvent.class, (GameViewContext ctx, Ability receiver, Events.GetVisionEvent e) -> {
+                    if (ctx.view.game.world.getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
                             .map((Building b) -> b.name.equals(Labels.building_tower)).orElse(false)) {
                         e.radius += 2;
                     }
@@ -830,140 +847,146 @@ class VanillaModAbilities {
 
         // Lava Bubble
         new Stratified<Ability>(events.ability, Labels.ability_lava_bubble).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_slime, 0x38a736, 0x994528);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage and burns the target")).add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(2), 3, Optional.of((Point p) -> {
-                                    final SideEffect effects = new SideEffect();
-                                    final Optional<Unit> target = view.game.world.getTile(p)
-                                            .flatMap((Tile t) -> t.unit);
-                                    target.ifPresent((Unit u) -> {
-                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_burned)) {
-                                            effects.add(u.abilities.addStatusEffect(view, Labels.status_effect_burned));
-                                        }
-                                    });
-                                    return effects;
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 3,
+                                        Optional.of((Point p) -> {
+                                            final SideEffect effects = new SideEffect();
+                                            final Optional<Unit> target = ctx.view.game.world.getTile(p)
+                                                    .flatMap((Tile t) -> t.unit);
+                                            target.ifPresent((Unit u) -> {
+                                                if (!u.abilities.hasStatusEffect(Labels.status_effect_burned)) {
+                                                    effects.add(u.abilities.addStatusEffect(ctx.view,
+                                                            Labels.status_effect_burned));
+                                                }
+                                            });
+                                            return effects;
+                                        })));
 
         // Life Aura
         new Stratified<Ability>(events.ability, Labels.ability_life_aura).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_life_aura);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates 3 unit points per turn"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> new SideEffect()
                         .add(() -> receiver.wielder.getLeader()
-                                .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 3))));
+                                .ifPresent((Player p) -> p.addUnitPoints(ctx.view, receiver.wielder.getPoint(), 3))));
 
         // Life Finds a Way
         new Stratified<Ability>(events.ability, Labels.ability_life_finds_a_way).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom, 0x417b80, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates 5 unit points when the unit is attacked"))
-                .add(Events.AttackedEvent.class, (GameView view, Ability receiver,
+                .add(Events.AttackedEvent.class, (GameViewContext ctx, Ability receiver,
                         Events.AttackedEvent e) -> new SideEffect().add(() -> receiver.wielder.getLeader()
-                                .ifPresent((Player p) -> p.addUnitPoints(view, receiver.wielder.getPoint(), 5))));
+                                .ifPresent((Player p) -> p.addUnitPoints(ctx.view, receiver.wielder.getPoint(), 5))));
 
         // Liquifying Presence
         new Stratified<Ability>(events.ability, Labels.ability_liquifying_presence)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_liquifying_presence);
                             return new SideEffect();
                         })
                 .add(AbilityLogic.desc("Deals 1 damage each turn to an occupied building"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
-                    Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
+                    Optional<Building> b = ctx.view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
-                    return b.map((Building b1) -> b1.combat.takeDamage(view, new Damage(1), receiver.wielder))
+                    return b.map((Building b1) -> b1.combat.takeDamage(ctx.view, new Damage(1), receiver.wielder))
                             .orElse(new SideEffect());
                 });
 
         // Looter
         new Stratified<Ability>(events.ability, Labels.ability_looter).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit receives an item whenever it destroys a building or tower"))
-                .add(Events.KilledEntityEvent.class, (GameView view, Ability receiver, Events.KilledEntityEvent e) -> {
-                    final SideEffect effects = new SideEffect();
-                    if (e.killer == receiver.wielder && (e.target.isEntityType(EntityType.BUILDING)
-                            || e.target.isEntityType(EntityType.TOWER))) {
-                        final Item i = view.game.mechanics.loot.drop(view.game);
-                        effects.add(() -> receiver.wielder.haul.add(i));
-                    }
-                    return effects;
-                });
+                .add(Events.KilledEntityEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.KilledEntityEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (e.killer == receiver.wielder && (e.target.isEntityType(EntityType.BUILDING)
+                                    || e.target.isEntityType(EntityType.TOWER))) {
+                                final Item i = ctx.view.game.mechanics.loot.drop(ctx.view.game);
+                                effects.add(() -> receiver.wielder.haul.add(i));
+                            }
+                            return effects;
+                        });
 
         // Macuahuitl
         new Stratified<Ability>(events.ability, Labels.ability_macuahuitl).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage and an additional 1 damage per turn for the next 3 turns"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
-                                    final SideEffect effects = new SideEffect();
-                                    view.game.world.getTile(p).flatMap((Tile t) -> t.unit).ifPresent((Unit u) -> {
-                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_bleed)) {
-                                            effects.add(u.abilities.addStatusEffect(view, Labels.status_effect_bleed));
-                                        }
-                                    });
-                                    return effects;
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
+                                        Optional.of((Point p) -> {
+                                            final SideEffect effects = new SideEffect();
+                                            ctx.view.game.world.getTile(p).flatMap((Tile t) -> t.unit)
+                                                    .ifPresent((Unit u) -> {
+                                                        if (!u.abilities.hasStatusEffect(Labels.status_effect_bleed)) {
+                                                            effects.add(u.abilities.addStatusEffect(ctx.view,
+                                                                    Labels.status_effect_bleed));
+                                                        }
+                                                    });
+                                            return effects;
+                                        })));
 
         // Market Boom
         new Stratified<Ability>(events.ability, Labels.ability_market_boom).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_market_boom);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit generates 4 auction points whenever it attacks"))
-                .add(Events.AttackEvent.class, (GameView view, Ability receiver, Events.AttackEvent e) -> AbilityLogic
-                        .generateAuctionPoints(view, receiver.wielder, 4));
+                .add(Events.AttackEvent.class, (GameViewContext ctx, Ability receiver,
+                        Events.AttackEvent e) -> AbilityLogic.generateAuctionPoints(ctx.view, receiver.wielder, 4));
 
         // Market Indicator
         new Stratified<Ability>(events.ability, Labels.ability_market_indicator).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_market_indicator);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit generates 3 auction points when adjacent to a marketplace"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
                 .add("Tick",
-                        (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(view,
-                                receiver.wielder,
+                        (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic.doWhenAdjacent(
+                                ctx.view, receiver.wielder,
                                 (Tile t) -> t.building.map((Building b) -> b.name.equals(Labels.building_marketplace))
                                         .orElse(false),
-                                () -> AbilityLogic.generateAuctionPoints(view, receiver.wielder, 3)));
+                                () -> AbilityLogic.generateAuctionPoints(ctx.view, receiver.wielder, 3)));
 
         // Medicinal Tuber
         new Stratified<Ability>(events.ability, Labels.ability_medicinal_tuber).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_spores);
                     return new SideEffect();
                 })
                 .add(AbilityLogic
                         .desc("Heals 2 damage from the target unit (or heals 4 damage if it is a mining glyph unit)"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic.healUnit(view,
-                                receiver.wielder, (Unit u) -> u.glyphs.has(Glyph.MINING) ? 4 : 2));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .healUnit(ctx.view, receiver.wielder, (Unit u) -> u.glyphs.has(Glyph.MINING) ? 4 : 2));
 
         // Mine Gems
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gems);
                     return new SideEffect();
                 })
@@ -973,7 +996,7 @@ class VanillaModAbilities {
 
         // Mine Gold
         new Stratified<Ability>(events.ability, Labels.ability_mine_gold).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gold);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestGoldFromBuilding(5, 2, "mines",
@@ -981,20 +1004,22 @@ class VanillaModAbilities {
 
         // Mining Stone Form
         new Stratified<Ability>(events.ability, Labels.ability_mining_stone_form).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mining_glyph);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit cannot move when in stone form but it harvests twice as many gems"))
-                .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
-                    if (receiver.wielder.abilities.hasStatusEffect(Labels.status_effect_stone_form_active)) {
-                        e.canWalkOnBuilding = false;
-                    }
-                    return new SideEffect();
-                }).add(Events.HarvestEvent.class, (GameView view, Ability receiver, Events.HarvestEvent e) -> {
+                .add(Events.CanUnitMoveEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.CanUnitMoveEvent e) -> {
+                            if (receiver.wielder.abilities.hasStatusEffect(Labels.status_effect_stone_form_active)) {
+                                e.canWalkOnBuilding = false;
+                            }
+                            return new SideEffect();
+                        })
+                .add(Events.HarvestEvent.class, (GameViewContext ctx, Ability receiver, Events.HarvestEvent e) -> {
                     final SideEffect effects = new SideEffect();
                     if (!e.unit.haul.isFull() && e.item.tags.has(Labels.tag_gem)
                             && receiver.wielder.abilities.hasStatusEffect(Labels.status_effect_stone_form_active)) {
-                        final Item extra = view.game.generator.item(e.item.name);
+                        final Item extra = ctx.view.game.generator.item(e.item.name);
                         effects.add(() -> e.unit.haul.add(extra));
                     }
                     return effects;
@@ -1002,39 +1027,39 @@ class VanillaModAbilities {
 
         // Mountain Strider
         new Stratified<Ability>(events.ability, Labels.ability_mountain_strider).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mountain_strider);
                     return new SideEffect();
                 }).add(AbilityLogic.traverse(Labels.building_mountain));
 
         // Necrotic Blast
         new Stratified<Ability>(events.ability, Labels.ability_necrotic_blast).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball, 0xdbc626, 0x53cb51);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(3), 3));
 
         // Night Vision
         new Stratified<Ability>(events.ability, Labels.ability_night_vision).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_night_vision);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit does not lose vision at night"))
-                .add(Events.GetVisionEvent.class, (GameView view, Ability receiver, Events.GetVisionEvent e) -> {
+                .add(Events.GetVisionEvent.class, (GameViewContext ctx, Ability receiver, Events.GetVisionEvent e) -> {
                     e.canSeeAtNight = true;
                     return new SideEffect();
                 });
 
         // Pebble Shot
         new Stratified<Ability>(events.ability, Labels.ability_pebble_shot).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(1), 3));
 
         // Pick Apples
         new Stratified<Ability>(events.ability, Labels.ability_pick_apples).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_pick_apples);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_apple, 2, "forests",
@@ -1042,7 +1067,7 @@ class VanillaModAbilities {
 
         // Pick Nopales
         new Stratified<Ability>(events.ability, Labels.ability_pick_nopales).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1051,7 +1076,7 @@ class VanillaModAbilities {
 
         // Pick Walnuts
         new Stratified<Ability>(events.ability, Labels.ability_pick_walnuts).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1060,30 +1085,30 @@ class VanillaModAbilities {
 
         // Pious
         new Stratified<Ability>(events.ability, Labels.ability_pious).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_worship_glyph);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit generates +1 favor with nearby patrons"))
                 .add(Events.GenerateFavorEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateFavorEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateFavorEvent e) -> {
                             e.favor += 1;
                             return new SideEffect();
                         });
 
         // Plant Cushion
         new Stratified<Ability>(events.ability, Labels.ability_plant_cushion).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom, 0xe858d4, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense if the unit is hauling a natural item"))
-                .add(Events.TakeDamageEvent.class, (GameView view, Ability receiver,
+                .add(Events.TakeDamageEvent.class, (GameViewContext ctx, Ability receiver,
                         Events.TakeDamageEvent e) -> receiver.wielder.haul.hasItemWithTag(Labels.tag_natural)
                                 ? AbilityLogic.defense(e, 2)
                                 : new SideEffect());
 
         // Plant Forest
         new Stratified<Ability>(events.ability, Labels.ability_plant_forest).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_forest);
                     return new SideEffect();
                 }).add(AbilityLogic.build(Labels.building_forest, "a grass tile",
@@ -1091,7 +1116,7 @@ class VanillaModAbilities {
 
         // Plant Meadow
         new Stratified<Ability>(events.ability, Labels.ability_plant_meadow).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_meadow);
                     return new SideEffect();
                 }).add(AbilityLogic.build(Labels.building_meadow, "a grass tile",
@@ -1099,7 +1124,7 @@ class VanillaModAbilities {
 
         // Plant Shrubland
         new Stratified<Ability>(events.ability, Labels.ability_plant_shrubland).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1108,19 +1133,19 @@ class VanillaModAbilities {
 
         // Power of Nature
         new Stratified<Ability>(events.ability, Labels.ability_power_of_nature).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_pick_flowers);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Consumes a natural item to deal 3 damage to the adjacent target"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final SideEffect effects = new SideEffect();
                             if (receiver.wielder.haul.hasItemWithTag(Labels.tag_natural)) {
                                 effects.add(() -> receiver.wielder.haul.removeItemWithTag(Labels.tag_natural));
-                                effects.add(AbilityLogic.attackAndEffect(view, receiver.wielder, new Damage(3), 1,
+                                effects.add(AbilityLogic.attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
                                         Optional.empty()));
                             } else if (receiver.wielder.leadership.belongsToHuman()) {
-                                effects.add(() -> view.hud.logger
+                                effects.add(() -> ctx.view.hud.logger
                                         .error("You have no natural items to activate this ability"));
                             }
                             return effects;
@@ -1128,52 +1153,53 @@ class VanillaModAbilities {
 
         // Protective Spores
         new Stratified<Ability>(events.ability, Labels.ability_protective_spores).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_spores);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Grants the target +2 defense for the next 2 turns"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Set<Point> points = Lambda.filter((Point p) -> view.game.world.getUnit(p).isPresent(),
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Set<Point> points = Lambda.filter(
+                                    (Point p) -> ctx.view.game.world.getUnit(p).isPresent(),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, points,
                                     "No valid targets for extra defense", (Point p) -> {
-                                        final Optional<Unit> target = view.game.world.getUnit(p);
-                                        final SideEffect effects = new SideEffect()
-                                                .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
-                                        target.ifPresent((Unit u) -> effects.add(
-                                                u.abilities.addStatusEffect(view, Labels.status_effect_extra_defense)));
+                                        final Optional<Unit> target = ctx.view.game.world.getUnit(p);
+                                        final SideEffect effects = new SideEffect().add(() -> ctx.view.game.actions
+                                                .unitHasCastSpell(ctx.view, receiver.wielder));
+                                        target.ifPresent((Unit u) -> effects.add(u.abilities.addStatusEffect(ctx.view,
+                                                Labels.status_effect_extra_defense)));
                                         return effects;
                                     })).orElse(new SideEffect());
                         });
 
         // Raid Mine
         new Stratified<Ability>(events.ability, Labels.ability_raid_mine).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dungeon_delve);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 4 damage to the target Mine and generates gold"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
-                            final Function<Point, Boolean> criteria = (Point p) -> view.game.world
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                            final Function<Point, Boolean> criteria = (Point p) -> ctx.view.game.world
                                     .getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building)
                                     .map((Building b) -> b.name.equals(Labels.building_mine)).orElse(false);
                             final Set<Point> points = Lambda.filter(criteria,
                                     Hexagons.getAdjacents(receiver.wielder.getPoint()));
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, points,
                                     "No Mines are in range", (Point p) -> {
                                         final SideEffect effects = new SideEffect();
                                         if (criteria.apply(p)) {
-                                            Optional<Building> target = view.game.world.getTile(p)
+                                            Optional<Building> target = ctx.view.game.world.getTile(p)
                                                     .flatMap((Tile t) -> t.building);
                                             target.ifPresent((Building b) -> effects
-                                                    .add(receiver.wielder.combat.attack(view, b, new Damage(4)))
+                                                    .add(receiver.wielder.combat.attack(ctx.view, b, new Damage(4)))
                                                     .add(() -> {
                                                         if (!receiver.wielder.haul.isFull()) {
-                                                            receiver.wielder.haul.add(
-                                                                    view.game.generator.item(Labels.item_bag_of_gold));
+                                                            receiver.wielder.haul.add(ctx.view.game.generator
+                                                                    .item(Labels.item_bag_of_gold));
                                                         }
-                                                    }).add(() -> view.game.actions.unitHasCastSpell(view,
+                                                    }).add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view,
                                                             receiver.wielder)));
                                         }
                                         return effects;
@@ -1182,20 +1208,20 @@ class VanillaModAbilities {
 
         // Raise Undead
         new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_raise_undead);
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc(
                         "Consumes 5 health to spawn a Ghastly Thrall (max one at a time, remains adjacent to this unit)"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             // Check for any existing Ghastly Thrall
                             for (Point p : Hexagons.getNeighbors(receiver.wielder.getPoint(), 1)) {
-                                if (view.game.world.getUnit(p)
+                                if (ctx.view.game.world.getUnit(p)
                                         .map((Unit u) -> u.name.equals(Labels.unit_ghastly_thrall)).orElse(false)) {
                                     if (receiver.wielder.leadership.belongsToHuman()) {
-                                        view.hud.logger.error("You can only raise one Ghastly Thrall at a time");
+                                        ctx.view.hud.logger.error("You can only raise one Ghastly Thrall at a time");
                                     }
                                     return new SideEffect();
                                 }
@@ -1203,41 +1229,41 @@ class VanillaModAbilities {
 
                             // Select a Tile to spawn the Unit on
                             final Set<Point> points = Lambda.filter(
-                                    (Point p) -> view.game.world.getTile(p)
+                                    (Point p) -> ctx.view.game.world.getTile(p)
                                             .map((Tile t) -> !t.unit.isPresent() && t.building
                                                     .map((Building b) -> !b.isEntityType(EntityType.PATRON))
                                                     .orElse(true))
                                             .orElse(false),
                                     Hexagons.getNeighbors(receiver.wielder.getPoint(), 1));
-                            return receiver.wielder.getLeader().map((Player player) -> player.select(view, points,
+                            return receiver.wielder.getLeader().map((Player player) -> player.select(ctx.view, points,
                                     "Nowhere to spawn unit", (Point p) -> {
-                                        return new SideEffect().add(receiver.wielder.combat.takeDamage(view,
+                                        return new SideEffect().add(receiver.wielder.combat.takeDamage(ctx.view,
                                                 new Damage(5), receiver.wielder)).add(() -> {
-                                                    view.game.actions.unitHasCastSpell(view, receiver.wielder);
-                                                    final Unit u = view.game.generator.unit(Labels.unit_ghastly_thrall,
-                                                            p.x, p.y);
-                                                    u.spawn(view);
-                                                    view.game.setLeader(view, u, receiver.wielder.getLeader());
+                                                    ctx.view.game.actions.unitHasCastSpell(ctx.view, receiver.wielder);
+                                                    final Unit u = ctx.view.game.generator
+                                                            .unit(Labels.unit_ghastly_thrall, p.x, p.y);
+                                                    u.spawn(ctx.view);
+                                                    ctx.view.game.setLeader(ctx.view, u, receiver.wielder.getLeader());
                                                 });
                                     })).orElse(new SideEffect());
                         });
 
         // Rallying Cry
         new Stratified<Ability>(events.ability, Labels.ability_rallying_cry).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bloodlust);
                     return new SideEffect();
                 })
                 .add(AbilityLogic.desc("+2 damage and +1 speed for all adjacent friendly units (cooldown for 2 turns)"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final SideEffect effects = new SideEffect().add(() -> receiver.goOnCooldown(2))
-                                    .add(() -> view.game.actions.unitHasCastSpell(view, receiver.wielder));
+                                    .add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view, receiver.wielder));
                             for (Point p : Hexagons.getAdjacents(receiver.wielder.getPoint())) {
-                                final Optional<Unit> unit = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                                final Optional<Unit> unit = ctx.view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                                 unit.ifPresent((Unit u) -> {
                                     if (u.leadership.sameLeader(receiver.wielder)) {
-                                        effects.add(u.abilities.addStatusEffect(view, Labels.status_effect_rally));
+                                        effects.add(u.abilities.addStatusEffect(ctx.view, Labels.status_effect_rally));
                                     }
                                 });
                             }
@@ -1246,49 +1272,51 @@ class VanillaModAbilities {
 
         // Regeneration
         new Stratified<Ability>(events.ability, Labels.ability_regeneration).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_regeneration);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit heals 1 hit point each turn"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> receiver.wielder.combat
-                        .heal(view, 1));
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> receiver.wielder.combat
+                        .heal(ctx.view, 1));
 
         // Reincarnation
         new Stratified<Ability>(events.ability, Labels.ability_reincarnation).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
-                }).add(Events.EntityDiedEvent.class, (GameView view, Ability receiver, Events.EntityDiedEvent e) -> {
-                    final SideEffect effects = new SideEffect();
-                    if (e.target == receiver.wielder) {
-                        effects.add(() -> view.game.mechanics.pools.reincarnate((Unit) e.target));
-                    }
-                    return effects;
-                });
+                }).add(Events.EntityDiedEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.EntityDiedEvent e) -> {
+                            final SideEffect effects = new SideEffect();
+                            if (e.target == receiver.wielder) {
+                                effects.add(() -> ctx.view.game.mechanics.pools.reincarnate((Unit) e.target));
+                            }
+                            return effects;
+                        });
 
         // Repair Structure
         new Stratified<Ability>(events.ability, Labels.ability_repair_structure).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Heals 1 damage each turn to an occupied building"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
-                    Optional<Building> b = view.game.world.getTile(receiver.wielder.getPoint())
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
+                    Optional<Building> b = ctx.view.game.world.getTile(receiver.wielder.getPoint())
                             .flatMap((Tile t) -> t.building);
-                    return b.map((Building b1) -> receiver.wielder.combat.heal(view, b1, 1)).orElse(new SideEffect());
+                    return b.map((Building b1) -> receiver.wielder.combat.heal(ctx.view, b1, 1))
+                            .orElse(new SideEffect());
                 });
 
         // Repel Invaders
         new Stratified<Ability>(events.ability, Labels.ability_repel_invaders).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO ad new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1296,9 +1324,9 @@ class VanillaModAbilities {
                 .add(AbilityLogic
                         .desc("Deals 2 damage to the target (or 4 damage when this unit is occupying a Tower)"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver,
+                        (GameViewContext ctx, Ability receiver,
                                 Events.AbilityActivatedEvent e) -> AbilityLogic
-                                        .dynamicDamageAttack(view, receiver.wielder, 1,
+                                        .dynamicDamageAttack(ctx.view, receiver.wielder, 1,
                                                 (Tile t) -> new Damage(t.building
                                                         .map((Building b) -> b.name.equals(Labels.building_tower))
                                                         .orElse(false) ? 4 : 2)));
@@ -1306,56 +1334,56 @@ class VanillaModAbilities {
         // Revenge of the Forest
         new Stratified<Ability>(events.ability, Labels.ability_revenge_of_the_forest)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_sword_slash, 0xffffff, 0x00ff00);
                             return new SideEffect();
                         })
                 .add(AbilityLogic
                         .desc("Deals 2 damage to the target (or 4 damage when this unit is occupying a Forest)"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver,
+                        (GameViewContext ctx, Ability receiver,
                                 Events.AbilityActivatedEvent e) -> AbilityLogic
-                                        .dynamicDamageAttack(view, receiver.wielder, 1,
+                                        .dynamicDamageAttack(ctx.view, receiver.wielder, 1,
                                                 (Tile t) -> new Damage(t.building
                                                         .map((Building b) -> b.name.equals(Labels.building_forest))
                                                         .orElse(false) ? 4 : 2)));
 
         // Rock Appetite
         new Stratified<Ability>(events.ability, Labels.ability_rock_appetite).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_crystal);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can only eat gem items"))
-                .add(Events.CanEatItemEvent.class, (GameView view, Ability receiver, Events.CanEatItemEvent e) -> {
-                    e.edible = e.item.tags.has(Labels.tag_gem);
-                    return new SideEffect();
-                });
+                }).add(AbilityLogic.desc("This unit can only eat gem items")).add(Events.CanEatItemEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.CanEatItemEvent e) -> {
+                            e.edible = e.item.tags.has(Labels.tag_gem);
+                            return new SideEffect();
+                        });
 
         // Self Sacrifice
         new Stratified<Ability>(events.ability, Labels.ability_self_sacrifice).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_self_sacrifice);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit transfers all their health but 1 to the target unit"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> {
                             final int hitPoints = receiver.wielder.combat.health.get() - 1;
-                            return new SideEffect().add(AbilityLogic.healUnit(view, receiver.wielder, hitPoints))
+                            return new SideEffect().add(AbilityLogic.healUnit(ctx.view, receiver.wielder, hitPoints))
                                     .add(() -> receiver.wielder.combat.health.set(1));
                         });
 
         // Scalding Skin
         new Stratified<Ability>(events.ability, Labels.ability_scalding_skin).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0xba3521);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Adjacent attackers take 1 damage"))
-                .add(Events.AttackedEvent.class, (GameView view, Ability receiver, Events.AttackedEvent e) -> {
+                .add(Events.AttackedEvent.class, (GameViewContext ctx, Ability receiver, Events.AttackedEvent e) -> {
                     if (e.attacker instanceof Unit) {
                         Unit target = (Unit) e.target;
                         Unit attacker = (Unit) e.attacker;
                         return Hexagons.areNeighbors(attacker.getPoint(), target.getPoint())
-                                ? attacker.combat.takeDamage(view, new Damage(1), target)
+                                ? attacker.combat.takeDamage(ctx.view, new Damage(1), target)
                                 : new SideEffect();
                     }
                     return new SideEffect();
@@ -1363,32 +1391,32 @@ class VanillaModAbilities {
 
         // Scratch
         new Stratified<Ability>(events.ability, Labels.ability_scratch).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_self_sacrifice);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(1), 1));
 
         // Shell Defense
         new Stratified<Ability>(events.ability, Labels.ability_shell_defense).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
-                        (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
+                        Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Shield Bash
         new Stratified<Ability>(events.ability, Labels.ability_shield_bash).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_shield_bash);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage with a 25% chance to stun (1 turn cooldown)"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> new SideEffect()
-                                .add(AbilityLogic.attackAndEffect(view, receiver.wielder, new Damage(3), 1,
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> new SideEffect()
+                                .add(AbilityLogic.attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
                                         Optional.of((Point p) -> {
-                                            Optional<Unit> u = view.game.world.getUnit(p);
+                                            Optional<Unit> u = ctx.view.game.world.getUnit(p);
                                             return u.isPresent() && Lambda.chance(25)
-                                                    ? u.get().abilities.addStatusEffect(view,
+                                                    ? u.get().abilities.addStatusEffect(ctx.view,
                                                             Labels.status_effect_stunned)
                                                     : new SideEffect();
                                         })))
@@ -1396,7 +1424,7 @@ class VanillaModAbilities {
 
         // Shield Totem
         new Stratified<Ability>(events.ability, Labels.ability_shield_totem).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1404,86 +1432,91 @@ class VanillaModAbilities {
 
         // Shove
         new Stratified<Ability>(events.ability, Labels.ability_shove).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage and knocks the target back by one tile"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(3), 1, Optional.of((Point p) -> {
-                                    final SideEffect effects = new SideEffect();
-                                    final Optional<Unit> u = view.game.world.getUnit(p);
-                                    final Optional<HexSide> direction = Hexagons
-                                            .getDirection(receiver.wielder.getPoint(), p);
-                                    final Optional<Point> p1 = direction
-                                            .map((HexSide d) -> Hexagons.followLine(p, d, 1));
-                                    if (u.isPresent() && p1.flatMap((Point p2) -> view.game.world.getTile(p2))
-                                            .map((Tile t) -> !t.unit.isPresent()).orElse(false)) {
-                                        effects.add(() -> u.get().movement.setPosition(view, p1.get().x, p1.get().y));
-                                    }
-                                    return effects;
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
+                                        Optional.of((Point p) -> {
+                                            final SideEffect effects = new SideEffect();
+                                            final Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                            final Optional<HexSide> direction = Hexagons
+                                                    .getDirection(receiver.wielder.getPoint(), p);
+                                            final Optional<Point> p1 = direction
+                                                    .map((HexSide d) -> Hexagons.followLine(p, d, 1));
+                                            if (u.isPresent()
+                                                    && p1.flatMap((Point p2) -> ctx.view.game.world.getTile(p2))
+                                                            .map((Tile t) -> !t.unit.isPresent()).orElse(false)) {
+                                                effects.add(() -> u.get().movement.setPosition(ctx.view, p1.get().x,
+                                                        p1.get().y));
+                                            }
+                                            return effects;
+                                        })));
 
         // Slime Shot
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_slime_shot);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 3));
 
         // Slow
         new Stratified<Ability>(events.ability, Labels.ability_slow).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xffd9b1);
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
-                        (GameView view, Ability receiver, Events.GetDescriptionEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.GetDescriptionEvent e) -> {
                             final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(
                                     receiver.wielder);
-                            receiver.wielder.handleEvent(view, event);
+                            receiver.wielder.handleEvent(ctx, event);
                             e.desc = String.format("This unit has 1 base speed (currently has %d speed)",
                                     event.distance);
                             return new SideEffect();
                         })
                 .add(Events.UnitMoveDistanceEvent.class,
-                        (GameView view, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.UnitMoveDistanceEvent e) -> {
                             e.distance = 1;
                             return new SideEffect();
                         });
 
         // Smash
         new Stratified<Ability>(events.ability, Labels.ability_smash).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_smash);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(3), 1, Optional.of((Point p) -> {
-                                    Optional<Unit> u = view.game.world.getUnit(p);
-                                    return u.isPresent() && Lambda.chance(15)
-                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : new SideEffect();
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(3), 1,
+                                        Optional.of((Point p) -> {
+                                            Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                            return u.isPresent() && Lambda.chance(15)
+                                                    ? u.get().abilities.addStatusEffect(ctx.view,
+                                                            Labels.status_effect_stunned)
+                                                    : new SideEffect();
+                                        })));
 
         // Soothing Aura
         new Stratified<Ability>(events.ability, Labels.ability_soothing_aura).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Heals adjacent friendly units for 1 hit point each turn"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> {
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect().add(
+                                () -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                .add("Tick", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> {
                     final SideEffect effects = new SideEffect();
                     final Set<Point> adjacents = Hexagons.getAdjacents(receiver.wielder.getPoint());
                     for (Point p : adjacents) {
-                        final Optional<Unit> target = view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
+                        final Optional<Unit> target = ctx.view.game.world.getTile(p).flatMap((Tile t) -> t.unit);
                         if (target.map((Unit u) -> u.leadership.sameLeader(receiver.wielder)).orElse(false)) {
-                            effects.add(target.get().combat.heal(view, target.get(), 1));
+                            effects.add(target.get().combat.heal(ctx.view, target.get(), 1));
                         }
                     }
                     return effects;
@@ -1491,7 +1524,7 @@ class VanillaModAbilities {
 
         // Stipend
         new Stratified<Ability>(events.ability, Labels.ability_stipend).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1500,70 +1533,77 @@ class VanillaModAbilities {
 
         // Stomp
         new Stratified<Ability>(events.ability, Labels.ability_stomp).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stomp);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
-                                    Optional<Unit> u = view.game.world.getUnit(p);
-                                    return u.isPresent() && Lambda.chance(15)
-                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : new SideEffect();
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
+                                        Optional.of((Point p) -> {
+                                            Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                            return u.isPresent() && Lambda.chance(15)
+                                                    ? u.get().abilities.addStatusEffect(ctx.view,
+                                                            Labels.status_effect_stunned)
+                                                    : new SideEffect();
+                                        })));
 
         // Stone Defense
         new Stratified<Ability>(events.ability, Labels.ability_stone_defense).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class,
-                        (GameView view, Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
+                }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
+                        Ability receiver, Events.TakeDamageEvent e) -> AbilityLogic.defense(e, 2));
 
         // Stone Form
         new Stratified<Ability>(events.ability, Labels.ability_stone_form).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x828282);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit enters Stone Form at night or on rock tiles"))
                 .add(Events.SpawnEvent.class,
-                        (GameView view, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
-                                .add(AbilityLogic.checkStoneForm(view, receiver.wielder))
-                                .add(() -> view.game.future.addFutureTick("Tick", receiver, 1, true, Optional.empty())))
+                        (GameViewContext ctx, Ability receiver, Events.SpawnEvent e) -> new SideEffect()
+                                .add(AbilityLogic.checkStoneForm(ctx.view, receiver.wielder))
+                                .add(() -> ctx.view.game.future.addFutureTick("Tick", receiver, 1, true,
+                                        Optional.empty())))
                 .add(Events.UnitMovedEvent.class,
-                        (GameView view, Ability receiver, Events.UnitMovedEvent e) -> AbilityLogic.checkStoneForm(view,
-                                receiver.wielder))
-                .add("Tick", (GameView view, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic
-                        .checkStoneForm(view, receiver.wielder));
+                        (GameViewContext ctx, Ability receiver, Events.UnitMovedEvent e) -> AbilityLogic
+                                .checkStoneForm(ctx.view, receiver.wielder))
+                .add("Tick", (GameViewContext ctx, Ability receiver, Events.RepeatedEvent e) -> AbilityLogic
+                        .checkStoneForm(ctx.view, receiver.wielder));
 
         // Subterranean Potions
-        new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions).add(
-                Events.GenerateAbilityEvent.class, (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
-                    e.blob.setIcon(Labels.asset_subterranean_potions);
-                    return new SideEffect();
-                }).add(AbilityLogic.harvestFromBuilding(Labels.item_health_potion, 2, "mines",
+        new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions)
+                .add(Events.GenerateAbilityEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                            e.blob.setIcon(Labels.asset_subterranean_potions);
+                            return new SideEffect();
+                        })
+                .add(AbilityLogic.harvestFromBuilding(Labels.item_health_potion, 2, "mines",
                         (Building b) -> b.name.equals(Labels.building_mine)));
 
         // Sucker Punch
         new Stratified<Ability>(events.ability, Labels.ability_sucker_punch).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage with a 25% chance to stun"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
-                                    final Optional<Unit> u = view.game.world.getUnit(p);
-                                    return u.isPresent() && Lambda.chance(25)
-                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : new SideEffect();
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
+                                        Optional.of((Point p) -> {
+                                            final Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                            return u.isPresent() && Lambda.chance(25)
+                                                    ? u.get().abilities.addStatusEffect(ctx.view,
+                                                            Labels.status_effect_stunned)
+                                                    : new SideEffect();
+                                        })));
 
         // Surprise Attack
         new Stratified<Ability>(events.ability, Labels.ability_surprise_attack).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1571,60 +1611,65 @@ class VanillaModAbilities {
                 .add(AbilityLogic.desc(
                         "Deals 2 damage with a 25% chance to stun if occupying a forest (or 50% chance to stun on a dense forest)"))
                 .add(Events.AbilityActivatedEvent.class,
-                        (GameView view, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
-                                .attackAndEffect(view, receiver.wielder, new Damage(2), 1, Optional.of((Point p) -> {
-                                    final Optional<Unit> u = view.game.world.getUnit(p);
-                                    final Optional<Building> building = view.game.world
-                                            .getTile(receiver.wielder.getPoint()).flatMap((Tile t) -> t.building);
-                                    int chance = 0;
-                                    if (building.map((Building b) -> b.name.equals(Labels.building_forest))
-                                            .orElse(false)) {
-                                        chance = 25;
-                                    }
-                                    if (building.map((Building b) -> b.name.equals(Labels.building_dense_forest))
-                                            .orElse(false)) {
-                                        chance = 50;
-                                    }
-                                    return u.isPresent() && Lambda.chance(chance)
-                                            ? u.get().abilities.addStatusEffect(view, Labels.status_effect_stunned)
-                                            : new SideEffect();
-                                })));
+                        (GameViewContext ctx, Ability receiver, Events.AbilityActivatedEvent e) -> AbilityLogic
+                                .attackAndEffect(ctx.view, receiver.wielder, new Damage(2), 1,
+                                        Optional.of((Point p) -> {
+                                            final Optional<Unit> u = ctx.view.game.world.getUnit(p);
+                                            final Optional<Building> building = ctx.view.game.world
+                                                    .getTile(receiver.wielder.getPoint())
+                                                    .flatMap((Tile t) -> t.building);
+                                            int chance = 0;
+                                            if (building.map((Building b) -> b.name.equals(Labels.building_forest))
+                                                    .orElse(false)) {
+                                                chance = 25;
+                                            }
+                                            if (building
+                                                    .map((Building b) -> b.name.equals(Labels.building_dense_forest))
+                                                    .orElse(false)) {
+                                                chance = 50;
+                                            }
+                                            return u.isPresent() && Lambda.chance(chance)
+                                                    ? u.get().abilities.addStatusEffect(ctx.view,
+                                                            Labels.status_effect_stunned)
+                                                    : new SideEffect();
+                                        })));
 
         // Swim
         new Stratified<Ability>(events.ability, Labels.ability_swim).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_swim);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can traverse water tiles"))
-                .add(Events.CanUnitMoveEvent.class, (GameView view, Ability receiver, Events.CanUnitMoveEvent e) -> {
-                    if (!e.canWalkOnTile && e.tile.name.equals(Labels.tile_water)) {
-                        e.canWalkOnTile = true;
-                    }
-                    return new SideEffect();
-                });
+                }).add(AbilityLogic.desc("This unit can traverse water tiles")).add(Events.CanUnitMoveEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.CanUnitMoveEvent e) -> {
+                            if (!e.canWalkOnTile && e.tile.name.equals(Labels.tile_water)) {
+                                e.canWalkOnTile = true;
+                            }
+                            return new SideEffect();
+                        });
 
         // Swing Axe
         new Stratified<Ability>(events.ability, Labels.ability_swing_axe).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_axe_swing);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(3), 1));
 
         // Swing Pickaxe
         new Stratified<Ability>(events.ability, Labels.ability_swing_pickaxe).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gold, 0xbed129, 0x802412);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage (or 4 damage if the target has a gem in their inventory)"))
-                .add(Events.AbilityActivatedEvent.class, (GameView view, Ability receiver,
-                        Events.AbilityActivatedEvent e) -> AbilityLogic.dynamicDamageAttack(view, receiver.wielder, 1,
+                .add(Events.AbilityActivatedEvent.class, (GameViewContext ctx, Ability receiver,
+                        Events.AbilityActivatedEvent e) -> AbilityLogic.dynamicDamageAttack(ctx.view, receiver.wielder,
+                                1,
                                 (Tile t) -> t.unit.map((Unit u) -> u.haul.hasItemWithTag(Labels.tag_gem)).orElse(false)
                                         ? new Damage(4)
                                         : new Damage(2)));
 
         // Swing Staff
         new Stratified<Ability>(events.ability, Labels.ability_swing_staff).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1632,25 +1677,25 @@ class VanillaModAbilities {
 
         // Sword Slash
         new Stratified<Ability>(events.ability, Labels.ability_sword_slash).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_sword_slash);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 1));
 
         // Total Appetite
         new Stratified<Ability>(events.ability, Labels.ability_total_appetite).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stomach);
                     return new SideEffect();
-                }).add(AbilityLogic.desc("This unit can eat any item"))
-                .add(Events.CanEatItemEvent.class, (GameView view, Ability receiver, Events.CanEatItemEvent e) -> {
-                    e.edible = true;
-                    return new SideEffect();
-                });
+                }).add(AbilityLogic.desc("This unit can eat any item")).add(Events.CanEatItemEvent.class,
+                        (GameViewContext ctx, Ability receiver, Events.CanEatItemEvent e) -> {
+                            e.edible = true;
+                            return new SideEffect();
+                        });
 
         // Trade
         new Stratified<Ability>(events.ability, Labels.ability_trade).add(Events.GenerateAbilityEvent.class,
-                (GameView view, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_trade);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestGoldFromBuilding(10, 2, "marketplaces",

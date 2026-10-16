@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.game.model.Tile;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
@@ -21,10 +22,10 @@ public class ItemLogic {
      */
     public static StratifiedPayload<Item, Events.ItemConsumedEvent> valuable() {
         return new StratifiedPayload<>(Events.ItemConsumedEvent.class,
-                (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> {
+                (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect().add(() -> {
                     e.consumer.getLeader().get().gold += e.item.gold;
-                    view.hud.top.update(view.game);
-                }).add(e.consumer.handleEvent(view, new Events.YieldGoldEvent(e.consumer, e.item.gold))));
+                    ctx.view.hud.top.update(ctx.view.game);
+                }).add(e.consumer.handleEvent(new Events.YieldGoldEvent(e.consumer, e.item.gold))));
     }
 
     /**

@@ -1,5 +1,5 @@
 package net.lugocorp.kingdom.gameplay.events;
-import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
@@ -7,5 +7,5 @@ import net.lugocorp.kingdom.utils.SideEffect;
  * handling system
  */
 public interface EventHandler<T extends EventReceiver, E extends Event> {
-    public SideEffect handle(GameView view, T receiver, E event);
+    public SideEffect handle(GameViewContext ctx, T receiver, E event);
 }

@@ -23,7 +23,7 @@ public class Vision {
     public int get(GameView view, Player player, Entity receiver) {
         final Events.GetVisionEvent event = new Events.GetVisionEvent(player, receiver);
         final boolean isNight = view.game.mechanics.dayNight.isNight();
-        receiver.handleEvent(view, event);
+        receiver.handleEvent(event);
         return Math.max(0, event.cumulative(isNight));
     }
 

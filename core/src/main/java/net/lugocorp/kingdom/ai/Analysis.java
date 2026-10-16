@@ -6,6 +6,7 @@ import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Path;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.prediction.EventLog;
@@ -70,10 +71,10 @@ public class Analysis {
      * Predicts the outcome of the given Event on the given Ability, and assigns a
      * Priority to the outcome
      */
-    public Priority passiveAbility(GameView view, Ability ability, Event event,
+    public Priority passiveAbility(GameViewContext ctx, Ability ability, Event event,
             Function<List<Event>, Priority> prioritize) {
         final int handle = EventLog.getHandle();
-        ability.handleEvent(view, event);
+        ability.handleEvent(ctx, event);
         return prioritize.apply(EventLog.getEvents(handle));
     }
 
@@ -89,9 +90,10 @@ public class Analysis {
      * Makes a Prediction for what will happen if the given Unit consumes the given
      * Item
      */
-    public Priority itemConsumption(GameView view, Unit unit, Item item, Function<List<Event>, Priority> prioritize) {
+    public Priority itemConsumption(GameViewContext ctx, Unit unit, Item item,
+            Function<List<Event>, Priority> prioritize) {
         final int handle = EventLog.getHandle();
-        item.handleEvent(view, new Events.ItemConsumedEvent(item, unit));
+        item.handleEvent(ctx, new Events.ItemConsumedEvent(item, unit));
         return prioritize.apply(EventLog.getEvents(handle));
     }
 

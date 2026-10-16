@@ -24,7 +24,7 @@ public class Hunger {
      */
     public boolean canEat(GameView view, Item i) {
         final Events.CanEatItemEvent e = new Events.CanEatItemEvent(i);
-        this.unit.handleEvent(view, e);
+        this.unit.handleEvent(e);
         return e.edible;
     }
 

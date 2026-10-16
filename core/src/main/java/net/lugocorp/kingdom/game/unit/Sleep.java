@@ -26,7 +26,7 @@ public class Sleep {
      */
     public void wakeUpCheck(GameView view) {
         final Events.IsStunnedEvent event = new Events.IsStunnedEvent(this.unit);
-        this.unit.handleEvent(view, event).execute();
+        this.unit.handleEvent(event).execute();
         if (event.isStunned) {
             this.sleeping = true;
         } else if (this.sleeping) {

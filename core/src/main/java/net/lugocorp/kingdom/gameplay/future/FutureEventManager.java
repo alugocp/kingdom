@@ -125,7 +125,7 @@ public class FutureEventManager {
     private void processFutureTick(GameView view, FutureTick ft) {
         this.futures.get(ft.turn).list().remove(ft);
         Events.RepeatedEvent e = new Events.RepeatedEvent(ft.channel, ft.interval, ft.repeat);
-        ft.receiver.handleEvent(view, e).execute();
+        ft.receiver.handleEvent(e).execute();
         if (e.repeat) {
             this.addFutureTick(ft.channel, ft.receiver, e.interval, true, ft.playersTurn);
         }

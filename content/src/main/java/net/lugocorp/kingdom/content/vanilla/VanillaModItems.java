@@ -9,7 +9,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Stratified;
-import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.Optional;
 
@@ -23,8 +23,8 @@ class VanillaModItems {
      */
     static void registerEvents(AllEventHandlers events) {
         // Gold Coin
-        new Stratified<Item>(events.item, Labels.item_gold_coin)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_gold_coin).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_coin);
                     e.blob.gold = 1;
@@ -32,8 +32,8 @@ class VanillaModItems {
                 }).add(ItemLogic.valuable());
 
         // Emerald
-        new Stratified<Item>(events.item, Labels.item_emerald)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_emerald).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_crystal);
                     e.blob.gold = 10;
@@ -42,19 +42,19 @@ class VanillaModItems {
                 }).add(ItemLogic.valuable());
 
         // Fish
-        new Stratified<Item>(events.item, Labels.item_fish)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_fish).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_fish);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_meat);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Mushroom
-        new Stratified<Item>(events.item, Labels.item_mushroom)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_mushroom).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to look at this mushroom";
                     e.blob.icon = Optional.of(Labels.asset_mushroom);
                     e.blob.gold = 1;
@@ -62,47 +62,47 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect());
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect());
 
         // Apple
-        new Stratified<Item>(events.item, Labels.item_apple)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_apple).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_fruit);
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Cacao
-        new Stratified<Item>(events.item, Labels.item_cacao)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_cacao).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_harvest_cacao);
                     e.blob.gold = 3;
                     e.blob.tags.add(Labels.tag_fruit);
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Mesquite
-        new Stratified<Item>(events.item, Labels.item_mesquite)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_mesquite).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_harvest_mesquite);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_fruit);
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Batata
-        new Stratified<Item>(events.item, Labels.item_batata)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_batata).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger and restore 1 health";
                     e.blob.icon = Optional.of(Labels.asset_harvest_batatas);
                     e.blob.gold = 1;
@@ -110,36 +110,36 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect()
-                                .add(ItemLogic.food(view, e)).add(e.consumer.combat.heal(view, e.consumer, 1)));
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect()
+                                .add(ItemLogic.food(ctx.view, e)).add(e.consumer.combat.heal(ctx.view, e.consumer, 1)));
 
         // Pumpkin
-        new Stratified<Item>(events.item, Labels.item_pumpkin)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_pumpkin).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_harvest_pumpkins);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_fruit);
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver,
-                        Events.ItemConsumedEvent e) -> new SideEffect().add(ItemLogic.food(view, e)));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> new SideEffect().add(ItemLogic.food(ctx.view, e)));
 
         // Fig
-        new Stratified<Item>(events.item, Labels.item_fig)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_fig).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "A sweet edible fruit resembling a tiny satchel";
                     e.blob.icon = Optional.of(Labels.asset_harvest_figs);
                     e.blob.gold = 1;
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Truffle
-        new Stratified<Item>(events.item, Labels.item_truffle)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_truffle).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "A tasty and expensive fungus";
                     // TODO add a real icon
                     e.blob.icon = Optional.of(Labels.asset_mushroom);
@@ -148,12 +148,12 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Walnut
-        new Stratified<Item>(events.item, Labels.item_walnut)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_walnut).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "A tough nut rich in protein";
                     e.blob.icon = Optional.of(Labels.asset_apple);
@@ -161,12 +161,12 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Nopal
-        new Stratified<Item>(events.item, Labels.item_nopal)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_nopal).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "This cactus is very nutritious once you remove the thorns";
                     e.blob.icon = Optional.of(Labels.asset_apple);
@@ -174,12 +174,12 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Passionfruit
-        new Stratified<Item>(events.item, Labels.item_passionfruit)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_passionfruit).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "A sweet and sour fruit that grows on vines";
                     e.blob.icon = Optional.of(Labels.asset_apple);
@@ -187,23 +187,23 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     e.blob.tags.add(Labels.tag_fruit);
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.food(view, e));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.food(ctx.view, e));
 
         // Health Potion
-        new Stratified<Item>(events.item, Labels.item_health_potion)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_health_potion).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to heal by 5 hit points";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.gold = 1;
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.potion(view, e, 5));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> ItemLogic.potion(ctx.view, e, 5));
 
         // Incense
         // Bag of Gold
-        new Stratified<Item>(events.item, Labels.item_bag_of_gold)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_bag_of_gold).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_pouch);
                     e.blob.gold = 5;
@@ -211,48 +211,48 @@ class VanillaModItems {
                 }).add(ItemLogic.valuable());
 
         // Capital
-        new Stratified<Item>(events.item, Labels.item_capital)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_capital).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to generate 6 auction points";
                     e.blob.icon = Optional.of(Labels.asset_paper);
                     e.blob.gold = 6;
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class, (GameView view, Item receiver,
-                        Events.ItemConsumedEvent e) -> AbilityLogic.generateAuctionPoints(view, e.consumer, 10));
+                }).add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> AbilityLogic.generateAuctionPoints(ctx.view, e.consumer, 10));
 
         // Stones
         // Sword
-        new Stratified<Item>(events.item, Labels.item_sword)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_sword).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "+1 damage";
                     e.blob.icon = Optional.of(Labels.asset_sword);
                     e.blob.gold = 1;
                     return new SideEffect();
-                }).add(Events.AttackEvent.class, (GameView view, Item receiver, Events.AttackEvent e) -> {
+                }).add(Events.AttackEvent.class, (GameViewContext ctx, Item receiver, Events.AttackEvent e) -> {
                     ItemLogic.boostDamage(e, 1, true);
                     return new SideEffect();
                 });
 
         // Shield
-        new Stratified<Item>(events.item, Labels.item_shield)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_shield).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "+1 armor";
                     e.blob.icon = Optional.of(Labels.asset_shield);
                     e.blob.gold = 1;
                     return new SideEffect();
-                }).add(Events.TakeDamageEvent.class, (GameView view, Item receiver, Events.TakeDamageEvent e) -> {
+                }).add(Events.TakeDamageEvent.class, (GameViewContext ctx, Item receiver, Events.TakeDamageEvent e) -> {
                     ItemLogic.boostArmor(e, 1, true);
                     return new SideEffect();
                 });
 
         // Staff
-        new Stratified<Item>(events.item, Labels.item_staff)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_staff).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "+1 healing";
                     e.blob.icon = Optional.of(Labels.asset_staff);
                     e.blob.gold = 1;
                     return new SideEffect();
-                }).add(Events.HealEntityEvent.class, (GameView view, Item receiver, Events.HealEntityEvent e) -> {
+                }).add(Events.HealEntityEvent.class, (GameViewContext ctx, Item receiver, Events.HealEntityEvent e) -> {
                     ItemLogic.boostHealing(e, 1, true);
                     return new SideEffect();
                 });
@@ -279,17 +279,17 @@ class VanillaModItems {
         // Bloody Totem
         // Phoenix Blossom
         // Life-Giving Elixir
-        new Stratified<Item>(events.item, Labels.item_life_giving_elixir)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_life_giving_elixir).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to generate 6 unit points";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.rarity = Rarity.UNCOMMON;
                     e.blob.gold = 6;
                     return new SideEffect();
-                }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> new SideEffect()
-                                .add(() -> e.consumer.getLeader()
-                                        .ifPresent((Player p) -> p.addUnitPoints(view, e.consumer.getPoint(), 10))));
+                })
+                .add(Events.ItemConsumedEvent.class, (GameViewContext ctx, Item receiver,
+                        Events.ItemConsumedEvent e) -> new SideEffect().add(() -> e.consumer.getLeader()
+                                .ifPresent((Player p) -> p.addUnitPoints(ctx.view, e.consumer.getPoint(), 10))));
 
         // Blood-Thirsty Blade
         // Blood-Soaked Mail
@@ -312,8 +312,8 @@ class VanillaModItems {
         // Mercenary's Blade
         // Wizard's Staff
         // Floral Seeds
-        new Stratified<Item>(events.item, Labels.item_floral_seeds)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_floral_seeds).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a meadow on a grass tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -321,12 +321,12 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
-                                Labels.building_meadow, (Tile t) -> t.name.equals(Labels.tile_grass)));
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(ctx.view,
+                                e.consumer, Labels.building_meadow, (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Arboreal Seeds
-        new Stratified<Item>(events.item, Labels.item_arboreal_seeds)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_arboreal_seeds).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a forest on a grass tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -334,12 +334,12 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
-                                Labels.building_forest, (Tile t) -> t.name.equals(Labels.tile_grass)));
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(ctx.view,
+                                e.consumer, Labels.building_forest, (Tile t) -> t.name.equals(Labels.tile_grass)));
 
         // Arctic Seeds
-        new Stratified<Item>(events.item, Labels.item_arctic_seeds)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_arctic_seeds).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a taiga on a snow tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -347,12 +347,12 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
-                                Labels.building_taiga, (Tile t) -> t.name.equals(Labels.tile_snow)));
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(ctx.view,
+                                e.consumer, Labels.building_taiga, (Tile t) -> t.name.equals(Labels.tile_snow)));
 
         // Cactus Seeds
-        new Stratified<Item>(events.item, Labels.item_cactus_seeds)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_cactus_seeds).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a shrubland on a sand tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -360,12 +360,12 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
-                                Labels.building_shrubland, (Tile t) -> t.name.equals(Labels.tile_sand)));
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(ctx.view,
+                                e.consumer, Labels.building_shrubland, (Tile t) -> t.name.equals(Labels.tile_sand)));
 
         // Pioneering Seeds
-        new Stratified<Item>(events.item, Labels.item_pioneering_seeds)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_pioneering_seeds).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant an oasis on a sand tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -373,20 +373,20 @@ class VanillaModItems {
                     e.blob.tags.add(Labels.tag_natural);
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
-                                Labels.building_oasis, (Tile t) -> t.name.equals(Labels.tile_sand)));
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(ctx.view,
+                                e.consumer, Labels.building_oasis, (Tile t) -> t.name.equals(Labels.tile_sand)));
 
         // Digging Kit
-        new Stratified<Item>(events.item, Labels.item_digging_kit)
-                .add(Events.GenerateItemEvent.class, (GameView view, Item receiver, Events.GenerateItemEvent e) -> {
+        new Stratified<Item>(events.item, Labels.item_digging_kit).add(Events.GenerateItemEvent.class,
+                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to dig a mine";
                     e.blob.icon = Optional.of(Labels.asset_shovel);
                     e.blob.rarity = Rarity.RARE;
                     e.blob.gold = 10;
                     return new SideEffect();
                 }).add(Events.ItemConsumedEvent.class,
-                        (GameView view, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(view, e.consumer,
-                                Labels.building_mine, (Tile t) -> true));
+                        (GameViewContext ctx, Item receiver, Events.ItemConsumedEvent e) -> ItemLogic.build(ctx.view,
+                                e.consumer, Labels.building_mine, (Tile t) -> true));
 
         // Telescope
         // Ornate Boots

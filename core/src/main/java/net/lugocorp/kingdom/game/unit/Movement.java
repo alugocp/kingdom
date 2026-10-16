@@ -97,7 +97,7 @@ public class Movement {
                 parallel);
         final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous,
                 parallel);
-        effects.add(this.unit.handleEvent(view, before));
+        effects.add(this.unit.handleEvent(before));
         effects.add(() -> {
             final Point start = this.unit.getPoint();
             final boolean wasOnUnit = view.hud.bot.tileMenu.get().equals(start);
@@ -118,7 +118,7 @@ public class Movement {
                     this.removeFromPosition(view.game);
                     this.setPosition(view, dest.x, dest.y);
                     if (isLast) {
-                        this.unit.handleEvent(view, after).execute();
+                        this.unit.handleEvent(after).execute();
                         if (wasOnUnit && view.hud.bot.tileMenu.get().equals(start)
                                 && this.unit.leadership.belongsToHuman()) {
                             view.hud.bot.minimap.refresh(view.game.world);
@@ -186,7 +186,7 @@ public class Movement {
      */
     public int getMaxDistance(GameView view) {
         final Events.UnitMoveDistanceEvent event = new Events.UnitMoveDistanceEvent(this.unit);
-        this.unit.handleEvent(view, event);
+        this.unit.handleEvent(event);
         return event.distance;
     }
 
@@ -195,8 +195,8 @@ public class Movement {
      */
     private int getSpeedCost(GameView view, Tile t) {
         final Events.GetSpeedCostEvent event = new Events.GetSpeedCostEvent(t);
-        t.building.ifPresent((Building b) -> b.handleEvent(view, event));
-        this.unit.handleEvent(view, event);
+        t.building.ifPresent((Building b) -> b.handleEvent(event));
+        this.unit.handleEvent(event);
         return event.cost;
     }
 
@@ -246,7 +246,7 @@ public class Movement {
 
         // Check if this Unit is allowed to move there (Tile and Building logic)
         final Events.CanUnitMoveEvent event = new Events.CanUnitMoveEvent(this.unit, t);
-        this.unit.handleEvent(view, event);
+        this.unit.handleEvent(event);
         return event.possible();
     }
 }

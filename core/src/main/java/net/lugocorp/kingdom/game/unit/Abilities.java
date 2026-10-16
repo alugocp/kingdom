@@ -125,7 +125,7 @@ public class Abilities {
         effects.add(() -> view.overlays.entity(this.unit)
                 .addRising(new RisingOverlay(view, this.unit, ColorScheme.WHITE.hex, status.name)));
         effects.add(() -> this.passives.add(status));
-        effects.add(status.handleEvent(view, new Events.StatusEffectAddedEvent(status, this.unit)));
+        effects.add(status.handleEvent(new Events.StatusEffectAddedEvent(status, this.unit)));
         return effects;
     }
 

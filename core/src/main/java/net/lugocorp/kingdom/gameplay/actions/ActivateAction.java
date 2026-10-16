@@ -11,7 +11,7 @@ public class ActivateAction implements Action {
 
     public ActivateAction(GameView view, Unit unit) {
         final Events.GetMaxActivationsEvent e = new Events.GetMaxActivationsEvent(unit);
-        unit.handleEvent(view, e); // Don't need execute() here
+        unit.handleEvent(e); // Don't need execute() here
         this.remaining = e.max - 1;
     }
 

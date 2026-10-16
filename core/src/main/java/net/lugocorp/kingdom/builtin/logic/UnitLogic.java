@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.UnitDefaults;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 
@@ -23,7 +24,7 @@ public class UnitLogic {
      */
     public static StratifiedPayload<Unit, Events.UnitMoveDistanceEvent> speed(int distance) {
         return new StratifiedPayload<>(Events.UnitMoveDistanceEvent.class,
-                (GameView view, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
+                (GameViewContext ctx, Unit receiver, Events.UnitMoveDistanceEvent e) -> {
                     e.distance = distance;
                     return new SideEffect();
                 });

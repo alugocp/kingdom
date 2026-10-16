@@ -29,7 +29,7 @@ public class UnitAnalysis {
         // Check for an armor ability
         final int test = 10;
         Events.TakeDamageEvent evt = new Events.TakeDamageEvent(u, new Damage(test));
-        u.handleEvent(view, evt);
+        u.handleEvent(evt);
         return evt.dmg.base < test;
     }
 }

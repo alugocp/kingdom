@@ -20,6 +20,7 @@ import net.lugocorp.kingdom.game.unit.Sleep;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -109,7 +110,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     public void spawn(GameView view) {
         this.setLoaders(view.av);
         this.movement.setPosition(view, this.x, this.y);
-        this.handleEvent(view, new Events.SpawnEvent<Unit>(this)).execute();
+        this.handleEvent(new Events.SpawnEvent<Unit>(this)).execute();
         this.hunger.eat(view, false);
         view.game.units.add(this);
     }
@@ -146,18 +147,18 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
         final SideEffect effects = new SideEffect();
-        effects.add(view.game.events.unit.handle(view, this, e));
+        effects.add(ctx.view.game.events.unit.handle(ctx, this, e));
         if (e.propagate) {
             for (Ability a : this.abilities.getActives()) {
-                effects.add(a.handleEventWithoutSignalBooster(view, e));
+                effects.add(a.handleEventWithoutSignalBooster(ctx, e));
             }
             for (Ability a : this.abilities.getPassives()) {
-                effects.add(a.handleEventWithoutSignalBooster(view, e));
+                effects.add(a.handleEventWithoutSignalBooster(ctx, e));
             }
             for (Item i : this.equipped) {
-                effects.add(i.handleEventWithoutSignalBooster(view, e));
+                effects.add(i.handleEventWithoutSignalBooster(ctx, e));
             }
         }
         return effects;
@@ -165,16 +166,16 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
 
     /** {@inheritdoc} */
     @Override
-    public void deactivate(GameView view) {
-        super.deactivate(view);
+    public void deactivate(GameViewContext ctx) {
+        super.deactivate(ctx);
         this.getLeader().ifPresent((Player l) -> {
-            this.vision.remove(l, view.game.world);
+            this.vision.remove(l, ctx.view.game.world);
             l.units.remove(this);
         });
-        view.overlays.removeEntity(this);
-        view.game.units.remove(this);
-        view.game.actions.removeUnitInfo(this);
-        this.movement.removeFromPosition(view.game);
+        ctx.view.overlays.removeEntity(this);
+        ctx.view.game.units.remove(this);
+        ctx.view.game.actions.removeUnitInfo(this);
+        this.movement.removeFromPosition(ctx.view.game);
         this.dispose();
     }
 

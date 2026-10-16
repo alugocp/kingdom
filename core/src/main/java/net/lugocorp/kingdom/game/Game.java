@@ -74,7 +74,7 @@ public class Game implements Serializable<GameSerial> {
      */
     public Unit getInitialUnit(GameView view, Player p, int x, int y) {
         final Events.GetInitialGlyphEvent e = new Events.GetInitialGlyphEvent();
-        p.getFate().handleEvent(view, e).execute();
+        p.getFate().handleEvent(e).execute();
         final Glyph g = e.glyph.orElse(Lambda.random(Glyph.class));
         final String name = this.mechanics.pools.random(g, 1)[0];
         final String nameWithOverride = p.isHumanPlayer() ? DevOptions.getFirstUnit().orElse(name) : name;

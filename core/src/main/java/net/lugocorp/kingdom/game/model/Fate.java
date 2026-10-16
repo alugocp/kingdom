@@ -3,10 +3,10 @@ import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.menu.structure.ListNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +54,8 @@ public class Fate implements EventReceiver {
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        return view.game.events.fate.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
+        return ctx.view.game.events.fate.handle(ctx, this, e);
     }
 
     /** {@inheritdoc} */

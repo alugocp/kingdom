@@ -37,8 +37,8 @@ public class Combat {
 
         // Logic for non-Towers
         final SideEffect effects = new SideEffect();
-        effects.add(this.bearer.handleEvent(view, new Events.EntityDiedEvent(this.bearer, attacker)));
-        effects.add(attacker.handleEvent(view, new Events.KilledEntityEvent(attacker, this.bearer)));
+        effects.add(this.bearer.handleEvent(new Events.EntityDiedEvent(this.bearer, attacker)));
+        effects.add(attacker.handleEvent(new Events.KilledEntityEvent(attacker, this.bearer)));
 
         // Entity deactivation
         effects.add(() -> this.bearer.deactivate(view));
@@ -70,7 +70,7 @@ public class Combat {
     public SideEffect damageTowerWithoutGold(GameView view, Damage dmg) {
         final SideEffect effects = new SideEffect();
         final Events.TakeDamageEvent damageEvent = new Events.TakeDamageEvent(this.bearer, dmg);
-        effects.add(this.bearer.handleEvent(view, damageEvent));
+        effects.add(this.bearer.handleEvent(damageEvent));
         final int result = this.health.get() - damageEvent.dmg.total();
         effects.add(() -> this.health.set(result));
         if (result > 0) {
@@ -101,7 +101,7 @@ public class Combat {
             return effects;
         }
         Events.TakeDamageEvent damageEvent = new Events.TakeDamageEvent(this.bearer, dmg);
-        effects.add(this.bearer.handleEvent(view, damageEvent));
+        effects.add(this.bearer.handleEvent(damageEvent));
         effects.add(() -> this.health.set(this.health.get() - damageEvent.dmg.total()));
         final boolean willDie = this.health.get() <= damageEvent.dmg.total();
         if (willDie) {
@@ -134,7 +134,7 @@ public class Combat {
 
         // Determine if this attack was a critical hit or not
         Events.CheckCriticalHitEvent crit = new Events.CheckCriticalHitEvent(this.bearer);
-        effects.add(this.bearer.handleEvent(view, crit));
+        effects.add(this.bearer.handleEvent(crit));
         if (Math.floor(Math.random() * 100) < crit.chance) {
             dmg.setMultiplier(crit.multiplier);
         }
@@ -142,8 +142,8 @@ public class Combat {
         // Trigger conjugate Events for an Entity attacking and another Entity being
         // attacked, then calculate the outcomes of the battle (damage taken, death
         // triggers, etc)
-        effects.add(this.bearer.handleEvent(view, new Events.AttackEvent(this.bearer, target, dmg)));
-        effects.add(target.handleEvent(view, new Events.AttackedEvent(target, this.bearer, dmg)));
+        effects.add(this.bearer.handleEvent(new Events.AttackEvent(this.bearer, target, dmg)));
+        effects.add(target.handleEvent(new Events.AttackedEvent(target, this.bearer, dmg)));
         effects.add(target.combat.takeDamage(view, dmg, this.bearer));
         effects.add(() -> {
             final boolean humanAttacker = this.bearer.getLeader().map((Player l) -> l.isHumanPlayer()).orElse(false);
@@ -175,7 +175,7 @@ public class Combat {
         Events.HealEntityEvent heal = new Events.HealEntityEvent(this.bearer, target, amount);
         final int healthStart = target.combat.health.get();
         final int healthEnd = healthStart + heal.amount;
-        return effects.add(this.bearer.handleEvent(view, heal)).add(() -> {
+        return effects.add(this.bearer.handleEvent(heal)).add(() -> {
             final boolean needsHealing = target.combat.health.get() < target.combat.health.getMax();
             target.combat.health.set(target.combat.health.get() + heal.amount);
             if (needsHealing) {

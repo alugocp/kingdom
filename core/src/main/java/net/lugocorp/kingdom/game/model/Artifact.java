@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
@@ -32,7 +33,7 @@ public class Artifact implements EventReceiver, MenuSubject {
     public void claim(GameView view, Player player) {
         this.owner = Optional.of(player);
         player.artifacts.add(this);
-        this.handleEvent(view, new Events.ArtifactClaimedEvent(this, player)).execute();
+        this.handleEvent(new Events.ArtifactClaimedEvent(this, player)).execute();
     }
 
     /**
@@ -65,8 +66,8 @@ public class Artifact implements EventReceiver, MenuSubject {
 
     /** {@inheritdoc} */
     @Override
-    public SideEffect handleEventWithoutSignalBooster(GameView view, Event e) {
-        return view.game.events.artifact.handle(view, this, e);
+    public SideEffect handleEventWithoutSignalBooster(GameViewContext ctx, Event e) {
+        return ctx.view.game.events.artifact.handle(ctx, this, e);
     }
 
     /** {@inheritdoc} */
