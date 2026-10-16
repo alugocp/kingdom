@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.gameplay.events;
-import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
@@ -15,9 +14,8 @@ import java.util.regex.Pattern;
  * Handles arbitrary incoming Events on arbitrary members of some group
  */
 public class EventHandlerBundle<T extends EventReceiver> {
-    private final List<EventHandler<T>> empty = new ArrayList<>(0);
-    private Map<String, List<EventHandler<T>>> handlers = new HashMap<>();
-    private Map<String, EventHandler<T>> defaults = new HashMap<>();
+    private Map<String, List<EventHandler<T, Event>>> handlers = new HashMap<>();
+    private Map<String, EventHandler<T, Event>> defaults = new HashMap<>();
 
     /**
      * Formats the lookup key used in this.handlers
@@ -74,53 +72,33 @@ public class EventHandlerBundle<T extends EventReceiver> {
     /**
      * Registers a new EventHandler to some name and channel on this EventReceiver
      */
-    public void addEventHandler(String stratifier, String channel, EventHandler<T> handler) {
+    public <E extends Event> void addEventHandler(String stratifier, String channel, EventHandler<T, E> handler) {
         String key = this.getKey(stratifier, channel);
         if (!this.handlers.containsKey(key)) {
-            this.handlers.put(key, new ArrayList<EventHandler<T>>());
+            this.handlers.put(key, new ArrayList<EventHandler<T, Event>>());
         }
-        this.handlers.get(key).add(handler);
+        this.handlers.get(key).add((EventHandler<T, Event>) handler);
     }
 
     /**
      * Calls into this.addEventHandler() using an Event class
      */
-    public <E extends Event> void addEventHandler(String stratifier, Class<E> eventClass,
-            SingleEventHandler<T, E> handler) {
-        this.addEventHandler(stratifier, eventClass.getSimpleName(),
-                (GameView view, T receiver, Event event) -> handler.handle(view, receiver, (E) event));
-    }
-
-    /**
-     * Calls into this.addEventHandler() using an Event class
-     */
-    public void addEventHandler(String stratifier, String channel,
-            SingleEventHandler<T, Events.RepeatedEvent> handler) {
-        this.addEventHandler(stratifier, channel, (GameView view, T receiver, Event event) -> handler.handle(view,
-                receiver, (Events.RepeatedEvent) event));
+    public <E extends Event> void addEventHandler(String stratifier, Class<E> channel, EventHandler<T, E> handler) {
+        this.addEventHandler(stratifier, channel.getSimpleName(), handler);
     }
 
     /**
      * Registers a new default EventHandler to some channel on this EventReceiver
      */
-    public void setDefaultHandler(String channel, EventHandler<T> handler) {
+    public <E extends Event> void setDefaultHandler(String channel, EventHandler<T, E> handler) {
         // TODO find a way to remove this
-        this.defaults.put(channel, handler);
-    }
-
-    /**
-     * Calls into setDefaultHandler() with an Event class
-     */
-    public <E extends Event> void setDefaultHandler(Class<E> channel, SingleEventHandler<T, E> handler) {
-        // TODO find a way to remove this
-        this.setDefaultHandler(channel.getSimpleName(),
-                (GameView view, T receiver, Event event) -> handler.handle(view, receiver, (E) event));
+        this.defaults.put(channel, (EventHandler<T, Event>) handler);
     }
 
     /**
      * Runs the relevant EventHandler logic for a given name and Event
      */
-    public SideEffect handle(GameView view, T receiver, Event e) {
+    public <E extends Event> SideEffect handle(GameView view, T receiver, E e) {
         String key = this.getKey(receiver.getStratifier(), e.channel);
         boolean hasHandler = this.handlers.containsKey(key);
         boolean hasDefault = this.defaults.containsKey(e.channel);
@@ -130,7 +108,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
         }
         final SideEffect effects = new SideEffect();
         if (hasHandler) {
-            for (EventHandler<T> handler : this.handlers.get(key)) {
+            for (EventHandler<T, Event> handler : this.handlers.get(key)) {
                 effects.add(handler.handle(view, receiver, e));
             }
         } else if (hasDefault) {

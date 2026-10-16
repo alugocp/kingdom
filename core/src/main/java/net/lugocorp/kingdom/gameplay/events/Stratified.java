@@ -20,11 +20,8 @@ public class Stratified<T extends EventReceiver> {
      */
     public Stratified<T> add(StratifiedPayload[] payloads) {
         for (StratifiedPayload payload : payloads) {
-            if (payload.overrideChannel.isPresent()) {
-                this.bundle.addEventHandler(this.stratifier, payload.overrideChannel.get().toString(), payload.handler);
-            } else {
-                this.bundle.addEventHandler(this.stratifier, payload.eventClass, payload.handler);
-            }
+            this.bundle.addEventHandler(this.stratifier, payload.overrideChannel.orElse(payload.eventClass),
+                    payload.handler);
         }
         return this;
     }
@@ -34,8 +31,7 @@ public class Stratified<T extends EventReceiver> {
      */
     public <E extends Event> Stratified<T> add(StratifiedPayload<T, E> payload) {
         if (payload.overrideChannel.isPresent()) {
-            this.bundle.addEventHandler(this.stratifier, payload.overrideChannel.get(),
-                    (EventHandler<T>) payload.handler);
+            this.bundle.addEventHandler(this.stratifier, payload.overrideChannel.get(), payload.handler);
         } else {
             this.bundle.addEventHandler(this.stratifier, payload.eventClass, payload.handler);
         }
@@ -45,7 +41,7 @@ public class Stratified<T extends EventReceiver> {
     /**
      * Adds an EventHandler to this instance's stratifier
      */
-    public <E extends Event> Stratified<T> add(Class<E> eventClass, SingleEventHandler<T, E> handler) {
+    public <E extends Event> Stratified<T> add(Class<E> eventClass, EventHandler<T, E> handler) {
         this.bundle.addEventHandler(this.stratifier, eventClass, handler);
         return this;
     }
@@ -54,7 +50,7 @@ public class Stratified<T extends EventReceiver> {
      * Adds an EventHandler to this instance's stratifier (for RepeatedEvents in
      * particular)
      */
-    public Stratified<T> add(String channel, SingleEventHandler<T, Events.RepeatedEvent> handler) {
+    public Stratified<T> add(String channel, EventHandler<T, Events.RepeatedEvent> handler) {
         this.bundle.addEventHandler(this.stratifier, channel, handler);
         return this;
     }
