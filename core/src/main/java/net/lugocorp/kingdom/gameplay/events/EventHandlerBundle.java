@@ -78,19 +78,12 @@ public class EventHandlerBundle<T extends EventReceiver> {
     /**
      * Registers a new EventHandler to some name and channel on this EventReceiver
      */
-    public <E extends Event> void addEventHandler(String stratifier, String channel, EventHandler<T, E> handler) {
+    <E extends Event> void addEventHandler(String stratifier, String channel, EventHandler<T, E> handler) {
         String key = this.getKey(stratifier, channel);
         if (!this.handlers.containsKey(key)) {
             this.handlers.put(key, new ArrayList<EventHandler<T, Event>>());
         }
         this.handlers.get(key).add((EventHandler<T, Event>) handler);
-    }
-
-    /**
-     * Calls into this.addEventHandler() using an Event class
-     */
-    public <E extends Event> void addEventHandler(String stratifier, Class<E> channel, EventHandler<T, E> handler) {
-        this.addEventHandler(stratifier, channel.getSimpleName(), handler);
     }
 
     /**

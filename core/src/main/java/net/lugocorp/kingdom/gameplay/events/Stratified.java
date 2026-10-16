@@ -20,8 +20,12 @@ public class Stratified<T extends EventReceiver> {
      */
     public Stratified<T> add(StratifiedPayload[] payloads) {
         for (StratifiedPayload payload : payloads) {
-            this.bundle.addEventHandler(this.stratifier, payload.overrideChannel.orElse(payload.eventClass),
-                    payload.handler);
+            if (payload.overrideChannel.isPresent()) {
+                final StratifiedPayload<T, Events.RepeatedEvent> p = (StratifiedPayload<T, Events.RepeatedEvent>) payload;
+                this.bundle.addEventHandler(this.stratifier, p.overrideChannel.get(), p.handler);
+            } else {
+                this.bundle.addEventHandler(this.stratifier, payload.eventClass.getSimpleName(), payload.handler);
+            }
         }
         return this;
     }
@@ -30,11 +34,8 @@ public class Stratified<T extends EventReceiver> {
      * Adds an EventHandler to this instance's stratifier using a StratifiedPayload
      */
     public <E extends Event> Stratified<T> add(StratifiedPayload<T, E> payload) {
-        if (payload.overrideChannel.isPresent()) {
-            this.bundle.addEventHandler(this.stratifier, payload.overrideChannel.get(), payload.handler);
-        } else {
-            this.bundle.addEventHandler(this.stratifier, payload.eventClass, payload.handler);
-        }
+        this.bundle.addEventHandler(this.stratifier, payload.overrideChannel.orElse(payload.eventClass.getSimpleName()),
+                payload.handler);
         return this;
     }
 
@@ -42,7 +43,7 @@ public class Stratified<T extends EventReceiver> {
      * Adds an EventHandler to this instance's stratifier
      */
     public <E extends Event> Stratified<T> add(Class<E> eventClass, EventHandler<T, E> handler) {
-        this.bundle.addEventHandler(this.stratifier, eventClass, handler);
+        this.bundle.addEventHandler(this.stratifier, eventClass.getSimpleName(), handler);
         return this;
     }
 

@@ -7,6 +7,8 @@ import net.lugocorp.kingdom.game.model.Fate;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.world.WorldGenOptions;
 import net.lugocorp.kingdom.game.world.WorldSize;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.MenuNode;
@@ -62,6 +64,7 @@ class GameCreationView implements View {
         // Initialize Game and GameView state for world generation logic
         final Game game = new Game(params.events, OffsetTime.now());
         this.view = new GameView(params, game);
+        AllEventHandlers.instance.setContext(new GameViewContext(this.view));
         game.init(this.view);
         this.setWorldSize(0);
 
