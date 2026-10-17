@@ -28,11 +28,11 @@ const int NO_VISIBILITY = 0;
 const float OUTLINE_WIDTH = 3.0;
 
 vec4 normalsTexSample(float x, float y) {
-    return texture2D(u_normalsTexture, vec2((x / 1600.0) * u_frameBufferQueryRatioX, (y / 960.0)  * u_frameBufferQueryRatioY));
+    return texture2D(u_normalsTexture, vec2((x / 1600.0) * u_frameBufferQueryRatioX, (y / 960.0) * u_frameBufferQueryRatioY));
 }
 
 vec4 shadowTexSample(float x, float y) {
-    return texture2D(u_shadowTexture, vec2((x / 1600.0) * u_frameBufferQueryRatioX, (y / 960.0)  * u_frameBufferQueryRatioY));
+    return texture2D(u_shadowTexture, vec2(mod(x * u_frameBufferQueryRatioX, 120.0) / 120.0, mod(y * u_frameBufferQueryRatioY, 120.0) / 120.0));
 }
 
 bool outline() {
