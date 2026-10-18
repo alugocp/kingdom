@@ -21,17 +21,17 @@ public class DevOptions {
     }
 
     /**
-     * Accesses FeatureFlags.INITIAL_UNIT_POINTS
-     */
-    public static Optional<Integer> getInitialUnitPoints() {
-        return DevOptions.getDebugField(FeatureFlags.INITIAL_UNIT_POINTS);
-    }
-
-    /**
      * Accesses FeatureFlags.WORLD_SEED
      */
     public static Optional<Long> getWorldSeed() {
         return DevOptions.getDebugField(FeatureFlags.WORLD_SEED);
+    }
+
+    /**
+     * Accesses FeatureFlags.INITIAL_UNIT_POINTS
+     */
+    public static int getInitialUnitPoints() {
+        return DevOptions.isDebugMode() ? FeatureFlags.INITIAL_UNIT_POINTS : 0;
     }
 
     /**
@@ -46,6 +46,13 @@ public class DevOptions {
      */
     public static Optional<String> getFirstUnit() {
         return DevOptions.getDebugField(FeatureFlags.FIRST_UNIT);
+    }
+
+    /**
+     * Accesses FeatureFlags.INITIAL_UNIT_POINTS
+     */
+    public static boolean includeSecretUnits() {
+        return DevOptions.isDebugMode() && FeatureFlags.INCLUDE_SECRET_UNITS;
     }
 
     /**

@@ -28,7 +28,7 @@ import java.util.function.Function;
  */
 public abstract class Player {
     public static final int INITIAL_GOLD = 100;
-    private int unitPoints = DevOptions.getInitialUnitPoints().orElse(0);
+    private int unitPoints = DevOptions.getInitialUnitPoints();
     private Color color;
     private Fate fate;
     public final List<Artifact> artifacts = new ArrayList<>();

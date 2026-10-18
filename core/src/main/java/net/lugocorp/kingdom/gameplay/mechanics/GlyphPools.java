@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.DummyUnit;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.utils.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,13 +43,18 @@ public class GlyphPools {
             }
             u.resetUnlistedStatus();
         }
+        if (DevOptions.isDebugMode()) {
+            for (Glyph glyph : Glyph.values()) {
+                Log.log("%s glyph pool size: %d", glyph, this.pools.get(glyph).size());
+            }
+        }
     }
 
     /**
      * Returns true if we can include the given Unit in this build of the game
      */
     private boolean includeUnit(Unit u) {
-        return DevOptions.isDebugMode() || !u.getModelName().equals("placeholder1");
+        return DevOptions.includeSecretUnits() || !u.getModelName().equals("placeholder1");
     }
 
     /**
