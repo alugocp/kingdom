@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.context.BaseContext;
 import net.lugocorp.kingdom.context.Context;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
@@ -56,8 +57,8 @@ class LoadGameView implements View {
                         final Optional<Game> game = ctx.serial.loadGame(savedGame);
                         if (game.isPresent()) {
                             final GameView view = new GameView(game.get());
-                            // TODO serial rehydrate or something
-                            Context.getContext().navigate.accept(view);
+                            Context.setContext(new GameViewContext(ctx, view));
+                            ctx.navigate.accept(view);
                         } else {
                             // TODO serial give some error message to the player
                         }
