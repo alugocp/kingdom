@@ -32,7 +32,7 @@ vec4 normalsTexSample(float x, float y) {
 }
 
 vec4 shadowTexSample(float x, float y) {
-    return texture2D(u_shadowTexture, vec2(mod(x * u_frameBufferQueryRatioX, 120.0) / 120.0, mod(y * u_frameBufferQueryRatioY, 120.0) / 120.0));
+    return texture2D(u_shadowTexture, vec2(mod(x * u_frameBufferQueryRatioX, 24.0) / 24.0, mod(y * u_frameBufferQueryRatioY, 24.0) / 24.0));
 }
 
 bool outline() {
@@ -87,8 +87,8 @@ void main() {
     float shadow = dot(v_normal, normalize(vec3(0.0, 1.0, 0.5)));
     if (shadow < 0.5) {
         vec4 textured = shadowTexSample(gl_FragCoord.x, gl_FragCoord.y);
-        if (textured.a > 0.0) {
-            float coeff = 0.75; // shadow < 0.25 ? 0.75 : 0.9;
+        if ((shadow >= 0.25 && textured.a > 0.25) || (shadow < 0.25 && textured.a > 0.0)) {
+            float coeff = 0.75;
             gl_FragColor.x *= coeff;
             gl_FragColor.y *= coeff;
             gl_FragColor.z *= coeff;
