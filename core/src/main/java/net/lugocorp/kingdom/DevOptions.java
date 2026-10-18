@@ -21,6 +21,13 @@ public class DevOptions {
     }
 
     /**
+     * Accesses FeatureFlags.INITIAL_UNIT_POINTS
+     */
+    public static Optional<Integer> getInitialUnitPoints() {
+        return DevOptions.getDebugField(FeatureFlags.INITIAL_UNIT_POINTS);
+    }
+
+    /**
      * Accesses FeatureFlags.WORLD_SEED
      */
     public static Optional<Long> getWorldSeed() {

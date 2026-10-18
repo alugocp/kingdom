@@ -8,6 +8,9 @@ class FeatureFlags {
     // Controls debug mode
     static final boolean DEBUG = false;
 
+    // Sets the initial unit points for a HumanPlayer
+    static final Optional<Integer> INITIAL_UNIT_POINTS = 0;
+
     // Sets a default world seed for the GameCreationView
     static final Optional<Long> WORLD_SEED = Optional.empty();
 

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.game.player;
+import net.lugocorp.kingdom.DevOptions;
 import net.lugocorp.kingdom.color.ColorPool;
 import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.game.Game;
@@ -27,7 +28,7 @@ import java.util.function.Function;
  */
 public abstract class Player {
     public static final int INITIAL_GOLD = 100;
-    private int unitPoints = 0;
+    private int unitPoints = DevOptions.getInitialUnitPoints().orElse(0);
     private Color color;
     private Fate fate;
     public final List<Artifact> artifacts = new ArrayList<>();

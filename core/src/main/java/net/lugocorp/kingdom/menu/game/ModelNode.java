@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.menu.game;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.math.Coords;
@@ -36,6 +37,7 @@ public class ModelNode implements MenuNode {
     public ModelNode(Camera camera, Environment environment, String name, Optional<Tuple<Integer, String>> material,
             boolean oldModel) {
         this.model.setModelInstance(name);
+        this.model.setLoaders(Context.getContext().av);
         material.ifPresent((Tuple<Integer, String> t) -> this.model.setMaterial(t.b, t.a));
         this.environment = environment;
         this.camera = camera;
