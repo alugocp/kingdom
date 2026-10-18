@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.gameplay.events;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,11 +15,6 @@ import java.util.regex.Pattern;
 public class EventHandlerBundle<T extends EventReceiver> {
     private final Map<String, List<EventHandler<Context, T, Event<Context>>>> handlers = new HashMap<>();
     private final Map<String, EventHandler<Context, T, Event<Context>>> defaults = new HashMap<>();
-    private final Supplier<GameViewContext> getContext;
-
-    EventHandlerBundle(Supplier<GameViewContext> getContext) {
-        this.getContext = getContext;
-    }
 
     /**
      * Formats the lookup key used in this.handlers
@@ -100,7 +93,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
      * Runs the relevant EventHandler logic for a given name and Event
      */
     public <C extends Context, E extends Event<C>> SideEffect handle(T receiver, E e) {
-        final Context ctx = AllEventHandlers.instance.getContext();
+        final Context ctx = Context.getContext();
         final String key = this.getKey(receiver.getStratifier(), e.channel);
         final boolean hasHandler = this.handlers.containsKey(key);
         final boolean hasDefault = this.defaults.containsKey(e.channel);
@@ -109,7 +102,8 @@ public class EventHandlerBundle<T extends EventReceiver> {
                     String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
         if (!ctx.canHandle(e)) {
-            throw new RuntimeException(String.format("Cannot handle %s events under %s context", e.channel, ctx.name));
+            throw new RuntimeException(String.format("Cannot handle %s events under %s context", e.channel,
+                    ctx.getClass().getSimpleName()));
         }
 
         // Run the actual handler and collect side effects

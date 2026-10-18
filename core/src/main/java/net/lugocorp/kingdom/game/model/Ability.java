@@ -3,7 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.engine.controllers.Shortcut;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.math.Point;
@@ -127,7 +127,7 @@ public class Ability implements EventReceiver, MenuSubject {
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(Event e) {
-        return AllEventHandlers.instance.ability.handle(this, e);
+        return Context.getContext().events.ability.handle(this, e);
     }
 
     /** {@inheritdoc} */

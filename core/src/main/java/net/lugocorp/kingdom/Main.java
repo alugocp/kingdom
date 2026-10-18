@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class Main implements ApplicationListener {
     public static final Semver VERSION = new Semver(0, 0, 0, Semver.BETA);
-    public static Viewport viewport = null;
     private long prevTime = System.currentTimeMillis();
     private View view = null;
     private AudioVideo av;

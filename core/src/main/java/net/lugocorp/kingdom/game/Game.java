@@ -59,15 +59,6 @@ public class Game implements Serializable<GameSerial> {
     }
 
     /**
-     * Post-constructor initialization of Game state
-     */
-    public void init(GameView view) {
-        // TODO serial remove this init function once Generator no longer needs GameView
-        this.generator.setGameView(view);
-        this.mechanics.init(this);
-    }
-
-    /**
      * This function returns the initial Unit for the given Player. Note that it
      * does not spawn the Unit, but it does remove them from all relevant
      * GlyphPools.

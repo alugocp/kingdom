@@ -1,7 +1,7 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.game.player.Player;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.menu.structure.ListNode;
@@ -55,7 +55,7 @@ public class Fate implements EventReceiver {
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(Event e) {
-        return AllEventHandlers.instance.fate.handle(this, e);
+        return Context.getContext().events.fate.handle(this, e);
     }
 
     /** {@inheritdoc} */

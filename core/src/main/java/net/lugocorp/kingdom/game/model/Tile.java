@@ -8,7 +8,7 @@ import net.lugocorp.kingdom.game.layers.Governable;
 import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.math.Coords;
@@ -256,7 +256,7 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(Event e) {
-        return AllEventHandlers.instance.tile.handle(this, e);
+        return Context.getContext().events.tile.handle(this, e);
     }
 
     /** {@inheritdoc} */

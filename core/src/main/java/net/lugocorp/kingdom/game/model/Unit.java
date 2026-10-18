@@ -19,7 +19,7 @@ import net.lugocorp.kingdom.game.unit.Movement;
 import net.lugocorp.kingdom.game.unit.Sleep;
 import net.lugocorp.kingdom.gameplay.actions.ActionType;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
@@ -150,7 +150,7 @@ public class Unit extends Entity implements MenuSubject, Spawnable, IndependentG
     @Override
     public SideEffect handleEventWithoutSignalBooster(Event e) {
         final SideEffect effects = new SideEffect();
-        effects.add(AllEventHandlers.instance.unit.handle(this, e));
+        effects.add(Context.getContext().events.unit.handle(this, e));
         if (e.propagate) {
             for (Ability a : this.abilities.getActives()) {
                 effects.add(a.handleEventWithoutSignalBooster(e));

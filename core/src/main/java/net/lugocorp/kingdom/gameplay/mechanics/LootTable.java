@@ -2,6 +2,7 @@ package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.properties.Rarity;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.Tuple;
 import java.util.ArrayList;
@@ -19,15 +20,15 @@ public class LootTable {
     /**
      * Sets up the data stored in this class
      */
-    public void init(Game game) {
+    public void init() {
         // Populate the Map with Lists
         for (Rarity r : Rarity.values()) {
             this.itemsByRarity.put(r, new ArrayList<>());
         }
 
         // Populate the Lists with Item names by their Rarity
-        for (String s : game.events.item.getStratifiers()) {
-            final Item i = game.generator.item(s);
+        for (String s : Context.getContext().events.item.getStratifiers()) {
+            final Item i = Context.getContext().generator.item(s);
             this.itemsByRarity.get(i.rarity).add(s);
             for (String tag : i.tags) {
                 final Tuple<String, Rarity> key = new Tuple<>(tag, i.rarity);

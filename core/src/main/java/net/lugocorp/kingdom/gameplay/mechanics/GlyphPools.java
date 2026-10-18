@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.DevOptions;
-import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.DummyUnit;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,20 +20,20 @@ public class GlyphPools {
      * Initializes this object, ingests all registered Unit names in the Game and
      * their associated Glyphs
      */
-    public void init(Game g) {
+    public void init() {
         for (Glyph glyph : Glyph.values()) {
             this.pools.put(glyph, new ArrayList<String>());
             this.originals.put(glyph, 0);
         }
         final DummyUnit u = new DummyUnit();
-        for (String name : g.events.unit.getStratifiers()) {
+        for (String name : Context.getContext().events.unit.getStratifiers()) {
             // Set a couple of defaults on the Unit before running the generation event
             u.setNameOverride(name);
             u.glyphs.setDefault();
 
             // Run the generation event without instantiating a new Unit object,
             // then add it to the GlyphPool
-            g.generator.unitOptimal(u);
+            Context.getContext().generator.unitOptimal(u);
             if (u.shouldAddToGlyphPool() && this.includeUnit(u)) {
                 this.add(name, u.glyphs.get());
                 for (Glyph g1 : u.glyphs.get()) {

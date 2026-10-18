@@ -8,7 +8,7 @@ import net.lugocorp.kingdom.game.layers.Spawnable;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.game.properties.Inventory;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Coords;
@@ -144,7 +144,7 @@ public class Building extends Entity implements MenuSubject, Spawnable {
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(Event e) {
-        return AllEventHandlers.instance.building.handle(this, e);
+        return Context.getContext().events.building.handle(this, e);
     }
 
     /** {@inheritdoc} */

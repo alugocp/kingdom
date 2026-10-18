@@ -2,7 +2,7 @@ package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.game.properties.Tags;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -50,7 +50,7 @@ public class Item implements EventReceiver {
     /** {@inheritdoc} */
     @Override
     public SideEffect handleEventWithoutSignalBooster(Event e) {
-        return AllEventHandlers.instance.item.handle(this, e);
+        return Context.getContext().events.item.handle(this, e);
     }
 
     /** {@inheritdoc} */

@@ -1,5 +1,4 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
-import net.lugocorp.kingdom.game.Game;
 
 /**
  * This class bundles game mechanics classes for easy access
@@ -15,13 +14,9 @@ public class Mechanics {
     public final LootTable loot = new LootTable();
     public final Fates fates = new Fates();
 
-    /**
-     * Initializes mechanics that require GameView to be initialized
-     */
-    public void init(Game game) {
-        // TODO serial remove the init functions once Generator no longer needs GameView
-        this.auction.init(game);
-        this.pools.init(game);
-        this.loot.init(game);
+    public Mechanics() {
+        this.auction.init();
+        this.pools.init();
+        this.loot.init();
     }
 }

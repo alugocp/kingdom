@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.Menu;
@@ -43,12 +44,12 @@ public class ArtifactAuction {
     /**
      * Generates all registered Artifacts at the start of the Game
      */
-    public void init(Game g) {
-        Set<String> stratifiers = g.events.artifact.getStratifiers();
+    public void init() {
+        Set<String> stratifiers = Context.getContext().events.artifact.getStratifiers();
         final List<Artifact> loading = new ArrayList<>();
         int maxChips = 0;
         for (String name : stratifiers) {
-            final Artifact a = g.generator.artifact(name);
+            final Artifact a = Context.getContext().generator.artifact(name);
             if (a.chips > maxChips) {
                 maxChips = a.chips;
             }

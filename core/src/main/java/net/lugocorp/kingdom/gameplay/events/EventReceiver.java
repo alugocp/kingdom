@@ -15,7 +15,7 @@ public interface EventReceiver {
     public default SideEffect handleEvent(Event e) {
         EventLog.log(e, this);
         return new SideEffect().add(e).add(this.handleEventWithoutSignalBooster(e))
-                .add(AllEventHandlers.instance.signals.propagate(this, e));
+                .add(Context.getContext().events.signals.propagate(this, e));
     }
 
     /**

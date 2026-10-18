@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;
@@ -23,7 +23,6 @@ import java.util.List;
  * View for when we're loading a new game
  */
 public class LoadingGameView extends ThreadedTaskView {
-    private final AllEventHandlers events = AllEventHandlers.instance;
     private final List<GameMod> mods = new ArrayList<>();
 
     public LoadingGameView(AudioVideo av) {
@@ -94,7 +93,7 @@ public class LoadingGameView extends ThreadedTaskView {
             System.out.println(String.format("Loading mod %s", profile.name));
 
             // Load mod code
-            modLoader.loadMod(mod, this.events, this.av.loaders.sprites);
+            modLoader.loadMod(mod, Context.getContext().events, this.av.loaders.sprites);
             this.mods.add(mod);
 
             // Set progress
@@ -114,6 +113,7 @@ public class LoadingGameView extends ThreadedTaskView {
     /** {@inheritdoc} */
     @Override
     protected View getNextView() {
-        return new StartMenuView(new StartMenuView.Params(this.av, this.events, new SaveLoad(), this.mods));
+        return new StartMenuView(
+                new StartMenuView.Params(this.av, Context.getContext().events, new SaveLoad(), this.mods));
     }
 }
