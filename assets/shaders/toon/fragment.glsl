@@ -11,7 +11,6 @@ precision mediump float;
 #endif
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_normalsTexture;
-uniform sampler2D u_shadowTexture;
 uniform vec4 u_diffuseColor;
 uniform vec4 u_diffuseUVTransform;
 uniform float u_nighttime;
@@ -29,10 +28,6 @@ const float OUTLINE_WIDTH = 3.0;
 
 vec4 normalsTexSample(float x, float y) {
     return texture2D(u_normalsTexture, vec2((x / 1600.0) * u_frameBufferQueryRatioX, (y / 960.0) * u_frameBufferQueryRatioY));
-}
-
-vec4 shadowTexSample(float x, float y) {
-    return texture2D(u_shadowTexture, vec2(mod(x * u_frameBufferQueryRatioX, 24.0) / 24.0, mod(y * u_frameBufferQueryRatioY, 24.0) / 24.0));
 }
 
 bool outline() {
@@ -86,12 +81,9 @@ void main() {
     // Make the color darker for shading
     float shadow = dot(v_normal, normalize(vec3(0.0, 1.0, 0.5)));
     if (shadow < 0.5) {
-        vec4 textured = shadowTexSample(gl_FragCoord.x, gl_FragCoord.y);
-        if ((shadow >= 0.25 && textured.a > 0.25) || (shadow < 0.25 && textured.a > 0.0)) {
-            float coeff = 0.75;
-            gl_FragColor.x *= coeff;
-            gl_FragColor.y *= coeff;
-            gl_FragColor.z *= coeff;
-        }
+        float coeff = shadow < 0.25 ? 0.75 : 0.9;
+        gl_FragColor.x *= coeff;
+        gl_FragColor.y *= coeff;
+        gl_FragColor.z *= coeff;
     }
 }
