@@ -1,13 +1,11 @@
 package net.lugocorp.kingdom.context;
-import net.lugocorp.kingdom.game.model.Generator;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 
 /**
  * Contexts split our Event system into different stages of the application's
  * lifecycle
  */
 public abstract class Context {
-    private static BaseContext instance = new BaseContext(new AllEventHandlers(), new Generator());
+    private static BaseContext instance = null;
 
     /**
      * Gets the global Context

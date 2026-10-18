@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.Main;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
-import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.structure.ListNode;
@@ -10,58 +10,52 @@ import net.lugocorp.kingdom.menu.structure.SpacerNode;
 import net.lugocorp.kingdom.menu.text.ButtonNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
-import net.lugocorp.kingdom.mods.GameMod;
-import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * View to select in-app options
  */
 class StartMenuView implements View {
     private final Background background;
-    private final Params params;
     private final Menu menu;
-    private Consumer<View> navigate;
 
-    StartMenuView(Params params) {
-        this.params = params;
-        this.background = new Background(params.av);
+    StartMenuView() {
+        final AudioVideo av = Context.getContext().av;
+        this.background = new Background(av);
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
-                .add(new HeaderNode(params.av, "Legends of T'ahn").center()).add(new SpacerNode(false))
-                .add(new ButtonNode(params.av, "New game", () -> this.navigate.accept(new GameCreationView(params))))
+                .add(new HeaderNode(av, "Legends of T'ahn").center()).add(new SpacerNode(false))
+                .add(new ButtonNode(av, "New game", () -> Context.getContext().navigate.accept(new GameCreationView())))
                 .add(new SpacerNode(false).half())
-                .add(new ButtonNode(params.av, "Load game", () -> this.navigate.accept(new LoadGameView(params))))
+                .add(new ButtonNode(av, "Load game", () -> Context.getContext().navigate.accept(new LoadGameView())))
                 .add(new SpacerNode(false).half())
-                .add(new ButtonNode(params.av, "Settings", () -> this.navigate.accept(new SettingsView(params))))
+                .add(new ButtonNode(av, "Settings", () -> Context.getContext().navigate.accept(new SettingsView())))
                 .add(new SpacerNode(false).half())
-                .add(new ButtonNode(params.av, "Credits", () -> this.navigate.accept(new CreditsView(params))))
+                .add(new ButtonNode(av, "Credits", () -> Context.getContext().navigate.accept(new CreditsView())))
                 // .add(new SpacerNode(false).half())
-                // .add(new ButtonNode(params.av, "Content", () -> this.navigate.accept(new
+                // .add(new ButtonNode(params.av, "Content", () ->
+                // Context.getContext().navigate.accept(new
                 // ActiveModsView(params))))
                 .add(new SpacerNode(false))
-                .add(new TextNode(params.av, String.format("Version %s", Main.VERSION.toString())).center()))
-                .noBackground();
+                .add(new TextNode(av, String.format("Version %s", Main.VERSION.toString())).center())).noBackground();
     }
 
     /** {@inheritdoc} */
     @Override
-    public void start(Consumer<View> navigate) {
-        this.navigate = navigate;
-        MenuController menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
+    public void start() {
+        final AudioVideo av = Context.getContext().av;
+        final MenuController menuController = new MenuController(av.settings, () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
-        this.params.av.loaders.music.play("sfx/fantasy-adventure-quest");
+        av.loaders.music.play("sfx/fantasy-adventure-quest");
     }
 
     /** {@inheritdoc} */
     @Override
     public void render(int dt) {
         this.background.render();
-        this.menu.draw(this.params.av);
+        this.menu.draw(Context.getContext().av);
     }
 
     /** {@inheritdoc} */
@@ -72,23 +66,5 @@ class StartMenuView implements View {
     /** {@inheritdoc} */
     @Override
     public void dispose() {
-    }
-
-    /**
-     * This nested class stores all the necessary parameters for StartMenuView and
-     * any views that can navigate to it
-     */
-    static class Params {
-        final AllEventHandlers events;
-        final List<GameMod> mods;
-        final SaveLoad serial;
-        final AudioVideo av;
-
-        Params(AudioVideo av, AllEventHandlers events, SaveLoad serial, List<GameMod> mods) {
-            this.serial = serial;
-            this.events = events;
-            this.mods = mods;
-            this.av = av;
-        }
     }
 }

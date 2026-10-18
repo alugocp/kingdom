@@ -11,7 +11,6 @@ import net.lugocorp.kingdom.menu.icon.IconNode;
 import net.lugocorp.kingdom.mods.GameMod;
 import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.mods.ModProfile;
-import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.utils.Log;
 import com.badlogic.gdx.Gdx;
@@ -26,8 +25,9 @@ import java.util.List;
 public class LoadingGameView extends ThreadedTaskView {
     private final List<GameMod> mods = new ArrayList<>();
 
-    public LoadingGameView(AudioVideo av) {
-        super(av, "Loading");
+    public LoadingGameView() {
+        super("Loading");
+        final AudioVideo av = Context.getContext().av;
 
         // Set the custom cursor
         final Pixmap pixmap = new Pixmap(Gdx.files.internal("ui/cursor.png"));
@@ -114,7 +114,6 @@ public class LoadingGameView extends ThreadedTaskView {
     /** {@inheritdoc} */
     @Override
     protected View getNextView() {
-        return new StartMenuView(
-                new StartMenuView.Params(this.av, Context.getContext().events, new SaveLoad(), this.mods));
+        return new StartMenuView();
     }
 }

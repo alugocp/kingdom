@@ -35,7 +35,6 @@ import java.time.OffsetTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * This View walks the player through Game setup and World generation
@@ -45,7 +44,6 @@ class GameCreationView implements View {
     private final WorldGenOptions worldGenOpts = new WorldGenOptions(
             DevOptions.getWorldSeed().orElse(GameCreationView.getRandomSeed()));
     private final List<CompPlayer> comps = new ArrayList();
-    private final StartMenuView.Params params;
     private final TextNode humanFateNameNode;
     private final ButtonNode startButton;
     private final Background background;
@@ -54,16 +52,14 @@ class GameCreationView implements View {
     private final Menu playerSelection;
     private final GameView view;
     private MenuController menuController = null;
-    private Consumer<View> navigate;
     private Menu menu;
 
-    GameCreationView(StartMenuView.Params params) {
-        this.params = params;
-        this.background = new Background(params.av);
+    GameCreationView() {
+        this.background = new Background(Context.getContext().av);
 
         // Initialize Game and GameView state for world generation logic
         final Game game = new Game(OffsetTime.now());
-        final GameView view = new GameView(params, game);
+        final GameView view = new GameView(game);
         Context.setContext(new GameViewContext(Context.getContext(), view));
         this.setWorldSize(0);
         this.view = view;
@@ -119,8 +115,7 @@ class GameCreationView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void start(Consumer<View> navigate) {
-        this.navigate = navigate;
+    public void start() {
         this.menuController = new MenuController(this.view.av.settings, () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         this.menuController.reset();
@@ -148,7 +143,7 @@ class GameCreationView implements View {
      */
     private void startGame() {
         this.view.game.mechanics.turns.getTurn().setPlayers(this.view.game.getAllPlayers());
-        this.navigate.accept(new GenerateWorldView(this.view, this.worldGenOpts));
+        Context.getContext().navigate.accept(new GenerateWorldView(this.view, this.worldGenOpts));
     }
 
     /**
@@ -165,7 +160,7 @@ class GameCreationView implements View {
                 .add(new RowNode()
                         .addRatio(20,
                                 new ButtonNode(this.view.av, "Back",
-                                        () -> this.navigate.accept(new StartMenuView(this.params))))
+                                        () -> Context.getContext().navigate.accept(new StartMenuView())))
                         .add(new HeaderNode(this.view.av, "World Generation").center())
                         .addRatio(20, new ButtonNode(this.view.av, "Next", () -> this.setMenu(this.fateSelection))))
                 .add(new SpacerNode())

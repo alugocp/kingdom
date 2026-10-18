@@ -1,4 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.context.BaseContext;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
@@ -13,42 +15,39 @@ import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * This View walks the player through Game setup and World generation
  */
 class ActiveModsView implements View {
-    private final StartMenuView.Params params;
     private final Background background;
-    private Consumer<View> navigate;
     private Menu menu;
 
-    ActiveModsView(StartMenuView.Params params) {
+    ActiveModsView() {
+        final BaseContext ctx = Context.getContext();
         ListNode node = new ListNode()
-                .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
-                .add(new HeaderNode(params.av, "Content"));
-        for (GameMod mod : params.mods) {
+                .add(new ButtonNode(ctx.av, "Back", () -> Context.getContext().navigate.accept(new StartMenuView())))
+                .add(new HeaderNode(ctx.av, "Content"));
+        for (GameMod mod : ctx.mods) {
             ModProfile profile = mod.getProfile();
-            node.add(new SpacerNode()).add(new HeaderNode(params.av, profile.name))
-                    .add(new TextNode(params.av, profile.description));
+            node.add(new SpacerNode()).add(new HeaderNode(ctx.av, profile.name))
+                    .add(new TextNode(ctx.av, profile.description));
             if (profile.credits.length > 0) {
-                node.add(new TextNode(params.av, "Credits:"));
+                node.add(new TextNode(ctx.av, "Credits:"));
                 for (String name : profile.credits) {
-                    node.add(new TextNode(params.av, String.format("  • %s", name)));
+                    node.add(new TextNode(ctx.av, String.format("  • %s", name)));
                 }
             }
         }
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, node).noBackground();
-        this.background = new Background(params.av);
-        this.params = params;
+        this.background = new Background(ctx.av);
     }
 
     /** {@inheritdoc} */
     @Override
-    public void start(Consumer<View> navigate) {
-        this.navigate = navigate;
-        MenuController menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
+    public void start() {
+        MenuController menuController = new MenuController(Context.getContext().av.settings,
+                () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         menuController.reset();
     }
@@ -57,7 +56,7 @@ class ActiveModsView implements View {
     @Override
     public void render(int dt) {
         this.background.render();
-        this.menu.draw(this.params.av);
+        this.menu.draw(Context.getContext().av);
     }
 
     /** {@inheritdoc} */

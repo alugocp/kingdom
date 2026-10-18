@@ -3,13 +3,12 @@ import net.lugocorp.kingdom.math.Coords;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import java.util.function.Consumer;
 
 /**
  * Interface for any screen in the application
  */
 public interface View {
-    public void start(Consumer<View> navigate);
+    public void start();
     public void render(int dt);
     public void resize(int w, int h);
     public void dispose();

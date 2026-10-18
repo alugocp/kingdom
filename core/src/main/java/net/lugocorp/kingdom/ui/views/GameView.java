@@ -15,7 +15,6 @@ import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.MutablePoint;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.math.Rect;
-import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.hud.Hud;
 import net.lugocorp.kingdom.ui.overlay.OverlayLayer;
@@ -38,7 +37,6 @@ import java.util.function.Consumer;
  * This class handles all the Game runtime logic
  */
 public class GameView implements View {
-    private final StartMenuView.Params params;
     private MutablePoint frameBufferMappedPoint = new MutablePoint(-1, -1);
     private GameViewController controller;
     private PerspectiveCamera camera;
@@ -53,10 +51,9 @@ public class GameView implements View {
     private Consumer<View> navigate = (View v) -> {
     };
 
-    GameView(StartMenuView.Params params, Game game) {
+    GameView(Game game) {
         this.game = game;
-        this.av = params.av;
-        this.params = params;
+        this.av = Context.getContext().av;
         this.hud = new Hud(this);
         this.selector = new TileSelector(this);
         this.overlays = new OverlayLayer(this);
@@ -71,17 +68,10 @@ public class GameView implements View {
     }
 
     /**
-     * Returns a SaveLoad instance to use through the Hud
-     */
-    public SaveLoad getSerial() {
-        return this.params.serial;
-    }
-
-    /**
      * Returns to the StartMenuView
      */
     public void close() {
-        this.navigate.accept(new StartMenuView(this.params));
+        Context.getContext().navigate.accept(new StartMenuView());
     }
 
     /**
@@ -173,9 +163,8 @@ public class GameView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void start(Consumer<View> navigate) {
+    public void start() {
         this.hud.bot.init(this.game.world);
-        this.navigate = navigate;
 
         // 3D setup
         this.environment = new Environment();
@@ -183,7 +172,7 @@ public class GameView implements View {
         // Camera, viewport and input
         this.camera = new PerspectiveCamera(67, Coords.SIZE.x, Coords.SIZE.y);
         this.viewport = new FitViewport(Coords.SIZE.x, Coords.SIZE.y, this.camera);
-        this.controller = new GameViewController(this, this.params.av.settings, this.camera);
+        this.controller = new GameViewController(this, this.av.settings, this.camera);
         Gdx.input.setInputProcessor(this.controller);
         this.camera.position.set(0f, 5f, 5f);
         this.camera.lookAt(0, 0, 0);
@@ -194,7 +183,7 @@ public class GameView implements View {
         ViewportLogic.setViewport(this.viewport);
 
         // Check if tutorial is active
-        if (this.params.av.settings.isTutorialEnabled()) {
+        if (this.av.settings.isTutorialEnabled()) {
             this.hud.tutorial.setup();
         }
 
@@ -203,7 +192,7 @@ public class GameView implements View {
         this.initHudMessages();
 
         // Start the music
-        this.params.av.loaders.music.play("sfx/fantasy-background");
+        this.av.loaders.music.play("sfx/fantasy-background");
     }
 
     /** {@inheritdoc} */

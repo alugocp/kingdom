@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.engine.render.Drawable;
@@ -9,7 +10,6 @@ import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import java.util.function.Consumer;
 
 /**
  * View for when we're loading a new game
@@ -22,14 +22,13 @@ public abstract class ThreadedTaskView implements View {
     private boolean loaded = false;
     private int progress = 0;
     protected final AudioVideo av;
-    protected Consumer<View> navigate;
 
-    ThreadedTaskView(AudioVideo av, String loadingText) {
-        this.font = av.fonts.getFont(
+    ThreadedTaskView(String loadingText) {
+        this.av = Context.getContext().av;
+        this.font = this.av.fonts.getFont(
                 new FontParam().setSize(28).setColor(ColorScheme.TEXT.color).setBorder(ColorScheme.BLACK.color));
         this.background = new Drawable(av.loaders.sprites, "loading-screen");
         this.loadingText = loadingText;
-        this.av = av;
     }
 
     /**
@@ -51,9 +50,7 @@ public abstract class ThreadedTaskView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void start(Consumer<View> navigate) {
-        this.navigate = navigate;
-
+    public void start() {
         // Initiate mod loading in a separate Thread
         new Thread(() -> {
             this.performTask();
@@ -72,7 +69,7 @@ public abstract class ThreadedTaskView implements View {
     @Override
     public void render(int dt) {
         if (this.loaded) {
-            this.navigate.accept(this.getNextView());
+            Context.getContext().navigate.accept(this.getNextView());
         }
 
         // Render the loading screen graphic

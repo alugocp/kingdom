@@ -8,7 +8,7 @@ public class GameViewContext extends BaseContext {
     public final GameView view;
 
     public GameViewContext(BaseContext prev, GameView view) {
-        super(prev.events, prev.generator);
+        super(prev.events, prev.generator, prev.navigate, prev.serial, prev.av, prev.mods);
         this.view = view;
     }
 }

@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.math.Coords;
@@ -17,24 +18,21 @@ import net.lugocorp.kingdom.ui.Background;
 import net.lugocorp.kingdom.ui.View;
 import com.badlogic.gdx.Gdx;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * This View allows the player to change some basic settings
  */
 public class SettingsView implements View {
-    private final StartMenuView.Params params;
     private final Background background;
     private final Menu menu;
-    private Consumer<View> navigate;
 
-    SettingsView(StartMenuView.Params params) {
-        this.params = params;
-        this.background = new Background(params.av);
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, SettingsView.addSettingsMenuNodes(params.av,
-                new ListNode().add(new ButtonNode(params.av, "Back", () -> {
-                    SettingsIO.write(params.av.settings);
-                    this.navigate.accept(new StartMenuView(params));
+    SettingsView() {
+        final AudioVideo av = Context.getContext().av;
+        this.background = new Background(av);
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
+                SettingsView.addSettingsMenuNodes(av, new ListNode().add(new ButtonNode(av, "Back", () -> {
+                    SettingsIO.write(av.settings);
+                    Context.getContext().navigate.accept(new StartMenuView());
                 })))).noBackground();
     }
 
@@ -78,9 +76,9 @@ public class SettingsView implements View {
 
     /** {@inheritdoc} */
     @Override
-    public void start(Consumer<View> navigate) {
-        this.navigate = navigate;
-        MenuController menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
+    public void start() {
+        MenuController menuController = new MenuController(Context.getContext().av.settings,
+                () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         menuController.reset();
     }
@@ -89,7 +87,7 @@ public class SettingsView implements View {
     @Override
     public void render(int dt) {
         this.background.render();
-        this.menu.draw(this.params.av);
+        this.menu.draw(Context.getContext().av);
     }
 
     /** {@inheritdoc} */

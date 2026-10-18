@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.ui.hud;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.game.Game;
@@ -129,7 +130,7 @@ public class TopHud extends Menu {
                             view.hud.popups.addNextUnrequired(this.getExitMenu(view));
                         })).add(new ButtonNode(view.av, "Save game", () -> {
                             try {
-                                view.getSerial().saveGame(view.game);
+                                Context.getContext().serial.saveGame(view.game);
                                 view.hud.logger.log("Game has been saved");
                             } catch (Exception e) {
                                 view.hud.logger.error("Could not save game");

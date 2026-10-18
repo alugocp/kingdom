@@ -1,6 +1,12 @@
 package net.lugocorp.kingdom;
+import net.lugocorp.kingdom.context.BaseContext;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
+import net.lugocorp.kingdom.game.model.Generator;
+import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.mods.GameMod;
+import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.settings.SettingsIO;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
@@ -11,6 +17,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.ArrayList;
 
 /**
  * This main class kicks off all game logic
@@ -19,7 +26,6 @@ public class Main implements ApplicationListener {
     public static final Semver VERSION = new Semver(0, 0, 0, Semver.BETA);
     private long prevTime = System.currentTimeMillis();
     private View view = null;
-    private AudioVideo av;
 
     /**
      * Causes the application to swap out its current View
@@ -30,7 +36,7 @@ public class Main implements ApplicationListener {
             this.view.dispose();
         }
         this.view = v;
-        v.start((View v1) -> this.navigate(v1));
+        v.start();
 
         // Set up the new viewport
         final Viewport vp = v.getViewport();
@@ -47,14 +53,16 @@ public class Main implements ApplicationListener {
     @Override
     public void create() {
         Gdx.graphics.setResizable(true);
-        this.av = new AudioVideo(SettingsIO.readOrDefault());
-        this.navigate(new LoadingGameView(this.av));
+        Context.setContext(new BaseContext(new AllEventHandlers(), new Generator(), (View v) -> this.navigate(v),
+                new SaveLoad(), new AudioVideo(SettingsIO.readOrDefault()), new ArrayList<GameMod>()));
+        this.navigate(new LoadingGameView());
     }
 
     /** {@inheritdoc} */
     @Override
     public void render() {
         // Play any queued audio
+        final AudioVideo av = Context.getContext().av;
         av.loaders.sounds.checkQueuedSounds();
         av.loaders.music.checkQueuedMusic();
 
@@ -70,7 +78,7 @@ public class Main implements ApplicationListener {
     @Override
     public void dispose() {
         this.view.dispose();
-        this.av.dispose();
+        Context.getContext().av.dispose();
     }
 
     /** {@inheritdoc} */

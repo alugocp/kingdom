@@ -14,7 +14,7 @@ public class GenerateWorldView extends ThreadedTaskView {
     private final GameView view;
 
     GenerateWorldView(GameView view, WorldGenOptions worldGenOpts) {
-        super(view.av, "Generating world");
+        super("Generating world");
         this.worldGenOpts = worldGenOpts;
         this.view = view;
     }

@@ -1,4 +1,7 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.context.BaseContext;
+import net.lugocorp.kingdom.context.Context;
+import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.controllers.MenuController;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.math.Coords;
@@ -15,51 +18,46 @@ import com.badlogic.gdx.Gdx;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * This View shows players who contributed to the game
  */
 class LoadGameView implements View {
-    private final StartMenuView.Params params;
     private final Background background;
     private final ListNode content = new ListNode();
     private final Menu menu;
-    private Consumer<View> navigate;
 
-    LoadGameView(StartMenuView.Params params) {
-        this.params = params;
-        this.background = new Background(params.av);
-        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false,
-                new ListNode()
-                        .add(new ButtonNode(params.av, "Back", () -> this.navigate.accept(new StartMenuView(params))))
-                        .add(new HeaderNode(params.av, "Load Games")).add(new SpacerNode())
-                        .add(this.content.add(new TextNode(params.av, "Loading..."))))
-                .noBackground();
+    LoadGameView() {
+        final AudioVideo av = Context.getContext().av;
+        this.background = new Background(av);
+        this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
+                .add(new ButtonNode(av, "Back", () -> Context.getContext().navigate.accept(new StartMenuView())))
+                .add(new HeaderNode(av, "Load Games")).add(new SpacerNode())
+                .add(this.content.add(new TextNode(av, "Loading...")))).noBackground();
     }
 
     /** {@inheritdoc} */
     @Override
-    public void start(Consumer<View> navigate) {
-        this.navigate = navigate;
-        MenuController menuController = new MenuController(this.params.av.settings, () -> Optional.of(this.menu));
+    public void start() {
+        final BaseContext ctx = Context.getContext();
+        MenuController menuController = new MenuController(ctx.av.settings, () -> Optional.of(this.menu));
         Gdx.input.setInputProcessor(menuController);
         menuController.reset();
 
         // Loads the saved games
-        List<Path> savedGames = this.params.serial.getSavedGames();
+        List<Path> savedGames = ctx.serial.getSavedGames();
         this.content.clear();
         if (savedGames.size() == 0) {
-            this.content.add(new TextNode(this.params.av, "No saved games"));
+            this.content.add(new TextNode(ctx.av, "No saved games"));
         }
         for (Path savedGame : savedGames) {
-            this.content.add(new RowNode().add(new TextNode(this.params.av, savedGame.getFileName().toString()))
-                    .add(new ButtonNode(this.params.av, "Choose", () -> {
-                        final Optional<Game> game = this.params.serial.loadGame(savedGame);
+            this.content.add(new RowNode().add(new TextNode(ctx.av, savedGame.getFileName().toString()))
+                    .add(new ButtonNode(ctx.av, "Choose", () -> {
+                        final Optional<Game> game = ctx.serial.loadGame(savedGame);
                         if (game.isPresent()) {
-                            final GameView view = new GameView(this.params, game.get());
+                            final GameView view = new GameView(game.get());
                             // TODO serial rehydrate or something
-                            this.navigate.accept(view);
+                            Context.getContext().navigate.accept(view);
                         } else {
                             // TODO serial give some error message to the player
                         }
@@ -72,7 +70,7 @@ class LoadGameView implements View {
     @Override
     public void render(int dt) {
         this.background.render();
-        this.menu.draw(this.params.av);
+        this.menu.draw(Context.getContext().av);
     }
 
     /** {@inheritdoc} */
