@@ -34,12 +34,6 @@ class TileMoveSelectMode extends TileSelectMode {
     private final void removeShaderData(GameView view) {
         this.existingPath.ifPresent((List<Point> path) -> {
             for (Point p : path) {
-                if (!view.game.world.getTile(p).isPresent()) {
-                    System.out.println(path);
-                    for (Point p1 : path) {
-                        System.out.println(p1);
-                    }
-                }
                 final Tile t = view.game.world.getTile(p).get();
                 t.setMovePath(0, 0);
             }

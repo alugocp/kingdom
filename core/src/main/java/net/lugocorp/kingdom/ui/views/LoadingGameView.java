@@ -13,6 +13,7 @@ import net.lugocorp.kingdom.mods.ModLoader;
 import net.lugocorp.kingdom.mods.ModProfile;
 import net.lugocorp.kingdom.serial.SaveLoad;
 import net.lugocorp.kingdom.ui.View;
+import net.lugocorp.kingdom.utils.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -90,7 +91,7 @@ public class LoadingGameView extends ThreadedTaskView {
         final int dx = Math.max(1, 80 / mods.length);
         for (GameMod mod : mods) {
             final ModProfile profile = mod.getProfile();
-            System.out.println(String.format("Loading mod %s", profile.name));
+            Log.log("Loading mod %s", profile.name);
 
             // Load mod code
             modLoader.loadMod(mod, Context.getContext().events, this.av.loaders.sprites);

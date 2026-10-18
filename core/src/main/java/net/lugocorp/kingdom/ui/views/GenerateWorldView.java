@@ -4,6 +4,7 @@ import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.game.world.WorldGenOptions;
 import net.lugocorp.kingdom.game.world.WorldGenerator;
 import net.lugocorp.kingdom.ui.View;
+import net.lugocorp.kingdom.utils.Log;
 
 /**
  * View for when we're generating a new World
@@ -25,7 +26,7 @@ public class GenerateWorldView extends ThreadedTaskView {
         for (CompPlayer comp : this.view.game.comps) {
             comp.memory = new MemoryMap(this.worldGenOpts.size.w, this.worldGenOpts.size.h);
         }
-        System.out.println(String.format("Generating world #%d...", this.worldGenOpts.seed));
+        Log.log("Generating world #%d...", this.worldGenOpts.seed);
         generator.generateWorld(this.view, (Integer i) -> this.setProgress(i.intValue()));
         this.setProgress(100);
     }
