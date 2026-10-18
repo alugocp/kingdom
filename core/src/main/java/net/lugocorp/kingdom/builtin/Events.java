@@ -16,6 +16,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
+import net.lugocorp.kingdom.gameplay.events.contexts.CreationContext;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import java.util.List;
@@ -30,11 +31,11 @@ public class Events {
     /**
      * Template for the generator Events
      */
-    private static abstract class GenerateBlobEventTemplate<T> extends Event<GameViewContext> {
+    private static abstract class GenerateBlobEventTemplate<T> extends Event<CreationContext> {
         public final T blob;
 
         private GenerateBlobEventTemplate(T blob) {
-            super(GameViewContext.class, false, true);
+            super(CreationContext.class, false, true);
             this.blob = blob;
         }
     }

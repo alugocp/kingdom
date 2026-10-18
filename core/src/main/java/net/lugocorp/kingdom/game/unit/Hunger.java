@@ -3,6 +3,7 @@ import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.UnitDefaults;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
@@ -82,11 +83,14 @@ public class Hunger {
     /**
      * Changes how long this instance's Unit takes to get hungry
      */
-    public void setTimeToHunger(GameView view, int n) {
-        final int diff = n - this.turnsToGetHungry;
-        final int remainingTurns = this.getTurnsUntilGetsHungry(view);
-        if (remainingTurns >= 0 && remainingTurns + diff <= 0) {
-            view.game.future.handleFutureTicksEarly(view, this.unit, "GetsHungry");
+    public void setTimeToHunger(int n) {
+        if (Context.getContext() instanceof GameViewContext) {
+            final GameView view = ((GameViewContext) Context.getContext()).view;
+            final int diff = n - this.turnsToGetHungry;
+            final int remainingTurns = this.getTurnsUntilGetsHungry(view);
+            if (remainingTurns >= 0 && remainingTurns + diff <= 0) {
+                view.game.future.handleFutureTicksEarly(view, this.unit, "GetsHungry");
+            }
         }
         this.turnsToGetHungry = n;
     }

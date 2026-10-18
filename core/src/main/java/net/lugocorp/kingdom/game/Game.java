@@ -14,6 +14,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.world.World;
 import net.lugocorp.kingdom.gameplay.actions.ActionManager;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
+import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.future.FutureEventManager;
 import net.lugocorp.kingdom.gameplay.mechanics.Mechanics;
 import net.lugocorp.kingdom.math.Hexagons;
@@ -37,17 +38,18 @@ public class Game implements Serializable<GameSerial> {
     public final ActionManager actions = new ActionManager();
     public final ColorPool colorPool = new ColorPool();
     public final Mechanics mechanics = new Mechanics();
-    public final Generator generator = new Generator();
     public final List<CompPlayer> comps = new ArrayList<>();
     public final Set<Tower> towers = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
     public final World world = new World();
     public final OffsetTime startTime;
     public final HumanPlayer human;
-    public AllEventHandlers events;
+    public final AllEventHandlers events;
+    public final Generator generator;
 
-    public Game(AllEventHandlers events, OffsetTime startTime) {
-        this.events = events;
+    public Game(OffsetTime startTime) {
+        this.generator = Context.getContext().generator;
+        this.events = Context.getContext().events;
         this.startTime = startTime;
         this.human = new HumanPlayer(this.colorPool.getFromPool());
     }

@@ -7,7 +7,8 @@ import net.lugocorp.kingdom.ui.views.GameView;
 public class GameViewContext extends CreationContext {
     public final GameView view;
 
-    public GameViewContext(GameView view) {
+    public GameViewContext(CreationContext prev, GameView view) {
+        super(prev.events, prev.generator);
         this.view = view;
     }
 }

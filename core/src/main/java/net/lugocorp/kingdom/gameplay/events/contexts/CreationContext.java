@@ -7,6 +7,11 @@ import net.lugocorp.kingdom.gameplay.events.Context;
  * This Context exists as soon as we can use the Event system
  */
 public class CreationContext extends Context {
-    public final AllEventHandlers events = new AllEventHandlers();
-    public final Generator generator = new Generator();
+    public final AllEventHandlers events;
+    public final Generator generator;
+
+    public CreationContext(AllEventHandlers events, Generator generator) {
+        this.generator = generator;
+        this.events = events;
+    }
 }

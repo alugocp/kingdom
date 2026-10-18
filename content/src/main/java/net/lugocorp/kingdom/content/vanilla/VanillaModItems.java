@@ -9,6 +9,7 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Stratified;
+import net.lugocorp.kingdom.gameplay.events.contexts.CreationContext;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.Optional;
@@ -24,7 +25,7 @@ class VanillaModItems {
     static void registerEvents(AllEventHandlers events) {
         // Gold Coin
         new Stratified<Item>(events.item, Labels.item_gold_coin).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_coin);
                     e.blob.gold = 1;
@@ -33,7 +34,7 @@ class VanillaModItems {
 
         // Emerald
         new Stratified<Item>(events.item, Labels.item_emerald).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_crystal);
                     e.blob.gold = 10;
@@ -43,7 +44,7 @@ class VanillaModItems {
 
         // Fish
         new Stratified<Item>(events.item, Labels.item_fish).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_fish);
                     e.blob.gold = 1;
@@ -54,7 +55,7 @@ class VanillaModItems {
 
         // Mushroom
         new Stratified<Item>(events.item, Labels.item_mushroom).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to look at this mushroom";
                     e.blob.icon = Optional.of(Labels.asset_mushroom);
                     e.blob.gold = 1;
@@ -66,7 +67,7 @@ class VanillaModItems {
 
         // Apple
         new Stratified<Item>(events.item, Labels.item_apple).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_apple);
                     e.blob.gold = 1;
@@ -78,7 +79,7 @@ class VanillaModItems {
 
         // Cacao
         new Stratified<Item>(events.item, Labels.item_cacao).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_harvest_cacao);
                     e.blob.gold = 3;
@@ -90,7 +91,7 @@ class VanillaModItems {
 
         // Mesquite
         new Stratified<Item>(events.item, Labels.item_mesquite).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_harvest_mesquite);
                     e.blob.gold = 1;
@@ -102,7 +103,7 @@ class VanillaModItems {
 
         // Batata
         new Stratified<Item>(events.item, Labels.item_batata).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger and restore 1 health";
                     e.blob.icon = Optional.of(Labels.asset_harvest_batatas);
                     e.blob.gold = 1;
@@ -115,7 +116,7 @@ class VanillaModItems {
 
         // Pumpkin
         new Stratified<Item>(events.item, Labels.item_pumpkin).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to stave off hunger";
                     e.blob.icon = Optional.of(Labels.asset_harvest_pumpkins);
                     e.blob.gold = 1;
@@ -127,7 +128,7 @@ class VanillaModItems {
 
         // Fig
         new Stratified<Item>(events.item, Labels.item_fig).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "A sweet edible fruit resembling a tiny satchel";
                     e.blob.icon = Optional.of(Labels.asset_harvest_figs);
                     e.blob.gold = 1;
@@ -139,7 +140,7 @@ class VanillaModItems {
 
         // Truffle
         new Stratified<Item>(events.item, Labels.item_truffle).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "A tasty and expensive fungus";
                     // TODO add a real icon
                     e.blob.icon = Optional.of(Labels.asset_mushroom);
@@ -153,7 +154,7 @@ class VanillaModItems {
 
         // Walnut
         new Stratified<Item>(events.item, Labels.item_walnut).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "A tough nut rich in protein";
                     e.blob.icon = Optional.of(Labels.asset_apple);
@@ -166,7 +167,7 @@ class VanillaModItems {
 
         // Nopal
         new Stratified<Item>(events.item, Labels.item_nopal).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "This cactus is very nutritious once you remove the thorns";
                     e.blob.icon = Optional.of(Labels.asset_apple);
@@ -179,7 +180,7 @@ class VanillaModItems {
 
         // Passionfruit
         new Stratified<Item>(events.item, Labels.item_passionfruit).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     // TODO add new icon
                     e.blob.desc = "A sweet and sour fruit that grows on vines";
                     e.blob.icon = Optional.of(Labels.asset_apple);
@@ -192,7 +193,7 @@ class VanillaModItems {
 
         // Health Potion
         new Stratified<Item>(events.item, Labels.item_health_potion).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to heal by 5 hit points";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.gold = 1;
@@ -203,7 +204,7 @@ class VanillaModItems {
         // Incense
         // Bag of Gold
         new Stratified<Item>(events.item, Labels.item_bag_of_gold).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to increase your gold";
                     e.blob.icon = Optional.of(Labels.asset_pouch);
                     e.blob.gold = 5;
@@ -212,7 +213,7 @@ class VanillaModItems {
 
         // Capital
         new Stratified<Item>(events.item, Labels.item_capital).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to generate 6 auction points";
                     e.blob.icon = Optional.of(Labels.asset_paper);
                     e.blob.gold = 6;
@@ -223,7 +224,7 @@ class VanillaModItems {
         // Stones
         // Sword
         new Stratified<Item>(events.item, Labels.item_sword).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "+1 damage";
                     e.blob.icon = Optional.of(Labels.asset_sword);
                     e.blob.gold = 1;
@@ -235,7 +236,7 @@ class VanillaModItems {
 
         // Shield
         new Stratified<Item>(events.item, Labels.item_shield).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "+1 armor";
                     e.blob.icon = Optional.of(Labels.asset_shield);
                     e.blob.gold = 1;
@@ -247,7 +248,7 @@ class VanillaModItems {
 
         // Staff
         new Stratified<Item>(events.item, Labels.item_staff).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "+1 healing";
                     e.blob.icon = Optional.of(Labels.asset_staff);
                     e.blob.gold = 1;
@@ -280,7 +281,7 @@ class VanillaModItems {
         // Phoenix Blossom
         // Life-Giving Elixir
         new Stratified<Item>(events.item, Labels.item_life_giving_elixir).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to generate 6 unit points";
                     e.blob.icon = Optional.of(Labels.asset_potion);
                     e.blob.rarity = Rarity.UNCOMMON;
@@ -313,7 +314,7 @@ class VanillaModItems {
         // Wizard's Staff
         // Floral Seeds
         new Stratified<Item>(events.item, Labels.item_floral_seeds).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a meadow on a grass tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -326,7 +327,7 @@ class VanillaModItems {
 
         // Arboreal Seeds
         new Stratified<Item>(events.item, Labels.item_arboreal_seeds).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a forest on a grass tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -339,7 +340,7 @@ class VanillaModItems {
 
         // Arctic Seeds
         new Stratified<Item>(events.item, Labels.item_arctic_seeds).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a taiga on a snow tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -352,7 +353,7 @@ class VanillaModItems {
 
         // Cactus Seeds
         new Stratified<Item>(events.item, Labels.item_cactus_seeds).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant a shrubland on a sand tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -365,7 +366,7 @@ class VanillaModItems {
 
         // Pioneering Seeds
         new Stratified<Item>(events.item, Labels.item_pioneering_seeds).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to plant an oasis on a sand tile";
                     e.blob.icon = Optional.of(Labels.asset_seeds);
                     e.blob.rarity = Rarity.RARE;
@@ -378,7 +379,7 @@ class VanillaModItems {
 
         // Digging Kit
         new Stratified<Item>(events.item, Labels.item_digging_kit).add(Events.GenerateItemEvent.class,
-                (GameViewContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
+                (CreationContext ctx, Item receiver, Events.GenerateItemEvent e) -> {
                     e.blob.desc = "Consume to dig a mine";
                     e.blob.icon = Optional.of(Labels.asset_shovel);
                     e.blob.rarity = Rarity.RARE;

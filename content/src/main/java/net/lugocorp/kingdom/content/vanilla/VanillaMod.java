@@ -23,6 +23,7 @@ import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.Stratified;
+import net.lugocorp.kingdom.gameplay.events.contexts.CreationContext;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -272,7 +273,7 @@ public class VanillaMod implements GameMod {
 
         // Grass
         new Stratified<Tile>(events.tile, Labels.tile_grass).add(Events.GenerateTileEvent.class,
-                (GameViewContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
+                (CreationContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
                     e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0x2c9965);
                     e.blob.desc = "The seeds to spring new life lay dormant beneath this place";
@@ -281,7 +282,7 @@ public class VanillaMod implements GameMod {
 
         // Rock
         new Stratified<Tile>(events.tile, Labels.tile_rock).add(Events.GenerateTileEvent.class,
-                (GameViewContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
+                (CreationContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
                     e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0x666666);
                     e.blob.setMaterial(Labels.asset_rock);
@@ -291,7 +292,7 @@ public class VanillaMod implements GameMod {
 
         // Sand
         new Stratified<Tile>(events.tile, Labels.tile_sand).add(Events.GenerateTileEvent.class,
-                (GameViewContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
+                (CreationContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
                     e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0xc7c567);
                     e.blob.setMaterial(Labels.asset_sand);
@@ -301,7 +302,7 @@ public class VanillaMod implements GameMod {
 
         // Snow
         new Stratified<Tile>(events.tile, Labels.tile_snow).add(Events.GenerateTileEvent.class,
-                (GameViewContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
+                (CreationContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
                     e.blob.setModelInstance(Labels.asset_grass);
                     e.blob.setMinimapColor(0xffffff);
                     e.blob.setMaterial(Labels.asset_snow);
@@ -311,7 +312,7 @@ public class VanillaMod implements GameMod {
 
         // Water
         new Stratified<Tile>(events.tile, Labels.tile_water).add(Events.GenerateTileEvent.class,
-                (GameViewContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
+                (CreationContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
                     e.blob.setModelInstance(Labels.asset_water);
                     e.blob.setMinimapColor(0x20c7f7);
                     e.blob.setObstacle(true);
@@ -322,7 +323,7 @@ public class VanillaMod implements GameMod {
 
         // Lava
         new Stratified<Tile>(events.tile, Labels.tile_lava).add(Events.GenerateTileEvent.class,
-                (GameViewContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
+                (CreationContext ctx, Tile receiver, Events.GenerateTileEvent e) -> {
                     e.blob.setModelInstance(Labels.asset_water);
                     e.blob.setMinimapColor(0xcf3b23);
                     e.blob.setMaterial(Labels.asset_lava);
@@ -338,7 +339,7 @@ public class VanillaMod implements GameMod {
 
         // Tower
         new Stratified<Building>(events.building, Labels.building_tower).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("tower");
                     e.blob.desc = "Towers provide influence over the map and cost gold each turn. Players who have lost control of all their Towers lose the game.";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 5));
@@ -349,7 +350,7 @@ public class VanillaMod implements GameMod {
 
         // Mine
         new Stratified<Building>(events.building, Labels.building_mine).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("mine");
                     e.blob.desc = "Units with mining abilities can generate gold or items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(10);
@@ -359,7 +360,7 @@ public class VanillaMod implements GameMod {
 
         // Cache
         new Stratified<Building>(events.building, Labels.building_cache).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("cache");
                     e.blob.desc = "This building can store items. But be careful, if the cache is destroyed then so are all the items inside!";
                     e.blob.items = Optional.of(new Inventory(InventoryType.BUILDING, 24));
@@ -370,7 +371,7 @@ public class VanillaMod implements GameMod {
 
         // Marketplace
         new Stratified<Building>(events.building, Labels.building_marketplace).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("marketplace");
                     e.blob.desc = "Occupying units generate gold and sometimes an item.";
                     e.blob.combat.health.setMaxAndValue(10);
@@ -401,7 +402,7 @@ public class VanillaMod implements GameMod {
 
         // Forest
         new Stratified<Building>(events.building, Labels.building_forest).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("forest");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
@@ -411,7 +412,7 @@ public class VanillaMod implements GameMod {
 
         // Dense Forest
         new Stratified<Building>(events.building, Labels.building_dense_forest).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("dense-forest");
                     e.blob.desc = "Most units cannot traverse dense forests. They leave behind regular forests when they are destroyed.";
                     e.blob.combat.health.setMaxAndValue(10);
@@ -426,7 +427,7 @@ public class VanillaMod implements GameMod {
 
         // Taiga
         new Stratified<Building>(events.building, Labels.building_taiga).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("forest");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
@@ -437,7 +438,7 @@ public class VanillaMod implements GameMod {
 
         // Meadow
         new Stratified<Building>(events.building, Labels.building_meadow).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("meadow");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
@@ -447,7 +448,7 @@ public class VanillaMod implements GameMod {
 
         // Oasis
         new Stratified<Building>(events.building, Labels.building_oasis).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("oasis");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
@@ -457,7 +458,7 @@ public class VanillaMod implements GameMod {
 
         // Shrubland
         new Stratified<Building>(events.building, Labels.building_shrubland).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("shrubland");
                     e.blob.desc = "Units with harvest abilities can generate food or other items when they occupy this building.";
                     e.blob.combat.health.setMaxAndValue(5);
@@ -467,7 +468,7 @@ public class VanillaMod implements GameMod {
 
         // Mountain
         new Stratified<Building>(events.building, Labels.building_mountain).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("mountain");
                     e.blob.desc = "Most units cannot traverse mountains.";
                     e.blob.combat.health.invulnerable();
@@ -478,7 +479,7 @@ public class VanillaMod implements GameMod {
 
         // Hill
         new Stratified<Building>(events.building, Labels.building_hill).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("hill");
                     e.blob.desc = "Units move slower on hills.";
                     e.blob.combat.health.invulnerable();
@@ -492,7 +493,7 @@ public class VanillaMod implements GameMod {
 
         // Bluff
         new Stratified<Building>(events.building, Labels.building_bluff).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     e.blob.setModelInstance("bluff");
                     e.blob.desc = "Units move slower on bluffs.";
                     e.blob.combat.health.invulnerable();
@@ -507,7 +508,7 @@ public class VanillaMod implements GameMod {
         // Healing Fountain
         new Stratified<Building>(events.building, Labels.building_healing_fountain)
                 .add(Events.GenerateBuildingEvent.class,
-                        (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                        (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                             e.blob.setModelInstance("fountain");
                             e.blob.desc = "An occupying unit regains health each turn.";
                             e.blob.combat.health.setMaxAndValue(10);
@@ -524,7 +525,7 @@ public class VanillaMod implements GameMod {
 
         // Wall
         new Stratified<Building>(events.building, Labels.building_wall).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     // TODO add new model
                     e.blob.setModelInstance("placeholder1");
                     e.blob.desc = "Units cannot traverse this structure. It crumbles in 6 turns.";
@@ -542,7 +543,7 @@ public class VanillaMod implements GameMod {
 
         // Shield Totem
         new Stratified<Building>(events.building, Labels.building_shield_totem).add(Events.GenerateBuildingEvent.class,
-                (GameViewContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
+                (CreationContext ctx, Building receiver, Events.GenerateBuildingEvent e) -> {
                     // TODO add new model
                     e.blob.setModelInstance("placeholder1");
                     e.blob.desc = "All friendly units within a 1 tile radius get +1 defense. This structure will collapse in 4 turns.";
@@ -579,7 +580,7 @@ public class VanillaMod implements GameMod {
 
         // Joyous Reaper
         new Stratified<Patron>(events.patron, Labels.patron_joyous_reaper).add(Events.GeneratePatronEvent.class,
-                (GameViewContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
+                (CreationContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance("joyous-reaper");
                     e.blob.desc = "This spirit ferries the souls of warriors to the afterlife. Sometimes it appears before mortals as an omen of encroaching death.";
                     e.blob.effect = "Your battle glyph units generate 5 unit points when they kill or are killed by another unit. The killed unit is reincarnated (returns as a unit recruitment option).";
@@ -618,7 +619,7 @@ public class VanillaMod implements GameMod {
         // Lord Shui, Guardian of the River
         // The Pond Troll
         new Stratified<Patron>(events.patron, Labels.patron_pond_troll).add(Events.GeneratePatronEvent.class,
-                (GameViewContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
+                (CreationContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance("pond-troll");
                     e.blob.desc = "This ancient Troll made a pact with water spirits to save her village. In return she was forced to become a spirit herself, and now watches over those who seek to cross bodies of water.";
                     e.blob.effect = "The favorite player's units can traverse water tiles and have a 20% chance to fish when they do";
@@ -652,7 +653,7 @@ public class VanillaMod implements GameMod {
         // The Eternal Guardian
         // Flutterwing
         new Stratified<Patron>(events.patron, Labels.patron_flutterwing).add(Events.GeneratePatronEvent.class,
-                (GameViewContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
+                (CreationContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance("flutterwing");
                     e.blob.desc = "This great spirit dances upon the bodies of freshly slain warriors. It recycles their fleeting essence into new life to sustain the great cycle.";
                     e.blob.effect = "Your battle glyph units have +20% critical hit chance and generate 5 unit points when they kill another unit";
@@ -686,7 +687,7 @@ public class VanillaMod implements GameMod {
 
         // Wise Mountain
         new Stratified<Patron>(events.patron, Labels.patron_wise_mountain).add(Events.GeneratePatronEvent.class,
-                (GameViewContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
+                (CreationContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance("wise-mountain");
                     e.blob.desc = "This mountain has watched over villages at its base for thousands upon thousands of years. It has witnessed the rise and fall of dynasties, the crashing wake of invading armies, and the birth of new forms of magic.";
                     e.blob.effect = "Your mining glyph units' harvest abilities have a 20% chance to generate an additional item";
@@ -709,7 +710,7 @@ public class VanillaMod implements GameMod {
 
         // Wise Oak
         new Stratified<Patron>(events.patron, Labels.patron_wise_oak).add(Events.GeneratePatronEvent.class,
-                (GameViewContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
+                (CreationContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance("wise-oak");
                     e.blob.desc = "This elder communes with the surrounding forest through a complex network of underground fungal helpers. It knows the names of all the trees and flowers and shrubs that have existed on the continent for the past several hundred years.";
                     e.blob.effect = "Your nature glyph units' harvest abilities have a 20% chance to generate an additional item";
@@ -734,7 +735,7 @@ public class VanillaMod implements GameMod {
         // Ahn-Juné
         // The Shining Eyes
         new Stratified<Patron>(events.patron, Labels.patron_shining_eyes).add(Events.GeneratePatronEvent.class,
-                (GameViewContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
+                (CreationContext ctx, Patron receiver, Events.GeneratePatronEvent e) -> {
                     e.blob.setModelInstance("shining-eyes");
                     e.blob.desc = "A mysterious being from some upper realm. The light that irradiates from its otherworldly form nurtures the soul and heals fatal wounds. Many believe its true form is far more strange than how it normally depicts itself.";
                     e.blob.effect = "Heals 4 random units of its favorite player each turn";
@@ -764,7 +765,7 @@ public class VanillaMod implements GameMod {
         // Cho's Sigil of Haste
         new Stratified<Artifact>(events.artifact, Labels.artifact_chos_sigil_of_haste)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your support glyph units get +1 movement speed";
                             e.blob.image = Optional.of(Labels.asset_chos_sigil_of_haste);
                             return new SideEffect();
@@ -785,7 +786,7 @@ public class VanillaMod implements GameMod {
         // Urdin's Scroll of Agility
         new Stratified<Artifact>(events.artifact, Labels.artifact_urdins_scroll_of_agility)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your defense glyph units get +1 movement speed";
                             e.blob.image = Optional.of(Labels.asset_urdins_scroll_of_agility);
                             return new SideEffect();
@@ -806,7 +807,7 @@ public class VanillaMod implements GameMod {
         // Sword of Aesethos
         new Stratified<Artifact>(events.artifact, Labels.artifact_sword_of_aesethos)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your units have +10% critical hit chance";
                             e.blob.image = Optional.of(Labels.asset_sword_of_aesethos);
                             return new SideEffect();
@@ -826,7 +827,7 @@ public class VanillaMod implements GameMod {
 
         // Kauna's Amulet
         new Stratified<Artifact>(events.artifact, Labels.artifact_kaunas_amulet).add(Events.GenerateArtifactEvent.class,
-                (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Your units within a patron's domain have extra defense";
                     e.blob.image = Optional.of(Labels.asset_kaunas_amulet);
                     return new SideEffect();
@@ -851,7 +852,7 @@ public class VanillaMod implements GameMod {
         // Staff of Wurmdel
         new Stratified<Artifact>(events.artifact, Labels.artifact_staff_of_wurmdel)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your healing spells restore +4 more health";
                             e.blob.image = Optional.of(Labels.asset_staff_of_wurmdel);
                             return new SideEffect();
@@ -874,7 +875,7 @@ public class VanillaMod implements GameMod {
         /*
          * new Stratified<Artifact>(events.artifact,
          * Labels.artifact_tome_of_morun).add(Events.GenerateArtifactEvent.class,
-         * (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+         * (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
          * e.blob.desc = "20% chance to spawn a glyph when your units kill an enemy";
          * e.blob.image = Optional.of(Labels.asset_tome_of_morun); return new
          * SideEffect(); }).add(Events.ArtifactClaimedEvent.class, (GameViewContext ctx,
@@ -893,7 +894,7 @@ public class VanillaMod implements GameMod {
         // Orb of Nerketo
         new Stratified<Artifact>(events.artifact, Labels.artifact_orb_of_nerketo)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your units have +1 vision";
                             e.blob.image = Optional.of(Labels.asset_orb_of_nerketo);
                             return new SideEffect();
@@ -915,7 +916,7 @@ public class VanillaMod implements GameMod {
 
         // Shada's Flute
         new Stratified<Artifact>(events.artifact, Labels.artifact_shadas_flute).add(Events.GenerateArtifactEvent.class,
-                (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Your patrons generate 3 unit points per turn";
                     e.blob.image = Optional.of(Labels.asset_shadas_flute);
                     return new SideEffect();
@@ -935,7 +936,7 @@ public class VanillaMod implements GameMod {
         // Stones of Thudin
         new Stratified<Artifact>(events.artifact, Labels.artifact_stones_of_thudin)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your towers have +2 defense";
                             e.blob.image = Optional.of(Labels.asset_stones_of_thudin);
                             return new SideEffect();
@@ -958,7 +959,7 @@ public class VanillaMod implements GameMod {
 
         // The Chasi Bones
         new Stratified<Artifact>(events.artifact, Labels.artifact_chasi_bones).add(Events.GenerateArtifactEvent.class,
-                (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Your nature glyph units have a 20% chance to harvest an additional item";
                     e.blob.image = Optional.of(Labels.asset_chasi_bones);
                     return new SideEffect();
@@ -978,7 +979,7 @@ public class VanillaMod implements GameMod {
         // Ucha's Bowl of Plenty
         new Stratified<Artifact>(events.artifact, Labels.artifact_uchas_bowl_of_plenty)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "+1 option when selecting a new unit";
                             e.blob.image = Optional.of(Labels.asset_uchas_bowl_of_plenty);
                             e.blob.chips = 2;
@@ -992,7 +993,7 @@ public class VanillaMod implements GameMod {
 
         // Nerketo's Helm
         new Stratified<Artifact>(events.artifact, Labels.artifact_nerketos_helm).add(Events.GenerateArtifactEvent.class,
-                (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Critical hits against your units are less effective";
                     e.blob.image = Optional.of(Labels.asset_nerketos_helm);
                     e.blob.chips = 2;
@@ -1013,7 +1014,7 @@ public class VanillaMod implements GameMod {
         // Bounty of Ahn-June
         new Stratified<Artifact>(events.artifact, Labels.artifact_bounty_of_ahn_june)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your trade glyph units generate +2 more auction points";
                             e.blob.image = Optional.of(Labels.asset_bounty_of_ahn_june);
                             e.blob.chips = 2;
@@ -1035,7 +1036,7 @@ public class VanillaMod implements GameMod {
 
         // Mark of Kung
         new Stratified<Artifact>(events.artifact, Labels.artifact_mark_of_kung).add(Events.GenerateArtifactEvent.class,
-                (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "Your battle glyph units get +1 movement speed";
                     e.blob.image = Optional.of(Labels.asset_mark_of_kung);
                     e.blob.chips = 2;
@@ -1056,7 +1057,7 @@ public class VanillaMod implements GameMod {
         // Chalco's Seal of Protection
         new Stratified<Artifact>(events.artifact, Labels.artifact_chalcos_seal_of_protection)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your trade glyph units have +2 defense";
                             e.blob.image = Optional.of(Labels.asset_chalcos_seal_of_protection);
                             e.blob.chips = 2;
@@ -1083,7 +1084,7 @@ public class VanillaMod implements GameMod {
         /*
          * new Stratified<Artifact>(events.artifact,
          * Labels.artifact_podas_elixir).add(Events.GenerateArtifactEvent.class,
-         * (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+         * (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
          * e.blob.desc = "15% chance refresh a glyph when you recruit a unit";
          * e.blob.image = Optional.of(Labels.asset_podas_elixir); e.blob.chips = 2;
          * return new SideEffect(); }).add(Events.ArtifactClaimedEvent.class, (GameView
@@ -1101,7 +1102,7 @@ public class VanillaMod implements GameMod {
 
         // Gaia's Effigy
         new Stratified<Artifact>(events.artifact, Labels.artifact_gaias_effigy).add(Events.GenerateArtifactEvent.class,
-                (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "+8 unit points each turn";
                     e.blob.image = Optional.of(Labels.asset_gaias_effigy);
                     e.blob.chips = 3;
@@ -1117,7 +1118,7 @@ public class VanillaMod implements GameMod {
 
         // Rod of Adelon
         new Stratified<Artifact>(events.artifact, Labels.artifact_rod_of_adelon).add(Events.GenerateArtifactEvent.class,
-                (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                     e.blob.desc = "5% chance to recruit an enemy unit when you kill it";
                     e.blob.image = Optional.of(Labels.asset_rod_of_adelon);
                     e.blob.chips = 3;
@@ -1140,7 +1141,7 @@ public class VanillaMod implements GameMod {
         // Blade of Sanguinor
         new Stratified<Artifact>(events.artifact, Labels.artifact_blade_of_sanguinor)
                 .add(Events.GenerateArtifactEvent.class,
-                        (GameViewContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
+                        (CreationContext ctx, Artifact receiver, Events.GenerateArtifactEvent e) -> {
                             e.blob.desc = "Your battle glyph units deal +2 damage";
                             e.blob.image = Optional.of(Labels.asset_blade_of_sanguinor);
                             e.blob.chips = 3;
@@ -1186,7 +1187,7 @@ public class VanillaMod implements GameMod {
 
         // The Raider
         new Stratified<Fate>(events.fate, Labels.fate_raider).add(Events.GenerateFateEvent.class,
-                (GameViewContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
+                (CreationContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
                     e.blob.image = Optional.of(Labels.asset_raider);
                     e.blob.desc.add("Playstyle: High-risk aggro");
                     e.blob.desc.add("• Your first unit will have the battle glyph");
@@ -1228,7 +1229,7 @@ public class VanillaMod implements GameMod {
 
         // The Merchant
         new Stratified<Fate>(events.fate, Labels.fate_merchant).add(Events.GenerateFateEvent.class,
-                (GameViewContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
+                (CreationContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
                     e.blob.image = Optional.of(Labels.asset_merchant);
                     e.blob.desc.add("Playstyle: Market control");
                     e.blob.desc.add("• Your first unit will have the trade glyph");
@@ -1256,7 +1257,7 @@ public class VanillaMod implements GameMod {
 
         // The Veteran
         new Stratified<Fate>(events.fate, Labels.fate_veteran).add(Events.GenerateFateEvent.class,
-                (GameViewContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
+                (CreationContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
                     e.blob.image = Optional.of(Labels.asset_veteran);
                     e.blob.desc.add("Playstyle: Military production");
                     e.blob.desc.add("• Your battle glyph units heal for 3 damage when they don't act in a turn");
@@ -1280,7 +1281,7 @@ public class VanillaMod implements GameMod {
 
         // The Sentinel
         new Stratified<Fate>(events.fate, Labels.fate_sentinel).add(Events.GenerateFateEvent.class,
-                (GameViewContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
+                (CreationContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
                     e.blob.image = Optional.of(Labels.asset_sentinel);
                     e.blob.desc.add("Playstyle: Defensive expansion");
                     e.blob.desc.add("• Your buildings take 15% less damage");
@@ -1319,7 +1320,7 @@ public class VanillaMod implements GameMod {
 
         // The Usurper
         new Stratified<Fate>(events.fate, Labels.fate_usurper).add(Events.GenerateFateEvent.class,
-                (GameViewContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
+                (CreationContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
                     e.blob.image = Optional.of(Labels.asset_usurper);
                     e.blob.desc.add("Playstyle: Early market bonus into unit production");
                     e.blob.desc.add("• Your first unit will have the trade glyph");
@@ -1342,7 +1343,7 @@ public class VanillaMod implements GameMod {
 
         // The Forager
         new Stratified<Fate>(events.fate, Labels.fate_forager).add(Events.GenerateFateEvent.class,
-                (GameViewContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
+                (CreationContext ctx, Fate receiver, Events.GenerateFateEvent e) -> {
                     e.blob.image = Optional.of(Labels.asset_forager);
                     e.blob.desc.add("Playstyle: Resource accumulation");
                     e.blob.desc.add("• Your first unit will have the nature glyph");
@@ -1377,7 +1378,7 @@ public class VanillaMod implements GameMod {
 
         // Stunned
         new Stratified<Ability>(events.ability, Labels.status_effect_stunned).add(Events.GenerateAbilityEvent.class,
-                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stunned);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit cannot act for 1 turn"))
@@ -1396,7 +1397,7 @@ public class VanillaMod implements GameMod {
         // Proud Builder
         new Stratified<Ability>(events.ability, Labels.status_effect_proud_builder)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_proud_builder);
                             return new SideEffect();
                         })
@@ -1421,7 +1422,7 @@ public class VanillaMod implements GameMod {
         // Extra Defense
         new Stratified<Ability>(events.ability, Labels.status_effect_extra_defense)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_shield);
                             return new SideEffect();
                         })
@@ -1442,7 +1443,7 @@ public class VanillaMod implements GameMod {
         // Extra Attack
         new Stratified<Ability>(events.ability, Labels.status_effect_extra_attack)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             // TODO add new icon
                             e.blob.setIcon(Labels.asset_apple);
                             return new SideEffect();
@@ -1462,7 +1463,7 @@ public class VanillaMod implements GameMod {
 
         // Poisoned
         new Stratified<Ability>(events.ability, Labels.status_effect_poisoned).add(Events.GenerateAbilityEvent.class,
-                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_poisoned);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit takes 1 damage each turn for 4 turns"))
@@ -1482,7 +1483,7 @@ public class VanillaMod implements GameMod {
 
         // Swift
         new Stratified<Ability>(events.ability, Labels.status_effect_swift).add(Events.GenerateAbilityEvent.class,
-                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_swift);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit can move an extra space for the next 2 turns"))
@@ -1501,7 +1502,7 @@ public class VanillaMod implements GameMod {
 
         // Rally
         new Stratified<Ability>(events.ability, Labels.status_effect_rally).add(Events.GenerateAbilityEvent.class,
-                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bloodlust);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 damage and +1 speed for 2 turns"))
@@ -1524,7 +1525,7 @@ public class VanillaMod implements GameMod {
         // Stone Form Active
         new Stratified<Ability>(events.ability, Labels.status_effect_stone_form_active)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x828282);
                             return new SideEffect();
                         })
@@ -1533,7 +1534,7 @@ public class VanillaMod implements GameMod {
         // Conserved Energy
         new Stratified<Ability>(events.ability, Labels.status_effect_conserved_energy)
                 .add(Events.GenerateAbilityEvent.class,
-                        (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_regeneration, 0x00ff10, 0x00a9ff);
                             return new SideEffect();
                         })
@@ -1545,7 +1546,7 @@ public class VanillaMod implements GameMod {
 
         // Burned
         new Stratified<Ability>(events.ability, Labels.status_effect_burned).add(Events.GenerateAbilityEvent.class,
-                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("The unit takes 1 damage each turn for 4 turns"))
@@ -1565,7 +1566,7 @@ public class VanillaMod implements GameMod {
 
         // Bleed
         new Stratified<Ability>(events.ability, Labels.status_effect_bleed).add(Events.GenerateAbilityEvent.class,
-                (GameViewContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();

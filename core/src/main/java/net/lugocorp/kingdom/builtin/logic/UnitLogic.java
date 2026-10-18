@@ -4,7 +4,6 @@ import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.UnitDefaults;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
 import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
-import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 
 /**
@@ -15,8 +14,8 @@ public class UnitLogic {
     /**
      * Makes the given Unit get hungry faster than normal
      */
-    public static void hungry(GameView view, Unit unit) {
-        unit.hunger.setTimeToHunger(view, 10);
+    public static void hungry(Unit unit) {
+        unit.hunger.setTimeToHunger(10);
     }
 
     /**

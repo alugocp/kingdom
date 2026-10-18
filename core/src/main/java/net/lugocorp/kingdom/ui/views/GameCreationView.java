@@ -62,9 +62,9 @@ class GameCreationView implements View {
         this.background = new Background(params.av);
 
         // Initialize Game and GameView state for world generation logic
-        final Game game = new Game(params.events, OffsetTime.now());
+        final Game game = new Game(OffsetTime.now());
         final GameView view = new GameView(params, game);
-        Context.setContext(new GameViewContext(view));
+        Context.setContext(new GameViewContext(Context.getContext(), view));
         this.setWorldSize(0);
         this.view = view;
 
