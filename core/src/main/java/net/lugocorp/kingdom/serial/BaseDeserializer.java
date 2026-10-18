@@ -31,7 +31,8 @@ public abstract class BaseDeserializer<V extends Serial<Game>> {
      */
     public Optional<V> deserialize(File file) {
         // Check if the loaded file can be handled by this version of the Deserializer
-        if (this.getFileVersion(file).map((Semver v) -> v.isNewerThan(this.version)).orElse(false)) {
+        if (this.getFileVersion(file).map((Semver v) -> v.equals(this.version) || v.isNewerThan(this.version))
+                .orElse(false)) {
             try {
                 final V v = this.getGameSerial(file);
                 return Optional.of(v);
