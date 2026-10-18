@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.properties.Rarity;
-import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.Tuple;
 import java.util.ArrayList;

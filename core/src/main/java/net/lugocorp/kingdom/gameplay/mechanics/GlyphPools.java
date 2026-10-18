@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.gameplay.mechanics;
 import net.lugocorp.kingdom.DevOptions;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.DummyUnit;
 import net.lugocorp.kingdom.game.model.Unit;
-import net.lugocorp.kingdom.gameplay.events.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

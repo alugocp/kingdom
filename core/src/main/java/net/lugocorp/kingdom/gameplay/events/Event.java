@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.events;
+import net.lugocorp.kingdom.context.Context;
 
 /**
  * Contains relevant data for some incoming event
@@ -15,7 +16,7 @@ public abstract class Event<C extends Context> {
     public final String channel;
 
     // Allows us to check if this Event can be handled in any given Context
-    final Class<C> contextClass;
+    private final Class<C> contextClass;
 
     public Event(String channel, Class<C> contextClass, boolean propagate, boolean panic) {
         if (channel == null) {
@@ -34,5 +35,12 @@ public abstract class Event<C extends Context> {
 
     public Event(Class<C> contextClass) {
         this(contextClass, true, false);
+    }
+
+    /**
+     * Returns true if you can process this Event within the given Context
+     */
+    public boolean canBeHandled(Context ctx) {
+        return this.contextClass.isAssignableFrom(ctx.getClass());
     }
 }

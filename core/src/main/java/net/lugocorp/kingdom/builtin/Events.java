@@ -1,5 +1,7 @@
 package net.lugocorp.kingdom.builtin;
 import net.lugocorp.kingdom.content.Labels;
+import net.lugocorp.kingdom.context.BaseContext;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.engine.render.Modellable;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.Entity;
@@ -16,8 +18,6 @@ import net.lugocorp.kingdom.game.player.Player;
 import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.Event;
-import net.lugocorp.kingdom.gameplay.events.contexts.CreationContext;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.Point;
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +31,11 @@ public class Events {
     /**
      * Template for the generator Events
      */
-    private static abstract class GenerateBlobEventTemplate<T> extends Event<CreationContext> {
+    private static abstract class GenerateBlobEventTemplate<T> extends Event<BaseContext> {
         public final T blob;
 
         private GenerateBlobEventTemplate(T blob) {
-            super(CreationContext.class, false, true);
+            super(BaseContext.class, false, true);
             this.blob = blob;
         }
     }

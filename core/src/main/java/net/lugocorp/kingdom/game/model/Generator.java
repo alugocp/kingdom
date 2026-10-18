@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.gameplay.events.Context;
+import net.lugocorp.kingdom.context.Context;
 
 /**
  * This class is like a factory class for all game objects. It calls the

@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ui.views;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
-import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.menu.Menu;
 import net.lugocorp.kingdom.menu.game.ArtifactNode;

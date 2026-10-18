@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.player.CompPlayer;
 import net.lugocorp.kingdom.gameplay.actions.SkipAction;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Log;
 import net.lugocorp.kingdom.utils.LogSys;

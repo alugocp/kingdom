@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.gameplay.events;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
+import net.lugocorp.kingdom.context.Context;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.prediction.EventLog;
 import net.lugocorp.kingdom.utils.SideEffect;
 

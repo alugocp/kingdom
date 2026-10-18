@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.gameplay.events;
 import net.lugocorp.kingdom.builtin.Events;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
+import net.lugocorp.kingdom.context.Context;
+import net.lugocorp.kingdom.context.GameViewContext;
 
 /**
  * This class exposes an API that allows us to define content via decorator

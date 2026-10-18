@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.events;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.utils.SideEffect;
 
 /**

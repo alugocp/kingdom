@@ -1,10 +1,10 @@
 package net.lugocorp.kingdom.game.unit;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.context.Context;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.game.model.Item;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.game.model.UnitDefaults;
-import net.lugocorp.kingdom.gameplay.events.Context;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import java.util.Optional;

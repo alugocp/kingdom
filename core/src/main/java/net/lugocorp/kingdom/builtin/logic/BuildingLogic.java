@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.builtin.logic;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.game.model.Building;
 import net.lugocorp.kingdom.gameplay.events.StratifiedPayload;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.utils.SideEffect;
 
 /**

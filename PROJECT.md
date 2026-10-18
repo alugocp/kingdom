@@ -17,6 +17,7 @@ This file explains all the code folders inside this repository.
         - `animation` contains a set of game animation utilities
         - `logic` congregates useful logic for defining game content
     - `color` deals with color value logic
+    - `context` houses all Context classes that define globally accessible values
     - `engine` provides an interface between the game logic and LibGDX
         - `animation` defines our animation system
         - `assets` loads all of our assets, including models and music

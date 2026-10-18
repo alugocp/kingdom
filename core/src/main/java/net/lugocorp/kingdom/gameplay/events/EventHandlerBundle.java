@@ -1,4 +1,5 @@
 package net.lugocorp.kingdom.gameplay.events;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.utils.SideEffect;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
             throw new RuntimeException(
                     String.format("Did not handle %s event for %s", e.channel, receiver.getStratifier()));
         }
-        if (!ctx.canHandle(e)) {
+        if (!e.canBeHandled(ctx)) {
             throw new RuntimeException(String.format("Cannot handle %s events under %s context", e.channel,
                     ctx.getClass().getSimpleName()));
         }

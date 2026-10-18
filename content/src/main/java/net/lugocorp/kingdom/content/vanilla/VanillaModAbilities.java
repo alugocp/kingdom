@@ -2,6 +2,8 @@ package net.lugocorp.kingdom.content.vanilla;
 import net.lugocorp.kingdom.builtin.Events;
 import net.lugocorp.kingdom.builtin.logic.AbilityLogic;
 import net.lugocorp.kingdom.content.Labels;
+import net.lugocorp.kingdom.context.BaseContext;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.Entity;
 import net.lugocorp.kingdom.game.model.Ability;
@@ -14,8 +16,6 @@ import net.lugocorp.kingdom.game.properties.EntityType;
 import net.lugocorp.kingdom.gameplay.combat.Damage;
 import net.lugocorp.kingdom.gameplay.events.AllEventHandlers;
 import net.lugocorp.kingdom.gameplay.events.Stratified;
-import net.lugocorp.kingdom.gameplay.events.contexts.CreationContext;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
@@ -41,7 +41,7 @@ class VanillaModAbilities {
     static void registerEvents(AllEventHandlers events) {
         // Absorb
         new Stratified<Ability>(events.ability, Labels.ability_absorb).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_drown, 0x318ec0, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Consumes all hauled items to restore 3 health"))
@@ -60,7 +60,7 @@ class VanillaModAbilities {
 
         // Acid Skin
         new Stratified<Ability>(events.ability, Labels.ability_acid_skin).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Adjacent attackers take 1 damage"))
@@ -77,7 +77,7 @@ class VanillaModAbilities {
 
         // Armor
         new Stratified<Ability>(events.ability, Labels.ability_armor).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
@@ -85,7 +85,7 @@ class VanillaModAbilities {
 
         // Arrow Shot
         new Stratified<Ability>(events.ability, Labels.ability_arrow_shot).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -93,7 +93,7 @@ class VanillaModAbilities {
 
         // Bite
         new Stratified<Ability>(events.ability, Labels.ability_bite).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bite);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 1));
@@ -101,7 +101,7 @@ class VanillaModAbilities {
         // Blessing of Nature's Hand
         new Stratified<Ability>(events.ability, Labels.ability_blessing_of_natures_hand)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_blessing_of_natures_hand);
                             return new SideEffect();
                         })
@@ -120,7 +120,7 @@ class VanillaModAbilities {
         // Blessing of the Plains
         new Stratified<Ability>(events.ability, Labels.ability_blessing_of_the_plains)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             // TODO add new icon
                             e.blob.setIcon(Labels.asset_apple);
                             return new SideEffect();
@@ -151,7 +151,7 @@ class VanillaModAbilities {
 
         // Chuck Gem
         new Stratified<Ability>(events.ability, Labels.ability_chuck_gem).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -175,7 +175,7 @@ class VanillaModAbilities {
         // Conservation of Energy
         new Stratified<Ability>(events.ability, Labels.ability_conservation_of_energy)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_regeneration, 0x00ff10, 0x00a9ff);
                             return new SideEffect();
                         })
@@ -197,7 +197,7 @@ class VanillaModAbilities {
         // Construct Healing Fountain
         new Stratified<Ability>(events.ability, Labels.ability_construct_healing_fountain)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_build_healing_fountain);
                             return new SideEffect();
                         })
@@ -206,7 +206,7 @@ class VanillaModAbilities {
         // Construct Marketplace
         new Stratified<Ability>(events.ability, Labels.ability_construct_marketplace)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_build_vault);
                             return new SideEffect();
                         })
@@ -214,7 +214,7 @@ class VanillaModAbilities {
 
         // Construct Wall
         new Stratified<Ability>(events.ability, Labels.ability_construct_wall).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -224,7 +224,7 @@ class VanillaModAbilities {
         // Collapse Structure
         new Stratified<Ability>(events.ability, Labels.ability_collapse_structure)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_collapse_mine);
                             return new SideEffect();
                         })
@@ -254,7 +254,7 @@ class VanillaModAbilities {
 
         // Collect Bounty
         new Stratified<Ability>(events.ability, Labels.ability_collect_bounty).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -270,7 +270,7 @@ class VanillaModAbilities {
 
         // Combat Loot
         new Stratified<Ability>(events.ability, Labels.ability_combat_loot).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_combat_loot);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 damage if this unit is hauling an item"))
@@ -283,7 +283,7 @@ class VanillaModAbilities {
 
         // Crystal Skin
         new Stratified<Ability>(events.ability, Labels.ability_crystal_skin).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x318ec0);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
@@ -291,7 +291,7 @@ class VanillaModAbilities {
 
         // Defensive Bloom
         new Stratified<Ability>(events.ability, Labels.ability_defensive_bloom).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("15% chance to generate a natural item when the unit is attacked"))
@@ -305,7 +305,7 @@ class VanillaModAbilities {
         // Defensive Stone Form
         new Stratified<Ability>(events.ability, Labels.ability_defensive_stone_form)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_defense_glyph);
                             return new SideEffect();
                         })
@@ -322,7 +322,7 @@ class VanillaModAbilities {
 
         // Deposit Seeds
         new Stratified<Ability>(events.ability, Labels.ability_deposit_seeds).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_deposit_seeds);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("10% chance to spawn a Meadow whenever this unit moves"))
@@ -337,7 +337,7 @@ class VanillaModAbilities {
 
         // Desert's Caress
         new Stratified<Ability>(events.ability, Labels.ability_deserts_caress).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -354,7 +354,7 @@ class VanillaModAbilities {
 
         // Construct Mine
         new Stratified<Ability>(events.ability, Labels.ability_construct_mine).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dig_mine);
                     return new SideEffect();
                 }).add(AbilityLogic.build(Labels.building_mine, "a rock tile",
@@ -362,7 +362,7 @@ class VanillaModAbilities {
 
         // Dungeon Delve
         new Stratified<Ability>(events.ability, Labels.ability_dungeon_delve).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dungeon_delve);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage and generates loot if targeting a tile with a building"))
@@ -377,7 +377,7 @@ class VanillaModAbilities {
 
         // Edible
         new Stratified<Ability>(events.ability, Labels.ability_edible).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_edible);
                     return new SideEffect();
                 })
@@ -387,7 +387,7 @@ class VanillaModAbilities {
 
         // Elusive
         new Stratified<Ability>(events.ability, Labels.ability_elusive).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -395,7 +395,7 @@ class VanillaModAbilities {
 
         // Entrenched
         new Stratified<Ability>(events.ability, Labels.ability_entrenched).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_local_defender);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense when on a building")).add(Events.TakeDamageEvent.class,
@@ -407,7 +407,7 @@ class VanillaModAbilities {
 
         // Erupt
         new Stratified<Ability>(events.ability, Labels.ability_erupt).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_erupt);
                     return new SideEffect();
                 })
@@ -452,7 +452,7 @@ class VanillaModAbilities {
 
         // Evasive
         new Stratified<Ability>(events.ability, Labels.ability_evasive).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -467,7 +467,7 @@ class VanillaModAbilities {
 
         // Fast
         new Stratified<Ability>(events.ability, Labels.ability_fast).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xff9525);
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
@@ -487,14 +487,14 @@ class VanillaModAbilities {
 
         // Fireball
         new Stratified<Ability>(events.ability, Labels.ability_fireball).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 3));
 
         // Fire Cannon
         new Stratified<Ability>(events.ability, Labels.ability_fire_cannon).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage to the target unit or 5 damage to the target building"))
@@ -507,7 +507,7 @@ class VanillaModAbilities {
 
         // Fire Laser
         new Stratified<Ability>(events.ability, Labels.ability_fire_laser).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_laser);
                     return new SideEffect();
                 })
@@ -544,7 +544,7 @@ class VanillaModAbilities {
         // Forage Passionfruit
         new Stratified<Ability>(events.ability, Labels.ability_forage_passionfruit)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             // TODO add new icon
                             e.blob.setIcon(Labels.asset_apple);
                             return new SideEffect();
@@ -554,7 +554,7 @@ class VanillaModAbilities {
 
         // Frenzy
         new Stratified<Ability>(events.ability, Labels.ability_frenzy).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -568,7 +568,7 @@ class VanillaModAbilities {
 
         // Ghastly Thrall
         new Stratified<Ability>(events.ability, Labels.ability_ghastly_thrall).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_raise_undead);
                     return new SideEffect();
                 })
@@ -603,7 +603,7 @@ class VanillaModAbilities {
 
         // Great Cycle
         new Stratified<Ability>(events.ability, Labels.ability_great_cycle).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_great_cycle);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Fully heals friendly adjacent units on death"))
@@ -626,7 +626,7 @@ class VanillaModAbilities {
 
         // Green Fortress
         new Stratified<Ability>(events.ability, Labels.ability_green_fortress).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_green_fortress);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense on Forests")).add(Events.TakeDamageEvent.class,
@@ -639,7 +639,7 @@ class VanillaModAbilities {
 
         // Harvest Batatas
         new Stratified<Ability>(events.ability, Labels.ability_harvest_batatas).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_batatas);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_batata, 3, "mines",
@@ -647,7 +647,7 @@ class VanillaModAbilities {
 
         // Harvest Cacao
         new Stratified<Ability>(events.ability, Labels.ability_harvest_cacao).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_cacao);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_cacao, 2, "forests",
@@ -655,7 +655,7 @@ class VanillaModAbilities {
 
         // Harvest Figs
         new Stratified<Ability>(events.ability, Labels.ability_harvest_figs).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_figs);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_fig, 2, "forests",
@@ -663,7 +663,7 @@ class VanillaModAbilities {
 
         // Harvest Mesquite
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mesquite).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mesquite);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_mesquite, 2, "oases",
@@ -671,7 +671,7 @@ class VanillaModAbilities {
 
         // Harvest Mushrooms
         new Stratified<Ability>(events.ability, Labels.ability_harvest_mushrooms).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom);
                     return new SideEffect();
                 })
@@ -682,7 +682,7 @@ class VanillaModAbilities {
 
         // Harvest Pumpkins
         new Stratified<Ability>(events.ability, Labels.ability_harvest_pumpkins).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_pumpkins);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_pumpkin, 2, "meadows",
@@ -690,7 +690,7 @@ class VanillaModAbilities {
 
         // Harvest Truffles
         new Stratified<Ability>(events.ability, Labels.ability_harvest_truffles).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_mushroom, 0xb16255, 0x57372c);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_truffle, 2, "forests",
@@ -698,7 +698,7 @@ class VanillaModAbilities {
 
         // Heal Wounds
         new Stratified<Ability>(events.ability, Labels.ability_heal_wounds).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_heal_wounds);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Heals 2 damage"))
@@ -707,7 +707,7 @@ class VanillaModAbilities {
 
         // Healing Water
         new Stratified<Ability>(events.ability, Labels.ability_healing_water).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_subterranean_potions, 0xba3521, 0x318ec0);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromTile(Labels.item_health_potion, 3, "water tiles",
@@ -715,7 +715,7 @@ class VanillaModAbilities {
 
         // High Vision
         new Stratified<Ability>(events.ability, Labels.ability_high_vision).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_night_vision, 0xa18f1e, 0xffffff);
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
@@ -737,7 +737,7 @@ class VanillaModAbilities {
 
         // Hug
         new Stratified<Ability>(events.ability, Labels.ability_hug).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hug);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Heals 1 hit point from the target adjacent unit"))
@@ -746,7 +746,7 @@ class VanillaModAbilities {
 
         // Hungry Frog Magic
         new Stratified<Ability>(events.ability, Labels.ability_hungry_frog_magic).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hungry_frog_magic);
                     return new SideEffect();
                 })
@@ -769,7 +769,7 @@ class VanillaModAbilities {
 
         // Hunt Fish
         new Stratified<Ability>(events.ability, Labels.ability_hunt_fish).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_hunt_fish);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromTile(Labels.item_fish, 3, "water tiles",
@@ -777,7 +777,7 @@ class VanillaModAbilities {
 
         // Hurl Rock
         new Stratified<Ability>(events.ability, Labels.ability_hurl_rock).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
@@ -792,7 +792,7 @@ class VanillaModAbilities {
 
         // Industrious
         new Stratified<Ability>(events.ability, Labels.ability_industrious).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -817,7 +817,7 @@ class VanillaModAbilities {
 
         // Investment
         new Stratified<Ability>(events.ability, Labels.ability_investment).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_economic_activity);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates 3 auction points on a marketplace"))
@@ -831,7 +831,7 @@ class VanillaModAbilities {
 
         // Keeping Watch
         new Stratified<Ability>(events.ability, Labels.ability_keeping_watch).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -846,7 +846,7 @@ class VanillaModAbilities {
 
         // Lava Bubble
         new Stratified<Ability>(events.ability, Labels.ability_lava_bubble).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_harvest_slime, 0x38a736, 0x994528);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage and burns the target")).add(Events.AbilityActivatedEvent.class,
@@ -866,7 +866,7 @@ class VanillaModAbilities {
 
         // Life Aura
         new Stratified<Ability>(events.ability, Labels.ability_life_aura).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_life_aura);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates 3 unit points per turn"))
@@ -879,7 +879,7 @@ class VanillaModAbilities {
 
         // Life Finds a Way
         new Stratified<Ability>(events.ability, Labels.ability_life_finds_a_way).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom, 0x417b80, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Generates 5 unit points when the unit is attacked"))
@@ -890,7 +890,7 @@ class VanillaModAbilities {
         // Liquifying Presence
         new Stratified<Ability>(events.ability, Labels.ability_liquifying_presence)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_liquifying_presence);
                             return new SideEffect();
                         })
@@ -907,7 +907,7 @@ class VanillaModAbilities {
 
         // Looter
         new Stratified<Ability>(events.ability, Labels.ability_looter).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -925,7 +925,7 @@ class VanillaModAbilities {
 
         // Macuahuitl
         new Stratified<Ability>(events.ability, Labels.ability_macuahuitl).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -945,7 +945,7 @@ class VanillaModAbilities {
 
         // Market Boom
         new Stratified<Ability>(events.ability, Labels.ability_market_boom).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_market_boom);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit generates 4 auction points whenever it attacks"))
@@ -954,7 +954,7 @@ class VanillaModAbilities {
 
         // Market Indicator
         new Stratified<Ability>(events.ability, Labels.ability_market_indicator).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_market_indicator);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit generates 3 auction points when adjacent to a marketplace"))
@@ -970,7 +970,7 @@ class VanillaModAbilities {
 
         // Medicinal Tuber
         new Stratified<Ability>(events.ability, Labels.ability_medicinal_tuber).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_spores);
                     return new SideEffect();
                 })
@@ -982,7 +982,7 @@ class VanillaModAbilities {
 
         // Mine Gems
         new Stratified<Ability>(events.ability, Labels.ability_mine_gems).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gems);
                     return new SideEffect();
                 })
@@ -992,7 +992,7 @@ class VanillaModAbilities {
 
         // Mine Gold
         new Stratified<Ability>(events.ability, Labels.ability_mine_gold).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gold);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestGoldFromBuilding(5, 2, "mines",
@@ -1000,7 +1000,7 @@ class VanillaModAbilities {
 
         // Mining Stone Form
         new Stratified<Ability>(events.ability, Labels.ability_mining_stone_form).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mining_glyph);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit cannot move when in stone form but it harvests twice as many gems"))
@@ -1023,21 +1023,21 @@ class VanillaModAbilities {
 
         // Mountain Strider
         new Stratified<Ability>(events.ability, Labels.ability_mountain_strider).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mountain_strider);
                     return new SideEffect();
                 }).add(AbilityLogic.traverse(Labels.building_mountain));
 
         // Necrotic Blast
         new Stratified<Ability>(events.ability, Labels.ability_necrotic_blast).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fireball, 0xdbc626, 0x53cb51);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(3), 3));
 
         // Night Vision
         new Stratified<Ability>(events.ability, Labels.ability_night_vision).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_night_vision);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit does not lose vision at night"))
@@ -1048,14 +1048,14 @@ class VanillaModAbilities {
 
         // Pebble Shot
         new Stratified<Ability>(events.ability, Labels.ability_pebble_shot).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_fire_cannon);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(1), 3));
 
         // Pick Apples
         new Stratified<Ability>(events.ability, Labels.ability_pick_apples).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_pick_apples);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestFromBuilding(Labels.item_apple, 2, "forests",
@@ -1063,7 +1063,7 @@ class VanillaModAbilities {
 
         // Pick Nopales
         new Stratified<Ability>(events.ability, Labels.ability_pick_nopales).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1072,7 +1072,7 @@ class VanillaModAbilities {
 
         // Pick Walnuts
         new Stratified<Ability>(events.ability, Labels.ability_pick_walnuts).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1081,7 +1081,7 @@ class VanillaModAbilities {
 
         // Pious
         new Stratified<Ability>(events.ability, Labels.ability_pious).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_worship_glyph);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit generates +1 favor with nearby patrons"))
@@ -1093,7 +1093,7 @@ class VanillaModAbilities {
 
         // Plant Cushion
         new Stratified<Ability>(events.ability, Labels.ability_plant_cushion).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defensive_blossom, 0xe858d4, 0x38a736);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense if the unit is hauling a natural item"))
@@ -1104,7 +1104,7 @@ class VanillaModAbilities {
 
         // Plant Forest
         new Stratified<Ability>(events.ability, Labels.ability_plant_forest).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_forest);
                     return new SideEffect();
                 }).add(AbilityLogic.build(Labels.building_forest, "a grass tile",
@@ -1112,7 +1112,7 @@ class VanillaModAbilities {
 
         // Plant Meadow
         new Stratified<Ability>(events.ability, Labels.ability_plant_meadow).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_plant_meadow);
                     return new SideEffect();
                 }).add(AbilityLogic.build(Labels.building_meadow, "a grass tile",
@@ -1120,7 +1120,7 @@ class VanillaModAbilities {
 
         // Plant Shrubland
         new Stratified<Ability>(events.ability, Labels.ability_plant_shrubland).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1129,7 +1129,7 @@ class VanillaModAbilities {
 
         // Power of Nature
         new Stratified<Ability>(events.ability, Labels.ability_power_of_nature).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_pick_flowers);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Consumes a natural item to deal 3 damage to the adjacent target"))
@@ -1149,7 +1149,7 @@ class VanillaModAbilities {
 
         // Protective Spores
         new Stratified<Ability>(events.ability, Labels.ability_protective_spores).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_spores);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Grants the target +2 defense for the next 2 turns"))
@@ -1171,7 +1171,7 @@ class VanillaModAbilities {
 
         // Raid Mine
         new Stratified<Ability>(events.ability, Labels.ability_raid_mine).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_dungeon_delve);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 4 damage to the target Mine and generates gold"))
@@ -1204,7 +1204,7 @@ class VanillaModAbilities {
 
         // Raise Undead
         new Stratified<Ability>(events.ability, Labels.ability_raise_undead).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_raise_undead);
                     return new SideEffect();
                 })
@@ -1246,7 +1246,7 @@ class VanillaModAbilities {
 
         // Rallying Cry
         new Stratified<Ability>(events.ability, Labels.ability_rallying_cry).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_bloodlust);
                     return new SideEffect();
                 })
@@ -1268,7 +1268,7 @@ class VanillaModAbilities {
 
         // Regeneration
         new Stratified<Ability>(events.ability, Labels.ability_regeneration).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_regeneration);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit heals 1 hit point each turn"))
@@ -1280,7 +1280,7 @@ class VanillaModAbilities {
 
         // Reincarnation
         new Stratified<Ability>(events.ability, Labels.ability_reincarnation).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1295,7 +1295,7 @@ class VanillaModAbilities {
 
         // Repair Structure
         new Stratified<Ability>(events.ability, Labels.ability_repair_structure).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1312,7 +1312,7 @@ class VanillaModAbilities {
 
         // Repel Invaders
         new Stratified<Ability>(events.ability, Labels.ability_repel_invaders).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO ad new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1330,7 +1330,7 @@ class VanillaModAbilities {
         // Revenge of the Forest
         new Stratified<Ability>(events.ability, Labels.ability_revenge_of_the_forest)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_sword_slash, 0xffffff, 0x00ff00);
                             return new SideEffect();
                         })
@@ -1346,7 +1346,7 @@ class VanillaModAbilities {
 
         // Rock Appetite
         new Stratified<Ability>(events.ability, Labels.ability_rock_appetite).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_crystal);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit can only eat gem items")).add(Events.CanEatItemEvent.class,
@@ -1357,7 +1357,7 @@ class VanillaModAbilities {
 
         // Self Sacrifice
         new Stratified<Ability>(events.ability, Labels.ability_self_sacrifice).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_self_sacrifice);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit transfers all their health but 1 to the target unit"))
@@ -1370,7 +1370,7 @@ class VanillaModAbilities {
 
         // Scalding Skin
         new Stratified<Ability>(events.ability, Labels.ability_scalding_skin).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0xba3521);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Adjacent attackers take 1 damage"))
@@ -1387,14 +1387,14 @@ class VanillaModAbilities {
 
         // Scratch
         new Stratified<Ability>(events.ability, Labels.ability_scratch).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_self_sacrifice);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(1), 1));
 
         // Shell Defense
         new Stratified<Ability>(events.ability, Labels.ability_shell_defense).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
@@ -1402,7 +1402,7 @@ class VanillaModAbilities {
 
         // Shield Bash
         new Stratified<Ability>(events.ability, Labels.ability_shield_bash).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_shield_bash);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage with a 25% chance to stun (1 turn cooldown)"))
@@ -1420,7 +1420,7 @@ class VanillaModAbilities {
 
         // Shield Totem
         new Stratified<Ability>(events.ability, Labels.ability_shield_totem).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1428,7 +1428,7 @@ class VanillaModAbilities {
 
         // Shove
         new Stratified<Ability>(events.ability, Labels.ability_shove).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1452,14 +1452,14 @@ class VanillaModAbilities {
 
         // Slime Shot
         new Stratified<Ability>(events.ability, Labels.ability_slime_shot).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_slime_shot);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 3));
 
         // Slow
         new Stratified<Ability>(events.ability, Labels.ability_slow).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_running_through_nature, 0x246719, 0xffd9b1);
                     return new SideEffect();
                 }).add(Events.GetDescriptionEvent.class,
@@ -1479,7 +1479,7 @@ class VanillaModAbilities {
 
         // Smash
         new Stratified<Ability>(events.ability, Labels.ability_smash).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_smash);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 3 damage with a 15% chance to stun"))
@@ -1494,7 +1494,7 @@ class VanillaModAbilities {
 
         // Soothing Aura
         new Stratified<Ability>(events.ability, Labels.ability_soothing_aura).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1516,7 +1516,7 @@ class VanillaModAbilities {
 
         // Stipend
         new Stratified<Ability>(events.ability, Labels.ability_stipend).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1525,7 +1525,7 @@ class VanillaModAbilities {
 
         // Stomp
         new Stratified<Ability>(events.ability, Labels.ability_stomp).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stomp);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage with a 15% chance to stun"))
@@ -1540,7 +1540,7 @@ class VanillaModAbilities {
 
         // Stone Defense
         new Stratified<Ability>(events.ability, Labels.ability_stone_defense).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_defense);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("+2 defense")).add(Events.TakeDamageEvent.class, (GameViewContext ctx,
@@ -1548,7 +1548,7 @@ class VanillaModAbilities {
 
         // Stone Form
         new Stratified<Ability>(events.ability, Labels.ability_stone_form).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_acid_skin, 0x34a33b, 0x828282);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit enters Stone Form at night or on rock tiles"))
@@ -1566,7 +1566,7 @@ class VanillaModAbilities {
         // Subterranean Potions
         new Stratified<Ability>(events.ability, Labels.ability_subterranean_potions)
                 .add(Events.GenerateAbilityEvent.class,
-                        (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                        (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                             e.blob.setIcon(Labels.asset_subterranean_potions);
                             return new SideEffect();
                         })
@@ -1575,7 +1575,7 @@ class VanillaModAbilities {
 
         // Sucker Punch
         new Stratified<Ability>(events.ability, Labels.ability_sucker_punch).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1591,7 +1591,7 @@ class VanillaModAbilities {
 
         // Surprise Attack
         new Stratified<Ability>(events.ability, Labels.ability_surprise_attack).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1620,7 +1620,7 @@ class VanillaModAbilities {
 
         // Swim
         new Stratified<Ability>(events.ability, Labels.ability_swim).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_swim);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit can traverse water tiles")).add(Events.CanUnitMoveEvent.class,
@@ -1633,14 +1633,14 @@ class VanillaModAbilities {
 
         // Swing Axe
         new Stratified<Ability>(events.ability, Labels.ability_swing_axe).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_axe_swing);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(3), 1));
 
         // Swing Pickaxe
         new Stratified<Ability>(events.ability, Labels.ability_swing_pickaxe).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_mine_gold, 0xbed129, 0x802412);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("Deals 2 damage (or 4 damage if the target has a gem in their inventory)"))
@@ -1652,7 +1652,7 @@ class VanillaModAbilities {
 
         // Swing Staff
         new Stratified<Ability>(events.ability, Labels.ability_swing_staff).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     // TODO add new icon
                     e.blob.setIcon(Labels.asset_apple);
                     return new SideEffect();
@@ -1660,14 +1660,14 @@ class VanillaModAbilities {
 
         // Sword Slash
         new Stratified<Ability>(events.ability, Labels.ability_sword_slash).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_sword_slash);
                     return new SideEffect();
                 }).add(AbilityLogic.attack(new Damage(2), 1));
 
         // Total Appetite
         new Stratified<Ability>(events.ability, Labels.ability_total_appetite).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_stomach);
                     return new SideEffect();
                 }).add(AbilityLogic.desc("This unit can eat any item")).add(Events.CanEatItemEvent.class,
@@ -1678,7 +1678,7 @@ class VanillaModAbilities {
 
         // Trade
         new Stratified<Ability>(events.ability, Labels.ability_trade).add(Events.GenerateAbilityEvent.class,
-                (CreationContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
+                (BaseContext ctx, Ability receiver, Events.GenerateAbilityEvent e) -> {
                     e.blob.setIcon(Labels.asset_trade);
                     return new SideEffect();
                 }).add(AbilityLogic.harvestGoldFromBuilding(10, 2, "marketplaces",

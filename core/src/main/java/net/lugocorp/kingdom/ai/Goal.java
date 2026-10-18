@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.ai;
+import net.lugocorp.kingdom.context.GameViewContext;
 import net.lugocorp.kingdom.game.player.CompPlayer;
-import net.lugocorp.kingdom.gameplay.events.contexts.GameViewContext;
 
 /**
  * A Goal is an abstract effort that the CompPlayers strive towards

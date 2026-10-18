@@ -1,8 +1,8 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.game.properties.Rarity;
 import net.lugocorp.kingdom.game.properties.Tags;
-import net.lugocorp.kingdom.gameplay.events.Context;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventReceiver;
 import net.lugocorp.kingdom.ui.views.GameView;
