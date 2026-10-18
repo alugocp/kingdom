@@ -24,7 +24,7 @@ public abstract class BaseDeserializer<V extends Serial<Game>> {
     /**
      * Extracts a Serial<Game> from the given File
      */
-    protected abstract V getGameSerial(File file);
+    protected abstract V getGameSerial(File file) throws Exception;
 
     /**
      * Attempts to deserialize the given File under this version of the Deserializer

@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.serial;
 import net.lugocorp.kingdom.game.Game;
+import net.lugocorp.kingdom.serial.kryo.SaveFileHandler;
 import net.lugocorp.kingdom.serial.v0d0d0.GameSerial;
 import net.lugocorp.kingdom.serial.v0d0d0.V0d0d0Deserializer;
 import net.lugocorp.kingdom.utils.Files;
@@ -67,7 +68,7 @@ public class SaveLoad {
         final File file = Files.getFile(filename).file();
         try {
             final GameSerial serial = game.serialize();
-            // TODO serial write to output file
+            SaveFileHandler.writeToFile(file, serial);
         } catch (Exception e) {
             e.printStackTrace();
             if (file.exists()) {

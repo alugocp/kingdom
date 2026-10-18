@@ -57,7 +57,7 @@ public class Game implements Serializable<GameSerial> {
     /** {@inheritdoc} */
     public GameSerial serialize() {
         // TODO serial
-        return null;
+        return new GameSerial();
     }
 
     /**

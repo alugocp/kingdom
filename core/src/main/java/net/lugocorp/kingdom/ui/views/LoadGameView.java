@@ -26,15 +26,17 @@ import java.util.Optional;
 class LoadGameView implements View {
     private final Background background;
     private final ListNode content = new ListNode();
+    private final TextNode status;
     private final Menu menu;
 
     LoadGameView() {
         final AudioVideo av = Context.getContext().av;
         this.background = new Background(av);
+        this.status = new TextNode(av, "Loading...");
         this.menu = new Menu((Coords.SIZE.x / 2) - 300, 0, 600, false, new ListNode()
                 .add(new ButtonNode(av, "Back", () -> Context.getContext().navigate.accept(new StartMenuView())))
-                .add(new HeaderNode(av, "Load Games")).add(new SpacerNode())
-                .add(this.content.add(new TextNode(av, "Loading...")))).noBackground();
+                .add(new HeaderNode(av, "Load Games")).add(new SpacerNode()).add(this.status).add(this.content))
+                .noBackground();
     }
 
     /** {@inheritdoc} */
@@ -47,20 +49,21 @@ class LoadGameView implements View {
 
         // Loads the saved games
         List<Path> savedGames = ctx.serial.getSavedGames();
-        this.content.clear();
+        this.status.setText("");
         if (savedGames.size() == 0) {
             this.content.add(new TextNode(ctx.av, "No saved games"));
         }
         for (Path savedGame : savedGames) {
-            this.content.add(new RowNode().add(new TextNode(ctx.av, savedGame.getFileName().toString()))
-                    .add(new ButtonNode(ctx.av, "Choose", () -> {
+            final String filename = savedGame.getFileName().toString();
+            this.content
+                    .add(new RowNode().add(new TextNode(ctx.av, filename)).add(new ButtonNode(ctx.av, "Choose", () -> {
                         final Optional<Game> game = ctx.serial.loadGame(savedGame);
                         if (game.isPresent()) {
                             final GameView view = new GameView(game.get());
                             Context.setContext(new GameViewContext(ctx, view));
                             ctx.navigate.accept(view);
                         } else {
-                            // TODO serial give some error message to the player
+                            this.status.setText(String.format("Could not load game %s", filename));
                         }
                     })));
         }
