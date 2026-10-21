@@ -1,7 +1,9 @@
 package net.lugocorp.kingdom.game.model;
 import net.lugocorp.kingdom.builtin.Events;
+import net.lugocorp.kingdom.color.ColorScheme;
 import net.lugocorp.kingdom.color.Colors;
 import net.lugocorp.kingdom.context.Context;
+import net.lugocorp.kingdom.engine.fonts.FontParam;
 import net.lugocorp.kingdom.engine.render.DynamicModellable;
 import net.lugocorp.kingdom.engine.userdata.TileUserData;
 import net.lugocorp.kingdom.game.layers.Entity;
@@ -25,6 +27,7 @@ import net.lugocorp.kingdom.menu.text.TextNode;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import java.util.HashSet;
@@ -297,6 +300,16 @@ public class Tile extends DynamicModellable implements EventReceiver, MenuSubjec
         if (this.getLeader().isPresent()) {
             tileNodes.add(new PlayerBadgeNode(view.av, this.getLeader().get()));
         }
+        tileNodes.add(new TextNode(view.av,
+                this.building.isPresent()
+                        ? "Tiles with buildings do not yield unit points"
+                        : "This tile yields unit points each turn") {
+            /** {@inheritdoc} */
+            @Override
+            protected BitmapFont getFont() {
+                return this.av.fonts.getFont(new FontParam().setColor(ColorScheme.GOLD.color));
+            }
+        });
         tileNodes.add(new TextNode(view.av, this.desc));
 
         // Determine whether we add the MenuNodes to the ListNode directly or to a
