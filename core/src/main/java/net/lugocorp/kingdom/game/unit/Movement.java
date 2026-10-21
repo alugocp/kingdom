@@ -13,8 +13,8 @@ import net.lugocorp.kingdom.math.HexSide;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
-import net.lugocorp.kingdom.utils.Wrapped;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,23 +68,14 @@ public class Movement {
         }
 
         // Calculate distance with speed cost in mind
-        int overallDistance = 0;
-        final Wrapped<Integer> costSpent = new Wrapped<>(0);
-        for (int a = 0; a < maxCost; a++) {
-            costSpent.set(costSpent.get() + this.getSpeedCost(view, view.game.world.getTile(path.get(a)).get()));
-            if (maxCost - costSpent.get() >= 0
-                    || (maxCost == Math.min(path.size(), maxMovementSpeed) && overallDistance == 0)) {
-                overallDistance++;
-            }
-        }
-        if (overallDistance < 1) {
+        final MovementCost cost = this.getMovementCosts(view, path, 1).get(0);
+        if (cost.distance < 1) {
             return effects;
         }
 
         // Make sure we can still take this path
-        final int distance = overallDistance;
         if (!this.skipPreCheck) {
-            for (int a = 0; a < distance; a++) {
+            for (int a = 0; a < cost.distance; a++) {
                 if (!this.canMoveToPoint(view, path.get(a))) {
                     return effects;
                 }
@@ -92,20 +83,20 @@ public class Movement {
         }
 
         // Do the actual movements
-        final List<Point> previous = this.getPreviousPath(path, distance);
-        final Events.UnitMovedEvent before = new Events.UnitMovedEvent(this.unit, path.get(distance - 1), previous,
+        final List<Point> previous = this.getPreviousPath(path, cost.distance);
+        final Events.UnitMovedEvent before = new Events.UnitMovedEvent(this.unit, path.get(cost.distance - 1), previous,
                 parallel);
-        final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(distance - 1), previous,
-                parallel);
+        final Events.UnitMovedEvent after = new Events.AfterUnitMovedEvent(this.unit, path.get(cost.distance - 1),
+                previous, parallel);
         effects.add(this.unit.handleEvent(before));
         effects.add(() -> {
             final Point start = this.unit.getPoint();
             final boolean wasOnUnit = view.hud.bot.tileMenu.get().equals(start);
             final AnimationChain chain = new AnimationChain();
             Point prev = start;
-            for (int a = 0; a < distance; a++) {
+            for (int a = 0; a < cost.distance; a++) {
                 final Point dest = path.get(a);
-                final boolean isLast = a == distance - 1;
+                final boolean isLast = a == cost.distance - 1;
                 final Optional<HexSide> direction = Hexagons.getDirection(prev, dest);
                 if (!direction.isPresent()) {
                     throw new RuntimeException("Should not be here - cannot find vision offset direction");
@@ -141,9 +132,37 @@ public class Movement {
                 view.animations.add(chain.get());
             }
             view.game.actions.unitHasActed(view, this.unit,
-                    new MoveAction(view, this.unit, path, distance, costSpent.get()));
+                    new MoveAction(view, this.unit, path, cost.distance, cost.cost));
         });
         return effects;
+    }
+
+    /**
+     * Calculates how far the Unit can move each turn (given dynamic movement cost)
+     */
+    private List<MovementCost> getMovementCosts(GameView view, List<Point> path, int maxSize) {
+        final List<MovementCost> costs = new ArrayList<>();
+        final int maxMovementSpeed = this.getMaxDistance(view);
+        int index = 0;
+        while (index < path.size() && (maxSize < 0 || costs.size() < maxSize)) {
+            final int maxCost = Math.min(path.size() - index,
+                    costs.size() == 0 ? view.game.actions.getRemainingMoveDistance(view, this.unit) : maxMovementSpeed);
+            final MovementCost cost = new MovementCost();
+            for (int a = 0; a < maxCost; a++) {
+                final int nextCost = cost.cost
+                        + this.getSpeedCost(view, view.game.world.getTile(path.get(index)).get());
+                if (maxCost - nextCost >= 0
+                        || (maxCost == Math.min(path.size() - index, maxMovementSpeed) && cost.distance == 0)) {
+                    cost.cost = nextCost;
+                    cost.distance++;
+                    index++;
+                } else {
+                    break;
+                }
+            }
+            costs.add(cost);
+        }
+        return costs;
     }
 
     /**
@@ -205,28 +224,7 @@ public class Movement {
      * given path
      */
     public List<Integer> getSubpathLengths(GameView view, List<Point> path) {
-        final List<Integer> lengths = new ArrayList<>();
-        final int remaining = view.game.actions.getRemainingMoveDistance(view, this.unit);
-        final int max = this.getMaxDistance(view);
-        int points = remaining;
-        int distance = 0;
-        for (int a = 0; a < path.size(); a++) {
-            final Tile t = view.game.world.getTile(path.get(a)).get();
-            final int cost = this.getSpeedCost(view, t);
-            if (cost <= points || distance == 0) {
-                points -= cost;
-                distance++;
-            } else if (cost > points) {
-                points -= cost;
-                a--;
-            }
-            if (points <= 0 || a == path.size() - 1) {
-                lengths.add(distance);
-                distance = 0;
-                points = max;
-            }
-        }
-        return lengths;
+        return Lambda.map((MovementCost cost) -> cost.distance, this.getMovementCosts(view, path, -1));
     }
 
     /**
