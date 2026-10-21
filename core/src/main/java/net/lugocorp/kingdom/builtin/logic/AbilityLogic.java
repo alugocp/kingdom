@@ -94,6 +94,8 @@ public class AbilityLogic {
             final Damage dmg = getDamage.apply(t);
             final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
             attacker.handleEvent(new Events.AttackEvent(attacker, target, dmg));
+            target.handleEvent(new Events.AttackedEvent(target, attacker, dmg));
+            target.handleEvent(new Events.TakeDamageEvent(target, dmg));
             return Optional.of(new LabelOverlay(t.getPoint(),
                     new Vector3(0f, ctx.view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
                     dmg.toString()));
@@ -147,6 +149,8 @@ public class AbilityLogic {
             final Damage dmgLabel = new Damage(dmg);
             final Entity target = (t.unit.isPresent() ? t.unit : t.building).get();
             attacker.handleEvent(new Events.AttackEvent(attacker, target, dmgLabel));
+            target.handleEvent(new Events.AttackedEvent(target, attacker, dmgLabel));
+            target.handleEvent(new Events.TakeDamageEvent(target, dmgLabel));
             return Optional.of(new LabelOverlay(t.getPoint(),
                     new Vector3(0f, ctx.view.av.loaders.models.getModelHeight(target.getModelName()), 0f), 0xff0000,
                     dmgLabel.toString()));
