@@ -133,7 +133,7 @@ public class AbilityLogic {
         // Use overridden method from Player to determine how targets are selected
         return attacker.getLeader().get().select(ctx.view, points, "No attack targets are in range", (Point p) -> {
             final SideEffect effects = new SideEffect();
-            if (!targets.containsKey(p)) {
+            if (targets.containsKey(p)) {
                 effects.add(attacker.combat.attack(ctx, targets.get(p), dmg))
                         .add(effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(new SideEffect()))
                         .add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view, attacker));
