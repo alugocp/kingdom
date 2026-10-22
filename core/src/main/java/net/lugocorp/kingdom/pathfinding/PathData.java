@@ -1,6 +1,7 @@
 package net.lugocorp.kingdom.pathfinding;
 import net.lugocorp.kingdom.math.Coords;
 import net.lugocorp.kingdom.math.Point;
+import net.lugocorp.kingdom.utils.Chooser;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,16 +76,12 @@ class PathData {
      * Returns the next Point we should iterate on in the A* algorithm
      */
     final Point getLikelyClosestPoint() {
-        int thresh = Pathfinder.INFINITY;
-        Point lowest = null;
+        final Chooser<Point> chooser = new Chooser<>((Integer old, Integer next) -> next < old);
         for (Point p : this.openSet) {
             final int score = this.gScore.getOrDefault(p, Pathfinder.INFINITY);
-            if (score < thresh) {
-                thresh = score;
-                lowest = p;
-            }
+            chooser.choice(p, score);
         }
-        return lowest;
+        return chooser.get();
     }
 
     /**
@@ -92,16 +89,12 @@ class PathData {
      */
     final Point getBestKickoffPoint(Point dest) {
         final Vector3 v = Coords.grid.vector(dest.x, dest.y);
-        int d = Pathfinder.INFINITY;
-        Point best = null;
+        final Chooser<Point> chooser = new Chooser<>((Integer old, Integer next) -> next < old);
         for (Point p : this.gScore.keySet()) {
             final Vector3 v1 = Coords.grid.vector(p.x, p.y);
             final int d1 = (int) Math.sqrt(Math.pow(v.x - v1.x, 2) + Math.pow(v.z - v1.z, 2));
-            if (d1 < d) {
-                best = p;
-                d = d1;
-            }
+            chooser.choice(p, d1);
         }
-        return best;
+        return chooser.get();
     }
 }

@@ -133,7 +133,7 @@ public class AbilityLogic {
         // Use overridden method from Player to determine how targets are selected
         return attacker.getLeader().get().select(ctx.view, points, "No attack targets are in range", (Point p) -> {
             final SideEffect effects = new SideEffect();
-            if (targets.get(p) != null) {
+            if (!targets.containsKey(p)) {
                 effects.add(attacker.combat.attack(ctx, targets.get(p), dmg))
                         .add(effect.map((Function<Point, SideEffect> f) -> f.apply(p)).orElse(new SideEffect()))
                         .add(() -> ctx.view.game.actions.unitHasCastSpell(ctx.view, attacker));
@@ -174,23 +174,23 @@ public class AbilityLogic {
     /**
      * Private helper method for common heal abilities
      */
-    private static SideEffect heal(GameView view, Unit healer, Function<Point, Integer> getHitPoints,
-            Function<Tile, Entity> getEntity) {
-        Map<Point, Entity> targets = new HashMap<>();
+    private static <E extends Entity> SideEffect heal(GameView view, Unit healer, Function<Point, Integer> getHitPoints,
+            Function<Tile, Optional<E>> getEntity) {
+        Map<Point, E> targets = new HashMap<>();
         Set<Point> points = new HashSet<>();
 
         // Grab every possible heal target within range
         Set<Point> unfiltered = Hexagons.getNeighbors(healer.getPoint(), 1);
         for (Point p : unfiltered) {
-            Optional<Tile> t = view.game.world.getTile(p);
+            final Optional<Tile> t = view.game.world.getTile(p);
             if (!t.isPresent()) {
                 continue;
             }
-            Entity entity = getEntity.apply(t.get());
-            if (entity != null) {
-                targets.put(p, entity);
+            final Optional<E> entity = getEntity.apply(t.get());
+            entity.ifPresent((E e) -> {
+                targets.put(p, e);
                 points.add(p);
-            }
+            });
         }
 
         // Have the Player select which target to heal
@@ -215,7 +215,7 @@ public class AbilityLogic {
      * Ability that heals a Unit
      */
     public static SideEffect healUnit(GameView view, Unit healer, int hitPoints) {
-        return AbilityLogic.heal(view, healer, (Point p) -> hitPoints, (Tile t) -> t.unit.orElse(null));
+        return AbilityLogic.heal(view, healer, (Point p) -> hitPoints, (Tile t) -> t.unit);
     }
 
     /**
@@ -223,8 +223,7 @@ public class AbilityLogic {
      */
     public static SideEffect healUnit(GameView view, Unit healer, Function<Unit, Integer> getHitPoints) {
         return AbilityLogic.heal(view, healer,
-                (Point p) -> getHitPoints.apply(view.game.world.getTile(p).get().unit.get()),
-                (Tile t) -> t.unit.orElse(null));
+                (Point p) -> getHitPoints.apply(view.game.world.getTile(p).get().unit.get()), (Tile t) -> t.unit);
     }
 
     /**
@@ -236,10 +235,10 @@ public class AbilityLogic {
             if (t.building.isPresent()) {
                 Building b = t.building.get();
                 if (criteria.apply(b)) {
-                    return b;
+                    return Optional.of(b);
                 }
             }
-            return null;
+            return Optional.empty();
         });
     }
 

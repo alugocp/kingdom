@@ -51,7 +51,7 @@ class GameCreationView implements View {
     private final Menu fateSelection;
     private final Menu playerSelection;
     private final GameView view;
-    private MenuController menuController = null;
+    private Optional<MenuController> menuController = Optional.empty();
     private Menu menu;
 
     GameCreationView() {
@@ -96,7 +96,7 @@ class GameCreationView implements View {
      */
     private void setMenu(Menu menu) {
         this.menu = menu;
-        this.menuController.reset();
+        this.menuController.ifPresent((MenuController controller) -> controller.reset());
     }
 
     /**
@@ -116,9 +116,10 @@ class GameCreationView implements View {
     /** {@inheritdoc} */
     @Override
     public void start() {
-        this.menuController = new MenuController(this.view.av.settings, () -> Optional.of(this.menu));
-        Gdx.input.setInputProcessor(menuController);
-        this.menuController.reset();
+        final MenuController controller = new MenuController(this.view.av.settings, () -> Optional.of(this.menu));
+        this.menuController = Optional.of(controller);
+        Gdx.input.setInputProcessor(controller);
+        controller.reset();
     }
 
     /** {@inheritdoc} */

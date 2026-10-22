@@ -1,5 +1,6 @@
 package net.lugocorp.kingdom.menu;
 import net.lugocorp.kingdom.color.ColorScheme;
+import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.engine.AudioVideo;
 import net.lugocorp.kingdom.engine.projection.ViewportLogic;
 import net.lugocorp.kingdom.engine.render.Drawable;
@@ -18,13 +19,13 @@ public class Menu {
     private static final int MINI_MENU_WIDTH = 250;
     private static final int SCROLLBAR = 15;
     public static final int TEXTURE_SIDE = 1000;
+    private final Drawable background;
     private final boolean tall;
     private Optional<Menu> submenu = Optional.empty();
     private Optional<Point> prev = Optional.empty();
     private Optional<Point> curr = Optional.empty();
     private Optional<Menu> mini = Optional.empty();
     private boolean scrollBarHighlighted = false;
-    private Drawable background = null; // TODO make final and add av to Menu constructor
     private boolean renderBackground = true;
     private boolean outlined = false;
     private int margin = 15;
@@ -35,6 +36,7 @@ public class Menu {
     protected MenuNode root;
 
     public Menu(int x, int y, int width, boolean tall, MenuNode root) {
+        this.background = new Drawable(Context.getContext().av.loaders.sprites, "menu");
         this.width = width;
         this.root = root;
         this.tall = tall;
@@ -245,9 +247,6 @@ public class Menu {
     public void draw(AudioVideo av) {
         final int h = this.getHeight();
         final Rect bg = Coords.screen.flip(this.x, this.y, this.width, h);
-        if (this.background == null) {
-            this.background = new Drawable(av.loaders.sprites, "menu");
-        }
 
         // Draw Menu content
         final int[] s1 = ViewportLogic.project(bg.x, bg.y, true);

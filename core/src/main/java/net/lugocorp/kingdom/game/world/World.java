@@ -18,7 +18,7 @@ import java.util.Optional;
 public class World implements Iterable<Tile> {
     // TODO serial
     private final List<List<Tile>> grid = new ArrayList<List<Tile>>();
-    private WorldGenOptions options = null;
+    private WorldGenOptions options = new WorldGenOptions(0);
 
     public void init(WorldGenOptions options) {
         this.options = options;
