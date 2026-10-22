@@ -19,7 +19,7 @@ import java.util.Queue;
  */
 public class Tutorial extends Menu {
     private static final Rect OFFSCREEN = new Rect(-1, -1, 0, 0);
-    private static final int MARGIN = 10;
+    private static final int MARGIN = 30;
     private final Queue<TutorialPopup> popups = new LinkedList<>();
     private final GameView view;
 
