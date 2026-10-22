@@ -17,6 +17,7 @@ import java.util.Optional;
  * Artifacts are global buffs that Players can bid on
  */
 public class Artifact implements EventReceiver, MenuSubject {
+    // TODO serial
     private Optional<Player> owner = Optional.empty();
     public final String name;
     public Optional<String> image = Optional.empty();

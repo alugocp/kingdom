@@ -17,6 +17,7 @@ import java.util.Set;
  * Contains all logic for a Unit's Action(s) taken each turn
  */
 public class ActionManager {
+    // TODO serial
     private final Map<Unit, ActionOverlay> overlays = new HashMap<>();
     private final Map<Unit, Action> actions = new HashMap<>();
 

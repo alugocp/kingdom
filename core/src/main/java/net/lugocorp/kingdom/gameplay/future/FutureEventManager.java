@@ -16,6 +16,7 @@ import java.util.Optional;
  * This class stores and processes future Events
  */
 public class FutureEventManager {
+    // TODO serial
     private final Map<Integer, BatchCounter<FutureTick>> futures = new HashMap<>();
     private final Game game;
 

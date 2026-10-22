@@ -57,6 +57,7 @@ import java.util.Set;
  * in-game
  */
 public class Unit extends Entity implements MenuSubject, Spawnable, IndependentGovernable {
+    // TODO serial
     private final CoordUserData userData = new CoordUserData(() -> false);
     public final Adjacency nextTo = new Adjacency(this);
     public final Sleep sleep = new Sleep(this);

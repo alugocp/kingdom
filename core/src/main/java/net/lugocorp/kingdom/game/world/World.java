@@ -16,6 +16,7 @@ import java.util.Optional;
  * Properties and logic for the physical game map
  */
 public class World implements Iterable<Tile> {
+    // TODO serial
     private final List<List<Tile>> grid = new ArrayList<List<Tile>>();
     private WorldGenOptions options = null;
 

@@ -12,6 +12,7 @@ import java.util.Optional;
  * Towers control influence over the map
  */
 public class Tower extends Building implements IndependentGovernable {
+    // TODO serial
     public static final int GOLD_COST = 10;
     private Optional<Player> leader = Optional.empty();
     public final Domain domain = new Domain();

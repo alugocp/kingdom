@@ -28,6 +28,7 @@ import java.util.function.Function;
  * This Player is operated by an Actor (entry point to the AI system)
  */
 public class CompPlayer extends Player {
+    // TODO serial
     public final Actor actor = new Actor();
     public MemoryMap memory = null;
 

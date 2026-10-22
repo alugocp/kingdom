@@ -14,6 +14,7 @@ import java.util.Optional;
  * An in-game pickup to be used by Units
  */
 public class Item implements EventReceiver {
+    // TODO serial
     private Optional<Matrix4> recolor = Optional.empty();
     public final Tags tags = new Tags();
     public final String name;

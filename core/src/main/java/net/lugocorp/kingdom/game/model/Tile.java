@@ -39,6 +39,7 @@ import java.util.Set;
  * properties
  */
 public class Tile extends DynamicModellable implements EventReceiver, MenuSubject, Spawnable, Governable {
+    // TODO serial
     private final TileUserData userData = new TileUserData();
     private Optional<ModelInstance> placeholderBuildingModel = Optional.empty();
     private Color minimapColor = Color.BLACK;

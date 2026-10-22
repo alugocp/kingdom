@@ -26,6 +26,7 @@ import net.lugocorp.kingdom.utils.LogSys;
  * This class handles human and AI Players taking turns during the Game
  */
 public class TurnStructure {
+    // TODO serial
     private final Turn turn = new Turn();
     private boolean shouldCheckForAutoTurnEnd = true;
 

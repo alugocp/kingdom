@@ -35,6 +35,7 @@ import java.util.function.Function;
  * Represents a local spirit that Players can compete for favor with
  */
 public class Patron extends Building {
+    // TODO serial
     private static final int MIN_FAVOR = 1;
     private final Map<Player, Integer> favor = new HashMap<>();
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;

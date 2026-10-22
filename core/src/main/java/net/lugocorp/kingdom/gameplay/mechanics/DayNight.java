@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
  * This class implements a day/night cycle
  */
 public class DayNight {
+    // TODO serial
     private static final int DURATION = 8;
     private DayNightState state = DayNightState.DAY;
     private int countdown = DayNight.DURATION;

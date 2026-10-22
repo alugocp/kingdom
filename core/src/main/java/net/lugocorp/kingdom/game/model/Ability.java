@@ -19,6 +19,7 @@ import java.util.Optional;
  * A passive or active effect that Units, Buildings and Tiles can use
  */
 public class Ability implements EventReceiver, MenuSubject {
+    // TODO serial
     public final Unit wielder;
     public final String name;
     private Optional<Shortcut> shortcut = Optional.empty();

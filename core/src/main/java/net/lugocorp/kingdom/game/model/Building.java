@@ -34,6 +34,7 @@ import java.util.Optional;
  * Some structure that can be built on top of a Tile to modify its properties
  */
 public class Building extends Entity implements MenuSubject, Spawnable {
+    // TODO serial
     private final CoordUserData userData;
     private Optional<Color> minimapColor = Optional.empty();
     private boolean obstacle = false;

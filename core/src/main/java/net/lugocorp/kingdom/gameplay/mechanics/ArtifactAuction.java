@@ -35,6 +35,7 @@ import java.util.Set;
  * This class manages the logic for artifact auctions
  */
 public class ArtifactAuction {
+    // TODO serial
     public static final int MAX_AUCTION_POINTS = 100;
     private final List<Artifact> artifacts = new ArrayList<>();
     private Random random = new Random();

@@ -17,6 +17,7 @@ import java.util.Optional;
  * They provide bonuses that reward certain playstyles.
  */
 public class Fate implements EventReceiver {
+    // TODO serial
     public final String name;
     public final List<String> desc = new ArrayList<>();
     public Optional<String> image = Optional.empty();

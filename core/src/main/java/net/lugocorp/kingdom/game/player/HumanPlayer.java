@@ -13,6 +13,7 @@ import java.util.function.Function;
  * This Player is operated by a real life human being
  */
 public class HumanPlayer extends Player {
+    // TODO serial
 
     public HumanPlayer(Color color) {
         super("you", null, color);

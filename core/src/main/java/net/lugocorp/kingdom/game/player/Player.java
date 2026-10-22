@@ -27,6 +27,7 @@ import java.util.function.Function;
  * Represents a human or AI that is playing the game
  */
 public abstract class Player {
+    // TODO serial
     public static final int INITIAL_GOLD = 100;
     private int unitPoints = DevOptions.getInitialUnitPoints();
     private Color color;
