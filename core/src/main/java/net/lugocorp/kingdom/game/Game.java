@@ -20,10 +20,10 @@ import net.lugocorp.kingdom.gameplay.mechanics.Mechanics;
 import net.lugocorp.kingdom.math.Hexagons;
 import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.serial.Serializable;
-import net.lugocorp.kingdom.serial.v0d0d0.GameSerial;
+import net.lugocorp.kingdom.serial.v1d0d0.GameSerial;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
-import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,12 +42,12 @@ public class Game implements Serializable<GameSerial> {
     public final Set<Tower> towers = new HashSet<>();
     public final Set<Unit> units = new HashSet<>();
     public final World world = new World();
-    public final OffsetTime startTime;
+    public final ZonedDateTime startTime;
     public final HumanPlayer human;
     public final AllEventHandlers events;
     public final Generator generator;
 
-    public Game(OffsetTime startTime) {
+    public Game(ZonedDateTime startTime) {
         this.generator = Context.getContext().generator;
         this.events = Context.getContext().events;
         this.startTime = startTime;

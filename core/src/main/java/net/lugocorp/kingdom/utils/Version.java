@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.utils;
 
 /**
- * Represents a semantic versioning value
+ * Represents a release version
  */
-public class Semver {
+public class Version {
     public static final int ALPHA = 0;
     public static final int BETA = 1;
     public static final int FULL = 2;
@@ -12,21 +12,22 @@ public class Semver {
     public final int patch;
     public final int label;
 
-    public Semver(int major, int minor, int patch, int label) {
+    public Version(int major, int minor, int patch, int label) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
         this.label = label;
     }
 
-    public Semver(int major, int minor, int patch) {
-        this(major, minor, patch, Semver.FULL);
+    public Version(int major, int minor, int patch) {
+        this(major, minor, patch, Version.FULL);
     }
 
     /**
-     * Returns true if this Semver represents a newer version than the given Semver
+     * Returns true if this Version represents a newer version than the given
+     * Version
      */
-    public boolean isNewerThan(Semver s) {
+    public boolean isNewerThan(Version s) {
         return this.major > s.major
                 || (this.major == s.major && (this.minor > s.minor || (this.minor == s.minor && this.patch > s.patch)));
     }
@@ -35,10 +36,10 @@ public class Semver {
     @Override
     public String toString() {
         String suffix = "";
-        if (this.label == Semver.ALPHA) {
+        if (this.label == Version.ALPHA) {
             suffix = " (alpha)";
         }
-        if (this.label == Semver.BETA) {
+        if (this.label == Version.BETA) {
             suffix = " (beta)";
         }
         return String.format("%d.%d.%d%s", this.major, this.minor, this.patch, suffix);
@@ -52,8 +53,8 @@ public class Semver {
     /** {@inheritdoc} */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Semver) {
-            Semver s = (Semver) o;
+        if (o instanceof Version) {
+            Version s = (Version) o;
             return this.major == s.major && this.minor == s.minor && this.patch == s.patch;
         }
         return false;

@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.serial.kryo;
 import net.lugocorp.kingdom.Main;
-import net.lugocorp.kingdom.utils.Semver;
+import net.lugocorp.kingdom.utils.Version;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -17,16 +17,16 @@ public class SaveFileHandler {
     public static final Kryo kryo = KryoProvider.getKryo();
 
     /**
-     * Extracts a Semver instance from a Kryo-based file format
+     * Extracts a Version instance from a Kryo-based file format
      */
-    public static Optional<Semver> readVersion(File file) {
+    public static Optional<Version> readVersion(File file) {
         Input input = null;
         try {
             input = new Input(new FileInputStream(file));
             final int major = input.read();
             final int minor = input.read();
             final int patch = input.read();
-            return Optional.of(new Semver(major, minor, patch));
+            return Optional.of(new Version(major, minor, patch));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();

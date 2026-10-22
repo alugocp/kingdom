@@ -31,7 +31,8 @@ import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.utils.Tuple;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +59,7 @@ class GameCreationView implements View {
         this.background = new Background(Context.getContext().av);
 
         // Initialize Game and GameView state for world generation logic
-        final Game game = new Game(OffsetTime.now());
+        final Game game = new Game(ZonedDateTime.now(ZoneId.of("EST", ZoneId.SHORT_IDS)));
         final GameView view = new GameView(game);
         Context.setContext(new GameViewContext(Context.getContext(), view));
         this.setWorldSize(0);

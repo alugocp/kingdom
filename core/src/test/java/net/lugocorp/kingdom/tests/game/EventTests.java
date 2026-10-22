@@ -1,9 +1,9 @@
 package net.lugocorp.kingdom.tests.game;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import net.lugocorp.kingdom.context.BaseContext;
 import net.lugocorp.kingdom.game.model.Unit;
 import net.lugocorp.kingdom.gameplay.events.Event;
 import net.lugocorp.kingdom.gameplay.events.EventHandlerBundle;
-import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,8 @@ public class EventTests {
         assertEquals(bundle.hasEventHandler(stratifier, event2), false);
 
         // Add some EventHandlers
-        bundle.addEventHandler(stratifier, event1, (GameView view, Unit receiver, Event event) -> new SideEffect());
+        bundle.addEventHandler(stratifier, event1,
+                (BaseContext ctx, Unit receiver, Event<BaseContext> event) -> new SideEffect());
         assertEquals(bundle.hasEventHandler(stratifier, event1), true);
         assertEquals(bundle.hasEventHandler(stratifier, event2), false);
 

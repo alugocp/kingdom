@@ -1,11 +1,14 @@
 package net.lugocorp.kingdom.serial;
+import net.lugocorp.kingdom.Main;
 import net.lugocorp.kingdom.game.Game;
 import net.lugocorp.kingdom.serial.kryo.SaveFileHandler;
-import net.lugocorp.kingdom.serial.v0d0d0.GameSerial;
-import net.lugocorp.kingdom.serial.v0d0d0.V0d0d0Deserializer;
+import net.lugocorp.kingdom.serial.v1d0d0.GameSerial;
+import net.lugocorp.kingdom.serial.v1d0d0.V1d0d0Deserializer;
 import net.lugocorp.kingdom.utils.Files;
+import net.lugocorp.kingdom.utils.Version;
 import java.io.File;
 import java.nio.file.Path;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +20,7 @@ import java.util.regex.Pattern;
  */
 public class SaveLoad {
     private static final String EXT = "game";
-    private static final V0d0d0Deserializer deserializer = new V0d0d0Deserializer();
+    private static final V1d0d0Deserializer deserializer = new V1d0d0Deserializer();
 
     /**
      * Returns a list of paths that have saved games
@@ -46,6 +49,17 @@ public class SaveLoad {
     }
 
     /**
+     * Returns the corresponding filename for the given Game instance
+     */
+    public String getFilename(Version version, ZonedDateTime time) {
+        if (version.label < Version.FULL) {
+            return String.format("%s-%s.%s", time.toString(), version.label == Version.ALPHA ? "alpha" : "beta",
+                    SaveLoad.EXT);
+        }
+        return String.format("%s.%s", time.toString(), SaveLoad.EXT);
+    }
+
+    /**
      * Loads a Game from the given Path
      */
     public Optional<Game> loadGame(Path path) {
@@ -64,7 +78,7 @@ public class SaveLoad {
      */
     public void saveGame(Game game) throws Exception {
         Files.ensureExistence();
-        final String filename = String.format("%s.%s", game.startTime.toString(), SaveLoad.EXT);
+        final String filename = this.getFilename(Main.VERSION, game.startTime);
         final File file = Files.getFile(filename).file();
         try {
             final GameSerial serial = game.serialize();

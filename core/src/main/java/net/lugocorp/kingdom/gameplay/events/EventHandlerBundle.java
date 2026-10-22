@@ -72,7 +72,7 @@ public class EventHandlerBundle<T extends EventReceiver> {
     /**
      * Registers a new EventHandler to some name and channel on this EventReceiver
      */
-    <C extends Context, E extends Event<C>> void addEventHandler(String stratifier, String channel,
+    public <C extends Context, E extends Event<C>> void addEventHandler(String stratifier, String channel,
             EventHandler<C, T, E> handler) {
         String key = this.getKey(stratifier, channel);
         if (!this.handlers.containsKey(key)) {

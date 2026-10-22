@@ -11,7 +11,7 @@ import net.lugocorp.kingdom.settings.SettingsIO;
 import net.lugocorp.kingdom.ui.View;
 import net.lugocorp.kingdom.ui.views.LoadingGameView;
 import net.lugocorp.kingdom.utils.Log;
-import net.lugocorp.kingdom.utils.Semver;
+import net.lugocorp.kingdom.utils.Version;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * This main class kicks off all game logic
  */
 public class Main implements ApplicationListener {
-    public static final Semver VERSION = new Semver(0, 0, 0, Semver.BETA);
+    public static final Version VERSION = new Version(1, 0, 0, Version.BETA);
     private long prevTime = System.currentTimeMillis();
     private View view = null;
 

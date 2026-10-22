@@ -1,6 +1,6 @@
 package net.lugocorp.kingdom.serial;
 import net.lugocorp.kingdom.game.Game;
-import net.lugocorp.kingdom.utils.Semver;
+import net.lugocorp.kingdom.utils.Version;
 import java.io.File;
 import java.util.Optional;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 public abstract class Deserializer<V extends Serial<Game>, P extends Serial<Game>> extends BaseDeserializer<V> {
     protected final Optional<BaseDeserializer<P>> prev;
 
-    protected Deserializer(Semver version, Optional<BaseDeserializer<P>> prev) {
+    protected Deserializer(Version version, Optional<BaseDeserializer<P>> prev) {
         super(version);
         this.prev = prev;
     }

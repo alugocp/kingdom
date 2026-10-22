@@ -1,21 +1,21 @@
-package net.lugocorp.kingdom.serial.v0d0d0;
+package net.lugocorp.kingdom.serial.v1d0d0;
 import net.lugocorp.kingdom.serial.BaseDeserializer;
 import net.lugocorp.kingdom.serial.kryo.SaveFileHandler;
-import net.lugocorp.kingdom.utils.Semver;
+import net.lugocorp.kingdom.utils.Version;
 import java.io.File;
 import java.util.Optional;
 
 /**
- * Deserializer implementation for v0.0.0
+ * Deserializer implementation for v1.0.0
  */
-public class V0d0d0Deserializer extends BaseDeserializer<GameSerial> {
+public class V1d0d0Deserializer extends BaseDeserializer<GameSerial> {
 
-    public V0d0d0Deserializer() {
-        super(new Semver(0, 0, 0));
+    public V1d0d0Deserializer() {
+        super(new Version(1, 0, 0));
     }
 
     /** {@inheritdoc} */
-    protected Optional<Semver> getFileVersion(File file) {
+    protected Optional<Version> getFileVersion(File file) {
         return SaveFileHandler.readVersion(file);
     }
 

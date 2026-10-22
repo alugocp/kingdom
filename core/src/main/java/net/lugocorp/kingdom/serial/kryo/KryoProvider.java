@@ -14,8 +14,8 @@ public class KryoProvider {
         kryo.setReferences(true);
         kryo.setRegistrationRequired(false);
 
-        // Register v0.0.0 serial classes
-        kryo.register(net.lugocorp.kingdom.serial.v0d0d0.GameSerial.class);
+        // Register v1.0.0 serial classes
+        kryo.register(net.lugocorp.kingdom.serial.v1d0d0.GameSerial.class);
         return kryo;
     }
 }

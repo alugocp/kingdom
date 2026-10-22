@@ -1,5 +1,5 @@
 # Legends of T'ahn
-![Static Badge](https://img.shields.io/badge/Version-0.0.0--beta-a?color=%23009900)
+![Static Badge](https://img.shields.io/badge/Version-1.0.0--beta-a?color=%23009900)
 
 Legends of T'ahn is a turn-based strategy game written in Java with the [libGDX](https://libgdx.com/) library.
 Manage resources and train units as you explore and maintain the game world.
@@ -40,6 +40,7 @@ You can also run `gradle cleanAssets` to convert all models at once.
 
 Alternatively, you can use Blockbench instead of Blender.
 Export a Blockbench project as an `obj` file (this will also generate `mtl` and `png` files), then run `gradle cleanAssets`.
+Buildings/Tiles are modeled in Blockbench and Units/Patrons are modeled in Blender.
 
 ## Modifying content
 If you change the 3D models then run `gradle cleanAssets` *before* rerunning `gradle build` or `gradle run`.
@@ -51,6 +52,16 @@ python3 create_labels.py
 ```
 
 This will re-generate the `Labels` class that defines all in-game content.
+Then you can modify the Java code within `content/src/main/java/net/lugocorp/kingdom/content`.
+
+## Versioning
+We use a three-digit versioning system (`x.y.z`) to keep track of releases for the game.
+The first digit tracks major releases such as expansions.
+The second digit tracks minor updates such as new content.
+The third digit tracks patches such as bug fixes.
+Each release is also tagged with a build (git hash) and an optional release type (`alpha` or `beta`).
+Full release versions (those without a tagged release type) have backwards compatibility for loading saved games.
+Alpha and beta release versions make no guarantee of backwards compatibility between builds.
 
 ## Notes
 - [libGDX JavaDocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/index.html)
