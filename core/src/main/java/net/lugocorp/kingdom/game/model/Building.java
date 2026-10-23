@@ -23,17 +23,21 @@ import net.lugocorp.kingdom.menu.text.BadgeNode;
 import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.PlayerBadgeNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.serial.Serializable;
+import net.lugocorp.kingdom.serial.v1d0d0.BuildingSerial;
 import net.lugocorp.kingdom.ui.views.GameView;
+import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
  * Some structure that can be built on top of a Tile to modify its properties
  */
-public class Building extends Entity implements MenuSubject, Spawnable {
+public class Building extends Entity implements MenuSubject, Spawnable, Serializable<BuildingSerial> {
     // TODO serial
     private final CoordUserData userData;
     private Optional<Color> minimapColor = Optional.empty();
@@ -46,6 +50,14 @@ public class Building extends Entity implements MenuSubject, Spawnable {
         this.userData = new CoordUserData(() -> this.tile.map((Tile t) -> !t.isVisible()).orElse(true));
         this.userData.point.x = x;
         this.userData.point.y = y;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public BuildingSerial serialize() {
+        return new BuildingSerial(this.name, this.getPoint(),
+                this.items.map((Inventory inventory) -> Lambda.map((Item i) -> i.name, inventory.getItems()))
+                        .orElse(new ArrayList<String>()));
     }
 
     /** {@inheritdoc} */

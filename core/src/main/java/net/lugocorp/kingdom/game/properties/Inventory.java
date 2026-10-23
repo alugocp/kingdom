@@ -44,6 +44,15 @@ public class Inventory implements MenuSubject, Iterable<Item> {
     }
 
     /**
+     * Returns a shallow copy of the Items list behind this instance
+     */
+    public List<Item> getItems() {
+        final List<Item> i = new ArrayList<>();
+        i.addAll(this.items);
+        return i;
+    }
+
+    /**
      * Returns true if this Inventory has any Items in it
      */
     public boolean hasItems() {
