@@ -13,24 +13,25 @@ import java.util.List;
  * Serial<Building> implementation for v1.0.0
  */
 public class BuildingSerial implements Serial<Building> {
-    // TODO serial remove EntityType/Point as types here
     private final List<String> items;
-    private final EntityType type;
     private final String label;
-    private final Point point;
+    private final String type;
+    private final int x;
+    private final int y;
 
     public BuildingSerial(EntityType type, String label, Point point, List<String> items) {
+        this.type = type.toString();
         this.label = label;
-        this.point = point;
         this.items = items;
-        this.type = type;
+        this.x = point.x;
+        this.y = point.y;
     }
 
     /** {@inheritdoc} */
     public Building deserialize() {
         final BaseContext ctx = Context.getContext();
-        if (this.type == EntityType.BUILDING) {
-            final Building b = ctx.generator.building(this.label, this.point.x, this.point.y);
+        if (this.type == EntityType.BUILDING.toString()) {
+            final Building b = ctx.generator.building(this.label, this.x, this.y);
             b.items.ifPresent((Inventory inventory) -> {
                 for (String i : this.items) {
                     inventory.add(ctx.generator.item(i));
@@ -38,8 +39,8 @@ public class BuildingSerial implements Serial<Building> {
             });
             return b;
         }
-        if (this.type == EntityType.BUILDING) {
-            final Tower t = ctx.generator.tower(this.point.x, this.point.y);
+        if (this.type == EntityType.BUILDING.toString()) {
+            final Tower t = ctx.generator.tower(this.x, this.y);
             t.items.ifPresent((Inventory inventory) -> {
                 for (String i : this.items) {
                     inventory.add(ctx.generator.item(i));
@@ -47,8 +48,8 @@ public class BuildingSerial implements Serial<Building> {
             });
             return t;
         }
-        if (this.type == EntityType.PATRON) {
-            return ctx.generator.patron(this.label, this.point.x, this.point.y);
+        if (this.type == EntityType.PATRON.toString()) {
+            return ctx.generator.patron(this.label, this.x, this.y);
         }
         throw new RuntimeException(String.format("Could not deserialize buidling %s", this.label));
     }
