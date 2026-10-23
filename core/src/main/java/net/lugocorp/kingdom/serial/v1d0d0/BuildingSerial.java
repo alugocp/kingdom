@@ -13,6 +13,7 @@ import java.util.List;
  * Serial<Building> implementation for v1.0.0
  */
 public class BuildingSerial implements Serial<Building> {
+    // TODO serial remove EntityType/Point as types here
     private final List<String> items;
     private final EntityType type;
     private final String label;

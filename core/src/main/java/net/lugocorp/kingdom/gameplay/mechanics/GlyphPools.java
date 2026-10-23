@@ -4,6 +4,8 @@ import net.lugocorp.kingdom.context.Context;
 import net.lugocorp.kingdom.game.glyph.Glyph;
 import net.lugocorp.kingdom.game.layers.DummyUnit;
 import net.lugocorp.kingdom.game.model.Unit;
+import net.lugocorp.kingdom.serial.Serializable;
+import net.lugocorp.kingdom.serial.v1d0d0.GlyphPoolSerial;
 import net.lugocorp.kingdom.utils.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,10 +15,25 @@ import java.util.Map;
 /**
  * This class tracks all the Units that can be recruited by their Glyph(s)
  */
-public class GlyphPools {
-    // TODO serial
+public class GlyphPools implements Serializable<GlyphPoolSerial> {
     private final Map<Glyph, List<String>> pools = new HashMap<>();
     private final Map<Glyph, Integer> originals = new HashMap<>();
+
+    /** {@inheritdoc} */
+    @Override
+    public GlyphPoolSerial serialize() {
+        return new GlyphPoolSerial(this.pools, this.originals);
+    }
+
+    /**
+     * Populates this instance's fields from the given inputs
+     */
+    public void populate(Map<String, List<String>> pools, Map<String, Integer> originals) {
+        for (Glyph glyph : Glyph.values()) {
+            this.pools.put(glyph, pools.getOrDefault(glyph.toString(), new ArrayList<String>()));
+            this.originals.put(glyph, originals.getOrDefault(glyph.toString(), 0));
+        }
+    }
 
     /**
      * Initializes this object, ingests all registered Unit names in the Game and
