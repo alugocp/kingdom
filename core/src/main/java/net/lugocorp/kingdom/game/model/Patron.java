@@ -19,10 +19,12 @@ import net.lugocorp.kingdom.menu.text.HeaderNode;
 import net.lugocorp.kingdom.menu.text.PlayerBadgeNode;
 import net.lugocorp.kingdom.menu.text.SubheaderNode;
 import net.lugocorp.kingdom.menu.text.TextNode;
+import net.lugocorp.kingdom.serial.v1d0d0.BuildingSerial;
 import net.lugocorp.kingdom.ui.overlay.RisingOverlay;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.Lambda;
 import net.lugocorp.kingdom.utils.SideEffect;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +37,6 @@ import java.util.function.Function;
  * Represents a local spirit that Players can compete for favor with
  */
 public class Patron extends Building {
-    // TODO serial
     private static final int MIN_FAVOR = 1;
     private final Map<Player, Integer> favor = new HashMap<>();
     public Function<Unit, Boolean> isPreferredUnitType = (Unit u) -> false;
@@ -49,6 +50,12 @@ public class Patron extends Building {
         super(name, x, y);
         this.combat.health.invulnerable();
         super.setMinimapColor(ColorScheme.BLACK.hex);
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public BuildingSerial serialize() {
+        return new BuildingSerial(EntityType.PATRON, this.name, this.getPoint(), new ArrayList<String>());
     }
 
     /** {@inheritdoc} */

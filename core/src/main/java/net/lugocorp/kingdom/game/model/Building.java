@@ -55,7 +55,7 @@ public class Building extends Entity implements MenuSubject, Spawnable, Serializ
     /** {@inheritdoc} */
     @Override
     public BuildingSerial serialize() {
-        return new BuildingSerial(this.name, this.getPoint(),
+        return new BuildingSerial(EntityType.BUILDING, this.name, this.getPoint(),
                 this.items.map((Inventory inventory) -> Lambda.map((Item i) -> i.name, inventory.getItems()))
                         .orElse(new ArrayList<String>()));
     }
