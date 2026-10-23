@@ -10,6 +10,8 @@ import net.lugocorp.kingdom.math.Point;
 import net.lugocorp.kingdom.menu.MenuNode;
 import net.lugocorp.kingdom.menu.MenuSubject;
 import net.lugocorp.kingdom.menu.icon.ActionNode;
+import net.lugocorp.kingdom.serial.Serializable;
+import net.lugocorp.kingdom.serial.v1d0d0.AbilitySerial;
 import net.lugocorp.kingdom.ui.views.GameView;
 import net.lugocorp.kingdom.utils.SideEffect;
 import com.badlogic.gdx.math.Matrix4;
@@ -18,8 +20,7 @@ import java.util.Optional;
 /**
  * A passive or active effect that Units, Buildings and Tiles can use
  */
-public class Ability implements EventReceiver, MenuSubject {
-    // TODO serial
+public class Ability implements EventReceiver, MenuSubject, Serializable<AbilitySerial> {
     public final Unit wielder;
     public final String name;
     private Optional<Shortcut> shortcut = Optional.empty();
@@ -30,6 +31,12 @@ public class Ability implements EventReceiver, MenuSubject {
     public Ability(Unit wielder, String name) {
         this.wielder = wielder;
         this.name = name;
+    }
+
+    /** {@inheritdoc} */
+    @Override
+    public AbilitySerial serialize() {
+        return new AbilitySerial(this.name, this.cooldown);
     }
 
     /**
